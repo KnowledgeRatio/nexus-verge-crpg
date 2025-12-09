@@ -37,6 +37,18 @@
       "difficultTerrain": true
     },
     {
+      "id": "deepWater",
+      "name": "Deep Water",
+      "symbol": "~",
+      "color": "#1e5ba8",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Deep water blocks your path.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false
+    },
+    {
       "id": "water",
       "name": "Water",
       "symbol": "~",
@@ -84,6 +96,18 @@
       "coverType": null,
       "difficultTerrain": false,
       "isSettlement": true
+    },
+    {
+      "id": "hills",
+      "name": "Hills",
+      "symbol": "n",
+      "color": "#9aad72",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Rolling hills provide vantage points.",
+      "encounterModifier": 0.8,
+      "coverType": "half",
+      "difficultTerrain": true
     },
     {
       "id": "hill",
@@ -146,6 +170,78 @@
       "coverType": "threeQuarters",
       "difficultTerrain": true,
       "isDungeon": true
+    },
+    {
+      "id": "plains",
+      "name": "Plains",
+      "symbol": ".",
+      "color": "#d4c896",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Flat, open plains stretch to the horizon.",
+      "encounterModifier": 0.9,
+      "coverType": null,
+      "difficultTerrain": false
+    },
+    {
+      "id": "denseForest",
+      "name": "Dense Forest",
+      "symbol": "♣",
+      "color": "#1a3a0f",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Thick forest with towering trees and dense undergrowth.",
+      "encounterModifier": 1.5,
+      "coverType": "threeQuarters",
+      "difficultTerrain": true
+    },
+    {
+      "id": "tundra",
+      "name": "Tundra",
+      "symbol": ".",
+      "color": "#c8d8e8",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Frozen ground with sparse vegetation.",
+      "encounterModifier": 0.7,
+      "coverType": null,
+      "difficultTerrain": true
+    },
+    {
+      "id": "snowyPlains",
+      "name": "Snowy Plains",
+      "symbol": "*",
+      "color": "#f0f8ff",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Snow-covered plains glitter in the cold.",
+      "encounterModifier": 0.6,
+      "coverType": null,
+      "difficultTerrain": true
+    },
+    {
+      "id": "jungle",
+      "name": "Jungle",
+      "symbol": "♠",
+      "color": "#2d6b22",
+      "traversable": true,
+      "movementCost": 2.5,
+      "description": "Dense tropical jungle teeming with life.",
+      "encounterModifier": 1.8,
+      "coverType": "threeQuarters",
+      "difficultTerrain": true
+    },
+    {
+      "id": "savanna",
+      "name": "Savanna",
+      "symbol": "'",
+      "color": "#e8c870",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Golden grasslands dotted with acacia trees.",
+      "encounterModifier": 1.1,
+      "coverType": null,
+      "difficultTerrain": false
     }
   ]
 }

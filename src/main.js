@@ -6,11 +6,23 @@
 import { gameState } from './core/GameState.js';
 import { generateSeedString } from './utils/rng.js';
 import CharacterCreationUI from './ui/CharacterCreation.js';
+import WorldGenerator from './systems/WorldGenerator.js';
+import MapRenderer from './rendering/MapRenderer.js';
+import Player from './systems/Player.js';
 
 class Game {
     constructor() {
         this.characterCreationUI = null;
         this.currentScreen = null;
+
+        // Game systems (initialized when game starts)
+        this.worldGenerator = null;
+        this.mapRenderer = null;
+        this.player = null;
+
+        // Game loop
+        this.gameLoopId = null;
+        this.lastFrameTime = 0;
     }
 
     /**
@@ -163,7 +175,7 @@ class Game {
     /**
      * Initialize game screen
      */
-    initGameScreen() {
+    async initGameScreen() {
         console.log('🎮 Initializing game screen...');
 
         const character = gameState.get('character');
@@ -176,13 +188,43 @@ class Game {
         // Update HUD
         this.updateHUD(character);
 
-        // Add welcome message
+        // Initialize game systems
+        const worldConfig = gameState.get('worldConfig');
+        const seed = gameState.get('seed');
+
+        if (!this.worldGenerator) {
+            console.log('🌍 Initializing world generator...');
+            this.worldGenerator = new WorldGenerator(seed, worldConfig);
+        }
+
+        if (!this.mapRenderer) {
+            console.log('🎨 Initializing map renderer...');
+            this.mapRenderer = new MapRenderer('gameCanvas', {
+                tileWidth: 12,
+                tileHeight: 16,
+                viewportWidth: 80,
+                viewportHeight: 40
+            });
+        }
+
+        if (!this.player) {
+            console.log('👤 Initializing player...');
+            this.player = new Player(this.worldGenerator, this.mapRenderer);
+            await this.player.spawn();
+        }
+
+        // Add welcome messages
         gameState.addMessage(`Welcome to Nexus Verge, ${character.name}!`, 'success');
         gameState.addMessage(`You are a Level ${character.level} ${character.race.name} ${character.class.name}.`, 'info');
         gameState.addMessage('Use WASD or Arrow keys to move.', 'info');
 
-        // TODO: Initialize world generation and map renderer
-        console.log('⚠️ World generation not yet implemented');
+        // Subscribe to messages
+        this.setupMessageLog();
+
+        // Start game loop
+        this.startGameLoop();
+
+        console.log('✅ Game initialized successfully');
     }
 
     /**
@@ -273,7 +315,116 @@ class Game {
             });
         }
     }
+
+    /**
+     * Setup message log
+     */
+    setupMessageLog() {
+        const messageLog = document.getElementById('messageLog');
+        if (!messageLog) return;
+
+        gameState.subscribe('ui.messages', (messages) => {
+            // Show last 10 messages
+            const recent = messages.slice(-10);
+            messageLog.innerHTML = recent.map(msg => {
+                const className = `message message-${msg.type || 'info'}`;
+                return `<div class="${className}">${msg.text}</div>`;
+            }).join('');
+
+            // Auto-scroll to bottom
+            messageLog.scrollTop = messageLog.scrollHeight;
+        });
+    }
+
+    /**
+     * Start game loop
+     */
+    startGameLoop() {
+        if (this.gameLoopId) {
+            cancelAnimationFrame(this.gameLoopId);
+        }
+
+        const gameLoop = async (timestamp) => {
+            // Calculate delta time
+            const deltaTime = timestamp - this.lastFrameTime;
+            this.lastFrameTime = timestamp;
+
+            // Update game state
+            await this.update(deltaTime);
+
+            // Render
+            await this.render();
+
+            // Continue loop
+            this.gameLoopId = requestAnimationFrame(gameLoop);
+        };
+
+        this.gameLoopId = requestAnimationFrame(gameLoop);
+        console.log('🔄 Game loop started');
+    }
+
+    /**
+     * Stop game loop
+     */
+    stopGameLoop() {
+        if (this.gameLoopId) {
+            cancelAnimationFrame(this.gameLoopId);
+            this.gameLoopId = null;
+            console.log('⏸️ Game loop stopped');
+        }
+    }
+
+    /**
+     * Update game state
+     */
+    async update(deltaTime) {
+        // Game state updates will happen here
+        // For now, most updates are event-driven (player input)
+    }
+
+    /**
+     * Render game
+     */
+    async render() {
+        if (!this.mapRenderer || !this.player || !this.worldGenerator) {
+            return;
+        }
+
+        const playerPos = this.player.getPosition();
+
+        // Get visible regions
+        const { regionX, regionY } = this.worldGenerator.getRegionCoords(playerPos.x, playerPos.y);
+
+        // Load current and adjacent regions
+        const regions = [];
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                const region = await this.worldGenerator.generateRegion(regionX + dx, regionY + dy);
+                regions.push(region);
+            }
+        }
+
+        // Combine all tiles from loaded regions
+        const allTiles = regions.flatMap(r => r.tiles);
+
+        // Add features to tiles
+        regions.forEach(region => {
+            region.features.forEach(feature => {
+                const tile = allTiles.find(t => t.x === feature.x && t.y === feature.y);
+                if (tile) {
+                    tile.feature = feature;
+                }
+            });
+        });
+
+        // Render world
+        await this.mapRenderer.renderWorld({ tiles: allTiles }, playerPos);
+
+        // Prune distant regions from cache
+        this.worldGenerator.pruneCache(regionX, regionY, 3);
+    }
 }
+
 
 // Initialize game when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
