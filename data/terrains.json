@@ -1,0 +1,151 @@
+{
+  "terrains": [
+    {
+      "id": "grassland",
+      "name": "Grassland",
+      "symbol": ".",
+      "color": "#7ec850",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Open fields of grass sway gently in the breeze.",
+      "encounterModifier": 1.0,
+      "coverType": null,
+      "difficultTerrain": false
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "symbol": "T",
+      "color": "#2d5016",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Dense trees provide shade and cover.",
+      "encounterModifier": 1.3,
+      "coverType": "half",
+      "difficultTerrain": true
+    },
+    {
+      "id": "mountain",
+      "name": "Mountain",
+      "symbol": "^",
+      "color": "#8b7355",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Rocky peaks reach toward the sky.",
+      "encounterModifier": 0.7,
+      "coverType": "threeQuarters",
+      "difficultTerrain": true
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "symbol": "~",
+      "color": "#4a9eff",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Deep water blocks your path.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false
+    },
+    {
+      "id": "shallowWater",
+      "name": "Shallow Water",
+      "symbol": "≈",
+      "color": "#6ab8ff",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Shallow water that can be waded through.",
+      "encounterModifier": 0.5,
+      "coverType": null,
+      "difficultTerrain": true
+    },
+    {
+      "id": "road",
+      "name": "Road",
+      "symbol": "=",
+      "color": "#b8a589",
+      "traversable": true,
+      "movementCost": 0.8,
+      "description": "A well-worn path connects settlements.",
+      "encounterModifier": 0.5,
+      "coverType": null,
+      "difficultTerrain": false
+    },
+    {
+      "id": "town",
+      "name": "Town",
+      "symbol": "#",
+      "color": "#d4af37",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A settlement with buildings and people.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isSettlement": true
+    },
+    {
+      "id": "hill",
+      "name": "Hill",
+      "symbol": "n",
+      "color": "#9aad72",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Rolling hills provide vantage points.",
+      "encounterModifier": 0.8,
+      "coverType": "half",
+      "difficultTerrain": true
+    },
+    {
+      "id": "swamp",
+      "name": "Swamp",
+      "symbol": "m",
+      "color": "#4a6838",
+      "traversable": true,
+      "movementCost": 2.5,
+      "description": "A murky wetland filled with thick vegetation.",
+      "encounterModifier": 1.2,
+      "coverType": "half",
+      "difficultTerrain": true
+    },
+    {
+      "id": "desert",
+      "name": "Desert",
+      "symbol": "~",
+      "color": "#edc9af",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Endless sands stretch in all directions.",
+      "encounterModifier": 0.6,
+      "coverType": null,
+      "difficultTerrain": true
+    },
+    {
+      "id": "cave",
+      "name": "Cave Entrance",
+      "symbol": "O",
+      "color": "#3d3d3d",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A dark opening leading underground.",
+      "encounterModifier": 1.5,
+      "coverType": "full",
+      "difficultTerrain": false,
+      "isDungeon": true
+    },
+    {
+      "id": "ruins",
+      "name": "Ruins",
+      "symbol": "R",
+      "color": "#7a7a7a",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Ancient structures crumbling with age.",
+      "encounterModifier": 1.4,
+      "coverType": "threeQuarters",
+      "difficultTerrain": true,
+      "isDungeon": true
+    }
+  ]
+}

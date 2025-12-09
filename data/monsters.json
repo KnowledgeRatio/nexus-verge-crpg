@@ -1,0 +1,404 @@
+{
+  "monsters": [
+    {
+      "id": "goblin",
+      "name": "Goblin",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 15,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 10,
+        "int": 10,
+        "wis": 8,
+        "cha": 8
+      },
+      "skills": {
+        "stealth": 6
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": ["common", "goblin"],
+      "traits": [
+        {
+          "name": "Nimble Escape",
+          "description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {"id": "dagger", "chance": 0.3},
+          {"id": "leatherArmor", "chance": 0.2},
+          {"id": "potionOfHealing", "chance": 0.1}
+        ]
+      }
+    },
+    {
+      "id": "wolf",
+      "name": "Wolf",
+      "size": "medium",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 13,
+      "hitPoints": "2d8+2",
+      "speed": 40,
+      "abilities": {
+        "str": 12,
+        "dex": 15,
+        "con": 12,
+        "int": 3,
+        "wis": 12,
+        "cha": 6
+      },
+      "skills": {
+        "perception": 3,
+        "stealth": 4
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Hearing and Smell",
+          "description": "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d4+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      }
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "lawful evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 13,
+      "hitPoints": "2d8+4",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 14,
+        "con": 15,
+        "int": 6,
+        "wis": 8,
+        "cha": 5
+      },
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["exhaustion", "poisoned"],
+      "senses": "darkvision 60 ft.",
+      "languages": ["understands Common but can't speak"],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Shortbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": {
+            "normal": 80,
+            "long": 320
+          },
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {"id": "shortsword", "chance": 0.3},
+          {"id": "shortbow", "chance": 0.2}
+        ]
+      }
+    },
+    {
+      "id": "orc",
+      "name": "Orc",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 13,
+      "hitPoints": "2d8+6",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 12,
+        "con": 16,
+        "int": 7,
+        "wis": 11,
+        "cha": 10
+      },
+      "skills": {
+        "intimidation": 2
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": ["common", "orc"],
+      "traits": [
+        {
+          "name": "Aggressive",
+          "description": "As a bonus action, the orc can move up to its speed toward a hostile creature it can see."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d12+3",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {"id": "battleaxe", "chance": 0.4},
+          {"id": "hideArmor", "chance": 0.3},
+          {"id": "potionOfHealing", "chance": 0.2}
+        ]
+      }
+    },
+    {
+      "id": "bandit",
+      "name": "Bandit",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any non-lawful",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d8+2",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 12,
+        "con": 12,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "senses": "normal",
+      "languages": ["common"],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": "1d6+1",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Light Crossbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 3,
+          "range": {
+            "normal": 80,
+            "long": 320
+          },
+          "damage": "1d8+1",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {"id": "dagger", "chance": 0.3},
+          {"id": "leatherArmor", "chance": 0.3},
+          {"id": "potionOfHealing", "chance": 0.1}
+        ]
+      }
+    },
+    {
+      "id": "zombie",
+      "name": "Zombie",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 8,
+      "hitPoints": "3d8+9",
+      "speed": 20,
+      "abilities": {
+        "str": 13,
+        "dex": 6,
+        "con": 16,
+        "int": 3,
+        "wis": 6,
+        "cha": 5
+      },
+      "savingThrows": {
+        "wis": 0
+      },
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["poisoned"],
+      "senses": "darkvision 60 ft.",
+      "languages": ["understands languages it knew in life but can't speak"],
+      "traits": [
+        {
+          "name": "Undead Fortitude",
+          "description": "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Slam",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": "1d6+1",
+          "damageType": "bludgeoning"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      }
+    },
+    {
+      "id": "giantRat",
+      "name": "Giant Rat",
+      "size": "small",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 7,
+        "dex": 15,
+        "con": 11,
+        "int": 2,
+        "wis": 10,
+        "cha": 4
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Smell",
+          "description": "The rat has advantage on Wisdom (Perception) checks that rely on smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The rat has advantage on attack rolls against a creature if at least one of the rat's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d4+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      }
+    },
+    {
+      "id": "bugbear",
+      "name": "Bugbear",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 16,
+      "hitPoints": "5d8+5",
+      "speed": 30,
+      "abilities": {
+        "str": 15,
+        "dex": 14,
+        "con": 13,
+        "int": 8,
+        "wis": 11,
+        "cha": 9
+      },
+      "skills": {
+        "stealth": 6,
+        "survival": 2
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": ["common", "goblin"],
+      "traits": [
+        {
+          "name": "Brute",
+          "description": "A melee weapon deals one extra die of its damage when the bugbear hits with it (included in the attack)."
+        },
+        {
+          "name": "Surprise Attack",
+          "description": "If the bugbear surprises a creature and hits it with an attack during the first round of combat, the target takes an extra 7 (2d6) damage from the attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Morningstar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d8+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {"id": "chainShirt", "chance": 0.4},
+          {"id": "battleaxe", "chance": 0.3},
+          {"id": "potionOfHealing", "chance": 0.3}
+        ]
+      }
+    }
+  ]
+}
