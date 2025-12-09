@@ -450,3 +450,302 @@ body {
         border-top: 2px solid var(--border-color);
     }
 }
+
+/* Character Creation Styles */
+.char-creation-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.creation-progress {
+    margin-bottom: 30px;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.progress-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: var(--font-mono);
+}
+
+.progress-step.active .step-number {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--bg-primary);
+}
+
+.progress-step.complete .step-number {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--bg-primary);
+}
+
+.step-label {
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.progress-step.active .step-label {
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.creation-step {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.creation-step h3 {
+    margin-bottom: 10px;
+    color: var(--text-highlight);
+}
+
+.step-description {
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+}
+
+.step-hint {
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-color);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.race-grid, .class-grid, .background-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.race-card, .class-card, .background-card {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    padding: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.race-card:hover, .class-card:hover, .background-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.race-card.selected, .class-card.selected, .background-card.selected {
+    border-color: var(--success-color);
+    background: var(--bg-primary);
+}
+
+.race-card h4, .class-card h4, .background-card h4 {
+    margin-bottom: 8px;
+    color: var(--text-highlight);
+}
+
+.race-description, .class-description, .background-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.race-stats, .class-stats, .background-stats {
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.race-stats > div, .class-stats > div, .background-stats > div {
+    margin-bottom: 4px;
+}
+
+.race-traits ul, .background-stats ul {
+    margin-left: 20px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.race-traits li, .background-stats li {
+    margin-bottom: 4px;
+}
+
+.ability-assignment {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ability-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+}
+
+.ability-row label {
+    width: 60px;
+    font-weight: bold;
+    font-family: var(--font-mono);
+}
+
+.ability-select {
+    padding: 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    min-width: 100px;
+}
+
+.ability-modifier {
+    font-weight: bold;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    min-width: 40px;
+}
+
+.racial-bonus {
+    color: var(--success-color);
+    font-size: 0.85rem;
+}
+
+.skill-selection {
+    margin-bottom: 20px;
+}
+
+.skill-selection h4, .background-skills h4 {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.skill-checkbox {
+    display: block;
+    padding: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.skill-checkbox:hover {
+    background: var(--bg-primary);
+}
+
+.skill-checkbox input {
+    margin-right: 8px;
+}
+
+.background-skills {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+}
+
+.character-review {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.review-section {
+    background: var(--bg-tertiary);
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.review-section h4 {
+    margin-bottom: 10px;
+    color: var(--text-highlight);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.review-section p {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.ability-review {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px;
+    background: var(--bg-primary);
+    margin-bottom: 4px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+}
+
+.ability-name {
+    font-weight: bold;
+}
+
+.ability-score {
+    color: var(--accent-color);
+}
+
+.ability-mod {
+    color: var(--text-secondary);
+}
+
+.creation-nav {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.creation-nav button {
+    flex: 1;
+    max-width: 200px;
+}
