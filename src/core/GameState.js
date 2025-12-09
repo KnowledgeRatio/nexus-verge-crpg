@@ -124,6 +124,15 @@ export class GameState {
     }
 
     /**
+     * Set state value (alias for update)
+     * @param {string} path - Dot-notation path
+     * @param {any} value - New value
+     */
+    set(path, value) {
+        this.update(path, value);
+    }
+
+    /**
      * Get state value at path
      * @param {string} path - Dot-notation path
      * @returns {any} Value at path
