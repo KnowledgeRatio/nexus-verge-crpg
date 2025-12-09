@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Verge - D&D 5e Roguelike CRPG</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Main Menu Screen -->
+        <div id="mainMenu" class="screen active">
+            <div class="menu-container">
+                <h1 class="title">NEXUS VERGE</h1>
+                <p class="subtitle">A D&D 5e Roguelike Adventure</p>
+                <div class="menu-buttons">
+                    <button id="newGameBtn" class="menu-btn">New Game</button>
+                    <button id="loadGameBtn" class="menu-btn">Load Game</button>
+                    <button id="helpBtn" class="menu-btn">Help</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Game Setup Screen -->
+        <div id="newGameScreen" class="screen">
+            <div class="setup-container">
+                <h2>New Game Setup</h2>
+
+                <div class="setup-section">
+                    <label for="seedInput">World Seed:</label>
+                    <div class="seed-input-group">
+                        <input type="text" id="seedInput" placeholder="NEXUS-XXXX-ALPHA">
+                        <button id="randomSeedBtn" class="small-btn">Random</button>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <label for="mapSize">Map Size:</label>
+                    <select id="mapSize">
+                        <option value="small">Small (Fast)</option>
+                        <option value="medium" selected>Medium (Recommended)</option>
+                        <option value="large">Large (Epic)</option>
+                    </select>
+                </div>
+
+                <div class="setup-section">
+                    <label for="difficulty">Difficulty:</label>
+                    <select id="difficulty">
+                        <option value="easy">Easy (Forgiving)</option>
+                        <option value="normal" selected>Normal (Balanced)</option>
+                        <option value="hard">Hard (Challenging)</option>
+                    </select>
+                </div>
+
+                <div class="setup-section">
+                    <label for="campaign">Campaign Objective:</label>
+                    <select id="campaign">
+                        <option value="defeatLichKing">Defeat the Lich King</option>
+                        <option value="uniteKingdoms">Unite the Kingdoms</option>
+                        <option value="recoverArtifact">Recover the Lost Artifact</option>
+                    </select>
+                </div>
+
+                <div class="menu-buttons">
+                    <button id="startGameBtn" class="menu-btn">Create Character</button>
+                    <button id="backToMenuBtn" class="menu-btn secondary">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Creation Screen -->
+        <div id="characterCreation" class="screen">
+            <div class="char-creation-container">
+                <h2>Character Creation</h2>
+                <div id="charCreationContent"></div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <!-- Top HUD -->
+            <div id="hud" class="hud">
+                <div class="hud-left">
+                    <span id="charName">Thorin</span>
+                    <span id="charLevel">Level 1 Fighter</span>
+                </div>
+                <div class="hud-center">
+                    <span id="location">Ironhill</span>
+                </div>
+                <div class="hud-right">
+                    <span id="hpDisplay">HP: 12/12</span>
+                    <span id="acDisplay">AC: 16</span>
+                </div>
+            </div>
+
+            <!-- Main Game Area -->
+            <div class="game-container">
+                <!-- Map Canvas -->
+                <div class="map-container">
+                    <canvas id="gameCanvas"></canvas>
+                </div>
+
+                <!-- Side Panel -->
+                <div class="side-panel">
+                    <div class="panel-section">
+                        <h3>Quick Stats</h3>
+                        <div id="quickStats"></div>
+                    </div>
+                    <div class="panel-section">
+                        <h3>Message Log</h3>
+                        <div id="messageLog" class="message-log"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Controls -->
+            <div class="controls">
+                <div class="control-hint">
+                    <kbd>WASD</kbd> Move |
+                    <kbd>I</kbd> Inventory |
+                    <kbd>C</kbd> Character |
+                    <kbd>Q</kbd> Quests |
+                    <kbd>R</kbd> Rest |
+                    <kbd>H</kbd> Help
+                </div>
+            </div>
+        </div>
+
+        <!-- Combat Screen -->
+        <div id="combatScreen" class="screen">
+            <div class="combat-container">
+                <h2>Combat</h2>
+                <div id="combatContent">
+                    <div class="combat-grid-container">
+                        <canvas id="combatCanvas"></canvas>
+                    </div>
+                    <div class="combat-sidebar">
+                        <div id="turnOrder"></div>
+                        <div id="combatActions"></div>
+                        <div id="combatLog" class="message-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modalOverlay" class="modal-overlay">
+            <div id="modalContent" class="modal-content"></div>
+        </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

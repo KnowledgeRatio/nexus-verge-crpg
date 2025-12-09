@@ -1,0 +1,452 @@
+/* Nexus Verge - Main Stylesheet */
+
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-highlight: #ffd700;
+    --border-color: #4a4a4a;
+    --accent-color: #4a9eff;
+    --danger-color: #ff4444;
+    --success-color: #44ff44;
+    --warning-color: #ffaa44;
+
+    /* Terrain colors */
+    --terrain-grass: #7ec850;
+    --terrain-forest: #2d5016;
+    --terrain-mountain: #8b7355;
+    --terrain-water: #4a9eff;
+    --terrain-road: #b8a589;
+    --terrain-town: #d4af37;
+
+    --font-mono: 'Courier New', Consolas, monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Menu */
+.menu-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 40px;
+    text-align: center;
+}
+
+.title {
+    font-size: 4rem;
+    font-family: var(--font-mono);
+    color: var(--text-highlight);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+    letter-spacing: 0.2em;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 60px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-family: var(--font-mono);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.menu-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.menu-btn.secondary {
+    background: transparent;
+}
+
+/* Setup Screen */
+.setup-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px;
+}
+
+.setup-container h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    color: var(--text-highlight);
+}
+
+.setup-section {
+    margin-bottom: 25px;
+}
+
+.setup-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.setup-section input,
+.setup-section select {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.seed-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.seed-input-group input {
+    flex: 1;
+}
+
+.small-btn {
+    padding: 12px 20px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: var(--font-mono);
+}
+
+.small-btn:hover {
+    background: var(--accent-color);
+}
+
+/* Character Creation */
+.char-creation-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px;
+}
+
+.char-creation-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: var(--text-highlight);
+}
+
+/* Game Screen */
+#gameScreen {
+    flex-direction: column;
+}
+
+.hud {
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.hud-left, .hud-center, .hud-right {
+    display: flex;
+    gap: 20px;
+}
+
+.game-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.map-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    padding: 20px;
+}
+
+#gameCanvas {
+    border: 2px solid var(--border-color);
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.side-panel {
+    width: 300px;
+    background: var(--bg-secondary);
+    border-left: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.panel-section {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-section h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.message-log {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    max-height: 400px;
+    overflow-y: auto;
+    line-height: 1.4;
+}
+
+.message-log .message {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.message-log .message.combat {
+    color: var(--danger-color);
+}
+
+.message-log .message.success {
+    color: var(--success-color);
+}
+
+.message-log .message.info {
+    color: var(--accent-color);
+}
+
+.controls {
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--border-color);
+    padding: 10px 20px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.control-hint kbd {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+/* Combat Screen */
+.combat-container {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.combat-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: var(--danger-color);
+}
+
+#combatContent {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+
+.combat-grid-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#combatCanvas {
+    border: 2px solid var(--border-color);
+}
+
+.combat-sidebar {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#turnOrder {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+}
+
+#combatActions {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+}
+
+#combatLog {
+    flex: 1;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Modals */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    padding: 30px;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-success {
+    color: var(--success-color);
+}
+
+.text-danger {
+    color: var(--danger-color);
+}
+
+.text-warning {
+    color: var(--warning-color);
+}
+
+.text-accent {
+    color: var(--accent-color);
+}
+
+.mt-1 { margin-top: 10px; }
+.mt-2 { margin-top: 20px; }
+.mb-1 { margin-bottom: 10px; }
+.mb-2 { margin-bottom: 20px; }
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-color);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .side-panel {
+        width: 250px;
+    }
+
+    .combat-sidebar {
+        width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .game-container {
+        flex-direction: column;
+    }
+
+    .side-panel {
+        width: 100%;
+        max-height: 200px;
+        border-left: none;
+        border-top: 2px solid var(--border-color);
+    }
+}

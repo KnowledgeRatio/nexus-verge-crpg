@@ -1,0 +1,153 @@
+{
+  "races": [
+    {
+      "id": "human",
+      "name": "Human",
+      "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.",
+      "abilityScoreIncrease": {
+        "str": 1,
+        "dex": 1,
+        "con": 1,
+        "int": 1,
+        "wis": 1,
+        "cha": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common"],
+      "traits": [
+        {
+          "name": "Versatile",
+          "description": "You gain +1 to all ability scores, reflecting human adaptability."
+        }
+      ]
+    },
+    {
+      "id": "elf",
+      "name": "Elf",
+      "description": "Elves are a magical people of otherworldly grace, living in places of ethereal beauty. They love nature and magic, art and artistry, music and poetry.",
+      "abilityScoreIncrease": {
+        "dex": 2,
+        "int": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common", "elvish"],
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "You have proficiency in the Perception skill."
+        },
+        {
+          "name": "Fey Ancestry",
+          "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep."
+        },
+        {
+          "name": "Trance",
+          "description": "Elves don't need to sleep. Instead, they meditate deeply for 4 hours a day (during a long rest, you only need 4 hours instead of 8)."
+        }
+      ]
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "description": "Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human.",
+      "abilityScoreIncrease": {
+        "con": 2,
+        "wis": 1
+      },
+      "size": "medium",
+      "speed": 25,
+      "languages": ["common", "dwarvish"],
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light."
+        },
+        {
+          "name": "Dwarven Resilience",
+          "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."
+        },
+        {
+          "name": "Dwarven Combat Training",
+          "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer."
+        },
+        {
+          "name": "Stonecunning",
+          "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check."
+        }
+      ]
+    },
+    {
+      "id": "halfling",
+      "name": "Halfling",
+      "description": "The diminutive halflings survive in a world full of larger creatures by avoiding notice or, barring that, avoiding offense. They are inclined to be affable and get along well with others.",
+      "abilityScoreIncrease": {
+        "dex": 2,
+        "cha": 1
+      },
+      "size": "small",
+      "speed": 25,
+      "languages": ["common", "halfling"],
+      "traits": [
+        {
+          "name": "Lucky",
+          "description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll."
+        },
+        {
+          "name": "Brave",
+          "description": "You have advantage on saving throws against being frightened."
+        },
+        {
+          "name": "Halfling Nimbleness",
+          "description": "You can move through the space of any creature that is of a size larger than yours."
+        }
+      ]
+    },
+    {
+      "id": "dragonborn",
+      "name": "Dragonborn",
+      "description": "Dragonborn look very much like dragons standing erect in humanoid form, though they lack wings or a tail. They are proud and honorable, with a strong sense of clan and heritage.",
+      "abilityScoreIncrease": {
+        "str": 2,
+        "cha": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common", "draconic"],
+      "dragonAncestry": {
+        "options": ["black", "blue", "brass", "bronze", "copper", "gold", "green", "red", "silver", "white"],
+        "damageTypes": {
+          "black": "acid",
+          "blue": "lightning",
+          "brass": "fire",
+          "bronze": "lightning",
+          "copper": "acid",
+          "gold": "fire",
+          "green": "poison",
+          "red": "fire",
+          "silver": "cold",
+          "white": "cold"
+        }
+      },
+      "traits": [
+        {
+          "name": "Draconic Ancestry",
+          "description": "You have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type."
+        },
+        {
+          "name": "Breath Weapon",
+          "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type. When you use your breath weapon, each creature in the area must make a saving throw (DC = 8 + your Constitution modifier + your proficiency bonus). A creature takes 2d6 damage on a failed save, and half as much on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level. After using your breath weapon, you can't use it again until you complete a short or long rest."
+        },
+        {
+          "name": "Damage Resistance",
+          "description": "You have resistance to the damage type associated with your draconic ancestry."
+        }
+      ]
+    }
+  ]
+}
