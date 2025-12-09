@@ -216,11 +216,72 @@ class Player {
     checkForEncounters(tile, terrainDef) {
         const encounterChance = terrainDef.encounterModifier || 0.1;
 
-        if (Math.random() < encounterChance * 0.05) { // 5% base, modified by terrain
+        if (Math.random() < encounterChance * 0.08) { // 8% base, modified by terrain
             gameState.addMessage('⚔️ A hostile creature appears!', 'warning');
-            // TODO: Trigger combat encounter
-            console.log('🎲 Encounter triggered!');
+            this.triggerCombatEncounter();
         }
+    }
+
+    /**
+     * Trigger a combat encounter
+     */
+    async triggerCombatEncounter() {
+        // Generate enemies based on player level
+        const playerLevel = gameState.get('character.level') || 1;
+        const numEnemies = Math.floor(Math.random() * 2) + 1; // 1-2 enemies
+
+        const enemies = [];
+        for (let i = 0; i < numEnemies; i++) {
+            const enemy = await this.generateEnemy(playerLevel);
+            enemies.push(enemy);
+        }
+
+        // Trigger combat event
+        gameState.set('ui.pendingCombat', { enemies });
+        gameState.set('ui.currentScreen', 'combatScreen');
+    }
+
+    /**
+     * Generate an enemy for encounter
+     */
+    async generateEnemy(playerLevel) {
+        // Load monster data
+        const response = await fetch('data/monsters.json');
+        const monsterData = await response.json();
+
+        // Filter by appropriate CR
+        const appropriateMonsters = monsterData.monsters.filter(m => {
+            const cr = m.cr || 0.25;
+            return cr >= (playerLevel - 1) * 0.25 && cr <= (playerLevel + 1) * 0.5;
+        });
+
+        // Pick random monster
+        const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)]
+            || monsterData.monsters[0];
+
+        // Create enemy character from monster data
+        return {
+            name: monster.name,
+            race: { name: monster.type },
+            class: { name: 'Monster' },
+            level: playerLevel,
+            cr: monster.cr,
+            maxHP: monster.hp,
+            currentHP: monster.hp,
+            ac: monster.ac,
+            speed: monster.speed || 30,
+            abilities: monster.abilities,
+            abilityModifiers: {
+                str: Math.floor((monster.abilities.str - 10) / 2),
+                dex: Math.floor((monster.abilities.dex - 10) / 2),
+                con: Math.floor((monster.abilities.con - 10) / 2),
+                int: Math.floor((monster.abilities.int - 10) / 2),
+                wis: Math.floor((monster.abilities.wis - 10) / 2),
+                cha: Math.floor((monster.abilities.cha - 10) / 2)
+            },
+            proficiencyBonus: 2,
+            skills: monster.skills || {}
+        };
     }
 
     /**

@@ -8,7 +8,9 @@ import { generateSeedString } from './utils/rng.js';
 import CharacterCreationUI from './ui/CharacterCreation.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
+import CombatRenderer from './rendering/CombatRenderer.js';
 import Player from './systems/Player.js';
+import CombatManager from './systems/CombatManager.js';
 
 class Game {
     constructor() {
@@ -19,6 +21,10 @@ class Game {
         this.worldGenerator = null;
         this.mapRenderer = null;
         this.player = null;
+
+        // Combat systems
+        this.combatManager = null;
+        this.combatRenderer = null;
 
         // Game loop
         this.gameLoopId = null;
@@ -68,6 +74,8 @@ class Game {
                 this.initCharacterCreation();
             } else if (screenName === 'game') {
                 this.initGameScreen();
+            } else if (screenName === 'combat' || screenName === 'combatScreen') {
+                this.initCombatScreen();
             }
         } else {
             console.error(`Screen not found: ${screenName}`);
@@ -225,6 +233,118 @@ class Game {
         this.startGameLoop();
 
         console.log('✅ Game initialized successfully');
+    }
+
+    /**
+     * Initialize combat screen
+     */
+    async initCombatScreen() {
+        console.log('⚔️ Initializing combat screen...');
+
+        // Initialize combat renderer if needed
+        if (!this.combatRenderer) {
+            this.combatRenderer = new CombatRenderer('combatCanvas', {
+                tileSize: 40
+            });
+        }
+
+        // Initialize combat manager if needed
+        if (!this.combatManager) {
+            this.combatManager = new CombatManager();
+        }
+
+        // Get pending combat data
+        const pendingCombat = gameState.get('ui.pendingCombat');
+        if (!pendingCombat || !pendingCombat.enemies) {
+            console.error('No pending combat data!');
+            gameState.set('ui.currentScreen', 'game');
+            return;
+        }
+
+        // Start combat
+        const player = gameState.get('character');
+        await this.combatManager.startCombat(player, pendingCombat.enemies);
+
+        // Clear pending combat
+        gameState.set('ui.pendingCombat', null);
+
+        // Setup combat input
+        this.setupCombatInput();
+
+        console.log('✅ Combat screen initialized');
+    }
+
+    /**
+     * Setup combat input handlers
+     */
+    setupCombatInput() {
+        // Remove any existing handlers
+        if (this.combatClickHandler) {
+            this.combatRenderer.canvas.removeEventListener('click', this.combatClickHandler);
+        }
+
+        // Add click handler for combat grid
+        this.combatClickHandler = (e) => {
+            const rect = this.combatRenderer.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const gridPos = this.combatRenderer.screenToGrid(x, y);
+            this.handleCombatClick(gridPos.x, gridPos.y);
+        };
+
+        this.combatRenderer.canvas.addEventListener('click', this.combatClickHandler);
+
+        // Add keyboard handler for ending turn
+        this.combatKeyHandler = (e) => {
+            if (e.key.toLowerCase() === 'enter' || e.key === ' ') {
+                e.preventDefault();
+                const currentCombatant = this.combatManager.getCurrentCombatant();
+                if (currentCombatant && currentCombatant.team === 'player') {
+                    this.combatManager.endTurn();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', this.combatKeyHandler);
+    }
+
+    /**
+     * Handle combat grid click
+     */
+    handleCombatClick(gridX, gridY) {
+        if (!this.combatManager || !this.combatManager.active) return;
+
+        const currentCombatant = this.combatManager.getCurrentCombatant();
+        if (!currentCombatant || currentCombatant.team !== 'player') {
+            gameState.addMessage("It's not your turn!", 'error');
+            return;
+        }
+
+        const combatState = gameState.get('combat');
+        if (!combatState) return;
+
+        // Check if clicked on an enemy
+        const clickedEnemy = combatState.grid.positions.find(p =>
+            p.x === gridX && p.y === gridY &&
+            combatState.combatants.find(c => c.id === p.id && c.team === 'enemy')
+        );
+
+        if (clickedEnemy) {
+            const enemyCombatant = this.combatManager.enemyCombatants.find(e => e.id === clickedEnemy.id);
+            if (enemyCombatant && enemyCombatant.hp > 0) {
+                // Attack the enemy
+                this.combatManager.attack(this.combatManager.playerCombatant, enemyCombatant);
+            }
+            return;
+        }
+
+        // Otherwise, try to move there
+        if (currentCombatant.actions.movement > 0) {
+            this.combatManager.move(currentCombatant, gridX, gridY);
+        } else {
+            gameState.addMessage("No movement left!", 'error');
+        }
     }
 
     /**
@@ -386,6 +506,15 @@ class Game {
      * Render game
      */
     async render() {
+        // Check if in combat
+        const combatState = gameState.get('combat');
+        if (combatState && combatState.active && this.combatRenderer) {
+            // Render combat
+            this.combatRenderer.render(combatState);
+            return;
+        }
+
+        // Render exploration
         if (!this.mapRenderer || !this.player || !this.worldGenerator) {
             return;
         }
