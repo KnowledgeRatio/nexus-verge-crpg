@@ -1,0 +1,94 @@
+{
+  "backgrounds": [
+    {
+      "id": "soldier",
+      "name": "Soldier",
+      "description": "You began training for war as soon as you reached adulthood and carry precious few memories of life before you took up arms. Battle is in your blood. Sometimes you catch yourself reflexively performing the basic fighting exercises you learned first. Eventually, you put that training to use on the battlefield, protecting the realm by waging war.",
+      "abilityScoreIncreases": ["str", "dex", "con"],
+      "feat": "savageAttacker",
+      "skillProficiencies": ["athletics", "intimidation"],
+      "toolProficiencies": ["gamingSet"],
+      "equipment": {
+        "optionA": ["spear", "shortbow", "arrow:20", "gamingSet", "healersKit", "quiver", "travelersClothes"],
+        "optionB": [],
+        "gold": 14
+      },
+      "feature": {
+        "name": "Military Rank",
+        "description": "You have a military rank from your career as a soldier. Soldiers loyal to your former military organization still recognize your authority and influence, and they defer to you if they are of a lower rank."
+      }
+    },
+    {
+      "id": "acolyte",
+      "name": "Acolyte",
+      "description": "You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. There you performed rites in honor of a god or pantheon. You served under a priest and studied religion, learning the ways of your faith.",
+      "abilityScoreIncreases": ["int", "wis", "cha"],
+      "feat": "magicInitiate",
+      "skillProficiencies": ["insight", "religion"],
+      "toolProficiencies": [],
+      "equipment": {
+        "optionA": ["holySymbol", "prayerBook", "incense:5", "vestments", "commonClothes"],
+        "optionB": [],
+        "gold": 23
+      },
+      "feature": {
+        "name": "Shelter of the Faithful",
+        "description": "You and your companions can expect to receive free healing and care at temples, shrines, and other religious establishments of your faith. Those who share your religion will support you at a modest lifestyle."
+      }
+    },
+    {
+      "id": "criminal",
+      "name": "Criminal",
+      "description": "You are an experienced criminal with a history of breaking the law. You have connections to the criminal underworld and a knack for staying out of trouble, or at least getting out of it when you're caught.",
+      "abilityScoreIncreases": ["dex", "int", "cha"],
+      "feat": "alert",
+      "skillProficiencies": ["deception", "stealth"],
+      "toolProficiencies": ["thievesTools"],
+      "equipment": {
+        "optionA": ["dagger:2", "thievesTools", "crowbar", "pouch", "darkClothes"],
+        "optionB": [],
+        "gold": 16
+      },
+      "feature": {
+        "name": "Criminal Contact",
+        "description": "You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. You know how to get messages to and from your contact, even over great distances."
+      }
+    },
+    {
+      "id": "sage",
+      "name": "Sage",
+      "description": "You spent years learning the lore of the multiverse. You scoured manuscripts, studied scrolls, and listened to the greatest experts on the subjects that interest you. Your efforts have made you a master in your chosen fields.",
+      "abilityScoreIncreases": ["int", "wis", "cha"],
+      "feat": "skilled",
+      "skillProficiencies": ["arcana", "history"],
+      "toolProficiencies": [],
+      "equipment": {
+        "optionA": ["quarterstaff", "book", "parchment:10", "ink", "inkPen", "robes", "pouch"],
+        "optionB": [],
+        "gold": 10
+      },
+      "feature": {
+        "name": "Researcher",
+        "description": "When you attempt to learn or recall a piece of lore, if you do not know that information, you often know where and from whom you can obtain it. Usually, this information comes from a library, scriptorium, university, or a sage."
+      }
+    },
+    {
+      "id": "folkHero",
+      "name": "Folk Hero",
+      "description": "You come from humble origins, but you are destined for so much more. The people of your home village regard you as their champion, and your destiny calls you to stand against the tyrants and monsters that threaten the common folk.",
+      "abilityScoreIncreases": ["str", "con", "wis"],
+      "feat": "tough",
+      "skillProficiencies": ["animalHandling", "survival"],
+      "toolProficiencies": ["artisansTools"],
+      "equipment": {
+        "optionA": ["handaxe", "shovel", "ironPot", "commonClothes", "pouch"],
+        "optionB": [],
+        "gold": 22
+      },
+      "feature": {
+        "name": "Rustic Hospitality",
+        "description": "Since you come from the ranks of the common folk, you fit in among them with ease. You can find a place to hide, rest, or recuperate among other commoners, unless you have shown yourself to be a danger to them."
+      }
+    }
+  ]
+}
