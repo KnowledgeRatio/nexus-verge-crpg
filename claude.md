@@ -3,8 +3,8 @@
 
 **Last Updated:** 2025-12-09
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
-**Project Phase:** Phase 2 MVP - In Progress
-**Latest Commit:** Add complete character creation UI and main game bootstrap
+**Project Phase:** Phase 2 MVP - Core Systems Complete
+**Latest Commit:** Implement full D&D 5e turn-based combat system
 
 ---
 
@@ -33,19 +33,23 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - [x] Utility libraries (RNG, dice rolling, helpers)
 - [x] Main game bootstrap (`src/main.js`)
 
-### 🚧 Phase 2 In Progress - MVP Features
+### ✅ Phase 2 Complete - Core Gameplay Systems
+- [x] World generation system (Simplex noise, chunk-based regions, 18 terrain types)
+- [x] Map rendering (Canvas-based 80x40 viewport, ASCII/tile display, fog of war)
+- [x] Player movement and exploration (WASD/arrows, collision, visibility)
+- [x] Combat system (full D&D 5e turn-based tactical combat)
+- [x] Enemy AI (basic tactical behavior)
+- [x] Random encounters (8% base chance, terrain modified)
+
+### 🚧 Phase 2 Remaining - MVP Features
 **Next Priorities:**
-- [ ] World generation system (terrain, regions, settlements)
-- [ ] Map rendering (Canvas-based, ASCII/tile display)
-- [ ] Player movement and exploration
-- [ ] Combat system (turn-based grid combat)
-- [ ] Quest system (campaign + side quests)
-- [ ] Faction and reputation system
-- [ ] Save/Load functionality
-- [ ] Rest system (short/long rests)
-- [ ] Spell system (cantrips + levels 1-2)
+- [ ] Quest system (campaign + side quests, templates, tracking)
+- [ ] Faction and reputation system (5 factions, reputation-based economy)
+- [ ] Save/Load functionality (LocalStorage, serialization)
+- [ ] Rest system (short/long rests, recovery, taverns)
+- [ ] Spell system (cantrips + levels 1-2, casting UI)
 - [ ] Skill checks and non-combat encounters
-- [ ] Loot and inventory management
+- [ ] Loot and inventory management (drops, equipment, weight)
 
 ---
 
@@ -88,16 +92,23 @@ nexus-verge-crpg-5e/
 │   ├── terrains.json      # Terrain types
 │   └── skills.json        # 18 D&D 5e skills
 ├── src/                   # Source code
-│   ├── main.js           # Application bootstrap
+│   ├── main.js           # Application bootstrap + game loop
 │   ├── core/             # Core engine
 │   │   ├── GameState.js  # Centralized state with observers
 │   │   └── rulesEngine.js # Game rules configuration
 │   ├── systems/          # Game systems
-│   │   └── Character.js  # Character class (PC/NPC)
+│   │   ├── Character.js  # Character class (PC/NPC)
+│   │   ├── Player.js     # Player movement and input
+│   │   ├── WorldGenerator.js # Procedural world generation
+│   │   └── CombatManager.js  # Turn-based combat system
+│   ├── rendering/        # Rendering systems
+│   │   ├── MapRenderer.js    # World map visualization
+│   │   └── CombatRenderer.js # Combat grid visualization
 │   ├── ui/               # UI components
 │   │   └── CharacterCreation.js # Character creation wizard
 │   └── utils/            # Utilities
 │       ├── rng.js        # Seeded random number generator
+│       ├── simplexNoise.js # Noise generation for terrain
 │       ├── dice.js       # Dice rolling functions
 │       └── helpers.js    # Helper functions
 └── assets/               # Future: images, sounds
@@ -263,6 +274,111 @@ rollD20(5);                // d20 + 5
 // Advantage/Disadvantage
 rollWithAdvantage(5);      // Roll 2d20, take higher, add 5
 rollWithAdvantage(5, true); // Disadvantage - take lower
+```
+
+### Combat System (`src/systems/CombatManager.js`)
+**Purpose:** Turn-based tactical combat following D&D 5e rules
+
+**Key Features:**
+- Initiative system (d20 + DEX modifier)
+- Action economy (Action, Bonus Action, Movement, Reaction)
+- Attack rolls (d20 + modifiers vs AC)
+- Damage rolls with critical hits (natural 20)
+- 12x12 grid-based battlefield
+- Enemy AI with tactical behavior
+- Victory/defeat conditions with XP rewards
+
+**Usage:**
+```javascript
+import CombatManager from './systems/CombatManager.js';
+
+const combat = new CombatManager();
+
+// Start combat with player and enemies
+await combat.startCombat(playerCharacter, [enemy1, enemy2]);
+
+// On player turn
+combat.move(combatant, toX, toY);           // Move combatant
+combat.attack(attacker, defender);           // Make attack
+combat.endTurn();                             // End current turn
+
+// Combat ends automatically on victory/defeat
+```
+
+**Combat Flow:**
+1. **Start Combat** → Generate 12x12 grid, place combatants
+2. **Roll Initiative** → All combatants roll d20 + DEX
+3. **Turn Loop:**
+   - Start turn (reset action economy)
+   - Player acts (click to move/attack) or AI executes
+   - End turn
+   - Next combatant
+4. **End Combat** → Award XP, return to exploration
+
+**Combatant Actions:**
+- **Action:** Attack, special abilities (once per turn)
+- **Bonus Action:** Quick actions (once per turn)
+- **Movement:** Character speed / 5 feet per square
+- **Reaction:** Opportunity attacks (when triggered)
+
+### World Generation (`src/systems/WorldGenerator.js`)
+**Purpose:** Procedural terrain generation using Simplex noise
+
+**Key Features:**
+- Chunk-based regions (32x32 tiles each)
+- Simplex noise for elevation, moisture, temperature
+- 18 terrain types (grassland, forest, mountains, desert, jungle, etc.)
+- Procedural settlements (villages, towns, cities)
+- Dungeons and points of interest
+- Region caching with automatic pruning
+
+**Usage:**
+```javascript
+import WorldGenerator from './systems/WorldGenerator.js';
+
+const worldGen = new WorldGenerator(seed, worldConfig);
+
+// Generate region
+const region = await worldGen.generateRegion(regionX, regionY);
+
+// Get specific tile
+const tile = await worldGen.getTile(worldX, worldY);
+
+// Get spawn location
+const spawnTile = await worldGen.getSpawnLocation();
+
+// Clean up distant regions
+worldGen.pruneCache(centerX, centerY, keepRadius);
+```
+
+### Map Renderer (`src/rendering/MapRenderer.js`)
+**Purpose:** Visualize the world on Canvas
+
+**Key Features:**
+- 80x40 tile viewport
+- ASCII character rendering (12x16 pixels per tile)
+- Camera following player
+- Fog of war (explored vs visible)
+- Feature rendering (settlements, dungeons, POIs)
+- Dimmed rendering for explored areas
+
+**Usage:**
+```javascript
+import MapRenderer from './rendering/MapRenderer.js';
+
+const renderer = new MapRenderer('gameCanvas', {
+  tileWidth: 12,
+  tileHeight: 16,
+  viewportWidth: 80,
+  viewportHeight: 40
+});
+
+// Render world
+await renderer.renderWorld(worldData, playerPosition);
+
+// Convert coordinates
+const gridPos = renderer.screenToGrid(screenX, screenY);
+const screenPos = renderer.worldToScreen(worldX, worldY);
 ```
 
 ---
@@ -654,26 +770,28 @@ npx serve .
 
 ## 📝 Session Notes
 
-### 2025-12-09 - Character Creation Complete
-**Completed:**
-- Full character creation wizard implemented
-- All 5 races and 5 classes available
-- Point Buy and Standard Array both working
-- Background selection integrated
-- Character class fully functional with all D&D 5e calculations
-- GameState manager with observer pattern
-- Main game bootstrap and screen transitions
+### 2025-12-09 - Core Gameplay Systems Complete!
+**Completed Today:**
+1. **World Generation System** - Simplex noise, 18 terrain types, chunk-based regions
+2. **Map Renderer** - Canvas-based 80x40 viewport with ASCII tiles
+3. **Player Movement** - WASD/arrows, collision detection, fog of war
+4. **Full D&D 5e Combat System** - Turn-based tactical combat with all mechanics
+5. **Enemy AI** - Basic tactical behavior (move and attack)
+6. **Random Encounters** - Procedural enemy generation based on CR
 
 **Current State:**
-- Character creation is complete and functional
-- Game can initialize with seed, create character, and transition to game screen
-- World generation and map rendering are next priorities
+- Game is **fully playable** from start to combat!
+- Players can create characters, explore a procedural world, and fight monsters
+- Combat uses authentic D&D 5e rules (initiative, attack rolls, damage, crits)
+- World generates infinitely with deterministic seeds
+- All core systems integrated and working
 
-**Next Session:**
-- Implement world generation system
-- Create map renderer with Canvas
-- Add player movement and exploration
-- Begin combat system implementation
+**Next Session Priorities:**
+- Quest system (templates, generation, tracking, rewards)
+- Save/Load functionality (LocalStorage persistence)
+- Rest system (short/long rests, HP/spell slot recovery)
+- Spell system (cantrips + levels 1-2 for casters)
+- Loot drops and inventory management
 
 ---
 
