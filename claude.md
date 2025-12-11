@@ -1,10 +1,10 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-09
+**Last Updated:** 2025-12-11
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Complete
-**Latest Commit:** Implement full D&D 5e turn-based combat system
+**Latest Commit:** Rewrite combat system as simplified non-grid turn-based (D&D 5e SRD 5.2.1 2024)
 
 ---
 
@@ -37,8 +37,8 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - [x] World generation system (Simplex noise, chunk-based regions, 18 terrain types)
 - [x] Map rendering (Canvas-based 80x40 viewport, ASCII/tile display, fog of war)
 - [x] Player movement and exploration (WASD/arrows, collision, visibility)
-- [x] Combat system (full D&D 5e turn-based tactical combat)
-- [x] Enemy AI (basic tactical behavior)
+- [x] Combat system (simplified non-grid turn-based, D&D 5e SRD 5.2.1 2024 rules)
+- [x] Enemy AI (random target selection, automatic actions)
 - [x] Random encounters (8% base chance, terrain modified)
 
 ### 🚧 Phase 2 Remaining - MVP Features
@@ -100,10 +100,9 @@ nexus-verge-crpg-5e/
 │   │   ├── Character.js  # Character class (PC/NPC)
 │   │   ├── Player.js     # Player movement and input
 │   │   ├── WorldGenerator.js # Procedural world generation
-│   │   └── CombatManager.js  # Turn-based combat system
+│   │   └── CombatManager.js  # Simplified non-grid turn-based combat
 │   ├── rendering/        # Rendering systems
-│   │   ├── MapRenderer.js    # World map visualization
-│   │   └── CombatRenderer.js # Combat grid visualization
+│   │   └── MapRenderer.js    # World map visualization
 │   ├── ui/               # UI components
 │   │   └── CharacterCreation.js # Character creation wizard
 │   └── utils/            # Utilities
@@ -277,16 +276,18 @@ rollWithAdvantage(5, true); // Disadvantage - take lower
 ```
 
 ### Combat System (`src/systems/CombatManager.js`)
-**Purpose:** Turn-based tactical combat following D&D 5e rules
+**Purpose:** Simplified non-grid turn-based combat following D&D 5e SRD 5.2.1 2024 rules
 
 **Key Features:**
-- Initiative system (d20 + DEX modifier)
-- Action economy (Action, Bonus Action, Movement, Reaction)
-- Attack rolls (d20 + modifiers vs AC)
-- Damage rolls with critical hits (natural 20)
-- 12x12 grid-based battlefield
-- Enemy AI with tactical behavior
-- Victory/defeat conditions with XP rewards
+- Initiative system (d20 + DEX modifier, DEX tiebreaker)
+- Action economy (Action, Bonus Action, Reaction - no movement/positioning)
+- Attack rolls (d20 + modifiers vs AC) with weapon properties
+- Damage rolls with critical hits (natural 20 = double dice)
+- Card-based UI showing combatants with HP bars
+- Action buttons (Attack, Ability, Spell, Flee)
+- Flee mechanic (d20 + initiative vs DC 30)
+- Simple enemy AI (random target selection, always attacks)
+- Victory/defeat/fled conditions with XP rewards
 
 **Usage:**
 ```javascript
@@ -294,32 +295,40 @@ import CombatManager from './systems/CombatManager.js';
 
 const combat = new CombatManager();
 
-// Start combat with player and enemies
+// Start combat with player and enemies (no grid)
 await combat.startCombat(playerCharacter, [enemy1, enemy2]);
 
-// On player turn
-combat.move(combatant, toX, toY);           // Move combatant
+// On player turn (click enemy cards to target)
 combat.attack(attacker, defender);           // Make attack
-combat.endTurn();                             // End current turn
+combat.flee(combatant);                      // Attempt escape
+combat.endTurn();                            // End current turn
 
-// Combat ends automatically on victory/defeat
+// Combat ends automatically on victory/defeat/fled
 ```
 
 **Combat Flow:**
-1. **Start Combat** → Generate 12x12 grid, place combatants
+1. **Start Combat** → Create combatants (no positioning)
 2. **Roll Initiative** → All combatants roll d20 + DEX
 3. **Turn Loop:**
-   - Start turn (reset action economy)
-   - Player acts (click to move/attack) or AI executes
+   - Start turn (reset action economy: action, bonus, reaction)
+   - **Player Turn:** Click action button (Attack/Ability/Spell/Flee), then click enemy card
+   - **Enemy Turn:** AI picks random target and attacks automatically
    - End turn
-   - Next combatant
-4. **End Combat** → Award XP, return to exploration
+   - Next combatant (skip dead)
+4. **End Combat** → Award XP (victory), death penalty (defeat), or return to exploration (fled)
 
 **Combatant Actions:**
-- **Action:** Attack, special abilities (once per turn)
-- **Bonus Action:** Quick actions (once per turn)
-- **Movement:** Character speed / 5 feet per square
-- **Reaction:** Opportunity attacks (when triggered)
+- **Attack:** Standard melee/ranged attack with equipped weapon
+- **Ability:** Class features (placeholder - not yet implemented)
+- **Spell:** Cast spell from known spells (placeholder - not yet implemented)
+- **Flee:** d20 + initiative vs DC 30 (escape on success)
+
+**UI Implementation (`src/main.js`):**
+- `renderCombatants()` - Display character cards with HP bars
+- `renderCombatActions()` - Show action buttons on player turn
+- `renderTurnOrder()` - Initiative order with current turn highlight
+- `handleTargetClick()` - Process enemy card clicks
+- `selectAction()` - Handle action button selection
 
 ### World Generation (`src/systems/WorldGenerator.js`)
 **Purpose:** Procedural terrain generation using Simplex noise
@@ -622,11 +631,11 @@ All 18 D&D 5e skills
 ## 🐛 Known Issues & TODOs
 
 ### Current TODOs in Code
-- `src/main.js:184` - World generation not yet implemented
 - Save/Load system not yet implemented
-- Combat system not yet implemented
 - Quest system not yet implemented
-- Map rendering not yet implemented
+- Spell system (cantrips + levels 1-2) not yet implemented
+- Ability system (class features) not yet implemented
+- Skill checks in non-combat encounters not yet implemented
 
 ### Technical Debt
 - Add comprehensive error handling
@@ -769,6 +778,42 @@ npx serve .
 ---
 
 ## 📝 Session Notes
+
+### 2025-12-11 - Combat System Simplified & Rewritten
+**Completed Today:**
+1. **Removed Grid-Based Combat** - Eliminated CombatGrid class, all positioning/movement mechanics
+2. **Simplified Turn-Based Combat** - Initiative-based, action selection, target any enemy
+3. **Added Flee Mechanic** - d20 + initiative vs DC 30 (per D&D 5e SRD 5.2.1 2024)
+4. **Card-Based Combat UI** - Combatant cards with HP bars, action buttons, no canvas
+5. **Updated Enemy AI** - Simple random target selection and automatic attacks
+6. **Removed CombatRenderer** - No longer needed, UI is pure DOM/CSS
+
+**User Feedback:**
+- Original grid-based combat was not working (couldn't attack enemies, AI didn't act)
+- User requested rewrite to non-grid turn-based system
+- Requirements: Initiative-based, action buttons (Attack/Ability/Spell/Flee), target enemies directly
+
+**Current State:**
+- Combat system fully rewritten and functional
+- Players click action buttons, then click enemy cards to target
+- Enemies automatically pick targets and attack on their turn
+- Combat follows D&D 5e SRD 5.2.1 2024 rules (initiative, attack rolls, damage, flee)
+- UI is clean with combatant cards showing HP bars and current turn
+
+**Files Changed:**
+- `src/systems/CombatManager.js` - Removed grid, simplified Combatant, added flee()
+- `index.html` - New combat screen structure with card displays
+- `styles.css` - Combatant cards, action buttons, HP bars
+- `src/main.js` - Removed CombatRenderer, added new rendering methods
+
+**Next Session Priorities:**
+- Test combat system thoroughly (initiative, attacks, damage, flee, victory/defeat)
+- Implement ability system (class features like Action Surge, Rage)
+- Implement spell system (cantrips + levels 1-2 for casters)
+- Quest system (templates, generation, tracking, rewards)
+- Save/Load functionality (LocalStorage persistence)
+
+---
 
 ### 2025-12-09 - Core Gameplay Systems Complete!
 **Completed Today:**

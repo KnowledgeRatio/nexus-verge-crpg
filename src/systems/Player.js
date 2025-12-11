@@ -249,9 +249,12 @@ class Player {
         const response = await fetch('data/monsters.json');
         const monsterData = await response.json();
 
+        // Import dice rolling function
+        const { roll } = await import('../utils/dice.js');
+
         // Filter by appropriate CR
         const appropriateMonsters = monsterData.monsters.filter(m => {
-            const cr = m.cr || 0.25;
+            const cr = m.challengeRating || 0.25;
             return cr >= (playerLevel - 1) * 0.25 && cr <= (playerLevel + 1) * 0.5;
         });
 
@@ -259,16 +262,19 @@ class Player {
         const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)]
             || monsterData.monsters[0];
 
+        // Roll HP from dice notation
+        const hp = roll(monster.hitPoints);
+
         // Create enemy character from monster data
         return {
             name: monster.name,
             race: { name: monster.type },
             class: { name: 'Monster' },
             level: playerLevel,
-            cr: monster.cr,
-            maxHP: monster.hp,
-            currentHP: monster.hp,
-            ac: monster.ac,
+            cr: monster.challengeRating,
+            maxHP: hp,
+            currentHP: hp,
+            ac: monster.armorClass,
             speed: monster.speed || 30,
             abilities: monster.abilities,
             abilityModifiers: {
@@ -280,7 +286,12 @@ class Player {
                 cha: Math.floor((monster.abilities.cha - 10) / 2)
             },
             proficiencyBonus: 2,
-            skills: monster.skills || {}
+            skills: monster.skills || {},
+            equipment: {
+                mainHand: null,
+                offHand: null,
+                armor: null
+            }
         };
     }
 

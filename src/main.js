@@ -8,7 +8,6 @@ import { generateSeedString } from './utils/rng.js';
 import CharacterCreationUI from './ui/CharacterCreation.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
-import CombatRenderer from './rendering/CombatRenderer.js';
 import Player from './systems/Player.js';
 import CombatManager from './systems/CombatManager.js';
 
@@ -244,13 +243,6 @@ class Game {
     async initCombatScreen() {
         console.log('⚔️ Initializing combat screen...');
 
-        // Initialize combat renderer if needed
-        if (!this.combatRenderer) {
-            this.combatRenderer = new CombatRenderer('combatCanvas', {
-                tileSize: 40
-            });
-        }
-
         // Initialize combat manager if needed
         if (!this.combatManager) {
             this.combatManager = new CombatManager();
@@ -271,9 +263,6 @@ class Game {
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
 
-        // Setup combat input
-        this.setupCombatInput();
-
         // Setup combat UI
         this.setupCombatUI();
 
@@ -281,44 +270,9 @@ class Game {
     }
 
     /**
-     * Setup combat input handlers
+     * Action selection state
      */
-    setupCombatInput() {
-        // Remove any existing handlers
-        if (this.combatClickHandler) {
-            this.combatRenderer.canvas.removeEventListener('click', this.combatClickHandler);
-        }
-
-        // Add click handler for combat grid
-        this.combatClickHandler = (e) => {
-            console.log('🖱️ Canvas clicked!', e);
-            const rect = this.combatRenderer.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            console.log('Click coords:', x, y, 'Rect:', rect);
-
-            const gridPos = this.combatRenderer.screenToGrid(x, y);
-            console.log('Grid position:', gridPos);
-            this.handleCombatClick(gridPos.x, gridPos.y);
-        };
-
-        console.log('✅ Adding click handler to combat canvas');
-        this.combatRenderer.canvas.addEventListener('click', this.combatClickHandler);
-        console.log('Canvas element:', this.combatRenderer.canvas);
-
-        // Add keyboard handler for ending turn
-        this.combatKeyHandler = (e) => {
-            if (e.key.toLowerCase() === 'enter' || e.key === ' ') {
-                e.preventDefault();
-                const currentCombatant = this.combatManager.getCurrentCombatant();
-                if (currentCombatant && currentCombatant.team === 'player') {
-                    this.combatManager.endTurn();
-                }
-            }
-        };
-
-        document.addEventListener('keydown', this.combatKeyHandler);
-    }
+    selectedAction = null;
 
     /**
      * Setup combat UI elements
@@ -340,182 +294,203 @@ class Game {
         // Subscribe to combat state updates
         gameState.subscribe('combat', (combatState) => {
             if (!combatState || !combatState.active) return;
-            this.updateCombatUI(combatState);
+            this.renderCombatScreen(combatState);
         });
 
-        // Initial update
+        // Initial render
         const combatState = gameState.get('combat');
         if (combatState) {
-            this.updateCombatUI(combatState);
+            this.renderCombatScreen(combatState);
         }
+
+        // Expose handleTargetClick to window for onclick handlers
+        window.game = this;
     }
 
     /**
-     * Update combat UI with current state
+     * Render full combat screen
      */
-    updateCombatUI(combatState) {
-        // Update turn order
+    renderCombatScreen(combatState) {
+        // Update round number
+        const roundEl = document.getElementById('roundNumber');
+        if (roundEl) {
+            roundEl.textContent = combatState.round;
+        }
+
+        // Render combatants
+        this.renderCombatants(combatState);
+
+        // Render turn order
+        this.renderTurnOrder(combatState);
+
+        // Render actions
+        this.renderCombatActions(combatState);
+    }
+
+    /**
+     * Render combatant cards
+     */
+    renderCombatants(combatState) {
+        const playerDiv = document.getElementById('playerCombatants');
+        const enemyDiv = document.getElementById('enemyCombatants');
+
+        if (!playerDiv || !enemyDiv || !combatState) return;
+
+        const currentTurn = combatState.currentTurn;
+
+        // Render player combatants
+        const playerCombatants = combatState.combatants.filter(c => c.team === 'player');
+        playerDiv.innerHTML = playerCombatants.map(c => `
+            <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}">
+                <div class="combatant-name">${c.name}</div>
+                <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
+                <div class="hp-bar">
+                    <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                </div>
+                <div class="combatant-ac">AC: ${c.ac}</div>
+            </div>
+        `).join('');
+
+        // Render enemy combatants (clickable for targeting)
+        const enemyCombatants = combatState.combatants.filter(c => c.team === 'enemy');
+        enemyDiv.innerHTML = enemyCombatants.map(c => `
+            <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}"
+                 data-combatant-id="${c.id}"
+                 onclick="window.game.handleTargetClick('${c.id}')">
+                <div class="combatant-name">${c.name}</div>
+                <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
+                <div class="hp-bar">
+                    <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                </div>
+                <div class="combatant-ac">AC: ${c.ac}</div>
+            </div>
+        `).join('');
+    }
+
+    /**
+     * Render turn order
+     */
+    renderTurnOrder(combatState) {
         const turnOrderEl = document.getElementById('turnOrder');
-        if (turnOrderEl && this.combatManager) {
-            const turnOrder = this.combatManager.turnOrder || [];
-            const currentCombatant = this.combatManager.getCurrentCombatant();
+        if (!turnOrderEl || !this.combatManager) return;
 
-            turnOrderEl.innerHTML = `
-                <h4 style="margin-bottom: 10px; color: #ffd700;">Turn Order - Round ${combatState.round || 1}</h4>
-                ${turnOrder.map(c => {
-                    const isCurrent = c.id === currentCombatant?.id;
-                    const isDead = c.hp <= 0;
-                    const style = isCurrent ? 'background: #4a9eff; color: #000; font-weight: bold;' :
-                                 isDead ? 'opacity: 0.5; text-decoration: line-through;' : '';
-                    const team = c.team === 'player' ? '🛡️' : '⚔️';
-                    return `<div style="padding: 6px; margin-bottom: 4px; ${style}">
-                        ${team} ${c.name} (HP: ${c.hp}/${c.maxHP})
-                    </div>`;
-                }).join('')}
+        const turnOrder = this.combatManager.turnOrder || [];
+        const currentCombatant = this.combatManager.getCurrentCombatant();
+
+        turnOrderEl.innerHTML = turnOrder.map(c => {
+            const isCurrent = c.id === currentCombatant?.id;
+            const isDead = c.hp <= 0;
+            const style = isCurrent ? 'background: var(--accent-color); color: var(--bg-primary); font-weight: bold; padding: 8px; border-radius: 4px;' :
+                         isDead ? 'opacity: 0.5; text-decoration: line-through;' : 'padding: 8px;';
+            const team = c.team === 'player' ? '🛡️' : '⚔️';
+            return `<div style="${style} margin-bottom: 6px; font-family: var(--font-mono); font-size: 0.9rem;">
+                ${team} ${c.name} (HP: ${c.hp}/${c.maxHP})
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * Render combat actions
+     */
+    renderCombatActions(combatState) {
+        const actionsEl = document.getElementById('combatActions');
+        if (!actionsEl || !this.combatManager) return;
+
+        const currentCombatant = this.combatManager.getCurrentCombatant();
+
+        if (!currentCombatant || currentCombatant.team !== 'player') {
+            actionsEl.innerHTML = `
+                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                    ${currentCombatant?.name || 'Enemy'} is taking their turn...
+                </p>
             `;
+            return;
         }
 
-        // Update combat actions
-        const actionsEl = document.getElementById('combatActions');
-        if (actionsEl && this.combatManager) {
-            const currentCombatant = this.combatManager.getCurrentCombatant();
+        // Player turn - show action buttons
+        actionsEl.innerHTML = `
+            <div class="action-buttons">
+                <button class="action-btn" onclick="window.game.selectAction('attack')"
+                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                    ⚔️ Attack
+                </button>
+                <button class="action-btn" onclick="window.game.selectAction('ability')"
+                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                    ✨ Ability
+                </button>
+                <button class="action-btn" onclick="window.game.selectAction('spell')"
+                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                    🔮 Spell
+                </button>
+                <button class="action-btn" onclick="window.game.selectAction('flee')">
+                    🏃 Flee
+                </button>
+            </div>
+            <button class="menu-btn" style="width: 100%; margin-top: 15px;"
+                    onclick="window.game.combatManager.endTurn()">
+                End Turn
+            </button>
+        `;
+    }
 
-            if (currentCombatant && currentCombatant.team === 'player') {
-                actionsEl.innerHTML = `
-                    <h4 style="margin-bottom: 10px; color: #44ff44;">Your Turn</h4>
-                    <div style="font-size: 0.9rem; line-height: 1.6;">
-                        <p><strong>Actions Available:</strong></p>
-                        <ul style="margin-left: 20px; margin-bottom: 10px;">
-                            <li>✅ Action: ${currentCombatant.actions.action ? 'Available' : 'Used'}</li>
-                            <li>✅ Movement: ${currentCombatant.actions.movement} squares</li>
-                            <li>✅ Bonus: ${currentCombatant.actions.bonus ? 'Available' : 'Used'}</li>
-                        </ul>
-                        <p><strong>How to Play:</strong></p>
-                        <ul style="margin-left: 20px; font-size: 0.85rem;">
-                            <li><strong>Click enemy</strong> to attack</li>
-                            <li><strong>Click tile</strong> to move</li>
-                            <li><strong>Press Enter</strong> to end turn</li>
-                        </ul>
-                    </div>
-                    <button id="endTurnBtn" style="width: 100%; padding: 10px; margin-top: 10px;
-                        background: #ff4444; border: none; color: white; cursor: pointer;
-                        font-family: monospace; font-size: 1rem;">
-                        End Turn
-                    </button>
-                `;
+    /**
+     * Select an action
+     */
+    selectAction(actionType) {
+        this.selectedAction = actionType;
+        gameState.addMessage(`Select a target to ${actionType}`, 'info');
 
-                // Add end turn button handler
-                const endTurnBtn = document.getElementById('endTurnBtn');
-                if (endTurnBtn) {
-                    endTurnBtn.addEventListener('click', () => {
-                        this.combatManager.endTurn();
-                    });
-                }
-            } else if (currentCombatant) {
-                actionsEl.innerHTML = `
-                    <h4 style="margin-bottom: 10px; color: #ff4444;">Enemy Turn</h4>
-                    <div style="font-size: 0.9rem; line-height: 1.6;">
-                        <p>${currentCombatant.name} is taking their turn...</p>
-                        <p style="color: #888; font-size: 0.85rem; margin-top: 10px;">Wait for them to finish.</p>
-                    </div>
-                `;
-            }
+        if (actionType === 'flee') {
+            this.combatManager.flee(this.combatManager.playerCombatant);
+            this.selectedAction = null;
         }
     }
 
     /**
-     * Handle combat grid click
+     * Handle target click
      */
-    handleCombatClick(gridX, gridY) {
-        console.log(`🖱️ COMBAT CLICK at grid position (${gridX}, ${gridY})`);
-        console.log('Combat Manager active?', this.combatManager?.active);
+    handleTargetClick(targetId) {
+        console.log('🎯 Target clicked:', targetId);
 
         if (!this.combatManager || !this.combatManager.active) {
-            console.log('⚠️ Combat manager not active!');
+            console.log('⚠️ Combat not active');
             return;
         }
 
         const currentCombatant = this.combatManager.getCurrentCombatant();
-        console.log('Current combatant:', currentCombatant?.name, 'Team:', currentCombatant?.team);
-
         if (!currentCombatant || currentCombatant.team !== 'player') {
             gameState.addMessage("It's not your turn!", 'error');
-            console.log('⚠️ Not player turn!');
             return;
         }
 
-        const combatState = gameState.get('combat');
-        if (!combatState) {
-            console.log('⚠️ No combat state!');
+        const target = this.combatManager.enemyCombatants.find(e => e.id === targetId);
+        if (!target || target.hp <= 0) {
+            gameState.addMessage('Invalid target!', 'error');
             return;
         }
 
-        console.log('Combat state:', combatState);
-        console.log('Grid positions:', combatState.grid.positions);
-        console.log('Looking for enemy at', gridX, gridY);
-
-        // Check if clicked on an enemy
-        const clickedEnemy = combatState.grid.positions.find(p => {
-            console.log(`Checking position ${p.x},${p.y} vs click ${gridX},${gridY}`);
-            return p.x === gridX && p.y === gridY;
-        });
-
-        console.log('Found position:', clickedEnemy);
-
-        if (clickedEnemy) {
-            const combatantAtPos = combatState.combatants.find(c => c.id === clickedEnemy.id);
-            console.log('Combatant at position:', combatantAtPos);
-
-            if (combatantAtPos && combatantAtPos.team === 'enemy') {
-                console.log('✅ Found enemy!', combatantAtPos.name);
-                const enemyCombatant = this.combatManager.enemyCombatants.find(e => e.id === clickedEnemy.id);
-                console.log('Enemy combatant object:', enemyCombatant);
-
-                if (enemyCombatant && enemyCombatant.hp > 0) {
-                    console.log('🗡️ ATTACKING ENEMY:', enemyCombatant.name);
-                    // Attack the enemy
-                    this.combatManager.attack(this.combatManager.playerCombatant, enemyCombatant);
-                    // Force UI update
-                    setTimeout(() => {
-                        const combatState = gameState.get('combat');
-                        if (combatState) this.updateCombatUI(combatState);
-                    }, 100);
-                } else {
-                    console.log('⚠️ Enemy is dead or not found');
-                }
-            } else {
-                console.log('Not an enemy - trying to move instead');
-            }
-
-            if (!combatantAtPos || combatantAtPos.team !== 'enemy') {
-                // Not an enemy, try to move
-                if (currentCombatant.actions.movement > 0) {
-                    console.log('Moving to', gridX, gridY);
-                    this.combatManager.move(currentCombatant, gridX, gridY);
-                    // Force UI update
-                    setTimeout(() => {
-                        const combatState = gameState.get('combat');
-                        if (combatState) this.updateCombatUI(combatState);
-                    }, 100);
-                } else {
-                    gameState.addMessage("No movement left!", 'error');
-                }
-            }
-            return;
+        // Default to attack if no action selected
+        if (!this.selectedAction) {
+            this.selectedAction = 'attack';
         }
 
-        // Otherwise, try to move there
-        if (currentCombatant.actions.movement > 0) {
-            this.combatManager.move(currentCombatant, gridX, gridY);
-            // Force UI update
-            setTimeout(() => {
-                const combatState = gameState.get('combat');
-                if (combatState) this.updateCombatUI(combatState);
-            }, 100);
-        } else {
-            gameState.addMessage("No movement left!", 'error');
+        const attacker = this.combatManager.playerCombatant;
+
+        switch(this.selectedAction) {
+            case 'attack':
+                this.combatManager.attack(attacker, target);
+                break;
+            case 'ability':
+                gameState.addMessage('Abilities not yet implemented', 'error');
+                break;
+            case 'spell':
+                gameState.addMessage('Spells not yet implemented', 'error');
+                break;
         }
+
+        this.selectedAction = null;
     }
+
 
     /**
      * Update HUD with character info

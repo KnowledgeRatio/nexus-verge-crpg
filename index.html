@@ -129,15 +129,36 @@
         <!-- Combat Screen -->
         <div id="combatScreen" class="screen">
             <div class="combat-container">
-                <h2>Combat</h2>
-                <div id="combatContent">
-                    <div class="combat-grid-container">
-                        <canvas id="combatCanvas"></canvas>
+                <h2>Combat - Round <span id="roundNumber">1</span></h2>
+
+                <div class="combat-content">
+                    <!-- Combatants Display -->
+                    <div class="combatants-display">
+                        <div class="team player-team">
+                            <h3>🛡️ Allies</h3>
+                            <div id="playerCombatants"></div>
+                        </div>
+
+                        <div class="team enemy-team">
+                            <h3>⚔️ Enemies</h3>
+                            <div id="enemyCombatants"></div>
+                        </div>
                     </div>
+
+                    <!-- Combat Sidebar -->
                     <div class="combat-sidebar">
-                        <div id="turnOrder"></div>
-                        <div id="combatActions"></div>
-                        <div id="combatLog" class="message-log"></div>
+                        <div class="sidebar-section">
+                            <h4>Turn Order</h4>
+                            <div id="turnOrder"></div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>Actions</h4>
+                            <div id="combatActions"></div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>Combat Log</h4>
+                            <div id="combatLog" class="message-log"></div>
+                        </div>
                     </div>
                 </div>
             </div>

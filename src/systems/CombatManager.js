@@ -1,6 +1,6 @@
 /**
- * Combat Manager
- * Handles turn-based tactical combat following D&D 5e rules
+ * Combat Manager - Simplified Non-Grid Turn-Based Combat
+ * Follows D&D 5e SRD 5.2.1 2024 rules
  */
 
 import { gameState } from '../core/GameState.js';
@@ -14,7 +14,6 @@ class CombatManager {
         this.turnOrder = [];
         this.currentTurnIndex = 0;
         this.round = 0;
-        this.grid = null;
 
         // Combat state
         this.playerCombatant = null;
@@ -27,19 +26,14 @@ class CombatManager {
      * Start combat encounter
      * @param {Object} player - Player character
      * @param {Array} enemies - Array of enemy characters
-     * @param {Object} battlefield - Battlefield configuration
      */
-    async startCombat(player, enemies, battlefield = {}) {
+    async startCombat(player, enemies) {
         console.log('⚔️ Starting combat encounter!');
 
         this.active = true;
         this.round = 1;
         this.combatants = [];
         this.turnOrder = [];
-
-        // Create battlefield grid
-        const gridSize = battlefield.size || { width: 12, height: 12 };
-        this.grid = new CombatGrid(gridSize.width, gridSize.height);
 
         // Create player combatant
         this.playerCombatant = new Combatant(player, 'player');
@@ -52,9 +46,6 @@ class CombatManager {
             return combatant;
         });
 
-        // Place combatants on grid
-        this.placeCombatants();
-
         // Roll initiative
         this.rollInitiative();
 
@@ -63,8 +54,7 @@ class CombatManager {
             active: true,
             round: this.round,
             currentTurn: this.getCurrentCombatant()?.id,
-            combatants: this.combatants.map(c => c.toJSON()),
-            grid: this.grid.toJSON()
+            combatants: this.combatants.map(c => c.toJSON())
         });
 
         // Add combat start messages
@@ -78,28 +68,12 @@ class CombatManager {
     }
 
     /**
-     * Place combatants on the grid
-     */
-    placeCombatants() {
-        // Place player on left side
-        const playerX = 2;
-        const playerY = Math.floor(this.grid.height / 2);
-        this.grid.placeCombatant(this.playerCombatant, playerX, playerY);
-
-        // Place enemies on right side
-        this.enemyCombatants.forEach((enemy, index) => {
-            const enemyX = this.grid.width - 3;
-            const enemyY = 3 + (index * 2);
-            this.grid.placeCombatant(enemy, enemyX, Math.min(enemyY, this.grid.height - 2));
-        });
-    }
-
-    /**
      * Roll initiative for all combatants
      */
     rollInitiative() {
         this.combatants.forEach(combatant => {
-            const roll = rollD20();
+            const rollObj = rollD20();
+            const roll = rollObj.result;
             const modifier = combatant.character.abilityModifiers.dex;
             combatant.initiative = roll + modifier;
 
@@ -148,7 +122,7 @@ class CombatManager {
         );
 
         // Update game state
-        gameState.set('combat.currentTurn', combatant.id);
+        this.updateGameState();
 
         // If it's an enemy turn, execute AI
         if (combatant.team === 'enemy') {
@@ -160,54 +134,25 @@ class CombatManager {
     }
 
     /**
-     * Execute enemy AI turn
+     * Execute enemy AI turn - Simple: pick random target and attack
      */
     async executeEnemyAI(combatant) {
         console.log(`⚔️ AI executing turn for ${combatant.name}`);
-        gameState.addMessage(`${combatant.name} is thinking...`, 'info');
+        gameState.addMessage(`${combatant.name} is acting...`, 'info');
 
-        // Simple AI: Move toward player and attack if in range
-        const playerPos = this.grid.getCombatantPosition(this.playerCombatant);
-        const enemyPos = this.grid.getCombatantPosition(combatant);
+        // Pick random living player target (for now just the player)
+        const targets = [this.playerCombatant].filter(c => c.hp > 0);
 
-        console.log(`Player pos:`, playerPos, `Enemy pos:`, enemyPos);
-
-        if (!playerPos || !enemyPos) {
-            console.log('⚠️ Missing position data, ending turn');
+        if (targets.length === 0) {
+            console.log('⚠️ No valid targets, ending turn');
             this.endTurn();
             return;
         }
 
-        // Calculate distance
-        const distance = Math.abs(playerPos.x - enemyPos.x) + Math.abs(playerPos.y - enemyPos.y);
-        console.log(`Distance to player: ${distance}`);
+        const target = targets[Math.floor(Math.random() * targets.length)];
 
-        // If adjacent, attack
-        if (distance <= 1) {
-            console.log(`Enemy attacking player!`);
-            await this.attack(combatant, this.playerCombatant);
-        } else {
-            // Move toward player
-            const dx = playerPos.x > enemyPos.x ? 1 : playerPos.x < enemyPos.x ? -1 : 0;
-            const dy = playerPos.y > enemyPos.y ? 1 : playerPos.y < enemyPos.y ? -1 : 0;
-
-            console.log(`Enemy moving by dx=${dx}, dy=${dy}`);
-            const moved = this.move(combatant, enemyPos.x + dx, enemyPos.y + dy);
-            console.log(`Move result: ${moved}`);
-
-            // Try to attack after moving if now adjacent
-            const newPos = this.grid.getCombatantPosition(combatant);
-            const newDistance = Math.abs(playerPos.x - newPos.x) + Math.abs(playerPos.y - newPos.y);
-
-            console.log(`New distance after move: ${newDistance}`);
-            if (newDistance <= 1 && combatant.actions.action) {
-                console.log(`Enemy attacking after move!`);
-                await this.attack(combatant, this.playerCombatant);
-            }
-        }
-
-        // Force update game state
-        this.updateGameState();
+        // For now, always attack (can add ability/spell logic later)
+        await this.attack(combatant, target);
 
         // End turn after a delay
         setTimeout(() => {
@@ -217,40 +162,10 @@ class CombatManager {
     }
 
     /**
-     * Move a combatant
-     */
-    move(combatant, toX, toY) {
-        const fromPos = this.grid.getCombatantPosition(combatant);
-        if (!fromPos) return false;
-
-        const distance = Math.abs(toX - fromPos.x) + Math.abs(toY - fromPos.y);
-        const speed = combatant.character.speed / RULES.combat.gridSize; // Convert feet to squares
-
-        if (distance > combatant.actions.movement || distance > speed) {
-            gameState.addMessage(`${combatant.name} doesn't have enough movement!`, 'error');
-            return false;
-        }
-
-        const success = this.grid.moveCombatant(combatant, toX, toY);
-
-        if (success) {
-            combatant.actions.movement -= distance;
-            gameState.addMessage(`${combatant.name} moves to (${toX}, ${toY})`, 'info');
-            this.updateGameState();
-            return true;
-        } else {
-            gameState.addMessage(`${combatant.name} cannot move there!`, 'error');
-            return false;
-        }
-    }
-
-    /**
      * Perform an attack
      */
     async attack(attacker, defender) {
-        console.log(`⚔️ ATTACK METHOD CALLED:`, attacker.name, 'attacks', defender.name);
-        console.log('Attacker:', attacker);
-        console.log('Defender:', defender);
+        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name);
 
         if (!attacker.actions.action) {
             console.log('⚠️ No action available!');
@@ -258,40 +173,59 @@ class CombatManager {
             return;
         }
 
-        console.log('✅ Action available, proceeding with attack');
         gameState.addMessage(`${attacker.name} attacks ${defender.name}!`, 'warning');
 
-        // Attack roll: d20 + STR/DEX mod + proficiency
-        const attackRoll = rollD20();
-        const abilityMod = attacker.character.abilityModifiers.str; // Assuming melee
+        // Get weapon for attack bonus
+        const weapon = attacker.character.equipment?.mainHand;
+        let attackBonus = attacker.character.abilityModifiers.str;
+
+        // If using DEX weapon or no weapon, use DEX
+        if (weapon?.properties?.includes('finesse') || !weapon) {
+            attackBonus = Math.max(
+                attacker.character.abilityModifiers.str,
+                attacker.character.abilityModifiers.dex
+            );
+        }
+
+        // Add proficiency bonus
         const proficiency = attacker.character.proficiencyBonus;
-        const attackTotal = attackRoll + abilityMod + proficiency;
+
+        // Attack roll: d20 + ability mod + proficiency
+        const attackRollObj = rollD20();
+        const attackRoll = attackRollObj.result;
+        const attackTotal = attackRoll + attackBonus + proficiency;
 
         const isCritical = RULES.combat.criticalHitRange.includes(attackRoll);
         const isCriticalMiss = RULES.combat.criticalMissRange.includes(attackRoll);
 
         gameState.addMessage(
-            `Attack roll: ${attackRoll} + ${abilityMod} + ${proficiency} = ${attackTotal} vs AC ${defender.ac}`,
+            `Attack roll: ${attackRoll} + ${attackBonus} + ${proficiency} = ${attackTotal} vs AC ${defender.ac}`,
             'info'
         );
 
         if (isCriticalMiss) {
             gameState.addMessage(`💥 Critical miss!`, 'error');
             attacker.actions.action = false;
+            this.updateGameState();
             return;
         }
 
         if (isCritical || attackTotal >= defender.ac) {
             // Hit! Roll damage
-            let damageRoll = rollDice(8); // d8 longsword
+            let damageDice = 8; // Default d8
+            if (weapon?.damage?.dice) {
+                damageDice = parseInt(weapon.damage.dice.split('d')[1]) || 8;
+            }
+
+            let damageRoll = rollDice(1, damageDice);
             if (isCritical) {
-                damageRoll += rollDice(8); // Double dice on crit
+                damageRoll += rollDice(1, damageDice); // Double dice on crit
                 gameState.addMessage(`⭐ Critical hit!`, 'success');
             }
-            const damageTotal = damageRoll + abilityMod;
+            const damageTotal = damageRoll + attackBonus;
 
             gameState.addMessage(
-                `💥 Hit! ${damageTotal} damage (${damageRoll} + ${abilityMod})`,
+                `💥 Hit! ${damageTotal} damage (${damageRoll} + ${attackBonus})`,
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
@@ -312,12 +246,56 @@ class CombatManager {
     }
 
     /**
+     * Attempt to flee from combat
+     * D&D 5e SRD 5.2.1 2024: d20 + initiative modifier vs DC 30
+     */
+    flee(combatant) {
+        if (!combatant.actions.action) {
+            gameState.addMessage(`${combatant.name} has no action available!`, 'error');
+            return;
+        }
+
+        const fleeRollObj = rollD20();
+        const fleeRoll = fleeRollObj.result;
+        const fleeTotal = fleeRoll + combatant.initiative;
+        const fleeDC = 30;
+
+        gameState.addMessage(
+            `${combatant.name} attempts to flee! (${fleeRoll} + ${combatant.initiative} = ${fleeTotal} vs DC ${fleeDC})`,
+            'warning'
+        );
+
+        if (fleeTotal >= fleeDC) {
+            gameState.addMessage(`${combatant.name} successfully escapes!`, 'success');
+            this.endCombat('fled');
+        } else {
+            gameState.addMessage(`${combatant.name} fails to escape!`, 'error');
+        }
+
+        combatant.actions.action = false;
+        this.updateGameState();
+    }
+
+    /**
+     * Use an ability (placeholder for future implementation)
+     */
+    useAbility(combatant, ability, target) {
+        gameState.addMessage('Abilities not yet implemented', 'error');
+        // TODO: Implement class features and abilities
+    }
+
+    /**
+     * Cast a spell (placeholder for future implementation)
+     */
+    castSpell(combatant, spell, target) {
+        gameState.addMessage('Spells not yet implemented', 'error');
+        // TODO: Implement spell casting system
+    }
+
+    /**
      * Handle combatant defeat
      */
     handleDefeat(combatant) {
-        // Remove from grid
-        this.grid.removeCombatant(combatant);
-
         // Check for combat end
         if (combatant.team === 'player') {
             this.endCombat('defeat');
@@ -339,13 +317,29 @@ class CombatManager {
             combatant.endTurn();
         }
 
-        // Move to next turn
-        this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.filter(c => c.hp > 0).length;
+        // Get alive combatants
+        const aliveCombatants = this.turnOrder.filter(c => c.hp > 0);
+
+        if (aliveCombatants.length === 0) {
+            console.log('⚠️ No alive combatants!');
+            return;
+        }
+
+        // Move to next alive combatant
+        let nextIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
+
+        // Skip dead combatants
+        while (this.turnOrder[nextIndex].hp <= 0) {
+            nextIndex = (nextIndex + 1) % this.turnOrder.length;
+        }
+
+        this.currentTurnIndex = nextIndex;
 
         // If we've cycled back to start, increment round
-        if (this.currentTurnIndex === 0) {
+        if (this.currentTurnIndex === 0 || this.currentTurnIndex < (this.currentTurnIndex - 1)) {
             this.round++;
             gameState.addMessage(`⚔️ Round ${this.round} begins!`, 'warning');
+            gameState.set('combat.round', this.round);
         }
 
         // Start next turn
@@ -366,17 +360,53 @@ class CombatManager {
             gameState.addMessage(`+${xpGained} XP`, 'success');
 
             // TODO: Add XP to character
+
+            // Return to exploration after delay
+            gameState.set('combat', null);
+            setTimeout(() => {
+                gameState.set('ui.currentScreen', 'game');
+            }, 2000);
         } else if (result === 'defeat') {
             gameState.addMessage('💀 You have been defeated...', 'error');
-            // TODO: Handle player death
+            gameState.addMessage('🎮 Game Over', 'error');
+
+            // Show game over screen
+            gameState.set('combat', null);
+            setTimeout(() => {
+                this.showGameOver();
+            }, 2000);
+        } else if (result === 'fled') {
+            gameState.addMessage('🏃 You have escaped from combat!', 'warning');
+
+            // Return to exploration after delay
+            gameState.set('combat', null);
+            setTimeout(() => {
+                gameState.set('ui.currentScreen', 'game');
+            }, 2000);
         }
+    }
 
-        gameState.set('combat', null);
+    /**
+     * Show game over screen
+     */
+    showGameOver() {
+        // Show game over modal
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
 
-        // Return to exploration after delay
-        setTimeout(() => {
-            gameState.set('ui.currentScreen', 'game');
-        }, 2000);
+        if (modalOverlay && modalContent) {
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 30px;">You have been defeated in combat.</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Your adventure ends here.</p>
+                    <button class="menu-btn" onclick="location.reload()" style="margin: 0 auto;">
+                        Return to Main Menu
+                    </button>
+                </div>
+            `;
+            modalOverlay.classList.add('active');
+        }
     }
 
     /**
@@ -414,14 +444,14 @@ class CombatManager {
             active: true,
             round: this.round,
             currentTurn: this.getCurrentCombatant()?.id,
-            combatants: this.combatants.map(c => c.toJSON()),
-            grid: this.grid.toJSON()
+            combatants: this.combatants.map(c => c.toJSON())
         });
     }
 }
 
 /**
  * Combatant - Wrapper for characters in combat
+ * Simplified without grid positioning
  */
 class Combatant {
     constructor(character, team, id = null) {
@@ -436,11 +466,10 @@ class Combatant {
         this.ac = character.ac;
         this.initiative = 0;
 
-        // Action economy
+        // Action economy (no movement)
         this.actions = {
             action: true,
             bonusAction: true,
-            movement: character.speed / RULES.combat.gridSize,
             reaction: true
         };
 
@@ -455,7 +484,6 @@ class Combatant {
         this.actions = {
             action: true,
             bonusAction: true,
-            movement: this.character.speed / RULES.combat.gridSize,
             reaction: true
         };
     }
@@ -508,109 +536,5 @@ class Combatant {
     }
 }
 
-/**
- * Combat Grid - Manages battlefield positioning
- */
-class CombatGrid {
-    constructor(width, height) {
-        this.width = width;
-        this.height = height;
-        this.grid = Array(height).fill(null).map(() => Array(width).fill(null));
-        this.combatantPositions = new Map(); // combatant -> {x, y}
-    }
-
-    /**
-     * Place combatant on grid
-     */
-    placeCombatant(combatant, x, y) {
-        if (!this.isValidPosition(x, y) || this.grid[y][x]) {
-            return false;
-        }
-
-        this.grid[y][x] = combatant;
-        this.combatantPositions.set(combatant, { x, y });
-        return true;
-    }
-
-    /**
-     * Move combatant
-     */
-    moveCombatant(combatant, toX, toY) {
-        const fromPos = this.combatantPositions.get(combatant);
-        if (!fromPos || !this.isValidPosition(toX, toY) || this.grid[toY][toX]) {
-            return false;
-        }
-
-        // Clear old position
-        this.grid[fromPos.y][fromPos.x] = null;
-
-        // Set new position
-        this.grid[toY][toX] = combatant;
-        this.combatantPositions.set(combatant, { x: toX, y: toY });
-
-        return true;
-    }
-
-    /**
-     * Remove combatant from grid
-     */
-    removeCombatant(combatant) {
-        const pos = this.combatantPositions.get(combatant);
-        if (pos) {
-            this.grid[pos.y][pos.x] = null;
-            this.combatantPositions.delete(combatant);
-        }
-    }
-
-    /**
-     * Get combatant position
-     */
-    getCombatantPosition(combatant) {
-        return this.combatantPositions.get(combatant);
-    }
-
-    /**
-     * Check if position is valid
-     */
-    isValidPosition(x, y) {
-        return x >= 0 && x < this.width && y >= 0 && y < this.height;
-    }
-
-    /**
-     * Get combatants in range
-     */
-    getCombatantsInRange(combatant, range) {
-        const pos = this.combatantPositions.get(combatant);
-        if (!pos) return [];
-
-        const inRange = [];
-        for (const [otherCombatant, otherPos] of this.combatantPositions) {
-            if (otherCombatant === combatant) continue;
-
-            const distance = Math.abs(pos.x - otherPos.x) + Math.abs(pos.y - otherPos.y);
-            if (distance <= range) {
-                inRange.push({ combatant: otherCombatant, distance });
-            }
-        }
-
-        return inRange;
-    }
-
-    /**
-     * Serialize to JSON
-     */
-    toJSON() {
-        return {
-            width: this.width,
-            height: this.height,
-            positions: Array.from(this.combatantPositions.entries()).map(([combatant, pos]) => ({
-                id: combatant.id,
-                x: pos.x,
-                y: pos.y
-            }))
-        };
-    }
-}
-
-export { CombatManager, Combatant, CombatGrid };
+export { CombatManager, Combatant };
 export default CombatManager;
