@@ -133,7 +133,12 @@ class CombatManager {
      */
     startTurn() {
         const combatant = this.getCurrentCombatant();
-        if (!combatant) return;
+        console.log('🎯 START TURN for:', combatant?.name, 'Team:', combatant?.team);
+
+        if (!combatant) {
+            console.log('⚠️ No current combatant!');
+            return;
+        }
 
         combatant.startTurn();
 
@@ -147,7 +152,10 @@ class CombatManager {
 
         // If it's an enemy turn, execute AI
         if (combatant.team === 'enemy') {
+            console.log('🤖 Enemy turn - executing AI in 500ms');
             setTimeout(() => this.executeEnemyAI(combatant), 500);
+        } else {
+            console.log('👤 Player turn - waiting for input');
         }
     }
 
@@ -155,41 +163,57 @@ class CombatManager {
      * Execute enemy AI turn
      */
     async executeEnemyAI(combatant) {
+        console.log(`⚔️ AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is thinking...`, 'info');
 
         // Simple AI: Move toward player and attack if in range
         const playerPos = this.grid.getCombatantPosition(this.playerCombatant);
         const enemyPos = this.grid.getCombatantPosition(combatant);
 
+        console.log(`Player pos:`, playerPos, `Enemy pos:`, enemyPos);
+
         if (!playerPos || !enemyPos) {
+            console.log('⚠️ Missing position data, ending turn');
             this.endTurn();
             return;
         }
 
         // Calculate distance
         const distance = Math.abs(playerPos.x - enemyPos.x) + Math.abs(playerPos.y - enemyPos.y);
+        console.log(`Distance to player: ${distance}`);
 
         // If adjacent, attack
         if (distance <= 1) {
+            console.log(`Enemy attacking player!`);
             await this.attack(combatant, this.playerCombatant);
         } else {
             // Move toward player
             const dx = playerPos.x > enemyPos.x ? 1 : playerPos.x < enemyPos.x ? -1 : 0;
             const dy = playerPos.y > enemyPos.y ? 1 : playerPos.y < enemyPos.y ? -1 : 0;
 
+            console.log(`Enemy moving by dx=${dx}, dy=${dy}`);
             const moved = this.move(combatant, enemyPos.x + dx, enemyPos.y + dy);
+            console.log(`Move result: ${moved}`);
 
             // Try to attack after moving if now adjacent
             const newPos = this.grid.getCombatantPosition(combatant);
             const newDistance = Math.abs(playerPos.x - newPos.x) + Math.abs(playerPos.y - newPos.y);
 
+            console.log(`New distance after move: ${newDistance}`);
             if (newDistance <= 1 && combatant.actions.action) {
+                console.log(`Enemy attacking after move!`);
                 await this.attack(combatant, this.playerCombatant);
             }
         }
 
+        // Force update game state
+        this.updateGameState();
+
         // End turn after a delay
-        setTimeout(() => this.endTurn(), 1000);
+        setTimeout(() => {
+            console.log(`Enemy turn ending`);
+            this.endTurn();
+        }, 1000);
     }
 
     /**
@@ -224,11 +248,17 @@ class CombatManager {
      * Perform an attack
      */
     async attack(attacker, defender) {
+        console.log(`⚔️ ATTACK METHOD CALLED:`, attacker.name, 'attacks', defender.name);
+        console.log('Attacker:', attacker);
+        console.log('Defender:', defender);
+
         if (!attacker.actions.action) {
+            console.log('⚠️ No action available!');
             gameState.addMessage(`${attacker.name} has no action available!`, 'error');
             return;
         }
 
+        console.log('✅ Action available, proceeding with attack');
         gameState.addMessage(`${attacker.name} attacks ${defender.name}!`, 'warning');
 
         // Attack roll: d20 + STR/DEX mod + proficiency

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(where:*)",
+      "Bash(python -m http.server:*)",
+      "Bash(findstr:*)",
+      "Bash(ping:*)",
+      "Bash(npx -y http-server -p 3000)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx -y http-server -p 8080)"
+    ]
+  }
+}

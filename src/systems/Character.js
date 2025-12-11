@@ -47,27 +47,7 @@ export class Character {
             size: this.class.hitDie
         };
 
-        // Armor Class
-        this.baseAC = 10; // Base AC
-        this.armorBonus = 0;
-        this.shieldBonus = 0;
-        this.ac = data.ac || this.calculateAC();
-
-        // Speed
-        this.speed = data.speed || this.calculateSpeed();
-
-        // Initiative
-        this.initiative = this.abilityModifiers.dex;
-
-        // Proficiencies
-        this.proficiencies = this.initializeProficiencies();
-
-        // Skills (proficiency tracking and bonuses)
-        this.skills = this.initializeSkills(data.skillChoices);
-
-        // Saving throws
-        this.savingThrows = this.initializeSavingThrows();
-
+        // Initialize equipment BEFORE AC calculation (AC needs equipment data)
         // Inventory
         this.inventory = data.inventory || [];
 
@@ -87,6 +67,27 @@ export class Character {
         } else {
             this.equipment = data.equipment;
         }
+
+        // Armor Class (calculated AFTER equipment is initialized)
+        this.baseAC = 10; // Base AC
+        this.armorBonus = 0;
+        this.shieldBonus = 0;
+        this.ac = data.ac || this.calculateAC();
+
+        // Speed
+        this.speed = data.speed || this.calculateSpeed();
+
+        // Initiative
+        this.initiative = this.abilityModifiers.dex;
+
+        // Proficiencies
+        this.proficiencies = this.initializeProficiencies();
+
+        // Skills (proficiency tracking and bonuses)
+        this.skills = this.initializeSkills(data.skillChoices);
+
+        // Saving throws
+        this.savingThrows = this.initializeSavingThrows();
 
         // Spellcasting (if applicable)
         this.spellcasting = null;

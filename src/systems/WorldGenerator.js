@@ -4,7 +4,7 @@
  */
 
 import SimplexNoise from '../utils/simplexNoise.js';
-import { createRNG, seedToNumber } from '../utils/rng.js';
+import { SeededRandom, hashString } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
 
 class WorldGenerator {
@@ -18,14 +18,14 @@ class WorldGenerator {
         };
 
         // Initialize noise generators with seed
-        const numericSeed = seedToNumber(worldSeed);
+        const numericSeed = hashString(worldSeed);
         this.elevationNoise = new SimplexNoise(numericSeed);
         this.moistureNoise = new SimplexNoise(numericSeed + 1000);
         this.temperatureNoise = new SimplexNoise(numericSeed + 2000);
         this.featureNoise = new SimplexNoise(numericSeed + 3000);
 
         // Base RNG for discrete decisions
-        this.baseRNG = createRNG(worldSeed);
+        this.baseRNG = new SeededRandom(worldSeed);
 
         // Cache for generated regions
         this.regionCache = new Map();
@@ -62,8 +62,8 @@ class WorldGenerator {
         await this.loadTerrainData();
 
         // Create region-specific RNG
-        const regionSeed = seedToNumber(`${this.worldSeed}_${regionX}_${regionY}`);
-        const regionRNG = createRNG(regionSeed);
+        const regionSeedString = `${this.worldSeed}_${regionX}_${regionY}`;
+        const regionRNG = new SeededRandom(regionSeedString);
 
         const regionSize = RULES.worldGen.regionSize;
         const tiles = [];
@@ -178,7 +178,7 @@ class WorldGenerator {
 
         // Check for settlement
         const settlementChance = 1.0 / RULES.worldGen.townSpacing;
-        if (rng.random() < settlementChance) {
+        if (rng.next() < settlementChance) {
             // Find suitable location (not water, not mountain)
             const suitableTiles = tiles.filter(t => {
                 const terrain = t.terrain;
@@ -188,7 +188,7 @@ class WorldGenerator {
             });
 
             if (suitableTiles.length > 0) {
-                const location = rng.pick(suitableTiles);
+                const location = rng.choice(suitableTiles);
 
                 // Settlement size based on distance from center
                 const distFromCenter = Math.sqrt(regionX * regionX + regionY * regionY);
@@ -214,31 +214,31 @@ class WorldGenerator {
         }
 
         // Check for dungeon
-        if (rng.random() < RULES.worldGen.dungeonFrequency) {
+        if (rng.next() < RULES.worldGen.dungeonFrequency) {
             const mountainTiles = tiles.filter(t =>
                 t.terrain === 'mountain' || t.terrain === 'hills'
             );
 
             if (mountainTiles.length > 0) {
-                const location = rng.pick(mountainTiles);
+                const location = rng.choice(mountainTiles);
                 features.push({
                     type: 'dungeon',
                     x: location.x,
                     y: location.y,
-                    difficulty: rng.int(1, 5),
+                    difficulty: rng.nextInt(1, 5),
                     explored: false
                 });
             }
         }
 
         // Check for points of interest
-        if (rng.random() < 0.15) {
-            const location = rng.pick(tiles);
+        if (rng.next() < 0.15) {
+            const location = rng.choice(tiles);
             const poiTypes = ['shrine', 'ruins', 'cave', 'camp', 'landmark'];
 
             features.push({
                 type: 'poi',
-                poiType: rng.pick(poiTypes),
+                poiType: rng.choice(poiTypes),
                 x: location.x,
                 y: location.y,
                 discovered: false
@@ -264,8 +264,8 @@ class WorldGenerator {
             'mill', 'brook', 'glen', 'hollow', 'peak', 'ridge'
         ];
 
-        const prefix = rng.pick(prefixes);
-        const suffix = rng.pick(suffixes);
+        const prefix = rng.choice(prefixes);
+        const suffix = rng.choice(suffixes);
 
         return `${prefix}${suffix}`;
     }
@@ -276,11 +276,11 @@ class WorldGenerator {
     getSettlementPopulation(type, rng) {
         switch (type) {
             case 'city':
-                return rng.int(5000, 20000);
+                return rng.nextInt(5000, 20000);
             case 'town':
-                return rng.int(1000, 5000);
+                return rng.nextInt(1000, 5000);
             case 'village':
-                return rng.int(50, 500);
+                return rng.nextInt(50, 500);
             default:
                 return 100;
         }
