@@ -80,6 +80,10 @@ export class GameState {
         // History for undo/debugging (optional)
         this.history = [];
         this.maxHistory = 50;
+
+        // Playtime tracking
+        this.sessionStartTime = null;
+        this.playtimeInterval = null;
     }
 
     /**
@@ -460,6 +464,50 @@ export class GameState {
      */
     getHistory(count = 10) {
         return this.history.slice(-count);
+    }
+
+    /**
+     * Start tracking playtime
+     */
+    startPlaytimeTracking() {
+        if (this.playtimeInterval) {
+            this.stopPlaytimeTracking();
+        }
+
+        this.sessionStartTime = Date.now();
+
+        // Update playtime every second
+        this.playtimeInterval = setInterval(() => {
+            this.data.stats.playTime += 1000; // Add 1 second
+        }, 1000);
+
+        console.log('⏱️ Playtime tracking started');
+    }
+
+    /**
+     * Stop tracking playtime
+     */
+    stopPlaytimeTracking() {
+        if (this.playtimeInterval) {
+            clearInterval(this.playtimeInterval);
+            this.playtimeInterval = null;
+        }
+
+        if (this.sessionStartTime) {
+            // Add final session time
+            const sessionTime = Date.now() - this.sessionStartTime;
+            this.data.stats.playTime += sessionTime;
+            this.sessionStartTime = null;
+        }
+
+        console.log('⏱️ Playtime tracking stopped');
+    }
+
+    /**
+     * Get total playtime in milliseconds
+     */
+    getPlaytime() {
+        return this.data.stats.playTime;
     }
 }
 

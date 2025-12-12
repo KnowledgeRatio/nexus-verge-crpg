@@ -121,6 +121,7 @@
                     <kbd>C</kbd> Character |
                     <kbd>Q</kbd> Quests |
                     <kbd>R</kbd> Rest |
+                    <kbd>ESC</kbd> Save |
                     <kbd>H</kbd> Help
                 </div>
             </div>
@@ -167,6 +168,61 @@
         <!-- Modals -->
         <div id="modalOverlay" class="modal-overlay">
             <div id="modalContent" class="modal-content"></div>
+        </div>
+
+        <!-- Rest Modal -->
+        <div id="restModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Rest</h2>
+                    <button class="close-btn" id="closeRestBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="restCharacterStatus" class="rest-status"></div>
+
+                    <div id="restInfo" class="rest-info"></div>
+
+                    <div class="rest-actions">
+                        <button id="shortRestBtn" class="rest-btn short-rest-btn">
+                            <span class="btn-title">Short Rest</span>
+                            <span class="btn-desc">Spend hit dice to heal</span>
+                        </button>
+                        <button id="longRestBtn" class="rest-btn long-rest-btn">
+                            <span class="btn-title">Long Rest</span>
+                            <span class="btn-desc">Fully restore HP and abilities</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load Game Screen -->
+        <div id="loadGameScreen" class="screen">
+            <div class="menu-container">
+                <h1>Load Game</h1>
+                <p class="subtitle">Select a save to load</p>
+
+                <div id="saveSlots" class="save-slots-container"></div>
+
+                <div class="menu-buttons">
+                    <button onclick="window.game.showScreen('mainMenu')" class="menu-btn secondary">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save/Load Modal (in-game) -->
+        <div id="saveLoadModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Save Game</h2>
+                    <button class="close-btn" onclick="window.game.closeSaveMenu()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-instructions">Select a save slot:</p>
+                    <div id="saveMenuSlots" class="save-menu-slots"></div>
+                    <p class="modal-hint">Press ESC to close</p>
+                </div>
+            </div>
         </div>
     </div>
 

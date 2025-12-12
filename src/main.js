@@ -10,6 +10,8 @@ import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
 import Player from './systems/Player.js';
 import CombatManager from './systems/CombatManager.js';
+import restManager from './systems/RestManager.js';
+import saveManager from './systems/SaveManager.js';
 
 class Game {
     constructor() {
@@ -230,6 +232,15 @@ class Game {
 
         // Setup Quick Stats
         this.setupQuickStats();
+
+        // Setup Rest System
+        this.setupRestSystem();
+
+        // Setup Save/Load System
+        this.setupSaveLoadSystem();
+
+        // Start playtime tracking
+        gameState.startPlaytimeTracking();
 
         // Start game loop
         this.startGameLoop();
@@ -518,8 +529,229 @@ class Game {
      * Show load game screen
      */
     showLoadGameScreen() {
-        // TODO: Implement save/load system
-        alert('Load Game feature not yet implemented. Coming in Phase 1 Day 2!');
+        this.showScreen('loadGameScreen');
+        this.renderLoadGameSlots();
+    }
+
+    /**
+     * Render load game save slots
+     */
+    renderLoadGameSlots() {
+        const slotsContainer = document.getElementById('saveSlots');
+        if (!slotsContainer) return;
+
+        const slots = saveManager.getSaveSlots();
+
+        slotsContainer.innerHTML = '';
+
+        for (let i = 1; i <= saveManager.maxSlots; i++) {
+            const slot = slots[i];
+            const slotEl = document.createElement('div');
+            slotEl.className = `save-slot ${slot.isEmpty ? 'empty' : ''}`;
+            slotEl.dataset.slotId = i;
+
+            if (slot.isEmpty) {
+                slotEl.innerHTML = `
+                    <div class="save-slot-header">
+                        <span class="slot-number">Slot ${i}</span>
+                    </div>
+                    <div class="save-slot-body">
+                        <p class="empty-slot-text">Empty Slot</p>
+                    </div>
+                `;
+            } else {
+                slotEl.innerHTML = `
+                    <div class="save-slot-header">
+                        <span class="slot-number">Slot ${i}</span>
+                        <span class="slot-timestamp">${saveManager.formatTimestamp(slot.timestamp)}</span>
+                    </div>
+                    <div class="save-slot-body">
+                        <div class="save-slot-character">
+                            <span class="character-name">${slot.characterName}</span>
+                            <span class="character-class">Level ${slot.level} ${slot.class}</span>
+                        </div>
+                        <div class="save-slot-info">
+                            <span class="save-location">${slot.location}</span>
+                            <span class="save-playtime">${saveManager.formatPlaytime(slot.playtime)}</span>
+                        </div>
+                        <div class="save-slot-actions">
+                            <button class="btn-load" onclick="window.game.loadGameFromSlot(${i})">Load</button>
+                            <button class="btn-delete" onclick="window.game.confirmDeleteSave(${i})">Delete</button>
+                        </div>
+                    </div>
+                    <div class="save-slot-footer">
+                        <span class="save-seed">Seed: ${slot.seed}</span>
+                    </div>
+                `;
+            }
+
+            slotsContainer.appendChild(slotEl);
+        }
+    }
+
+    /**
+     * Setup save/load system UI handlers
+     */
+    setupSaveLoadSystem() {
+        // ESC key to open save menu (when in game screen)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openSaveMenu();
+            }
+        });
+
+        console.log('💾 Save/Load system initialized');
+    }
+
+    /**
+     * Open save menu
+     */
+    openSaveMenu() {
+        const modalOverlay = document.getElementById('saveLoadModal');
+        if (!modalOverlay) return;
+
+        // Render save slots
+        this.renderSaveSlots();
+
+        modalOverlay.classList.add('active');
+    }
+
+    /**
+     * Close save menu
+     */
+    closeSaveMenu() {
+        const modalOverlay = document.getElementById('saveLoadModal');
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+        }
+    }
+
+    /**
+     * Render save slots in save menu
+     */
+    renderSaveSlots() {
+        const slotsContainer = document.getElementById('saveMenuSlots');
+        if (!slotsContainer) return;
+
+        const slots = saveManager.getSaveSlots();
+
+        slotsContainer.innerHTML = '';
+
+        for (let i = 1; i <= saveManager.maxSlots; i++) {
+            const slot = slots[i];
+            const slotEl = document.createElement('button');
+            slotEl.className = `save-menu-slot ${slot.isEmpty ? 'empty' : ''}`;
+            slotEl.onclick = () => this.saveToSlot(i);
+
+            if (slot.isEmpty) {
+                slotEl.innerHTML = `
+                    <span class="slot-number">Slot ${i}</span>
+                    <span class="empty-text">Empty</span>
+                `;
+            } else {
+                slotEl.innerHTML = `
+                    <span class="slot-number">Slot ${i}</span>
+                    <span class="slot-char">${slot.characterName} - Level ${slot.level}</span>
+                    <span class="slot-time">${saveManager.formatTimestamp(slot.timestamp)}</span>
+                `;
+            }
+
+            slotsContainer.appendChild(slotEl);
+        }
+    }
+
+    /**
+     * Save game to specific slot
+     */
+    saveToSlot(slotId) {
+        const result = saveManager.saveGame(slotId);
+
+        if (result.success) {
+            gameState.addMessage(result.message, 'success');
+            this.closeSaveMenu();
+        } else {
+            gameState.addMessage(result.message, 'error');
+        }
+    }
+
+    /**
+     * Load game from specific slot
+     */
+    loadGameFromSlot(slotId) {
+        const result = saveManager.loadGame(slotId);
+
+        if (result.success) {
+            // Reinitialize game systems with loaded data
+            this.reinitializeGameAfterLoad();
+            this.showScreen('game');
+        } else {
+            alert(result.message);
+        }
+    }
+
+    /**
+     * Reinitialize game systems after loading
+     */
+    async reinitializeGameAfterLoad() {
+        console.log('🔄 Reinitializing game after load...');
+
+        const seed = gameState.get('seed');
+        const worldConfig = gameState.get('worldConfig');
+        const character = gameState.get('character');
+
+        // Reinitialize world generator
+        this.worldGenerator = new WorldGenerator(seed, worldConfig);
+
+        // Load saved regions into WorldGenerator cache (preserves explored/visible state)
+        const savedRegions = gameState.get('world.generatedRegions');
+        if (savedRegions) {
+            this.worldGenerator.loadSavedRegions(savedRegions);
+        }
+
+        // Reinitialize map renderer
+        if (!this.mapRenderer) {
+            this.mapRenderer = new MapRenderer('gameCanvas', {
+                tileWidth: 12,
+                tileHeight: 16,
+                viewportWidth: 80,
+                viewportHeight: 40
+            });
+        }
+
+        // Reinitialize player at saved position
+        this.player = new Player(this.worldGenerator, this.mapRenderer);
+        const savedPosition = gameState.get('world.currentLocation');
+        if (savedPosition) {
+            this.player.x = savedPosition.x;
+            this.player.y = savedPosition.y;
+            await this.player.updateVisibility();
+        }
+
+        // Update HUD
+        this.updateHUD(character);
+
+        // Restart playtime tracking
+        gameState.startPlaytimeTracking();
+
+        // Restart game loop
+        this.startGameLoop();
+
+        gameState.addMessage('Game loaded successfully!', 'success');
+        console.log('✅ Game reinitialized after load');
+    }
+
+    /**
+     * Confirm delete save slot
+     */
+    confirmDeleteSave(slotId) {
+        if (confirm(`Are you sure you want to delete save slot ${slotId}?`)) {
+            const result = saveManager.deleteSave(slotId);
+            if (result.success) {
+                this.renderLoadGameSlots();
+            } else {
+                alert(result.message);
+            }
+        }
     }
 
     /**
@@ -633,6 +865,55 @@ class Game {
 
         // Subscribe to character changes
         gameState.subscribe('character', updateStats);
+    }
+
+    /**
+     * Setup Rest System UI
+     */
+    setupRestSystem() {
+        // Close button
+        const closeRestBtn = document.getElementById('closeRestBtn');
+        if (closeRestBtn) {
+            closeRestBtn.addEventListener('click', () => {
+                restManager.closeRestMenu();
+            });
+        }
+
+        // Short rest button
+        const shortRestBtn = document.getElementById('shortRestBtn');
+        if (shortRestBtn) {
+            shortRestBtn.addEventListener('click', async () => {
+                const result = await restManager.shortRest();
+                if (result.success) {
+                    restManager.closeRestMenu();
+                    this.updateHUD(gameState.get('character'));
+                }
+            });
+        }
+
+        // Long rest button
+        const longRestBtn = document.getElementById('longRestBtn');
+        if (longRestBtn) {
+            longRestBtn.addEventListener('click', async () => {
+                const result = await restManager.longRest();
+                if (result.success) {
+                    restManager.closeRestMenu();
+                    this.updateHUD(gameState.get('character'));
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        const restModal = document.getElementById('restModal');
+        if (restModal) {
+            restModal.addEventListener('click', (e) => {
+                if (e.target === restModal) {
+                    restManager.closeRestMenu();
+                }
+            });
+        }
+
+        console.log('✅ Rest system UI initialized');
     }
 
     /**

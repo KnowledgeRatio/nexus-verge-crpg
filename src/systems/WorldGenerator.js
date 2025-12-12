@@ -353,6 +353,27 @@ class WorldGenerator {
             console.log(`🧹 Pruned ${toDelete.length} regions from cache`);
         }
     }
+
+    /**
+     * Load regions from game state (used after loading a save)
+     * @param {Map} savedRegions - Map of region keys to region data
+     */
+    loadSavedRegions(savedRegions) {
+        if (!savedRegions || !(savedRegions instanceof Map)) {
+            console.warn('⚠️ No saved regions to load');
+            return;
+        }
+
+        // Clear current cache
+        this.regionCache.clear();
+
+        // Populate cache with saved regions
+        for (const [key, region] of savedRegions.entries()) {
+            this.regionCache.set(key, region);
+        }
+
+        console.log(`📂 Loaded ${savedRegions.size} regions into cache`);
+    }
 }
 
 export default WorldGenerator;

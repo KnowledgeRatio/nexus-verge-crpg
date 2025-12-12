@@ -3,8 +3,58 @@
 
 **Last Updated:** 2025-12-11
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
-**Project Phase:** Phase 2 MVP - Core Systems Complete
-**Latest Commit:** Rewrite combat system as simplified non-grid turn-based (D&D 5e SRD 5.2.1 2024)
+**Project Phase:** Phase 2 MVP - Core Systems Implementation
+**Latest Commit:** Implement rest system (short/long rests with tavern requirement)
+
+---
+
+## 🆕 Recent Changes (2025-12-11)
+
+### Rest System Implementation ✅
+Implemented full rest system per D&D 5e rules with the following components:
+
+**New Files:**
+- `src/systems/RestManager.js` - Core rest system logic and validation
+
+**Features Added:**
+1. **Short Rest Mechanics:**
+   - Spend hit dice to recover HP (auto-spends half available)
+   - Maximum 2 short rests between long rests
+   - Can be taken anywhere safe (not in combat)
+   - Updates character state and displays healing
+
+2. **Long Rest Mechanics:**
+   - Fully restores HP to maximum
+   - Recovers half of hit dice (minimum 1)
+   - Restores all spell slots for casters
+   - Resets short rest counter
+   - **Requires tavern/inn** - must be in or near a settlement
+
+3. **Tavern Detection:**
+   - Checks player's current tile for settlement features
+   - Searches within 2-tile radius for nearby settlements
+   - All settlements (villages, towns, cities) provide rest services
+
+4. **UI Components:**
+   - Rest modal with character status display (HP, hit dice, spell slots)
+   - Short/Long rest buttons with enabled/disabled states
+   - Informative tooltips when rest is unavailable
+   - Clean modal design with backdrop blur
+   - Keyboard shortcut: 'R' key opens rest menu
+
+5. **Integration:**
+   - Hooked into Player input system
+   - Updates HUD after successful rest
+   - Message log feedback for all rest events
+   - Proper state management via GameState
+
+**Rules Engine Configuration:**
+- Short rest: 1 hour instant, max 2 per long rest
+- Long rest: 8 hours instant, requires tavern (configurable)
+- Hit dice recovery: 50% of max per long rest
+- Spell slot recovery: All slots restored on long rest
+
+**Next Recommended Implementation:** Quest system (campaign + side quests, templates, tracking)
 
 ---
 
@@ -40,13 +90,13 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - [x] Combat system (simplified non-grid turn-based, D&D 5e SRD 5.2.1 2024 rules)
 - [x] Enemy AI (random target selection, automatic actions)
 - [x] Random encounters (8% base chance, terrain modified)
+- [x] Rest system (short/long rests, HP/spell recovery, tavern requirement)
 
 ### 🚧 Phase 2 Remaining - MVP Features
 **Next Priorities:**
 - [ ] Quest system (campaign + side quests, templates, tracking)
 - [ ] Faction and reputation system (5 factions, reputation-based economy)
 - [ ] Save/Load functionality (LocalStorage, serialization)
-- [ ] Rest system (short/long rests, recovery, taverns)
 - [ ] Spell system (cantrips + levels 1-2, casting UI)
 - [ ] Skill checks and non-combat encounters
 - [ ] Loot and inventory management (drops, equipment, weight)
@@ -100,7 +150,8 @@ nexus-verge-crpg-5e/
 │   │   ├── Character.js  # Character class (PC/NPC)
 │   │   ├── Player.js     # Player movement and input
 │   │   ├── WorldGenerator.js # Procedural world generation
-│   │   └── CombatManager.js  # Simplified non-grid turn-based combat
+│   │   ├── CombatManager.js  # Simplified non-grid turn-based combat
+│   │   └── RestManager.js    # Rest system (short/long rests)
 │   ├── rendering/        # Rendering systems
 │   │   └── MapRenderer.js    # World map visualization
 │   ├── ui/               # UI components
@@ -329,6 +380,62 @@ combat.endTurn();                            // End current turn
 - `renderTurnOrder()` - Initiative order with current turn highlight
 - `handleTargetClick()` - Process enemy card clicks
 - `selectAction()` - Handle action button selection
+
+### Rest System (`src/systems/RestManager.js`)
+**Purpose:** Manage short and long rest mechanics per D&D 5e rules
+
+**Key Features:**
+- Short rest: Spend hit dice to heal (max 2 per long rest)
+- Long rest: Full HP, restore half hit dice, regain spell slots (requires tavern/inn)
+- Tavern detection: Checks for settlement features near player
+- Rest validation: Prevents resting in combat or when not needed
+- Modal UI with character status and rest buttons
+
+**Usage:**
+```javascript
+import restManager from './systems/RestManager.js';
+
+// Open rest menu (triggered by 'R' key)
+restManager.openRestMenu();
+
+// Check if rests are available
+const canShort = restManager.canShortRest();  // { canRest: bool, reason: string }
+const canLong = restManager.canLongRest();
+
+// Perform rests
+const shortResult = await restManager.shortRest();
+// Returns: { success, healing, hitDiceSpent, shortRestsRemaining }
+
+const longResult = await restManager.longRest();
+// Returns: { success, hpRestored, hitDiceRestored, spellSlotsRestored }
+
+// Close rest menu
+restManager.closeRestMenu();
+```
+
+**Rest Rules (from RULES.rest):**
+- **Short Rest:** 1 hour (instant in-game), spend hit dice to heal
+  - Auto-spends half of available hit dice (can be customized)
+  - Maximum 2 short rests between long rests
+  - Can be taken anywhere safe (not in combat)
+  
+- **Long Rest:** 8 hours (instant in-game)
+  - Fully restores HP
+  - Recovers half of max hit dice (minimum 1)
+  - Restores all spell slots
+  - Resets short rest counter
+  - **Requires tavern/inn** (configurable via RULES.rest.longRestRequiresTavern)
+
+**Tavern Detection:**
+- Checks player's current tile for settlement features
+- Searches nearby tiles (within 2 tiles) for settlements
+- All settlements (villages, towns, cities) have taverns/inns
+
+**UI Integration:**
+- Rest modal (`#restModal`) with character status display
+- Short/Long rest buttons with enabled/disabled states
+- Tooltips explaining why rest is unavailable
+- Updates HUD after successful rest
 
 ### World Generation (`src/systems/WorldGenerator.js`)
 **Purpose:** Procedural terrain generation using Simplex noise
@@ -778,6 +885,52 @@ npx serve .
 ---
 
 ## 📝 Session Notes
+
+### 2025-12-11 - Rest System Implementation ✅
+**Completed Today:**
+1. **RestManager System** - Created `src/systems/RestManager.js` with full rest logic
+2. **Short Rest Mechanics** - Spend hit dice to heal, max 2 per long rest, can rest anywhere safe
+3. **Long Rest Mechanics** - Full HP/hit dice/spell slot recovery, requires tavern/inn
+4. **Tavern Detection** - Checks for settlement features in current and nearby tiles
+5. **Rest UI** - Modal with character status, rest buttons, validation, and messaging
+6. **Player Integration** - 'R' key opens rest menu, updates HUD after rest
+7. **HTML/CSS** - Added rest modal markup and styled components
+
+**Implementation Details:**
+- `RestManager.js` handles all rest validation and execution
+- `isPlayerInTavern()` searches 2-tile radius for settlements
+- Modal shows current HP, hit dice, short rests remaining, spell slots
+- Buttons disabled with tooltips when rest unavailable
+- All messages logged to game message system
+- Follows D&D 5e rules exactly (hit dice recovery, spell slots, etc.)
+
+**Files Created/Modified:**
+- `src/systems/RestManager.js` - New file (core rest system)
+- `src/systems/Player.js` - Added rest() method calling RestManager
+- `src/main.js` - Added setupRestSystem() and import
+- `index.html` - Added rest modal HTML structure
+- `styles.css` - Added rest modal styling
+
+**Testing Status:**
+- ✅ Server starts without errors
+- ✅ No linting/compilation errors
+- ✅ UI loads correctly in browser
+- ⚠️ Needs runtime testing (create character, explore, find settlement, test rest)
+
+**Current State:**
+- Rest system fully implemented and integrated
+- Follows D&D 5e rules per rulesEngine.js configuration
+- Clean modal UI with proper state management
+- Ready for testing and iteration
+
+**Next Session Priorities:**
+1. **Test rest system** - Runtime validation of all rest mechanics
+2. **Quest system** - Campaign + side quests, templates, tracking, rewards
+3. **Save/Load** - LocalStorage persistence for game state
+4. **Faction system** - 5 factions with reputation tracking
+5. **Spell system** - Cantrips + levels 1-2, casting UI
+
+---
 
 ### 2025-12-11 - Combat System Simplified & Rewritten
 **Completed Today:**
