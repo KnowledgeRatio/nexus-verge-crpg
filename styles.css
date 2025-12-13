@@ -110,6 +110,17 @@ body {
     background: transparent;
 }
 
+.menu-btn.disabled-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-primary);
+}
+
+.menu-btn.disabled-btn:hover {
+    transform: none;
+    border-color: var(--border-color);
+}
+
 /* Setup Screen */
 .setup-container {
     max-width: 700px;

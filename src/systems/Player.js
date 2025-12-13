@@ -249,18 +249,59 @@ class Player {
         const response = await fetch('data/monsters.json');
         const monsterData = await response.json();
 
-        // Import dice rolling function
+        // Import dice rolling function and rules engine
         const { roll } = await import('../utils/dice.js');
+        const { getEncounterCR, RULES } = await import('../core/rulesEngine.js');
 
-        // Filter by appropriate CR
-        const appropriateMonsters = monsterData.monsters.filter(m => {
+        // Get difficulty setting
+        const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
+
+        // Use rules engine to calculate target CR
+        const targetCR = getEncounterCR(playerLevel, difficulty);
+
+        // Get appropriate monster types for level (if defined)
+        const levelBrackets = Object.entries(RULES.difficulty.scalingByLevel.enemyTypesByLevel)
+            .map(([level, types]) => ({level: parseInt(level), types}))
+            .sort((a, b) => b.level - a.level); // Sort descending
+
+        let allowedTypes = null;
+        for (const {level, types} of levelBrackets) {
+            if (playerLevel >= level) {
+                allowedTypes = types;
+                break;
+            }
+        }
+
+        // Filter by appropriate CR (within ±1 of target) and optionally by type
+        let appropriateMonsters = monsterData.monsters.filter(m => {
             const cr = m.challengeRating || 0.25;
-            return cr >= (playerLevel - 1) * 0.25 && cr <= (playerLevel + 1) * 0.5;
+            const crMatch = cr >= targetCR - 1 && cr <= targetCR + 1;
+            
+            // If level-based types are defined, also filter by type
+            if (allowedTypes && allowedTypes.length > 0) {
+                const typeMatch = allowedTypes.some(type => 
+                    m.type.toLowerCase().includes(type.toLowerCase()) ||
+                    m.name.toLowerCase().includes(type.toLowerCase())
+                );
+                return crMatch && typeMatch;
+            }
+            
+            return crMatch;
         });
 
-        // Pick random monster
+        // Fallback: If no monsters match, get closest CR match
+        if (appropriateMonsters.length === 0) {
+            appropriateMonsters = monsterData.monsters.filter(m => {
+                const cr = m.challengeRating || 0.25;
+                return cr >= targetCR - 2 && cr <= targetCR + 2;
+            });
+        }
+
+        // Final fallback: Get any low-CR monster
         const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)]
-            || monsterData.monsters[0];
+            || monsterData.monsters.reduce((lowest, m) => 
+                (m.challengeRating || 0.25) < (lowest.challengeRating || 0.25) ? m : lowest
+            );
 
         // Roll HP from dice notation
         const hp = roll(monster.hitPoints);

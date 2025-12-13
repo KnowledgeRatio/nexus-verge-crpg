@@ -622,8 +622,7 @@ class Game {
                 <div style="margin-bottom: 20px;">
                     <h3>Short Rest (1 hour)</h3>
                     <p>Spend hit dice to recover HP. Each hit die restores 1d${character.hitDice.size} + ${character.abilityModifiers.con} HP.</p>
-                    <button id="shortRestBtn" class="menu-btn"
-                            ${character.shortRestsUsed >= 2 || character.hitDice.current <= 0 ? 'disabled' : ''}>
+                    <button id="shortRestBtn" class="menu-btn ${character.shortRestsUsed >= 2 || character.hitDice.current <= 0 ? 'disabled-btn' : ''}">
                         Take Short Rest
                     </button>
                     ${character.shortRestsUsed >= 2 ? '<p style="color: var(--text-warning);">⚠️ No short rests remaining. Need a long rest.</p>' : ''}
@@ -633,8 +632,7 @@ class Game {
                 <div style="margin-bottom: 20px;">
                     <h3>Long Rest (8 hours)</h3>
                     <p>Recover all HP, half of your hit dice, and all spell slots. Resets short rests.</p>
-                    <button id="longRestBtn" class="menu-btn"
-                            ${!inSettlement ? 'disabled' : ''}>
+                    <button id="longRestBtn" class="menu-btn ${!inSettlement ? 'disabled-btn' : ''}">
                         Take Long Rest
                     </button>
                     ${!inSettlement ? '<p style="color: var(--text-warning);">⚠️ You must be in a settlement (town/village) to take a long rest.</p>' : '<p style="color: var(--text-success);">✓ You are in a settlement and can rest safely.</p>'}
@@ -696,21 +694,32 @@ class Game {
 
         const playerPos = this.player.getPosition();
 
-        // Check current tile for settlement feature
-        // We need to check the world generator for the current tile's features
-        const { regionX, regionY } = this.worldGenerator.getRegionCoords(playerPos.x, playerPos.y);
-        const region = this.worldGenerator.regions.get(`${regionX},${regionY}`);
+        // Check current tile and nearby tiles for settlement features
+        // We check a 2-tile radius to allow resting near towns
+        const searchRadius = 2;
 
-        if (!region) return false;
+        for (let dx = -searchRadius; dx <= searchRadius; dx++) {
+            for (let dy = -searchRadius; dy <= searchRadius; dy++) {
+                const checkX = playerPos.x + dx;
+                const checkY = playerPos.y + dy;
 
-        // Check if there's a settlement feature at the player's location
-        const settlement = region.features.find(f =>
-            f.type === 'settlement' &&
-            f.x === playerPos.x &&
-            f.y === playerPos.y
-        );
+                const { regionX, regionY } = this.worldGenerator.getRegionCoords(checkX, checkY);
+                const region = this.worldGenerator.regionCache.get(`${regionX},${regionY}`);
 
-        return !!settlement;
+                if (!region) continue;
+
+                // Check if there's a settlement feature at this location
+                const settlement = region.features.find(f =>
+                    f.type === 'settlement' &&
+                    f.x === checkX &&
+                    f.y === checkY
+                );
+
+                if (settlement) return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -719,6 +728,17 @@ class Game {
     takeShortRest() {
         const character = gameState.get('character');
         if (!character) return;
+
+        // Validate conditions
+        if (character.shortRestsUsed >= 2) {
+            gameState.addMessage('❌ No short rests remaining. You need to take a long rest first.', 'error');
+            return;
+        }
+
+        if (character.hitDice.current <= 0) {
+            gameState.addMessage('❌ No hit dice remaining. You need to take a long rest to recover hit dice.', 'error');
+            return;
+        }
 
         const result = character.shortRest();
 
