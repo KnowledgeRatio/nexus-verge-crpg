@@ -513,10 +513,21 @@ class Game {
         if (hpDisplay) hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
         if (acDisplay) acDisplay.textContent = `AC: ${character.ac}`;
 
-        // Subscribe to character HP changes
+        // Subscribe to character changes (entire object)
+        // This fires when character is replaced via gameState.set('character', newChar)
+        gameState.subscribe('character', (updatedChar) => {
+            if (!updatedChar) return;
+            if (charName) charName.textContent = updatedChar.name;
+            if (charLevel) charLevel.textContent = `Level ${updatedChar.level} ${updatedChar.class.name}`;
+            if (hpDisplay) hpDisplay.textContent = `HP: ${updatedChar.currentHP}/${updatedChar.maxHP}`;
+            if (acDisplay) acDisplay.textContent = `AC: ${updatedChar.ac}`;
+        });
+
+        // Also subscribe to specific HP changes (for fine-grained updates via combat)
         gameState.subscribe('character.currentHP', (hp) => {
-            if (hpDisplay) {
-                hpDisplay.textContent = `HP: ${hp}/${character.maxHP}`;
+            const char = gameState.get('character');
+            if (hpDisplay && char) {
+                hpDisplay.textContent = `HP: ${hp}/${char.maxHP}`;
             }
         });
     }
