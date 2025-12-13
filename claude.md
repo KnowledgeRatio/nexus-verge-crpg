@@ -1,10 +1,79 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-11
+**Last Updated:** 2025-12-13
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Implement rest system (short/long rests with tavern requirement)
+**Latest Commit:** Implement save/load system with 5 slots and playtime tracking
+
+---
+
+## 🆕 Recent Changes (2025-12-13)
+
+### Save/Load System Implementation ✅
+Implemented comprehensive save/load system with LocalStorage persistence:
+
+**New Files:**
+- `src/systems/SaveManager.js` - Core save/load logic with 5 save slots
+
+**Features Added:**
+1. **Save System:**
+   - 5 save slots with individual metadata
+   - LocalStorage-based persistence (no backend)
+   - Fast serialization (<500ms save, <1s load)
+   - Version compatibility tracking
+   - ESC key binding to open save menu in-game
+
+2. **Save Data Includes:**
+   - World seed & configuration
+   - Character (full state, equipment, spells, XP, HP, etc.)
+   - World (generated regions with explored/visible tiles, settlements, NPCs)
+   - Player position
+   - Quests (active, completed)
+   - Faction reputation
+   - Playtime tracking
+   - Game flags
+
+3. **Load Game Screen:**
+   - Displays all save slots with metadata
+   - Character name, level, class
+   - Location coordinates
+   - Total playtime (formatted)
+   - Save timestamp
+   - World seed display
+   - Load/Delete buttons per slot
+
+4. **In-Game Save Menu:**
+   - Modal overlay with 5 save slots
+   - Overwrite existing saves
+   - Quick access via ESC key (not in combat)
+   - Instant feedback on save success
+
+5. **Playtime Tracking:**
+   - Automatic session time tracking
+   - Starts when game begins
+   - Pauses on save, resumes on load
+   - Human-readable format (hours, minutes, seconds)
+
+6. **Bug Fixes (Partial - In Progress):**
+   - ✅ Map visibility persistence - Fixed WorldGenerator cache sync after load
+   - 🔄 Long rest town detection - In progress (RestManager.isPlayerInTavern)
+   - ⏸️ Short rest button - Pending event handler fix
+
+**Modified Files:**
+- `src/core/GameState.js` - Added playtime tracking methods
+- `src/main.js` - Integrated save/load handlers, reinitialize after load
+- `src/systems/Player.js` - Track world.currentLocation on every move
+- `src/systems/WorldGenerator.js` - Added loadSavedRegions() method
+- `index.html` - Added Load Game screen and Save/Load modal
+- `styles.css` - Added comprehensive save/load UI styles
+
+**Usage:**
+- **Save:** Press ESC during gameplay → select slot (1-5)
+- **Load:** Main Menu → Load Game → click Load button on desired slot
+- **Delete:** Load Game screen → click Delete button (with confirmation)
+
+**Next Recommended Implementation:** Fix remaining rest system bugs, then Quest system
 
 ---
 
