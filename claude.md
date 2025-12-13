@@ -160,15 +160,16 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - [x] Enemy AI (random target selection, automatic actions)
 - [x] Random encounters (8% base chance, terrain modified)
 - [x] Rest system (short/long rests, HP/spell recovery, tavern requirement)
+- [x] Save/Load functionality (5 slots, LocalStorage, metadata, playtime tracking)
 
 ### 🚧 Phase 2 Remaining - MVP Features
 **Next Priorities:**
-- [ ] Quest system (campaign + side quests, templates, tracking)
+- [ ] **Bug Fixes:** Short rest button, long rest town detection (in progress)
+- [ ] Quest system (campaign + side quests, templates, tracking, rewards)
+- [ ] Loot and inventory management (drops, equipment, weight, rarity)
+- [ ] Spell system (cantrips + levels 1-2, casting UI, concentration)
 - [ ] Faction and reputation system (5 factions, reputation-based economy)
-- [ ] Save/Load functionality (LocalStorage, serialization)
-- [ ] Spell system (cantrips + levels 1-2, casting UI)
-- [ ] Skill checks and non-combat encounters
-- [ ] Loot and inventory management (drops, equipment, weight)
+- [ ] Skill checks and non-combat encounters (perception, stealth, traps)
 
 ---
 
