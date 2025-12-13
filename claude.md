@@ -40,13 +40,13 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - [x] Combat system (simplified non-grid turn-based, D&D 5e SRD 5.2.1 2024 rules)
 - [x] Enemy AI (random target selection, automatic actions)
 - [x] Random encounters (8% base chance, terrain modified)
+- [x] Rest system (short/long rests, hit dice recovery, settlement-based long rests)
 
 ### 🚧 Phase 2 Remaining - MVP Features
 **Next Priorities:**
 - [ ] Quest system (campaign + side quests, templates, tracking)
 - [ ] Faction and reputation system (5 factions, reputation-based economy)
 - [ ] Save/Load functionality (LocalStorage, serialization)
-- [ ] Rest system (short/long rests, recovery, taverns)
 - [ ] Spell system (cantrips + levels 1-2, casting UI)
 - [ ] Skill checks and non-combat encounters
 - [ ] Loot and inventory management (drops, equipment, weight)
@@ -778,6 +778,44 @@ npx serve .
 ---
 
 ## 📝 Session Notes
+
+### 2025-12-13 - Rest System Implementation
+**Completed Today:**
+1. **Rest UI Modal** - Created modal-based rest interface accessible via R key
+2. **Short Rest Functionality** - Spend hit dice to recover HP (1d{hitDie} + CON per die)
+3. **Long Rest Functionality** - Full HP recovery, recover half hit dice, reset spell slots and short rests
+4. **Settlement Detection** - Long rests require player to be in a settlement/town
+5. **Rest Tracking** - Tracks short rests used (max 2 per long rest), hit dice available
+6. **Rest Rules** - Follows D&D 5e SRD rules engine (rulesEngine.js:239-254)
+
+**User Feedback:**
+- Rest system UI was partially created but not functional
+- Short rest button didn't do anything when clicked
+- Long rest button stayed greyed out even when in towns
+
+**Implementation Details:**
+- `Player.js:350-353` - R key triggers rest modal via GameState
+- `main.js:594-752` - Rest modal UI, settlement detection, short/long rest handlers
+- `Character.js:544-604` - Core rest mechanics (already implemented, now wired up)
+- Settlement detection checks world generator for settlement features at player position
+- Rest modal shows current HP, hit dice, short rests remaining, and settlement status
+- Short rest auto-spends half available hit dice (can be customized later)
+- Long rest fully restores HP, recovers 50% of hit dice, resets short rests counter
+
+**Current State:**
+- Rest system fully functional and integrated
+- Press R to open rest modal
+- Short rest available when you have hit dice and haven't used 2 short rests
+- Long rest available only when standing on a settlement tile
+- HUD updates automatically after resting
+
+**Next Session Priorities:**
+- Quest system (templates, generation, tracking, rewards)
+- Spell system (cantrips + levels 1-2 for casters)
+- Save/Load functionality (LocalStorage persistence)
+- Loot drops and inventory management
+
+---
 
 ### 2025-12-11 - Combat System Simplified & Rewritten
 **Completed Today:**

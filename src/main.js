@@ -47,6 +47,13 @@ class Game {
             this.showScreen(screen);
         });
 
+        // Subscribe to rest modal
+        gameState.subscribe('ui.showRestModal', (show) => {
+            if (show) {
+                this.showRestModal();
+            }
+        });
+
         console.log('✅ Game initialized');
     }
 
@@ -578,6 +585,169 @@ class Game {
                     overlay.classList.remove('active');
                 }
             });
+        }
+    }
+
+    /**
+     * Show rest modal
+     */
+    showRestModal() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Check if in settlement for long rest
+        const inSettlement = this.isInSettlement();
+
+        const restContent = `
+            <h2>😴 Rest</h2>
+            <div style="margin: 20px 0;">
+                <div style="margin-bottom: 20px;">
+                    <h3>Current Status</h3>
+                    <p><strong>HP:</strong> ${character.currentHP} / ${character.maxHP}</p>
+                    <p><strong>Hit Dice:</strong> ${character.hitDice.current} / ${character.hitDice.max} (d${character.hitDice.size})</p>
+                    <p><strong>Short Rests Used:</strong> ${character.shortRestsUsed} / 2</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>Short Rest (1 hour)</h3>
+                    <p>Spend hit dice to recover HP. Each hit die restores 1d${character.hitDice.size} + ${character.abilityModifiers.con} HP.</p>
+                    <button id="shortRestBtn" class="menu-btn"
+                            ${character.shortRestsUsed >= 2 || character.hitDice.current <= 0 ? 'disabled' : ''}>
+                        Take Short Rest
+                    </button>
+                    ${character.shortRestsUsed >= 2 ? '<p style="color: var(--text-warning);">⚠️ No short rests remaining. Need a long rest.</p>' : ''}
+                    ${character.hitDice.current <= 0 ? '<p style="color: var(--text-warning);">⚠️ No hit dice remaining.</p>' : ''}
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>Long Rest (8 hours)</h3>
+                    <p>Recover all HP, half of your hit dice, and all spell slots. Resets short rests.</p>
+                    <button id="longRestBtn" class="menu-btn"
+                            ${!inSettlement ? 'disabled' : ''}>
+                        Take Long Rest
+                    </button>
+                    ${!inSettlement ? '<p style="color: var(--text-warning);">⚠️ You must be in a settlement (town/village) to take a long rest.</p>' : '<p style="color: var(--text-success);">✓ You are in a settlement and can rest safely.</p>'}
+                </div>
+
+                <button id="closeRestBtn" class="menu-btn secondary">Close</button>
+            </div>
+        `;
+
+        const modal = document.getElementById('modalContent');
+        const overlay = document.getElementById('modalOverlay');
+
+        if (modal && overlay) {
+            modal.innerHTML = restContent;
+            overlay.classList.add('active');
+
+            // Short rest button
+            const shortRestBtn = document.getElementById('shortRestBtn');
+            if (shortRestBtn) {
+                shortRestBtn.addEventListener('click', () => {
+                    this.takeShortRest();
+                });
+            }
+
+            // Long rest button
+            const longRestBtn = document.getElementById('longRestBtn');
+            if (longRestBtn) {
+                longRestBtn.addEventListener('click', () => {
+                    this.takeLongRest();
+                });
+            }
+
+            // Close button
+            const closeBtn = document.getElementById('closeRestBtn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    overlay.classList.remove('active');
+                    gameState.set('ui.showRestModal', false);
+                });
+            }
+
+            // Close on overlay click
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    gameState.set('ui.showRestModal', false);
+                }
+            });
+        }
+    }
+
+    /**
+     * Check if player is in a settlement
+     */
+    isInSettlement() {
+        if (!this.player || !this.worldGenerator) {
+            return false;
+        }
+
+        const playerPos = this.player.getPosition();
+
+        // Check current tile for settlement feature
+        // We need to check the world generator for the current tile's features
+        const { regionX, regionY } = this.worldGenerator.getRegionCoords(playerPos.x, playerPos.y);
+        const region = this.worldGenerator.regions.get(`${regionX},${regionY}`);
+
+        if (!region) return false;
+
+        // Check if there's a settlement feature at the player's location
+        const settlement = region.features.find(f =>
+            f.type === 'settlement' &&
+            f.x === playerPos.x &&
+            f.y === playerPos.y
+        );
+
+        return !!settlement;
+    }
+
+    /**
+     * Take a short rest
+     */
+    takeShortRest() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        const result = character.shortRest();
+
+        if (result.success) {
+            gameState.set('character', character);
+            gameState.addMessage(`✅ Short rest complete! Healed ${result.healing} HP by spending ${result.hitDiceSpent} hit dice. ${result.shortRestsRemaining} short rests remaining.`, 'success');
+
+            // Close modal and reopen to refresh
+            document.getElementById('modalOverlay').classList.remove('active');
+            gameState.set('ui.showRestModal', false);
+            setTimeout(() => {
+                gameState.set('ui.showRestModal', true);
+            }, 100);
+        } else {
+            gameState.addMessage(`❌ ${result.reason}`, 'error');
+        }
+    }
+
+    /**
+     * Take a long rest
+     */
+    takeLongRest() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Check if in settlement
+        if (!this.isInSettlement()) {
+            gameState.addMessage('❌ You must be in a settlement to take a long rest.', 'error');
+            return;
+        }
+
+        const result = character.longRest();
+
+        if (result.success) {
+            gameState.set('character', character);
+            gameState.addMessage(`✅ Long rest complete! HP fully restored. Recovered ${result.hitDiceRecovered} hit dice. Spell slots and short rests reset.`, 'success');
+
+            // Close modal
+            document.getElementById('modalOverlay').classList.remove('active');
+            gameState.set('ui.showRestModal', false);
         }
     }
 

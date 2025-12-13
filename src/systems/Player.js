@@ -348,8 +348,8 @@ class Player {
     }
 
     rest() {
-        gameState.addMessage('😴 Rest system not yet implemented', 'info');
-        // TODO: Show rest options
+        // Trigger rest UI via game state
+        gameState.set('ui.showRestModal', true);
     }
 
     interact() {
