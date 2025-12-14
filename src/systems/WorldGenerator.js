@@ -6,6 +6,8 @@
 import SimplexNoise from '../utils/simplexNoise.js';
 import { SeededRandom, hashString } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { gameState } from '../core/GameState.js';
+import NPCGenerator from './NPCGenerator.js';
 
 class WorldGenerator {
     constructor(worldSeed, config = {}) {
@@ -27,8 +29,8 @@ class WorldGenerator {
         // Base RNG for discrete decisions
         this.baseRNG = new SeededRandom(worldSeed);
 
-        // Cache for generated regions
-        this.regionCache = new Map();
+        // NPC Generator
+        this.npcGenerator = new NPCGenerator(worldSeed);
 
         // Terrain types (will be loaded from data/terrains.json)
         this.terrainTypes = null;
@@ -52,10 +54,12 @@ class WorldGenerator {
      * @returns {Object} Region data with tiles and features
      */
     async generateRegion(regionX, regionY) {
-        // Check cache first
+        // Check gameState cache first
         const cacheKey = `${regionX},${regionY}`;
-        if (this.regionCache.has(cacheKey)) {
-            return this.regionCache.get(cacheKey);
+        const generatedRegions = gameState.get('world.generatedRegions');
+        
+        if (generatedRegions && generatedRegions.has(cacheKey)) {
+            return generatedRegions.get(cacheKey);
         }
 
         // Ensure terrain data is loaded
@@ -80,7 +84,7 @@ class WorldGenerator {
         }
 
         // Generate features (settlements, dungeons, etc.)
-        const features = this.generateFeatures(regionX, regionY, regionRNG, tiles);
+        const features = await this.generateFeatures(regionX, regionY, regionRNG, tiles);
 
         const region = {
             x: regionX,
@@ -90,8 +94,10 @@ class WorldGenerator {
             generated: Date.now()
         };
 
-        // Cache the region
-        this.regionCache.set(cacheKey, region);
+        // Store region in gameState
+        const regions = gameState.get('world.generatedRegions') || new Map();
+        regions.set(cacheKey, region);
+        gameState.set('world.generatedRegions', regions);
 
         return region;
     }
@@ -173,7 +179,7 @@ class WorldGenerator {
     /**
      * Generate features for a region (settlements, dungeons, etc.)
      */
-    generateFeatures(regionX, regionY, rng, tiles) {
+    async generateFeatures(regionX, regionY, rng, tiles) {
         const features = [];
 
         // Check for settlement
@@ -202,13 +208,48 @@ class WorldGenerator {
                     settlementType = 'village';
                 }
 
-                features.push({
+                const settlement = {
                     type: 'settlement',
                     settlementType,
                     x: location.x,
                     y: location.y,
                     name: this.generateSettlementName(rng),
-                    population: this.getSettlementPopulation(settlementType, rng)
+                    population: this.getSettlementPopulation(settlementType, rng),
+                    npcs: [] // Will be filled by NPC generator
+                };
+
+                // Generate NPCs for this settlement
+                try {
+                    settlement.npcs = await this.npcGenerator.generateNPCsForSettlement(settlement);
+                } catch (error) {
+                    console.error(`Failed to generate NPCs for ${settlement.name}:`, error);
+                    settlement.npcs = []; // Fallback to no NPCs
+                }
+
+                features.push(settlement);
+            }
+        }
+
+        // Check for sanctuary (2x as common as settlements)
+        const sanctuaryChance = 2.0 / RULES.worldGen.townSpacing;
+        if (rng.next() < sanctuaryChance) {
+            // Find suitable location (prefer forests, hills, peaceful areas)
+            const suitableTiles = tiles.filter(t => {
+                const terrain = t.terrain;
+                return terrain !== 'deepWater' &&
+                       terrain !== 'shallowWater' &&
+                       terrain !== 'mountain';
+            });
+
+            if (suitableTiles.length > 0) {
+                const location = rng.choice(suitableTiles);
+
+                features.push({
+                    type: 'sanctuary',
+                    x: location.x,
+                    y: location.y,
+                    name: this.generateSanctuaryName(rng),
+                    discovered: false
                 });
             }
         }
@@ -268,6 +309,26 @@ class WorldGenerator {
         const suffix = rng.choice(suffixes);
 
         return `${prefix}${suffix}`;
+    }
+
+    /**
+     * Generate a sanctuary name
+     */
+    generateSanctuaryName(rng) {
+        const prefixes = [
+            'Sacred', 'Blessed', 'Holy', 'Divine', 'Ancient', 'Peaceful', 'Serene',
+            'Tranquil', 'Hallowed', 'Mystic', 'Celestial', 'Eternal'
+        ];
+
+        const types = [
+            'Shrine', 'Grove', 'Temple', 'Chapel', 'Sanctum', 'Haven',
+            'Refuge', 'Retreat', 'Rest', 'Oasis'
+        ];
+
+        const prefix = rng.choice(prefixes);
+        const type = rng.choice(types);
+
+        return `${prefix} ${type}`;
     }
 
     /**
@@ -334,9 +395,12 @@ class WorldGenerator {
      * Clear distant regions from cache to save memory
      */
     pruneCache(centerX, centerY, keepRadius = 3) {
+        const generatedRegions = gameState.get('world.generatedRegions');
+        if (!generatedRegions) return;
+
         const toDelete = [];
 
-        for (const [key, region] of this.regionCache.entries()) {
+        for (const [key, region] of generatedRegions.entries()) {
             const distance = Math.sqrt(
                 Math.pow(region.x - centerX, 2) +
                 Math.pow(region.y - centerY, 2)
@@ -347,7 +411,7 @@ class WorldGenerator {
             }
         }
 
-        toDelete.forEach(key => this.regionCache.delete(key));
+        toDelete.forEach(key => generatedRegions.delete(key));
 
         if (toDelete.length > 0) {
             console.log(`🧹 Pruned ${toDelete.length} regions from cache`);
@@ -364,15 +428,8 @@ class WorldGenerator {
             return;
         }
 
-        // Clear current cache
-        this.regionCache.clear();
-
-        // Populate cache with saved regions
-        for (const [key, region] of savedRegions.entries()) {
-            this.regionCache.set(key, region);
-        }
-
-        console.log(`📂 Loaded ${savedRegions.size} regions into cache`);
+        // Set regions directly in gameState (they're already there from deserialization)
+        console.log(`📂 Loaded ${savedRegions.size} regions from save`);
     }
 }
 

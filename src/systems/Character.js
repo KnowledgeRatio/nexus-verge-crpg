@@ -547,17 +547,18 @@ export class Character {
             return { success: false, reason: "Already used all short rests. Need a long rest." };
         }
 
-        // Spend hit dice to heal (player chooses how many)
-        // For now, auto-spend half available hit dice
-        const diceToSpend = Math.floor(this.hitDice.current / 2);
+        // Roll ALL hit dice to heal (hit dice = level, they don't deplete)
+        const diceToRoll = this.hitDice.current; // This equals level
         let healing = 0;
 
-        for (let i = 0; i < diceToSpend; i++) {
+        for (let i = 0; i < diceToRoll; i++) {
             healing += roll(`1d${this.hitDice.size}`) + this.abilityModifiers.con;
-            this.hitDice.current--;
         }
 
-        this.heal(healing);
+        if (healing > 0) {
+            this.heal(healing);
+        }
+        
         this.shortRestsUsed++;
 
         // Recover some class features (e.g., Fighter's Second Wind, Action Surge)
@@ -566,7 +567,7 @@ export class Character {
         return {
             success: true,
             healing: healing,
-            hitDiceSpent: diceToSpend,
+            hitDiceRolled: diceToRoll,
             shortRestsRemaining: 2 - this.shortRestsUsed
         };
     }
@@ -578,11 +579,11 @@ export class Character {
         // Restore all HP
         this.currentHP = this.maxHP;
 
-        // Restore half of hit dice (minimum 1)
-        const diceToRecover = Math.max(1, Math.floor(this.hitDice.max / 2));
-        this.hitDice.current = Math.min(this.hitDice.max, this.hitDice.current + diceToRecover);
+        // Hit dice don't need restoring (they equal level and don't deplete)
+        // Just ensure they're set correctly in case of any issues
+        this.hitDice.current = this.hitDice.max;
 
-        // Reset short rests
+        // Reset short rests counter
         this.shortRestsUsed = 0;
 
         // Recover spell slots
@@ -598,8 +599,7 @@ export class Character {
         this.lastLongRest = Date.now();
 
         return {
-            success: true,
-            hitDiceRecovered: diceToRecover
+            success: true
         };
     }
 

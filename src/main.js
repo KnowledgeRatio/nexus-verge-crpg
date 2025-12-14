@@ -6,22 +6,26 @@
 import { gameState } from './core/GameState.js';
 import { generateSeedString } from './utils/rng.js';
 import CharacterCreationUI from './ui/CharacterCreation.js';
+import SettlementUI from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
 import Player from './systems/Player.js';
 import CombatManager from './systems/CombatManager.js';
 import restManager from './systems/RestManager.js';
 import saveManager from './systems/SaveManager.js';
+import SettlementManager from './systems/SettlementManager.js';
 
 class Game {
     constructor() {
         this.characterCreationUI = null;
+        this.settlementUI = null;
         this.currentScreen = null;
 
         // Game systems (initialized when game starts)
         this.worldGenerator = null;
         this.mapRenderer = null;
         this.player = null;
+        this.settlementManager = null;
 
         // Combat systems
         this.combatManager = null;
@@ -54,6 +58,11 @@ class Game {
             if (show) {
                 this.showRestModal();
             }
+        });
+
+        // Subscribe to dev mode changes
+        gameState.subscribe('devMode', (isDevMode) => {
+            this.updateDevModeIndicator(isDevMode);
         });
 
         console.log('✅ Game initialized');
@@ -94,6 +103,16 @@ class Game {
      * Bind main menu button handlers
      */
     bindMainMenuButtons() {
+        // Dev Mode Toggle
+        const devModeBtn = document.getElementById('devModeBtn');
+        if (devModeBtn) {
+            devModeBtn.addEventListener('click', () => {
+                const isDevMode = gameState.toggleDevMode();
+                devModeBtn.textContent = `Dev Mode: ${isDevMode ? 'ON' : 'OFF'}`;
+                devModeBtn.classList.toggle('primary', isDevMode);
+            });
+        }
+
         const newGameBtn = document.getElementById('newGameBtn');
         const loadGameBtn = document.getElementById('loadGameBtn');
         const helpBtn = document.getElementById('helpBtn');
@@ -223,9 +242,20 @@ class Game {
             });
         }
 
+        if (!this.settlementUI) {
+            console.log('🏘️ Initializing settlement UI...');
+            this.settlementUI = new SettlementUI(null); // Will set manager reference after creation
+        }
+
+        if (!this.settlementManager) {
+            console.log('🏘️ Initializing settlement system...');
+            this.settlementManager = new SettlementManager(this.worldGenerator, this.settlementUI);
+            this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
+        }
+
         if (!this.player) {
             console.log('👤 Initializing player...');
-            this.player = new Player(this.worldGenerator, this.mapRenderer);
+            this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
             await this.player.spawn();
         }
 
@@ -245,6 +275,8 @@ class Game {
 
         // Setup Save/Load System
         this.setupSaveLoadSystem();
+
+        // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
         // Start playtime tracking
         gameState.startPlaytimeTracking();
@@ -524,6 +556,9 @@ class Game {
         if (hpDisplay) hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
         if (acDisplay) acDisplay.textContent = `AC: ${character.ac}`;
 
+        // Update dev mode indicator
+        this.updateDevModeIndicator(gameState.get('devMode'));
+
         // Subscribe to character changes (entire object)
         // This fires when character is replaced via gameState.set('character', newChar)
         gameState.subscribe('character', (updatedChar) => {
@@ -541,6 +576,16 @@ class Game {
                 hpDisplay.textContent = `HP: ${hp}/${char.maxHP}`;
             }
         });
+    }
+
+    /**
+     * Update dev mode indicator in HUD
+     */
+    updateDevModeIndicator(isDevMode) {
+        const indicator = document.getElementById('devModeIndicator');
+        if (indicator) {
+            indicator.style.display = isDevMode ? 'inline' : 'none';
+        }
     }
 
     /**
@@ -736,8 +781,18 @@ class Game {
             });
         }
 
+        // Reinitialize settlement system
+        if (!this.settlementUI) {
+            this.settlementUI = new SettlementUI(null);
+        }
+
+        if (!this.settlementManager) {
+            this.settlementManager = new SettlementManager(this.worldGenerator, this.settlementUI);
+            this.settlementUI.settlementManager = this.settlementManager;
+        }
+
         // Reinitialize player at saved position
-        this.player = new Player(this.worldGenerator, this.mapRenderer);
+        this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
         const savedPosition = gameState.get('world.currentLocation');
         if (savedPosition) {
             this.player.x = savedPosition.x;
@@ -853,17 +908,16 @@ class Game {
 
                 <div style="margin-bottom: 20px;">
                     <h3>Short Rest (1 hour)</h3>
-                    <p>Spend hit dice to recover HP. Each hit die restores 1d${character.hitDice.size} + ${character.abilityModifiers.con} HP.</p>
-                    <button id="shortRestBtn" class="menu-btn ${character.shortRestsUsed >= 2 || character.hitDice.current <= 0 ? 'disabled-btn' : ''}">
+                    <p>Roll all ${character.hitDice.current}d${character.hitDice.size} + ${character.abilityModifiers.con} to recover HP.</p>
+                    <button id="shortRestBtn" class="menu-btn ${character.shortRestsUsed >= 2 ? 'disabled-btn' : ''}">
                         Take Short Rest
                     </button>
                     ${character.shortRestsUsed >= 2 ? '<p style="color: var(--text-warning);">⚠️ No short rests remaining. Need a long rest.</p>' : ''}
-                    ${character.hitDice.current <= 0 ? '<p style="color: var(--text-warning);">⚠️ No hit dice remaining.</p>' : ''}
                 </div>
 
                 <div style="margin-bottom: 20px;">
                     <h3>Long Rest (8 hours)</h3>
-                    <p>Recover all HP, half of your hit dice, and all spell slots. Resets short rests.</p>
+                    <p>Fully restore HP and spell slots. Reset short rest counter.</p>
                     <button id="longRestBtn" class="menu-btn ${!inSettlement ? 'disabled-btn' : ''}">
                         Take Long Rest
                     </button>
@@ -940,14 +994,14 @@ class Game {
 
                 if (!region) continue;
 
-                // Check if there's a settlement feature at this location
-                const settlement = region.features.find(f =>
-                    f.type === 'settlement' &&
+                // Check if there's a settlement or sanctuary feature at this location
+                const restLocation = region.features.find(f =>
+                    (f.type === 'settlement' || f.type === 'sanctuary') &&
                     f.x === checkX &&
                     f.y === checkY
                 );
 
-                if (settlement) return true;
+                if (restLocation) return true;
             }
         }
 
@@ -967,23 +1021,16 @@ class Game {
             return;
         }
 
-        if (character.hitDice.current <= 0) {
-            gameState.addMessage('❌ No hit dice remaining. You need to take a long rest to recover hit dice.', 'error');
-            return;
-        }
-
+        // Perform the rest
         const result = character.shortRest();
 
         if (result.success) {
             gameState.set('character', character);
-            gameState.addMessage(`✅ Short rest complete! Healed ${result.healing} HP by spending ${result.hitDiceSpent} hit dice. ${result.shortRestsRemaining} short rests remaining.`, 'success');
+            gameState.addMessage(`✅ Short rest complete! Healed ${result.healing} HP by rolling ${result.hitDiceRolled}d${character.hitDice.size}. ${result.shortRestsRemaining} short rests remaining.`, 'success');
 
-            // Close modal and reopen to refresh
+            // Close modal
             document.getElementById('modalOverlay').classList.remove('active');
-            gameState.set('ui.showRestModal', false);
-            setTimeout(() => {
-                gameState.set('ui.showRestModal', true);
-            }, 100);
+            this.updateHUD(character);
         } else {
             gameState.addMessage(`❌ ${result.reason}`, 'error');
         }
@@ -1006,7 +1053,7 @@ class Game {
 
         if (result.success) {
             gameState.set('character', character);
-            gameState.addMessage(`✅ Long rest complete! HP fully restored. Recovered ${result.hitDiceRecovered} hit dice. Spell slots and short rests reset.`, 'success');
+            gameState.addMessage(`✅ Long rest complete! HP fully restored. Spell slots and short rests reset.`, 'success');
 
             // Close modal
             document.getElementById('modalOverlay').classList.remove('active');

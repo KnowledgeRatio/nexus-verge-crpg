@@ -1318,3 +1318,185 @@ body {
     margin-top: 20px;
 }
 
+
+/* ===================================
+   Settlement UI Styles
+   =================================== */
+
+/* Settlement Modal */
+.settlement-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.settlement-container {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.settlement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.settlement-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.settlement-title h2 {
+    margin: 0;
+    color: var(--accent-color);
+    font-size: 2rem;
+}
+
+.settlement-type {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.settlement-population {
+    color: var(--text-secondary);
+    margin: 0 0 30px 0;
+    font-size: 0.95rem;
+}
+
+/* Town Map Grid */
+.town-map {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.building-row {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.building {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    width: 220px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.building:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.building-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.building h3 {
+    margin: 0 0 20px 0;
+    color: var(--text-highlight);
+    font-size: 1.3rem;
+}
+
+.enter-btn {
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.enter-btn:hover {
+    background: var(--accent-dark);
+    transform: scale(1.05);
+}
+
+.settlement-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* Building Interior Modal */
+.building-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+}
+
+.building-container {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 900px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.building-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.building-header h2 {
+    margin: 0;
+    color: var(--accent-color);
+    font-size: 1.8rem;
+}
+
+.building-content {
+    min-height: 300px;
+    padding: 20px 0;
+}
+
+.building-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-color);
+}

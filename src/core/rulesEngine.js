@@ -254,6 +254,45 @@ export const RULES = {
     },
 
     // ====================
+    // NPC GENERATION
+    // ====================
+    npc: {
+        // NPC count by settlement type and building
+        countBySettlementType: {
+            village: {
+                tavern: { min: 3, max: 4 },      // Innkeeper + 2-3 patrons
+                greathall: { min: 3, max: 4 }    // Leader + 2-3 guards/citizens
+            },
+            town: {
+                tavern: { min: 5, max: 7 },      // Innkeeper + 4-6 patrons
+                greathall: { min: 4, max: 6 }    // Leader + 3-5 guards/citizens
+            },
+            city: {
+                tavern: { min: 7, max: 11 },     // Innkeeper + 6-10 patrons
+                greathall: { min: 6, max: 10 }   // Leader + 5-9 guards/citizens
+            }
+        },
+
+        // Quest offering chance by NPC role
+        questChanceByRole: {
+            innkeeper: 0.50,     // 50% chance
+            patron: 0.30,        // 30% chance
+            merchant: 0.40,      // 40% chance
+            blacksmith: 0.30,    // 30% chance
+            leader: 0.80,        // 80% chance
+            guard: 0.60,         // 60% chance
+            citizen: 0.20        // 20% chance
+        },
+
+        // NPC personality types
+        personalityTypes: [
+            "friendly", "grumpy", "mysterious", "fearful",
+            "jovial", "stern", "greedy", "nervous",
+            "wise", "honorable", "proud"
+        ]
+    },
+
+    // ====================
     // SKILLS
     // ====================
     skills: {

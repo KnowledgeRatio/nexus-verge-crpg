@@ -63,6 +63,9 @@ export class GameState {
             // Flags for quest/story tracking
             flags: {},
 
+            // Dev mode
+            devMode: false,
+
             // Statistics
             stats: {
                 playTime: 0,
@@ -349,6 +352,27 @@ export class GameState {
     }
 
     /**
+     * Toggle dev mode
+     */
+    toggleDevMode() {
+        this.data.devMode = !this.data.devMode;
+        
+        if (this.data.devMode) {
+            // Set HP to 9999
+            if (this.data.character) {
+                this.data.character.maxHP = 9999;
+                this.data.character.currentHP = 9999;
+            }
+            console.log('🔧 Dev Mode ENABLED - 9999 HP, no combat encounters');
+        } else {
+            console.log('🔧 Dev Mode DISABLED');
+        }
+        
+        this.notify('devMode', this.data.devMode);
+        return this.data.devMode;
+    }
+
+    /**
      * Serialize state for saving
      */
     toJSON() {
@@ -429,6 +453,7 @@ export class GameState {
                 messageLog: []
             },
             flags: {},
+            devMode: false,
             stats: {
                 playTime: 0,
                 combatsWon: 0,

@@ -17,6 +17,7 @@
                     <button id="newGameBtn" class="menu-btn">New Game</button>
                     <button id="loadGameBtn" class="menu-btn">Load Game</button>
                     <button id="helpBtn" class="menu-btn">Help</button>
+                    <button id="devModeBtn" class="menu-btn secondary" style="margin-top: 20px;">Dev Mode: OFF</button>
                 </div>
             </div>
         </div>
@@ -83,6 +84,7 @@
                 <div class="hud-left">
                     <span id="charName">Thorin</span>
                     <span id="charLevel">Level 1 Fighter</span>
+                    <span id="devModeIndicator" style="display: none; color: #ffff00; font-weight: bold; margin-left: 10px;">🔧 DEV MODE</span>
                 </div>
                 <div class="hud-center">
                     <span id="location">Ironhill</span>
@@ -117,6 +119,7 @@
             <div class="controls">
                 <div class="control-hint">
                     <kbd>WASD</kbd> Move |
+                    <kbd>E</kbd> Enter Settlement |
                     <kbd>I</kbd> Inventory |
                     <kbd>C</kbd> Character |
                     <kbd>Q</kbd> Quests |
@@ -221,6 +224,72 @@
                     <p class="modal-instructions">Select a save slot:</p>
                     <div id="saveMenuSlots" class="save-menu-slots"></div>
                     <p class="modal-hint">Press ESC to close</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settlement Town Map Modal -->
+        <div id="settlementModal" class="modal settlement-modal">
+            <div class="settlement-container">
+                <div class="settlement-header">
+                    <div class="settlement-title">
+                        <h2 id="settlementName">Oakvale</h2>
+                        <span id="settlementType" class="settlement-type">Village</span>
+                    </div>
+                    <button class="close-btn" id="closeSettlementBtn">&times;</button>
+                </div>
+                <p id="settlementPopulation" class="settlement-population">Population: 234</p>
+
+                <div class="town-map">
+                    <!-- Top Row: Tavern & Blacksmith -->
+                    <div class="building-row">
+                        <div class="building tavern" data-building="tavern">
+                            <div class="building-icon">🏠</div>
+                            <h3>Tavern</h3>
+                            <button class="enter-btn">ENTER</button>
+                        </div>
+                        <div class="building blacksmith" data-building="blacksmith">
+                            <div class="building-icon">⚒️</div>
+                            <h3>Blacksmith</h3>
+                            <button class="enter-btn">ENTER</button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Merchant & Great Hall -->
+                    <div class="building-row">
+                        <div class="building merchant" data-building="merchant">
+                            <div class="building-icon">🏪</div>
+                            <h3>Merchant</h3>
+                            <button class="enter-btn">ENTER</button>
+                        </div>
+                        <div class="building greathall" data-building="greathall">
+                            <div class="building-icon">🏛️</div>
+                            <h3>Great Hall</h3>
+                            <button class="enter-btn">ENTER</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settlement-actions">
+                    <button id="leaveSettlementBtn" class="menu-btn secondary">Leave Settlement</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Building Interior Modal -->
+        <div id="buildingModal" class="modal building-modal">
+            <div class="building-container">
+                <div class="building-header">
+                    <h2 id="buildingTitle">Tavern</h2>
+                    <button class="close-btn" id="closeBuildingBtn">&times;</button>
+                </div>
+
+                <div id="buildingContent" class="building-content">
+                    <!-- Building-specific content will be rendered here -->
+                </div>
+
+                <div class="building-actions">
+                    <button id="leaveBuildingBtn" class="menu-btn secondary">Leave</button>
                 </div>
             </div>
         </div>

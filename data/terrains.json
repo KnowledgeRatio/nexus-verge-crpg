@@ -49,6 +49,19 @@
       "difficultTerrain": false
     },
     {
+      "id": "sanctuary",
+      "name": "Sanctuary",
+      "symbol": "☼",
+      "color": "#f0e68c",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A peaceful sanctuary where weary travelers can rest safely.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "canLongRest": true
+    },
+    {
       "id": "water",
       "name": "Water",
       "symbol": "~",

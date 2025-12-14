@@ -28,9 +28,14 @@ class RestManager {
             return { canRest: false, reason: "No short rests remaining. You need a long rest." };
         }
 
-        // Check if already at full HP and no hit dice to recover
-        if (character.currentHP >= character.maxHP && character.hitDice.current === 0) {
-            return { canRest: false, reason: "You are already at full health with no hit dice to spend." };
+        // In D&D 5e, you can take a short rest even without hit dice to spend
+        // (for class features, or just to take a break)
+        // Only prevent if already fully recovered AND at max hit dice AND no class features to recover
+        if (character.currentHP >= character.maxHP && 
+            character.hitDice.current >= character.hitDice.max) {
+            // For now, allow rest even if at full health - player may want to rest for RP reasons
+            // or we may add class features that recover on short rest
+            return { canRest: true, reason: "" };
         }
 
         return { canRest: true, reason: "" };
@@ -97,14 +102,14 @@ class RestManager {
         if (!playerPos) return false;
 
         const world = gameState.get('world');
-        if (!world || !world.regions) return false;
+        if (!world || !world.generatedRegions) return false;
 
         // Get current region
         const regionX = Math.floor(playerPos.x / 32);
         const regionY = Math.floor(playerPos.y / 32);
         const regionKey = `${regionX},${regionY}`;
         
-        const region = world.regions.get(regionKey);
+        const region = world.generatedRegions.get(regionKey);
         if (!region) return false;
 
         // Get tile within region
@@ -119,12 +124,17 @@ class RestManager {
             return true;
         }
 
-        // Also check if we're on a specific terrain type marked as town/city
-        if (tile.terrain === 'town' || tile.terrain === 'city') {
+        // Check if tile has a sanctuary feature
+        if (tile.feature && tile.feature.type === 'sanctuary') {
             return true;
         }
 
-        // Check nearby tiles for settlement features (within 1-2 tiles)
+        // Also check if we're on a specific terrain type marked as town/city/sanctuary
+        if (tile.terrain === 'town' || tile.terrain === 'city' || tile.terrain === 'sanctuary') {
+            return true;
+        }
+
+        // Check nearby tiles for settlement or sanctuary features (within 1-2 tiles)
         for (let dy = -2; dy <= 2; dy++) {
             for (let dx = -2; dx <= 2; dx++) {
                 if (dx === 0 && dy === 0) continue;
@@ -137,15 +147,17 @@ class RestManager {
                 const checkRegionY = Math.floor(checkY / 32);
                 const checkRegionKey = `${checkRegionX},${checkRegionY}`;
                 
-                const checkRegion = world.regions.get(checkRegionKey);
+                const checkRegion = world.generatedRegions.get(checkRegionKey);
                 if (!checkRegion) continue;
                 
                 const checkLocalX = ((checkX % 32) + 32) % 32;
                 const checkLocalY = ((checkY % 32) + 32) % 32;
                 const checkTile = checkRegion.tiles[checkLocalY]?.[checkLocalX];
                 
-                if (checkTile && checkTile.feature && checkTile.feature.type === 'settlement') {
-                    return true;
+                if (checkTile && checkTile.feature) {
+                    if (checkTile.feature.type === 'settlement' || checkTile.feature.type === 'sanctuary') {
+                        return true;
+                    }
                 }
             }
         }
@@ -185,7 +197,6 @@ class RestManager {
         // Add message
         if (result.success) {
             gameState.addMessage(`You take a short rest and recover ${result.healing} HP.`, 'success');
-            gameState.addMessage(`Hit dice remaining: ${character.hitDice.current}/${character.hitDice.max}`, 'info');
             gameState.addMessage(`Short rests remaining: ${result.shortRestsRemaining}`, 'info');
         } else {
             gameState.addMessage(result.reason, 'error');
@@ -267,7 +278,7 @@ class RestManager {
                 </div>
                 <div class="rest-stat">
                     <span class="label">Hit Dice:</span>
-                    <span class="value">${character.hitDice.current} / ${character.hitDice.max} (d${character.hitDice.size})</span>
+                    <span class="value">${character.hitDice.current}d${character.hitDice.size} (always available)</span>
                 </div>
                 <div class="rest-stat">
                     <span class="label">Short Rests:</span>
@@ -311,8 +322,8 @@ class RestManager {
         if (infoEl) {
             const isInTavern = this.isPlayerInTavern();
             infoEl.innerHTML = `
-                <p><strong>Short Rest:</strong> Spend hit dice to recover HP. Max ${RULES.rest.shortRestsPerLongRest} per long rest.</p>
-                <p><strong>Long Rest:</strong> Fully restore HP, recover half your hit dice, and regain all spell slots. ${RULES.rest.longRestRequiresTavern ? '(Requires tavern or inn)' : ''}</p>
+                <p><strong>Short Rest:</strong> Roll all your hit dice to recover HP. Max ${RULES.rest.shortRestsPerLongRest} per long rest.</p>
+                <p><strong>Long Rest:</strong> Fully restore HP, regain all spell slots, and reset short rest counter. ${RULES.rest.longRestRequiresTavern ? '(Requires tavern or inn)' : ''}</p>
                 ${RULES.rest.longRestRequiresTavern && !isInTavern ? 
                     '<p class="warning">⚠️ You are not in a tavern. Find an inn to take a long rest.</p>' : 
                     ''}

@@ -7,9 +7,10 @@ import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
 
 class Player {
-    constructor(worldGenerator, mapRenderer) {
+    constructor(worldGenerator, mapRenderer, settlementManager = null) {
         this.worldGenerator = worldGenerator;
         this.mapRenderer = mapRenderer;
+        this.settlementManager = settlementManager;
 
         // Player position (world coordinates)
         this.x = 0;
@@ -73,6 +74,9 @@ class Player {
 
         // Action keys
         switch(key) {
+            case 'e':
+                this.enterSettlement();
+                break;
             case 'i':
                 this.openInventory();
                 break;
@@ -190,7 +194,40 @@ class Player {
             this.handleFeature(tile.feature);
         }
 
+        // Check for settlements
+        this.checkForSettlement();
+
         return true;
+    }
+
+    /**
+     * Check if player is at a settlement
+     */
+    checkForSettlement() {
+        if (!this.settlementManager) return;
+
+        const settlement = this.settlementManager.getSettlementAtPlayerPosition();
+        if (settlement) {
+            gameState.addMessage(`🏘️ Press E to enter ${settlement.name}`, 'info');
+        }
+    }
+
+    /**
+     * Enter settlement if at a settlement tile
+     */
+    enterSettlement() {
+        if (!this.settlementManager) {
+            gameState.addMessage('Settlement system not initialized', 'error');
+            return;
+        }
+
+        // Don't allow settlement entry during combat
+        if (gameState.get('combat')?.active) {
+            gameState.addMessage('Cannot enter settlement during combat!', 'error');
+            return;
+        }
+
+        this.settlementManager.enterSettlement();
     }
 
     /**
@@ -217,6 +254,11 @@ class Player {
      * Check for random encounters
      */
     checkForEncounters(tile, terrainDef) {
+        // Skip encounters in dev mode
+        if (gameState.get('devMode')) {
+            return;
+        }
+
         const encounterChance = terrainDef.encounterModifier || 0.1;
 
         if (Math.random() < encounterChance * 0.04) { // 4% base, modified by terrain

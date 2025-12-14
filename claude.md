@@ -1,10 +1,86 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-13
+**Last Updated:** 2025-12-14
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Implement save/load system with 5 slots and playtime tracking
+**Latest Commit:** Bug fixes for fog of war persistence, rest mechanics, and sanctuary system
+
+---
+
+## 🆕 Recent Changes (2025-12-14)
+
+### Bug Fixes & System Improvements ✅
+Resolved critical bugs in save/load, rest system, and added sanctuary locations:
+
+**1. Fog of War Persistence Fix** 🐛 ✅
+- **Problem:** Explored tiles were not persisting through save/load cycles
+- **Root Cause:** WorldGenerator maintained separate `regionCache` while SaveManager saved from `gameState.world.generatedRegions` - they were never synced
+- **Solution:** Refactored WorldGenerator to use `gameState.world.generatedRegions` as single source of truth
+- **Changes:**
+  - Removed `this.regionCache` from WorldGenerator
+  - All region operations now read/write directly to gameState
+  - Eliminated manual sync logic (was causing bugs)
+  - Simplified `loadSavedRegions()` method
+
+**2. Rest System Mechanics Overhaul** 🐛 ✅
+- **Problems:**
+  - Hit dice were depleting permanently (incorrect D&D 5e implementation)
+  - Short rest button disabled when hit dice = 0
+  - Button disabled when HP was damaged (backwards logic)
+  - Double-execution bug causing two short rests per click
+  - Overly restrictive validation logic
+
+- **Correct D&D 5e Implementation:**
+  - Hit dice DON'T deplete (always equal to character level)
+  - Short rests are the limited resource (2 per long rest)
+  - Each short rest rolls ALL hit dice: `{level}d{hitDie} + CON` for healing
+  - Long rest resets short rest counter (not hit dice)
+
+- **Changes Made:**
+  - `Character.shortRest()`: Now rolls all hit dice without depleting them
+  - `Character.longRest()`: Removed hit dice recovery logic, just resets short rest counter
+  - `RestManager.canShortRest()`: Simplified to only check short rest counter
+  - `main.js` rest UI: Removed hit dice depletion warnings, updated descriptions
+  - `main.js` takeShortRest(): Removed validation check, fixed double-execution by removing modal reopen
+  - Updated all messaging to reflect correct mechanics
+
+**3. Sanctuary System Implementation** 🆕 ✅
+Added safe rest locations scattered across wilderness:
+
+**New Features:**
+- **Sanctuary Terrain Type:**
+  - Symbol: ☼ (sun/light symbol)
+  - Color: Khaki/light yellow (#f0e68c)
+  - Allows long rests like taverns
+  - No combat encounters (0% spawn rate)
+  - Fully traversable, normal movement cost
+
+- **Sanctuary Generation:**
+  - Spawn rate: **2x as common as settlements** (2 / townSpacing vs 1 / townSpacing)
+  - Generated in all terrain types except water and mountains
+  - Each has procedurally generated name from themed word lists
+  - Example names: "Sacred Shrine", "Blessed Grove", "Tranquil Retreat", "Holy Temple"
+
+- **Long Rest Support:**
+  - RestManager checks for sanctuary features (same as settlements)
+  - Player can rest within 2-tile radius of sanctuary
+  - `isInSettlement()` now returns true for sanctuaries
+  - Works with existing long rest validation system
+
+**Modified Files:**
+- `src/systems/WorldGenerator.js` - Unified state management, added sanctuary generation & naming
+- `src/systems/Character.js` - Fixed short/long rest mechanics per D&D 5e rules
+- `src/systems/RestManager.js` - Updated validation logic, added sanctuary checks
+- `src/main.js` - Fixed UI logic, removed double-execution, updated settlement detection
+- `data/terrains.json` - Added sanctuary terrain definition
+
+**Multiclassing Preparation:**
+- Hit dice structure already class-based: `this.class.hitDie`
+- Current single-class format: `{ current: 5, max: 5, size: 10 }`
+- Ready for future multiclass expansion: `{ fighter: {3, d10}, wizard: {2, d6} }`
+
+**Next Recommended Implementation:** Quest system (campaign + side quests, templates, tracking)
 
 ---
 
