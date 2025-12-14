@@ -4,6 +4,7 @@
  */
 
 import { gameState } from '../core/GameState.js';
+import restManager from './RestManager.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer) {
@@ -35,6 +36,7 @@ class Player {
 
         // Update game state
         gameState.set('player.position', { x: this.x, y: this.y });
+        gameState.set('world.currentLocation', { x: this.x, y: this.y });
         gameState.addMessage(`You awaken in an unfamiliar land...`, 'info');
 
         console.log(`📍 Player spawned at (${this.x}, ${this.y})`);
@@ -166,6 +168,7 @@ class Player {
 
         // Update game state
         gameState.set('player.position', { x: this.x, y: this.y });
+        gameState.set('world.currentLocation', { x: this.x, y: this.y });
 
         // Mark tile as explored
         tile.explored = true;
@@ -216,7 +219,7 @@ class Player {
     checkForEncounters(tile, terrainDef) {
         const encounterChance = terrainDef.encounterModifier || 0.1;
 
-        if (Math.random() < encounterChance * 0.08) { // 8% base, modified by terrain
+        if (Math.random() < encounterChance * 0.04) { // 4% base, modified by terrain
             gameState.addMessage('⚔️ A hostile creature appears!', 'warning');
             this.triggerCombatEncounter();
         }
@@ -228,7 +231,7 @@ class Player {
     async triggerCombatEncounter() {
         // Generate enemies based on player level
         const playerLevel = gameState.get('character.level') || 1;
-        const numEnemies = Math.floor(Math.random() * 2) + 1; // 1-2 enemies
+        const numEnemies = 1; // Always 1v1 combat for easier difficulty
 
         const enemies = [];
         for (let i = 0; i < numEnemies; i++) {
@@ -389,8 +392,7 @@ class Player {
     }
 
     rest() {
-        // Trigger rest UI via game state
-        gameState.set('ui.showRestModal', true);
+        restManager.openRestMenu();
     }
 
     interact() {
