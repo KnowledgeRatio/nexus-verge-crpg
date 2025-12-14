@@ -122,6 +122,9 @@ export class Character {
         // Rest tracking
         this.shortRestsUsed = data.shortRestsUsed || 0;
         this.lastLongRest = data.lastLongRest || Date.now();
+
+        // Currency
+        this.gold = data.gold !== undefined ? data.gold : (this.background?.startingGold || 150);
     }
 
     /**
@@ -645,6 +648,273 @@ export class Character {
         return false;
     }
 
+    // ==================== INVENTORY MANAGEMENT ====================
+
+    /**
+     * Add an item to inventory
+     * @param {Object} item - Item object from items.json
+     * @param {number} quantity - Number of items to add (default: 1)
+     * @returns {boolean} - Success
+     */
+    addItem(item, quantity = 1) {
+        // Check if item already exists in inventory
+        const existingItem = this.inventory.find(inv => inv.id === item.id);
+
+        if (existingItem) {
+            // Stack consumables and misc items
+            if (item.type === 'consumable' || item.type === 'misc') {
+                existingItem.quantity = (existingItem.quantity || 1) + quantity;
+            } else {
+                // Non-stackable items - add as separate entry
+                this.inventory.push({
+                    ...item,
+                    quantity: 1,
+                    instanceId: generateUUID() // Unique instance ID
+                });
+            }
+        } else {
+            // New item - add to inventory
+            this.inventory.push({
+                ...item,
+                quantity: quantity,
+                instanceId: generateUUID()
+            });
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove an item from inventory
+     * @param {string} itemId - Item ID or instanceId
+     * @param {number} quantity - Number to remove (default: 1)
+     * @returns {boolean} - Success
+     */
+    removeItem(itemId, quantity = 1) {
+        const itemIndex = this.inventory.findIndex(
+            inv => inv.id === itemId || inv.instanceId === itemId
+        );
+
+        if (itemIndex === -1) {
+            console.warn(`Item ${itemId} not found in inventory`);
+            return false;
+        }
+
+        const item = this.inventory[itemIndex];
+
+        // Handle stackable items
+        if (item.quantity && item.quantity > quantity) {
+            item.quantity -= quantity;
+        } else {
+            // Remove entire item
+            this.inventory.splice(itemIndex, 1);
+        }
+
+        return true;
+    }
+
+    /**
+     * Equip an item from inventory
+     * @param {string} itemId - Item ID or instanceId
+     * @returns {boolean} - Success
+     */
+    equipItem(itemId) {
+        const item = this.inventory.find(
+            inv => inv.id === itemId || inv.instanceId === itemId
+        );
+
+        if (!item) {
+            console.warn(`Item ${itemId} not found in inventory`);
+            return false;
+        }
+
+        // Determine equipment slot
+        let slot = null;
+        if (item.type === 'weapon') {
+            slot = 'mainHand';
+        } else if (item.type === 'armor') {
+            slot = 'armor';
+        } else if (item.type === 'shield') {
+            slot = 'shield';
+        } else if (item.type === 'artifact') {
+            slot = 'artifact';
+        } else {
+            console.warn(`Item ${item.id} cannot be equipped (type: ${item.type})`);
+            return false;
+        }
+
+        // Unequip current item in slot (if any)
+        if (this.equipment[slot]) {
+            this.unequipItem(slot);
+        }
+
+        // Equip new item
+        this.equipment[slot] = item;
+
+        // Recalculate AC if armor/shield changed
+        if (slot === 'armor' || slot === 'shield') {
+            this.ac = this.calculateAC();
+        }
+
+        console.log(`✅ Equipped ${item.name} to ${slot}`);
+        return true;
+    }
+
+    /**
+     * Unequip an item and return it to inventory
+     * @param {string} slot - Equipment slot name
+     * @returns {boolean} - Success
+     */
+    unequipItem(slot) {
+        if (!this.equipment[slot]) {
+            console.warn(`No item equipped in ${slot}`);
+            return false;
+        }
+
+        const item = this.equipment[slot];
+        this.equipment[slot] = null;
+
+        // Recalculate AC if armor/shield changed
+        if (slot === 'armor' || slot === 'shield') {
+            this.ac = this.calculateAC();
+        }
+
+        console.log(`✅ Unequipped ${item.name} from ${slot}`);
+        return true;
+    }
+
+    /**
+     * Use a consumable item
+     * @param {string} itemId - Item ID or instanceId
+     * @returns {Object|null} - Item effect or null
+     */
+    useItem(itemId) {
+        const item = this.inventory.find(
+            inv => inv.id === itemId || inv.instanceId === itemId
+        );
+
+        if (!item) {
+            console.warn(`Item ${itemId} not found in inventory`);
+            return null;
+        }
+
+        if (item.type !== 'consumable') {
+            console.warn(`Item ${item.id} is not consumable`);
+            return null;
+        }
+
+        // Apply item effect (e.g., healing potion)
+        let effect = null;
+        if (item.effect) {
+            effect = this.applyItemEffect(item.effect);
+        }
+
+        // Remove one from inventory
+        this.removeItem(itemId, 1);
+
+        console.log(`✅ Used ${item.name}`);
+        return effect;
+    }
+
+    /**
+     * Apply item effect to character
+     * @param {Object} effect - Effect definition
+     * @returns {Object} - Effect result
+     */
+    applyItemEffect(effect) {
+        const result = {};
+
+        // Healing effect
+        if (effect.healing) {
+            const healing = roll(effect.healing);
+            this.currentHP = Math.min(this.maxHP, this.currentHP + healing);
+            result.healing = healing;
+            console.log(`💚 Healed ${healing} HP (${this.currentHP}/${this.maxHP})`);
+        }
+
+        // Temporary HP
+        if (effect.tempHP) {
+            const tempHP = roll(effect.tempHP);
+            this.tempHP = Math.max(this.tempHP, tempHP);
+            result.tempHP = tempHP;
+            console.log(`🛡️ Gained ${tempHP} temporary HP`);
+        }
+
+        // Buff effect (future: implement conditions)
+        if (effect.buff) {
+            // TODO: Implement buff system
+            result.buff = effect.buff;
+        }
+
+        return result;
+    }
+
+    /**
+     * Add gold to character
+     * @param {number} amount - Amount to add
+     */
+    addGold(amount) {
+        this.gold += amount;
+        console.log(`💰 Gained ${amount} gold (total: ${this.gold} gp)`);
+    }
+
+    /**
+     * Remove gold from character
+     * @param {number} amount - Amount to remove
+     * @returns {boolean} - Success (false if insufficient gold)
+     */
+    removeGold(amount) {
+        if (this.gold < amount) {
+            console.warn(`❌ Insufficient gold (need ${amount}, have ${this.gold})`);
+            return false;
+        }
+
+        this.gold -= amount;
+        console.log(`💸 Spent ${amount} gold (remaining: ${this.gold} gp)`);
+        return true;
+    }
+
+    /**
+     * Calculate total inventory weight
+     * @returns {number} - Total weight in lbs
+     */
+    calculateInventoryWeight() {
+        let totalWeight = 0;
+
+        // Inventory items
+        for (const item of this.inventory) {
+            const weight = item.weight || 0;
+            const quantity = item.quantity || 1;
+            totalWeight += weight * quantity;
+        }
+
+        // Equipped items
+        for (const slot in this.equipment) {
+            const item = this.equipment[slot];
+            if (item && item.weight) {
+                totalWeight += item.weight;
+            }
+        }
+
+        return totalWeight;
+    }
+
+    /**
+     * Calculate max carrying capacity (STR score × 15 lbs)
+     * @returns {number} - Max weight in lbs
+     */
+    getMaxCarryingCapacity() {
+        return this.abilities.str * 15;
+    }
+
+    /**
+     * Check if character is over-encumbered
+     * @returns {boolean}
+     */
+    isEncumbered() {
+        return this.calculateInventoryWeight() > this.getMaxCarryingCapacity();
+    }
+
     /**
      * Serialize character for saving
      */
@@ -667,6 +937,7 @@ export class Character {
             skills: this.skills,
             inventory: this.inventory,
             equipment: this.equipment,
+            gold: this.gold,
             spellcasting: this.spellcasting,
             conditions: this.conditions,
             effects: this.effects,

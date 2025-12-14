@@ -4,11 +4,74 @@
 **Last Updated:** 2025-12-14
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Bug fixes for fog of war persistence, rest mechanics, and sanctuary system
+**Latest Commit:** Trading System implementation with CHA-modified pricing
 
 ---
 
 ## 🆕 Recent Changes (2025-12-14)
+
+### Trading System Implementation ✅
+Implemented complete trading system with merchant/blacksmith NPCs and CHA-based pricing:
+
+**New Files:**
+- `src/systems/MerchantManager.js` - Trading logic and price calculation engine
+- `data/merchantInventory.json` - Item pools for procedural merchant inventory generation
+
+**Features Added:**
+1. **MerchantManager System:**
+   - Procedural merchant inventory generation using world seed
+   - Settlement-tier based inventory (villages=common items, cities=rare items)
+   - CHA-modified pricing: 1% per CHA modifier point
+   - Buy formula: `basePrice × (1.0 - chaEffect)` - Higher CHA = lower prices
+   - Sell formula: `(basePrice × 0.5) × (1.0 + chaEffect)` - Higher CHA = better selling prices
+
+2. **Merchant Inventory Data:**
+   - 14 consumable/misc items (potions, tools, supplies)
+   - 15 weapons/armor/shields (including +1 magic items for high-tier settlements)
+   - Complete D&D 5e item properties (damage dice, AC values, weight, rarity)
+
+3. **Trading UI:**
+   - Full modal-based interface with Buy/Sell tabs
+   - Left panel: Scrollable item list with prices and stock
+   - Right panel: Transaction details (selected item, quantity selector, total price)
+   - Real-time CHA modifier visibility
+   - Item selection with visual feedback
+   - Quantity controls with stock/owned limits
+   - Gold validation and trade execution
+
+4. **Rules Engine Configuration:**
+   - Added merchant pricing configuration to `rulesEngine.js`
+   - Configurable CHA modifier percentage (default: 1% per point)
+   - Settlement-based inventory rules (min/max items, rarity filters)
+   - Base sell multiplier (default: 50% of item value)
+
+**Modified Files:**
+- `src/core/rulesEngine.js` - Added merchant configuration section
+- `src/ui/SettlementUI.js` - Integrated trading modal with complete UI logic
+- `index.html` - Added Trading Modal HTML structure
+- `styles.css` - Added comprehensive trading UI styles (~350 lines)
+
+**Integration:**
+- Merchants and blacksmiths offer "Trade" dialogue option
+- Trading opens modal with procedurally generated inventory
+- Inventory based on settlement type and world seed
+- Transactions update character gold and inventory
+- HUD updates automatically after trades
+- Message log feedback for all transactions
+
+**Next Recommended Implementation:**
+- Quest system (campaign + side quests, templates, tracking)
+- Loot system with combat drops (ensure D&D 5e SRD compliance)
+- Skill challenge system integrated with quest NPCs
+
+**Important Notes:**
+- **SRD Compliance:** Future loot tables and combat drops must follow D&D 5e SRD guidelines for treasure distribution and item rarity
+- **Skill Challenges:** Quest system should integrate D&D 5e skill challenges using the 18 skills from character sheet (Acrobatics, Animal Handling, Arcana, Athletics, Deception, History, Insight, Intimidation, Investigation, Medicine, Nature, Perception, Performance, Persuasion, Religion, Sleight of Hand, Stealth, Survival)
+- **Quest NPCs:** Skill challenges should be connected to quest objectives and NPC interactions
+
+---
+
+## 🆕 Recent Changes (2025-12-14 - Earlier)
 
 ### Bug Fixes & System Improvements ✅
 Resolved critical bugs in save/load, rest system, and added sanctuary locations:
@@ -814,80 +877,115 @@ All 18 D&D 5e skills
 
 ## 🚀 Next Steps (Priority Order)
 
-### Immediate (Day 3-4)
-1. **World Generation System**
-   - Implement Simplex noise terrain generation
-   - Chunk-based region system
-   - Biome clustering (grassland, forest, mountain, water)
-   - Settlement placement algorithm
+### ✅ Completed Systems
+1. **World Generation System** - ✅ COMPLETE
+   - Simplex noise terrain generation (18 terrain types)
+   - Chunk-based region system (32x32 tiles)
+   - Settlement placement (villages, towns, cities)
+   - Sanctuary generation (safe rest locations)
 
-2. **Map Renderer**
+2. **Map Renderer** - ✅ COMPLETE
    - Canvas-based rendering
    - ASCII/tile display (80x40 viewport)
-   - Fog of war
+   - Fog of war with persistence
    - Camera following player
 
-3. **Player Movement**
+3. **Player Movement** - ✅ COMPLETE
    - WASD/Arrow key input
    - Collision detection
    - Region loading on movement
-   - Update game state
+   - Settlement entry system
 
-### Mid-Term (Day 5-6)
-4. **Combat System**
-   - Grid-based battlefield (10x10 minimum)
-   - Initiative system
-   - Turn-based action queue
-   - Attack rolls, damage calculation
-   - Enemy AI (basic)
+4. **Combat System** - ✅ COMPLETE
+   - Non-grid turn-based combat
+   - Initiative system (d20 + DEX modifier)
+   - Attack rolls, damage, critical hits
+   - Enemy AI (random target selection)
+   - Flee mechanic (d20 + initiative vs DC 30)
 
-5. **Quest System**
-   - Quest templates (kill, retrieve, deliver)
-   - Quest generation from templates
-   - Quest tracking and completion
-   - XP and reputation rewards
-
-6. **Save/Load**
-   - Serialize game state to JSON
-   - LocalStorage save slots
-   - Load game and restore state
+5. **Save/Load System** - ✅ COMPLETE
+   - 5 save slots with metadata
+   - LocalStorage persistence
+   - Playtime tracking
    - Version compatibility
 
-### Later (Day 7+)
-7. **Spell System**
-   - Spell slot tracking
-   - Spell casting UI
-   - Spell effects and targeting
-   - Concentration tracking
+6. **Rest System** - ✅ COMPLETE
+   - Short rests (2 per long rest, roll all hit dice)
+   - Long rests (full HP/spell recovery, requires tavern/sanctuary)
+   - Modal UI with validation
 
-8. **Faction System**
-   - Faction data structure
-   - Reputation tracking
-   - Reputation-based merchants
-   - Faction relationships
+7. **NPC & Settlement System** - ✅ COMPLETE
+   - Procedural NPC generation (names, roles, personalities)
+   - Building interiors (tavern, merchant, blacksmith, great hall)
+   - NPC dialogue system
+   - Settlement town map UI
 
-9. **Skill Checks**
-   - Skill check prompts
-   - DC calculation
-   - Success/failure outcomes
-   - Integration in exploration
+8. **Trading System** - ✅ COMPLETE
+   - Merchant inventory generation
+   - CHA-modified pricing (1% per modifier point)
+   - Buy/Sell UI with tabs
+   - Gold and inventory management
 
-10. **Polish & Testing**
-    - Bug fixes
-    - Balance tuning
+### 🚧 In Progress (Priority Order)
+9. **Quest System** - NEXT PRIORITY
+   - Campaign quest chain (4 stages)
+   - Procedural side quests (kill, retrieve, deliver templates)
+   - Quest tracking and UI (quest log, turn-ins)
+   - XP and reputation rewards
+   - **Integration with skill challenges** (Perception checks, Investigation, Persuasion, etc.)
+
+10. **Loot System** - HIGH PRIORITY
+    - Combat drops with CR-based tables
+    - Treasure chests and hidden caches
+    - **D&D 5e SRD compliance** for item distribution and rarity
+    - Loot rarity scaling (common → legendary)
+    - Weight and inventory management
+
+11. **Skill Challenge System** - HIGH PRIORITY
+    - All 18 D&D 5e skills (Acrobatics, Animal Handling, Arcana, Athletics, Deception, History, Insight, Intimidation, Investigation, Medicine, Nature, Perception, Performance, Persuasion, Religion, Sleight of Hand, Stealth, Survival)
+    - DC-based skill checks (d20 + ability modifier + proficiency)
+    - Contextual prompts (traps, hidden doors, social encounters)
+    - **Quest integration** (skill checks as quest objectives)
+    - **NPC integration** (social skill checks in dialogue)
+    - Success/failure consequences
+
+### 📅 Later Priority
+12. **Spell System**
+    - Spell slot tracking (levels 1-2 + cantrips)
+    - Spell casting UI
+    - Spell effects and targeting
+    - Concentration tracking
+
+13. **Ability System**
+    - Class features (Action Surge, Rage, Bardic Inspiration, etc.)
+    - Passive abilities
+    - Resource tracking (Ki points, Sorcery points, etc.)
+
+14. **Faction System**
+    - Faction data structure
+    - Reputation tracking
+    - Faction-based quest chains
+    - Faction relationships and conflicts
+
+15. **Polish & Testing**
+    - Bug fixes and edge cases
+    - Balance tuning (XP, loot, difficulty)
     - Performance optimization
-    - Playtesting
+    - Playtesting and iteration
 
 ---
 
 ## 🐛 Known Issues & TODOs
 
 ### Current TODOs in Code
-- Save/Load system not yet implemented
-- Quest system not yet implemented
-- Spell system (cantrips + levels 1-2) not yet implemented
-- Ability system (class features) not yet implemented
-- Skill checks in non-combat encounters not yet implemented
+- ✅ Save/Load system - **COMPLETE** (5 slots, LocalStorage, metadata, playtime tracking)
+- ✅ Trading system - **COMPLETE** (CHA-modified pricing, procedural inventory)
+- ✅ Rest system - **COMPLETE** (short/long rests, tavern/sanctuary requirement)
+- ❌ Quest system - **IN PROGRESS** (campaign + side quests, templates, tracking, rewards)
+- ❌ Loot system - **PENDING** (combat drops, treasure tables - **must follow D&D 5e SRD**)
+- ❌ Spell system - **PENDING** (cantrips + levels 1-2, casting UI, concentration)
+- ❌ Ability system - **PENDING** (class features, Action Surge, Rage, etc.)
+- ❌ Skill checks - **PENDING** (D&D 5e skill challenges integrated with quests and NPCs)
 
 ### Technical Debt
 - Add comprehensive error handling

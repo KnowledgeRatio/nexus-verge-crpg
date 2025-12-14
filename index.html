@@ -293,6 +293,222 @@
                 </div>
             </div>
         </div>
+
+        <!-- NPC Dialogue Modal -->
+        <div id="npcDialogueModal" class="modal npc-dialogue-modal">
+            <div class="dialogue-container">
+                <div class="dialogue-header">
+                    <div class="npc-info">
+                        <h2 id="npcDialogueName">NPC Name</h2>
+                        <span id="npcDialogueRole" class="npc-role-tag">Role</span>
+                    </div>
+                    <button class="close-btn" id="closeDialogueBtn">&times;</button>
+                </div>
+
+                <div class="dialogue-content">
+                    <p id="npcDialogueText">Dialogue text will appear here...</p>
+                </div>
+
+                <div id="npcDialogueOptions" class="dialogue-options">
+                    <!-- Dialogue options will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Modal -->
+        <div id="inventoryModal" class="modal inventory-modal">
+            <div class="inventory-container">
+                <div class="inventory-header">
+                    <h2>Inventory</h2>
+                    <button class="close-btn" id="closeInventoryBtn">&times;</button>
+                </div>
+
+                <div class="inventory-body">
+                    <!-- Character Info Panel -->
+                    <div class="inventory-info-panel">
+                        <div class="info-section">
+                            <h3>Character</h3>
+                            <div class="info-stat">
+                                <span class="label">Name:</span>
+                                <span class="value" id="invCharName">Thorin</span>
+                            </div>
+                            <div class="info-stat">
+                                <span class="label">Class:</span>
+                                <span class="value" id="invCharClass">Fighter 1</span>
+                            </div>
+                            <div class="info-stat">
+                                <span class="label">Gold:</span>
+                                <span class="value gold-value" id="invGold">150 gp</span>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Equipment</h3>
+                            <div class="equipment-slots">
+                                <div class="equipment-slot" data-slot="weapon">
+                                    <span class="slot-label">Weapon:</span>
+                                    <span class="slot-value" id="eqWeapon">Longsword</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="armor">
+                                    <span class="slot-label">Armor:</span>
+                                    <span class="slot-value" id="eqArmor">Chain Mail</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="shield">
+                                    <span class="slot-label">Shield:</span>
+                                    <span class="slot-value" id="eqShield">Shield</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Weight</h3>
+                            <div class="weight-bar">
+                                <div class="weight-fill" id="invWeightBar" style="width: 45%"></div>
+                            </div>
+                            <div class="weight-text">
+                                <span id="invWeight">45</span> / <span id="invMaxWeight">100</span> lbs
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Items Panel -->
+                    <div class="inventory-items-panel">
+                        <div class="inventory-tabs">
+                            <button class="inv-tab-btn active" data-tab="all">All Items</button>
+                            <button class="inv-tab-btn" data-tab="weapons">Weapons</button>
+                            <button class="inv-tab-btn" data-tab="armor">Armor</button>
+                            <button class="inv-tab-btn" data-tab="consumables">Consumables</button>
+                            <button class="inv-tab-btn" data-tab="misc">Misc</button>
+                        </div>
+
+                        <div id="inventoryItemsList" class="inventory-items-list">
+                            <!-- Items will be rendered here dynamically -->
+                            <div class="inventory-item" data-item-id="longsword">
+                                <div class="item-icon">⚔️</div>
+                                <div class="item-details">
+                                    <div class="item-name">Longsword</div>
+                                    <div class="item-description">1d8 slashing, Versatile (1d10)</div>
+                                    <div class="item-stats">
+                                        <span class="item-weight">3 lbs</span>
+                                        <span class="item-rarity common">Common</span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="item-action-btn equipped" disabled>Equipped</button>
+                                    <button class="item-action-btn" data-action="drop">Drop</button>
+                                </div>
+                            </div>
+
+                            <div class="inventory-item" data-item-id="potion-healing">
+                                <div class="item-icon">🧪</div>
+                                <div class="item-details">
+                                    <div class="item-name">Potion of Healing <span class="item-quantity">x3</span></div>
+                                    <div class="item-description">Restores 2d4+2 hit points</div>
+                                    <div class="item-stats">
+                                        <span class="item-weight">0.5 lbs</span>
+                                        <span class="item-rarity common">Common</span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="item-action-btn" data-action="use">Use</button>
+                                    <button class="item-action-btn" data-action="drop">Drop</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-footer">
+                    <button id="closeInventoryFooterBtn" class="menu-btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Modal -->
+        <div id="tradingModal" class="modal trading-modal">
+            <div class="trading-container">
+                <div class="trading-header">
+                    <div class="merchant-info">
+                        <h2 id="tradingMerchantName">Merchant</h2>
+                        <span id="tradingMerchantShop" class="shop-name-tag">General Goods</span>
+                    </div>
+                    <button class="close-btn" id="closeTradingBtn">&times;</button>
+                </div>
+
+                <div class="trading-body">
+                    <!-- Left Panel - Merchant Inventory -->
+                    <div class="merchant-panel">
+                        <h3>Merchant Inventory</h3>
+                        <div class="trading-tabs">
+                            <button class="trading-tab-btn active" data-tab="buy">Buy</button>
+                            <button class="trading-tab-btn" data-tab="sell">Sell</button>
+                        </div>
+
+                        <!-- Buy Tab -->
+                        <div id="buyTab" class="trading-tab active">
+                            <div id="merchantItemsList" class="trading-items-list">
+                                <!-- Merchant items rendered here -->
+                            </div>
+                        </div>
+
+                        <!-- Sell Tab -->
+                        <div id="sellTab" class="trading-tab" style="display: none;">
+                            <div id="playerItemsList" class="trading-items-list">
+                                <!-- Player items rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel - Transaction Info -->
+                    <div class="transaction-panel">
+                        <h3>Your Inventory</h3>
+
+                        <div class="info-section">
+                            <div class="info-stat">
+                                <span class="label">Gold:</span>
+                                <span class="value gold-value" id="tradingPlayerGold">150 gp</span>
+                            </div>
+                            <div class="info-stat">
+                                <span class="label">Weight:</span>
+                                <span class="value" id="tradingPlayerWeight">45 / 150 lbs</span>
+                            </div>
+                        </div>
+
+                        <div class="transaction-area">
+                            <h4>Selected Item</h4>
+                            <div id="selectedItemDisplay" class="selected-item-card">
+                                <p class="empty-message">Click an item to view details</p>
+                            </div>
+
+                            <div class="quantity-selector" style="display: none;">
+                                <label>Quantity:</label>
+                                <div class="quantity-controls">
+                                    <button class="qty-btn" id="qtyMinus">-</button>
+                                    <input type="number" id="qtyInput" value="1" min="1" max="1">
+                                    <button class="qty-btn" id="qtyPlus">+</button>
+                                </div>
+                            </div>
+
+                            <div class="transaction-total" style="display: none;">
+                                <div class="total-row">
+                                    <span>Total:</span>
+                                    <span id="transactionTotal" class="total-price">50 gp</span>
+                                </div>
+                            </div>
+
+                            <button id="executeTradeBtn" class="trade-btn" style="display: none;">
+                                <span id="tradeBtnText">Buy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trading-footer">
+                    <p class="trading-hint">💡 Your CHA modifier affects prices!</p>
+                    <button id="closeTradingFooterBtn" class="menu-btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="src/main.js"></script>

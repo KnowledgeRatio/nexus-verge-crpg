@@ -293,6 +293,34 @@ export const RULES = {
     },
 
     // ====================
+    // MERCHANT & TRADING
+    // ====================
+    merchant: {
+        // Pricing
+        chaModifierPercent: 0.01,    // 1% per CHA modifier point
+        baseSellMultiplier: 0.5,     // Players sell items at 50% base value
+
+        // Inventory size by settlement type
+        inventoryBySettlementType: {
+            village: {
+                minItems: 8,
+                maxItems: 12,
+                allowedRarities: ['common']
+            },
+            town: {
+                minItems: 12,
+                maxItems: 18,
+                allowedRarities: ['common', 'uncommon']
+            },
+            city: {
+                minItems: 18,
+                maxItems: 25,
+                allowedRarities: ['common', 'uncommon', 'rare']
+            }
+        }
+    },
+
+    // ====================
     // SKILLS
     // ====================
     skills: {
