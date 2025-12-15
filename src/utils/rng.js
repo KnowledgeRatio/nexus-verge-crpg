@@ -58,6 +58,24 @@ export function createSeededRNG(seedString) {
 }
 
 /**
+ * Alias for createSeededRNG for backwards compatibility
+ */
+export function createRNG(seed) {
+    if (typeof seed === 'string') {
+        return createSeededRNG(seed);
+    }
+    // If seed is already a number, use it directly
+    return mulberry32(seed);
+}
+
+/**
+ * Convert seed string to number
+ */
+export function seedToNumber(seedString) {
+    return hashString(seedString);
+}
+
+/**
  * RNG utility class with convenience methods
  */
 export class SeededRandom {

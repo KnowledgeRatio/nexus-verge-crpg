@@ -1,6 +1,7 @@
 {
   "description": "Reusable skill challenge templates for contextual gameplay",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "note": "Updated for new 13-skill system: removed Medicine, Animal Handling, Survival, History, Nature, Religion, Insight, Persuasion, Intimidation, Performance, Stealth. Added Endurance, Academia, Cunning, Creativity, Empathy, Influence.",
 
   "challengeTemplates": [
     {
@@ -28,7 +29,7 @@
         },
         {
           "id": "disarm",
-          "skill": "sleight_of_hand",
+          "skill": "sleightOfHand",
           "dc": 13,
           "description": "Carefully disable the trap mechanism",
           "onSuccess": {
@@ -51,7 +52,7 @@
       "options": [
         {
           "id": "lockpick",
-          "skill": "sleight_of_hand",
+          "skill": "sleightOfHand",
           "dc": 15,
           "description": "Pick the lock",
           "toolRequired": "thieves' tools",
@@ -101,34 +102,17 @@
       "type": "choice",
       "options": [
         {
-          "id": "intimidate",
-          "skill": "intimidation",
+          "id": "influence_threat",
+          "skill": "influence",
           "dc": 14,
-          "description": "Threaten the bandits with violence",
+          "description": "Threaten or persuade the bandits to leave",
           "onSuccess": {
-            "message": "The bandits flee in terror!",
-            "xp": 200,
-            "reputation": 30
+            "message": "The bandits are convinced by your words and flee!",
+            "xp": 225,
+            "reputation": 35
           },
           "onFailure": {
-            "message": "The bandits laugh at your threats and attack!",
-            "initiateCombat": true,
-            "enemies": ["bandit", "bandit", "bandit_captain"]
-          }
-        },
-        {
-          "id": "persuade",
-          "skill": "persuasion",
-          "dc": 16,
-          "description": "Reason with the bandits",
-          "onSuccess": {
-            "message": "The bandits agree to leave in exchange for safe passage.",
-            "xp": 250,
-            "reputation": 40,
-            "goldCost": 50
-          },
-          "onFailure": {
-            "message": "The bandits reject your offer and attack!",
+            "message": "The bandits reject your words and attack!",
             "initiateCombat": true,
             "enemies": ["bandit", "bandit", "bandit_captain"]
           }
@@ -148,6 +132,22 @@
             "initiateCombat": true,
             "enemies": ["bandit", "bandit", "bandit_captain"]
           }
+        },
+        {
+          "id": "empathy",
+          "skill": "empathy",
+          "dc": 16,
+          "description": "Appeal to their better nature",
+          "onSuccess": {
+            "message": "You connect with the bandits emotionally. They agree to leave peacefully!",
+            "xp": 250,
+            "reputation": 40
+          },
+          "onFailure": {
+            "message": "Your emotional appeal falls flat and they attack!",
+            "initiateCombat": true,
+            "enemies": ["bandit", "bandit", "bandit_captain"]
+          }
         }
       ]
     },
@@ -159,16 +159,16 @@
       "stages": [
         {
           "id": "assess",
-          "skill": "survival",
+          "skill": "perception",
           "dc": 12,
-          "description": "Find the best climbing route",
+          "description": "Spot the best climbing route",
           "onSuccess": {
             "message": "You identify handholds and a safe path.",
             "nextStage": "climb",
             "climbDCModifier": -2
           },
           "onFailure": {
-            "message": "You begin climbing without a plan.",
+            "message": "You begin climbing without a clear plan.",
             "nextStage": "climb"
           }
         },
@@ -213,7 +213,7 @@
         },
         {
           "id": "retrieve",
-          "skill": "sleight_of_hand",
+          "skill": "sleightOfHand",
           "dc": 12,
           "description": "Open the hidden compartment",
           "onSuccess": {
@@ -228,14 +228,14 @@
       ]
     },
     {
-      "id": "animal_handling_wild",
+      "id": "calm_wild_beast",
       "name": "Calm Wild Beast",
       "description": "Attempt to calm an aggressive wild animal",
       "type": "single",
-      "skill": "animal_handling",
+      "skill": "empathy",
       "dc": 14,
       "onSuccess": {
-        "message": "The animal calms down and leaves peacefully.",
+        "message": "You connect with the animal. It calms down and leaves peacefully.",
         "xp": 100,
         "avoidCombat": true
       },
@@ -246,23 +246,44 @@
       }
     },
     {
-      "id": "stealth_past_guards",
+      "id": "sneak_past_guards",
       "name": "Sneak Past Guards",
-      "description": "Move silently past enemy guards",
-      "type": "contested",
-      "playerSkill": "stealth",
-      "opposingSkill": "perception",
-      "opposingDC": 12,
-      "onSuccess": {
-        "message": "You slip past the guards unnoticed.",
-        "xp": 150
-      },
-      "onFailure": {
-        "message": "A guard spots you!",
-        "initiateCombat": true,
-        "enemies": ["guard", "guard"],
-        "surprised": false
-      }
+      "description": "Move silently and stay hidden past enemy guards",
+      "type": "choice",
+      "options": [
+        {
+          "id": "stealth_move",
+          "skill": "acrobatics",
+          "dc": 14,
+          "description": "Move silently past the guards",
+          "onSuccess": {
+            "message": "You slip past the guards unnoticed.",
+            "xp": 150
+          },
+          "onFailure": {
+            "message": "You make a noise and a guard spots you!",
+            "initiateCombat": true,
+            "enemies": ["guard", "guard"],
+            "surprised": false
+          }
+        },
+        {
+          "id": "hide",
+          "skill": "cunning",
+          "dc": 13,
+          "description": "Hide in the shadows and wait for an opening",
+          "onSuccess": {
+            "message": "You blend into the shadows and slip past when they're not looking.",
+            "xp": 150
+          },
+          "onFailure": {
+            "message": "A guard spots you hiding!",
+            "initiateCombat": true,
+            "enemies": ["guard", "guard"],
+            "surprised": false
+          }
+        }
+      ]
     },
     {
       "id": "arcane_puzzle",
@@ -295,15 +316,28 @@
           "onFailure": {
             "message": "The puzzle is too complex to understand."
           }
+        },
+        {
+          "id": "creativity",
+          "skill": "creativity",
+          "dc": 17,
+          "description": "Think outside the box to find an unconventional solution",
+          "onSuccess": {
+            "message": "Your creative approach reveals a hidden solution!",
+            "xp": 175
+          },
+          "onFailure": {
+            "message": "Your unconventional approach doesn't work."
+          }
         }
       ]
     },
     {
-      "id": "history_ancient_text",
+      "id": "ancient_text",
       "name": "Decipher Ancient Text",
       "description": "Read an ancient inscription or tome",
       "type": "single",
-      "skill": "history",
+      "skill": "academia",
       "dc": 15,
       "onSuccess": {
         "message": "You translate the ancient text and gain valuable information!",
@@ -316,32 +350,54 @@
       }
     },
     {
-      "id": "medicine_stabilize",
+      "id": "stabilize_wounded",
       "name": "Stabilize Wounded NPC",
-      "description": "Provide medical aid to a critically wounded person",
-      "type": "single",
-      "skill": "medicine",
-      "dc": 12,
-      "onSuccess": {
-        "message": "You stabilize the wounded person. They will survive!",
-        "xp": 75,
-        "reputation": 25,
-        "questUpdate": true
-      },
-      "onFailure": {
-        "message": "Despite your efforts, the person's condition worsens.",
-        "reputation": -10
-      }
+      "description": "Provide aid to a critically wounded person",
+      "type": "choice",
+      "options": [
+        {
+          "id": "academia",
+          "skill": "academia",
+          "dc": 13,
+          "description": "Apply scholarly medical knowledge",
+          "onSuccess": {
+            "message": "You stabilize the wounded person using your medical knowledge!",
+            "xp": 75,
+            "reputation": 25,
+            "questUpdate": true
+          },
+          "onFailure": {
+            "message": "Despite your efforts, the person's condition worsens.",
+            "reputation": -10
+          }
+        },
+        {
+          "id": "investigation",
+          "skill": "investigation",
+          "dc": 14,
+          "description": "Examine the wounds and apply practical first aid",
+          "onSuccess": {
+            "message": "You identify the injury and treat it effectively!",
+            "xp": 75,
+            "reputation": 25,
+            "questUpdate": true
+          },
+          "onFailure": {
+            "message": "You cannot determine how to help them.",
+            "reputation": -10
+          }
+        }
+      ]
     },
     {
-      "id": "nature_track",
+      "id": "track_creature",
       "name": "Track Creature",
       "description": "Follow tracks to find a creature",
       "type": "sequential",
       "stages": [
         {
           "id": "find_tracks",
-          "skill": "survival",
+          "skill": "perception",
           "dc": 13,
           "description": "Find tracks of the creature",
           "onSuccess": {
@@ -354,7 +410,7 @@
         },
         {
           "id": "follow",
-          "skill": "survival",
+          "skill": "investigation",
           "dc": 14,
           "description": "Follow the tracks to the creature",
           "onSuccess": {
@@ -369,11 +425,11 @@
       ]
     },
     {
-      "id": "insight_detect_lie",
+      "id": "detect_lie",
       "name": "Detect Deception",
       "description": "Determine if an NPC is lying",
       "type": "contested",
-      "playerSkill": "insight",
+      "playerSkill": "empathy",
       "opposingSkill": "deception",
       "opposingDC": 14,
       "onSuccess": {
@@ -386,31 +442,31 @@
       }
     },
     {
-      "id": "performance_distraction",
+      "id": "creative_distraction",
       "name": "Create Distraction",
-      "description": "Perform to distract guards",
+      "description": "Create an improvised distraction to divert guards",
       "type": "single",
-      "skill": "performance",
+      "skill": "creativity",
       "dc": 13,
       "onSuccess": {
-        "message": "Your performance captivates the guards, creating an opening!",
+        "message": "Your clever distraction works perfectly, creating an opening!",
         "xp": 100,
         "distraction": true,
         "timeWindow": 60
       },
       "onFailure": {
-        "message": "Your performance fails to distract the guards."
+        "message": "Your distraction attempt fails to fool the guards."
       }
     },
     {
-      "id": "religion_ritual",
+      "id": "holy_ritual",
       "name": "Perform Holy Ritual",
       "description": "Conduct a religious ceremony to consecrate an area",
       "type": "single",
-      "skill": "religion",
+      "skill": "academia",
       "dc": 14,
       "onSuccess": {
-        "message": "You successfully perform the ritual. The area is blessed!",
+        "message": "You successfully perform the ritual using your religious knowledge. The area is blessed!",
         "xp": 150,
         "areaEffect": "consecrated",
         "duration": 86400
@@ -420,7 +476,7 @@
       }
     },
     {
-      "id": "acrobatics_balance",
+      "id": "narrow_ledge",
       "name": "Narrow Ledge",
       "description": "Cross a narrow ledge without falling",
       "type": "single",
@@ -438,6 +494,24 @@
         "saveDC": 12,
         "halfDamageOnSave": true
       }
+    },
+    {
+      "id": "endure_harsh_environment",
+      "name": "Endure Harsh Environment",
+      "description": "Push through extreme heat, cold, or exhaustion",
+      "type": "single",
+      "skill": "endurance",
+      "dc": 14,
+      "onSuccess": {
+        "message": "You push through the harsh conditions!",
+        "xp": 100
+      },
+      "onFailure": {
+        "message": "The conditions overwhelm you.",
+        "damage": "2d4",
+        "damageType": "environmental",
+        "exhaustion": 1
+      }
     }
   ],
 
@@ -452,27 +526,29 @@
   "contextualTriggers": {
     "exploration": {
       "terrain": {
-        "mountain": ["cliff_climb", "narrow_ledge"],
-        "forest": ["animal_handling_wild", "nature_track"],
-        "dungeon": ["trap_detect_disarm", "locked_door", "arcane_puzzle"]
+        "mountain": ["cliff_climb", "narrow_ledge", "endure_harsh_environment"],
+        "forest": ["calm_wild_beast", "track_creature"],
+        "dungeon": ["trap_detect_disarm", "locked_door", "arcane_puzzle"],
+        "desert": ["endure_harsh_environment", "track_creature"],
+        "tundra": ["endure_harsh_environment"]
       },
       "featureType": {
-        "ruins": ["history_ancient_text", "arcane_puzzle"],
+        "ruins": ["ancient_text", "arcane_puzzle", "hidden_treasure"],
         "cave": ["hidden_treasure", "cliff_climb"],
-        "temple": ["religion_ritual", "arcane_puzzle"]
+        "temple": ["holy_ritual", "arcane_puzzle", "ancient_text"]
       }
     },
     "social": {
       "npcType": {
-        "hostile": ["insight_detect_lie", "bandit_negotiation"],
-        "merchant": ["insight_detect_lie", "persuasion"],
-        "guard": ["stealth_past_guards", "performance_distraction"]
+        "hostile": ["detect_lie", "bandit_negotiation"],
+        "merchant": ["detect_lie", "influence"],
+        "guard": ["sneak_past_guards", "creative_distraction"]
       }
     },
     "quest": {
       "objectiveType": {
-        "investigate": ["investigation", "history_ancient_text"],
-        "rescue": ["medicine_stabilize", "stealth_past_guards"],
+        "investigate": ["investigation", "ancient_text"],
+        "rescue": ["stabilize_wounded", "sneak_past_guards"],
         "retrieve": ["hidden_treasure", "locked_door"]
       }
     }

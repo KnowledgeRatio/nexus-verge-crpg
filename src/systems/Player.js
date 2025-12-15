@@ -215,7 +215,7 @@ class Player {
     /**
      * Enter settlement if at a settlement tile
      */
-    enterSettlement() {
+    async enterSettlement() {
         if (!this.settlementManager) {
             gameState.addMessage('Settlement system not initialized', 'error');
             return;
@@ -227,7 +227,7 @@ class Player {
             return;
         }
 
-        this.settlementManager.enterSettlement();
+        await this.settlementManager.enterSettlement();
     }
 
     /**

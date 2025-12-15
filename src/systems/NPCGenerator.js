@@ -3,7 +3,7 @@
  * Procedurally generates friendly NPCs for settlements with names, roles, and personalities
  */
 
-import { createRNG, seedToNumber } from '../utils/rng.js';
+import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
 
 class NPCGenerator {
@@ -47,7 +47,7 @@ class NPCGenerator {
 
     const settlementType = settlement.settlementType || 'village';
     const seed = `${this.worldSeed}_settlement_${settlement.x}_${settlement.y}_npcs`;
-    const rng = createRNG(seedToNumber(seed));
+    const rng = new SeededRandom(seed);
 
     const npcs = [];
 
@@ -83,9 +83,9 @@ class NPCGenerator {
     npcs.push(innkeeper);
 
     // Generate patrons (mix of named and generic)
-    const patronCount = rng.intBetween(npcCounts.min - 1, npcCounts.max - 1); // -1 for innkeeper
+    const patronCount = rng.nextInt(npcCounts.min - 1, npcCounts.max - 1); // -1 for innkeeper
     for (let i = 0; i < patronCount; i++) {
-      const isNamed = rng.random() < 0.3; // 30% chance of being a named NPC with quest potential
+      const isNamed = rng.next() < 0.3; // 30% chance of being a named NPC with quest potential
       const patron = this.generateNPC({
         settlement,
         building: 'tavern',
@@ -161,10 +161,10 @@ class NPCGenerator {
     npcs.push(leader);
 
     // Generate guards and citizens (mix of named and generic)
-    const citizenCount = rng.intBetween(npcCounts.min - 1, npcCounts.max - 1); // -1 for leader
+    const citizenCount = rng.nextInt(npcCounts.min - 1, npcCounts.max - 1); // -1 for leader
     for (let i = 0; i < citizenCount; i++) {
       const isGuard = i < Math.floor(citizenCount / 2); // Half are guards
-      const isNamed = rng.random() < 0.4; // 40% chance of being named
+      const isNamed = rng.next() < 0.4; // 40% chance of being named
 
       const npc = this.generateNPC({
         settlement,
@@ -186,17 +186,17 @@ class NPCGenerator {
    */
   generateNPC({ settlement, building, role, isNamed, rng }) {
     const settlementType = settlement.settlementType || 'village';
-    const id = `npc_${settlement.x}_${settlement.y}_${building}_${rng.int(100000, 999999)}`;
+    const id = `npc_${settlement.x}_${settlement.y}_${building}_${rng.nextInt(100000, 999999)}`;
 
     // Generate name
     const name = this.generateName(role, settlementType, rng);
 
     // Generate personality
-    const personality = rng.pick(RULES.npc.personalityTypes);
+    const personality = rng.choice(RULES.npc.personalityTypes);
 
     // Determine if this NPC offers quests
     const questChance = RULES.npc.questChanceByRole[role] || 0;
-    const offersQuest = isNamed && rng.random() < questChance;
+    const offersQuest = isNamed && rng.next() < questChance;
 
     // Generate dialogue
     const dialogue = this.generateDialogue(role, personality, settlement, name, settlementType, rng);
@@ -204,11 +204,11 @@ class NPCGenerator {
     // Create shop name for merchants/blacksmiths
     let shopName = null;
     if (role === 'merchant') {
-      shopName = rng.pick(this.nameData.merchantShopNames);
+      shopName = rng.choice(this.nameData.merchantShopNames);
     } else if (role === 'blacksmith') {
-      shopName = rng.pick(this.nameData.blacksmithShopNames);
+      shopName = rng.choice(this.nameData.blacksmithShopNames);
     } else if (role === 'innkeeper') {
-      shopName = rng.pick(this.nameData.tavernNames);
+      shopName = rng.choice(this.nameData.tavernNames);
     }
 
     return {
@@ -237,36 +237,36 @@ class NPCGenerator {
    */
   generateName(role, settlementType, rng) {
     // Determine race (mostly humans in settlements)
-    const raceRoll = rng.random();
+    const raceRoll = rng.next();
     let race = 'human';
     if (raceRoll < 0.1) race = 'elf';
     else if (raceRoll < 0.15) race = 'dwarf';
 
     // Determine gender
-    const gender = rng.random() < 0.5 ? 'male' : 'female';
+    const gender = rng.next() < 0.5 ? 'male' : 'female';
 
     let firstName;
     if (race === 'human') {
-      firstName = rng.pick(this.nameData.humanFirstNames[gender]);
+      firstName = rng.choice(this.nameData.humanFirstNames[gender]);
     } else if (race === 'elf') {
-      firstName = rng.pick(this.nameData.elfFirstNames[gender]);
+      firstName = rng.choice(this.nameData.elfFirstNames[gender]);
     } else if (race === 'dwarf') {
-      firstName = rng.pick(this.nameData.dwarfFirstNames[gender]);
+      firstName = rng.choice(this.nameData.dwarfFirstNames[gender]);
     }
 
     // For leaders and important NPCs, add title
     if (role === 'leader') {
-      const title = rng.pick(this.nameData.titles[settlementType].leader);
-      const lastName = rng.pick(this.nameData.lastNames);
+      const title = rng.choice(this.nameData.titles[settlementType].leader);
+      const lastName = rng.choice(this.nameData.lastNames);
       return `${title} ${firstName} ${lastName}`;
-    } else if (role === 'guard' && rng.random() < 0.3) {
+    } else if (role === 'guard' && rng.next() < 0.3) {
       // Some guards have titles
-      const title = rng.pick(this.nameData.titles[settlementType].guard);
+      const title = rng.choice(this.nameData.titles[settlementType].guard);
       return `${title} ${firstName}`;
     }
 
     // Most NPCs just have first name + last name
-    const lastName = rng.pick(this.nameData.lastNames);
+    const lastName = rng.choice(this.nameData.lastNames);
     return `${firstName} ${lastName}`;
   }
 
@@ -286,7 +286,7 @@ class NPCGenerator {
 
     let greeting;
     if (personalityTemplates && personalityTemplates.length > 0) {
-      greeting = rng.pick(personalityTemplates);
+      greeting = rng.choice(personalityTemplates);
     } else {
       // Fallback generic greeting
       greeting = "Hello there!";
@@ -297,31 +297,31 @@ class NPCGenerator {
       settlement: settlement.name,
       name: name,
       title: role,
-      tavernName: rng.pick(this.nameData.tavernNames),
-      shopName: rng.pick(this.nameData.merchantShopNames)
+      tavernName: rng.choice(this.nameData.tavernNames),
+      shopName: rng.choice(this.nameData.merchantShopNames)
     });
 
     // Select random flavor dialogue lines
     const flavorLines = [];
     const flavorCategories = Object.keys(this.dialogueData.flavorDialogue);
-    const numLines = rng.intBetween(2, 4);
+    const numLines = rng.nextInt(2, 4);
 
     for (let i = 0; i < numLines; i++) {
-      const category = rng.pick(flavorCategories);
-      let line = rng.pick(this.dialogueData.flavorDialogue[category]);
+      const category = rng.choice(flavorCategories);
+      let line = rng.choice(this.dialogueData.flavorDialogue[category]);
       line = this.fillTemplate(line, { settlement: settlement.name });
       flavorLines.push(line);
     }
 
     return {
       greeting,
-      flavorDialogue: flavorLines,
-      questOffer: rng.pick(this.dialogueData.questHooks.casual),
-      questAccept: rng.pick(this.dialogueData.questAccept),
-      questDecline: rng.pick(this.dialogueData.questDecline),
-      questProgress: rng.pick(this.dialogueData.questProgress),
-      questComplete: rng.pick(this.dialogueData.questComplete),
-      goodbye: rng.pick(this.dialogueData.goodbye)
+      flavor: flavorLines,
+      questOffer: rng.choice(this.dialogueData.questHooks.casual),
+      questAccept: rng.choice(this.dialogueData.questAccept),
+      questDecline: rng.choice(this.dialogueData.questDecline),
+      questProgress: rng.choice(this.dialogueData.questProgress),
+      questComplete: rng.choice(this.dialogueData.questComplete),
+      goodbye: rng.choice(this.dialogueData.goodbye)
     };
   }
 

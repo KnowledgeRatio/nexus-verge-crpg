@@ -12,7 +12,7 @@
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 2,
-        "from": ["acrobatics", "animalHandling", "athletics", "history", "insight", "intimidation", "perception", "survival"]
+        "from": ["acrobatics", "athletics", "endurance", "perception", "empathy", "influence"]
       },
       "startingEquipment": {
         "defaults": ["chainMail", "longsword", "shield", "lightCrossbow", "bolt:20", "dungeoneersPack"]
@@ -76,7 +76,7 @@
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 2,
-        "from": ["arcana", "history", "insight", "investigation", "medicine", "religion"]
+        "from": ["arcana", "academia", "empathy", "investigation"]
       },
       "startingEquipment": {
         "defaults": ["quarterstaff", "componentPouch", "scholarsPack", "spellbook"]
@@ -136,7 +136,7 @@
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 2,
-        "from": ["history", "insight", "medicine", "persuasion", "religion"]
+        "from": ["academia", "empathy", "influence"]
       },
       "startingEquipment": {
         "defaults": ["mace", "scaleMail", "shield", "holySymbol", "priestsPack"]
@@ -205,7 +205,7 @@
       "toolProficiencies": ["thievesTools"],
       "skillChoices": {
         "choose": 4,
-        "from": ["acrobatics", "athletics", "deception", "insight", "intimidation", "investigation", "perception", "performance", "persuasion", "sleightOfHand", "stealth"]
+        "from": ["acrobatics", "athletics", "deception", "empathy", "influence", "investigation", "perception", "sleightOfHand", "cunning"]
       },
       "startingEquipment": {
         "defaults": ["rapier", "shortbow", "arrow:20", "leatherArmor", "dagger:2", "thievesTools", "burglarsPack"]
@@ -268,7 +268,7 @@
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 3,
-        "from": ["animalHandling", "athletics", "insight", "investigation", "nature", "perception", "stealth", "survival"]
+        "from": ["athletics", "empathy", "investigation", "academia", "perception", "cunning", "endurance"]
       },
       "startingEquipment": {
         "defaults": ["scaleMail", "longbow", "arrow:20", "longsword", "explorersPack"]

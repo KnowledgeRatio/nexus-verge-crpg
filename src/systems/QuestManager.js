@@ -530,6 +530,44 @@ class QuestManager {
   }
 
   /**
+   * Get quests from a specific NPC by status
+   * @param {string} npcId - NPC ID
+   * @param {string} status - Quest status ('available', 'active', 'completed')
+   * @returns {Array<Object>} Quests
+   */
+  getQuestsFromNPC(npcId, status = 'available') {
+    const quests = gameState.get('quests');
+    if (!quests) return [];
+
+    let questList = [];
+    
+    if (status === 'available') {
+      // Available quests that haven't been taken yet
+      questList = (this.availableQuests || []).filter(q => q.questGiver?.npcId === npcId);
+    } else if (status === 'active') {
+      // Active quests from this NPC
+      questList = quests.active.filter(q => q.questGiver?.npcId === npcId);
+    } else if (status === 'completed') {
+      // Completed quests from this NPC
+      questList = quests.completed.filter(q => q.questGiver?.npcId === npcId);
+    }
+
+    return questList;
+  }
+
+  /**
+   * Check if a quest is ready to complete (all objectives done)
+   * @param {string} questId - Quest ID
+   * @returns {boolean} Ready to complete
+   */
+  isQuestReadyToComplete(questId) {
+    const quest = this.getQuest(questId);
+    if (!quest) return false;
+
+    return quest.objectives.every(obj => obj.completed);
+  }
+
+  /**
    * Get quests ready to turn in to an NPC
    * @param {string} npcId - NPC ID
    * @returns {Array<Object>} Turn-in ready quests
@@ -539,7 +577,7 @@ class QuestManager {
     if (!quests) return [];
 
     return quests.active.filter(q =>
-      q.questGiverId === npcId && q.status === 'ready_to_turn_in'
+      q.questGiver?.npcId === npcId && this.isQuestReadyToComplete(q.id)
     );
   }
 

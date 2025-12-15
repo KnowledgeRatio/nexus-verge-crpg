@@ -235,10 +235,10 @@ export class Character {
     initializeSkills(chosenSkills = []) {
         const skills = {};
         const skillList = [
-            'acrobatics', 'animalHandling', 'arcana', 'athletics', 'deception',
-            'history', 'insight', 'intimidation', 'investigation', 'medicine',
-            'nature', 'perception', 'performance', 'persuasion', 'religion',
-            'sleightOfHand', 'stealth', 'survival'
+            'athletics', 'acrobatics', 'sleightOfHand', 'endurance',
+            'academia', 'arcana', 'investigation',
+            'perception', 'cunning', 'creativity', 'empathy',
+            'influence', 'deception'
         ];
 
         // Initialize all skills
@@ -282,24 +282,19 @@ export class Character {
      */
     updateSkillBonuses(skills = this.skills) {
         const skillAbilities = {
-            acrobatics: 'dex',
-            animalHandling: 'wis',
-            arcana: 'int',
             athletics: 'str',
-            deception: 'cha',
-            history: 'int',
-            insight: 'wis',
-            intimidation: 'cha',
-            investigation: 'int',
-            medicine: 'wis',
-            nature: 'int',
-            perception: 'wis',
-            performance: 'cha',
-            persuasion: 'cha',
-            religion: 'int',
+            acrobatics: 'dex',
             sleightOfHand: 'dex',
-            stealth: 'dex',
-            survival: 'wis'
+            endurance: 'con',
+            academia: 'int',
+            arcana: 'int',
+            investigation: 'int',
+            perception: 'wis',
+            cunning: 'wis',
+            creativity: 'wis',
+            empathy: 'wis',
+            influence: 'cha',
+            deception: 'cha'
         };
 
         for (const [skill, data] of Object.entries(skills)) {

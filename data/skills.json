@@ -1,16 +1,34 @@
 {
   "skills": [
     {
+      "id": "athletics",
+      "name": "Athletics",
+      "ability": "str",
+      "description": "Your Strength (Athletics) check covers difficult situations you encounter while climbing, jumping, swimming, grappling, and other feats of physical prowess."
+    },
+    {
       "id": "acrobatics",
       "name": "Acrobatics",
       "ability": "dex",
-      "description": "Your Dexterity (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, such as when you're trying to run across a sheet of ice, balance on a tightrope, or stay upright on a rocking ship's deck."
+      "description": "Your Dexterity (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, balance on precarious surfaces, move silently, and perform acrobatic maneuvers. Also used for stealth (moving silently)."
     },
     {
-      "id": "animalHandling",
-      "name": "Animal Handling",
-      "ability": "wis",
-      "description": "When there is any question whether you can calm down a domesticated animal, keep a mount from getting spooked, or intuit an animal's intentions, the GM might call for a Wisdom (Animal Handling) check."
+      "id": "sleightOfHand",
+      "name": "Sleight of Hand",
+      "ability": "dex",
+      "description": "Whenever you attempt an act of legerdemain or manual trickery, such as planting something on someone else, concealing an object on your person, lockpicking, or disarming traps, make a Dexterity (Sleight of Hand) check."
+    },
+    {
+      "id": "endurance",
+      "name": "Endurance",
+      "ability": "con",
+      "description": "Your Constitution (Endurance) check measures your ability to push through harsh environments, endure sustained activity, resist fatigue, and maintain concentration during physically demanding tasks."
+    },
+    {
+      "id": "academia",
+      "name": "Academia",
+      "ability": "int",
+      "description": "Your Intelligence (Academia) check measures your ability to recall lore about historical events, natural phenomena (terrain, plants, animals, weather), religious knowledge (deities, rites, prayers), and scholarly theory. Merges History, Nature, and Religion."
     },
     {
       "id": "arcana",
@@ -19,94 +37,46 @@
       "description": "Your Intelligence (Arcana) check measures your ability to recall lore about spells, magic items, eldritch symbols, magical traditions, the planes of existence, and the inhabitants of those planes."
     },
     {
-      "id": "athletics",
-      "name": "Athletics",
-      "ability": "str",
-      "description": "Your Strength (Athletics) check covers difficult situations you encounter while climbing, jumping, or swimming."
-    },
-    {
-      "id": "deception",
-      "name": "Deception",
-      "ability": "cha",
-      "description": "Your Charisma (Deception) check determines whether you can convincingly hide the truth, either verbally or through your actions."
-    },
-    {
-      "id": "history",
-      "name": "History",
-      "ability": "int",
-      "description": "Your Intelligence (History) check measures your ability to recall lore about historical events, legendary people, ancient kingdoms, past disputes, recent wars, and lost civilizations."
-    },
-    {
-      "id": "insight",
-      "name": "Insight",
-      "ability": "wis",
-      "description": "Your Wisdom (Insight) check decides whether you can determine the true intentions of a creature, such as when searching out a lie or predicting someone's next move."
-    },
-    {
-      "id": "intimidation",
-      "name": "Intimidation",
-      "ability": "cha",
-      "description": "When you attempt to influence someone through overt threats, hostile actions, and physical violence, the GM might ask you to make a Charisma (Intimidation) check."
-    },
-    {
       "id": "investigation",
       "name": "Investigation",
       "ability": "int",
-      "description": "When you look around for clues and make deductions based on those clues, you make an Intelligence (Investigation) check."
-    },
-    {
-      "id": "medicine",
-      "name": "Medicine",
-      "ability": "wis",
-      "description": "A Wisdom (Medicine) check lets you try to stabilize a dying companion or diagnose an illness."
-    },
-    {
-      "id": "nature",
-      "name": "Nature",
-      "ability": "int",
-      "description": "Your Intelligence (Nature) check measures your ability to recall lore about terrain, plants and animals, the weather, and natural cycles."
+      "description": "When you look around for clues and make deductions based on those clues, conduct forensic analysis, follow evidence chains, or piece together logical inferences, you make an Intelligence (Investigation) check."
     },
     {
       "id": "perception",
       "name": "Perception",
       "ability": "wis",
-      "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your general awareness of your surroundings and the keenness of your senses."
+      "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your awareness of detail, danger, motion, and the keenness of your senses."
     },
     {
-      "id": "performance",
-      "name": "Performance",
-      "ability": "cha",
-      "description": "Your Charisma (Performance) check determines how well you can delight an audience with music, dance, acting, storytelling, or some other form of entertainment."
-    },
-    {
-      "id": "persuasion",
-      "name": "Persuasion",
-      "ability": "cha",
-      "description": "When you attempt to influence someone or a group of people with tact, social graces, or good nature, the GM might ask you to make a Charisma (Persuasion) check."
-    },
-    {
-      "id": "religion",
-      "name": "Religion",
-      "ability": "int",
-      "description": "Your Intelligence (Religion) check measures your ability to recall lore about deities, rites and prayers, religious hierarchies, holy symbols, and the practices of secret cults."
-    },
-    {
-      "id": "sleightOfHand",
-      "name": "Sleight of Hand",
-      "ability": "dex",
-      "description": "Whenever you attempt an act of legerdemain or manual trickery, such as planting something on someone else or concealing an object on your person, make a Dexterity (Sleight of Hand) check."
-    },
-    {
-      "id": "stealth",
-      "name": "Stealth",
-      "ability": "dex",
-      "description": "Make a Dexterity (Stealth) check when you attempt to conceal yourself from enemies, slink past guards, slip away without being noticed, or sneak up on someone without being seen or heard."
-    },
-    {
-      "id": "survival",
-      "name": "Survival",
+      "id": "cunning",
+      "name": "Cunning",
       "ability": "wis",
-      "description": "The GM might ask you to make a Wisdom (Survival) check to follow tracks, hunt wild game, guide your group through frozen wastelands, identify signs that owlbears live nearby, predict the weather, or avoid quicksand and other natural hazards."
+      "description": "Your Wisdom (Cunning) check represents the subtle brother of creativity, focusing on stealth (hiding, blending into shadows), tactical thinking, and practical problem-solving in the moment."
+    },
+    {
+      "id": "creativity",
+      "name": "Creativity",
+      "ability": "wis",
+      "description": "Your Wisdom (Creativity) check measures improvisational problem solving, artistic expression, and thinking outside the box. Used when conventional approaches fail and innovation is required."
+    },
+    {
+      "id": "empathy",
+      "name": "Empathy",
+      "ability": "wis",
+      "description": "Your Wisdom (Empathy) check determines whether you can understand the true intentions and emotions of a creature, sense when someone is lying, predict their next move, or connect with them emotionally. Replaces Insight."
+    },
+    {
+      "id": "influence",
+      "name": "Influence",
+      "ability": "cha",
+      "description": "Your Charisma (Influence) check covers all forms of social persuasion, from gentle diplomacy and inspiring speeches to overt threats and intimidation. Merges Persuasion and Intimidation."
+    },
+    {
+      "id": "deception",
+      "name": "Deception",
+      "ability": "cha",
+      "description": "Your Charisma (Deception) check determines whether you can convincingly hide the truth, either verbally or through your actions, bluff your way past guards, or maintain a false identity."
     }
   ]
 }

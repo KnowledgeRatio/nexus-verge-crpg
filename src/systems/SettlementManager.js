@@ -4,11 +4,20 @@
 import { gameState } from '../core/GameState.js';
 
 class SettlementManager {
-  constructor(worldGenerator, settlementUI = null) {
+  constructor(worldGenerator, settlementUI = null, npcGenerator = null, questGenerator = null, questManager = null) {
     this.worldGenerator = worldGenerator;
     this.settlementUI = settlementUI;
+    this.npcGenerator = npcGenerator;
+    this.questGenerator = questGenerator;
+    this.questManager = questManager;
     this.currentSettlement = null;
     this.currentBuilding = null;
+    
+    console.log('🏘️ SettlementManager initialized with:', {
+      npcGenerator: !!this.npcGenerator,
+      questGenerator: !!this.questGenerator,
+      questManager: !!this.questManager
+    });
   }
 
   /**
@@ -41,7 +50,7 @@ class SettlementManager {
    * Shows prompt if settlement available, opens UI if player presses E
    * @returns {boolean} True if settlement entered, false otherwise
    */
-  enterSettlement() {
+  async enterSettlement() {
     const settlement = this.getSettlementAtPlayerPosition();
 
     if (!settlement) {
@@ -53,10 +62,40 @@ class SettlementManager {
     this.currentSettlement = settlement;
     gameState.set('ui.currentSettlement', settlement);
 
-    // Generate NPCs if first visit
+    // Generate NPCs and quests if first visit
     if (!settlement.npcs || settlement.npcs.length === 0) {
-      // TODO: Will be implemented in Phase 2 (NPC Generation)
-      settlement.npcs = [];
+      console.log(`🏘️ First visit to ${settlement.name}, generating content...`);
+      
+      // Generate NPCs
+      if (this.npcGenerator) {
+        settlement.npcs = await this.npcGenerator.generateNPCsForSettlement(settlement);
+        console.log(`👥 Generated ${settlement.npcs.length} NPCs`);
+      } else {
+        settlement.npcs = [];
+        console.warn('NPCGenerator not initialized');
+      }
+
+      // Generate quests
+      if (this.questGenerator && this.questManager) {
+        const playerLevel = gameState.get('character.level') || 1;
+        const quests = await this.questGenerator.generateQuestsForSettlement(settlement, playerLevel);
+        console.log(`📜 Generated ${quests.length} quests`);
+
+        // Assign quests to NPCs
+        this.assignQuestsToNPCs(settlement, quests);
+
+        // Add quests to quest manager as available
+        for (const quest of quests) {
+          // Store quest in manager as available from this settlement
+          if (!this.questManager.availableQuests) {
+            this.questManager.availableQuests = [];
+          }
+          this.questManager.availableQuests.push(quest);
+        }
+      } else {
+        console.warn('QuestGenerator or QuestManager not initialized');
+      }
+
       settlement.visitedAt = Date.now();
     }
 
@@ -65,6 +104,66 @@ class SettlementManager {
     gameState.addMessage(`You enter ${settlement.name}`, 'success');
 
     return true;
+  }
+
+  /**
+   * Assign generated quests to appropriate NPCs based on their roles
+   * @param {Object} settlement - Settlement data
+   * @param {Array<Object>} quests - Generated quests
+   */
+  assignQuestsToNPCs(settlement, quests) {
+    if (!settlement.npcs || settlement.npcs.length === 0) {
+      console.warn('No NPCs to assign quests to');
+      return;
+    }
+
+    // Build role-based NPC lookup
+    const npcsByRole = {};
+    for (const npc of settlement.npcs) {
+      if (npc.offersQuest) {
+        if (!npcsByRole[npc.role]) {
+          npcsByRole[npc.role] = [];
+        }
+        npcsByRole[npc.role].push(npc);
+      }
+    }
+
+    // Assign each quest to an appropriate NPC
+    for (const quest of quests) {
+      // Get quest giver preference from quest data
+      const preferredRole = quest.questGiver?.role || 'leader';
+      
+      // Find NPCs with matching role
+      let candidates = npcsByRole[preferredRole] || [];
+      
+      // Fallback to any quest-giving NPC if no match
+      if (candidates.length === 0) {
+        candidates = settlement.npcs.filter(npc => npc.offersQuest);
+      }
+
+      // Assign to NPC with fewest quests
+      if (candidates.length > 0) {
+        candidates.sort((a, b) => (a.questIds?.length || 0) - (b.questIds?.length || 0));
+        const selectedNPC = candidates[0];
+        
+        if (!selectedNPC.questIds) {
+          selectedNPC.questIds = [];
+        }
+        selectedNPC.questIds.push(quest.id);
+
+        // Update quest with NPC details
+        quest.questGiver = {
+          npcId: selectedNPC.id,
+          npcName: selectedNPC.name,
+          role: selectedNPC.role,
+          building: selectedNPC.building
+        };
+
+        console.log(`📜 Assigned quest "${quest.name}" to ${selectedNPC.name} (${selectedNPC.role})`);
+      } else {
+        console.warn(`No suitable NPC found for quest: ${quest.name}`);
+      }
+    }
   }
 
   /**

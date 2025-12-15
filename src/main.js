@@ -14,6 +14,7 @@ import CombatManager from './systems/CombatManager.js';
 import restManager from './systems/RestManager.js';
 import saveManager from './systems/SaveManager.js';
 import SettlementManager from './systems/SettlementManager.js';
+import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
 
@@ -29,7 +30,8 @@ class Game {
         this.player = null;
         this.settlementManager = null;
 
-        // Quest systems
+        // NPC and Quest systems
+        this.npcGenerator = null;
         this.questGenerator = null;
         this.questManager = null;
 
@@ -253,10 +255,10 @@ class Game {
             this.settlementUI = new SettlementUI(null); // Will set manager reference after creation
         }
 
-        if (!this.settlementManager) {
-            console.log('🏘️ Initializing settlement system...');
-            this.settlementManager = new SettlementManager(this.worldGenerator, this.settlementUI);
-            this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
+        if (!this.npcGenerator) {
+            console.log('👥 Initializing NPC generator...');
+            this.npcGenerator = new NPCGenerator(seed);
+            await this.npcGenerator.loadData();
         }
 
         if (!this.questGenerator) {
@@ -269,6 +271,18 @@ class Game {
             console.log('📜 Initializing quest manager...');
             this.questManager = new QuestManager(this.questGenerator);
             await this.questManager.initialize();
+        }
+
+        if (!this.settlementManager) {
+            console.log('🏘️ Initializing settlement system...');
+            this.settlementManager = new SettlementManager(
+                this.worldGenerator,
+                this.settlementUI,
+                this.npcGenerator,
+                this.questGenerator,
+                this.questManager
+            );
+            this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
         }
 
         if (!this.player) {

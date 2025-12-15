@@ -347,7 +347,8 @@ class SettlementUI {
    */
   handleDialogueOption(action, npc) {
     const textEl = document.getElementById('npcDialogueText');
-    if (!textEl) return;
+    const optionsEl = document.getElementById('npcDialogueOptions');
+    if (!textEl || !optionsEl) return;
 
     switch (action) {
       case 'flavor':
@@ -359,8 +360,8 @@ class SettlementUI {
         break;
 
       case 'quest':
-        // TODO: Phase 5 - Show quest offer
-        textEl.textContent = npc.dialogue.questOffer || 'I might have some work for you... (Quest system coming soon)';
+        // Show available quests from this NPC
+        this.showQuestOptions(npc, textEl, optionsEl);
         break;
 
       case 'trade':
@@ -384,6 +385,252 @@ class SettlementUI {
         }, 1000);
         break;
     }
+  }
+
+  /**
+   * Show quest options from NPC
+   * @param {Object} npc - NPC data
+   * @param {HTMLElement} textEl - Dialogue text element
+   * @param {HTMLElement} optionsEl - Dialogue options element
+   */
+  showQuestOptions(npc, textEl, optionsEl) {
+    if (!window.questManager) {
+      textEl.textContent = "I might have some work for you, but I can't quite remember... (Quest system not initialized)";
+      return;
+    }
+
+    // Get quests from this NPC
+    const availableQuests = window.questManager.getQuestsFromNPC(npc.id, 'available');
+    const activeQuests = window.questManager.getQuestsFromNPC(npc.id, 'active');
+    const completedQuests = window.questManager.getQuestsFromNPC(npc.id, 'completed');
+
+    // Check if player has completed quests ready to turn in
+    const readyToTurnIn = activeQuests.filter(q => window.questManager.isQuestReadyToComplete(q.id));
+
+    if (readyToTurnIn.length > 0) {
+      // Show turn-in options
+      textEl.textContent = "Ah, you've completed your tasks! Let me see...";
+      
+      let optionsHTML = '<div class="quest-turn-in-list">';
+      for (const quest of readyToTurnIn) {
+        optionsHTML += `
+          <button class="dialogue-option quest-turn-in" data-quest-id="${quest.id}">
+            ✅ Turn in: ${quest.name}
+          </button>
+        `;
+      }
+      optionsHTML += `
+        <button class="dialogue-option" data-action="back">
+          ← Back
+        </button>
+      `;
+      optionsHTML += '</div>';
+
+      optionsEl.innerHTML = optionsHTML;
+
+      // Add event listeners for turn-in
+      optionsEl.querySelectorAll('.quest-turn-in').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.turnInQuest(e.target.dataset.questId, npc);
+        });
+      });
+
+      // Back button
+      optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+        this.showNPCDialogue(npc);
+      });
+
+    } else if (availableQuests.length > 0) {
+      // Show available quest offers
+      textEl.textContent = npc.dialogue.questOffer || "I have some work that needs doing, if you're interested.";
+      
+      let optionsHTML = '<div class="quest-offer-list">';
+      for (const quest of availableQuests) {
+        const difficultyIcon = this.getQuestDifficultyIcon(quest.difficulty);
+        optionsHTML += `
+          <button class="dialogue-option quest-offer" data-quest-id="${quest.id}">
+            ${difficultyIcon} ${quest.name}
+          </button>
+        `;
+      }
+      optionsHTML += `
+        <button class="dialogue-option" data-action="back">
+          ← Back
+        </button>
+      `;
+      optionsHTML += '</div>';
+
+      optionsEl.innerHTML = optionsHTML;
+
+      // Add event listeners for quest details
+      optionsEl.querySelectorAll('.quest-offer').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.showQuestDetails(e.target.dataset.questId, npc);
+        });
+      });
+
+      // Back button
+      optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+        this.showNPCDialogue(npc);
+      });
+
+    } else if (activeQuests.length > 0) {
+      // Player has active quests but not completed
+      textEl.textContent = "You're still working on the tasks I gave you. Come back when you're done!";
+    } else if (completedQuests.length > 0) {
+      // No more quests available
+      textEl.textContent = "I don't have any more work for you right now. Check back later!";
+    } else {
+      // No quests at all
+      textEl.textContent = "I don't have any work available at the moment.";
+    }
+  }
+
+  /**
+   * Show detailed quest information
+   * @param {string} questId - Quest ID
+   * @param {Object} npc - NPC data
+   */
+  showQuestDetails(questId, npc) {
+    const quest = window.questManager.getQuest(questId);
+    if (!quest) {
+      console.error(`Quest ${questId} not found`);
+      return;
+    }
+
+    const textEl = document.getElementById('npcDialogueText');
+    const optionsEl = document.getElementById('npcDialogueOptions');
+
+    // Show quest details
+    const objectivesText = quest.objectives.map(obj => obj.description).join('; ');
+    const rewardText = `${quest.rewards.xp} XP, ${quest.rewards.gold} gold`;
+
+    textEl.innerHTML = `
+      <div class="quest-details">
+        <h4>${quest.name}</h4>
+        <p class="quest-difficulty">Difficulty: ${quest.difficulty}</p>
+        <p class="quest-description">${quest.description}</p>
+        <p class="quest-objectives"><strong>Objectives:</strong> ${objectivesText}</p>
+        <p class="quest-rewards"><strong>Rewards:</strong> ${rewardText}</p>
+      </div>
+    `;
+
+    // Show accept/decline options
+    optionsEl.innerHTML = `
+      <button class="dialogue-option btn-primary" data-action="accept-quest" data-quest-id="${questId}">
+        ✅ Accept Quest
+      </button>
+      <button class="dialogue-option" data-action="decline-quest">
+        ❌ Decline
+      </button>
+    `;
+
+    // Add event listeners
+    optionsEl.querySelector('[data-action="accept-quest"]')?.addEventListener('click', (e) => {
+      this.acceptQuest(e.target.dataset.questId, npc);
+    });
+
+    optionsEl.querySelector('[data-action="decline-quest"]')?.addEventListener('click', () => {
+      this.showNPCDialogue(npc);
+    });
+  }
+
+  /**
+   * Accept a quest from an NPC
+   * @param {string} questId - Quest ID
+   * @param {Object} npc - NPC data
+   */
+  acceptQuest(questId, npc) {
+    if (!window.questManager) {
+      console.error('QuestManager not initialized');
+      return;
+    }
+
+    const success = window.questManager.acceptQuest(questId);
+    
+    if (success) {
+      const textEl = document.getElementById('npcDialogueText');
+      if (textEl) {
+        textEl.textContent = npc.dialogue.questAccepted || "Thank you! I'm counting on you. Good luck!";
+      }
+
+      // Show notification
+      if (window.showQuestNotification) {
+        const quest = window.questManager.getQuest(questId);
+        window.showQuestNotification('Quest Accepted', quest.name, 'success');
+      }
+
+      // Close dialogue after a moment
+      setTimeout(() => {
+        this.closeNPCDialogue();
+      }, 1500);
+    } else {
+      const textEl = document.getElementById('npcDialogueText');
+      if (textEl) {
+        textEl.textContent = "Hmm, something's not right. Perhaps you already have this quest?";
+      }
+    }
+  }
+
+  /**
+   * Turn in a completed quest
+   * @param {string} questId - Quest ID
+   * @param {Object} npc - NPC data
+   */
+  turnInQuest(questId, npc) {
+    if (!window.questManager) {
+      console.error('QuestManager not initialized');
+      return;
+    }
+
+    const result = window.questManager.completeQuest(questId);
+    
+    if (result.success) {
+      const textEl = document.getElementById('npcDialogueText');
+      if (textEl) {
+        textEl.innerHTML = `
+          <div class="quest-complete">
+            <p>${npc.dialogue.questComplete || "Excellent work! Here's your reward."}</p>
+            <p class="rewards-received">
+              <strong>Received:</strong><br>
+              ${result.rewards.xp} XP<br>
+              ${result.rewards.gold} Gold
+              ${result.rewards.items && result.rewards.items.length > 0 ? '<br>' + result.rewards.items.join(', ') : ''}
+            </p>
+          </div>
+        `;
+      }
+
+      // Show notification
+      if (window.showQuestNotification) {
+        window.showQuestNotification('Quest Complete!', result.quest.name, 'success');
+      }
+
+      // Close dialogue after showing rewards
+      setTimeout(() => {
+        this.closeNPCDialogue();
+      }, 3000);
+    } else {
+      const textEl = document.getElementById('npcDialogueText');
+      if (textEl) {
+        textEl.textContent = "Hmm, you haven't completed all the objectives yet. Come back when you're done!";
+      }
+    }
+  }
+
+  /**
+   * Get difficulty icon for quest
+   * @param {string} difficulty - Quest difficulty
+   * @returns {string} Icon
+   */
+  getQuestDifficultyIcon(difficulty) {
+    const icons = {
+      'easy': '⭐',
+      'normal': '⭐⭐',
+      'hard': '⭐⭐⭐',
+      'deadly': '💀'
+    };
+    return icons[difficulty?.toLowerCase()] || '❓';
   }
 
   /**
