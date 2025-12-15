@@ -1,0 +1,532 @@
+{
+  "description": "Quest templates for campaign and procedural side quest generation",
+  "version": "1.0.0",
+
+  "campaignQuests": [
+    {
+      "id": "campaign-stage-1",
+      "stage": 1,
+      "name": "The Monster Threat",
+      "description": "Investigate the recent surge in monster attacks near {settlement}.",
+      "type": "campaign",
+      "difficulty": "normal",
+      "objectives": [
+        {
+          "id": "obj-1",
+          "type": "kill",
+          "description": "Defeat 5 monsters within 50 tiles of {settlement}",
+          "requirement": {
+            "count": 5,
+            "radius": 50,
+            "anyCreature": true
+          }
+        },
+        {
+          "id": "obj-2",
+          "type": "return",
+          "description": "Report findings to the village elder",
+          "requirement": {
+            "npcRole": "leader",
+            "settlementId": "{startSettlement}"
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 500,
+        "gold": 100,
+        "reputation": {
+          "faction": "settlement",
+          "amount": 50
+        }
+      },
+      "nextStage": 2
+    },
+    {
+      "id": "campaign-stage-2",
+      "stage": 2,
+      "name": "The Ancient Corruption",
+      "description": "Discover the source of the monster corruption in the nearby ruins.",
+      "type": "campaign",
+      "difficulty": "hard",
+      "objectives": [
+        {
+          "id": "obj-1",
+          "type": "explore",
+          "description": "Find and enter the ancient ruins",
+          "requirement": {
+            "featureType": "dungeon",
+            "radius": 200
+          }
+        },
+        {
+          "id": "obj-2",
+          "type": "retrieve",
+          "description": "Recover the corrupted artifact",
+          "requirement": {
+            "itemId": "corrupted-artifact",
+            "location": "dungeon"
+          }
+        },
+        {
+          "id": "obj-3",
+          "type": "return",
+          "description": "Bring the artifact to the village elder",
+          "requirement": {
+            "npcRole": "leader",
+            "settlementId": "{startSettlement}"
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 1000,
+        "gold": 250,
+        "item": "potion-greater-healing",
+        "reputation": {
+          "faction": "settlement",
+          "amount": 100
+        }
+      },
+      "nextStage": 3
+    },
+    {
+      "id": "campaign-stage-3",
+      "stage": 3,
+      "name": "The Enemy Stronghold",
+      "description": "Track the corruption to its source - an enemy fortress.",
+      "type": "campaign",
+      "difficulty": "hard",
+      "objectives": [
+        {
+          "id": "obj-1",
+          "type": "explore",
+          "description": "Locate the enemy stronghold",
+          "requirement": {
+            "featureType": "fortress",
+            "radius": 400
+          }
+        },
+        {
+          "id": "obj-2",
+          "type": "kill",
+          "description": "Defeat the stronghold's guardians",
+          "requirement": {
+            "count": 10,
+            "location": "fortress",
+            "minCR": 2
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 2000,
+        "gold": 500,
+        "item": "longsword-plus-1",
+        "reputation": {
+          "faction": "settlement",
+          "amount": 150
+        }
+      },
+      "nextStage": 4
+    },
+    {
+      "id": "campaign-stage-4",
+      "stage": 4,
+      "name": "Confronting the BBEG",
+      "description": "Face the mastermind behind the corruption and end the threat.",
+      "type": "campaign",
+      "difficulty": "deadly",
+      "objectives": [
+        {
+          "id": "obj-1",
+          "type": "kill",
+          "description": "Defeat the Dark Sorcerer",
+          "requirement": {
+            "bossId": "dark-sorcerer",
+            "location": "fortress"
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 5000,
+        "gold": 1000,
+        "item": "legendary-weapon",
+        "reputation": {
+          "faction": "all",
+          "amount": 500
+        },
+        "gameComplete": true
+      },
+      "nextStage": null
+    }
+  ],
+
+  "sideQuestTemplates": [
+    {
+      "id": "kill-creatures-basic",
+      "name": "{creatureNamePlural} Menace",
+      "description": "The local {npcRole} has asked you to deal with {count} {creatureName} threatening {settlement}.",
+      "type": "kill",
+      "difficulty": "normal",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Slay {count} {creatureName}",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": "{countValue}",
+            "location": {
+              "nearSettlement": "{settlement}",
+              "radius": 100
+            }
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "creatureCR * count * 100",
+        "goldFormula": "creatureCR * count * 25",
+        "reputation": {
+          "faction": "settlement",
+          "amount": 25
+        }
+      },
+      "generation": {
+        "minCR": 0.125,
+        "maxCRFormula": "playerLevel + 2",
+        "countRange": [3, 8],
+        "validNPCRoles": ["innkeeper", "leader", "merchant", "guard"]
+      }
+    },
+    {
+      "id": "kill-creatures-elite",
+      "name": "Hunt the {creatureName}",
+      "description": "{npcName} needs a skilled hunter to eliminate a particularly dangerous {creatureName} that has been terrorizing travelers near {settlement}.",
+      "type": "kill",
+      "difficulty": "hard",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Hunt and slay the elite {creatureName}",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": 1,
+            "elite": true,
+            "location": {
+              "nearSettlement": "{settlement}",
+              "radius": 150
+            }
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "creatureCR * 200",
+        "goldFormula": "creatureCR * 50",
+        "itemChance": 0.4,
+        "reputation": {
+          "faction": "settlement",
+          "amount": 50
+        }
+      },
+      "generation": {
+        "minCRFormula": "playerLevel",
+        "maxCRFormula": "playerLevel + 3",
+        "validNPCRoles": ["leader", "guard", "innkeeper"]
+      }
+    },
+    {
+      "id": "retrieve-item-dungeon",
+      "name": "Lost {itemType}",
+      "description": "{npcName} has lost their precious {itemName} in the nearby {dungeonType}. They're offering a reward for its safe return.",
+      "type": "retrieve",
+      "difficulty": "hard",
+      "objectives": [
+        {
+          "type": "explore",
+          "description": "Find the {dungeonType}",
+          "requirement": {
+            "featureType": "dungeon",
+            "within": 200
+          }
+        },
+        {
+          "type": "retrieve",
+          "description": "Recover {itemName} from the {dungeonType}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "location": "dungeon"
+          }
+        },
+        {
+          "type": "return",
+          "description": "Return {itemName} to {npcName}",
+          "requirement": {
+            "npcId": "{npcId}"
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "300 * difficultyMultiplier",
+        "goldFormula": "150 * difficultyMultiplier",
+        "itemChance": 0.25,
+        "reputation": {
+          "faction": "settlement",
+          "amount": 50
+        }
+      },
+      "generation": {
+        "validItemTypes": ["heirloom", "artifact", "treasure", "relic"],
+        "dungeonTypes": ["Cave", "Ruins", "Crypt", "Lair", "Hideout"],
+        "validNPCRoles": ["merchant", "innkeeper", "leader", "citizen"]
+      }
+    },
+    {
+      "id": "deliver-message",
+      "name": "Urgent Message",
+      "description": "{npcName} needs you to deliver an important message to {targetNpc} in {targetSettlement}.",
+      "type": "deliver",
+      "difficulty": "easy",
+      "objectives": [
+        {
+          "type": "travel",
+          "description": "Travel to {targetSettlement}",
+          "requirement": {
+            "settlementId": "{targetSettlementId}"
+          }
+        },
+        {
+          "type": "interact",
+          "description": "Speak with {targetNpc}",
+          "requirement": {
+            "npcId": "{targetNpcId}"
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "50 + (distance / 10)",
+        "goldFormula": "25 + (distance / 20)",
+        "reputation": {
+          "faction": "both",
+          "amount": 15
+        }
+      },
+      "generation": {
+        "minDistance": 50,
+        "maxDistance": 300,
+        "validNPCRoles": ["merchant", "leader", "innkeeper"],
+        "urgencyWords": ["Urgent", "Critical", "Important", "Time-Sensitive"]
+      }
+    },
+    {
+      "id": "deliver-item",
+      "name": "Supply Delivery",
+      "description": "{npcName} needs someone to deliver {itemName} to {targetNpc} in {targetSettlement}.",
+      "type": "deliver",
+      "difficulty": "normal",
+      "objectives": [
+        {
+          "type": "obtain",
+          "description": "Pick up {itemName} from {npcName}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "npcId": "{npcId}"
+          }
+        },
+        {
+          "type": "travel",
+          "description": "Travel to {targetSettlement}",
+          "requirement": {
+            "settlementId": "{targetSettlementId}"
+          }
+        },
+        {
+          "type": "deliver",
+          "description": "Deliver {itemName} to {targetNpc}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "npcId": "{targetNpcId}"
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "100 + (distance / 5)",
+        "goldFormula": "50 + (distance / 10)",
+        "reputation": {
+          "faction": "both",
+          "amount": 25
+        }
+      },
+      "generation": {
+        "minDistance": 50,
+        "maxDistance": 250,
+        "validNPCRoles": ["merchant", "blacksmith"],
+        "itemTypes": ["supplies", "goods", "materials"]
+      }
+    },
+    {
+      "id": "explore-location",
+      "name": "Scout {locationName}",
+      "description": "{npcName} needs reconnaissance on the nearby {locationType}. Explore the area and report back.",
+      "type": "explore",
+      "difficulty": "normal",
+      "objectives": [
+        {
+          "type": "explore",
+          "description": "Find and scout the {locationType}",
+          "requirement": {
+            "featureType": "{locationTypeId}",
+            "within": 150
+          }
+        },
+        {
+          "type": "return",
+          "description": "Report your findings to {npcName}",
+          "requirement": {
+            "npcId": "{npcId}"
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "200",
+        "goldFormula": "75",
+        "reputation": {
+          "faction": "settlement",
+          "amount": 30
+        }
+      },
+      "generation": {
+        "locationTypes": ["dungeon", "ruins", "cave", "landmark"],
+        "validNPCRoles": ["leader", "guard"]
+      }
+    },
+    {
+      "id": "skill-challenge-trap",
+      "name": "Disarm the Traps",
+      "description": "{npcName} reports that traps have been set near {settlement}. Use your skills to find and disable them.",
+      "type": "skill",
+      "difficulty": "normal",
+      "skillChallengeId": "trap_detect_disarm",
+      "objectives": [
+        {
+          "type": "skill",
+          "description": "Detect traps with Perception",
+          "requirement": {
+            "skill": "perception",
+            "dc": 15,
+            "count": 3
+          }
+        },
+        {
+          "type": "skill",
+          "description": "Disarm traps with Sleight of Hand",
+          "requirement": {
+            "skill": "sleight_of_hand",
+            "dc": 13,
+            "count": 3
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 250,
+        "gold": 100,
+        "reputation": {
+          "faction": "settlement",
+          "amount": 40
+        }
+      },
+      "generation": {
+        "validNPCRoles": ["guard", "leader"]
+      }
+    },
+    {
+      "id": "skill-challenge-social",
+      "name": "Negotiate with Bandits",
+      "description": "A group of bandits is demanding tribute from {settlement}. {npcName} asks you to negotiate or intimidate them into leaving.",
+      "type": "skill",
+      "difficulty": "normal",
+      "objectives": [
+        {
+          "type": "encounter",
+          "description": "Find the bandit camp",
+          "requirement": {
+            "encounterType": "bandit_camp",
+            "within": 100
+          }
+        },
+        {
+          "type": "skill_choice",
+          "description": "Intimidate or Persuade the bandits to leave",
+          "requirement": {
+            "skills": ["intimidation", "persuasion"],
+            "dc": 14
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 300,
+        "gold": 150,
+        "reputation": {
+          "faction": "settlement",
+          "amount": 60
+        }
+      },
+      "alternativeOutcomes": [
+        {
+          "trigger": "skill_failure",
+          "result": "combat",
+          "enemies": ["bandit", "bandit", "bandit_captain"]
+        }
+      ],
+      "generation": {
+        "validNPCRoles": ["leader", "guard", "merchant"]
+      }
+    }
+  ],
+
+  "wordLists": {
+    "creatureAdjectives": [
+      "Vicious",
+      "Rampaging",
+      "Savage",
+      "Feral",
+      "Corrupted",
+      "Bloodthirsty",
+      "Terrifying",
+      "Marauding"
+    ],
+    "itemTypes": [
+      "Heirloom",
+      "Artifact",
+      "Treasure",
+      "Relic",
+      "Family Ring",
+      "Keepsake",
+      "Tome",
+      "Amulet"
+    ],
+    "dungeonTypes": [
+      "Cave",
+      "Ruins",
+      "Crypt",
+      "Lair",
+      "Hideout",
+      "Catacomb",
+      "Tomb",
+      "Temple"
+    ],
+    "urgencyWords": [
+      "Urgent",
+      "Critical",
+      "Important",
+      "Time-Sensitive",
+      "Pressing",
+      "Immediate"
+    ],
+    "locationDescriptors": [
+      "Mysterious",
+      "Ancient",
+      "Forgotten",
+      "Hidden",
+      "Lost",
+      "Cursed",
+      "Haunted"
+    ]
+  }
+}

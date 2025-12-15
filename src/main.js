@@ -14,6 +14,8 @@ import CombatManager from './systems/CombatManager.js';
 import restManager from './systems/RestManager.js';
 import saveManager from './systems/SaveManager.js';
 import SettlementManager from './systems/SettlementManager.js';
+import QuestGenerator from './systems/QuestGenerator.js';
+import QuestManager from './systems/QuestManager.js';
 
 class Game {
     constructor() {
@@ -26,6 +28,10 @@ class Game {
         this.mapRenderer = null;
         this.player = null;
         this.settlementManager = null;
+
+        // Quest systems
+        this.questGenerator = null;
+        this.questManager = null;
 
         // Combat systems
         this.combatManager = null;
@@ -253,6 +259,18 @@ class Game {
             this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
         }
 
+        if (!this.questGenerator) {
+            console.log('📜 Initializing quest generator...');
+            this.questGenerator = new QuestGenerator(seed);
+            await this.questGenerator.loadData();
+        }
+
+        if (!this.questManager) {
+            console.log('📜 Initializing quest manager...');
+            this.questManager = new QuestManager(this.questGenerator);
+            await this.questManager.initialize();
+        }
+
         if (!this.player) {
             console.log('👤 Initializing player...');
             this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
@@ -275,6 +293,9 @@ class Game {
 
         // Setup Save/Load System
         this.setupSaveLoadSystem();
+
+        // Setup Quest System
+        this.setupQuestSystem();
 
         // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
@@ -664,6 +685,280 @@ class Game {
         });
 
         console.log('💾 Save/Load system initialized');
+    }
+
+    /**
+     * Setup quest system UI and event handlers
+     */
+    setupQuestSystem() {
+        // Make quest manager globally accessible for UI
+        window.questManager = this.questManager;
+
+        // Quest Log Modal elements
+        const questLogModal = document.getElementById('questLogModal');
+        const closeQuestLogBtn = document.getElementById('closeQuestLogBtn');
+
+        // Close button
+        if (closeQuestLogBtn) {
+            closeQuestLogBtn.addEventListener('click', () => {
+                this.closeQuestLog();
+            });
+        }
+
+        // Close on backdrop click
+        if (questLogModal) {
+            questLogModal.addEventListener('click', (e) => {
+                if (e.target === questLogModal) {
+                    this.closeQuestLog();
+                }
+            });
+        }
+
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.quest-tab-btn');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.switchQuestTab(btn.dataset.tab);
+            });
+        });
+
+        // Quest action buttons (delegated event handling)
+        document.addEventListener('click', (e) => {
+            const actionBtn = e.target.closest('.quest-action-btn');
+            if (!actionBtn) return;
+
+            const action = actionBtn.dataset.action;
+            const questItem = actionBtn.closest('.quest-item');
+            if (!questItem) return;
+
+            const questId = questItem.dataset.questId;
+
+            switch (action) {
+                case 'track':
+                    this.trackQuest(questId);
+                    break;
+                case 'abandon':
+                    this.abandonQuest(questId);
+                    break;
+                case 'complete':
+                    this.completeQuest(questId);
+                    break;
+            }
+        });
+
+        // Subscribe to quest state changes
+        gameState.subscribe('quests', (quests) => {
+            this.updateQuestCounts(quests);
+            this.renderCurrentQuestTab();
+        });
+
+        // Q key to open quest log (when not in combat)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'q' || e.key === 'Q') && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openQuestLog();
+            }
+        });
+
+        console.log('📜 Quest system initialized');
+    }
+
+    /**
+     * Open quest log modal
+     */
+    openQuestLog() {
+        const modal = document.getElementById('questLogModal');
+        if (!modal) return;
+
+        const quests = gameState.get('quests') || { active: [], completed: [], failed: [] };
+        this.updateQuestCounts(quests);
+        this.renderCurrentQuestTab();
+
+        modal.classList.add('active');
+    }
+
+    /**
+     * Close quest log modal
+     */
+    closeQuestLog() {
+        const modal = document.getElementById('questLogModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Switch between quest tabs (active/completed/failed)
+     */
+    switchQuestTab(tabName) {
+        // Update tab button active state
+        document.querySelectorAll('.quest-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+
+        // Update tab content active state
+        document.querySelectorAll('.quest-tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === `${tabName}QuestsTab`);
+        });
+
+        // Render selected tab
+        this.renderQuestTab(tabName);
+    }
+
+    /**
+     * Render current active quest tab
+     */
+    renderCurrentQuestTab() {
+        const activeTab = document.querySelector('.quest-tab-btn.active');
+        if (activeTab) {
+            this.renderQuestTab(activeTab.dataset.tab);
+        }
+    }
+
+    /**
+     * Render specific quest tab
+     */
+    renderQuestTab(tabName) {
+        const quests = gameState.get('quests') || { active: [], completed: [], failed: [] };
+        const questList = document.getElementById(`${tabName}QuestsList`);
+        if (!questList) return;
+
+        const questArray = quests[tabName] || [];
+
+        if (questArray.length === 0) {
+            questList.innerHTML = '<div class="empty-message">No quests in this category.</div>';
+            return;
+        }
+
+        questList.innerHTML = questArray.map(quest => this.renderQuestCard(quest, tabName)).join('');
+    }
+
+    /**
+     * Render individual quest card HTML
+     */
+    renderQuestCard(quest, status) {
+        const objectives = quest.objectives.map(obj => {
+            const progress = obj.progress || 0;
+            const required = obj.required || 1;
+            const completed = obj.completed || false;
+            const percentage = required > 0 ? (progress / required) * 100 : 0;
+
+            return `
+                <div class="objective-item ${completed ? 'completed' : ''}">
+                    <span class="objective-checkbox">${completed ? '☑' : '☐'}</span>
+                    <span class="objective-text">${obj.description}</span>
+                    <span class="objective-progress">${progress}/${required}</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const rewards = [];
+        if (quest.rewards.xp) rewards.push(`${quest.rewards.xp} XP`);
+        if (quest.rewards.gold) rewards.push(`${quest.rewards.gold} Gold`);
+        if (quest.rewards.reputation) rewards.push(`+${quest.rewards.reputation.amount} Rep`);
+        const rewardText = rewards.join(' | ');
+
+        let actionButtons = '';
+        if (status === 'active') {
+            const allCompleted = quest.objectives.every(obj => obj.completed);
+            actionButtons = `
+                <div class="quest-actions">
+                    <button class="quest-action-btn" data-action="track">Track</button>
+                    ${allCompleted ? '<button class="quest-action-btn btn-success" data-action="complete">Complete</button>' : ''}
+                    <button class="quest-action-btn btn-danger" data-action="abandon">Abandon</button>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="quest-item" data-quest-id="${quest.id}">
+                <div class="quest-header">
+                    <h3 class="quest-title">${quest.name}</h3>
+                    <span class="quest-difficulty ${quest.difficulty}">${quest.difficulty}</span>
+                </div>
+                <p class="quest-description">${quest.description}</p>
+                <div class="quest-objectives">
+                    ${objectives}
+                </div>
+                <div class="quest-rewards">
+                    🎁 ${rewardText}
+                </div>
+                ${actionButtons}
+            </div>
+        `;
+    }
+
+    /**
+     * Update quest counts in tab buttons
+     */
+    updateQuestCounts(quests) {
+        const activeCount = document.getElementById('activeQuestCount');
+        const completedCount = document.getElementById('completedQuestCount');
+        const failedCount = document.getElementById('failedQuestCount');
+
+        if (activeCount) activeCount.textContent = `(${quests.active?.length || 0})`;
+        if (completedCount) completedCount.textContent = `(${quests.completed?.length || 0})`;
+        if (failedCount) failedCount.textContent = `(${quests.failed?.length || 0})`;
+    }
+
+    /**
+     * Track quest (show marker on map - placeholder)
+     */
+    trackQuest(questId) {
+        gameState.addMessage(`Now tracking quest: ${questId}`, 'info');
+        // TODO: Add quest marker to map
+    }
+
+    /**
+     * Abandon quest
+     */
+    abandonQuest(questId) {
+        if (!confirm('Are you sure you want to abandon this quest?')) return;
+
+        const result = this.questManager.abandonQuest(questId);
+        if (result.success) {
+            this.showQuestNotification('Quest Abandoned', result.message);
+            this.renderCurrentQuestTab();
+        } else {
+            gameState.addMessage(result.message, 'error');
+        }
+    }
+
+    /**
+     * Complete quest
+     */
+    completeQuest(questId) {
+        const result = this.questManager.completeQuest(questId);
+        if (result.success) {
+            this.showQuestNotification('Quest Completed!', result.message, 'success');
+            this.renderCurrentQuestTab();
+            this.updateHUD(gameState.get('character')); // Update XP/gold display
+        } else {
+            gameState.addMessage(result.message, 'error');
+        }
+    }
+
+    /**
+     * Show quest notification toast
+     */
+    showQuestNotification(title, message, type = 'info') {
+        const toast = document.getElementById('questNotification');
+        if (!toast) return;
+
+        const titleEl = document.getElementById('toastTitle');
+        const messageEl = document.getElementById('toastMessage');
+
+        if (titleEl) titleEl.textContent = title;
+        if (messageEl) messageEl.textContent = message;
+
+        toast.classList.add('show');
+
+        // Auto-hide after 4 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 4000);
     }
 
     /**

@@ -1,0 +1,480 @@
+{
+  "description": "Reusable skill challenge templates for contextual gameplay",
+  "version": "1.0.0",
+
+  "challengeTemplates": [
+    {
+      "id": "trap_detect_disarm",
+      "name": "Trap Detection & Disarm",
+      "description": "Spot and disable a dangerous trap",
+      "type": "sequential",
+      "stages": [
+        {
+          "id": "detect",
+          "skill": "perception",
+          "dc": 15,
+          "description": "Notice the trap before triggering it",
+          "onSuccess": {
+            "message": "You spot the trap mechanism!",
+            "nextStage": "disarm"
+          },
+          "onFailure": {
+            "message": "You trigger the trap!",
+            "damage": "2d6",
+            "damageType": "piercing",
+            "saveType": "dex",
+            "saveDC": 13
+          }
+        },
+        {
+          "id": "disarm",
+          "skill": "sleight_of_hand",
+          "dc": 13,
+          "description": "Carefully disable the trap mechanism",
+          "onSuccess": {
+            "message": "You successfully disarm the trap!",
+            "xp": 100
+          },
+          "onFailure": {
+            "message": "You fumble with the mechanism and trigger the trap!",
+            "damage": "2d6",
+            "damageType": "piercing"
+          }
+        }
+      ]
+    },
+    {
+      "id": "locked_door",
+      "name": "Locked Door",
+      "description": "A locked door bars your way",
+      "type": "choice",
+      "options": [
+        {
+          "id": "lockpick",
+          "skill": "sleight_of_hand",
+          "dc": 15,
+          "description": "Pick the lock",
+          "toolRequired": "thieves' tools",
+          "onSuccess": {
+            "message": "You pick the lock and the door swings open.",
+            "xp": 50
+          },
+          "onFailure": {
+            "message": "You break your lockpick. The lock remains intact."
+          }
+        },
+        {
+          "id": "force",
+          "skill": "athletics",
+          "dc": 18,
+          "description": "Force the door open",
+          "onSuccess": {
+            "message": "You smash the door open with brute force!",
+            "xp": 25,
+            "alertEnemies": true
+          },
+          "onFailure": {
+            "message": "You hurt your shoulder trying to break down the door.",
+            "damage": "1d4",
+            "damageType": "bludgeoning"
+          }
+        },
+        {
+          "id": "arcana",
+          "skill": "arcana",
+          "dc": 14,
+          "description": "Detect and dispel magical lock",
+          "onSuccess": {
+            "message": "You identify a magical seal and dispel it!",
+            "xp": 75
+          },
+          "onFailure": {
+            "message": "The magical seal resists your attempts."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bandit_negotiation",
+      "name": "Bandit Negotiation",
+      "description": "Convince bandits to leave peacefully",
+      "type": "choice",
+      "options": [
+        {
+          "id": "intimidate",
+          "skill": "intimidation",
+          "dc": 14,
+          "description": "Threaten the bandits with violence",
+          "onSuccess": {
+            "message": "The bandits flee in terror!",
+            "xp": 200,
+            "reputation": 30
+          },
+          "onFailure": {
+            "message": "The bandits laugh at your threats and attack!",
+            "initiateCombat": true,
+            "enemies": ["bandit", "bandit", "bandit_captain"]
+          }
+        },
+        {
+          "id": "persuade",
+          "skill": "persuasion",
+          "dc": 16,
+          "description": "Reason with the bandits",
+          "onSuccess": {
+            "message": "The bandits agree to leave in exchange for safe passage.",
+            "xp": 250,
+            "reputation": 40,
+            "goldCost": 50
+          },
+          "onFailure": {
+            "message": "The bandits reject your offer and attack!",
+            "initiateCombat": true,
+            "enemies": ["bandit", "bandit", "bandit_captain"]
+          }
+        },
+        {
+          "id": "deception",
+          "skill": "deception",
+          "dc": 15,
+          "description": "Trick the bandits with false information",
+          "onSuccess": {
+            "message": "The bandits believe your lie about approaching guards and flee!",
+            "xp": 225,
+            "reputation": 35
+          },
+          "onFailure": {
+            "message": "The bandits see through your deception and attack!",
+            "initiateCombat": true,
+            "enemies": ["bandit", "bandit", "bandit_captain"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cliff_climb",
+      "name": "Cliff Climbing",
+      "description": "Scale a treacherous cliff face",
+      "type": "sequential",
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "survival",
+          "dc": 12,
+          "description": "Find the best climbing route",
+          "onSuccess": {
+            "message": "You identify handholds and a safe path.",
+            "nextStage": "climb",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You begin climbing without a plan.",
+            "nextStage": "climb"
+          }
+        },
+        {
+          "id": "climb",
+          "skill": "athletics",
+          "dc": 15,
+          "description": "Climb the cliff face",
+          "onSuccess": {
+            "message": "You reach the top safely!",
+            "xp": 100
+          },
+          "onFailure": {
+            "message": "You slip and fall!",
+            "damage": "3d6",
+            "damageType": "bludgeoning",
+            "saveType": "dex",
+            "saveDC": 14,
+            "halfDamageOnSave": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "hidden_treasure",
+      "name": "Hidden Treasure Search",
+      "description": "Search for hidden valuables",
+      "type": "sequential",
+      "stages": [
+        {
+          "id": "investigation",
+          "skill": "investigation",
+          "dc": 13,
+          "description": "Search the area methodically",
+          "onSuccess": {
+            "message": "You find signs of a hidden compartment!",
+            "nextStage": "retrieve"
+          },
+          "onFailure": {
+            "message": "You find nothing of interest."
+          }
+        },
+        {
+          "id": "retrieve",
+          "skill": "sleight_of_hand",
+          "dc": 12,
+          "description": "Open the hidden compartment",
+          "onSuccess": {
+            "message": "You retrieve the hidden treasure!",
+            "xp": 75,
+            "lootTable": "treasure_minor"
+          },
+          "onFailure": {
+            "message": "The compartment is stuck. You cannot open it."
+          }
+        }
+      ]
+    },
+    {
+      "id": "animal_handling_wild",
+      "name": "Calm Wild Beast",
+      "description": "Attempt to calm an aggressive wild animal",
+      "type": "single",
+      "skill": "animal_handling",
+      "dc": 14,
+      "onSuccess": {
+        "message": "The animal calms down and leaves peacefully.",
+        "xp": 100,
+        "avoidCombat": true
+      },
+      "onFailure": {
+        "message": "The animal remains hostile and attacks!",
+        "initiateCombat": true,
+        "enemies": ["{animalType}"]
+      }
+    },
+    {
+      "id": "stealth_past_guards",
+      "name": "Sneak Past Guards",
+      "description": "Move silently past enemy guards",
+      "type": "contested",
+      "playerSkill": "stealth",
+      "opposingSkill": "perception",
+      "opposingDC": 12,
+      "onSuccess": {
+        "message": "You slip past the guards unnoticed.",
+        "xp": 150
+      },
+      "onFailure": {
+        "message": "A guard spots you!",
+        "initiateCombat": true,
+        "enemies": ["guard", "guard"],
+        "surprised": false
+      }
+    },
+    {
+      "id": "arcane_puzzle",
+      "name": "Arcane Puzzle",
+      "description": "Solve a magical puzzle to unlock a door",
+      "type": "choice",
+      "options": [
+        {
+          "id": "arcana",
+          "skill": "arcana",
+          "dc": 16,
+          "description": "Use magical knowledge to solve the puzzle",
+          "onSuccess": {
+            "message": "You understand the magical principles and solve the puzzle!",
+            "xp": 200
+          },
+          "onFailure": {
+            "message": "The puzzle remains unsolved."
+          }
+        },
+        {
+          "id": "investigation",
+          "skill": "investigation",
+          "dc": 18,
+          "description": "Examine the puzzle for patterns",
+          "onSuccess": {
+            "message": "Through careful observation, you solve the puzzle!",
+            "xp": 150
+          },
+          "onFailure": {
+            "message": "The puzzle is too complex to understand."
+          }
+        }
+      ]
+    },
+    {
+      "id": "history_ancient_text",
+      "name": "Decipher Ancient Text",
+      "description": "Read an ancient inscription or tome",
+      "type": "single",
+      "skill": "history",
+      "dc": 15,
+      "onSuccess": {
+        "message": "You translate the ancient text and gain valuable information!",
+        "xp": 100,
+        "revealInformation": true,
+        "questClue": true
+      },
+      "onFailure": {
+        "message": "The text is too damaged or complex to understand."
+      }
+    },
+    {
+      "id": "medicine_stabilize",
+      "name": "Stabilize Wounded NPC",
+      "description": "Provide medical aid to a critically wounded person",
+      "type": "single",
+      "skill": "medicine",
+      "dc": 12,
+      "onSuccess": {
+        "message": "You stabilize the wounded person. They will survive!",
+        "xp": 75,
+        "reputation": 25,
+        "questUpdate": true
+      },
+      "onFailure": {
+        "message": "Despite your efforts, the person's condition worsens.",
+        "reputation": -10
+      }
+    },
+    {
+      "id": "nature_track",
+      "name": "Track Creature",
+      "description": "Follow tracks to find a creature",
+      "type": "sequential",
+      "stages": [
+        {
+          "id": "find_tracks",
+          "skill": "survival",
+          "dc": 13,
+          "description": "Find tracks of the creature",
+          "onSuccess": {
+            "message": "You discover fresh tracks!",
+            "nextStage": "follow"
+          },
+          "onFailure": {
+            "message": "You cannot find any tracks in this area."
+          }
+        },
+        {
+          "id": "follow",
+          "skill": "survival",
+          "dc": 14,
+          "description": "Follow the tracks to the creature",
+          "onSuccess": {
+            "message": "You track the creature to its location!",
+            "xp": 100,
+            "revealLocation": true
+          },
+          "onFailure": {
+            "message": "You lose the trail."
+          }
+        }
+      ]
+    },
+    {
+      "id": "insight_detect_lie",
+      "name": "Detect Deception",
+      "description": "Determine if an NPC is lying",
+      "type": "contested",
+      "playerSkill": "insight",
+      "opposingSkill": "deception",
+      "opposingDC": 14,
+      "onSuccess": {
+        "message": "You sense the NPC is being deceptive!",
+        "xp": 50,
+        "revealInformation": true
+      },
+      "onFailure": {
+        "message": "You believe the NPC is telling the truth."
+      }
+    },
+    {
+      "id": "performance_distraction",
+      "name": "Create Distraction",
+      "description": "Perform to distract guards",
+      "type": "single",
+      "skill": "performance",
+      "dc": 13,
+      "onSuccess": {
+        "message": "Your performance captivates the guards, creating an opening!",
+        "xp": 100,
+        "distraction": true,
+        "timeWindow": 60
+      },
+      "onFailure": {
+        "message": "Your performance fails to distract the guards."
+      }
+    },
+    {
+      "id": "religion_ritual",
+      "name": "Perform Holy Ritual",
+      "description": "Conduct a religious ceremony to consecrate an area",
+      "type": "single",
+      "skill": "religion",
+      "dc": 14,
+      "onSuccess": {
+        "message": "You successfully perform the ritual. The area is blessed!",
+        "xp": 150,
+        "areaEffect": "consecrated",
+        "duration": 86400
+      },
+      "onFailure": {
+        "message": "The ritual fails to take effect."
+      }
+    },
+    {
+      "id": "acrobatics_balance",
+      "name": "Narrow Ledge",
+      "description": "Cross a narrow ledge without falling",
+      "type": "single",
+      "skill": "acrobatics",
+      "dc": 13,
+      "onSuccess": {
+        "message": "You nimbly cross the narrow ledge!",
+        "xp": 75
+      },
+      "onFailure": {
+        "message": "You lose your balance and fall!",
+        "damage": "2d6",
+        "damageType": "bludgeoning",
+        "saveType": "dex",
+        "saveDC": 12,
+        "halfDamageOnSave": true
+      }
+    }
+  ],
+
+  "dcThresholds": {
+    "easy": 10,
+    "medium": 13,
+    "hard": 15,
+    "veryHard": 18,
+    "nearlyImpossible": 20
+  },
+
+  "contextualTriggers": {
+    "exploration": {
+      "terrain": {
+        "mountain": ["cliff_climb", "narrow_ledge"],
+        "forest": ["animal_handling_wild", "nature_track"],
+        "dungeon": ["trap_detect_disarm", "locked_door", "arcane_puzzle"]
+      },
+      "featureType": {
+        "ruins": ["history_ancient_text", "arcane_puzzle"],
+        "cave": ["hidden_treasure", "cliff_climb"],
+        "temple": ["religion_ritual", "arcane_puzzle"]
+      }
+    },
+    "social": {
+      "npcType": {
+        "hostile": ["insight_detect_lie", "bandit_negotiation"],
+        "merchant": ["insight_detect_lie", "persuasion"],
+        "guard": ["stealth_past_guards", "performance_distraction"]
+      }
+    },
+    "quest": {
+      "objectiveType": {
+        "investigate": ["investigation", "history_ancient_text"],
+        "rescue": ["medicine_stabilize", "stealth_past_guards"],
+        "retrieve": ["hidden_treasure", "locked_door"]
+      }
+    }
+  }
+}

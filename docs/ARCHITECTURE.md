@@ -1,7 +1,189 @@
 # Architectural Decisions Log (ADL)
 # Nexus Verge - D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-09
+**Last Updated:** 2025-12-15
+
+---
+
+## ADR-000: Core Architectural Principle - Modifiability First
+
+**Status:** Accepted
+**Date:** 2025-12-15
+**Decision Makers:** Development Team
+
+### Context
+The game needs to support:
+- Homebrew rule modifications (custom rules, house rules, variants)
+- Player-configurable settings (difficulty, mechanics, systems)
+- Component additions, modifications, and removals without major refactoring
+- Future expansion and experimentation with game mechanics
+- Easy balancing and iteration during development
+
+### Decision
+**MODIFIABILITY AS A CORE ARCHITECTURAL PRINCIPLE**
+
+All game systems MUST be designed with modifiability as the primary concern:
+
+1. **Data-Driven Design:**
+   - ALL content in JSON files (`/data/`)
+   - NO hardcoded values in game logic
+   - Content modifications via data files, not code changes
+
+2. **Centralized Rules Engine:**
+   - ALL game rules in `src/core/rulesEngine.js`
+   - Rules organized by system (combat, skills, progression, etc.)
+   - Easy to enable/disable/modify entire systems
+   - Support for rule variants (standard, homebrew, experimental)
+
+3. **Modular System Architecture:**
+   - Systems must be independently toggleable
+   - Minimal coupling between systems
+   - Clear interfaces and APIs
+   - Systems can be added/removed without breaking others
+
+4. **Configuration-Based Features:**
+   - Feature flags for experimental mechanics
+   - Runtime-configurable settings (not just compile-time)
+   - Player-accessible settings for optional rules
+   - Developer console for testing rule changes
+
+5. **Extensible Data Schemas:**
+   - Data structures support extension without breaking existing code
+   - Optional fields for future features
+   - Versioned data formats for backward compatibility
+   - Easy to add new fields/properties
+
+### Implementation Guidelines
+
+#### Rules Engine Structure
+```javascript
+export const RULES = {
+  version: "1.0.0",
+  variant: "standard", // "standard" | "homebrew" | "experimental"
+
+  // Core D&D 5e rules
+  core: { /* ability scores, proficiency, etc. */ },
+
+  // Combat system (fully configurable)
+  combat: {
+    enabled: true,
+    criticalHits: { enabled: true, range: [20], damage: "double_dice" },
+    deathSaves: { enabled: true, dcThreshold: 10 },
+    // ... all combat rules
+  },
+
+  // Skills system (modular, extensible)
+  skills: {
+    enabled: true,
+    useStandardSkills: true, // If false, load from data/skills.json
+    allowCustomSkills: false, // Homebrew skill creation
+    skillChallenges: {
+      enabled: true,
+      templates: "data/skillChallenges.json"
+    }
+  },
+
+  // Feature flags for experimental systems
+  experimental: {
+    flanking: false,
+    criticalFailures: false,
+    injuries: false
+  }
+};
+```
+
+#### Modular System Example
+```javascript
+class SkillSystem {
+  constructor(rulesConfig = RULES.skills) {
+    this.config = rulesConfig;
+    this.skills = this.loadSkills();
+    this.challenges = this.loadChallenges();
+  }
+
+  // Can be completely replaced with custom implementation
+  loadSkills() {
+    return this.config.useStandardSkills
+      ? DEFAULT_SKILLS
+      : this.loadCustomSkills();
+  }
+
+  // System can be disabled entirely
+  isEnabled() {
+    return this.config.enabled;
+  }
+}
+```
+
+#### Data Schema Extensibility
+```json
+{
+  "id": "perception",
+  "name": "Perception",
+  "ability": "wis",
+  "description": "Your general awareness of your surroundings",
+
+  // Optional future fields (won't break existing code)
+  "homebrew": false,
+  "variants": {
+    "keen_senses": { "advantage": true },
+    "observant": { "bonus": 5 }
+  },
+  "customDC": null
+}
+```
+
+### Benefits
+
+1. **Homebrew Support:** DMs can create custom rules without touching code
+2. **Playtesting:** Easy to test balance changes by tweaking config
+3. **Player Choice:** Players can toggle optional rules
+4. **Future-Proof:** New mechanics can be added without refactoring
+5. **Maintainability:** Clear separation of rules and logic
+6. **Debugging:** Can isolate issues by disabling systems
+
+### Trade-offs
+
+**Costs:**
+- More upfront design work
+- Slightly more complex initial implementation
+- Need to maintain backward compatibility
+
+**Accepted Because:**
+- Long-term benefits vastly outweigh initial costs
+- Essential for homebrew support (core requirement)
+- Makes iteration and balancing much faster
+- Reduces risk of breaking changes
+
+### Examples of Modifiability
+
+**Add New Skill:**
+- Add entry to `data/skills.json`
+- No code changes required
+- Automatically integrated into character sheet and checks
+
+**Modify Combat Rules:**
+- Change `RULES.combat.criticalHits.range = [19, 20]` for expanded crit range
+- No refactoring of combat system
+
+**Disable Entire System:**
+- Set `RULES.skills.enabled = false`
+- Game functions without skill system
+
+**Create Homebrew Variant:**
+- Copy `rulesEngine.js` to `rulesEngine.homebrew.js`
+- Set `RULES.variant = "homebrew"`
+- Load alternative rules on game start
+
+### Validation
+
+All systems MUST pass these modifiability tests:
+
+1. ✅ Can be disabled via config flag
+2. ✅ Can load content from data files (not hardcoded)
+3. ✅ Can be extended without modifying existing code
+4. ✅ Changes don't break other systems
+5. ✅ Player-accessible settings available where appropriate
 
 ---
 

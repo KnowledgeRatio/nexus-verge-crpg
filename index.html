@@ -509,6 +509,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- Quest Log Modal -->
+        <div id="questLogModal" class="modal quest-modal">
+            <div class="quest-container">
+                <div class="quest-header">
+                    <h2>Quest Log</h2>
+                    <button class="close-btn" id="closeQuestLogBtn">&times;</button>
+                </div>
+
+                <div class="quest-tabs">
+                    <button class="quest-tab-btn active" data-tab="active">Active <span id="activeQuestCount">(0)</span></button>
+                    <button class="quest-tab-btn" data-tab="completed">Completed <span id="completedQuestCount">(0)</span></button>
+                    <button class="quest-tab-btn" data-tab="failed">Failed <span id="failedQuestCount">(0)</span></button>
+                </div>
+
+                <div class="quest-body">
+                    <!-- Active Quests Tab -->
+                    <div id="activeQuestsTab" class="quest-tab-content active">
+                        <div id="activeQuestsList" class="quests-list">
+                            <div class="empty-message">No active quests. Visit a settlement to find quest givers!</div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Quests Tab -->
+                    <div id="completedQuestsTab" class="quest-tab-content">
+                        <div id="completedQuestsList" class="quests-list">
+                            <div class="empty-message">No completed quests yet.</div>
+                        </div>
+                    </div>
+
+                    <!-- Failed Quests Tab -->
+                    <div id="failedQuestsTab" class="quest-tab-content">
+                        <div id="failedQuestsList" class="quests-list">
+                            <div class="empty-message">No failed quests.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest-footer">
+                    <p class="quest-hint">💡 Press 'Q' to open quest log anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quest Notification Toast -->
+        <div id="questNotification" class="quest-toast">
+            <div class="toast-icon">📜</div>
+            <div class="toast-content">
+                <h4 id="toastTitle">Quest Update</h4>
+                <p id="toastMessage">Message here</p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="src/main.js"></script>

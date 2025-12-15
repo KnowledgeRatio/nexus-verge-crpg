@@ -361,6 +361,18 @@ class CombatManager {
 
             // TODO: Add XP to character
 
+            // Notify quest system of kills
+            if (window.questManager) {
+                const playerPos = gameState.get('world.currentLocation');
+                this.enemyCombatants.forEach(enemy => {
+                    if (enemy.hp <= 0) {
+                        // Get creature type ID (race.id or monster type)
+                        const creatureId = enemy.character.race?.id || enemy.character.type || 'unknown';
+                        window.questManager.onCreatureKilled(creatureId, playerPos);
+                    }
+                });
+            }
+
             // Return to exploration after delay
             gameState.set('combat', null);
             setTimeout(() => {

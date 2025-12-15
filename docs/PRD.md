@@ -18,6 +18,32 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 4. **Performance First** - Lightweight, efficient client-side web application
 5. **Modifiable Foundation** - Easily tunable rules engine for balance and homebrew content
 
+### Design Principles
+
+**MODIFIABILITY FIRST:** All game systems must be designed with modifiability as the primary architectural concern:
+
+- **Data-Driven:** All content (items, monsters, skills, spells) in JSON files, not code
+- **Rules Engine:** All game rules centralized in `rulesEngine.js` with feature flags
+- **Modular Systems:** Systems can be enabled/disabled/modified independently
+- **Extensible Schemas:** Data structures support additions without breaking existing code
+- **Homebrew Support:** DMs can add custom rules, skills, classes, and content
+- **Player Settings:** Players can toggle optional rules and difficulty modifiers
+
+**Why This Matters:**
+- Enable future homebrew rule variants (flanking, critical failures, etc.)
+- Support player customization of game mechanics
+- Faster iteration and balance tuning during development
+- Community modding and content creation
+- Easy experimentation with new features
+
+**Implementation Example:**
+```javascript
+// Rules can be toggled without refactoring
+RULES.skills.enabled = true;
+RULES.experimental.flanking = false;
+RULES.variant = "standard"; // or "homebrew"
+```
+
 ---
 
 ## Development Phases
@@ -420,8 +446,8 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 
 #### M-3.2: Skills System
 **As a** player
-**I want** all 18 D&D 5e skills implemented
-**So that** I can attempt diverse actions
+**I want** all 18 D&D 5e skills implemented with contextual skill challenges
+**So that** I can attempt diverse actions and overcome obstacles through skill use
 
 **Acceptance Criteria:**
 - All 18 skills: Acrobatics, Animal Handling, Arcana, Athletics, Deception, History, Insight, Intimidation, Investigation, Medicine, Nature, Perception, Performance, Persuasion, Religion, Sleight of Hand, Stealth, Survival
@@ -429,6 +455,57 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 - Proficiency determined by class and background
 - Expertise doubles proficiency bonus (if applicable)
 - Advantage/Disadvantage applies to skill checks
+- Skill challenges integrated into exploration, quests, and NPC interactions
+- **Modular implementation:** Skills must be data-driven and easily modifiable
+
+**Skill Challenge Examples:**
+- **Traps:** Perception check to detect traps, Sleight of Hand to disarm them
+- **Social Encounters:** Intimidation to avoid bandit combat, Persuasion for better quest rewards, Deception to lie to NPCs
+- **Exploration:** Investigation to find hidden objects, Survival to track creatures, Athletics to climb/swim
+- **Dungeon Hazards:** Acrobatics to dodge traps, Athletics to force doors, Arcana to decipher magical runes
+
+**Quest Integration:**
+- Skill challenges can be quest objectives (e.g., "Sneak past guards using Stealth")
+- Quest NPCs can offer skill-based alternatives (e.g., "Intimidate the bandit leader or fight them")
+- Skill success/failure affects quest outcomes and rewards
+
+**Technical Requirements (Modifiability):**
+- Skills defined in `data/skills.json` for easy modification
+- Skill challenges defined in `data/skillChallenges.json` as reusable templates
+- DCs configurable in rules engine (`RULES.skills.dcThresholds`)
+- System must support:
+  - Adding new skills without code changes
+  - Merging skills (e.g., Investigation + Perception combined)
+  - Retiring/removing skills
+  - Adding/modifying/removing skill challenges
+  - Homebrew skill variants
+
+**Data Schema Example:**
+```json
+{
+  "id": "perception",
+  "name": "Perception",
+  "ability": "wis",
+  "description": "Your general awareness of your surroundings",
+  "enabled": true,
+  "homebrew": false
+}
+```
+
+**Skill Challenge Template Example:**
+```json
+{
+  "id": "trap_detect_disarm",
+  "name": "Trap Detection & Disarm",
+  "description": "Spot and disable a trap",
+  "stages": [
+    { "skill": "perception", "dc": 15, "description": "Notice the trap" },
+    { "skill": "sleight_of_hand", "dc": 13, "description": "Disarm the trap" }
+  ],
+  "onSuccess": { "xp": 100 },
+  "onFailure": { "damage": "2d6", "type": "piercing" }
+}
+```
 
 ---
 

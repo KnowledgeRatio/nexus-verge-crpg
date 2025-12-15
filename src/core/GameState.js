@@ -227,6 +227,15 @@ export class GameState {
             modifiedTiles: []
         };
 
+        // Initialize quest system
+        this.data.quests = {
+            available: [],
+            active: [],
+            completed: [],
+            failed: []
+        };
+        this.data.campaignProgress = 1; // Start at campaign stage 1
+
         this.notify('game', 'initialized');
     }
 

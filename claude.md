@@ -1,10 +1,256 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-14
+**Last Updated:** 2025-12-15
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Trading System implementation with CHA-modified pricing
+**Latest Commit:** Quest System Implementation (Phases 5.1-5.5 Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-15)
+
+### Quest System Implementation (Phases 5.1-5.5) ✅
+Implemented complete quest system with procedural generation, lifecycle management, UI, and game integration:
+
+**New Files Created:**
+- `data/quests.json` - Quest templates (4-stage campaign + 9 side quest types)
+- `data/skillChallenges.json` - 15 skill challenge templates (all 18 D&D 5e skills)
+- `src/systems/QuestGenerator.js` - Procedural quest generation from templates
+- `src/systems/QuestManager.js` - Quest lifecycle tracking and progress management
+
+**Modified Files:**
+- `index.html` - Added Quest Log modal and quest notification toast
+- `styles.css` - Added comprehensive quest UI styles (500+ lines)
+- `src/core/GameState.js` - Added quest state initialization in initNewGame()
+- `src/main.js` - Integrated quest systems (initialization, UI setup, event handlers)
+- `src/systems/CombatManager.js` - Added quest kill tracking on combat victory
+
+**Phase 5.1: Quest Data Files ✅**
+Created modular, data-driven quest system:
+- **Campaign Quests:** 4-stage main storyline (Monster Threat → Ancient Corruption → Enemy Stronghold → BBEG)
+- **Side Quest Templates:** 9 reusable templates covering all quest types:
+  - Kill quests (basic + elite variants)
+  - Retrieve quests (dungeon item recovery)
+  - Deliver quests (messages + items)
+  - Explore quests (scouting locations)
+  - Skill challenge quests (traps, social encounters)
+- **Skill Challenges:** 15 templates with sequential stages, player choice, contested rolls
+  - Examples: Trap detection/disarm (Perception + Sleight of Hand), Bandit negotiation (Intimidation/Persuasion/Deception), Cliff climbing (Survival + Athletics)
+- **Formula-Based Rewards:** Dynamic XP/gold scaling based on CR, distance, difficulty
+- **Word Lists:** Procedural name generation for creatures, locations, items
+
+**Phase 5.2: QuestGenerator.js ✅**
+Procedural quest generation system:
+- **Template-Based Generation:** Instantiate quests from templates using seeded RNG
+- **Quest Types Supported:** kill, retrieve, deliver, explore, skill
+- **Placeholder Filling:** Replace `{variables}` with procedurally generated data
+- **Reward Calculation:** Evaluate formulas like `creatureCR * count * 100` for XP
+- **Settlement Integration:** Generate 2-6 quests per settlement based on type
+- **CR-Based Creature Selection:** Filter monsters by player level for appropriate challenges
+- **Campaign Quest Support:** Load pre-defined campaign quests by stage
+
+**Phase 5.3: QuestManager.js ✅**
+Quest lifecycle and progress tracking:
+- **Lifecycle Management:** Accept, abandon, complete, fail quests
+- **Progress Tracking Hooks:**
+  - `onCreatureKilled(creatureId, location)` - Update kill objectives
+  - `onItemAcquired(itemId)` - Update retrieve objectives
+  - `onNPCInteraction(npcId)` - Update return/interact objectives
+  - `onLocationDiscovered(location)` - Update explore objectives
+- **Objective Progress:** Track progress for each objective, mark completed when done
+- **Quest Completion:** Auto-detect all objectives complete, mark ready to turn in
+- **Reward Distribution:** Award XP, gold, items, reputation on completion
+- **Campaign Progression:** Advance to next campaign stage, generate next quest
+- **Quest Queries:** Get active/completed/failed quests, get quests from NPCs
+
+**Phase 5.4: Quest UI ✅**
+Complete quest log interface with notifications:
+- **Quest Log Modal:** Tabbed interface (Active/Completed/Failed)
+- **Quest Cards:** Display name, description, difficulty, type, objectives, rewards
+- **Progress Bars:** Visual progress for each objective
+- **Quest Actions:** Track, Complete (when ready), Abandon buttons
+- **Difficulty Badges:** Color-coded (Easy=green, Normal=yellow, Hard=red, Deadly=dark red)
+- **Quest Notifications:** Toast popup for quest updates (accept, progress, complete)
+- **Empty States:** Helpful messages when no quests in each category
+- **Keyboard Shortcut:** Press 'Q' to open quest log
+
+**Phase 5.5: Main Game Integration ✅**
+Connected quest system to game initialization and combat:
+- **GameState Integration:** Added quest initialization in `initNewGame()` (active, completed, failed arrays, campaignProgress)
+- **Quest System Initialization:** QuestGenerator and QuestManager initialized in `initGameScreen()` before player spawn
+- **Quest UI Setup:** Created `setupQuestSystem()` method in main.js with:
+  - Quest log modal open/close handlers
+  - Tab switching for Active/Completed/Failed
+  - Quest action button handlers (Track, Complete, Abandon)
+  - Quest card rendering with objectives and progress bars
+  - Quest notification toast system
+  - 'Q' key to open quest log (not in combat)
+  - Global `window.questManager` access for UI
+- **Combat Integration:** Added quest kill tracking in `CombatManager.endCombat()`
+  - Calls `questManager.onCreatureKilled()` for each defeated enemy
+  - Passes creature type ID and player location
+  - Updates all active kill quest objectives automatically
+- **Quest State Subscriptions:** Auto-refresh quest log when quest state changes
+- **Quest Counts:** Display active/completed/failed counts in tab buttons
+
+**Quest System Features:**
+- ✅ Campaign quests with linear progression
+- ✅ Procedurally generated side quests (infinite replayability)
+- ✅ Multiple objective types (kill, retrieve, deliver, explore, interact)
+- ✅ Real-time progress tracking
+- ✅ Formula-based dynamic rewards
+- ✅ Skill challenge integration (ready for Phase 5.7)
+- ✅ Settlement-based quest generation
+- ✅ NPC quest giver assignment (ready for Phase 5.6)
+- ✅ Quest log UI with full quest details
+- ✅ Quest notification system
+
+**Data Schema Examples:**
+
+Kill Quest Template:
+```json
+{
+  "id": "kill-creatures-basic",
+  "name": "{creatureNamePlural} Menace",
+  "type": "kill",
+  "objectives": [{
+    "type": "kill",
+    "description": "Slay {count} {creatureName}",
+    "requirement": {
+      "creatureTypes": ["{creatureType}"],
+      "count": "{countValue}",
+      "location": { "nearSettlement": "{settlement}", "radius": 100 }
+    }
+  }],
+  "rewards": {
+    "xpFormula": "creatureCR * count * 100",
+    "goldFormula": "creatureCR * count * 25"
+  }
+}
+```
+
+Skill Challenge Template:
+```json
+{
+  "id": "trap_detect_disarm",
+  "type": "sequential",
+  "stages": [
+    {
+      "skill": "perception",
+      "dc": 15,
+      "description": "Notice the trap",
+      "onSuccess": { "nextStage": "disarm" },
+      "onFailure": { "damage": "2d6", "damageType": "piercing" }
+    },
+    {
+      "skill": "sleight_of_hand",
+      "dc": 13,
+      "description": "Disarm the trap",
+      "onSuccess": { "xp": 100 }
+    }
+  ]
+}
+```
+
+**Quest System Status:**
+- ✅ **Phase 5.1-5.5 Complete** - Core quest system fully functional
+- ✅ **Combat Integration** - Kill quests track automatically
+- ✅ **UI Complete** - Quest log, notifications, progress tracking
+- ⏸️ **Phase 5.6 Next** - Connect NPCs to quest generation in settlements
+- ⏸️ **Phase 5.7 Pending** - Implement skill challenge mechanics
+
+**How to Test Quest System:**
+1. Start new game and create character
+2. Play through until you defeat 5 enemies (any type)
+3. Press 'Q' to open quest log (currently empty - Phase 5.6 will add quest generation)
+4. Quest UI and progress tracking fully functional, waiting for NPC integration
+
+**Next Steps (Phase 5.6-5.7):**
+- **Phase 5.6:** Connect NPCs to quest generation in settlements
+  - Generate quests when settlements are discovered
+  - Assign quests to NPCs based on roles (innkeeper, elder, guard, merchant)
+  - Update settlement NPC dialogue to show quest offers
+  - Wire up quest acceptance/turn-in through NPC dialogue modal
+  - Test full quest flow: discover settlement → talk to NPC → accept quest → complete → turn in
+- **Phase 5.7:** Implement skill challenge mechanics
+  - Create skill check system (d20 + ability modifier + proficiency)
+  - Add skill challenge prompts during exploration/quests
+  - Connect skill challenges to quest objectives
+  - Implement sequential, choice, and contested challenge types
+
+---
+
+## 🆕 Recent Changes (2025-12-15 - Earlier)
+
+### Documentation Updates - Modifiability First ✅
+Updated all core documentation to emphasize modifiability as a fundamental design principle:
+
+**Modified Files:**
+- `docs/ARCHITECTURE.md` - Added ADR-000: Core Architectural Principle - Modifiability First
+- `docs/PRD.md` - Added Design Principles section emphasizing modifiability
+- `docs/PRD.md` - Enhanced M-3.2 Skills System with modular implementation requirements
+
+**ADR-000: Modifiability First (ARCHITECTURE.md):**
+Created comprehensive architectural decision record establishing modifiability as the primary design concern:
+- **Data-Driven Design:** All content in JSON files, no hardcoded values
+- **Centralized Rules Engine:** All game rules in rulesEngine.js with feature flags
+- **Modular System Architecture:** Systems independently toggleable
+- **Configuration-Based Features:** Runtime-configurable settings
+- **Extensible Data Schemas:** Support for additions without breaking code
+
+**Key Implementation Guidelines:**
+```javascript
+// Rules Engine Structure
+RULES = {
+  version: "1.0.0",
+  variant: "standard", // or "homebrew" | "experimental"
+
+  skills: {
+    enabled: true,
+    useStandardSkills: true,
+    allowCustomSkills: false,
+    skillChallenges: { enabled: true, templates: "data/skillChallenges.json" }
+  },
+
+  experimental: {
+    flanking: false,
+    criticalFailures: false,
+    injuries: false
+  }
+};
+```
+
+**Validation Checklist for All Systems:**
+1. ✅ Can be disabled via config flag
+2. ✅ Can load content from data files (not hardcoded)
+3. ✅ Can be extended without modifying existing code
+4. ✅ Changes don't break other systems
+5. ✅ Player-accessible settings available where appropriate
+
+**PRD Updates (M-3.2 Skills System):**
+- Added modular implementation requirement
+- Added skill challenge examples (traps, social encounters, exploration)
+- Added quest integration specification
+- Added technical requirements for modifiability:
+  - Skills defined in data/skills.json
+  - Skill challenges in data/skillChallenges.json
+  - Support adding/merging/retiring skills
+  - Support adding/modifying/removing challenges
+  - Homebrew skill variant support
+- Added data schema examples
+
+**Why This Matters:**
+- **Homebrew Support:** Essential for allowing custom rules and house variants
+- **Player Settings:** Enable optional rule toggles (flanking, critical failures, etc.)
+- **Faster Iteration:** Balance changes via config, not code refactoring
+- **Future-Proof:** New mechanics can be added without breaking existing systems
+- **Community Modding:** Clear data structures for community content
+
+**Next Steps:**
+- Quest system implementation should follow modular design
+- Skill challenge system implementation per PRD specifications
+- Loot system with configurable treasure tables
 
 ---
 
@@ -303,7 +549,8 @@ Nexus Verge is a procedurally generated, top-down roguelike CRPG that faithfully
 
 ### 🚧 Phase 2 Remaining - MVP Features
 **Next Priorities:**
-- [ ] Quest system (campaign + side quests, templates, tracking, rewards)
+- [x] Quest system (campaign + side quests, templates, tracking, rewards) - **PHASES 5.1-5.4 COMPLETE**
+- [ ] Quest system integration (main.js, GameState, NPC connections) - **IN PROGRESS (Phase 5.5-5.7)**
 - [ ] Loot and inventory management (drops, equipment, weight, rarity)
 - [ ] Spell system (cantrips + levels 1-2, casting UI, concentration)
 - [ ] Faction and reputation system (5 factions, reputation-based economy)
