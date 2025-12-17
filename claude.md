@@ -1,10 +1,89 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-16
-**Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
+**Last Updated:** 2025-12-17
+**Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Equipment System Fixes - Combat Stat Recalculation (Complete)
+**Latest Commit:** Equipment Proficiency Prerequisites & UI Cleanup (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-17)
+
+### Equipment Proficiency Prerequisites Implementation ✅
+Implemented D&D 5e proficiency checking for equipping weapons, armor, and shields with proper validation and user feedback.
+
+**Modified Files:**
+- `src/systems/Character.js` - Added isProficientWithArmor() and isProficientWithShield() methods
+- `src/main.js` - Added proficiency helper functions and validation in equipItem()
+- `src/systems/Player.js` - Removed incorrect "not yet implemented" messages for inventory/character sheet
+- `src/systems/NPCGenerator.js` - Fixed git merge conflict (flavorDialogue property)
+- `.gitignore` - Created comprehensive production-ready gitignore
+
+**Implementation Details:**
+
+**1. Character Class Proficiency Methods** (Character.js:781-805):
+```javascript
+isProficientWithArmor(armor) {
+    // Checks armor.armorType (light/medium/heavy) against character.proficiencies.armor
+    // Also checks specific armor IDs
+}
+
+isProficientWithShield() {
+    // Checks if 'shields' in character.proficiencies.armor
+}
+```
+
+**2. Equipment Validation** (main.js:2048-2064):
+- **Weapons:** Shows warning if not proficient, still allows equipping (no proficiency bonus applied)
+  - Message: "You are not proficient with [weapon]. You cannot add your proficiency bonus to attack rolls."
+- **Armor:** Blocks equipping if not proficient (per D&D 5e rules)
+  - Message: "You are not proficient with [type] armor. You will have disadvantage on ability checks, saving throws, and attack rolls."
+- **Shields:** Blocks equipping if not proficient
+  - Message: "You are not proficient with shields. You will have disadvantage..."
+
+**3. Proficiency Checking Logic:**
+```javascript
+// Weapons: Check category (simple/martial) or specific ID
+isCharacterProficientWithWeapon(character, weapon) {
+    return character.proficiencies.weapons.includes(weapon.category) ||
+           character.proficiencies.weapons.includes(weapon.id);
+}
+
+// Armor: Check armorType (light/medium/heavy) or specific ID
+isCharacterProficientWithArmor(character, armor) {
+    return character.proficiencies.armor.includes(armor.armorType) ||
+           character.proficiencies.armor.includes(armor.id);
+}
+
+// Shields: Check for 'shields' proficiency
+isCharacterProficientWithShield(character) {
+    return character.proficiencies.armor.includes('shields');
+}
+```
+
+**4. D&D 5e Rules Compliance:**
+- **Weapons:** Can equip without proficiency, but no proficiency bonus to attacks
+- **Armor/Shields:** Cannot equip without proficiency (disadvantage on all checks/saves/attacks is too punishing, so block equipping instead)
+- Proficiency sources: Class (weaponProficiencies, armorProficiencies), Race (bonus proficiencies), Background (tool proficiencies)
+
+**Example Proficiencies:**
+- **Fighter:** `weaponProficiencies: ["simple", "martial"]`, `armorProficiencies: ["light", "medium", "heavy", "shields"]`
+- **Wizard:** `weaponProficiencies: ["dagger", "dart", "sling", "quarterstaff", "lightCrossbow"]`, `armorProficiencies: []`
+- **Cleric:** `weaponProficiencies: ["simple"]`, `armorProficiencies: ["light", "medium", "shields"]`
+
+**UI Cleanup:**
+- Removed incorrect "not yet implemented" messages for Inventory (I key) and Character Sheet (C key)
+- These features are fully implemented and functional
+- Only kept "not yet implemented" for truly missing features: World Map (M key), Interact (E key), Help (H key)
+
+**Bug Fixes:**
+- Fixed git merge conflict in NPCGenerator.js (line 318) - resolved to use `flavorDialogue` property
+
+**Next Steps:**
+- Implement world map UI (M key)
+- Implement interaction system for NPCs/objects (E key)
+- Implement help overlay (H key)
 
 ---
 

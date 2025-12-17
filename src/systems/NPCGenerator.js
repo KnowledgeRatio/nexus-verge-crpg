@@ -315,7 +315,7 @@ class NPCGenerator {
 
     return {
       greeting,
-      flavor: flavorLines,
+      flavorDialogue: flavorLines,
       questOffer: rng.choice(this.dialogueData.questHooks.casual),
       questAccept: rng.choice(this.dialogueData.questAccept),
       questDecline: rng.choice(this.dialogueData.questDecline),

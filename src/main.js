@@ -2045,6 +2045,24 @@ class Game {
             return;
         }
 
+        // Check proficiency requirements
+        if (item.type === 'weapon') {
+            if (!this.isCharacterProficientWithWeapon(character, item)) {
+                gameState.addMessage(`You are not proficient with ${item.name}. You cannot add your proficiency bonus to attack rolls with this weapon.`, 'warning');
+                // Still allow equipping, but warn about lack of proficiency bonus
+            }
+        } else if (item.type === 'armor') {
+            if (!this.isCharacterProficientWithArmor(character, item)) {
+                gameState.addMessage(`You are not proficient with ${item.armorType} armor. You will have disadvantage on ability checks, saving throws, and attack rolls while wearing this armor.`, 'error');
+                return; // Prevent equipping armor without proficiency (per D&D 5e rules)
+            }
+        } else if (item.type === 'shield') {
+            if (!this.isCharacterProficientWithShield(character)) {
+                gameState.addMessage(`You are not proficient with shields. You will have disadvantage on ability checks, saving throws, and attack rolls while using this shield.`, 'error');
+                return; // Prevent equipping shield without proficiency
+            }
+        }
+
         // Unequip current item in slot (move to inventory)
         if (character.equipment[slot]) {
             const currentItem = character.equipment[slot];
@@ -2767,6 +2785,32 @@ class Game {
         }
 
         return false;
+    }
+
+    /**
+     * Check if character is proficient with armor
+     */
+    isCharacterProficientWithArmor(character, armor) {
+        if (!armor) return false;
+
+        // Check if proficient with armor type (light, medium, heavy)
+        if (character.proficiencies.armor.includes(armor.armorType)) {
+            return true;
+        }
+
+        // Check if proficient with specific armor
+        if (character.proficiencies.armor.includes(armor.id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if character is proficient with shields
+     */
+    isCharacterProficientWithShield(character) {
+        return character.proficiencies.armor.includes('shields');
     }
 
     /**

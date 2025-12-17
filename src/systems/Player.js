@@ -411,40 +411,42 @@ class Player {
     }
 
     /**
-     * Action handlers
+     * Action handlers - These are triggered by keyboard shortcuts
+     * The actual UI logic is implemented in main.js Game class
      */
     openInventory() {
-        gameState.addMessage('📦 Inventory opened (not yet implemented)', 'info');
-        // TODO: Show inventory UI
+        // Inventory UI handled by Game.openInventory() in main.js
+        // Triggered by 'I' key
     }
 
     openCharacterSheet() {
-        gameState.addMessage('📊 Character sheet opened (not yet implemented)', 'info');
-        // TODO: Show character sheet UI
+        // Character sheet UI handled by Game.openCharacterSheet() in main.js
+        // Triggered by 'C' key
     }
 
     openQuestLog() {
-        gameState.addMessage('📜 Quest log opened (not yet implemented)', 'info');
-        // TODO: Show quest log UI
+        // Quest log UI handled by Game.openQuestLog() in main.js
+        // Triggered by 'Q' key
     }
 
     openMap() {
-        gameState.addMessage('🗺️ Map opened (not yet implemented)', 'info');
-        // TODO: Show full map UI
+        // World map UI - TODO: Implement full world map view
+        gameState.addMessage('🗺️ World map (not yet implemented)', 'info');
     }
 
     rest() {
+        // Rest UI handled by RestManager
         restManager.openRestMenu();
     }
 
     interact() {
+        // Interact with nearby objects/NPCs - TODO: Implement interaction system
         gameState.addMessage('👋 Interact with nearby objects (not yet implemented)', 'info');
-        // TODO: Check for nearby NPCs/objects
     }
 
     showHelp() {
+        // Help overlay - TODO: Implement help UI
         gameState.addMessage('❓ Press H for help (help UI not yet implemented)', 'info');
-        // TODO: Show help overlay
     }
 }
 

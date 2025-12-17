@@ -778,6 +778,32 @@ export class Character {
         return false;
     }
 
+    /**
+     * Check if proficient with armor
+     */
+    isProficientWithArmor(armor) {
+        if (!armor) return false;
+
+        // Check if proficient with armor type (light, medium, heavy)
+        if (this.proficiencies.armor.includes(armor.armorType)) {
+            return true;
+        }
+
+        // Check if proficient with specific armor
+        if (this.proficiencies.armor.includes(armor.id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if proficient with shield
+     */
+    isProficientWithShield() {
+        return this.proficiencies.armor.includes('shields');
+    }
+
     // ==================== INVENTORY MANAGEMENT ====================
 
     /**
