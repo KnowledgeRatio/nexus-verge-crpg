@@ -9,7 +9,9 @@
       "Bash(npx -y http-server -p 3000)",
       "Bash(netstat:*)",
       "Bash(taskkill:*)",
-      "Bash(npx -y http-server -p 8080)"
+      "Bash(npx -y http-server -p 8080)",
+      "Bash(git -C \"c:\\Users\\josh.mcdonald\\git\\nexus-verge-crpg-5e\" diff HEAD src/main.js)",
+      "Bash(git -C \"c:\\Users\\josh.mcdonald\\git\\nexus-verge-crpg-5e\" log --oneline -5 -- src/main.js)"
     ]
   }
 }

@@ -1,10 +1,82 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-15
+**Last Updated:** 2025-12-17
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Quest System Implementation (Phases 5.1-5.5 Complete)
+**Latest Commit:** Equipment Proficiency System Implementation (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-17)
+
+### Equipment Proficiency System Implementation ✅
+Implemented D&D 5e proficiency requirements for equipping weapons, armor, and shields.
+
+**Modified Files:**
+- `src/systems/Character.js` - Added canEquipItem() method and updated equipItem() to validate proficiencies
+
+**Implementation Details:**
+
+**New Method: `canEquipItem(item)`** (lines 716-776)
+Validates equipment proficiency requirements following D&D 5e SRD rules:
+
+**Weapons:**
+- ✅ Can equip with proficiency (weapon category 'simple'/'martial' OR specific weapon ID)
+- ⚠️ Can equip WITHOUT proficiency (warning issued, no proficiency bonus to attacks)
+- Example: Wizard equipping longsword (martial) → allowed but -2 to hit
+
+**Armor:**
+- ✅ Can equip with proficiency (armor type 'light'/'medium'/'heavy')
+- ❌ CANNOT equip without proficiency (D&D 5e rule)
+- Example: Wizard trying ring mail (heavy) → blocked
+
+**Shields:**
+- ✅ Can equip with proficiency ('shields' in armor proficiencies)
+- ❌ CANNOT equip without proficiency
+- Example: Wizard trying shield → blocked
+
+**Return Values:**
+```javascript
+// Success with proficiency
+{ canEquip: true, reason: '' }
+
+// Success without proficiency (weapons only)
+{ canEquip: true, reason: 'Warning message...', warning: true }
+
+// Blocked (armor/shields)
+{ canEquip: false, reason: 'You lack proficiency...' }
+```
+
+**Updated Method: `equipItem(itemId)`**
+Now validates proficiency before equipping:
+1. Find item in inventory
+2. Call `canEquipItem()` to check proficiency
+3. Block if `canEquip: false` (armor/shields without proficiency)
+4. Log warning if equipping weapon without proficiency
+5. Proceed with equipping if allowed
+6. Return object with `success`, optional `warning`/`reason`
+
+**D&D 5e Rules Implemented:**
+- ✅ Weapons: Can use without proficiency, don't add proficiency bonus to attacks
+- ✅ Armor: Cannot wear without proficiency (disadvantage on all checks/saves/attacks)
+- ✅ Shields: Cannot use without proficiency (no AC bonus)
+
+**Proficiency Sources:**
+- `character.proficiencies.weapons` - Array of weapon categories ('simple', 'martial') or specific IDs
+- `character.proficiencies.armor` - Array of armor types ('light', 'medium', 'heavy', 'shields')
+
+**Examples:**
+
+**Fighter** (martial weapons, all armor, shields):
+- ✅ Longsword (martial) → full proficiency
+- ✅ Ring mail (heavy) → full proficiency
+- ✅ Shield → full proficiency
+
+**Wizard** (simple weapons only, no armor, no shields):
+- ⚠️ Longsword (martial) → can equip, no proficiency bonus
+- ❌ Ring mail (heavy) → cannot equip
+- ❌ Shield → cannot equip
 
 ---
 
@@ -1228,11 +1300,14 @@ All 18 D&D 5e skills
 - ✅ Save/Load system - **COMPLETE** (5 slots, LocalStorage, metadata, playtime tracking)
 - ✅ Trading system - **COMPLETE** (CHA-modified pricing, procedural inventory)
 - ✅ Rest system - **COMPLETE** (short/long rests, tavern/sanctuary requirement)
-- ❌ Quest system - **IN PROGRESS** (campaign + side quests, templates, tracking, rewards)
+- ✅ Equipment system - **COMPLETE** (proficiency validation, stat recalculation, unequip functionality)
+- ✅ Quest system (Phases 5.1-5.6) - **COMPLETE** (templates, generation, NPC integration, tracking)
+- ✅ 13-skill system - **COMPLETE** (streamlined from 18 skills, all challenges updated)
+- 🔄 Quest testing - **READY** (need to test turn-in flow, rewards)
+- 🔄 Skill challenges - **READY** (Phase 5.7 - implement mechanics using 13-skill system)
 - ❌ Loot system - **PENDING** (combat drops, treasure tables - **must follow D&D 5e SRD**)
 - ❌ Spell system - **PENDING** (cantrips + levels 1-2, casting UI, concentration)
 - ❌ Ability system - **PENDING** (class features, Action Surge, Rage, etc.)
-- ❌ Skill checks - **PENDING** (D&D 5e skill challenges integrated with quests and NPCs)
 
 ### Technical Debt
 - Add comprehensive error handling

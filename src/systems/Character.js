@@ -714,6 +714,68 @@ export class Character {
     }
 
     /**
+     * Check if character can equip an item (proficiency requirements)
+     * @param {Object} item - Item object
+     * @returns {Object} - { canEquip: boolean, reason: string }
+     */
+    canEquipItem(item) {
+        // Weapons - check weapon proficiency
+        if (item.type === 'weapon') {
+            const category = item.category; // 'simple' or 'martial'
+
+            // Check if proficient with weapon category
+            if (this.proficiencies.weapons.includes(category)) {
+                return { canEquip: true, reason: '' };
+            }
+
+            // Check if proficient with specific weapon
+            if (this.proficiencies.weapons.includes(item.id)) {
+                return { canEquip: true, reason: '' };
+            }
+
+            // Not proficient - can still equip but with penalty
+            return {
+                canEquip: true,
+                reason: `You are not proficient with ${category} weapons. You will not add your proficiency bonus to attack rolls.`,
+                warning: true
+            };
+        }
+
+        // Armor - check armor proficiency
+        if (item.type === 'armor') {
+            const armorType = item.armorType; // 'light', 'medium', 'heavy'
+
+            // Check if proficient with armor type
+            if (this.proficiencies.armor.includes(armorType)) {
+                return { canEquip: true, reason: '' };
+            }
+
+            // Not proficient - cannot equip armor without proficiency (D&D 5e rule)
+            return {
+                canEquip: false,
+                reason: `You lack proficiency with ${armorType} armor. You cannot wear this armor effectively.`
+            };
+        }
+
+        // Shields - check shield proficiency
+        if (item.type === 'shield') {
+            // Check if proficient with shields
+            if (this.proficiencies.armor.includes('shields')) {
+                return { canEquip: true, reason: '' };
+            }
+
+            // Not proficient - cannot use shield effectively
+            return {
+                canEquip: false,
+                reason: `You lack proficiency with shields. You cannot use this shield effectively.`
+            };
+        }
+
+        // Artifacts and other items - no proficiency requirements
+        return { canEquip: true, reason: '' };
+    }
+
+    /**
      * Equip an item from inventory
      * @param {string} itemId - Item ID or instanceId
      * @returns {boolean} - Success
@@ -726,6 +788,18 @@ export class Character {
         if (!item) {
             console.warn(`Item ${itemId} not found in inventory`);
             return false;
+        }
+
+        // Check proficiency requirements
+        const proficiencyCheck = this.canEquipItem(item);
+        if (!proficiencyCheck.canEquip) {
+            console.warn(`❌ Cannot equip ${item.name}: ${proficiencyCheck.reason}`);
+            return { success: false, reason: proficiencyCheck.reason };
+        }
+
+        // Log warning if equipping without proficiency (weapons only)
+        if (proficiencyCheck.warning) {
+            console.warn(`⚠️ ${proficiencyCheck.reason}`);
         }
 
         // Determine equipment slot
@@ -757,7 +831,16 @@ export class Character {
         }
 
         console.log(`✅ Equipped ${item.name} to ${slot}`);
-        return true;
+
+        // Return success with optional warning
+        if (proficiencyCheck.warning) {
+            return {
+                success: true,
+                warning: proficiencyCheck.reason
+            };
+        }
+
+        return { success: true };
     }
 
     /**

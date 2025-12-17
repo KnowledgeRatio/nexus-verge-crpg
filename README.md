@@ -1,7 +1,7 @@
 # Nexus Verge
 ## Procedural D&D 5e Roguelike CRPG
 
-A procedurally generated, top-down roguelike CRPG that faithfully implements D&D 5e 2024 rules with a unique reputation-based economy. Explore infinite worlds with shareable seeds, engage in turn-based tactical combat, and experience deep character progression.
+A procedurally generated, top-down roguelike CRPG that faithfully implements D&D 5e 2024 rules. Explore infinite worlds with shareable seeds, engage in turn-based combat, complete quests, and build your character with authentic D&D mechanics.
 
 ---
 
@@ -9,47 +9,56 @@ A procedurally generated, top-down roguelike CRPG that faithfully implements D&D
 
 ### Procedural Generation
 - **Shareable Seeds:** Generate and share unique worlds with friends (like Minecraft)
-- **Infinite Exploration:** Regions generate as you explore, with coherent biome clustering
-- **Persistent World:** Return to previously explored areas exactly as you left them
-- **Dynamic Content:** Quest-driven changes affect towns and NPCs
+- **18 Terrain Types:** Grassland, forest, mountains, desert, jungle, tundra, swamp, and more
+- **Infinite Exploration:** Regions generate as you explore with coherent biome clustering
+- **Persistent World:** Fog of war tracks explored areas, regions cache and restore
+- **Settlements & Sanctuaries:** Villages, towns, and cities with NPCs and quests
 
 ### D&D 5e 2024 Rules
-- **Authentic Implementation:** Combat, skills, spells, and progression follow official rules
-- **5 Core Classes:** Fighter, Wizard, Cleric, Rogue, Ranger (more coming)
+- **Authentic Implementation:** Combat, skills, progression follow official 5e SRD
+- **5 Core Classes:** Fighter, Wizard, Cleric, Rogue, Ranger
 - **5 Races:** Human, Elf, Dwarf, Halfling, Dragonborn
-- **Full Skill System:** All 18 D&D skills with meaningful checks
-- **Spell System:** 20+ spells (cantrips through level 2) with proper spellcasting mechanics
-- **Modifiable Rules:** Easy-to-edit rules engine for balance and homebrew content
+- **13-Skill System:** Streamlined from 18 D&D skills (modular and data-driven)
+- **Equipment Proficiencies:** Weapon/armor restrictions based on class
+- **Modifiable Rules:** Easy-to-edit rules engine for balance and homebrew
 
-### Unique Reputation Economy
-- **No Gold Currency:** Earn reputation with factions instead
-- **Unlock Items:** Access better equipment by completing faction quests
-- **Faction Relationships:** Your choices affect standing with different groups
-- **Meaningful Choices:** Supporting one faction may harm relationships with others
-
-### Turn-Based Tactical Combat
-- **D&D Initiative:** Roll for turn order, strict 5e rules
-- **Action Economy:** Action, Bonus Action, Movement, Reaction
-- **Positioning Matters:** Grid-based combat with cover and terrain effects
-- **Full Combat Actions:** Dodge, Disengage, Dash, Help, Hide, Ready, and more
+### Turn-Based Combat
+- **D&D Initiative:** Roll d20 + DEX modifier with tiebreaker
+- **Action Economy:** Action, Bonus Action, Reaction (no grid movement)
+- **Attack Rolls:** d20 + modifiers vs AC, damage with critical hits
+- **Flee Mechanic:** d20 + initiative vs DC 30 to escape combat
+- **Simple AI:** Enemies automatically target and attack
 
 ### Character Progression
-- **Levels 1-5 (MVP):** Full progression with class features
 - **Point Buy or Standard Array:** Choose your ability score method
-- **Background System:** Flavor your character's history
-- **Spell Progression:** Spellcasters gain new slots and spells as they level
+- **Background System:** 5 backgrounds with skills, equipment, and features
+- **Equipment System:** Weapons, armor, shields with proficiency requirements
+- **Stat Recalculation:** AC and attack bonuses update on equipment changes
+- **Level 1-5:** Full XP progression with class features
 
 ### Quest System
-- **Procedurally Generated:** Infinite variety of quests from templates
-- **Campaign Objectives:** Choose your main goal at game start
-- **Multiple Quest Types:** Combat, retrieval, delivery, investigation, social
-- **Consequence-Driven:** Quest outcomes affect the world and factions
+- **Procedurally Generated:** Quests generated per settlement with templates
+- **NPC Quest Givers:** NPCs in taverns, greathalls assign quests by role
+- **Quest Types:** Kill, retrieve, deliver, explore, skill challenge
+- **Real-Time Tracking:** Objectives update automatically during gameplay
+- **Settlement Persistence:** NPCs and quests persist across region pruning
 
-### Rich Non-Combat Gameplay
-- **All Skills Matter:** Persuasion, Stealth, Perception, Investigation, and more
-- **Social Encounters:** Talk your way through problems
-- **Exploration:** Discover hidden caches, avoid traps, overcome obstacles
-- **Rest System:** Short rests (2x per long rest) and long rests (tavern required)
+### Trading & Economy
+- **CHA-Modified Pricing:** Charisma affects buy/sell prices (1% per modifier point)
+- **Merchant Inventories:** Procedurally generated based on settlement tier
+- **Buy/Sell System:** Full trading modal with tabs and quantity selection
+
+### Rest System
+- **Short Rests:** Roll all hit dice to heal (max 2 per long rest)
+- **Long Rests:** Full HP/spell slot recovery (requires tavern or sanctuary)
+- **Tavern Detection:** Automatic check for nearby settlements
+- **Rest Modal:** Clean UI with character status and validation
+
+### Save/Load System
+- **5 Save Slots:** Complete game state serialization
+- **LocalStorage:** No backend required, works offline
+- **Metadata Display:** Character name, level, class, location, playtime
+- **Playtime Tracking:** Automatic session time tracking
 
 ---
 
@@ -74,11 +83,13 @@ python -m http.server 8000
 
 ### Quick Start Guide
 1. **New Game:** Enter a seed (or generate random), select map size and difficulty
-2. **Create Character:** Choose race, class, background, and assign ability scores
-3. **Explore:** Use WASD or arrow keys to move around the world
-4. **Combat:** Enter turn-based combat when encountering enemies
-5. **Quest:** Visit towns to find quest givers and advance your story
-6. **Save:** Save your progress at any time (outside of combat)
+2. **Create Character:** Choose race, class, background, assign ability scores
+3. **Explore:** Use WASD or arrow keys to move around the procedural world
+4. **Combat:** Engage in turn-based combat when encountering enemies
+5. **Quest:** Visit settlements (towns/cities) to get quests from NPCs
+6. **Trade:** Buy/sell equipment at merchants with CHA-modified pricing
+7. **Rest:** Short rest anywhere safe, long rest at taverns/sanctuaries
+8. **Save:** Press ESC to open save menu (5 slots available)
 
 ---
 
@@ -86,80 +97,121 @@ python -m http.server 8000
 
 ### Exploration
 - **WASD / Arrow Keys:** Move character
+- **E:** Enter settlement when adjacent
 - **I:** Open inventory
 - **C:** Open character sheet
 - **Q:** Open quest log
-- **M:** Open map
-- **R:** Rest (short or long)
-- **Space:** Interact with NPCs/objects
-- **ESC:** Close menus / Cancel action
+- **R:** Rest menu (short/long rest options)
+- **ESC:** Save menu / Close dialogs
 
 ### Combat
-- **Click:** Select tile / target
-- **1-9:** Quick action buttons
-- **Space:** Confirm action
-- **ESC:** Cancel action
-- **Enter:** End turn
+- **Click Action Button:** Select Attack/Ability/Spell/Flee
+- **Click Enemy Card:** Target enemy for selected action
+- **Auto Turn:** Enemy turns execute automatically
 
 ### System
-- **H:** Help screen
-- **F1:** Save game
-- **F9:** Load game
+- **ESC:** Save game menu (5 slots)
+- **F5:** Refresh browser (reloads from gameState)
 
 ---
 
-## 📚 Documentation
+## 📚 Current Implementation Status
 
-### For Players
-- **[Game Rules](docs/GAME_RULES.md):** Complete gameplay guide (coming soon)
-- **[FAQ](docs/FAQ.md):** Common questions (coming soon)
+### ✅ Complete Systems
 
-### For Developers
-- **[PRD](docs/PRD.md):** Product Requirements Document with full feature specification
-- **[Architecture](docs/ARCHITECTURE.md):** Technical decisions and system architecture
-- **[Project Plan](docs/PROJECT_PLAN.md):** Day-by-day development timeline
-- **[Data Schema](docs/DATA_SCHEMA.md):** Complete data structure reference
+**World & Exploration:**
+- ✅ Procedural world generation (18 terrain types, Simplex noise)
+- ✅ Map rendering (80x40 viewport, ASCII tiles, camera follow)
+- ✅ Fog of war (explored/visible tracking with persistence)
+- ✅ Settlement generation (villages, towns, cities)
+- ✅ Sanctuary generation (safe rest locations)
+- ✅ Region caching and pruning (3-region radius)
 
-### For Modders
-- **[Modding Guide](docs/MODDING.md):** How to add custom content (coming soon)
-- **Data Files:** All content in `/data/` as JSON (easy to edit)
-- **Rules Engine:** Modify game balance in `src/core/rulesEngine.js`
+**Character Systems:**
+- ✅ Character creation (5 races, 5 classes, 5 backgrounds)
+- ✅ Point Buy & Standard Array ability score systems
+- ✅ Equipment system with proficiency validation
+- ✅ Inventory management (equip/unequip/drop/use)
+- ✅ Stat recalculation (AC, attack bonuses on equipment change)
+- ✅ 13-skill system (streamlined from 18 D&D skills)
+
+**Combat:**
+- ✅ Turn-based combat (initiative, action economy)
+- ✅ Attack rolls (d20 + modifiers vs AC)
+- ✅ Damage rolls with critical hits (natural 20)
+- ✅ Flee mechanic (d20 + initiative vs DC 30)
+- ✅ Simple enemy AI (random targeting)
+- ✅ XP rewards and leveling
+
+**NPCs & Quests:**
+- ✅ NPC generation (names, roles, personalities)
+- ✅ Settlement system (buildings, NPCs, dialogue)
+- ✅ Quest generation (templates, procedural content)
+- ✅ Quest assignment to NPCs by role
+- ✅ Quest tracking (objectives, progress)
+- ✅ Quest UI (quest log, notifications)
+
+**Trading:**
+- ✅ Merchant inventory generation (settlement-tier based)
+- ✅ CHA-modified pricing (1% per modifier)
+- ✅ Buy/sell system with full UI
+
+**Progression:**
+- ✅ Rest system (short/long rests, D&D 5e rules)
+- ✅ Save/load system (5 slots, metadata, playtime)
+- ✅ Settlement persistence across region pruning
+
+### 🔄 In Progress
+
+- 🔄 Quest turn-in testing (mechanics implemented, needs verification)
+- 🔄 Skill challenge system (Phase 5.7 - templates ready, mechanics pending)
+
+### ❌ Not Yet Implemented
+
+- ❌ Loot system (combat drops, treasure tables)
+- ❌ Spell system (cantrips + levels 1-2, casting UI)
+- ❌ Class abilities (Action Surge, Rage, Sneak Attack, etc.)
+- ❌ Faction reputation system
+- ❌ Advanced combat (reactions, opportunity attacks)
+- ❌ Party/companion system
+- ❌ Crafting system
+- ❌ Audio (sound effects, music)
 
 ---
 
 ## 🗺️ Development Roadmap
 
-### ✅ Phase 1: Playable Vertical Slice (Days 1-2)
+### ✅ Phase 1: Playable Vertical Slice (COMPLETE)
 - [x] Procedural world generation with seeds
-- [x] Character creation (Fighter class, Standard Array)
+- [x] Character creation (5 classes, Point Buy/Standard Array)
 - [x] Exploration with fog of war
-- [x] 1v1 turn-based combat
-- [x] XP and leveling (1-3)
-- [x] Basic loot system
+- [x] Turn-based combat
+- [x] XP and leveling
 - [x] Save/Load system
 
-### 🚧 Phase 2: MVP (Days 3-7) - IN PROGRESS
-- [ ] 5 classes with full features
-- [ ] Point Buy system
-- [ ] Quest system (campaign + side quests)
-- [ ] Reputation and faction system
-- [ ] All 18 skills with checks
-- [ ] Spell system (20+ spells)
-- [ ] Rest system (short/long)
-- [ ] Advanced combat (full action economy)
-- [ ] 25+ monsters (CR 0-5)
+### 🚧 Phase 2: MVP (IN PROGRESS - 85% Complete)
+- [x] 5 classes with proficiencies
+- [x] Equipment system with proficiency validation
+- [x] Quest system (generation, tracking, NPC integration)
+- [x] Trading system (CHA-modified pricing)
+- [x] Rest system (short/long rests)
+- [x] Settlement & NPC system
+- [x] 13-skill system (streamlined)
+- [ ] Loot system with D&D 5e SRD compliance
+- [ ] Spell system (20+ spells, cantrips-level 2)
+- [ ] Class abilities (Action Surge, Rage, etc.)
+- [ ] Skill challenge mechanics
+- [ ] Faction reputation system
 
 ### 📋 Phase 3: Content Expansion (Future)
 - [ ] All 13 D&D 5e classes
 - [ ] Subclass system
-- [ ] Levels 1-20
-- [ ] Full spell list (levels 0-9)
-- [ ] 100+ monsters (CR 0-30)
+- [ ] Levels 6-10 progression
+- [ ] Full spell list (levels 3-5)
+- [ ] 100+ monsters (CR 0-10)
 - [ ] Party/companion system
 - [ ] Crafting system
-- [ ] Audio (sound effects, music)
-- [ ] Visual enhancements
-- [ ] Multiplayer/co-op
+- [ ] Audio and visual polish
 
 ---
 
@@ -170,6 +222,7 @@ nexus-verge-crpg-5e/
 ├── index.html              # Main entry point
 ├── styles.css              # Global styles
 ├── README.md              # This file
+├── CLAUDE.md              # Developer guide
 ├── docs/                  # Documentation
 │   ├── PRD.md
 │   ├── ARCHITECTURE.md
@@ -178,18 +231,37 @@ nexus-verge-crpg-5e/
 ├── src/                   # Source code
 │   ├── main.js           # Application entry
 │   ├── core/             # Core engine
+│   │   ├── GameState.js
+│   │   └── rulesEngine.js
 │   ├── systems/          # Game systems
-│   ├── rendering/        # Rendering layer
+│   │   ├── Character.js
+│   │   ├── WorldGenerator.js
+│   │   ├── CombatManager.js
+│   │   ├── QuestManager.js
+│   │   ├── SettlementManager.js
+│   │   ├── NPCGenerator.js
+│   │   ├── RestManager.js
+│   │   └── SaveManager.js
+│   ├── rendering/        # Rendering
+│   │   └── MapRenderer.js
 │   ├── ui/               # UI components
+│   │   ├── CharacterCreation.js
+│   │   └── SettlementUI.js
 │   └── utils/            # Utilities
-├── data/                 # Game data (JSON)
-│   ├── classes.json
-│   ├── races.json
-│   ├── spells.json
-│   ├── items.json
-│   ├── monsters.json
-│   └── ...
-└── assets/               # Future: images, sounds
+│       ├── rng.js
+│       ├── dice.js
+│       └── simplexNoise.js
+└── data/                 # Game data (JSON)
+    ├── classes.json
+    ├── races.json
+    ├── backgrounds.json
+    ├── skills.json
+    ├── items.json
+    ├── monsters.json
+    ├── terrains.json
+    ├── quests.json
+    ├── skillChallenges.json
+    └── merchantInventory.json
 ```
 
 ---
@@ -197,55 +269,79 @@ nexus-verge-crpg-5e/
 ## 🛠️ Technical Stack
 
 - **Frontend:** Vanilla JavaScript (ES6 modules)
-- **Rendering:** HTML5 Canvas for game view, DOM for UI
+- **Rendering:** HTML5 Canvas (game view) + DOM (UI overlays)
 - **Storage:** LocalStorage (save files), JSON (game data)
 - **Architecture:** 100% client-side, no backend required
 - **RNG:** Mulberry32 seeded PRNG for deterministic generation
-- **World Gen:** Simplex noise for coherent terrain
-- **Bundle Size:** <500KB (lightweight and fast)
+- **World Gen:** Simplex noise for coherent terrain clustering
+- **State Management:** Custom GameState with observer pattern
+- **Bundle Size:** ~200KB base + ~100KB data files
 
 ---
 
-## 🎲 Game Systems Overview
+## 🎲 Key Game Systems
 
 ### Character Creation
-- Choose from 5 races and 5 classes
-- Assign ability scores (Point Buy or Standard Array)
-- Select background for flavor and skills
-- Full D&D 5e character sheet
+- 5 races with unique traits and ability bonuses
+- 5 classes with proficiencies and features
+- Point Buy (27 points) or Standard Array (15,14,13,12,10,8)
+- 5 backgrounds with skills, equipment, and features
+- Full D&D 5e character sheet with all stats
 
 ### Combat System
-- Turn-based with initiative (d20 + DEX modifier)
-- Grid-based positioning (10x10 minimum)
-- Full action economy (Action, Bonus, Movement, Reaction)
-- Attack rolls vs AC, damage rolls with modifiers
-- Status conditions and tactical options
+- Initiative: d20 + DEX modifier (DEX score tiebreaker)
+- Attack: d20 + ability mod + proficiency vs target AC
+- Damage: weapon dice + ability mod (critical = double dice)
+- Flee: d20 + initiative bonus vs DC 30
+- Victory: XP reward based on CR, automatic looting (future)
 
-### Skill System
-- All 18 D&D 5e skills implemented
-- Proficiency and expertise support
-- Advantage/disadvantage system
-- Passive scores for automatic checks
+### Equipment System
+- Proficiency validation (weapons, armor, shields)
+- Weapons: Can equip without proficiency (no bonus to hit)
+- Armor/Shields: Cannot equip without proficiency
+- Stat recalculation: AC and attack bonuses update automatically
+- Character sheet displays current attack bonuses + damage
 
-### Spell System
-- Spell slots by class and level
-- Prepared vs known spells (class dependent)
-- Spell attacks and saving throws
-- Concentration tracking
-- Cantrips scale with level
+### Quest System
+- **Generation:** 2-6 quests per settlement (tier-based)
+- **Assignment:** NPCs get quests based on roles (leader, merchant, guard)
+- **Types:** Kill (specific creature), retrieve, deliver, explore, skill
+- **Tracking:** Real-time objective progress, automatic updates
+- **Rewards:** XP, gold, items (formulas evaluate dynamically)
 
-### Reputation System
-- 5 reputation levels per faction (Stranger → Exalted)
-- Complete quests to earn reputation
-- Unlock items at merchants based on reputation
-- Faction relationships affect gameplay
+### Trading System
+- **Pricing:** Base price × (1.0 - CHA effect) for buying
+- **Selling:** (Base price × 0.5) × (1.0 + CHA effect)
+- **CHA Effect:** 1% per CHA modifier point
+- **Inventory:** Procedurally generated per settlement tier
 
-### World Generation
-- Seed-based deterministic generation
-- Chunk/region system (32x32 tiles)
-- Coherent biome clustering (Simplex noise)
-- Towns, settlements, dungeons procedurally placed
-- NPCs with roles and personalities
+### Rest System
+- **Short Rest:** Roll all hit dice (level × d{hitDie} + CON) for healing
+- **Hit Dice:** Don't deplete, always equal to character level
+- **Short Rest Limit:** Max 2 per long rest
+- **Long Rest:** Full HP, all spell slots, reset short rest counter
+- **Long Rest Location:** Requires tavern (settlement) or sanctuary
+
+---
+
+## 📖 Documentation
+
+### For Players
+- **Quick Start:** See "Getting Started" above
+- **Controls:** See "Controls" section
+- **Current Features:** See "Implementation Status" section
+
+### For Developers
+- **[CLAUDE.md](CLAUDE.md):** Comprehensive developer guide with session notes
+- **[PRD](docs/PRD.md):** Product Requirements Document
+- **[Architecture](docs/ARCHITECTURE.md):** Technical decisions (ADR log)
+- **[Data Schema](docs/DATA_SCHEMA.md):** Complete data structure reference
+
+### For Modders
+- **Data Files:** All content in `/data/` as JSON (easy to edit)
+- **Rules Engine:** Modify game balance in [src/core/rulesEngine.js](src/core/rulesEngine.js)
+- **Skill System:** Add/modify/remove skills in [data/skills.json](data/skills.json)
+- **Quest Templates:** Add new quest types in [data/quests.json](data/quests.json)
 
 ---
 
@@ -281,40 +377,38 @@ D&D 5e content used under the Open Game License (OGL) and System Reference Docum
 
 ---
 
-## 📧 Contact
-
-For questions, feedback, or support:
-- **GitHub Issues:** [Report bugs or suggest features]
-- **Project Lead:** KnowledgeRatio
-
----
-
 ## 🌟 Project Status
 
-**Current Phase:** Phase 1 Complete → Phase 2 In Progress
-**Version:** 0.1.0-alpha
-**Last Updated:** 2025-12-09
+**Current Phase:** Phase 2 MVP - 85% Complete
+**Version:** 0.2.0-alpha
+**Last Updated:** 2025-12-17
 
-**Playable:** Yes (vertical slice)
-**MVP Complete:** In progress (Day 3 of 7)
-**Production Ready:** No
+**Playable:** Yes (extensive features implemented)
+**MVP Complete:** 85% (quest system, trading, rest, equipment all working)
+**Production Ready:** No (still in active development)
 
 ---
 
-## 🎮 Play Now
+## 🎮 What You Can Do Now
 
-The game is currently in active development. A playable vertical slice is available:
-- Character creation (Fighter class)
-- Exploration with procedural generation
-- Turn-based combat (1v1)
-- Leveling system (1-3)
-- Save/Load functionality
+The game currently supports:
+- ✅ Create D&D 5e characters (5 races, 5 classes, 5 backgrounds)
+- ✅ Explore procedurally generated infinite worlds
+- ✅ Engage in turn-based combat with D&D 5e rules
+- ✅ Accept quests from NPCs in settlements
+- ✅ Track quest objectives in real-time
+- ✅ Trade with merchants (CHA-modified pricing)
+- ✅ Equip weapons/armor with proficiency validation
+- ✅ Take short/long rests following D&D 5e rules
+- ✅ Save/load game across 5 slots
 
 **Coming Soon:**
-- More classes and spells
-- Quest system
-- Faction reputation
-- Full skill checks
+- Quest turn-in and reward distribution
+- Skill challenge mechanics
+- Loot drops from combat
+- Spell casting system
+- Class abilities (Action Surge, Rage, etc.)
+- Faction reputation system
 
 ---
 

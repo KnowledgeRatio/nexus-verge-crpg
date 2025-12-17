@@ -1,0 +1,89 @@
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Node/NPM (if you ever add build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build outputs (future)
+dist/
+build/
+*.min.js
+*.min.css
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Test coverage (future)
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# System files that got committed by accident
+nul
+
+# Production: LocalStorage save files (browser-based, not in repo)
+# Note: Saves are stored in browser LocalStorage, not filesystem
+# But exclude any exported save files
+saves/
+*.save
+*.sav
+exported-saves/
+
+# Production: User data and analytics (if added later)
+user-data/
+analytics/
+error-reports/
+
+# Production: Generated bundles and minified assets
+*.bundle.js
+*.bundle.css
+*.min.js.map
+*.min.css.map
+
+# User-specific IDE configurations
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Production: Deployment artifacts
+deploy/
+release/
+.vercel/
+.netlify/
