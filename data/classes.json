@@ -1,85 +1,147 @@
 {
   "classes": [
     {
-      "id": "fighter",
-      "name": "Fighter",
-      "description": "A master of martial combat, skilled with a variety of weapons and armor. Fighters learn the basics of all combat styles. Every fighter can swing an axe, fence with a rapier, wield a longsword or a greatsword, use a bow, and even trap foes in a net with some degree of skill.",
+      "id": "dedication",
+      "name": "Dedication",
+      "displayName": "Dedication",
+      "description": "Those who follow the path of Dedication master martial combat through discipline and training. Combining the versatility of a warrior with the focused precision of a monk, Dedication embodies the perfection of body and mind through endless practice.",
+      "flavor": "Merges Fighter + Monk",
       "hitDie": 10,
       "primaryAbility": ["str", "dex"],
-      "savingThrowProficiencies": ["str", "con"],
+      "savingThrowProficiencies": ["str", "dex"],
       "armorProficiencies": ["light", "medium", "heavy", "shields"],
       "weaponProficiencies": ["simple", "martial"],
       "toolProficiencies": [],
       "skillChoices": {
-        "choose": 2,
-        "from": ["acrobatics", "athletics", "endurance", "perception", "empathy", "influence"]
+        "choose": 3,
+        "from": ["acrobatics", "athletics", "endurance", "perception", "empathy", "influence", "cunning"]
       },
       "startingEquipment": {
         "defaults": ["chainMail", "longsword", "shield", "lightCrossbow", "bolt:20", "dungeoneersPack"]
       },
       "spellcaster": false,
+      "resourceSystem": {
+        "type": "stamina",
+        "staminaPoints": "wis_mod",
+        "staminaScaling": {
+          "2": "wis_mod + 2",
+          "5": "wis_mod + 5",
+          "10": "wis_mod + 10"
+        },
+        "recharge": "shortRest"
+      },
+      "weaponMasteries": {
+        "level1": 3,
+        "level4": 4,
+        "level10": 5
+      },
       "features": {
         "1": [
           {
             "name": "Fighting Style",
-            "description": "You adopt a particular style of fighting as your specialty. Choose one: Defense (+1 AC while wearing armor), Dueling (+2 damage when wielding a melee weapon in one hand), or Great Weapon Fighting (reroll 1s and 2s on damage dice for two-handed weapons).",
+            "description": "Choose a fighting style: Defense (+1 AC in armor), Dueling (+2 damage with one-handed melee weapon), Great Weapon Fighting (reroll 1s and 2s on two-handed weapon damage), or Unarmed Fighting (1d6 unarmed strikes, 1d8 if both hands free).",
             "choices": {
               "choose": 1,
-              "from": ["defense", "dueling", "greatWeaponFighting"]
+              "from": ["defense", "dueling", "greatWeaponFighting", "unarmedFighting"]
             }
           },
           {
             "name": "Second Wind",
-            "description": "You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level. Once you use this feature, you must finish a short or long rest before you can use it again.",
+            "description": "Bonus action to regain 1d10 + your level HP. Once per short rest.",
             "type": "bonusAction",
             "uses": 1,
-            "recharge": "shortRest"
+            "recharge": "shortRest",
+            "abilityRef": "secondWind"
+          },
+          {
+            "name": "Martial Arts",
+            "description": "Your unarmed strikes and monk weapons (simple melee weapons without two-handed or heavy properties) gain benefits: Use DEX instead of STR, deal 1d6 damage (increases with level), and you can make one unarmed strike as a bonus action when you Attack with a monk weapon or unarmed strike.",
+            "unarmedDamage": "1d6",
+            "scaling": {
+              "5": { "unarmedDamage": "1d8" },
+              "11": { "unarmedDamage": "1d10" },
+              "17": { "unarmedDamage": "1d12" }
+            }
+          },
+          {
+            "name": "Weapon Mastery",
+            "description": "You master 3 weapons of your choice. You can use the mastery property of any weapon you're proficient with and have mastered.",
+            "masteredWeapons": 3
           }
         ],
         "2": [
           {
             "name": "Action Surge",
-            "description": "You can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action. Once you use this feature, you must finish a short or long rest before you can use it again. Starting at 17th level, you can use it twice before a rest, but only once on the same turn.",
+            "description": "Take one additional action on your turn. Once per short rest (twice at 17th level).",
             "uses": 1,
-            "recharge": "shortRest"
+            "recharge": "shortRest",
+            "abilityRef": "actionSurge"
+          },
+          {
+            "name": "Stamina",
+            "description": "You gain stamina points equal to your WIS modifier (minimum 1). Use stamina to fuel special techniques: Flurry of Blows (2 unarmed strikes as bonus action for 1 stamina), Patient Defense (Dodge as bonus action for 1 stamina), or Step of the Wind (Disengage or Dash as bonus action for 1 stamina).",
+            "staminaPoints": "wis_mod"
+          },
+          {
+            "name": "Unarmored Movement",
+            "description": "Your speed increases by 10 feet while not wearing armor or wielding a shield.",
+            "speedBonus": 10,
+            "requirement": "unarmored"
           }
         ],
         "3": [
           {
-            "name": "Improved Critical (Martial Archetype)",
-            "description": "Your weapon attacks score a critical hit on a roll of 19 or 20. (Champion archetype assumed for MVP)"
+            "name": "Deflect Missiles",
+            "description": "When hit by a ranged weapon attack, use your reaction to reduce damage by 1d10 + DEX modifier + your level. If you reduce it to 0, you can catch the missile and spend 1 stamina to throw it back (20/60 range).",
+            "type": "reaction"
           }
         ],
         "4": [
           {
             "name": "Ability Score Improvement",
-            "description": "You can increase one ability score by 2, or you can increase two ability scores by 1. You can't increase an ability score above 20 using this feature."
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
+          },
+          {
+            "name": "Weapon Mastery (4th level)",
+            "description": "You master 1 additional weapon (total: 4).",
+            "masteredWeapons": 4
           }
         ],
         "5": [
           {
             "name": "Extra Attack",
-            "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+            "description": "Attack twice instead of once when you take the Attack action.",
+            "attacks": 2
+          },
+          {
+            "name": "Stunning Strike",
+            "description": "When you hit with a melee weapon attack, spend 1 stamina to force a CON save (DC 8 + proficiency + WIS mod). On failure, target is stunned until the end of your next turn.",
+            "staminaCost": 1,
+            "saveDC": "8 + proficiency + wis_mod"
           }
         ]
       }
     },
+
     {
-      "id": "wizard",
-      "name": "Wizard",
-      "description": "Wizards are supreme magic-users, defined and united as a class by the spells they cast. Drawing on the subtle weave of magic that permeates the cosmos, wizards cast spells of explosive fire, arcing lightning, subtle deception, and brute-force mind control.",
+      "id": "scholar",
+      "name": "Scholar",
+      "displayName": "Scholar",
+      "description": "Scholars are masters of arcane knowledge, blending theoretical mastery with practical innovation. Combining the spellcasting prowess of wizards with the inventive genius of artificers, Scholars bend reality through intellect and ingenuity.",
+      "flavor": "Merges Wizard + Artificer",
       "hitDie": 6,
       "primaryAbility": ["int"],
       "savingThrowProficiencies": ["int", "wis"],
-      "armorProficiencies": [],
-      "weaponProficiencies": ["dagger", "dart", "sling", "quarterstaff", "lightCrossbow"],
-      "toolProficiencies": [],
+      "armorProficiencies": ["light"],
+      "weaponProficiencies": ["simple"],
+      "toolProficiencies": ["thievesTools", "tinkerersTools"],
       "skillChoices": {
-        "choose": 2,
-        "from": ["arcana", "academia", "empathy", "investigation"]
+        "choose": 3,
+        "from": ["arcana", "academia", "empathy", "investigation", "creativity", "cunning"]
       },
       "startingEquipment": {
-        "defaults": ["quarterstaff", "componentPouch", "scholarsPack", "spellbook"]
+        "defaults": ["quarterstaff", "componentPouch", "scholarsPack", "spellbook", "tinkerersTools"]
       },
       "spellcaster": true,
       "spellcastingAbility": "int",
@@ -93,57 +155,89 @@
       },
       "cantripsByLevel": {
         "1": 3,
-        "2": 3,
-        "3": 3,
         "4": 4,
-        "5": 4
+        "10": 5
+      },
+      "weaponMasteries": {
+        "level1": 1
       },
       "features": {
         "1": [
           {
+            "name": "Spellcasting",
+            "description": "You can cast wizard spells using INT as your spellcasting ability. You prepare spells from your spellbook each long rest (INT modifier + level spells prepared).",
+            "spellsPrepared": "int_mod + level"
+          },
+          {
             "name": "Arcane Recovery",
-            "description": "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher."
+            "description": "Once per day during a short rest, recover spell slots with combined level ≤ half your level (rounded up). No slot can be 6th level or higher.",
+            "abilityRef": "arcaneRecovery"
+          },
+          {
+            "name": "Magical Tinkering",
+            "description": "Imbue tiny objects with minor magical effects (light, recorded sound, odor, static image). Can have a number of objects active equal to your INT modifier.",
+            "activeObjects": "int_mod"
           }
         ],
         "2": [
           {
-            "name": "Evocation Savant (School of Evocation)",
-            "description": "The gold and time you must spend to copy an evocation spell into your spellbook is halved. (Evocation school assumed for MVP)"
-          },
+            "name": "Infuse Item",
+            "description": "Imbue mundane items with magic. You know 4 infusion recipes and can have 2 items infused at once. Infusions last until your next long rest.",
+            "infusionsKnown": 4,
+            "infusionsActive": 2,
+            "abilityRef": "infuseItem",
+            "scaling": {
+              "6": { "infusionsKnown": 6, "infusionsActive": 3 },
+              "10": { "infusionsKnown": 8, "infusionsActive": 4 }
+            }
+          }
+        ],
+        "3": [
           {
-            "name": "Sculpt Spells",
-            "description": "You can create pockets of relative safety within the effects of your evocation spells. When you cast an evocation spell, you can choose a number of creatures equal to 1 + the spell's level to automatically succeed on their saving throw."
+            "name": "The Right Tool for the Job",
+            "description": "Over 1 hour with tinker's tools, create a set of artisan's tools. The tools vanish when you create a new set.",
+            "type": "utility"
           }
         ],
         "4": [
           {
             "name": "Ability Score Improvement",
-            "description": "You can increase one ability score by 2, or you can increase two ability scores by 1."
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
           }
         ],
-        "5": []
+        "5": [
+          {
+            "name": "Tool Expertise",
+            "description": "Double your proficiency bonus for ability checks made with tools you're proficient with.",
+            "type": "expertise"
+          }
+        ]
       }
     },
+
     {
-      "id": "cleric",
-      "name": "Cleric",
-      "description": "Clerics are intermediaries between the mortal world and the distant planes of the gods. Divine magic, as the name suggests, is the power of the gods, flowing from them into the world.",
+      "id": "pact",
+      "name": "Pact",
+      "displayName": "Pact",
+      "description": "Those who walk the path of Pact draw power from otherworldly beings and divine entities. Merging the devotion of clerics with the forbidden knowledge of warlocks, Pact wielders channel forces beyond mortal comprehension.",
+      "flavor": "Merges Cleric + Warlock",
       "hitDie": 8,
-      "primaryAbility": ["wis"],
+      "primaryAbility": ["wis", "cha"],
       "savingThrowProficiencies": ["wis", "cha"],
       "armorProficiencies": ["light", "medium", "shields"],
       "weaponProficiencies": ["simple"],
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 2,
-        "from": ["academia", "empathy", "influence"]
+        "from": ["academia", "empathy", "influence", "arcana", "deception", "cunning"]
       },
       "startingEquipment": {
         "defaults": ["mace", "scaleMail", "shield", "holySymbol", "priestsPack"]
       },
       "spellcaster": true,
       "spellcastingAbility": "wis",
-      "spellsKnownProgression": "preparedCaster",
+      "spellsKnownProgression": "hybridCaster",
       "spellSlotsByLevel": {
         "1": [2, 0, 0, 0, 0, 0, 0, 0, 0],
         "2": [3, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -153,113 +247,231 @@
       },
       "cantripsByLevel": {
         "1": 3,
-        "2": 3,
-        "3": 3,
         "4": 4,
-        "5": 4
+        "10": 5
+      },
+      "pactMagic": {
+        "description": "In addition to normal spell slots, you have Pact Magic slots that recover on short rest.",
+        "pactSlotsByLevel": {
+          "1": [1, 0, 0, 0, 0],
+          "2": [2, 0, 0, 0, 0],
+          "3": [2, 0, 0, 0, 0],
+          "4": [2, 0, 0, 0, 0],
+          "5": [2, 0, 0, 0, 0]
+        },
+        "pactSlotLevel": {
+          "1": 1,
+          "3": 2,
+          "5": 3,
+          "7": 4,
+          "9": 5
+        }
+      },
+      "weaponMasteries": {
+        "level1": 1
       },
       "features": {
         "1": [
           {
-            "name": "Divine Domain (Life)",
-            "description": "The Life domain focuses on the vibrant positive energy—one of the fundamental forces of the universe—that sustains all life. You gain proficiency with heavy armor. (Life domain assumed for MVP)"
+            "name": "Divine Spellcasting",
+            "description": "Cast cleric spells using WIS. You prepare spells each long rest (WIS modifier + level spells).",
+            "spellsPrepared": "wis_mod + level"
           },
           {
-            "name": "Disciple of Life",
-            "description": "Your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level."
+            "name": "Pact Magic",
+            "description": "You have 1 Pact Magic slot (recovers on short rest) that you can use to cast warlock spells. Pact slots are always cast at the highest level you can cast.",
+            "pactSlots": 1,
+            "pactSlotLevel": 1
+          },
+          {
+            "name": "Eldritch Blast",
+            "description": "You know the Eldritch Blast cantrip, a beam of crackling energy (1d10 force damage, ranged spell attack).",
+            "cantrip": "eldritchBlast",
+            "abilityRef": "eldritchBlast"
           }
         ],
         "2": [
           {
-            "name": "Channel Divinity: Turn Undead",
-            "description": "You can use your Channel Divinity to turn undead. Each undead that can see or hear you within 30 feet must make a Wisdom saving throw. If failed, the creature is turned for 1 minute or until it takes damage."
+            "name": "Channel Divinity",
+            "description": "Channel divine energy to fuel magical effects. Choose: Turn Undead (force WIS save, turned on fail) or Preserve Life (heal 5 × level HP, divided among allies within 30 feet). Recovers on short rest.",
+            "uses": 1,
+            "recharge": "shortRest",
+            "options": ["turnUndead", "preserveLife"],
+            "abilityRef": "channelDivinity_turnUndead"
           },
           {
-            "name": "Channel Divinity: Preserve Life",
-            "description": "You can use Channel Divinity to heal the badly injured. You restore hit points equal to five times your cleric level, divided among creatures of your choice within 30 feet."
+            "name": "Eldritch Invocations",
+            "description": "Learn 2 invocations - fragments of forbidden knowledge that grant ongoing benefits. Examples: Agonizing Blast (+CHA to Eldritch Blast damage), Devil's Sight (see in magical darkness), Armor of Shadows (cast Mage Armor at will).",
+            "invocationsKnown": 2,
+            "abilityRef": "eldritchInvocations",
+            "scaling": {
+              "5": { "invocationsKnown": 3 },
+              "9": { "invocationsKnown": 4 }
+            }
+          }
+        ],
+        "3": [
+          {
+            "name": "Pact Boon",
+            "description": "Your patron bestows a gift. Choose: Pact of the Chain (familiar), Pact of the Blade (summon weapon), or Pact of the Tome (ritual spellbook).",
+            "choices": {
+              "choose": 1,
+              "from": ["chain", "blade", "tome"]
+            }
           }
         ],
         "4": [
           {
             "name": "Ability Score Improvement",
-            "description": "You can increase one ability score by 2, or you can increase two ability scores by 1."
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
           }
         ],
         "5": [
           {
             "name": "Destroy Undead (CR 1/2)",
-            "description": "When an undead of CR 1/2 or lower fails its saving throw against your Turn Undead feature, it is instantly destroyed."
+            "description": "When undead of CR 1/2 or lower fail their save against Turn Undead, they are instantly destroyed.",
+            "destroyUndeadCR": 0.5
           }
         ]
       }
     },
+
     {
-      "id": "rogue",
-      "name": "Rogue",
-      "description": "Rogues rely on skill, stealth, and their foes' vulnerabilities to get the upper hand in any situation. They have a knack for finding the solution to just about any problem, demonstrating a resourcefulness and versatility that is the cornerstone of any successful adventuring party.",
+      "id": "wanderlust",
+      "name": "Wanderlust",
+      "displayName": "Wanderlust",
+      "description": "Wanderlust represents those driven by curiosity and freedom, masters of versatility who refuse to be bound by convention. Combining the cunning of rogues with the charisma of bards, they are jack-of-all-trades who excel through adaptability.",
+      "flavor": "Merges Rogue + Bard",
       "hitDie": 8,
-      "primaryAbility": ["dex"],
+      "primaryAbility": ["dex", "cha"],
       "savingThrowProficiencies": ["dex", "int"],
       "armorProficiencies": ["light"],
       "weaponProficiencies": ["simple", "handCrossbow", "longsword", "rapier", "shortsword"],
-      "toolProficiencies": ["thievesTools"],
+      "toolProficiencies": ["thievesTools", "musicalInstrument"],
       "skillChoices": {
         "choose": 4,
-        "from": ["acrobatics", "athletics", "deception", "empathy", "influence", "investigation", "perception", "sleightOfHand", "cunning"]
+        "from": ["acrobatics", "athletics", "deception", "empathy", "influence", "investigation", "perception", "creativity", "sleightOfHand", "cunning"]
       },
       "startingEquipment": {
-        "defaults": ["rapier", "shortbow", "arrow:20", "leatherArmor", "dagger:2", "thievesTools", "burglarsPack"]
+        "defaults": ["rapier", "shortbow", "arrow:20", "leatherArmor", "dagger:2", "thievesTools", "lute", "burglarsPack"]
       },
-      "spellcaster": false,
+      "spellcaster": true,
+      "spellcastingAbility": "cha",
+      "spellsKnownProgression": "knownCaster",
+      "spellSlotsByLevel": {
+        "1": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "2": [2, 0, 0, 0, 0, 0, 0, 0, 0],
+        "3": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        "4": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        "5": [4, 2, 0, 0, 0, 0, 0, 0, 0]
+      },
+      "spellsKnownByLevel": {
+        "2": 3,
+        "3": 4,
+        "4": 5,
+        "5": 6
+      },
+      "cantripsByLevel": {
+        "2": 2,
+        "10": 3
+      },
+      "weaponMasteries": {
+        "level1": 2,
+        "level4": 3,
+        "level10": 4
+      },
       "features": {
         "1": [
           {
             "name": "Expertise",
-            "description": "Choose two of your skill proficiencies. Your proficiency bonus is doubled for any ability check you make that uses either of the chosen proficiencies. At 6th level, you can choose two more."
+            "description": "Choose 2 skills you're proficient in. Double your proficiency bonus for those skills. Choose 2 more at 6th level.",
+            "expertiseSkills": 2,
+            "scaling": {
+              "6": { "expertiseSkills": 4 }
+            }
           },
           {
             "name": "Sneak Attack",
-            "description": "You know how to strike subtly and exploit a foe's distraction. Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The attack must use a finesse or a ranged weapon. The extra damage increases as you gain levels (2d6 at level 3, 3d6 at level 5)."
+            "description": "Once per turn, deal extra 1d6 damage when you hit with advantage or an ally is within 5 feet of target. Must use finesse or ranged weapon.",
+            "sneakAttackDice": "1d6",
+            "abilityRef": "sneakAttack",
+            "scaling": {
+              "3": { "sneakAttackDice": "2d6" },
+              "5": { "sneakAttackDice": "3d6" },
+              "7": { "sneakAttackDice": "4d6" },
+              "9": { "sneakAttackDice": "5d6" }
+            }
           },
           {
-            "name": "Thieves' Cant",
-            "description": "You know thieves' cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation."
+            "name": "Bardic Inspiration",
+            "description": "Grant an ally a d6 inspiration die they can add to an ability check, attack roll, or save within 10 minutes. Uses = CHA modifier per short rest.",
+            "inspirationDie": "1d6",
+            "uses": "cha_mod",
+            "recharge": "shortRest",
+            "abilityRef": "bardicInspiration",
+            "scaling": {
+              "5": { "inspirationDie": "1d8" },
+              "10": { "inspirationDie": "1d10" }
+            }
           }
         ],
         "2": [
           {
             "name": "Cunning Action",
-            "description": "You can take a bonus action on each of your turns in combat to Dash, Disengage, or Hide."
+            "description": "Use a bonus action to Dash, Disengage, or Hide.",
+            "abilityRef": "cunningAction"
+          },
+          {
+            "name": "Jack of All Trades",
+            "description": "Add half your proficiency bonus (rounded down) to any ability check you make that doesn't already include your proficiency bonus.",
+            "type": "passive"
+          },
+          {
+            "name": "Song of Rest",
+            "description": "During a short rest, allies who spend hit dice to heal regain an extra 1d6 HP.",
+            "bonusHealing": "1d6",
+            "scaling": {
+              "9": { "bonusHealing": "1d8" }
+            }
           }
         ],
         "3": [
           {
-            "name": "Roguish Archetype: Thief",
-            "description": "You hone your skills in the larcenous arts. (Thief archetype assumed for MVP)"
+            "name": "Fast Hands",
+            "description": "Use Cunning Action bonus action to make a Sleight of Hand check, use thieves' tools to disarm traps/pick locks, or Use an Object.",
+            "type": "bonusAction"
           },
           {
-            "name": "Fast Hands",
-            "description": "You can use the bonus action granted by Cunning Action to make a Dexterity (Sleight of Hand) check, use your thieves' tools to disarm a trap or open a lock, or take the Use an Object action."
+            "name": "Expertise (Additional)",
+            "description": "Choose 1 more skill for Expertise (total: 3).",
+            "expertiseSkills": 3
           }
         ],
         "4": [
           {
             "name": "Ability Score Improvement",
-            "description": "You can increase one ability score by 2, or you can increase two ability scores by 1."
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
           }
         ],
         "5": [
           {
             "name": "Uncanny Dodge",
-            "description": "When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you."
+            "description": "When an attacker you can see hits you, use your reaction to halve the damage.",
+            "type": "reaction",
+            "abilityRef": "uncannyDodge"
           }
         ]
       }
     },
+
     {
-      "id": "ranger",
-      "name": "Ranger",
-      "description": "Far from the bustle of cities and towns, past the hedges that shelter the most distant farms, amid the dense-packed trees of trackless forests and across wide and empty plains, rangers keep their unending watch.",
+      "id": "bond",
+      "name": "Bond",
+      "displayName": "Bond",
+      "description": "Bond represents those who form deep connections with the natural world and its creatures. Merging the tracking prowess of rangers with the primal magic of druids, they are protectors of wilderness and champions of balance.",
+      "flavor": "Merges Ranger + Druid",
       "hitDie": 10,
       "primaryAbility": ["dex", "wis"],
       "savingThrowProficiencies": ["str", "dex"],
@@ -271,7 +483,7 @@
         "from": ["athletics", "empathy", "investigation", "academia", "perception", "cunning", "endurance"]
       },
       "startingEquipment": {
-        "defaults": ["scaleMail", "longbow", "arrow:20", "longsword", "explorersPack"]
+        "defaults": ["scaleMail", "longbow", "arrow:20", "longsword", "druidicFocus", "explorersPack"]
       },
       "spellcaster": true,
       "spellcastingAbility": "wis",
@@ -289,43 +501,347 @@
         "4": 3,
         "5": 4
       },
+      "cantripsByLevel": {
+        "1": 2,
+        "10": 3
+      },
+      "weaponMasteries": {
+        "level1": 2,
+        "level4": 3,
+        "level10": 4
+      },
       "features": {
         "1": [
           {
             "name": "Favored Enemy",
-            "description": "Choose a type of favored enemy (beasts, humanoids, undead, etc.). You have advantage on Wisdom (Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them."
+            "description": "Choose a creature type (beasts, fey, humanoids, undead, etc.). Advantage on tracking and Intelligence checks to recall info about them.",
+            "choices": {
+              "choose": 1,
+              "from": ["beasts", "fey", "humanoids", "monstrosities", "undead", "aberrations"]
+            }
           },
           {
             "name": "Natural Explorer",
-            "description": "You are particularly familiar with one type of natural environment (forest, grassland, mountain, etc.). When you make an Intelligence or Wisdom check related to your favored terrain, your proficiency bonus is doubled if you are proficient in that skill."
+            "description": "Choose a terrain type (forest, grassland, mountain, etc.). Double proficiency bonus on INT and WIS checks related to that terrain.",
+            "choices": {
+              "choose": 1,
+              "from": ["forest", "grassland", "mountain", "swamp", "arctic", "desert"]
+            }
+          },
+          {
+            "name": "Druidic",
+            "description": "You know Druidic, the secret language of druids. You can leave hidden messages in natural settings that only druids can read.",
+            "type": "language"
           }
         ],
         "2": [
           {
             "name": "Fighting Style",
-            "description": "You adopt a particular style of fighting. Choose one: Archery (+2 to ranged attack rolls) or Defense (+1 AC while wearing armor)."
+            "description": "Choose Archery (+2 ranged attack rolls), Defense (+1 AC in armor), or Dueling (+2 damage with one-handed weapon).",
+            "choices": {
+              "choose": 1,
+              "from": ["archery", "defense", "dueling"]
+            }
           },
           {
             "name": "Spellcasting",
-            "description": "You have learned to use the magical essence of nature to cast spells. You know 2 spells from the ranger spell list."
+            "description": "Cast ranger and druid spells using WIS. You know a number of spells based on your level.",
+            "spellsKnown": "wis_mod + level/2"
+          },
+          {
+            "name": "Wild Shape",
+            "description": "Transform into a beast with CR 1/4 or lower (CR 1/2 at 4th level, CR 1 at 8th level). Lasts for hours = half your level. Use twice per short rest.",
+            "uses": 2,
+            "recharge": "shortRest",
+            "maxCR": 0.25,
+            "duration": "level / 2",
+            "abilityRef": "wildShape",
+            "scaling": {
+              "4": { "maxCR": 0.5 },
+              "8": { "maxCR": 1 }
+            }
           }
         ],
         "3": [
           {
             "name": "Primeval Awareness",
-            "description": "You can use your action and expend one ranger spell slot to focus your awareness. For 1 minute per level of the spell slot expended, you can sense certain types of creatures within 1 mile of you."
+            "description": "Use an action and a spell slot to sense creatures within 1 mile (6 miles in favored terrain) for 1 minute per spell level. Sense: aberrations, celestials, dragons, elementals, fey, fiends, and undead.",
+            "range": 5280,
+            "type": "action"
           }
         ],
         "4": [
           {
             "name": "Ability Score Improvement",
-            "description": "You can increase one ability score by 2, or you can increase two ability scores by 1."
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
           }
         ],
         "5": [
           {
             "name": "Extra Attack",
-            "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+            "description": "Attack twice instead of once when you take the Attack action.",
+            "attacks": 2
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "oath",
+      "name": "Oath",
+      "displayName": "Oath",
+      "description": "Oath represents warriors bound by sacred vows, wielding divine power through conviction. Merging the holy might of paladins with the blood magic of blood hunters, they are relentless crusaders who pay a price for power.",
+      "flavor": "Merges Paladin + Blood Hunter",
+      "hitDie": 10,
+      "primaryAbility": ["str", "cha"],
+      "savingThrowProficiencies": ["wis", "cha"],
+      "armorProficiencies": ["light", "medium", "heavy", "shields"],
+      "weaponProficiencies": ["simple", "martial"],
+      "toolProficiencies": ["alchemistsSupplies"],
+      "skillChoices": {
+        "choose": 2,
+        "from": ["athletics", "empathy", "influence", "academia", "endurance", "cunning"]
+      },
+      "startingEquipment": {
+        "defaults": ["chainMail", "longsword", "shield", "javelin:5", "holySymbol", "priestsPack"]
+      },
+      "spellcaster": true,
+      "spellcastingAbility": "cha",
+      "spellsKnownProgression": "preparedCaster",
+      "spellSlotsByLevel": {
+        "1": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "2": [2, 0, 0, 0, 0, 0, 0, 0, 0],
+        "3": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        "4": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        "5": [4, 2, 0, 0, 0, 0, 0, 0, 0]
+      },
+      "spellsPreparedFormula": "cha_mod + level/2",
+      "weaponMasteries": {
+        "level1": 2,
+        "level4": 3,
+        "level10": 4
+      },
+      "features": {
+        "1": [
+          {
+            "name": "Divine Sense",
+            "description": "Sense celestials, fiends, and undead within 60 feet. Know their location and type. Uses = 1 + CHA modifier per long rest.",
+            "range": 60,
+            "uses": "1 + cha_mod",
+            "recharge": "longRest"
+          },
+          {
+            "name": "Lay on Hands",
+            "description": "You have a healing pool of HP = 5 × your level. As an action, touch a creature to restore HP from this pool (max = pool size). Cure disease/poison for 5 HP. Pool refills on long rest.",
+            "healingPool": "level * 5",
+            "recharge": "longRest",
+            "abilityRef": "layOnHands"
+          },
+          {
+            "name": "Crimson Rite",
+            "description": "As a bonus action, imbue a weapon with hemocraft energy. Take damage = 1 hit die (no roll). The weapon deals +1d4 damage (fire, cold, lightning, or necrotic) until you finish a rest.",
+            "hpCost": "1 hit die",
+            "extraDamage": "1d4",
+            "duration": "rest",
+            "abilityRef": "crimsonRite",
+            "scaling": {
+              "5": { "extraDamage": "1d6" },
+              "11": { "extraDamage": "1d8" }
+            }
+          }
+        ],
+        "2": [
+          {
+            "name": "Fighting Style",
+            "description": "Choose Defense (+1 AC in armor), Dueling (+2 damage one-handed), or Great Weapon Fighting (reroll 1s and 2s).",
+            "choices": {
+              "choose": 1,
+              "from": ["defense", "dueling", "greatWeaponFighting"]
+            }
+          },
+          {
+            "name": "Spellcasting",
+            "description": "Cast paladin spells using CHA. Prepare spells each long rest (CHA modifier + half your level).",
+            "spellsPrepared": "cha_mod + level/2"
+          },
+          {
+            "name": "Divine Smite",
+            "description": "When you hit with a melee weapon attack, expend a spell slot to deal +2d8 radiant damage (1st level) + 1d8 per slot level above 1st (max 5d8). +1d8 vs undead/fiends.",
+            "extraDamage": "2d8 + 1d8_per_level",
+            "maxDice": "5d8",
+            "bonusVsUndead": "1d8",
+            "abilityRef": "divineSmite"
+          }
+        ],
+        "3": [
+          {
+            "name": "Divine Health",
+            "description": "You are immune to disease.",
+            "type": "passive"
+          },
+          {
+            "name": "Sacred Oath",
+            "description": "Choose an oath: Devotion (protection and virtue), Vengeance (punish wrongdoers), or Redemption (peace and mercy). Gain oath spells and Channel Divinity options.",
+            "choices": {
+              "choose": 1,
+              "from": ["devotion", "vengeance", "redemption"]
+            }
+          }
+        ],
+        "4": [
+          {
+            "name": "Ability Score Improvement",
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
+          }
+        ],
+        "5": [
+          {
+            "name": "Extra Attack",
+            "description": "Attack twice instead of once when you take the Attack action.",
+            "attacks": 2
+          },
+          {
+            "name": "Brand of Castigation",
+            "description": "When you damage a creature with Crimson Rite, you can brand it. Branded creatures can't become invisible and you have advantage on attacks against them. Brand lasts until the end of your next turn.",
+            "type": "passive"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "instinct",
+      "name": "Instinct",
+      "displayName": "Instinct",
+      "description": "Instinct embodies raw, primal power channeled through emotion and will. Merging the savage fury of barbarians with the innate magic of sorcerers, they are forces of nature who bend reality through sheer force of personality.",
+      "flavor": "Merges Barbarian + Sorcerer",
+      "hitDie": 12,
+      "primaryAbility": ["str", "cha"],
+      "savingThrowProficiencies": ["str", "con"],
+      "armorProficiencies": ["light", "medium", "shields"],
+      "weaponProficiencies": ["simple", "martial"],
+      "toolProficiencies": [],
+      "skillChoices": {
+        "choose": 2,
+        "from": ["athletics", "empathy", "endurance", "perception", "cunning", "influence", "arcana"]
+      },
+      "startingEquipment": {
+        "defaults": ["greataxe", "handaxe:2", "explorersPack", "javelin:4"]
+      },
+      "spellcaster": true,
+      "spellcastingAbility": "cha",
+      "spellsKnownProgression": "knownCaster",
+      "spellSlotsByLevel": {
+        "1": [2, 0, 0, 0, 0, 0, 0, 0, 0],
+        "2": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        "3": [4, 2, 0, 0, 0, 0, 0, 0, 0],
+        "4": [4, 3, 0, 0, 0, 0, 0, 0, 0],
+        "5": [4, 3, 2, 0, 0, 0, 0, 0, 0]
+      },
+      "spellsKnownByLevel": {
+        "1": 2,
+        "2": 3,
+        "3": 4,
+        "4": 5,
+        "5": 6
+      },
+      "cantripsByLevel": {
+        "1": 4,
+        "10": 5
+      },
+      "resourceSystem": {
+        "type": "sorceryPoints",
+        "sorceryPoints": "level",
+        "recharge": "longRest"
+      },
+      "weaponMasteries": {
+        "level1": 2,
+        "level4": 3
+      },
+      "features": {
+        "1": [
+          {
+            "name": "Rage",
+            "description": "Enter a rage as a bonus action for 1 minute. Gain advantage on STR checks/saves, +2 melee damage, resistance to physical damage. Can't cast spells while raging. 2 rages per long rest.",
+            "uses": 2,
+            "recharge": "longRest",
+            "duration": 10,
+            "bonusDamage": 2,
+            "abilityRef": "rage",
+            "scaling": {
+              "3": { "uses": 3 },
+              "6": { "uses": 4, "bonusDamage": 3 },
+              "12": { "uses": 5, "bonusDamage": 4 }
+            }
+          },
+          {
+            "name": "Unarmored Defense",
+            "description": "While not wearing armor, your AC = 10 + DEX modifier + CON modifier + shield (if wielding).",
+            "acFormula": "10 + dex_mod + con_mod"
+          },
+          {
+            "name": "Spellcasting",
+            "description": "Cast sorcerer spells using CHA as your spellcasting ability. You know a number of cantrips and spells based on your level.",
+            "spellsKnown": "based on level"
+          }
+        ],
+        "2": [
+          {
+            "name": "Reckless Attack",
+            "description": "On your first attack each turn, gain advantage on all melee attack rolls. Attacks against you have advantage until your next turn.",
+            "abilityRef": "recklessAttack"
+          },
+          {
+            "name": "Danger Sense",
+            "description": "Advantage on DEX saves against effects you can see (traps, spells) while not blinded, deafened, or incapacitated.",
+            "type": "passive"
+          },
+          {
+            "name": "Font of Magic",
+            "description": "You have sorcery points = your level. Use them to create spell slots or fuel metamagic. Recover on long rest.",
+            "sorceryPoints": "level"
+          }
+        ],
+        "3": [
+          {
+            "name": "Primal Path",
+            "description": "Choose a path: Path of the Berserker (relentless fury), Path of the Totem Warrior (animal spirits), or Path of Wild Magic (chaotic surges).",
+            "choices": {
+              "choose": 1,
+              "from": ["berserker", "totem", "wildMagic"]
+            }
+          },
+          {
+            "name": "Metamagic",
+            "description": "Learn 2 metamagic options to modify your spells. Examples: Quickened Spell (cast as bonus action for 2 sorcery points), Empowered Spell (reroll damage dice for 1 point), Twinned Spell (target 2 creatures for sorcery points = spell level).",
+            "metamagicOptions": 2,
+            "options": ["quickened", "empowered", "twinned", "subtle", "careful"],
+            "abilityRef": "metamagic_quicken",
+            "scaling": {
+              "10": { "metamagicOptions": 3 }
+            }
+          }
+        ],
+        "4": [
+          {
+            "name": "Ability Score Improvement",
+            "description": "Increase one ability score by 2, or two ability scores by 1 each. Max 20.",
+            "type": "asi"
+          }
+        ],
+        "5": [
+          {
+            "name": "Extra Attack",
+            "description": "Attack twice instead of once when you take the Attack action.",
+            "attacks": 2
+          },
+          {
+            "name": "Fast Movement",
+            "description": "Your speed increases by 10 feet while not wearing heavy armor.",
+            "speedBonus": 10,
+            "requirement": "not heavy armor"
           }
         ]
       }

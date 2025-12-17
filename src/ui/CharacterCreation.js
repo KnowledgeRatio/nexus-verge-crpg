@@ -127,7 +127,7 @@ export class CharacterCreationUI {
      * Render progress steps
      */
     renderProgressSteps() {
-        const steps = ['Name', 'Race', 'Class', 'Background', 'Abilities', 'Skills', 'Review'];
+        const steps = ['Name', 'Culture', 'Calling', 'Background', 'Abilities', 'Skills', 'Review'];
         return steps.map((step, index) => {
             const stepNum = index + 1;
             const isActive = stepNum === this.currentStep;
@@ -162,12 +162,12 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Step 2: Race
+     * Step 2: Culture
      */
     renderRaceStep(container) {
         container.innerHTML = `
-            <h3>Choose Your Race</h3>
-            <p class="step-description">Your race determines your natural abilities and traits.</p>
+            <h3>Choose Your Culture</h3>
+            <p class="step-description">Your culture determines your natural abilities and traits.</p>
             <div class="race-grid">
                 ${this.racesData.map(race => `
                     <div class="race-card ${this.characterData.race?.id === race.id ? 'selected' : ''}"
@@ -199,17 +199,17 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Step 3: Class
+     * Step 3: Calling
      */
     renderClassStep(container) {
         container.innerHTML = `
-            <h3>Choose Your Class</h3>
-            <p class="step-description">Your class determines your abilities and role in combat.</p>
+            <h3>Choose Your Calling</h3>
+            <p class="step-description">Your calling determines your abilities and role in combat.</p>
             <div class="class-grid">
                 ${this.classesData.map(cls => `
                     <div class="class-card ${this.characterData.class?.id === cls.id ? 'selected' : ''}"
                          data-class-id="${cls.id}">
-                        <h4>${cls.name}</h4>
+                        <h4>${cls.displayName || cls.name}</h4>
                         <p class="class-description">${cls.description}</p>
                         <div class="class-stats">
                             <div><strong>Hit Die:</strong> d${cls.hitDie}</div>
@@ -325,11 +325,11 @@ export class CharacterCreationUI {
         container.innerHTML = `
             <h3>Choose Your Skills</h3>
             <p class="step-description">
-                Choose <strong>${numToChoose}</strong> skills from your class list.
+                Choose <strong>${numToChoose}</strong> skills from your calling list.
                 Your background grants additional skill proficiencies automatically.
             </p>
             <div class="skill-selection">
-                <h4>Class Skills (Choose ${numToChoose}):</h4>
+                <h4>Calling Skills (Choose ${numToChoose}):</h4>
                 ${availableSkills.map(skill => `
                     <label class="skill-checkbox">
                         <input type="checkbox" value="${skill}"
@@ -387,8 +387,8 @@ export class CharacterCreationUI {
                 <div class="review-section">
                     <h4>Identity</h4>
                     <p><strong>Name:</strong> ${this.characterData.name}</p>
-                    <p><strong>Race:</strong> ${this.characterData.race.name}</p>
-                    <p><strong>Class:</strong> ${this.characterData.class.name}</p>
+                    <p><strong>Culture:</strong> ${this.characterData.race.name}</p>
+                    <p><strong>Calling:</strong> ${this.characterData.class.displayName || this.characterData.class.name}</p>
                     <p><strong>Background:</strong> ${this.characterData.background.name}</p>
                 </div>
 

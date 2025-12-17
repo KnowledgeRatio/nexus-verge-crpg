@@ -3,12 +3,243 @@
 
 **Last Updated:** 2025-12-17
 **Current Branch:** `main-beta-quests`
+<<<<<<< Updated upstream
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
 **Latest Commit:** Equipment Proficiency Prerequisites & UI Cleanup (Complete)
+=======
+**Project Phase:** Phase 2 MVP - Core Systems Implementation + Class System Overhaul
+**Latest Commit:** New Calling System & Terminology Update (Data Complete, Code Integration Pending)
+>>>>>>> Stashed changes
 
 ---
 
-## 🆕 Recent Changes (2025-12-17)
+## 🆕 Recent Changes (2025-12-17 - Session 2)
+
+### New Calling System & Terminology Changes ✅ (Data Complete)
+Implemented comprehensive class system redesign with 7 new "Callings" that merge traditional D&D classes, plus complete UI terminology update from Race/Class to Culture/Calling.
+
+**New Data Files Created:**
+- `data/weaponMasteries.json` - 8 weapon mastery types with calling progression
+- `data/abilities.json` - 30+ non-magical abilities across all callings
+- `data/spells.json` - 15+ spells (cantrips + levels 1-2) with spell lists per calling
+- `data/classes.json` - Completely redesigned with 7 new Callings
+
+**Modified Files:**
+- `src/ui/CharacterCreation.js` - Updated all "Race" → "Culture", "Class" → "Calling"
+- `src/main.js` - Updated HUD and welcome messages to use displayName
+- `src/systems/NPCGenerator.js` - Fixed RNG import errors (createRNG → SeededRandom)
+
+---
+
+### **The 7 New Callings:**
+
+#### **1. Dedication** (Fighter + Monk) - d10 HP
+- **ID:** `dedication`
+- **Martial master:** 3 weapon masteries at level 1 (4 at level 4, 5 at level 10)
+- **Stamina resource:** WIS-based for monk techniques (Flurry of Blows, Patient Defense, Step of the Wind)
+- **Key features:** Fighting Style, Second Wind, Action Surge, Martial Arts (1d6 unarmed), Stunning Strike
+- **Extra Attack at 5th level**
+- **Proficiencies:** All armor + shields, simple + martial weapons
+
+#### **2. Scholar** (Wizard + Artificer) - d6 HP
+- **ID:** `scholar`
+- **INT spellcaster:** Prepared caster with spellbook
+- **Inventor:** Infuse items with magic (4 known, 2 active at level 2)
+- **Weapon masteries:** Only 1
+- **Key features:** Arcane Recovery, Magical Tinkering, Infuse Item, Tool Expertise
+- **Proficiencies:** Light armor, simple weapons, thieves' tools + tinker's tools
+
+#### **3. Pact** (Cleric + Warlock) - d8 HP
+- **ID:** `pact`
+- **Hybrid caster:** WIS divine spells + CHA Pact Magic (short rest slots)
+- **Dual power source:** Normal spell slots + Pact slots that recover on short rest
+- **Weapon masteries:** 1
+- **Key features:** Eldritch Blast (always known), Channel Divinity, Eldritch Invocations (2 at level 2), Pact Boon
+- **Proficiencies:** Light + medium armor + shields, simple weapons
+
+#### **4. Wanderlust** (Rogue + Bard) - d8 HP
+- **ID:** `wanderlust`
+- **Ultimate skill monkey:** 4 skill choices, Expertise in 2 (4 at level 6)
+- **CHA spellcaster:** Starts at level 2 (known caster)
+- **Weapon masteries:** 2 at level 1 (3 at level 4, 4 at level 10)
+- **Key features:** Sneak Attack (1d6 → 5d6 at level 9), Bardic Inspiration, Cunning Action, Jack of All Trades, Song of Rest
+- **Proficiencies:** Light armor, simple weapons + hand crossbow/longsword/rapier/shortsword, thieves' tools + instrument
+
+#### **5. Bond** (Ranger + Druid) - d10 HP
+- **ID:** `bond`
+- **Nature warrior:** WIS spellcaster with martial prowess
+- **Wild Shape:** Transform into beasts (2 uses per short rest, CR 1/4 at level 1)
+- **Weapon masteries:** 2 at level 1 (3 at level 4, 4 at level 10)
+- **Key features:** Favored Enemy, Natural Explorer, Druidic language, Fighting Style, Wild Shape, Primeval Awareness
+- **Extra Attack at 5th level**
+- **Proficiencies:** Light + medium armor + shields, simple + martial weapons
+
+#### **6. Oath** (Paladin + Blood Hunter) - d10 HP
+- **ID:** `oath`
+- **Sacred warrior:** CHA spellcaster with martial prowess
+- **Blood magic:** Crimson Rite (pay 1 hit die for +1d4 damage until rest)
+- **Weapon masteries:** 2 at level 1 (3 at level 4, 4 at level 10)
+- **Key features:** Lay on Hands (healing pool = 5 × level), Divine Smite (spend spell slots for +2d8 radiant), Crimson Rite, Sacred Oath, Fighting Style
+- **Extra Attack at 5th level**
+- **Proficiencies:** All armor + shields, simple + martial weapons, alchemist's supplies
+
+#### **7. Instinct** (Barbarian + Sorcerer) - d12 HP (highest!)
+- **ID:** `instinct`
+- **Primal spellcaster:** CHA spellcaster with Rage
+- **Sorcery Points:** Equal to level, fuel Metamagic
+- **Weapon masteries:** 2 at level 1 (3 at level 4)
+- **Key features:** Rage (2/day, +2 damage, resistance, can't cast while raging), Reckless Attack, Unarmored Defense (10 + DEX + CON), Metamagic (Quickened, Empowered, etc.), Font of Magic
+- **Extra Attack at 5th level**
+- **Highest HP, most cantrips (4)**
+- **Proficiencies:** Light + medium armor + shields, simple + martial weapons
+
+---
+
+### **Weapon Masteries System** ([data/weaponMasteries.json](data/weaponMasteries.json))
+
+**8 Mastery Types:**
+1. **Cleave** - Hit adjacent enemy after primary hit (greataxe, greatsword, halberd, glaive)
+2. **Graze** - Deal ability mod damage on miss (greatclub, maul, pike)
+3. **Nick** - Extra light weapon attack without ability mod (dagger, handaxe, scimitar, shortsword)
+4. **Push** - Push target 10 feet away (warhammer, battleaxe, pike, maul)
+5. **Sap** - Target has disadvantage on next attack (mace, morningstar, quarterstaff, club)
+6. **Slow** - Reduce target speed by 10 feet (whip, net, sling, dart)
+7. **Topple** - Force CON save or knock prone (longsword, greataxe, battleaxe, trident)
+8. **Vex** - Advantage on next attack vs same target (rapier, shortsword, scimitar, dagger)
+
+**Calling Progression:**
+- Dedication: 3 → 4 → 5 masteries (most)
+- Scholar/Pact: 1 mastery only
+- Wanderlust/Bond/Oath: 2 → 3 → 4 masteries
+- Instinct: 2 → 3 masteries
+
+**Requirements:** Must be proficient with weapon to use its mastery
+
+---
+
+### **Abilities System** ([data/abilities.json](data/abilities.json))
+
+**30+ Non-Magical Abilities** organized by calling with various resource types:
+
+**Resource Types:**
+- **Short Rest:** Second Wind, Action Surge, Cunning Action uses
+- **Long Rest:** Rage, Lay on Hands pool, Divine Smite spell slots
+- **Stamina:** Flurry of Blows, Patient Defense, Step of the Wind (WIS mod stamina points)
+- **Sorcery Points:** Metamagic fuel (equal to character level)
+- **Per Turn:** Sneak Attack, passive abilities
+- **Pools:** Lay on Hands (5 × level HP pool)
+
+**Example Abilities:**
+- **Dedication:** Second Wind (1d10 + level HP), Action Surge (extra action), Flurry of Blows (2 unarmed strikes for 1 stamina)
+- **Wanderlust:** Sneak Attack (1d6 → 5d6), Bardic Inspiration (CHA mod/short rest), Cunning Action
+- **Bond:** Hunter's Mark (WIS mod/long rest), Wild Shape (2/short rest), Primal Strike
+- **Oath:** Lay on Hands (pool healing), Divine Smite (spell slot → radiant damage), Crimson Rite (HP → weapon damage)
+- **Instinct:** Rage (2/long rest), Reckless Attack, Metamagic (Quickened Spell, Empowered Spell)
+- **Scholar:** Arcane Recovery, Infuse Item, Flash of Genius
+- **Pact:** Eldritch Blast, Eldritch Invocations, Channel Divinity
+
+**Action Types:** Action, Bonus Action, Reaction, Free, Passive, Metamagic
+
+---
+
+### **Spells System** ([data/spells.json](data/spells.json))
+
+**Cantrips (6):**
+- Fire Bolt, Ray of Frost, Shocking Grasp (Scholar, Instinct)
+- Sacred Flame, Guidance (Pact, Bond)
+- Light (All casters)
+
+**Level 1 Spells (8):**
+- Magic Missile, Burning Hands, Shield (Scholar)
+- Cure Wounds, Bless, Healing Word (Pact, Bond)
+- Hunter's Mark (Bond, Wanderlust)
+- Thunderwave (Scholar, Instinct, Wanderlust)
+
+**Level 2 Spells (4):**
+- Scorching Ray, Misty Step (Scholar, Instinct)
+- Hold Person (Scholar, Pact, Wanderlust)
+- Spiritual Weapon (Pact, Oath)
+
+**Spell Lists:** Each calling has specific spell access defined in `spellLists` section
+
+---
+
+### **UI Terminology Changes** ✅
+
+**Updated in CharacterCreation.js:**
+- Progress steps: "Race" → "Culture", "Class" → "Calling"
+- Step 2 header: "Choose Your Race" → "Choose Your Culture"
+- Step 3 header: "Choose Your Class" → "Choose Your Calling"
+- Skills section: "Class Skills" → "Calling Skills", "from your class list" → "from your calling list"
+- Review section: "Race:" → "Culture:", "Class:" → "Calling:"
+- All calling cards now display `displayName` field from classes.json
+
+**Updated in main.js:**
+- Welcome message: Uses `class.displayName` if available
+- HUD: Uses `class.displayName` for level display
+- Save slot display: Will show calling name correctly
+
+**Data Preparation:**
+- All 7 callings in classes.json have `displayName` field set
+- Backwards compatible: Falls back to `name` if `displayName` not present
+
+---
+
+### **Implementation Status:**
+
+✅ **Complete (Data Layer):**
+- Weapon masteries JSON schema with all 8 types
+- Abilities JSON schema with 30+ abilities
+- Spells JSON schema with 15+ spells
+- Classes JSON completely redesigned with 7 callings
+- UI terminology updated throughout
+
+⏸️ **Pending (Code Integration):**
+- Character.js needs updates to handle:
+  - Weapon masteries tracking and application
+  - Abilities system (resource pools, uses, activation)
+  - Spell system expansion (pact magic, metamagic)
+  - Resource systems (stamina, sorcery points)
+- Combat system integration for weapon masteries
+- Spell casting UI for new spell list structure
+- Ability activation UI (resource tracking, cooldowns)
+
+⚠️ **Known Issues:**
+- Character creation will load but Character.js still expects old 5-class structure
+- Weapon masteries defined but not implemented in combat
+- Abilities defined but no activation system yet
+- Spells defined but spell system needs expansion
+
+---
+
+### **Next Steps (User Guidance Required):**
+
+The data layer is complete and ready. Before implementing code integration, we need your guidance on:
+
+1. **Character.js Integration Priority:**
+   - Start with weapon masteries only?
+   - Start with abilities system only?
+   - Start with spell system expansion only?
+   - Or tackle all three systems together?
+
+2. **Implementation Approach:**
+   - Incremental (one system at a time, test between)
+   - Comprehensive (all systems together, test at end)
+
+3. **Testing Strategy:**
+   - Create test characters for each calling
+   - Focus on specific calling first (which one?)
+   - Test all 7 callings simultaneously
+
+4. **Backwards Compatibility:**
+   - Support old saves or require fresh start?
+   - Migration path for existing characters?
+
+**Recommendation:** Start with weapon masteries (simplest), then abilities (moderate), then spells (most complex). This allows incremental testing and validation.
+
+---
+
+## 🆕 Recent Changes (2025-12-17 - Session 1)
 
 ### Equipment Proficiency Prerequisites Implementation ✅
 Implemented D&D 5e proficiency checking for equipping weapons, armor, and shields with proper validation and user feedback.

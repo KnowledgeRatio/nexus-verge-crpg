@@ -5,7 +5,7 @@
 
 import { gameState } from './core/GameState.js';
 import { generateSeedString } from './utils/rng.js';
-import CharacterCreationUI from './ui/CharacterCreation.js';
+import { CharacterCreationUI } from './ui/CharacterCreation.js';
 import SettlementUI from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
@@ -288,7 +288,7 @@ class Game {
 
         // Add welcome messages
         gameState.addMessage(`Welcome to Nexus Verge, ${character.name}!`, 'success');
-        gameState.addMessage(`You are a Level ${character.level} ${character.race.name} ${character.class.name}.`, 'info');
+        gameState.addMessage(`You are a Level ${character.level} ${character.race.name} ${character.class.displayName || character.class.name}.`, 'info');
         gameState.addMessage('Use WASD or Arrow keys to move.', 'info');
 
         // Subscribe to messages
@@ -591,7 +591,7 @@ class Game {
         const acDisplay = document.getElementById('acDisplay');
 
         if (charName) charName.textContent = character.name;
-        if (charLevel) charLevel.textContent = `Level ${character.level} ${character.class.name}`;
+        if (charLevel) charLevel.textContent = `Level ${character.level} ${character.class.displayName || character.class.name}`;
         if (hpDisplay) hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
         if (acDisplay) acDisplay.textContent = `AC: ${character.ac}`;
 

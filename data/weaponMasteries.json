@@ -1,0 +1,154 @@
+{
+  "weaponMasteries": {
+    "description": "Weapon masteries are special techniques and bonuses gained when you are proficient with a weapon. Each weapon has an associated mastery that provides tactical advantages in combat.",
+
+    "masteries": {
+      "cleave": {
+        "name": "Cleave",
+        "description": "When you hit a creature with a melee attack using this weapon, you can make an additional attack against a second creature within 5 feet of the first that is also within your reach. This additional attack uses the same ability modifier as the primary attack and deals damage equal to the ability modifier (minimum 1).",
+        "type": "onHit",
+        "usesPerTurn": 1,
+        "weaponTypes": ["greataxe", "greatsword", "halberd", "glaive"]
+      },
+
+      "graze": {
+        "name": "Graze",
+        "description": "If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and it doesn't apply other effects that trigger on a hit.",
+        "type": "onMiss",
+        "weaponTypes": ["greatclub", "maul", "pike"]
+      },
+
+      "nick": {
+        "name": "Nick",
+        "description": "When you make an attack with this weapon as part of the Attack action on your turn, you can make one additional attack with a different Light weapon you're holding as part of the same action. You don't add your ability modifier to the extra attack's damage unless that modifier is negative.",
+        "type": "bonus",
+        "requirement": "Light weapon in other hand",
+        "weaponTypes": ["dagger", "handaxe", "lightHammer", "scimitar", "shortsword", "sickle"]
+      },
+
+      "push": {
+        "name": "Push",
+        "description": "If you hit a creature with this weapon, you can push that creature up to 10 feet straight away from you if it is Large or smaller. You can choose to move with the target up to 5 feet if you wish.",
+        "type": "onHit",
+        "usesPerTurn": 1,
+        "savingThrow": "STR",
+        "weaponTypes": ["warhammer", "battleaxe", "pike", "maul"]
+      },
+
+      "sap": {
+        "name": "Sap",
+        "description": "If you hit a creature with this weapon, that creature has disadvantage on its next attack roll before the start of your next turn.",
+        "type": "onHit",
+        "duration": "1 round",
+        "weaponTypes": ["mace", "morningstar", "quarterstaff", "club", "flail"]
+      },
+
+      "slow": {
+        "name": "Slow",
+        "description": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the weapon is thrown, the target is also slowed if you miss but the weapon passes within 5 feet of it.",
+        "type": "onHit",
+        "duration": "1 round",
+        "weaponTypes": ["whip", "net", "sling", "dart"]
+      },
+
+      "topple": {
+        "name": "Topple",
+        "description": "If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 + your proficiency bonus + the ability modifier used to make the attack). On a failed save, the creature has the Prone condition.",
+        "type": "onHit",
+        "usesPerTurn": 1,
+        "savingThrow": "CON",
+        "weaponTypes": ["greataxe", "greatsword", "longsword", "battleaxe", "warhammer", "trident"]
+      },
+
+      "vex": {
+        "name": "Vex",
+        "description": "If you hit a creature with this weapon and deal damage to the creature, you have advantage on your next attack roll against that creature before the end of your next turn.",
+        "type": "onHit",
+        "duration": "1 round",
+        "weaponTypes": ["rapier", "shortsword", "scimitar", "dagger", "handCrossbow"]
+      }
+    },
+
+    "weaponMasteryAssignments": {
+      "description": "Assigns masteries to specific weapons in items.json by weapon ID",
+      "assignments": {
+        "dagger": "nick",
+        "handaxe": "nick",
+        "lightHammer": "nick",
+        "scimitar": "nick",
+        "shortsword": "nick",
+        "sickle": "nick",
+
+        "rapier": "vex",
+        "handCrossbow": "vex",
+
+        "club": "sap",
+        "mace": "sap",
+        "morningstar": "sap",
+        "quarterstaff": "sap",
+        "flail": "sap",
+
+        "longsword": "topple",
+        "battleaxe": "topple",
+        "warhammer": "topple",
+        "trident": "topple",
+
+        "greataxe": "cleave",
+        "greatsword": "cleave",
+        "halberd": "cleave",
+        "glaive": "cleave",
+
+        "greatclub": "graze",
+        "maul": "graze",
+        "pike": "graze",
+
+        "whip": "slow",
+        "net": "slow",
+        "sling": "slow",
+        "dart": "slow",
+
+        "warpick": "push",
+        "lance": "push"
+      }
+    },
+
+    "proficiencyRequirement": {
+      "description": "You must be proficient with a weapon to use its mastery property. Masteries are automatically active when wielding a weapon you're proficient with.",
+      "enabled": true
+    },
+
+    "callingMasteryProgression": {
+      "description": "Number of weapon masteries a character can choose by calling and level",
+      "dedication": {
+        "1": 3,
+        "4": 4,
+        "10": 5
+      },
+      "wanderlust": {
+        "1": 2,
+        "4": 3,
+        "10": 4
+      },
+      "bond": {
+        "1": 2,
+        "4": 3,
+        "10": 4
+      },
+      "oath": {
+        "1": 2,
+        "4": 3,
+        "10": 4
+      },
+      "scholar": {
+        "1": 1
+      },
+      "pact": {
+        "1": 1
+      },
+      "instinct": {
+        "1": 2,
+        "4": 3
+      }
+    }
+  }
+}

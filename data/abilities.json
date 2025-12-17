@@ -1,0 +1,447 @@
+{
+  "abilities": {
+    "description": "Abilities are non-magical special actions that use Stamina (short rest resource) or have limited uses. Unlike spells, abilities don't require spellcasting ability and can be used by any calling.",
+
+    "dedication": [
+      {
+        "id": "secondWind",
+        "name": "Second Wind",
+        "callings": ["dedication"],
+        "levelRequired": 1,
+        "actionType": "bonusAction",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "description": "You have a limited well of stamina to protect yourself. As a bonus action, regain hit points equal to 1d10 + your level.",
+        "effects": {
+          "healing": "1d10 + level"
+        }
+      },
+
+      {
+        "id": "actionSurge",
+        "name": "Action Surge",
+        "callings": ["dedication"],
+        "levelRequired": 2,
+        "actionType": "free",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "description": "You can push yourself beyond normal limits. On your turn, take one additional action. At 17th level, you can use this twice per rest.",
+        "effects": {
+          "extraAction": 1
+        },
+        "scaling": {
+          "17": { "usesPerShortRest": 2 }
+        }
+      },
+
+      {
+        "id": "indomitable",
+        "name": "Indomitable",
+        "callings": ["dedication"],
+        "levelRequired": 9,
+        "actionType": "reaction",
+        "resourceType": "longRest",
+        "usesPerLongRest": 1,
+        "description": "You can reroll a saving throw that you fail. You must use the new roll. You can use this feature twice at 13th level and three times at 17th level.",
+        "effects": {
+          "rerollSavingThrow": true
+        },
+        "scaling": {
+          "13": { "usesPerLongRest": 2 },
+          "17": { "usesPerLongRest": 3 }
+        }
+      },
+
+      {
+        "id": "flurryOfBlows",
+        "name": "Flurry of Blows",
+        "callings": ["dedication"],
+        "levelRequired": 2,
+        "actionType": "bonusAction",
+        "resourceType": "stamina",
+        "staminaCost": 1,
+        "description": "Immediately after taking the Attack action, spend 1 stamina to make two unarmed strikes as a bonus action.",
+        "effects": {
+          "attacks": 2,
+          "damageType": "unarmed"
+        }
+      },
+
+      {
+        "id": "patientDefense",
+        "name": "Patient Defense",
+        "callings": ["dedication"],
+        "levelRequired": 2,
+        "actionType": "bonusAction",
+        "resourceType": "stamina",
+        "staminaCost": 1,
+        "description": "Spend 1 stamina to take the Dodge action as a bonus action.",
+        "effects": {
+          "dodge": true
+        }
+      }
+    ],
+
+    "wanderlust": [
+      {
+        "id": "cunningAction",
+        "name": "Cunning Action",
+        "callings": ["wanderlust"],
+        "levelRequired": 2,
+        "actionType": "bonusAction",
+        "resourceType": "none",
+        "description": "You can Dash, Disengage, or Hide as a bonus action.",
+        "effects": {
+          "bonusActionOptions": ["dash", "disengage", "hide"]
+        }
+      },
+
+      {
+        "id": "sneakAttack",
+        "name": "Sneak Attack",
+        "callings": ["wanderlust"],
+        "levelRequired": 1,
+        "actionType": "passive",
+        "resourceType": "perTurn",
+        "description": "Once per turn, deal extra damage to a creature you hit with an attack if you have advantage or an ally is within 5 feet of the target. Must use finesse or ranged weapon.",
+        "effects": {
+          "extraDamage": "1d6"
+        },
+        "scaling": {
+          "3": { "extraDamage": "2d6" },
+          "5": { "extraDamage": "3d6" },
+          "7": { "extraDamage": "4d6" },
+          "9": { "extraDamage": "5d6" }
+        }
+      },
+
+      {
+        "id": "uncannyDodge",
+        "name": "Uncanny Dodge",
+        "callings": ["wanderlust"],
+        "levelRequired": 5,
+        "actionType": "reaction",
+        "resourceType": "none",
+        "description": "When an attacker you can see hits you, use your reaction to halve the attack's damage.",
+        "effects": {
+          "damageMitigation": "half"
+        }
+      },
+
+      {
+        "id": "bardicInspiration",
+        "name": "Bardic Inspiration",
+        "callings": ["wanderlust"],
+        "levelRequired": 1,
+        "actionType": "bonusAction",
+        "resourceType": "shortRest",
+        "usesPerShortRest": "cha_mod",
+        "description": "Grant an ally an inspiration die (d6) they can add to an ability check, attack roll, or saving throw within 10 minutes. Die size increases at higher levels.",
+        "effects": {
+          "inspirationDie": "1d6"
+        },
+        "scaling": {
+          "5": { "inspirationDie": "1d8" },
+          "10": { "inspirationDie": "1d10" },
+          "15": { "inspirationDie": "1d12" }
+        }
+      }
+    ],
+
+    "bond": [
+      {
+        "id": "huntersMark",
+        "name": "Hunter's Mark",
+        "callings": ["bond"],
+        "levelRequired": 1,
+        "actionType": "bonusAction",
+        "resourceType": "longRest",
+        "usesPerLongRest": "wis_mod",
+        "description": "Mark a creature you can see. Deal an extra 1d6 damage when you hit it with a weapon attack. Lasts 1 hour or until the target drops to 0 HP. You can transfer the mark to a new creature as a bonus action.",
+        "effects": {
+          "extraDamage": "1d6",
+          "duration": 3600
+        }
+      },
+
+      {
+        "id": "primalStrike",
+        "name": "Primal Strike",
+        "callings": ["bond"],
+        "levelRequired": 2,
+        "actionType": "free",
+        "resourceType": "passive",
+        "description": "Your connection to nature empowers your strikes. When you hit with a melee weapon attack, you can deal an additional 1d8 damage. The damage type is your choice of cold, fire, lightning, or poison.",
+        "effects": {
+          "extraDamage": "1d8",
+          "damageTypes": ["cold", "fire", "lightning", "poison"]
+        }
+      },
+
+      {
+        "id": "wildShape",
+        "name": "Wild Shape",
+        "callings": ["bond"],
+        "levelRequired": 2,
+        "actionType": "action",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 2,
+        "description": "Transform into a beast you've seen with CR 1/4 or lower. Lasts for a number of hours equal to half your level (minimum 1). You gain the beast's HP, AC, and physical abilities.",
+        "effects": {
+          "transform": true,
+          "maxCR": 0.25,
+          "duration": "level / 2"
+        },
+        "scaling": {
+          "4": { "maxCR": 0.5 },
+          "8": { "maxCR": 1 }
+        }
+      }
+    ],
+
+    "oath": [
+      {
+        "id": "layOnHands",
+        "name": "Lay on Hands",
+        "callings": ["oath"],
+        "levelRequired": 1,
+        "actionType": "action",
+        "resourceType": "pool",
+        "poolSize": "level * 5",
+        "recharge": "longRest",
+        "description": "You have a pool of healing power (5 × your level) that replenishes on a long rest. As an action, touch a creature to restore HP from this pool. You can also spend 5 HP to cure one disease or poison.",
+        "effects": {
+          "healing": "pool",
+          "curePoison": 5,
+          "cureDisease": 5
+        }
+      },
+
+      {
+        "id": "divineSmite",
+        "name": "Divine Smite",
+        "callings": ["oath"],
+        "levelRequired": 2,
+        "actionType": "free",
+        "resourceType": "spellSlot",
+        "description": "When you hit with a melee weapon attack, expend a spell slot to deal extra radiant damage: 2d8 for 1st level, plus 1d8 per slot level above 1st (max 5d8). Add 1d8 against undead/fiends.",
+        "effects": {
+          "extraDamage": "2d8 + 1d8_per_level",
+          "damageType": "radiant",
+          "bonusVsUndead": "1d8",
+          "maxDice": "5d8"
+        }
+      },
+
+      {
+        "id": "crimsonRite",
+        "name": "Crimson Rite",
+        "callings": ["oath"],
+        "levelRequired": 1,
+        "actionType": "bonusAction",
+        "resourceType": "hpCost",
+        "hpCost": "hit_die",
+        "description": "Imbue a weapon with hemocraft magic. Take damage equal to one hit die as the weapon ignites with crimson energy. The weapon deals an extra 1d4 damage (fire, cold, lightning, or necrotic) while active. Lasts until short/long rest.",
+        "effects": {
+          "hpCost": "1 hit die",
+          "extraDamage": "1d4",
+          "damageTypes": ["fire", "cold", "lightning", "necrotic"],
+          "duration": "rest"
+        },
+        "scaling": {
+          "5": { "extraDamage": "1d6" },
+          "11": { "extraDamage": "1d8" }
+        }
+      }
+    ],
+
+    "instinct": [
+      {
+        "id": "rage",
+        "name": "Rage",
+        "callings": ["instinct"],
+        "levelRequired": 1,
+        "actionType": "bonusAction",
+        "resourceType": "longRest",
+        "usesPerLongRest": 2,
+        "description": "Enter a rage for 1 minute. Gain advantage on STR checks/saves, +2 melee damage, and resistance to physical damage. Can't cast spells while raging. Ends early if you don't attack or take damage on a turn.",
+        "effects": {
+          "advantageStr": true,
+          "bonusMeleeDamage": 2,
+          "damageResistance": ["bludgeoning", "piercing", "slashing"],
+          "duration": 10
+        },
+        "scaling": {
+          "3": { "usesPerLongRest": 3 },
+          "6": { "usesPerLongRest": 4, "bonusMeleeDamage": 3 },
+          "12": { "usesPerLongRest": 5, "bonusMeleeDamage": 4 }
+        }
+      },
+
+      {
+        "id": "recklessAttack",
+        "name": "Reckless Attack",
+        "callings": ["instinct"],
+        "levelRequired": 2,
+        "actionType": "free",
+        "resourceType": "none",
+        "description": "When you make your first attack on your turn, gain advantage on all melee weapon attack rolls this turn. Attack rolls against you have advantage until your next turn.",
+        "effects": {
+          "advantageAttack": true,
+          "disadvantageDefense": true
+        }
+      },
+
+      {
+        "id": "metamagic_quicken",
+        "name": "Quickened Spell (Metamagic)",
+        "callings": ["instinct"],
+        "levelRequired": 3,
+        "actionType": "metamagic",
+        "resourceType": "sorceryPoints",
+        "cost": 2,
+        "description": "Spend 2 sorcery points to cast a spell with a casting time of 1 action as a bonus action.",
+        "effects": {
+          "castTimeReduction": "bonus_action"
+        }
+      },
+
+      {
+        "id": "metamagic_empower",
+        "name": "Empowered Spell (Metamagic)",
+        "callings": ["instinct"],
+        "levelRequired": 3,
+        "actionType": "metamagic",
+        "resourceType": "sorceryPoints",
+        "cost": 1,
+        "description": "Spend 1 sorcery point when rolling damage for a spell to reroll up to your CHA modifier of the damage dice. You must use the new rolls.",
+        "effects": {
+          "rerollDamageDice": "cha_mod"
+        }
+      }
+    ],
+
+    "scholar": [
+      {
+        "id": "arcaneRecovery",
+        "name": "Arcane Recovery",
+        "callings": ["scholar"],
+        "levelRequired": 1,
+        "actionType": "shortRest",
+        "resourceType": "longRest",
+        "usesPerLongRest": 1,
+        "description": "During a short rest, recover expended spell slots with a combined level up to half your level (rounded up). No slot can be 6th level or higher.",
+        "effects": {
+          "recoverSlotLevels": "level / 2"
+        }
+      },
+
+      {
+        "id": "flashOfGenius",
+        "name": "Flash of Genius",
+        "callings": ["scholar"],
+        "levelRequired": 7,
+        "actionType": "reaction",
+        "resourceType": "longRest",
+        "usesPerLongRest": "int_mod",
+        "description": "When you or an ally within 30 feet makes an ability check or saving throw, use your reaction to add your INT modifier to the roll.",
+        "effects": {
+          "bonus": "int_mod",
+          "range": 30
+        }
+      },
+
+      {
+        "id": "infuseItem",
+        "name": "Infuse Item",
+        "callings": ["scholar"],
+        "levelRequired": 2,
+        "actionType": "longRest",
+        "resourceType": "infusions",
+        "infusionsKnown": 4,
+        "infusionsActive": 2,
+        "description": "Imbue mundane items with magic. You know 4 infusion recipes and can have 2 active at a time. Active infusions last until your next long rest.",
+        "effects": {
+          "infusionOptions": ["enhanced_weapon", "enhanced_armor", "resistant_armor", "returning_weapon"]
+        },
+        "scaling": {
+          "6": { "infusionsKnown": 6, "infusionsActive": 3 },
+          "10": { "infusionsKnown": 8, "infusionsActive": 4 }
+        }
+      }
+    ],
+
+    "pact": [
+      {
+        "id": "eldritchBlast",
+        "name": "Eldritch Blast",
+        "callings": ["pact"],
+        "levelRequired": 1,
+        "actionType": "action",
+        "resourceType": "cantrip",
+        "description": "A beam of crackling energy. Make a ranged spell attack: 1d10 force damage. Gain additional beams at 5th (2 beams), 11th (3 beams), and 17th (4 beams) level.",
+        "effects": {
+          "rangedSpellAttack": true,
+          "damage": "1d10",
+          "damageType": "force"
+        },
+        "scaling": {
+          "5": { "beams": 2 },
+          "11": { "beams": 3 },
+          "17": { "beams": 4 }
+        }
+      },
+
+      {
+        "id": "eldritchInvocations",
+        "name": "Eldritch Invocations",
+        "callings": ["pact"],
+        "levelRequired": 2,
+        "actionType": "passive",
+        "resourceType": "invocations",
+        "invocationsKnown": 2,
+        "description": "Learn fragments of forbidden knowledge (invocations) that grant ongoing benefits. Choose 2 invocations at 2nd level.",
+        "effects": {
+          "invocationOptions": ["agonizing_blast", "devils_sight", "armor_of_shadows", "repelling_blast"]
+        },
+        "scaling": {
+          "5": { "invocationsKnown": 3 },
+          "9": { "invocationsKnown": 4 }
+        }
+      },
+
+      {
+        "id": "channelDivinity_turnUndead",
+        "name": "Channel Divinity: Turn Undead",
+        "callings": ["pact"],
+        "levelRequired": 2,
+        "actionType": "action",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "description": "Present your holy symbol to force undead within 30 feet to make a WIS save. On failure, they are turned for 1 minute or until damaged.",
+        "effects": {
+          "turnUndead": true,
+          "range": 30,
+          "duration": 10,
+          "saveDC": "8 + proficiency + wis_mod"
+        }
+      },
+
+      {
+        "id": "channelDivinity_preserveLife",
+        "name": "Channel Divinity: Preserve Life",
+        "callings": ["pact"],
+        "levelRequired": 2,
+        "actionType": "action",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "description": "Restore hit points equal to 5 × your level, divided among creatures within 30 feet. Can't restore above half their max HP.",
+        "effects": {
+          "healing": "level * 5",
+          "range": 30,
+          "maxHealPercent": 0.5
+        }
+      }
+    ]
+  }
+}
