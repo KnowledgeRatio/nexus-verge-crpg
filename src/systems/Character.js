@@ -48,6 +48,9 @@ export class Character {
         };
 
         // Initialize equipment BEFORE AC calculation (AC needs equipment data)
+        // Gold
+        this.gold = data.gold !== undefined ? data.gold : 0;
+
         // Inventory
         this.inventory = data.inventory || [];
 
@@ -61,10 +64,9 @@ export class Character {
             artifact: null
         };
 
-        // Apply starting equipment if new character
-        if (!data.equipment) {
-            this.applyStartingEquipment();
-        } else {
+        // Equipment will be applied after construction via applyStartingEquipment()
+        // This is async, so it must be called externally
+        if (data.equipment) {
             this.equipment = data.equipment;
         }
 
@@ -73,6 +75,10 @@ export class Character {
         this.armorBonus = 0;
         this.shieldBonus = 0;
         this.ac = data.ac || this.calculateAC();
+
+        // Attack bonuses (calculated from equipped weapons)
+        this.mainHandAttackBonus = data.mainHandAttackBonus || 0;
+        this.offHandAttackBonus = data.offHandAttackBonus || 0;
 
         // Speed
         this.speed = data.speed || this.calculateSpeed();
@@ -199,9 +205,9 @@ export class Character {
             ac = 10 + this.abilityModifiers.dex;
         }
 
-        // Shield
-        if (this.equipment.shield) {
-            ac += this.equipment.shield.armorClassBonus || 0;
+        // Shield (shields are equipped in offHand slot)
+        if (this.equipment.offHand && this.equipment.offHand.type === 'shield') {
+            ac += this.equipment.offHand.armorClassBonus || 0;
         }
 
         // Other bonuses (magic items, spells, etc.)
@@ -334,19 +340,148 @@ export class Character {
     /**
      * Apply starting equipment from class and background
      */
-    applyStartingEquipment() {
-        // For Phase 1, use class defaults
-        // TODO: Implement choice system for Phase 2
+    async applyStartingEquipment() {
+        // Load items data
+        const itemsData = await this.loadItemsData();
 
-        const startingItems = this.class.startingEquipment?.defaults || [];
+        // Get starting equipment from class
+        const startingItemIds = this.class.startingEquipment?.defaults || [];
 
-        // Add items to inventory
-        for (const itemId of startingItems) {
-            this.inventory.push({ id: itemId, quantity: 1, equipped: false });
+        // Get starting gold (D&D 5e class-based starting gold)
+        this.gold = this.getStartingGold();
+
+        // Convert item IDs to actual item objects
+        for (const itemEntry of startingItemIds) {
+            const item = this.getItemFromId(itemEntry, itemsData);
+            if (item) {
+                // Check if item should be equipped
+                if (item.type === 'weapon' || item.type === 'armor' || item.type === 'shield') {
+                    this.autoEquipItem(item);
+                } else {
+                    this.inventory.push(item);
+                }
+            }
         }
 
-        // Auto-equip basic gear
-        // TODO: Implement proper equipment from inventory system
+        // Add background equipment (use optionA by default)
+        if (this.background.equipment && this.background.equipment.optionA) {
+            for (const itemEntry of this.background.equipment.optionA) {
+                const item = this.getItemFromId(itemEntry, itemsData);
+                if (item) {
+                    this.inventory.push(item);
+                }
+            }
+
+            // Add background gold
+            if (this.background.equipment.gold) {
+                this.gold += this.background.equipment.gold;
+            }
+        }
+
+        // Recalculate AC and attack bonuses after equipping items
+        this.ac = this.calculateAC();
+
+        // Calculate attack bonuses for equipped weapons
+        if (this.equipment.mainHand) {
+            this.mainHandAttackBonus = this.getAttackBonus(this.equipment.mainHand);
+        }
+        if (this.equipment.offHand && this.equipment.offHand.type === 'weapon') {
+            this.offHandAttackBonus = this.getAttackBonus(this.equipment.offHand);
+        }
+    }
+
+    /**
+     * Load items data from JSON file
+     */
+    async loadItemsData() {
+        try {
+            const response = await fetch('data/items.json');
+            return await response.json();
+        } catch (error) {
+            console.error('Failed to load items data:', error);
+            return { weapons: [], armor: [], consumables: [], misc: [] };
+        }
+    }
+
+    /**
+     * Get item object from ID
+     */
+    getItemFromId(itemEntry, itemsData) {
+        // Handle quantity notation (e.g., "bolt:20")
+        let itemId = itemEntry;
+        let quantity = 1;
+
+        if (itemEntry.includes(':')) {
+            const parts = itemEntry.split(':');
+            itemId = parts[0];
+            quantity = parseInt(parts[1]) || 1;
+        }
+
+        // Search for item in all categories
+        const allItems = [
+            ...(itemsData.weapons || []),
+            ...(itemsData.armor || []),
+            ...(itemsData.shields || []),
+            ...(itemsData.consumables || []),
+            ...(itemsData.ammunition || []),
+            ...(itemsData.gear || []),
+            ...(itemsData.misc || [])
+        ];
+
+        const baseItem = allItems.find(item => item.id === itemId);
+
+        if (!baseItem) {
+            console.warn(`Item not found: ${itemId}`);
+            return null;
+        }
+
+        // Create item copy with quantity
+        return {
+            ...baseItem,
+            quantity: quantity
+        };
+    }
+
+    /**
+     * Auto-equip an item to appropriate slot
+     */
+    autoEquipItem(item) {
+        if (item.type === 'weapon') {
+            if (!this.equipment.mainHand) {
+                this.equipment.mainHand = item;
+            } else {
+                this.inventory.push(item);
+            }
+        } else if (item.type === 'armor') {
+            if (!this.equipment.armor) {
+                this.equipment.armor = item;
+            } else {
+                this.inventory.push(item);
+            }
+        } else if (item.type === 'shield') {
+            if (!this.equipment.offHand) {
+                this.equipment.offHand = item;
+            } else {
+                this.inventory.push(item);
+            }
+        } else {
+            this.inventory.push(item);
+        }
+    }
+
+    /**
+     * Get starting gold based on class (D&D 5e SRD)
+     */
+    getStartingGold() {
+        const goldByClass = {
+            fighter: 150,  // 5d4 × 10 gp (average)
+            wizard: 100,   // 4d4 × 10 gp (average)
+            cleric: 125,   // 5d4 × 10 gp (average)
+            rogue: 100,    // 4d4 × 10 gp (average)
+            ranger: 125    // 5d4 × 10 gp (average)
+        };
+
+        return goldByClass[this.class.id] || 100;
     }
 
     /**

@@ -1,10 +1,211 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-15
+**Last Updated:** 2025-12-16
 **Current Branch:** `claude/procedural-roguelike-platformer-01J97EBHans8dhCtHVojyJ7s`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Phase 5.6 - NPC Quest Integration (Complete)
+**Latest Commit:** Equipment System Fixes - Combat Stat Recalculation (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-16)
+
+### Equipment System Fixes - Combat Stat Recalculation ✅
+Fixed critical equipment system bugs where AC and attack bonuses were not recalculating when items were equipped/unequipped.
+
+**Modified Files:**
+- `src/main.js` - Added helper functions for plain character objects, updated equipItem/unequipItem methods
+- `src/systems/Character.js` - Added attack bonus properties, updated applyStartingEquipment()
+- Character sheet now displays weapon attack bonuses + damage
+
+**Bug Fixes:**
+
+**1. calculateAC is not a function** ✅
+- **Problem:** `TypeError: character.calculateAC is not a function` when unequipping items
+- **Root Cause:** Character from gameState is plain object (not Character class instance), lacks methods
+- **Fix:** Created standalone helper functions in main.js that work with plain objects:
+  - `calculateACForCharacter(character)` - Calculate AC from equipment
+  - `calculateAttackBonusForWeapon(character, weapon)` - Calculate attack bonus
+  - `isCharacterProficientWithWeapon(character, weapon)` - Check proficiency
+  - `recalculateCombatStats(character)` - Recalculate all stats (AC + attack bonuses)
+
+**2. Missing Attack Bonus Recalculation** ✅
+- **Problem:** AC recalculated on armor/shield changes, but weapon attack bonuses never updated
+- **User Request:** "need to do the same equip and unequip affecting attack/damage stats with weapons"
+- **Fix:** Added comprehensive stat recalculation:
+  - `equipItem()` now calls `recalculateCombatStats()` for all equipment types
+  - `unequipItem()` now calls `recalculateCombatStats()` for all equipment types
+  - Attack bonuses recalculate for both mainHand and offHand weapons
+  - Console logging confirms all stat changes: `⚔️ Combat stats recalculated - AC: 16, Main Hand Attack: +5, Off Hand Attack: +2`
+
+**3. Character Missing Attack Bonus Properties** ✅
+- **Problem:** Character objects didn't store pre-calculated attack bonuses
+- **Fix:** Added to Character constructor (lines 79-81):
+  ```javascript
+  this.mainHandAttackBonus = data.mainHandAttackBonus || 0;
+  this.offHandAttackBonus = data.offHandAttackBonus || 0;
+  ```
+- Updated `applyStartingEquipment()` to calculate bonuses when starting equipment is equipped
+
+**4. Character Sheet Missing Attack Display** ✅
+- **Problem:** Character sheet showed AC but not weapon attack bonuses
+- **Fix:** Added to Combat Stats section:
+  - Main Hand Attack: +X (damage dice)
+  - Off Hand Attack: +X (damage dice)
+  - Only displays when weapons are equipped
+  - Shows attack bonus calculated from STR/DEX + proficiency bonus
+
+**Implementation Details:**
+
+**Standalone Calculation Functions** (main.js lines 2686-2787):
+```javascript
+calculateACForCharacter(character) {
+    let ac = 10 + character.abilityModifiers.dex;
+    if (character.equipment.armor) { /* armor AC logic */ }
+    if (character.equipment.offHand?.type === 'shield') { ac += shield.armorClassBonus; }
+    return ac;
+}
+
+calculateAttackBonusForWeapon(character, weapon) {
+    // Finesse: use higher of STR/DEX
+    // Ranged: use DEX
+    // Melee: use STR
+    const abilityMod = /* calculate based on weapon type */;
+    const profBonus = proficient ? character.proficiencyBonus : 0;
+    return abilityMod + profBonus;
+}
+
+recalculateCombatStats(character) {
+    character.ac = this.calculateACForCharacter(character);
+    character.mainHandAttackBonus = this.calculateAttackBonusForWeapon(...);
+    character.offHandAttackBonus = this.calculateAttackBonusForWeapon(...);
+    console.log(`⚔️ Combat stats recalculated...`);
+}
+```
+
+**Equipment Flow:**
+1. Player equips weapon → `equipItem()` → `recalculateCombatStats()` → AC + attack bonuses updated
+2. Player unequips weapon → `unequipItem()` → `recalculateCombatStats()` → AC + attack bonuses updated
+3. Character sheet auto-refreshes showing new stats
+4. HUD updates with new AC value
+5. Console logs confirmation
+
+**What This Fixes:**
+- ✅ AC updates when armor/shields are equipped/unequipped
+- ✅ Attack bonuses update when weapons are equipped/unequipped
+- ✅ Character sheet displays weapon attack bonuses + damage dice
+- ✅ All combat stats recalculate on any equipment change
+- ✅ Works with plain character objects from gameState (not just class instances)
+- ✅ New characters get correct attack bonuses from starting equipment
+
+**D&D 5e Mechanics Implemented:**
+- **Finesse Weapons:** Use higher of STR or DEX modifier (e.g., rapier, shortsword)
+- **Ranged Weapons:** Use DEX modifier (e.g., shortbow, crossbow)
+- **Melee Weapons:** Use STR modifier (e.g., longsword, greatsword)
+- **Proficiency Bonus:** Added if character is proficient with weapon category (simple/martial) or specific weapon
+- **Attack Bonus Formula:** Ability Modifier + Proficiency Bonus (if proficient)
+- **AC Formula:** 10 + DEX modifier (unarmored) OR Armor AC + DEX modifier (if allowed) + Shield bonus
+
+**Testing:**
+- Character creation works correctly with starting equipment
+- Equipping weapons shows attack bonus in character sheet
+- Unequipping weapons removes attack bonus from display
+- AC changes correctly with armor/shield changes
+- Console confirms all recalculations
+
+---
+
+### Phase 5.6.1 - Quest System Bug Fixes & Settlement Persistence ✅
+Fixed critical bugs in quest system implementation and added settlement state persistence across region pruning.
+
+**Modified Files:**
+- `src/systems/QuestGenerator.js` - Fixed RNG API mismatch, creature CR field access, formula evaluation order
+- `src/systems/SettlementManager.js` - Fixed quest storage location, added NPC name placeholder replacement
+- `src/systems/QuestManager.js` - Fixed quest lookup to use gameState instead of manager property
+- `src/systems/WorldGenerator.js` - Added settlement persistence system (persist/restore on prune)
+
+**Bug Fixes:**
+
+**1. RNG API Mismatch** ✅
+- **Problem:** `rng.intBetween is not a function`, `rng.pick is not a function`
+- **Root Cause:** QuestGenerator using plain RNG function but calling SeededRandom class methods
+- **Fix:** Changed imports to use `SeededRandom` class, updated all method calls:
+  - `rng.intBetween()` → `rng.nextInt()`
+  - `rng.pick()` → `rng.choice()`
+  - `rng.int()` → `rng.nextInt()`
+
+**2. Creature Selection Failure** ✅
+- **Problem:** "No valid creatures for kill quest" at low player levels
+- **Root Cause:** Code checking `monster.cr` but monsters.json uses `challengeRating`
+- **Fix:** Updated creature filtering to check both field names:
+  ```javascript
+  const cr = monster.challengeRating || monster.cr || 0;
+  ```
+
+**3. Formula Evaluation Variable Collision** ✅
+- **Problem:** `ReferenceError: hardMultiplier is not defined` when evaluating `"300 * difficultyMultiplier"`
+- **Root Cause:** Regex replacement order - `difficulty` replaced before `difficultyMultiplier`, creating `hardMultiplier`
+- **Fix:** Sort variables by length (longest first) before replacement to prevent substring collisions
+
+**4. Quest Storage Location Mismatch** ✅
+- **Problem:** Quests added to SettlementManager but QuestManager couldn't find them
+- **Root Cause:** Storing in `questManager.availableQuests` array instead of `gameState.quests.available`
+- **Fix:** Updated SettlementManager to add quests to gameState:
+  ```javascript
+  const questState = gameState.get('quests');
+  questState.available.push(quest);
+  gameState.set('quests', questState);
+  ```
+
+**5. Quest Retrieval Using Wrong Location** ✅
+- **Problem:** NPC shows quest icon but "Ask about work" returns no quests
+- **Root Cause:** `getQuestsFromNPC()` checking `this.availableQuests` (doesn't exist) instead of gameState
+- **Fix:** Updated QuestManager.getQuestsFromNPC() to use `quests.available` from gameState
+
+**6. NPC Name Placeholder Not Replaced** ✅
+- **Problem:** Quest descriptions showing `{npcName}` instead of actual NPC name
+- **Root Cause:** Placeholder filled during generation before NPC assigned
+- **Fix:** Added placeholder replacement in assignQuestsToNPCs() after NPC assignment:
+  ```javascript
+  quest.description = quest.description.replace(/{npcName}/g, selectedNPC.name);
+  quest.name = quest.name.replace(/{npcName}/g, selectedNPC.name);
+  ```
+
+**7. Settlement State Loss on Region Pruning** ✅
+- **Problem:** NPCs, quests, trading history lost when regions pruned from cache
+- **Impact:** Would break active quests, reset merchant inventories, lose all settlement changes
+- **Fix:** Implemented persistent settlement storage:
+  - Added `persistSettlementData()` - saves settlement state before region deletion
+  - Added `restoreSettlementData()` - restores settlement state when region regenerated
+  - Settlement data stored in `gameState.world.settlements` (survives pruning & save/load)
+  - Preserves: NPCs, inventories, quest states, visit timestamps, all dynamic state
+
+**Quest System Status:**
+- ✅ Quest generation working (6 quests per city, 3-5 per town, 2-3 per village)
+- ✅ Quest assignment to NPCs by role (leaders→combat, merchants→retrieval, etc.)
+- ✅ Quest acceptance flow functional
+- ✅ Quest tracking by specific creature ID (e.g., only "orc" counts for "Hunt the Orc")
+- ✅ Settlement persistence across region pruning
+- ✅ NPC dialogue showing quest options correctly
+- ✅ Quest placeholders replaced with actual NPC names
+- 🔄 Quest completion flow (tracking works, turn-in UI pending test)
+- 🔄 Quest rewards (XP/gold implemented, items/reputation pending)
+
+**How Quest Completion Works:**
+1. Accept quest from NPC (e.g., "Hunt the Orc" - Kill 1 Orc)
+2. Exit settlement, explore world
+3. Trigger random encounters by walking around
+4. When combat starts, check creature type
+5. Defeat the specific creature (quest tracks by exact ID: "orc", "goblin", "rat", etc.)
+6. `CombatManager.endCombat()` calls `questManager.onCreatureKilled(creatureId, location)`
+7. Quest progress auto-updates (0/1 → 1/1)
+8. Return to quest-giving NPC
+9. Click "Turn in completed quest" for rewards
+
+**Next Steps:**
+- Test quest turn-in flow with completed objectives
+- Verify quest rewards (XP, gold) are properly awarded
+- Test settlement persistence (walk far away, return, verify NPCs/quests unchanged)
 
 ---
 

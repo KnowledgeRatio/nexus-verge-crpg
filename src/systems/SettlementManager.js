@@ -62,11 +62,17 @@ class SettlementManager {
     this.currentSettlement = settlement;
     gameState.set('ui.currentSettlement', settlement);
 
-    // Generate NPCs and quests if first visit
+    // Debug: Check settlement state
+    console.log(`🏘️ Entering ${settlement.name}`);
+    console.log(`   - Has NPCs: ${settlement.npcs ? 'yes' : 'no'}`);
+    console.log(`   - NPC count: ${settlement.npcs?.length || 0}`);
+    console.log(`   - Has quests generated: ${settlement.questsGenerated ? 'yes' : 'no'}`);
+    console.log(`   - Previously visited: ${settlement.visitedAt ? 'yes' : 'no'}`);
+
+    // Generate NPCs if they don't exist
     if (!settlement.npcs || settlement.npcs.length === 0) {
-      console.log(`🏘️ First visit to ${settlement.name}, generating content...`);
-      
-      // Generate NPCs
+      console.log(`👥 Generating NPCs for first visit...`);
+
       if (this.npcGenerator) {
         settlement.npcs = await this.npcGenerator.generateNPCsForSettlement(settlement);
         console.log(`👥 Generated ${settlement.npcs.length} NPCs`);
@@ -74,28 +80,42 @@ class SettlementManager {
         settlement.npcs = [];
         console.warn('NPCGenerator not initialized');
       }
+    }
 
-      // Generate quests
-      if (this.questGenerator && this.questManager) {
-        const playerLevel = gameState.get('character.level') || 1;
-        const quests = await this.questGenerator.generateQuestsForSettlement(settlement, playerLevel);
-        console.log(`📜 Generated ${quests.length} quests`);
+    // Generate quests if they haven't been generated yet (separate from NPC check)
+    if (!settlement.questsGenerated && this.questGenerator && this.questManager) {
+      console.log(`📜 Generating quests for first visit...`);
 
-        // Assign quests to NPCs
-        this.assignQuestsToNPCs(settlement, quests);
+      const playerLevel = gameState.get('character.level') || 1;
+      const quests = await this.questGenerator.generateQuestsForSettlement(settlement, playerLevel);
+      console.log(`📜 Generated ${quests.length} quests`);
 
-        // Add quests to quest manager as available
-        for (const quest of quests) {
-          // Store quest in manager as available from this settlement
-          if (!this.questManager.availableQuests) {
-            this.questManager.availableQuests = [];
-          }
-          this.questManager.availableQuests.push(quest);
-        }
-      } else {
-        console.warn('QuestGenerator or QuestManager not initialized');
+      // Assign quests to NPCs
+      this.assignQuestsToNPCs(settlement, quests);
+
+      // Add quests to gameState.quests.available
+      const questState = gameState.get('quests');
+      if (!questState.available) {
+        questState.available = [];
       }
 
+      for (const quest of quests) {
+        // Add to available quests in gameState
+        questState.available.push(quest);
+        console.log(`📜 Added quest "${quest.name}" to available quests (giver: ${quest.questGiver?.npcName})`);
+      }
+
+      gameState.set('quests', questState);
+      console.log(`📜 Total available quests: ${questState.available.length}`);
+
+      // Mark quests as generated
+      settlement.questsGenerated = true;
+    } else if (!this.questGenerator || !this.questManager) {
+      console.warn('QuestGenerator or QuestManager not initialized');
+    }
+
+    // Mark as visited
+    if (!settlement.visitedAt) {
       settlement.visitedAt = Date.now();
     }
 
@@ -158,6 +178,22 @@ class SettlementManager {
           role: selectedNPC.role,
           building: selectedNPC.building
         };
+
+        // Replace {npcName} placeholder in quest text with actual NPC name
+        if (quest.description) {
+          quest.description = quest.description.replace(/{npcName}/g, selectedNPC.name);
+        }
+        if (quest.name) {
+          quest.name = quest.name.replace(/{npcName}/g, selectedNPC.name);
+        }
+        // Update objectives too
+        if (quest.objectives) {
+          quest.objectives.forEach(obj => {
+            if (obj.description) {
+              obj.description = obj.description.replace(/{npcName}/g, selectedNPC.name);
+            }
+          });
+        }
 
         console.log(`📜 Assigned quest "${quest.name}" to ${selectedNPC.name} (${selectedNPC.role})`);
       } else {

@@ -205,6 +205,11 @@ class MapRenderer {
                 color = '#8b0000';
                 break;
 
+            case 'sanctuary':
+                symbol = '☼';  // Sun symbol for sanctuary
+                color = '#f0e68c';  // Khaki/light yellow (matches terrains.json)
+                break;
+
             case 'poi':
                 switch (feature.poiType) {
                     case 'shrine':

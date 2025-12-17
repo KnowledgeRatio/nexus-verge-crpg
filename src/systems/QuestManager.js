@@ -540,10 +540,10 @@ class QuestManager {
     if (!quests) return [];
 
     let questList = [];
-    
+
     if (status === 'available') {
-      // Available quests that haven't been taken yet
-      questList = (this.availableQuests || []).filter(q => q.questGiver?.npcId === npcId);
+      // Available quests that haven't been taken yet (from gameState, not this.availableQuests)
+      questList = (quests.available || []).filter(q => q.questGiver?.npcId === npcId);
     } else if (status === 'active') {
       // Active quests from this NPC
       questList = quests.active.filter(q => q.questGiver?.npcId === npcId);

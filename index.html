@@ -124,7 +124,8 @@
                     <kbd>C</kbd> Character |
                     <kbd>Q</kbd> Quests |
                     <kbd>R</kbd> Rest |
-                    <kbd>ESC</kbd> Save |
+                    <kbd>M</kbd> Map |
+                    <kbd>.</kbd> Save |
                     <kbd>H</kbd> Help
                 </div>
             </div>
@@ -217,13 +218,29 @@
         <div id="saveLoadModal" class="modal">
             <div class="modal-dialog">
                 <div class="modal-header">
-                    <h2>Save Game</h2>
+                    <h2>Save / Load Game</h2>
                     <button class="close-btn" onclick="window.game.closeSaveMenu()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p class="modal-instructions">Select a save slot:</p>
-                    <div id="saveMenuSlots" class="save-menu-slots"></div>
-                    <p class="modal-hint">Press ESC to close</p>
+                    <!-- Tab Buttons -->
+                    <div class="saveload-tabs">
+                        <button class="saveload-tab-btn active" data-tab="save">Save Game</button>
+                        <button class="saveload-tab-btn" data-tab="load">Load Game</button>
+                    </div>
+
+                    <!-- Save Tab -->
+                    <div id="saveTab" class="saveload-tab-content active">
+                        <p class="modal-instructions">Select a slot to save:</p>
+                        <div id="saveMenuSlots" class="save-menu-slots"></div>
+                    </div>
+
+                    <!-- Load Tab -->
+                    <div id="loadTab" class="saveload-tab-content">
+                        <p class="modal-instructions">Select a slot to load:</p>
+                        <div id="loadMenuSlots" class="save-menu-slots"></div>
+                    </div>
+
+                    <p class="modal-hint">💡 Press '.' (period) to open save/load menu | Press ESC to close</p>
                 </div>
             </div>
         </div>
@@ -549,6 +566,45 @@
 
                 <div class="quest-footer">
                     <p class="quest-hint">💡 Press 'Q' to open quest log anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- World Map Modal -->
+        <div id="worldMapModal" class="modal world-map-modal">
+            <div class="world-map-container">
+                <div class="world-map-header">
+                    <h2>World Map</h2>
+                    <button class="close-btn" id="closeWorldMapBtn">&times;</button>
+                </div>
+                <div class="world-map-body">
+                    <canvas id="worldMapCanvas"></canvas>
+                </div>
+                <div class="world-map-footer">
+                    <div class="map-legend">
+                        <div class="legend-item"><span class="legend-color" style="background: #90EE90;"></span> Grassland</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #228B22;"></span> Forest</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #8B4513;"></span> Hills</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #808080;"></span> Mountains</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #4682B4;"></span> Water</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #FFD700;"></span> Desert</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #8B0000;"></span> Settlements</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #FF0000;"></span> You</div>
+                    </div>
+                    <p class="map-hint">💡 Press 'M' to open world map anytime | Drag to pan, scroll to zoom</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Sheet Modal -->
+        <div id="characterSheetModal" class="modal">
+            <div class="modal-dialog character-sheet-dialog">
+                <div class="modal-header">
+                    <h2>Character Sheet</h2>
+                    <button class="close-btn" id="closeCharacterSheetBtn">&times;</button>
+                </div>
+                <div class="modal-body character-sheet-body">
+                    <div id="characterSheetContent"></div>
                 </div>
             </div>
         </div>

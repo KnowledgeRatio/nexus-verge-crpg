@@ -61,12 +61,7 @@ class Game {
             this.showScreen(screen);
         });
 
-        // Subscribe to rest modal
-        gameState.subscribe('ui.showRestModal', (show) => {
-            if (show) {
-                this.showRestModal();
-            }
-        });
+        // Rest modal handled by RestManager directly via 'R' key in Player.js
 
         // Subscribe to dev mode changes
         gameState.subscribe('devMode', (isDevMode) => {
@@ -310,6 +305,15 @@ class Game {
 
         // Setup Quest System
         this.setupQuestSystem();
+
+        // Setup World Map System
+        this.setupWorldMap();
+
+        // Setup Character Sheet System
+        this.setupCharacterSheet();
+
+        // Setup Inventory System
+        this.setupInventory();
 
         // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
@@ -691,14 +695,84 @@ class Game {
      * Setup save/load system UI handlers
      */
     setupSaveLoadSystem() {
-        // ESC key to open save menu (when in game screen)
+        // Tab switching for save/load modal
+        const tabButtons = document.querySelectorAll('.saveload-tab-btn');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.switchSaveLoadTab(btn.dataset.tab);
+            });
+        });
+
+        // Period key (.) to open save/load menu (when in game screen)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.currentScreen === 'game' && !gameState.get('combat')) {
+            if (e.key === '.' && this.currentScreen === 'game' && !gameState.get('combat')) {
                 this.openSaveMenu();
             }
         });
 
+        // ESC key to close any open modal (when in game screen)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.handleEscapeKey();
+            }
+        });
+
         console.log('💾 Save/Load system initialized');
+    }
+
+    /**
+     * Handle ESC key press - close open modals
+     */
+    handleEscapeKey() {
+        // Check if any modal is currently open
+        const modalIds = [
+            'saveLoadModal',
+            'questLogModal',
+            'settlementModal',
+            'restModal',
+            'tradingModal',
+            'buildingModal',
+            'npcDialogueModal',
+            'inventoryModal',
+            'modalOverlay',
+            'worldMapModal',
+            'characterSheetModal'
+        ];
+
+        const openModals = modalIds
+            .map(id => document.getElementById(id))
+            .filter(modal => modal && modal.classList.contains('active'));
+
+        if (openModals.length > 0) {
+            // Close all open modals
+            openModals.forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+    }
+
+    /**
+     * Switch between save/load tabs
+     */
+    switchSaveLoadTab(tabName) {
+        // Update tab button active state
+        document.querySelectorAll('.saveload-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+
+        // Update tab content active state
+        document.querySelectorAll('.saveload-tab-content').forEach(content => {
+            const isActive = (tabName === 'save' && content.id === 'saveTab') ||
+                            (tabName === 'load' && content.id === 'loadTab');
+            content.classList.toggle('active', isActive);
+        });
+
+        // Render the appropriate slots
+        if (tabName === 'save') {
+            this.renderSaveSlots();
+        } else if (tabName === 'load') {
+            this.renderLoadSlots();
+        }
     }
 
     /**
@@ -976,14 +1050,1168 @@ class Game {
     }
 
     /**
+     * Setup world map system UI and event handlers
+     */
+    setupWorldMap() {
+        // World Map Modal elements
+        const worldMapModal = document.getElementById('worldMapModal');
+        const closeWorldMapBtn = document.getElementById('closeWorldMapBtn');
+        const worldMapCanvas = document.getElementById('worldMapCanvas');
+
+        if (!worldMapCanvas) {
+            console.error('World map canvas not found');
+            return;
+        }
+
+        // Initialize canvas context
+        this.worldMapCtx = worldMapCanvas.getContext('2d');
+        this.worldMapZoom = 4; // 4 pixels per tile
+        this.worldMapOffsetX = 0;
+        this.worldMapOffsetY = 0;
+        this.worldMapDragging = false;
+        this.worldMapLastMouseX = 0;
+        this.worldMapLastMouseY = 0;
+
+        // Close button
+        if (closeWorldMapBtn) {
+            closeWorldMapBtn.addEventListener('click', () => {
+                this.closeWorldMap();
+            });
+        }
+
+        // Close on backdrop click
+        if (worldMapModal) {
+            worldMapModal.addEventListener('click', (e) => {
+                if (e.target === worldMapModal) {
+                    this.closeWorldMap();
+                }
+            });
+        }
+
+        // Canvas pan with mouse drag
+        if (worldMapCanvas) {
+            worldMapCanvas.addEventListener('mousedown', (e) => {
+                this.worldMapDragging = true;
+                this.worldMapLastMouseX = e.clientX;
+                this.worldMapLastMouseY = e.clientY;
+            });
+
+            worldMapCanvas.addEventListener('mousemove', (e) => {
+                if (this.worldMapDragging) {
+                    const dx = e.clientX - this.worldMapLastMouseX;
+                    const dy = e.clientY - this.worldMapLastMouseY;
+                    this.worldMapOffsetX += dx;
+                    this.worldMapOffsetY += dy;
+                    this.worldMapLastMouseX = e.clientX;
+                    this.worldMapLastMouseY = e.clientY;
+                    this.renderWorldMap();
+                }
+            });
+
+            worldMapCanvas.addEventListener('mouseup', () => {
+                this.worldMapDragging = false;
+            });
+
+            worldMapCanvas.addEventListener('mouseleave', () => {
+                this.worldMapDragging = false;
+            });
+
+            // Canvas zoom with mouse wheel
+            worldMapCanvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -1 : 1;
+                this.worldMapZoom = Math.max(1, Math.min(16, this.worldMapZoom + delta));
+                this.renderWorldMap();
+            });
+        }
+
+        // M key to open world map (when not in combat)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'm' || e.key === 'M') && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openWorldMap();
+            }
+        });
+
+        console.log('🗺️ World map system initialized');
+    }
+
+    /**
+     * Open world map modal
+     */
+    openWorldMap() {
+        const modal = document.getElementById('worldMapModal');
+        if (!modal) return;
+
+        modal.classList.add('active');
+
+        // Wait for modal to be visible, then set canvas size and center
+        requestAnimationFrame(() => {
+            const canvas = document.getElementById('worldMapCanvas');
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            // Center on player position
+            const playerPos = gameState.get('player.position');
+            if (playerPos) {
+                this.worldMapOffsetX = canvas.width / 2 - playerPos.x * this.worldMapZoom;
+                this.worldMapOffsetY = canvas.height / 2 - playerPos.y * this.worldMapZoom;
+            }
+
+            this.renderWorldMap();
+        });
+    }
+
+    /**
+     * Close world map modal
+     */
+    closeWorldMap() {
+        const modal = document.getElementById('worldMapModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Render the world map canvas
+     */
+    renderWorldMap() {
+        const canvas = document.getElementById('worldMapCanvas');
+        if (!canvas) return;
+
+        // Set canvas size to match container
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+
+        const ctx = this.worldMapCtx;
+        const world = gameState.get('world');
+        const playerPos = gameState.get('player.position');
+
+        if (!world || !world.generatedRegions) {
+            return;
+        }
+
+        // Clear canvas
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Iterate through all generated regions
+        world.generatedRegions.forEach((region, regionKey) => {
+            const [regionX, regionY] = regionKey.split(',').map(Number);
+
+            // Render each tile in the region (tiles are stored as 1D array)
+            for (let localY = 0; localY < 32; localY++) {
+                for (let localX = 0; localX < 32; localX++) {
+                    const index = localY * 32 + localX;
+                    const tile = region.tiles[index];
+                    if (!tile) continue;
+
+                    // Only render explored tiles
+                    if (!tile.explored) continue;
+
+                    const worldX = regionX * 32 + localX;
+                    const worldY = regionY * 32 + localY;
+
+                    const screenX = worldX * this.worldMapZoom + this.worldMapOffsetX;
+                    const screenY = worldY * this.worldMapZoom + this.worldMapOffsetY;
+
+                    // Skip if off-screen
+                    if (screenX < -this.worldMapZoom || screenX > canvas.width ||
+                        screenY < -this.worldMapZoom || screenY > canvas.height) {
+                        continue;
+                    }
+
+                    // Get terrain color
+                    const terrainColor = this.getTerrainColor(tile.terrain);
+
+                    // Dim unexplored tiles
+                    if (tile.visible) {
+                        ctx.fillStyle = terrainColor;
+                    } else {
+                        ctx.fillStyle = this.dimColor(terrainColor, 0.5);
+                    }
+
+                    ctx.fillRect(screenX, screenY, this.worldMapZoom, this.worldMapZoom);
+
+                    // Draw feature icons (settlements, sanctuaries)
+                    if (tile.feature && this.worldMapZoom >= 3) {
+                        if (tile.feature.type === 'settlement') {
+                            ctx.fillStyle = '#8B0000';
+                            ctx.fillRect(screenX, screenY, this.worldMapZoom, this.worldMapZoom);
+                        } else if (tile.feature.type === 'sanctuary') {
+                            ctx.fillStyle = '#FFD700';
+                            ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
+                                       this.worldMapZoom / 2, this.worldMapZoom / 2);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Draw player position
+        if (playerPos) {
+            const playerScreenX = playerPos.x * this.worldMapZoom + this.worldMapOffsetX;
+            const playerScreenY = playerPos.y * this.worldMapZoom + this.worldMapOffsetY;
+
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(playerScreenX + this.worldMapZoom / 2, playerScreenY + this.worldMapZoom / 2,
+                   Math.max(3, this.worldMapZoom), 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    /**
+     * Get color for terrain type
+     */
+    getTerrainColor(terrain) {
+        const colors = {
+            grassland: '#90EE90',
+            forest: '#228B22',
+            hills: '#8B4513',
+            mountains: '#808080',
+            water: '#4682B4',
+            ocean: '#000080',
+            desert: '#FFD700',
+            tundra: '#F0FFFF',
+            swamp: '#556B2F',
+            jungle: '#006400',
+            plains: '#9ACD32',
+            taiga: '#2F4F4F',
+            savanna: '#DAA520',
+            volcanic: '#8B0000',
+            wasteland: '#696969',
+            city: '#8B0000',
+            town: '#8B4513',
+            sanctuary: '#F0E68C'
+        };
+        return colors[terrain] || '#333333';
+    }
+
+    /**
+     * Dim a hex color by a factor
+     */
+    dimColor(hexColor, factor) {
+        const hex = hexColor.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        const dimR = Math.floor(r * factor);
+        const dimG = Math.floor(g * factor);
+        const dimB = Math.floor(b * factor);
+
+        return `rgb(${dimR}, ${dimG}, ${dimB})`;
+    }
+
+    /**
+     * Setup Character Sheet System
+     */
+    setupCharacterSheet() {
+        const modal = document.getElementById('characterSheetModal');
+        const closeBtn = document.getElementById('closeCharacterSheetBtn');
+
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.closeCharacterSheet();
+            });
+        }
+
+        // C key to open character sheet (when not in combat)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'c' || e.key === 'C') && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openCharacterSheet();
+            }
+        });
+
+        console.log('📋 Character sheet system initialized');
+    }
+
+    /**
+     * Open Character Sheet Modal
+     */
+    openCharacterSheet() {
+        const modal = document.getElementById('characterSheetModal');
+        if (!modal) return;
+
+        modal.classList.add('active');
+        this.renderCharacterSheet();
+    }
+
+    /**
+     * Close Character Sheet Modal
+     */
+    closeCharacterSheet() {
+        const modal = document.getElementById('characterSheetModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Render Complete Character Sheet
+     */
+    renderCharacterSheet() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        const content = document.getElementById('characterSheetContent');
+        if (!content) return;
+
+        // Build character sheet HTML
+        content.innerHTML = `
+            <!-- Basic Info Section -->
+            <div class="char-section full-width">
+                <h3>Character Info</h3>
+                <div class="char-row">
+                    <span class="char-label">Name:</span>
+                    <span class="char-value">${character.name}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Race:</span>
+                    <span class="char-value">${character.race.name}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Class:</span>
+                    <span class="char-value">${character.class.name}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Background:</span>
+                    <span class="char-value">${character.background.name}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Level:</span>
+                    <span class="char-value">${character.level}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Experience:</span>
+                    <span class="char-value">${character.xp} XP</span>
+                </div>
+            </div>
+
+            <!-- Ability Scores -->
+            <div class="char-section full-width">
+                <h3>Ability Scores</h3>
+                <div class="ability-grid">
+                    ${this.renderAbilityBox('STR', character.abilities.str, character.abilityModifiers.str)}
+                    ${this.renderAbilityBox('DEX', character.abilities.dex, character.abilityModifiers.dex)}
+                    ${this.renderAbilityBox('CON', character.abilities.con, character.abilityModifiers.con)}
+                    ${this.renderAbilityBox('INT', character.abilities.int, character.abilityModifiers.int)}
+                    ${this.renderAbilityBox('WIS', character.abilities.wis, character.abilityModifiers.wis)}
+                    ${this.renderAbilityBox('CHA', character.abilities.cha, character.abilityModifiers.cha)}
+                </div>
+            </div>
+
+            <!-- Combat Stats -->
+            <div class="char-section">
+                <h3>Combat Stats</h3>
+                <div class="char-row">
+                    <span class="char-label">Armor Class:</span>
+                    <span class="char-value">${character.ac}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Hit Points:</span>
+                    <span class="char-value">${character.currentHP} / ${character.maxHP}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Hit Dice:</span>
+                    <span class="char-value">${character.hitDice.current}d${character.hitDice.size}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Initiative:</span>
+                    <span class="char-value">${character.initiative >= 0 ? '+' : ''}${character.initiative || 0}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Speed:</span>
+                    <span class="char-value">${character.speed} ft</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Proficiency Bonus:</span>
+                    <span class="char-value">+${character.proficiencyBonus}</span>
+                </div>
+                ${character.equipment.mainHand ? `
+                <div class="char-row">
+                    <span class="char-label">Main Hand Attack:</span>
+                    <span class="char-value">${character.mainHandAttackBonus >= 0 ? '+' : ''}${character.mainHandAttackBonus || 0} (${character.equipment.mainHand.damage})</span>
+                </div>
+                ` : ''}
+                ${character.equipment.offHand && character.equipment.offHand.type === 'weapon' ? `
+                <div class="char-row">
+                    <span class="char-label">Off Hand Attack:</span>
+                    <span class="char-value">${character.offHandAttackBonus >= 0 ? '+' : ''}${character.offHandAttackBonus || 0} (${character.equipment.offHand.damage})</span>
+                </div>
+                ` : ''}
+            </div>
+
+            <!-- Saving Throws -->
+            <div class="char-section">
+                <h3>Saving Throws</h3>
+                <div class="saving-throws-grid">
+                    ${this.renderSavingThrow('STR', character.savingThrows.str.bonus, character.savingThrows.str.proficient)}
+                    ${this.renderSavingThrow('DEX', character.savingThrows.dex.bonus, character.savingThrows.dex.proficient)}
+                    ${this.renderSavingThrow('CON', character.savingThrows.con.bonus, character.savingThrows.con.proficient)}
+                    ${this.renderSavingThrow('INT', character.savingThrows.int.bonus, character.savingThrows.int.proficient)}
+                    ${this.renderSavingThrow('WIS', character.savingThrows.wis.bonus, character.savingThrows.wis.proficient)}
+                    ${this.renderSavingThrow('CHA', character.savingThrows.cha.bonus, character.savingThrows.cha.proficient)}
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="char-section full-width">
+                <h3>Skills</h3>
+                <div class="skills-grid">
+                    ${this.renderAllSkills(character)}
+                </div>
+            </div>
+
+            <!-- Equipment -->
+            <div class="char-section">
+                <h3>Equipment</h3>
+                <div class="equipment-grid">
+                    ${this.renderEquipmentSlot('Main Hand', character.equipment.mainHand)}
+                    ${this.renderEquipmentSlot('Off Hand', character.equipment.offHand)}
+                    ${this.renderEquipmentSlot('Armor', character.equipment.armor)}
+                    ${this.renderEquipmentSlot('Shield', character.equipment.shield)}
+                    ${this.renderEquipmentSlot('Helmet', character.equipment.helmet)}
+                    ${this.renderEquipmentSlot('Artifact', character.equipment.artifact)}
+                </div>
+            </div>
+
+            <!-- Proficiencies -->
+            <div class="char-section">
+                <h3>Proficiencies</h3>
+                <div class="char-row">
+                    <span class="char-label">Armor:</span>
+                    <span class="char-value">${character.proficiencies.armor.join(', ') || 'None'}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Weapons:</span>
+                    <span class="char-value">${character.proficiencies.weapons.join(', ') || 'None'}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Tools:</span>
+                    <span class="char-value">${character.proficiencies.tools.join(', ') || 'None'}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Languages:</span>
+                    <span class="char-value">${character.proficiencies.languages.join(', ') || 'None'}</span>
+                </div>
+            </div>
+
+            <!-- Class Features -->
+            <div class="char-section full-width">
+                <h3>Class Features</h3>
+                <ul class="features-list">
+                    ${this.renderClassFeatures(character)}
+                </ul>
+            </div>
+
+            <!-- Racial Traits -->
+            <div class="char-section full-width">
+                <h3>Racial Traits</h3>
+                <ul class="features-list">
+                    ${this.renderRacialTraits(character)}
+                </ul>
+            </div>
+
+            ${character.spellcasting ? `
+            <!-- Spellcasting -->
+            <div class="char-section full-width">
+                <h3>Spellcasting</h3>
+                <div class="char-row">
+                    <span class="char-label">Spellcasting Ability:</span>
+                    <span class="char-value">${character.spellcasting.ability.toUpperCase()}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Spell Save DC:</span>
+                    <span class="char-value">${character.spellcasting.spellSaveDC}</span>
+                </div>
+                <div class="char-row">
+                    <span class="char-label">Spell Attack Bonus:</span>
+                    <span class="char-value">+${character.spellcasting.spellAttackBonus}</span>
+                </div>
+                ${this.renderSpellSlots(character)}
+            </div>
+            ` : ''}
+        `;
+    }
+
+    /**
+     * Render Ability Score Box
+     */
+    renderAbilityBox(name, score, modifier) {
+        const modStr = modifier >= 0 ? `+${modifier}` : modifier;
+        return `
+            <div class="ability-box">
+                <div class="ability-name">${name}</div>
+                <div class="ability-score">${score}</div>
+                <div class="ability-modifier">${modStr}</div>
+            </div>
+        `;
+    }
+
+    /**
+     * Render Saving Throw Box
+     */
+    renderSavingThrow(name, bonus, isProficient) {
+        const bonusStr = bonus >= 0 ? `+${bonus}` : bonus;
+        return `
+            <div class="save-box ${isProficient ? 'proficient' : ''}">
+                <div class="save-name">${name}</div>
+                <div class="save-bonus">${bonusStr}</div>
+            </div>
+        `;
+    }
+
+    /**
+     * Render All Skills
+     */
+    renderAllSkills(character) {
+        const skills = character.skills;
+        return Object.entries(skills).map(([skillId, skillData]) => {
+            const bonusStr = skillData.bonus >= 0 ? `+${skillData.bonus}` : skillData.bonus;
+            const skillName = skillId.charAt(0).toUpperCase() + skillId.slice(1).replace(/([A-Z])/g, ' $1');
+            return `
+                <div class="skill-row ${skillData.proficient ? 'proficient' : ''}">
+                    <span class="skill-name">${skillName}</span>
+                    <span class="skill-bonus">${bonusStr}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Render Equipment Slot
+     */
+    renderEquipmentSlot(slotName, item) {
+        return `
+            <div class="equipment-slot ${item ? 'equipped' : ''}">
+                <span class="slot-label">${slotName}:</span>
+                <span class="slot-item ${!item ? 'empty' : ''}">${item ? item.name : 'Empty'}</span>
+            </div>
+        `;
+    }
+
+    /**
+     * Render Class Features
+     */
+    renderClassFeatures(character) {
+        const features = [];
+        const classData = character.class;
+
+        // Get all features up to current level
+        for (let level = 1; level <= character.level; level++) {
+            if (classData.features && classData.features[level]) {
+                classData.features[level].forEach(feature => {
+                    features.push(feature);
+                });
+            }
+        }
+
+        if (features.length === 0) {
+            return '<li class="feature-item"><div class="feature-description">No class features yet.</div></li>';
+        }
+
+        return features.map(feature => `
+            <li class="feature-item">
+                <div class="feature-name">${feature.name}</div>
+                <div class="feature-description">${feature.description}</div>
+            </li>
+        `).join('');
+    }
+
+    /**
+     * Render Racial Traits
+     */
+    renderRacialTraits(character) {
+        const traits = character.race.traits || [];
+
+        if (traits.length === 0) {
+            return '<li class="feature-item"><div class="feature-description">No racial traits.</div></li>';
+        }
+
+        return traits.map(trait => `
+            <li class="feature-item">
+                <div class="feature-name">${trait.name}</div>
+                <div class="feature-description">${trait.description}</div>
+            </li>
+        `).join('');
+    }
+
+    /**
+     * Render Spell Slots
+     */
+    renderSpellSlots(character) {
+        if (!character.spellcasting || !character.spellcasting.spellSlots) {
+            return '';
+        }
+
+        const slots = character.spellcasting.spellSlots;
+        return `
+            <div class="char-row">
+                <span class="char-label">Spell Slots:</span>
+                <span class="char-value">
+                    ${Object.entries(slots).map(([level, data]) =>
+                        `L${level}: ${data.current}/${data.max}`
+                    ).join(' | ')}
+                </span>
+            </div>
+        `;
+    }
+
+    /**
+     * Setup Inventory System
+     */
+    setupInventory() {
+        const modal = document.getElementById('inventoryModal');
+        const closeBtn = document.getElementById('closeInventoryBtn');
+        const closeFooterBtn = document.getElementById('closeInventoryFooterBtn');
+
+        // Close buttons
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeInventory());
+        }
+        if (closeFooterBtn) {
+            closeFooterBtn.addEventListener('click', () => this.closeInventory());
+        }
+
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.inv-tab-btn');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                this.switchInventoryTab(tab);
+            });
+        });
+
+        // I key to open inventory (when not in combat)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'i' || e.key === 'I') && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openInventory();
+            }
+        });
+
+        console.log('🎒 Inventory system initialized');
+    }
+
+    /**
+     * Open Inventory Modal
+     */
+    openInventory() {
+        const modal = document.getElementById('inventoryModal');
+        if (!modal) return;
+
+        modal.classList.add('active');
+        this.renderInventory();
+    }
+
+    /**
+     * Close Inventory Modal
+     */
+    closeInventory() {
+        const modal = document.getElementById('inventoryModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Switch Inventory Tab
+     */
+    switchInventoryTab(tabName) {
+        // Update tab button active state
+        document.querySelectorAll('.inv-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+
+        // Re-render inventory with filter
+        this.currentInventoryTab = tabName;
+        this.renderInventory();
+    }
+
+    /**
+     * Render Complete Inventory
+     */
+    renderInventory() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Clean up invalid items from inventory
+        if (character.inventory) {
+            const validItems = character.inventory.filter(item => item && item.id && item.name);
+            if (validItems.length !== character.inventory.length) {
+                character.inventory = validItems;
+                gameState.set('character', character);
+                console.log(`🧹 Cleaned up ${character.inventory.length - validItems.length} invalid items from inventory`);
+            }
+        }
+
+        // Update character info
+        const nameEl = document.getElementById('invCharName');
+        const classEl = document.getElementById('invCharClass');
+        const goldEl = document.getElementById('invGold');
+
+        if (nameEl) nameEl.textContent = character.name;
+        if (classEl) classEl.textContent = `${character.class.name} ${character.level}`;
+        if (goldEl) goldEl.textContent = `${character.gold || 0} gp`;
+
+        // Update equipment slots
+        this.updateEquipmentSlots(character);
+
+        // Update weight
+        this.updateWeightDisplay(character);
+
+        // Render inventory items
+        this.renderInventoryItems(character);
+    }
+
+    /**
+     * Update Equipment Slots Display
+     */
+    updateEquipmentSlots(character) {
+        const slots = {
+            weapon: character.equipment.mainHand,
+            armor: character.equipment.armor,
+            shield: character.equipment.shield
+        };
+
+        Object.entries(slots).forEach(([slotName, item]) => {
+            const slotEl = document.getElementById(`eq${slotName.charAt(0).toUpperCase() + slotName.slice(1)}`);
+            if (slotEl) {
+                slotEl.textContent = item ? item.name : '—';
+                slotEl.style.color = item ? 'var(--text-primary)' : 'var(--text-secondary)';
+            }
+        });
+    }
+
+    /**
+     * Update Weight Display
+     */
+    updateWeightDisplay(character) {
+        const totalWeight = this.calculateTotalWeight(character);
+        const maxWeight = character.abilities.str * 15; // D&D 5e carrying capacity
+
+        const weightEl = document.getElementById('invWeight');
+        const maxWeightEl = document.getElementById('invMaxWeight');
+        const weightBarEl = document.getElementById('invWeightBar');
+
+        if (weightEl) weightEl.textContent = totalWeight.toFixed(1);
+        if (maxWeightEl) maxWeightEl.textContent = maxWeight;
+
+        const percentage = (totalWeight / maxWeight) * 100;
+        if (weightBarEl) {
+            weightBarEl.style.width = `${Math.min(percentage, 100)}%`;
+            // Color based on encumbrance
+            if (percentage > 100) {
+                weightBarEl.style.backgroundColor = '#dc3545'; // Over encumbered (red)
+            } else if (percentage > 75) {
+                weightBarEl.style.backgroundColor = '#ffc107'; // Heavily encumbered (yellow)
+            } else {
+                weightBarEl.style.backgroundColor = '#28a745'; // Normal (green)
+            }
+        }
+    }
+
+    /**
+     * Calculate Total Weight
+     */
+    calculateTotalWeight(character) {
+        let totalWeight = 0;
+
+        // Equipment weight
+        Object.values(character.equipment).forEach(item => {
+            if (item && item.weight) {
+                totalWeight += item.weight;
+            }
+        });
+
+        // Inventory weight
+        if (character.inventory) {
+            character.inventory.forEach(item => {
+                if (item && item.weight) {
+                    const quantity = item.quantity || 1;
+                    totalWeight += item.weight * quantity;
+                }
+            });
+        }
+
+        return totalWeight;
+    }
+
+    /**
+     * Render Inventory Items List
+     */
+    renderInventoryItems(character) {
+        const listEl = document.getElementById('inventoryItemsList');
+        if (!listEl) return;
+
+        const tab = this.currentInventoryTab || 'all';
+
+        // Combine inventory items AND equipped items
+        let items = [...(character.inventory || [])];
+
+        // Add equipped items to the list
+        for (const slot in character.equipment) {
+            if (character.equipment[slot]) {
+                items.push(character.equipment[slot]);
+            }
+        }
+
+        // Filter out undefined/invalid items
+        items = items.filter(item => item && item.id && item.name);
+
+        // Filter by tab
+        if (tab !== 'all') {
+            items = items.filter(item => {
+                if (tab === 'weapons') return item.type === 'weapon';
+                if (tab === 'armor') return item.type === 'armor' || item.type === 'shield';
+                if (tab === 'consumables') return item.type === 'consumable' || item.consumable;
+                if (tab === 'misc') return !['weapon', 'armor', 'shield', 'consumable'].includes(item.type) && !item.consumable;
+                return true;
+            });
+        }
+
+        if (items.length === 0) {
+            listEl.innerHTML = '<div class="inventory-empty">No items in this category.</div>';
+            return;
+        }
+
+        listEl.innerHTML = items.map(item => this.renderInventoryItem(item, character)).join('');
+
+        // Attach event listeners to action buttons
+        listEl.querySelectorAll('.item-action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = btn.dataset.action;
+                const itemEl = btn.closest('.inventory-item');
+                const itemId = itemEl.dataset.itemId;
+                this.handleItemAction(action, itemId);
+            });
+        });
+    }
+
+    /**
+     * Render Single Inventory Item
+     */
+    renderInventoryItem(item, character) {
+        const isEquipped = this.isItemEquipped(item, character);
+        const icon = this.getItemIcon(item);
+        const rarity = item.rarity || 'common';
+        const weight = item.weight || 0;
+        const quantity = item.quantity || 1;
+
+        let description = item.description || '';
+        if (item.type === 'weapon' && item.damage) {
+            description = `${item.damage.dice} ${item.damage.type}`;
+            if (item.properties?.includes('versatile') && item.versatileDamage) {
+                description += `, Versatile (${item.versatileDamage})`;
+            }
+        } else if (item.type === 'armor' && item.ac) {
+            description = `AC ${item.ac}`;
+        }
+
+        return `
+            <div class="inventory-item ${isEquipped ? 'equipped' : ''}" data-item-id="${item.id}">
+                <div class="item-icon">${icon}</div>
+                <div class="item-details">
+                    <div class="item-name">
+                        ${item.name}
+                        ${isEquipped ? '<span class="equipped-badge">EQUIPPED</span>' : ''}
+                        ${quantity > 1 ? `<span class="item-quantity">x${quantity}</span>` : ''}
+                    </div>
+                    <div class="item-description">${description}</div>
+                    <div class="item-stats">
+                        <span class="item-weight">${weight} lbs</span>
+                        <span class="item-rarity ${rarity}">${rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    ${this.renderItemActions(item, isEquipped, character)}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Render Item Action Buttons
+     */
+    renderItemActions(item, isEquipped, character) {
+        const buttons = [];
+
+        if (item.type === 'weapon' || item.type === 'armor' || item.type === 'shield') {
+            if (isEquipped) {
+                buttons.push('<button class="item-action-btn equipped" data-action="unequip">Unequip</button>');
+            } else {
+                buttons.push('<button class="item-action-btn" data-action="equip">Equip</button>');
+            }
+        }
+
+        if (item.consumable || item.type === 'consumable') {
+            buttons.push('<button class="item-action-btn" data-action="use">Use</button>');
+        }
+
+        buttons.push('<button class="item-action-btn" data-action="drop">Drop</button>');
+
+        return buttons.join('');
+    }
+
+    /**
+     * Get Item Icon
+     */
+    getItemIcon(item) {
+        const icons = {
+            weapon: '⚔️',
+            sword: '⚔️',
+            axe: '🪓',
+            bow: '🏹',
+            armor: '🛡️',
+            shield: '🛡️',
+            helmet: '⛑️',
+            potion: '🧪',
+            consumable: '🧪',
+            scroll: '📜',
+            ring: '💍',
+            amulet: '📿',
+            artifact: '✨',
+            misc: '📦'
+        };
+
+        return icons[item.type] || icons[item.weaponType] || icons.misc;
+    }
+
+    /**
+     * Check if Item is Equipped
+     */
+    isItemEquipped(item, character) {
+        return Object.values(character.equipment).some(equipped => equipped && equipped.id === item.id);
+    }
+
+    /**
+     * Handle Item Action
+     */
+    async handleItemAction(action, itemId) {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Find item in inventory OR equipment
+        let item = character.inventory.find(i => i.id === itemId);
+
+        // If not in inventory, check if it's equipped
+        if (!item) {
+            for (const slot in character.equipment) {
+                if (character.equipment[slot] && character.equipment[slot].id === itemId) {
+                    item = character.equipment[slot];
+                    break;
+                }
+            }
+        }
+
+        if (!item) return;
+
+        switch (action) {
+            case 'equip':
+                this.equipItem(item, character);
+                break;
+            case 'unequip':
+                this.unequipItem(item, character);
+                break;
+            case 'use':
+                this.useItem(item, character);
+                break;
+            case 'drop':
+                this.dropItem(item, character);
+                break;
+        }
+    }
+
+    /**
+     * Equip Item
+     */
+    equipItem(item, character) {
+        let slot = null;
+
+        // Determine equipment slot
+        if (item.type === 'weapon') {
+            slot = 'mainHand';
+        } else if (item.type === 'armor') {
+            slot = 'armor';
+        } else if (item.type === 'shield') {
+            slot = 'offHand';
+        }
+
+        if (!slot) {
+            gameState.addMessage(`Cannot equip ${item.name}.`, 'error');
+            return;
+        }
+
+        // Unequip current item in slot (move to inventory)
+        if (character.equipment[slot]) {
+            const currentItem = character.equipment[slot];
+            character.inventory.push(currentItem);
+            gameState.addMessage(`Unequipped ${currentItem.name}.`, 'info');
+        }
+
+        // Remove from inventory and equip
+        const index = character.inventory.findIndex(i => i.id === item.id);
+        if (index !== -1) {
+            character.inventory.splice(index, 1);
+        }
+
+        character.equipment[slot] = item;
+        gameState.addMessage(`Equipped ${item.name}.`, 'success');
+
+        // Recalculate combat stats (AC, attack bonuses, damage)
+        this.recalculateCombatStats(character);
+
+        // Update game state
+        gameState.set('character', character);
+
+        // Re-render inventory
+        this.renderInventory();
+
+        // Update HUD
+        this.updateHUD(character);
+
+        // Update character sheet if it's open
+        this.renderCharacterSheet();
+    }
+
+    /**
+     * Unequip Item
+     */
+    unequipItem(item, character) {
+        // Find which slot has this item
+        let slot = null;
+        for (const [slotName, equipped] of Object.entries(character.equipment)) {
+            if (equipped && equipped.id === item.id) {
+                slot = slotName;
+                break;
+            }
+        }
+
+        if (!slot) {
+            gameState.addMessage(`${item.name} is not equipped.`, 'error');
+            return;
+        }
+
+        // Move to inventory
+        character.inventory.push(character.equipment[slot]);
+        character.equipment[slot] = null;
+
+        gameState.addMessage(`Unequipped ${item.name}.`, 'info');
+
+        // Recalculate combat stats (AC, attack bonuses, damage)
+        this.recalculateCombatStats(character);
+
+        // Update game state
+        gameState.set('character', character);
+
+        // Re-render inventory
+        this.renderInventory();
+
+        // Update HUD
+        this.updateHUD(character);
+
+        // Update character sheet if it's open
+        this.renderCharacterSheet();
+    }
+
+    /**
+     * Use Item (Consumables)
+     */
+    useItem(item, character) {
+        if (!item.consumable && item.type !== 'consumable') {
+            gameState.addMessage(`${item.name} cannot be used.`, 'error');
+            return;
+        }
+
+        // Handle potion of healing
+        if (item.id.includes('potion') && item.id.includes('healing')) {
+            const healing = this.rollHealing(item);
+            const oldHP = character.currentHP;
+            character.currentHP = Math.min(character.maxHP, character.currentHP + healing);
+            const actualHealing = character.currentHP - oldHP;
+
+            gameState.addMessage(`You drink ${item.name} and restore ${actualHealing} HP!`, 'success');
+
+            // Decrease quantity or remove item
+            if (item.quantity && item.quantity > 1) {
+                item.quantity--;
+            } else {
+                const index = character.inventory.findIndex(i => i.id === item.id);
+                if (index !== -1) {
+                    character.inventory.splice(index, 1);
+                }
+            }
+
+            // Update game state
+            gameState.set('character', character);
+
+            // Re-render inventory
+            this.renderInventory();
+
+            // Update HUD
+            this.updateHUD(character);
+        } else {
+            gameState.addMessage(`${item.name} cannot be used yet.`, 'info');
+        }
+    }
+
+    /**
+     * Roll Healing for Potion
+     */
+    rollHealing(item) {
+        // Default healing potion: 2d4+2
+        const dice = 2;
+        const sides = 4;
+        const bonus = 2;
+
+        let total = bonus;
+        for (let i = 0; i < dice; i++) {
+            total += Math.floor(Math.random() * sides) + 1;
+        }
+
+        return total;
+    }
+
+    /**
+     * Drop Item
+     */
+    dropItem(item, character) {
+        // Check if item is equipped - must unequip first
+        const isEquipped = this.isItemEquipped(item, character);
+        if (isEquipped) {
+            gameState.addMessage(`You must unequip ${item.name} before dropping it.`, 'error');
+            return;
+        }
+
+        if (!confirm(`Drop ${item.name}? This cannot be undone.`)) {
+            return;
+        }
+
+        const index = character.inventory.findIndex(i => i.id === item.id);
+        if (index !== -1) {
+            character.inventory.splice(index, 1);
+            gameState.addMessage(`Dropped ${item.name}.`, 'info');
+
+            // Update game state
+            gameState.set('character', character);
+
+            // Re-render inventory
+            this.renderInventory();
+        }
+    }
+
+    /**
      * Open save menu
      */
     openSaveMenu() {
         const modalOverlay = document.getElementById('saveLoadModal');
         if (!modalOverlay) return;
 
-        // Render save slots
-        this.renderSaveSlots();
+        // Switch to save tab by default
+        this.switchSaveLoadTab('save');
 
         modalOverlay.classList.add('active');
     }
@@ -1033,6 +2261,41 @@ class Game {
     }
 
     /**
+     * Render load slots in load menu
+     */
+    renderLoadSlots() {
+        const slotsContainer = document.getElementById('loadMenuSlots');
+        if (!slotsContainer) return;
+
+        const slots = saveManager.getSaveSlots();
+
+        slotsContainer.innerHTML = '';
+
+        for (let i = 1; i <= saveManager.maxSlots; i++) {
+            const slot = slots[i];
+            const slotEl = document.createElement('button');
+            slotEl.className = `save-menu-slot ${slot.isEmpty ? 'empty' : ''}`;
+
+            if (slot.isEmpty) {
+                slotEl.disabled = true;
+                slotEl.innerHTML = `
+                    <span class="slot-number">Slot ${i}</span>
+                    <span class="empty-text">Empty</span>
+                `;
+            } else {
+                slotEl.onclick = () => this.loadFromSlot(i);
+                slotEl.innerHTML = `
+                    <span class="slot-number">Slot ${i}</span>
+                    <span class="slot-char">${slot.characterName} - Level ${slot.level}</span>
+                    <span class="slot-time">${saveManager.formatTimestamp(slot.timestamp)}</span>
+                `;
+            }
+
+            slotsContainer.appendChild(slotEl);
+        }
+    }
+
+    /**
      * Save game to specific slot
      */
     saveToSlot(slotId) {
@@ -1047,14 +2310,34 @@ class Game {
     }
 
     /**
-     * Load game from specific slot
+     * Load game from specific slot (in-game load)
      */
-    loadGameFromSlot(slotId) {
+    async loadFromSlot(slotId) {
+        if (!confirm('Loading will overwrite your current game. Continue?')) {
+            return;
+        }
+
         const result = saveManager.loadGame(slotId);
 
         if (result.success) {
             // Reinitialize game systems with loaded data
-            this.reinitializeGameAfterLoad();
+            await this.reinitializeGameAfterLoad();
+            this.closeSaveMenu();
+            gameState.addMessage('Game loaded successfully!', 'success');
+        } else {
+            gameState.addMessage(result.message, 'error');
+        }
+    }
+
+    /**
+     * Load game from specific slot
+     */
+    async loadGameFromSlot(slotId) {
+        const result = saveManager.loadGame(slotId);
+
+        if (result.success) {
+            // Reinitialize game systems with loaded data
+            await this.reinitializeGameAfterLoad();
             this.showScreen('game');
         } else {
             alert(result.message);
@@ -1090,13 +2373,41 @@ class Game {
             });
         }
 
-        // Reinitialize settlement system
+        // Reinitialize settlement UI
         if (!this.settlementUI) {
             this.settlementUI = new SettlementUI(null);
         }
 
+        // Initialize NPC generator
+        if (!this.npcGenerator) {
+            console.log('👥 Initializing NPC generator...');
+            this.npcGenerator = new NPCGenerator(seed);
+            await this.npcGenerator.loadData();
+        }
+
+        // Initialize quest systems
+        if (!this.questGenerator) {
+            console.log('📜 Initializing quest generator...');
+            this.questGenerator = new QuestGenerator(seed);
+            await this.questGenerator.loadData();
+        }
+
+        if (!this.questManager) {
+            console.log('📜 Initializing quest manager...');
+            this.questManager = new QuestManager(this.questGenerator);
+            await this.questManager.initialize();
+        }
+
+        // Initialize settlement manager with all dependencies
         if (!this.settlementManager) {
-            this.settlementManager = new SettlementManager(this.worldGenerator, this.settlementUI);
+            console.log('🏘️ Initializing settlement system...');
+            this.settlementManager = new SettlementManager(
+                this.worldGenerator,
+                this.settlementUI,
+                this.npcGenerator,
+                this.questGenerator,
+                this.questManager
+            );
             this.settlementUI.settlementManager = this.settlementManager;
         }
 
@@ -1195,180 +2506,13 @@ class Game {
         }
     }
 
-    /**
-     * Show rest modal
-     */
-    showRestModal() {
-        const character = gameState.get('character');
-        if (!character) return;
+    // OLD showRestModal() removed - using RestManager
 
-        // Check if in settlement for long rest
-        const inSettlement = this.isInSettlement();
+    // OLD isInSettlement() removed - using RestManager.isPlayerInTavern()
 
-        const restContent = `
-            <h2>😴 Rest</h2>
-            <div style="margin: 20px 0;">
-                <div style="margin-bottom: 20px;">
-                    <h3>Current Status</h3>
-                    <p><strong>HP:</strong> ${character.currentHP} / ${character.maxHP}</p>
-                    <p><strong>Hit Dice:</strong> ${character.hitDice.current} / ${character.hitDice.max} (d${character.hitDice.size})</p>
-                    <p><strong>Short Rests Used:</strong> ${character.shortRestsUsed} / 2</p>
-                </div>
+    // OLD takeShortRest() removed - using RestManager.shortRest()
 
-                <div style="margin-bottom: 20px;">
-                    <h3>Short Rest (1 hour)</h3>
-                    <p>Roll all ${character.hitDice.current}d${character.hitDice.size} + ${character.abilityModifiers.con} to recover HP.</p>
-                    <button id="shortRestBtn" class="menu-btn ${character.shortRestsUsed >= 2 ? 'disabled-btn' : ''}">
-                        Take Short Rest
-                    </button>
-                    ${character.shortRestsUsed >= 2 ? '<p style="color: var(--text-warning);">⚠️ No short rests remaining. Need a long rest.</p>' : ''}
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <h3>Long Rest (8 hours)</h3>
-                    <p>Fully restore HP and spell slots. Reset short rest counter.</p>
-                    <button id="longRestBtn" class="menu-btn ${!inSettlement ? 'disabled-btn' : ''}">
-                        Take Long Rest
-                    </button>
-                    ${!inSettlement ? '<p style="color: var(--text-warning);">⚠️ You must be in a settlement (town/village) to take a long rest.</p>' : '<p style="color: var(--text-success);">✓ You are in a settlement and can rest safely.</p>'}
-                </div>
-
-                <button id="closeRestBtn" class="menu-btn secondary">Close</button>
-            </div>
-        `;
-
-        const modal = document.getElementById('modalContent');
-        const overlay = document.getElementById('modalOverlay');
-
-        if (modal && overlay) {
-            modal.innerHTML = restContent;
-            overlay.classList.add('active');
-
-            // Short rest button
-            const shortRestBtn = document.getElementById('shortRestBtn');
-            if (shortRestBtn) {
-                shortRestBtn.addEventListener('click', () => {
-                    this.takeShortRest();
-                });
-            }
-
-            // Long rest button
-            const longRestBtn = document.getElementById('longRestBtn');
-            if (longRestBtn) {
-                longRestBtn.addEventListener('click', () => {
-                    this.takeLongRest();
-                });
-            }
-
-            // Close button
-            const closeBtn = document.getElementById('closeRestBtn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    overlay.classList.remove('active');
-                    gameState.set('ui.showRestModal', false);
-                });
-            }
-
-            // Close on overlay click
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('active');
-                    gameState.set('ui.showRestModal', false);
-                }
-            });
-        }
-    }
-
-    /**
-     * Check if player is in a settlement
-     */
-    isInSettlement() {
-        if (!this.player || !this.worldGenerator) {
-            return false;
-        }
-
-        const playerPos = this.player.getPosition();
-
-        // Check current tile and nearby tiles for settlement features
-        // We check a 2-tile radius to allow resting near towns
-        const searchRadius = 2;
-
-        for (let dx = -searchRadius; dx <= searchRadius; dx++) {
-            for (let dy = -searchRadius; dy <= searchRadius; dy++) {
-                const checkX = playerPos.x + dx;
-                const checkY = playerPos.y + dy;
-
-                const { regionX, regionY } = this.worldGenerator.getRegionCoords(checkX, checkY);
-                const region = this.worldGenerator.regionCache.get(`${regionX},${regionY}`);
-
-                if (!region) continue;
-
-                // Check if there's a settlement or sanctuary feature at this location
-                const restLocation = region.features.find(f =>
-                    (f.type === 'settlement' || f.type === 'sanctuary') &&
-                    f.x === checkX &&
-                    f.y === checkY
-                );
-
-                if (restLocation) return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Take a short rest
-     */
-    takeShortRest() {
-        const character = gameState.get('character');
-        if (!character) return;
-
-        // Validate conditions
-        if (character.shortRestsUsed >= 2) {
-            gameState.addMessage('❌ No short rests remaining. You need to take a long rest first.', 'error');
-            return;
-        }
-
-        // Perform the rest
-        const result = character.shortRest();
-
-        if (result.success) {
-            gameState.set('character', character);
-            gameState.addMessage(`✅ Short rest complete! Healed ${result.healing} HP by rolling ${result.hitDiceRolled}d${character.hitDice.size}. ${result.shortRestsRemaining} short rests remaining.`, 'success');
-
-            // Close modal
-            document.getElementById('modalOverlay').classList.remove('active');
-            this.updateHUD(character);
-        } else {
-            gameState.addMessage(`❌ ${result.reason}`, 'error');
-        }
-    }
-
-    /**
-     * Take a long rest
-     */
-    takeLongRest() {
-        const character = gameState.get('character');
-        if (!character) return;
-
-        // Check if in settlement
-        if (!this.isInSettlement()) {
-            gameState.addMessage('❌ You must be in a settlement to take a long rest.', 'error');
-            return;
-        }
-
-        const result = character.longRest();
-
-        if (result.success) {
-            gameState.set('character', character);
-            gameState.addMessage(`✅ Long rest complete! HP fully restored. Spell slots and short rests reset.`, 'success');
-
-            // Close modal
-            document.getElementById('modalOverlay').classList.remove('active');
-            gameState.set('ui.showRestModal', false);
-        }
-    }
+    // OLD takeLongRest() removed - using RestManager.longRest()
 
     /**
      * Setup message log
@@ -1411,7 +2555,7 @@ class Game {
                     <div><strong>CHA:</strong> ${character.abilities.cha} (${character.abilityModifiers.cha >= 0 ? '+' : ''}${character.abilityModifiers.cha})</div>
                     <hr style="margin: 10px 0; border-color: #4a4a4a;">
                     <div><strong>Speed:</strong> ${character.speed} ft</div>
-                    <div><strong>Initiative:</strong> +${character.initiative}</div>
+                    <div><strong>Initiative:</strong> ${character.initiative >= 0 ? '+' : ''}${character.initiative || 0}</div>
                     <div><strong>Prof Bonus:</strong> +${character.proficiencyBonus}</div>
                 </div>
             `;
@@ -1428,37 +2572,12 @@ class Game {
      * Setup Rest System UI
      */
     setupRestSystem() {
-        // Close button
-        const closeRestBtn = document.getElementById('closeRestBtn');
-        if (closeRestBtn) {
-            closeRestBtn.addEventListener('click', () => {
-                restManager.closeRestMenu();
-            });
-        }
-
-        // Short rest button
-        const shortRestBtn = document.getElementById('shortRestBtn');
-        if (shortRestBtn) {
-            shortRestBtn.addEventListener('click', async () => {
-                const result = await restManager.shortRest();
-                if (result.success) {
-                    restManager.closeRestMenu();
-                    this.updateHUD(gameState.get('character'));
-                }
-            });
-        }
-
-        // Long rest button
-        const longRestBtn = document.getElementById('longRestBtn');
-        if (longRestBtn) {
-            longRestBtn.addEventListener('click', async () => {
-                const result = await restManager.longRest();
-                if (result.success) {
-                    restManager.closeRestMenu();
-                    this.updateHUD(gameState.get('character'));
-                }
-            });
-        }
+        // Listen for rest completion events from RestManager
+        window.addEventListener('restCompleted', (event) => {
+            const { type, result } = event.detail;
+            // Update HUD after successful rest
+            this.updateHUD(gameState.get('character'));
+        });
 
         // Close modal when clicking outside
         const restModal = document.getElementById('restModal');
@@ -1568,6 +2687,109 @@ class Game {
 
         // Prune distant regions from cache
         this.worldGenerator.pruneCache(regionX, regionY, 3);
+    }
+
+    // ==================== HELPER FUNCTIONS FOR PLAIN CHARACTER OBJECTS ====================
+
+    /**
+     * Calculate AC from plain character object (not class instance)
+     */
+    calculateACForCharacter(character) {
+        let ac = 10; // Base AC
+
+        // Armor
+        if (character.equipment.armor) {
+            const armor = character.equipment.armor;
+            ac = armor.armorClass;
+
+            // Add DEX modifier if allowed
+            if (armor.addDexModifier) {
+                const dexBonus = armor.maxDexBonus !== null
+                    ? Math.min(character.abilityModifiers.dex, armor.maxDexBonus)
+                    : character.abilityModifiers.dex;
+                ac += dexBonus;
+            }
+        } else {
+            // No armor: 10 + DEX modifier
+            ac = 10 + character.abilityModifiers.dex;
+        }
+
+        // Shield (shields are equipped in offHand slot)
+        if (character.equipment.offHand && character.equipment.offHand.type === 'shield') {
+            ac += character.equipment.offHand.armorClassBonus || 0;
+        }
+
+        // Other bonuses (magic items, spells, etc.)
+        ac += character.armorBonus || 0;
+
+        return ac;
+    }
+
+    /**
+     * Calculate attack bonus for a weapon from plain character object
+     */
+    calculateAttackBonusForWeapon(character, weapon) {
+        if (!weapon) return 0;
+
+        // Determine which ability modifier to use
+        let abilityMod;
+
+        if (weapon.properties?.includes('finesse')) {
+            // Finesse weapons can use DEX or STR (whichever is higher)
+            abilityMod = Math.max(character.abilityModifiers.str, character.abilityModifiers.dex);
+        } else if (weapon.weaponType === 'ranged') {
+            abilityMod = character.abilityModifiers.dex;
+        } else {
+            abilityMod = character.abilityModifiers.str;
+        }
+
+        // Check weapon proficiency
+        const proficient = this.isCharacterProficientWithWeapon(character, weapon);
+        const profBonus = proficient ? character.proficiencyBonus : 0;
+
+        return abilityMod + profBonus;
+    }
+
+    /**
+     * Check if character is proficient with weapon
+     */
+    isCharacterProficientWithWeapon(character, weapon) {
+        if (!weapon) return false;
+
+        // Check if proficient with weapon category (simple, martial)
+        if (character.proficiencies.weapons.includes(weapon.category)) {
+            return true;
+        }
+
+        // Check if proficient with specific weapon
+        if (character.proficiencies.weapons.includes(weapon.id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Recalculate all combat stats affected by equipment changes
+     */
+    recalculateCombatStats(character) {
+        // Recalculate AC
+        character.ac = this.calculateACForCharacter(character);
+
+        // Recalculate attack bonus for equipped weapons
+        if (character.equipment.mainHand) {
+            character.mainHandAttackBonus = this.calculateAttackBonusForWeapon(character, character.equipment.mainHand);
+        } else {
+            character.mainHandAttackBonus = 0;
+        }
+
+        if (character.equipment.offHand && character.equipment.offHand.type === 'weapon') {
+            character.offHandAttackBonus = this.calculateAttackBonusForWeapon(character, character.equipment.offHand);
+        } else {
+            character.offHandAttackBonus = 0;
+        }
+
+        console.log(`⚔️ Combat stats recalculated - AC: ${character.ac}, Main Hand Attack: +${character.mainHandAttackBonus}, Off Hand Attack: +${character.offHandAttackBonus}`);
     }
 }
 

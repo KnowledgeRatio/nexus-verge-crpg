@@ -3,7 +3,7 @@
  * Procedurally generates quests from templates using seeded RNG
  */
 
-import { createRNG, seedToNumber } from '../utils/rng.js';
+import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
 
 class QuestGenerator {
@@ -44,10 +44,14 @@ class QuestGenerator {
    * @returns {Array<Object>} Generated quest instances
    */
   async generateQuestsForSettlement(settlement, playerLevel) {
+    console.log(`📜 QuestGenerator.generateQuestsForSettlement() called`);
+    console.log(`   - Settlement: ${settlement.name} (${settlement.settlementType})`);
+    console.log(`   - Player level: ${playerLevel}`);
+
     await this.loadData();
 
     const seed = `${this.worldSeed}_settlement_${settlement.x}_${settlement.y}_quests`;
-    const rng = createRNG(seedToNumber(seed));
+    const rng = new SeededRandom(seed);
 
     const quests = [];
 
@@ -60,14 +64,17 @@ class QuestGenerator {
 
     const settlementType = settlement.settlementType || 'village';
     const config = questCounts[settlementType] || questCounts['village'];
-    const questCount = rng.intBetween(config.min, config.max);
+    const questCount = rng.nextInt(config.min, config.max);
+
+    console.log(`   - Will generate ${questCount} quests`);
 
     // Select random templates
     const templates = this.questData.sideQuestTemplates;
+    console.log(`   - Available templates: ${templates?.length || 0}`);
     const selectedTemplates = [];
 
     for (let i = 0; i < questCount; i++) {
-      const template = rng.pick(templates);
+      const template = rng.choice(templates);
       selectedTemplates.push(template);
     }
 
@@ -92,7 +99,7 @@ class QuestGenerator {
    * @returns {Object} Generated quest instance
    */
   async generateFromTemplate(template, settlement, playerLevel, rng) {
-    const questId = `quest_${settlement.x}_${settlement.y}_${rng.int(100000, 999999)}`;
+    const questId = `quest_${settlement.x}_${settlement.y}_${rng.nextInt(100000, 999999)}`;
 
     // Generate quest based on type
     let questData = null;
@@ -158,28 +165,31 @@ class QuestGenerator {
     const minCR = typeof gen.minCR === 'number' ? gen.minCR : playerLevel - 1;
     const maxCR = this.evaluateFormula(gen.maxCRFormula || 'playerLevel + 2', { playerLevel });
 
-    // Pick appropriate creature
+    // Pick appropriate creature (use challengeRating field from monsters.json)
     const validCreatures = this.monsterData.monsters.filter(monster => {
-      return monster.cr >= Math.max(0.125, minCR) && monster.cr <= maxCR;
+      const cr = monster.challengeRating || monster.cr || 0;
+      return cr >= Math.max(0.125, minCR) && cr <= maxCR;
     });
 
     if (validCreatures.length === 0) {
-      console.warn('No valid creatures for kill quest');
+      console.warn(`No valid creatures for kill quest (CR ${minCR}-${maxCR})`);
+      console.warn(`Available monsters:`, this.monsterData.monsters.map(m => ({ name: m.name, cr: m.challengeRating || m.cr })));
       return null;
     }
 
-    const creature = rng.pick(validCreatures);
+    const creature = rng.choice(validCreatures);
+    const creatureCR = creature.challengeRating || creature.cr || 1;
 
     // Determine count
     const countRange = gen.countRange || [3, 8];
-    const count = rng.intBetween(countRange[0], countRange[1]);
+    const count = rng.nextInt(countRange[0], countRange[1]);
 
     // Pick quest giver NPC role
-    const npcRole = rng.pick(gen.validNPCRoles || ['innkeeper', 'leader']);
+    const npcRole = rng.choice(gen.validNPCRoles || ['innkeeper', 'leader']);
 
     // Calculate rewards
     const rewards = this.calculateRewards(template.rewards, {
-      creatureCR: creature.cr,
+      creatureCR: creatureCR,
       count,
       playerLevel,
       difficulty: template.difficulty
@@ -250,13 +260,13 @@ class QuestGenerator {
     const gen = template.generation;
 
     // Pick item type and dungeon type
-    const itemType = rng.pick(gen.validItemTypes || ['heirloom', 'artifact']);
-    const dungeonType = rng.pick(gen.dungeonTypes || ['Cave', 'Ruins']);
+    const itemType = rng.choice(gen.validItemTypes || ['heirloom', 'artifact']);
+    const dungeonType = rng.choice(gen.dungeonTypes || ['Cave', 'Ruins']);
     const itemName = `Lost ${itemType.charAt(0).toUpperCase() + itemType.slice(1)}`;
-    const itemId = `quest_item_${itemType}_${rng.int(1000, 9999)}`;
+    const itemId = `quest_item_${itemType}_${rng.nextInt(1000, 9999)}`;
 
     // Pick quest giver
-    const npcRole = rng.pick(gen.validNPCRoles || ['merchant', 'innkeeper']);
+    const npcRole = rng.choice(gen.validNPCRoles || ['merchant', 'innkeeper']);
 
     // Calculate rewards
     const rewards = this.calculateRewards(template.rewards, {
@@ -315,14 +325,14 @@ class QuestGenerator {
     const gen = template.generation;
 
     // Pick quest giver
-    const npcRole = rng.pick(gen.validNPCRoles || ['merchant', 'innkeeper']);
+    const npcRole = rng.choice(gen.validNPCRoles || ['merchant', 'innkeeper']);
 
     // For simplicity, target same settlement (future: different settlements)
     const targetSettlement = settlement;
-    const targetNpcRole = rng.pick(['merchant', 'blacksmith', 'leader']);
+    const targetNpcRole = rng.choice(['merchant', 'blacksmith', 'leader']);
 
     // Calculate distance (for now, use proximity)
-    const distance = rng.intBetween(gen.minDistance || 50, gen.maxDistance || 200);
+    const distance = rng.nextInt(gen.minDistance || 50, gen.maxDistance || 200);
 
     // Calculate rewards
     const rewards = this.calculateRewards(template.rewards, {
@@ -384,11 +394,11 @@ class QuestGenerator {
 
     // Pick location type
     const locationTypes = gen.locationTypes || ['dungeon', 'ruins', 'cave'];
-    const locationType = rng.pick(locationTypes);
+    const locationType = rng.choice(locationTypes);
     const locationName = `Nearby ${locationType.charAt(0).toUpperCase() + locationType.slice(1)}`;
 
     // Pick quest giver
-    const npcRole = rng.pick(gen.validNPCRoles || ['leader', 'guard']);
+    const npcRole = rng.choice(gen.validNPCRoles || ['leader', 'guard']);
 
     // Calculate rewards
     const rewards = this.calculateRewards(template.rewards, {
@@ -448,7 +458,7 @@ class QuestGenerator {
     const gen = template.generation;
 
     // Pick quest giver
-    const npcRole = rng.pick(gen.validNPCRoles || ['guard', 'leader']);
+    const npcRole = rng.choice(gen.validNPCRoles || ['guard', 'leader']);
 
     // Fill templates
     const name = this.fillTemplate(template.name, {
@@ -560,10 +570,18 @@ class QuestGenerator {
   evaluateFormula(formula, variables) {
     try {
       // Replace variables in formula
+      // IMPORTANT: Sort by length (longest first) to avoid partial replacements
+      // e.g., "difficulty" shouldn't replace part of "difficultyMultiplier"
+      const sortedKeys = Object.keys(variables).sort((a, b) => b.length - a.length);
+
       let expression = formula;
-      for (const [key, value] of Object.entries(variables)) {
+      for (const key of sortedKeys) {
+        const value = variables[key];
         expression = expression.replace(new RegExp(key, 'g'), value);
       }
+
+      console.log(`📊 Evaluating formula: "${formula}" with variables:`, variables);
+      console.log(`📊 Result expression: "${expression}"`);
 
       // Evaluate safely (basic math only)
       // eslint-disable-next-line no-eval
@@ -571,6 +589,8 @@ class QuestGenerator {
       return Math.round(result);
     } catch (error) {
       console.error('Formula evaluation error:', formula, error);
+      console.error('Variables:', variables);
+      console.error('Expression after substitution:', expression);
       return 0;
     }
   }

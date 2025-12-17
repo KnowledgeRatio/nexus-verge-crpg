@@ -5,6 +5,7 @@
 
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
+import { roll } from '../utils/dice.js';
 
 class RestManager {
     constructor() {
@@ -99,28 +100,46 @@ class RestManager {
      */
     isPlayerInTavern() {
         const playerPos = gameState.get('player.position');
-        if (!playerPos) return false;
+        if (!playerPos) {
+            console.log('🏨 Tavern check: No player position');
+            return false;
+        }
 
         const world = gameState.get('world');
-        if (!world || !world.generatedRegions) return false;
+        if (!world || !world.generatedRegions) {
+            console.log('🏨 Tavern check: No world data');
+            return false;
+        }
 
         // Get current region
         const regionX = Math.floor(playerPos.x / 32);
         const regionY = Math.floor(playerPos.y / 32);
         const regionKey = `${regionX},${regionY}`;
-        
-        const region = world.generatedRegions.get(regionKey);
-        if (!region) return false;
 
-        // Get tile within region
+        const region = world.generatedRegions.get(regionKey);
+        if (!region) {
+            console.log(`🏨 Tavern check: No region at ${regionKey}`);
+            return false;
+        }
+
+        // Get tile within region (tiles are stored as 1D array)
         const localX = ((playerPos.x % 32) + 32) % 32;
         const localY = ((playerPos.y % 32) + 32) % 32;
-        const tile = region.tiles[localY]?.[localX];
+        const index = localY * 32 + localX;
+        const tile = region.tiles[index];
 
-        if (!tile) return false;
+        if (!tile) {
+            console.log(`🏨 Tavern check: No tile at local ${localX},${localY} (index ${index})`);
+            return false;
+        }
+
+        console.log(`🏨 Tavern check at world (${playerPos.x},${playerPos.y}), local (${localX},${localY})`);
+        console.log(`   - tile.terrain: ${tile.terrain}`);
+        console.log(`   - tile.feature:`, tile.feature);
 
         // Check if tile has a settlement feature (any settlement has tavern/inn)
         if (tile.feature && tile.feature.type === 'settlement') {
+            console.log('   ✅ Found settlement feature on current tile');
             return true;
         }
 
@@ -179,31 +198,39 @@ class RestManager {
         this.isResting = true;
         const character = gameState.get('character');
 
-        // If no specific dice count provided, auto-calculate
-        if (hitDiceToSpend === null) {
-            // Default: spend half of available hit dice (minimum 1)
-            hitDiceToSpend = Math.max(1, Math.floor(character.hitDice.current / 2));
+        // D&D 5e Short Rest: Roll all hit dice to heal
+        const diceToRoll = character.hitDice.current; // Hit dice = level (they don't deplete)
+        let healing = 0;
+
+        // Roll each hit die + CON modifier
+        for (let i = 0; i < diceToRoll; i++) {
+            healing += roll(`1d${character.hitDice.size}`) + character.abilityModifiers.con;
         }
 
-        // Clamp to available dice
-        hitDiceToSpend = Math.min(hitDiceToSpend, character.hitDice.current);
+        // Apply healing
+        if (healing > 0) {
+            const oldHP = character.currentHP;
+            character.currentHP = Math.min(character.maxHP, character.currentHP + healing);
+            healing = character.currentHP - oldHP; // Actual healing applied
+        }
 
-        // Perform the rest on the character
-        const result = character.shortRest();
+        // Increment short rests used
+        character.shortRestsUsed++;
 
         // Update game state
         gameState.set('character', character);
 
-        // Add message
-        if (result.success) {
-            gameState.addMessage(`You take a short rest and recover ${result.healing} HP.`, 'success');
-            gameState.addMessage(`Short rests remaining: ${result.shortRestsRemaining}`, 'info');
-        } else {
-            gameState.addMessage(result.reason, 'error');
-        }
+        // Add messages
+        gameState.addMessage(`You take a short rest and recover ${healing} HP by rolling ${diceToRoll}d${character.hitDice.size}.`, 'success');
+        gameState.addMessage(`Short rests remaining: ${2 - character.shortRestsUsed}`, 'info');
 
         this.isResting = false;
-        return result;
+        return {
+            success: true,
+            healing: healing,
+            hitDiceRolled: diceToRoll,
+            shortRestsRemaining: 2 - character.shortRestsUsed
+        };
     }
 
     /**
@@ -219,8 +246,21 @@ class RestManager {
         this.isResting = true;
         const character = gameState.get('character');
 
-        // Perform the rest on the character
-        const result = character.longRest();
+        // D&D 5e Long Rest: Restore all HP
+        character.currentHP = character.maxHP;
+
+        // Hit dice don't need restoring (they equal level and don't deplete)
+        character.hitDice.current = character.hitDice.max;
+
+        // Reset short rests counter
+        character.shortRestsUsed = 0;
+
+        // Recover spell slots
+        if (character.spellcasting) {
+            for (const level in character.spellcasting.spellSlots) {
+                character.spellcasting.spellSlots[level].current = character.spellcasting.spellSlots[level].max;
+            }
+        }
 
         // Update game state
         gameState.set('character', character);
@@ -230,13 +270,13 @@ class RestManager {
         gameState.addMessage('You wake up feeling refreshed!', 'success');
         gameState.addMessage(`HP: ${character.currentHP}/${character.maxHP} (fully restored)`, 'success');
         gameState.addMessage(`Hit dice: ${character.hitDice.current}/${character.hitDice.max}`, 'info');
-        
+
         if (character.spellcasting) {
             gameState.addMessage('All spell slots restored!', 'success');
         }
 
         this.isResting = false;
-        return result;
+        return { success: true };
     }
 
     /**
@@ -248,6 +288,66 @@ class RestManager {
         if (restModal) {
             restModal.classList.add('active');
             this.updateRestUI();
+
+            // Attach event handlers (in case they weren't set up yet or need refreshing)
+            this.attachEventHandlers();
+        }
+    }
+
+    /**
+     * Attach event handlers to rest buttons
+     */
+    attachEventHandlers() {
+        // Short rest button
+        const shortRestBtn = document.getElementById('shortRestBtn');
+        if (shortRestBtn) {
+            // Remove old handler if exists
+            const newShortRestBtn = shortRestBtn.cloneNode(true);
+            shortRestBtn.parentNode.replaceChild(newShortRestBtn, shortRestBtn);
+
+            newShortRestBtn.addEventListener('click', async () => {
+                const result = await this.shortRest();
+                if (result.success) {
+                    this.updateRestUI(); // Refresh UI after rest
+                    // Notify main.js to update HUD
+                    window.dispatchEvent(new CustomEvent('restCompleted', { detail: { type: 'short', result } }));
+                } else {
+                    // Show error in UI
+                    this.updateRestUI();
+                }
+            });
+        }
+
+        // Long rest button
+        const longRestBtn = document.getElementById('longRestBtn');
+        if (longRestBtn) {
+            // Remove old handler if exists
+            const newLongRestBtn = longRestBtn.cloneNode(true);
+            longRestBtn.parentNode.replaceChild(newLongRestBtn, longRestBtn);
+
+            newLongRestBtn.addEventListener('click', async () => {
+                const result = await this.longRest();
+                if (result.success) {
+                    this.updateRestUI(); // Refresh UI after rest
+                    // Notify main.js to update HUD
+                    window.dispatchEvent(new CustomEvent('restCompleted', { detail: { type: 'long', result } }));
+                } else {
+                    // Show error in UI
+                    this.updateRestUI();
+                }
+            });
+        }
+
+        // Close button
+        const closeRestBtn = document.getElementById('closeRestBtn');
+        if (closeRestBtn) {
+            // Remove old handler if exists
+            const newCloseBtn = closeRestBtn.cloneNode(true);
+            closeRestBtn.parentNode.replaceChild(newCloseBtn, closeRestBtn);
+
+            newCloseBtn.addEventListener('click', () => {
+                this.closeRestMenu();
+            });
         }
     }
 

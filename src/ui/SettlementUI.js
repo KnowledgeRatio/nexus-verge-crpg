@@ -281,6 +281,12 @@ class SettlementUI {
     if (roleEl) roleEl.textContent = this.formatRole(npc.role);
     if (textEl) textEl.textContent = npc.dialogue.greeting;
 
+    // Debug logging for NPC quest status
+    console.log(`💬 Showing dialogue for ${npc.name} (${npc.role})`);
+    console.log(`   - offersQuest: ${npc.offersQuest}`);
+    console.log(`   - questIds:`, npc.questIds);
+    console.log(`   - questIds.length: ${npc.questIds?.length || 0}`);
+
     // Build dialogue options
     let optionsHTML = '';
 
@@ -295,11 +301,14 @@ class SettlementUI {
 
     // Quest option (if NPC offers quest)
     if (npc.offersQuest && npc.questIds && npc.questIds.length > 0) {
+      console.log(`   ✅ Adding "Ask about work" button`);
       optionsHTML += `
         <button class="dialogue-option quest-option" data-action="quest">
           ❗ Ask about work
         </button>
       `;
+    } else if (npc.offersQuest) {
+      console.log(`   ⚠️ NPC offers quests but has no questIds assigned yet`);
     }
 
     // Trade option (for merchants/blacksmiths)
@@ -399,10 +408,20 @@ class SettlementUI {
       return;
     }
 
+    // Debug logging
+    console.log(`🔍 Checking quests for NPC: ${npc.name} (ID: ${npc.id})`);
+    console.log(`   - offersQuest: ${npc.offersQuest}`);
+    console.log(`   - questIds:`, npc.questIds);
+    console.log(`   - availableQuests in manager:`, window.questManager.availableQuests?.length || 0);
+
     // Get quests from this NPC
     const availableQuests = window.questManager.getQuestsFromNPC(npc.id, 'available');
     const activeQuests = window.questManager.getQuestsFromNPC(npc.id, 'active');
     const completedQuests = window.questManager.getQuestsFromNPC(npc.id, 'completed');
+
+    console.log(`   - Available quests found: ${availableQuests.length}`);
+    console.log(`   - Active quests found: ${activeQuests.length}`);
+    console.log(`   - Completed quests found: ${completedQuests.length}`);
 
     // Check if player has completed quests ready to turn in
     const readyToTurnIn = activeQuests.filter(q => window.questManager.isQuestReadyToComplete(q.id));

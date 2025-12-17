@@ -86,6 +86,17 @@ class WorldGenerator {
         // Generate features (settlements, dungeons, etc.)
         const features = await this.generateFeatures(regionX, regionY, regionRNG, tiles);
 
+        // Restore persistent settlement data if this region was visited before
+        this.restoreSettlementData(features);
+
+        // Link features to their tiles (so tile.feature exists)
+        for (const feature of features) {
+            const tile = tiles.find(t => t.x === feature.x && t.y === feature.y);
+            if (tile) {
+                tile.feature = feature;
+            }
+        }
+
         const region = {
             x: regionX,
             y: regionY,
@@ -388,6 +399,7 @@ class WorldGenerator {
         const regionSize = RULES.worldGen.regionSize;
         const index = localY * regionSize + localX;
 
+        // Return the tile reference (changes to this object will persist in the region)
         return region.tiles[index];
     }
 
@@ -407,6 +419,8 @@ class WorldGenerator {
             );
 
             if (distance > keepRadius) {
+                // Before deleting region, extract and persist settlement data
+                this.persistSettlementData(region);
                 toDelete.push(key);
             }
         }
@@ -414,7 +428,82 @@ class WorldGenerator {
         toDelete.forEach(key => generatedRegions.delete(key));
 
         if (toDelete.length > 0) {
-            console.log(`🧹 Pruned ${toDelete.length} regions from cache`);
+            console.log(`🧹 Pruned ${toDelete.length} regions from cache (settlement data preserved)`);
+        }
+    }
+
+    /**
+     * Extract settlement data from a region before pruning
+     * Stores settlement state in gameState.world.settlements
+     */
+    persistSettlementData(region) {
+        if (!region || !region.features) return;
+
+        const settlements = gameState.get('world.settlements') || [];
+        const existingSettlementIds = new Set(settlements.map(s => `${s.x},${s.y}`));
+
+        // Find all settlements in this region
+        const regionSettlements = region.features.filter(f => f.type === 'settlement');
+
+        for (const settlement of regionSettlements) {
+            const settlementId = `${settlement.x},${settlement.y}`;
+
+            // If this settlement is NOT already in persistent storage, add it
+            if (!existingSettlementIds.has(settlementId)) {
+                console.log(`💾 Persisting settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
+                settlements.push({
+                    ...settlement,
+                    id: settlementId,
+                    // Ensure these fields are preserved
+                    npcs: settlement.npcs || [],
+                    questsGenerated: settlement.questsGenerated || false,
+                    visitedAt: settlement.visitedAt || null
+                });
+            } else {
+                // Update existing settlement with latest state
+                const index = settlements.findIndex(s => s.id === settlementId);
+                if (index !== -1) {
+                    console.log(`💾 Updating settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
+                    settlements[index] = {
+                        ...settlements[index],
+                        ...settlement,
+                        id: settlementId
+                    };
+                }
+            }
+        }
+
+        gameState.set('world.settlements', settlements);
+    }
+
+    /**
+     * Restore settlement data from persistent storage when regenerating a region
+     * Replaces freshly-generated settlements with their persistent counterparts
+     */
+    restoreSettlementData(features) {
+        const persistedSettlements = gameState.get('world.settlements') || [];
+
+        if (persistedSettlements.length === 0) return;
+
+        // Build lookup map by coordinates
+        const persistedByCoords = new Map();
+        for (const settlement of persistedSettlements) {
+            persistedByCoords.set(`${settlement.x},${settlement.y}`, settlement);
+        }
+
+        // Replace generated settlements with persisted data
+        for (let i = 0; i < features.length; i++) {
+            const feature = features[i];
+            if (feature.type === 'settlement') {
+                const settlementId = `${feature.x},${feature.y}`;
+                const persisted = persistedByCoords.get(settlementId);
+
+                if (persisted) {
+                    console.log(`♻️ Restoring settlement: ${persisted.name} at (${persisted.x}, ${persisted.y})`);
+                    // Replace with persisted data
+                    features[i] = persisted;
+                }
+            }
         }
     }
 

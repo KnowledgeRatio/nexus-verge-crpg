@@ -522,7 +522,7 @@ export class CharacterCreationUI {
     /**
      * Create character and start game
      */
-    createCharacter() {
+    async createCharacter() {
         try {
             const character = new Character({
                 name: this.characterData.name,
@@ -535,9 +535,13 @@ export class CharacterCreationUI {
                 xp: 0
             });
 
+            // Apply starting equipment and gold (async)
+            await character.applyStartingEquipment();
+
             // Set character in game state
             gameState.setCharacter(character);
             gameState.addMessage(`Welcome, ${character.name}!`, 'success');
+            gameState.addMessage(`You start with ${character.gold} gold pieces.`, 'info');
             gameState.changeScreen('game');
 
             console.log('Character created:', character);
