@@ -4,7 +4,89 @@
 **Last Updated:** 2025-12-18
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 2 MVP - Core Systems Implementation + Class System Overhaul
-**Latest Commit:** Two-Weapon Fighting System Implementation (Complete)
+**Latest Commit:** Weapon Mastery System Corrections & UI Fixes (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 3)
+
+### Weapon Mastery System Corrections & UI Fixes ✅
+Corrected all weapon mastery mappings to match official D&D 5e Weapon Mastery variant rules, fixed inventory equipment display, and resolved character sheet bugs.
+
+**Modified Files:**
+- `data/weaponMasteries.json` - Corrected weapon mastery assignments for all 8 masteries
+- `src/ui/CharacterCreation.js` - Added weapon name formatting helper, cache-busting for data loading
+- `src/main.js` - Fixed inventory equipment slots (Shield → Off-Hand), fixed spellcasting conditional check
+- `index.html` - Updated equipment slot labels (Shield → Off-Hand)
+
+**Implementation Details:**
+
+**1. Weapon Mastery Corrections** ✅
+Fixed incorrect weapon-to-mastery mappings based on official D&D Wiki 5e Variant Rules:
+
+| Weapon | ❌ Was (Incorrect) | ✅ Now (Correct) |
+|--------|-------------------|------------------|
+| Club | Sap | **Slow** |
+| Handaxe | Nick | **Vex** |
+| Quarterstaff | Sap | **Topple** |
+| Longsword | Topple | **Sap** |
+| Warhammer | Topple | **Push** |
+| Greatsword | Cleave | **Graze** |
+| Pike | Graze | **Push** |
+| Maul | Graze | **Topple** |
+| Shortsword | Nick | **Vex** |
+
+**Complete Corrected Mastery Assignments:**
+- **Cleave (3 weapons):** Greataxe, Halberd, Glaive
+- **Graze (2 weapons):** Glaive, Greatsword
+- **Nick (4 weapons):** Dagger, Light Hammer, Scimitar, Sickle
+- **Push (4 weapons):** Greatclub, Pike, Warhammer, Heavy Crossbow
+- **Sap (6 weapons):** Flail, Longsword, Mace, Morningstar, Spear, War Pick
+- **Slow (6 weapons):** Club, Javelin, Light Crossbow, Longbow, Sling, Whip
+- **Topple (5 weapons):** Battleaxe, Lance, Maul, Quarterstaff, Trident
+- **Vex (7 weapons):** Blowgun, Dart, Handaxe, Hand Crossbow, Rapier, Shortbow, Shortsword
+
+**2. Character Creation Weapon Name Formatting** ✅
+- Added `formatWeaponName()` helper function in CharacterCreation.js
+- Converts weapon IDs (e.g., "lightCrossbow") to display names (e.g., "Light Crossbow")
+- Mastery selection screen now shows readable weapon names
+- Example: "Slow: Club, Javelin, Light Crossbow, Longbow, Sling, Whip" (not "club, javelin, lightCrossbow...")
+
+**3. Cache-Busting for Data Files** ✅
+- Added timestamp query parameters to all data file fetches: `?v=${Date.now()}`
+- Prevents browser from caching old JSON data
+- Ensures weapon mastery corrections load immediately
+- Applied to: races.json, classes.json, backgrounds.json, weaponMasteries.json
+
+**4. Inventory Equipment Display Fix** ✅
+- Changed "Shield" slot → "Off-Hand" slot in inventory modal
+- Updated `updateEquipmentSlots()` to read from `character.equipment.offHand` instead of non-existent `shield` property
+- Now correctly displays daggers, shortswords, and shields in off-hand slot
+- Files changed: index.html (HTML), main.js (JavaScript)
+
+**5. Character Sheet Spellcasting Bug Fix** ✅
+- **Problem:** Crash when opening character sheet with non-spellcaster or incomplete spellcasting
+- **Root Cause:** `character.spellcasting.ability` should be `character.spellcasting.spellcastingAbility`
+- **Fix:** Changed conditional from `character.spellcasting ?` to `character.spellcasting && character.spellcasting.spellcastingAbility ?`
+- **Impact:** Non-spellcasters (Dedication) and half-casters pre-spell-level (Wanderlust/Bond/Oath at level 1) no longer crash character sheet
+
+**6. AC System Modifiability Validation** ✅
+- Confirmed AC calculation system is fully data-driven
+- Supports non-traditional armor (e.g., heavy armor with capped DEX bonus)
+- Example: Can create "Masterwork Plate" with `addDexModifier: true, maxDexBonus: 2` without code changes
+- System handles: Light armor (full DEX), Medium armor (DEX cap +2), Heavy armor (no DEX), Custom armor (any combination)
+
+**Testing:**
+- All 8 weapon masteries now show correct weapon lists in character creation
+- Cache-busting ensures fresh data loads on every page refresh
+- Inventory correctly displays off-hand equipment (weapons and shields)
+- Character sheet no longer crashes for any calling type
+- Spellcasting section only appears when properly initialized
+
+**Next Steps:**
+- Implement remaining weapon mastery combat mechanics (Nick, Push, Sap, Slow, Topple, Vex)
+- Implement Two-Weapon Fighting fighting style (adds ability modifier to off-hand damage)
+- Implement class abilities system (Action Surge, Rage, Bardic Inspiration, etc.)
 
 ---
 

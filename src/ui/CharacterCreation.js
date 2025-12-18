@@ -38,11 +38,13 @@ export class CharacterCreationUI {
      */
     async loadData() {
         try {
+            // Add cache-busting parameter to force reload of updated data
+            const cacheBust = Date.now();
             const [races, classes, backgrounds, weaponMasteries] = await Promise.all([
-                fetch('data/races.json').then(r => r.json()),
-                fetch('data/classes.json').then(r => r.json()),
-                fetch('data/backgrounds.json').then(r => r.json()),
-                fetch('data/weaponMasteries.json').then(r => r.json())
+                fetch(`data/races.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/classes.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/backgrounds.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/weaponMasteries.json?v=${cacheBust}`).then(r => r.json())
             ]);
 
             this.racesData = races.races;
@@ -403,6 +405,7 @@ export class CharacterCreationUI {
                 <div class="weapon-mastery-selection">
                     ${weaponMasteryOptions.map(option => {
                         const isSelected = this.characterData.weaponMasteries.includes(option.masteryId);
+                        const weaponNames = option.mastery.weaponTypes.map(id => this.formatWeaponName(id)).join(', ');
                         return `
                             <label class="mastery-option ${isSelected ? 'selected' : ''}">
                                 <input type="checkbox"
@@ -411,7 +414,7 @@ export class CharacterCreationUI {
                                        class="mastery-choice">
                                 <div class="mastery-details">
                                     <div class="mastery-name">${option.mastery.name}</div>
-                                    <div class="mastery-weapons">Weapons: ${option.mastery.weaponTypes.join(', ')}</div>
+                                    <div class="mastery-weapons">Weapons: ${weaponNames}</div>
                                     <div class="mastery-description">${option.mastery.description}</div>
                                     ${option.mastery.usesPerTurn ? `<div class="mastery-uses">Uses: ${option.mastery.usesPerTurn} per turn</div>` : ''}
                                 </div>
@@ -682,6 +685,56 @@ export class CharacterCreationUI {
             .split(' ')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
+    }
+
+    /**
+     * Helper: Format weapon ID to display name
+     */
+    formatWeaponName(weaponId) {
+        const weaponNameMap = {
+            // Simple Melee
+            'club': 'Club',
+            'dagger': 'Dagger',
+            'greatclub': 'Greatclub',
+            'handaxe': 'Handaxe',
+            'javelin': 'Javelin',
+            'lightHammer': 'Light Hammer',
+            'mace': 'Mace',
+            'quarterstaff': 'Quarterstaff',
+            'sickle': 'Sickle',
+            'spear': 'Spear',
+            // Simple Ranged
+            'dart': 'Dart',
+            'lightCrossbow': 'Light Crossbow',
+            'shortbow': 'Shortbow',
+            'sling': 'Sling',
+            // Martial Melee
+            'battleaxe': 'Battleaxe',
+            'flail': 'Flail',
+            'glaive': 'Glaive',
+            'greataxe': 'Greataxe',
+            'greatsword': 'Greatsword',
+            'halberd': 'Halberd',
+            'lance': 'Lance',
+            'longsword': 'Longsword',
+            'maul': 'Maul',
+            'morningstar': 'Morningstar',
+            'pike': 'Pike',
+            'rapier': 'Rapier',
+            'scimitar': 'Scimitar',
+            'shortsword': 'Shortsword',
+            'trident': 'Trident',
+            'warhammer': 'Warhammer',
+            'warpick': 'War Pick',
+            'whip': 'Whip',
+            // Martial Ranged
+            'blowgun': 'Blowgun',
+            'handCrossbow': 'Hand Crossbow',
+            'heavyCrossbow': 'Heavy Crossbow',
+            'longbow': 'Longbow'
+        };
+
+        return weaponNameMap[weaponId] || weaponId;
     }
 }
 

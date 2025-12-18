@@ -8,14 +8,14 @@
         "description": "When you hit a creature with a melee attack using this weapon, you can make an additional attack against a second creature within 5 feet of the first that is also within your reach. This additional attack uses the same ability modifier as the primary attack and deals damage equal to the ability modifier (minimum 1).",
         "type": "onHit",
         "usesPerTurn": 1,
-        "weaponTypes": ["greataxe", "greatsword", "halberd", "glaive"]
+        "weaponTypes": ["greataxe", "halberd", "glaive"]
       },
 
       "graze": {
         "name": "Graze",
         "description": "If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and it doesn't apply other effects that trigger on a hit.",
         "type": "onMiss",
-        "weaponTypes": ["greatclub", "maul", "pike"]
+        "weaponTypes": ["glaive", "greatsword"]
       },
 
       "nick": {
@@ -23,7 +23,7 @@
         "description": "When you make an attack with this weapon as part of the Attack action on your turn, you can make one additional attack with a different Light weapon you're holding as part of the same action. You don't add your ability modifier to the extra attack's damage unless that modifier is negative.",
         "type": "bonus",
         "requirement": "Light weapon in other hand",
-        "weaponTypes": ["dagger", "handaxe", "lightHammer", "scimitar", "shortsword", "sickle"]
+        "weaponTypes": ["dagger", "lightHammer", "scimitar", "sickle"]
       },
 
       "push": {
@@ -32,7 +32,7 @@
         "type": "onHit",
         "usesPerTurn": 1,
         "savingThrow": "STR",
-        "weaponTypes": ["warhammer", "battleaxe", "pike", "maul"]
+        "weaponTypes": ["greatclub", "pike", "warhammer", "heavyCrossbow"]
       },
 
       "sap": {
@@ -40,7 +40,7 @@
         "description": "If you hit a creature with this weapon, that creature has disadvantage on its next attack roll before the start of your next turn.",
         "type": "onHit",
         "duration": "1 round",
-        "weaponTypes": ["mace", "morningstar", "quarterstaff", "club", "flail"]
+        "weaponTypes": ["flail", "longsword", "mace", "morningstar", "spear", "warpick"]
       },
 
       "slow": {
@@ -48,7 +48,7 @@
         "description": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the weapon is thrown, the target is also slowed if you miss but the weapon passes within 5 feet of it.",
         "type": "onHit",
         "duration": "1 round",
-        "weaponTypes": ["whip", "net", "sling", "dart"]
+        "weaponTypes": ["club", "javelin", "lightCrossbow", "longbow", "sling", "whip"]
       },
 
       "topple": {
@@ -57,7 +57,7 @@
         "type": "onHit",
         "usesPerTurn": 1,
         "savingThrow": "CON",
-        "weaponTypes": ["greataxe", "greatsword", "longsword", "battleaxe", "warhammer", "trident"]
+        "weaponTypes": ["battleaxe", "lance", "maul", "quarterstaff", "trident"]
       },
 
       "vex": {
@@ -65,50 +65,52 @@
         "description": "If you hit a creature with this weapon and deal damage to the creature, you have advantage on your next attack roll against that creature before the end of your next turn.",
         "type": "onHit",
         "duration": "1 round",
-        "weaponTypes": ["rapier", "shortsword", "scimitar", "dagger", "handCrossbow"]
+        "weaponTypes": ["blowgun", "dart", "handaxe", "handCrossbow", "rapier", "shortbow", "shortsword"]
       }
     },
 
     "weaponMasteryAssignments": {
       "description": "Assigns masteries to specific weapons in items.json by weapon ID",
       "assignments": {
+        "club": "slow",
         "dagger": "nick",
-        "handaxe": "nick",
+        "greatclub": "push",
+        "handaxe": "vex",
+        "javelin": "slow",
         "lightHammer": "nick",
-        "scimitar": "nick",
-        "shortsword": "nick",
-        "sickle": "nick",
-
-        "rapier": "vex",
-        "handCrossbow": "vex",
-
-        "club": "sap",
         "mace": "sap",
-        "morningstar": "sap",
-        "quarterstaff": "sap",
-        "flail": "sap",
+        "quarterstaff": "topple",
+        "sickle": "nick",
+        "spear": "sap",
 
-        "longsword": "topple",
-        "battleaxe": "topple",
-        "warhammer": "topple",
-        "trident": "topple",
-
-        "greataxe": "cleave",
-        "greatsword": "cleave",
-        "halberd": "cleave",
-        "glaive": "cleave",
-
-        "greatclub": "graze",
-        "maul": "graze",
-        "pike": "graze",
-
-        "whip": "slow",
-        "net": "slow",
+        "dart": "vex",
+        "lightCrossbow": "slow",
+        "shortbow": "vex",
         "sling": "slow",
-        "dart": "slow",
 
-        "warpick": "push",
-        "lance": "push"
+        "battleaxe": "topple",
+        "flail": "sap",
+        "glaive": "graze",
+        "greataxe": "cleave",
+        "greatsword": "graze",
+        "halberd": "cleave",
+        "lance": "topple",
+        "longsword": "sap",
+        "maul": "topple",
+        "morningstar": "sap",
+        "pike": "push",
+        "rapier": "vex",
+        "scimitar": "nick",
+        "shortsword": "vex",
+        "trident": "topple",
+        "warhammer": "push",
+        "warpick": "sap",
+        "whip": "slow",
+
+        "blowgun": "vex",
+        "handCrossbow": "vex",
+        "heavyCrossbow": "push",
+        "longbow": "slow"
       }
     },
 

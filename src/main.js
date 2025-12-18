@@ -1533,13 +1533,13 @@ class Game {
                 </ul>
             </div>
 
-            ${character.spellcasting ? `
+            ${character.spellcasting && character.spellcasting.spellcastingAbility ? `
             <!-- Spellcasting -->
             <div class="char-section full-width">
                 <h3>Spellcasting</h3>
                 <div class="char-row">
                     <span class="char-label">Spellcasting Ability:</span>
-                    <span class="char-value">${character.spellcasting.ability.toUpperCase()}</span>
+                    <span class="char-value">${character.spellcasting.spellcastingAbility.toUpperCase()}</span>
                 </div>
                 <div class="char-row">
                     <span class="char-label">Spell Save DC:</span>
@@ -1791,7 +1791,7 @@ class Game {
         const slots = {
             weapon: character.equipment.mainHand,
             armor: character.equipment.armor,
-            shield: character.equipment.shield
+            offHand: character.equipment.offHand
         };
 
         Object.entries(slots).forEach(([slotName, item]) => {
