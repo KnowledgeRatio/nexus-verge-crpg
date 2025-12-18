@@ -429,31 +429,43 @@ class Game {
 
         // Render player combatants
         const playerCombatants = combatState.combatants.filter(c => c.team === 'player');
-        playerDiv.innerHTML = playerCombatants.map(c => `
-            <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}">
-                <div class="combatant-name">${c.name}</div>
-                <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
-                <div class="hp-bar">
-                    <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+        playerDiv.innerHTML = playerCombatants.map(c => {
+            const conditionsDisplay = c.conditions && c.conditions.length > 0
+                ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
+                : '';
+            return `
+                <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}">
+                    <div class="combatant-name">${c.name}</div>
+                    <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
+                    <div class="hp-bar">
+                        <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                    </div>
+                    <div class="combatant-ac">AC: ${c.ac}</div>
+                    ${conditionsDisplay}
                 </div>
-                <div class="combatant-ac">AC: ${c.ac}</div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         // Render enemy combatants (clickable for targeting)
         const enemyCombatants = combatState.combatants.filter(c => c.team === 'enemy');
-        enemyDiv.innerHTML = enemyCombatants.map(c => `
-            <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}"
-                 data-combatant-id="${c.id}"
-                 onclick="window.game.handleTargetClick('${c.id}')">
-                <div class="combatant-name">${c.name}</div>
-                <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
-                <div class="hp-bar">
-                    <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+        enemyDiv.innerHTML = enemyCombatants.map(c => {
+            const conditionsDisplay = c.conditions && c.conditions.length > 0
+                ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
+                : '';
+            return `
+                <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}"
+                     data-combatant-id="${c.id}"
+                     onclick="window.game.handleTargetClick('${c.id}')">
+                    <div class="combatant-name">${c.name}</div>
+                    <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
+                    <div class="hp-bar">
+                        <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                    </div>
+                    <div class="combatant-ac">AC: ${c.ac}</div>
+                    ${conditionsDisplay}
                 </div>
-                <div class="combatant-ac">AC: ${c.ac}</div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     /**
@@ -1517,6 +1529,16 @@ class Game {
                 </div>
             </div>
 
+            <!-- Weapon Masteries -->
+            ${character.weaponMasteries && character.weaponMasteries.length > 0 ? `
+            <div class="char-section full-width">
+                <h3>Weapon Masteries</h3>
+                <div class="masteries-list">
+                    ${this.renderWeaponMasteries(character)}
+                </div>
+            </div>
+            ` : ''}
+
             <!-- Class Features -->
             <div class="char-section full-width">
                 <h3>Class Features</h3>
@@ -1655,6 +1677,79 @@ class Game {
                 <div class="feature-description">${trait.description}</div>
             </li>
         `).join('');
+    }
+
+    /**
+     * Render Weapon Masteries
+     */
+    renderWeaponMasteries(character) {
+        const masteries = character.weaponMasteries || [];
+
+        if (masteries.length === 0) {
+            return '<div class="mastery-item">No weapon masteries selected.</div>';
+        }
+
+        // Load mastery data
+        const masteryDescriptions = {
+            'cleave': {
+                name: 'Cleave',
+                description: 'When you hit with a melee attack, make an additional attack against a second creature within reach. The additional attack deals ability modifier damage (minimum 1).',
+                icon: '⚔️'
+            },
+            'graze': {
+                name: 'Graze',
+                description: 'If your attack misses, you can deal ability modifier damage to the target anyway.',
+                icon: '⚔️'
+            },
+            'nick': {
+                name: 'Nick',
+                description: 'When attacking with this Light weapon, make a free attack with a different Light weapon in your other hand. Don\'t add ability modifier to the extra attack\'s damage (unless negative).',
+                icon: '⚔️'
+            },
+            'push': {
+                name: 'Push',
+                description: 'When you hit, push the target (Large or smaller) away. They cannot make melee attacks on their next turn.',
+                icon: '💨'
+            },
+            'sap': {
+                name: 'Sap',
+                description: 'When you hit, the target has disadvantage on its next attack roll.',
+                icon: '💫'
+            },
+            'slow': {
+                name: 'Slow',
+                description: 'When you hit, reduce the target\'s AC by 1 until the start of your next turn. This effect does not stack.',
+                icon: '🐌'
+            },
+            'topple': {
+                name: 'Topple',
+                description: 'When you hit, force a CON save or knock the target prone. Prone creatures have disadvantage on attacks, and melee attackers have advantage against them.',
+                icon: '🔻'
+            },
+            'vex': {
+                name: 'Vex',
+                description: 'When you hit and deal damage, you have advantage on your next attack roll against that target.',
+                icon: '⚡'
+            }
+        };
+
+        return masteries.map(masteryId => {
+            const mastery = masteryDescriptions[masteryId] || {
+                name: masteryId,
+                description: 'Unknown mastery',
+                icon: '❓'
+            };
+
+            return `
+                <div class="mastery-item">
+                    <div class="mastery-header">
+                        <span class="mastery-icon">${mastery.icon}</span>
+                        <span class="mastery-name">${mastery.name}</span>
+                    </div>
+                    <div class="mastery-description">${mastery.description}</div>
+                </div>
+            `;
+        }).join('');
     }
 
     /**

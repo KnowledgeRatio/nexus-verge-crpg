@@ -45,7 +45,7 @@
 
       "slow": {
         "name": "Slow",
-        "description": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the weapon is thrown, the target is also slowed if you miss but the weapon passes within 5 feet of it.",
+        "description": "If you hit a creature with this weapon and deal damage to it, you reduce its AC by 1 until the start of your next turn. This effect does not stack.",
         "type": "onHit",
         "duration": "1 round",
         "weaponTypes": ["club", "javelin", "lightCrossbow", "longbow", "sling", "whip"]

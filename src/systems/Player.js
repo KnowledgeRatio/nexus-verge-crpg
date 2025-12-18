@@ -273,7 +273,25 @@ class Player {
     async triggerCombatEncounter() {
         // Generate enemies based on player level
         const playerLevel = gameState.get('character.level') || 1;
-        const numEnemies = 1; // Always 1v1 combat for easier difficulty
+
+        // Import rules engine to get encounter size
+        const { RULES } = await import('../core/rulesEngine.js');
+        const { min, max } = RULES.encounters.encounterSize;
+
+        // Calculate number of enemies (scaled by level if enabled)
+        let numEnemies = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        // Scale with level if configured
+        if (RULES.encounters.encounterSize.scaleWithLevel) {
+            // At level 1-2: 1-2 enemies
+            // At level 3-4: 1-3 enemies
+            // At level 5+: full range
+            if (playerLevel <= 2) {
+                numEnemies = Math.min(numEnemies, 2);
+            } else if (playerLevel <= 4) {
+                // Already within 1-3 range
+            }
+        }
 
         const enemies = [];
         for (let i = 0; i < numEnemies; i++) {
@@ -334,11 +352,22 @@ class Player {
             return crMatch;
         });
 
-        // Fallback: If no monsters match, get closest CR match
+        // Fallback: If no monsters match, widen CR range but keep type restrictions
         if (appropriateMonsters.length === 0) {
             appropriateMonsters = monsterData.monsters.filter(m => {
                 const cr = m.challengeRating || 0.25;
-                return cr >= targetCR - 2 && cr <= targetCR + 2;
+                const crMatch = cr >= targetCR - 2 && cr <= targetCR + 2;
+
+                // Still enforce type restrictions if they exist
+                if (allowedTypes && allowedTypes.length > 0) {
+                    const typeMatch = allowedTypes.some(type =>
+                        m.type.toLowerCase().includes(type.toLowerCase()) ||
+                        m.name.toLowerCase().includes(type.toLowerCase())
+                    );
+                    return crMatch && typeMatch;
+                }
+
+                return crMatch;
             });
         }
 

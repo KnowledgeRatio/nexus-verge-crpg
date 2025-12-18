@@ -399,6 +399,20 @@ body {
     color: var(--text-primary);
 }
 
+.combatant-conditions {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+    font-size: 1.2rem;
+    text-align: center;
+    cursor: help;
+    user-select: none;
+}
+
+.combatant-conditions:empty {
+    display: none;
+}
+
 .combatant-hp {
     font-family: var(--font-mono);
     font-size: 0.9rem;
@@ -3459,6 +3473,47 @@ body {
     color: var(--text-secondary);
     font-size: 0.85rem;
     line-height: 1.4;
+}
+
+/* Weapon Masteries */
+.masteries-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.mastery-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--bg-primary);
+    border-left: 3px solid var(--warning-color);
+    border-radius: 4px;
+}
+
+.mastery-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.mastery-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.mastery-name {
+    font-weight: 700;
+    color: var(--warning-color);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+}
+
+.mastery-description {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-left: 28px;
 }
 
 .stat-box {

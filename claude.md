@@ -3,8 +3,447 @@
 
 **Last Updated:** 2025-12-18
 **Current Branch:** `main-beta-quests`
-**Project Phase:** Phase 2 MVP - Core Systems Implementation + Class System Overhaul
-**Latest Commit:** Weapon Mastery System Corrections & UI Fixes (Complete)
+**Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
+**Latest Commit:** Multi-Enemy Encounters + Bugbear Level Adjustment (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 7)
+
+### Multi-Enemy Encounter System & Bugbear Rebalancing ✅
+Removed single-enemy restriction and implemented variable encounter sizes based on player level and difficulty settings. Adjusted bugbear spawn levels for better balance.
+
+**Modified Files:**
+- `src/systems/Player.js` - Removed hardcoded 1-enemy limit, added level-scaled encounter size
+- `src/core/rulesEngine.js` - Moved bugbear from level 5 bracket to level 3 bracket
+
+**Implementation Details:**
+
+**1. Dynamic Encounter Size** ✅
+Replaced hardcoded `numEnemies = 1` with dynamic calculation:
+- Uses `RULES.encounters.encounterSize` (min: 1, max: 3)
+- Random number of enemies within configured range
+- Level-based scaling:
+  - **Level 1-2:** 1-2 enemies (capped for new players)
+  - **Level 3-4:** 1-3 enemies (full range)
+  - **Level 5+:** 1-3 enemies (full range)
+
+**2. CR-Based Enemy Selection** ✅
+**Q: Are we using CR for difficulty management of combat encounters?**
+**A: Yes!** The encounter system uses Challenge Rating (CR) extensively:
+- `getEncounterCR(playerLevel, difficulty)` calculates target CR
+- Formula: `playerLevel + random(-1 to 2) + difficultyModifier`
+- Difficulty modifiers:
+  - Easy: -0.5 CR
+  - Normal: +0 CR
+  - Hard: +1 CR
+- Enemy types filtered by CR and player level brackets
+
+**3. Bugbear Level Adjustment** ✅
+- **Old:** Bugbear appeared at level 5+ (too late, CR 1 is easier than intended)
+- **New:** Bugbear appears at level 3+ (appropriate for CR 1 enemy)
+- **Reasoning:** Bugbear CR 1 is suitable for level 2-3 characters, not level 5+
+- Level brackets now:
+  - **Level 1:** bandit, giantRat, goblin, wolf
+  - **Level 3:** goblin, orc, **bugbear**, skeleton, zombie, wolf
+  - **Level 5:** orc, skeleton, zombie
+  - **Level 7:** bugbear, ogre, ghoul
+  - **Level 10:** veteran, werewolf, wraith
+
+**4. Encounter Fallback Bug Fix** ✅
+- **Bug:** Bugbears appeared at level 1 despite being in level 5+ bracket
+- **Root Cause:** Fallback logic ignored type restrictions when no CR match found
+- **How it happened:**
+  1. Level 1 player rolls high target CR (2-3) via random offset
+  2. No level 1 types (bandit, rat, goblin, wolf) match CR 2-3
+  3. Fallback triggers: finds ANY monster with CR within ±2
+  4. Bugbear (CR 1) passes fallback, ignoring level bracket
+- **Fix:** Fallback now **preserves type restrictions** while widening CR range
+- **Result:** Level 1 players can only encounter level 1 types, even with fallback
+
+**Encounter Balance:**
+- New players (level 1-2) face 1-2 weaker enemies
+- Mid-level players (level 3+) can face up to 3 enemies
+- Bugbear now appears when players have appropriate power level (level 3+)
+- Multi-enemy fights test weapon masteries (Cleave, Nick, etc.)
+- Type restrictions now properly enforced (no more bugbears at level 1!)
+
+**Status:**
+- ✅ Single-enemy restriction removed
+- ✅ Dynamic encounter sizing implemented
+- ✅ Level-based enemy caps for new players
+- ✅ Bugbear moved to appropriate level bracket (level 3)
+- ✅ Encounter fallback bug fixed (type restrictions now enforced)
+- ✅ CR-based difficulty system confirmed working
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 6)
+
+### Weapon Mastery Character Sheet Display ✅
+Added weapon masteries section to character sheet with full descriptions and visual styling.
+
+**Modified Files:**
+- `src/main.js` - Added weapon masteries section to character sheet HTML, created renderWeaponMasteries() method
+- `styles.css` - Added mastery styling with orange accent color
+
+**Implementation Details:**
+
+**1. Character Sheet Section** ✅
+Added conditional weapon masteries display in character sheet modal (lines 1532-1540):
+```javascript
+<!-- Weapon Masteries -->
+${character.weaponMasteries && character.weaponMasteries.length > 0 ? `
+<div class="char-section full-width">
+    <h3>Weapon Masteries</h3>
+    <div class="masteries-list">
+        ${this.renderWeaponMasteries(character)}
+    </div>
+</div>
+` : ''}
+```
+
+**2. renderWeaponMasteries() Method** ✅
+Created comprehensive rendering method (lines 1682-1753) with:
+- Hardcoded mastery data (names, descriptions, icons) for all 8 masteries
+- Empty state message if no masteries selected
+- Maps through character.weaponMasteries array
+- Returns formatted HTML with icons and descriptions
+
+**Mastery Data:**
+- **Cleave** ⚔️ - Extra attack on adjacent enemy for ability modifier damage
+- **Graze** ⚔️ - Ability modifier damage even on a miss
+- **Nick** ⚔️ - Free off-hand Light weapon attack (no ability modifier to damage)
+- **Push** 💨 - Push target away, cannot make melee attacks next turn
+- **Sap** 💫 - Target has disadvantage on next attack roll
+- **Slow** 🐌 - Reduce target's AC by 1 until start of your next turn
+- **Topple** 🔻 - CON save or knocked prone (disadvantage on attacks, advantage for melee attackers)
+- **Vex** ⚡ - Advantage on next attack vs same target
+
+**3. CSS Styling** ✅
+Added comprehensive mastery styles (styles.css lines 3478-3517):
+- `.masteries-list` - Container matching `.features-list` pattern
+- `.mastery-item` - Card layout with orange left border (distinguishes from features)
+- `.mastery-header` - Flexbox layout for icon + name
+- `.mastery-icon` - Larger emoji icons (1.2rem)
+- `.mastery-name` - Bold text with `--warning-color` (orange)
+- `.mastery-description` - Secondary text with left margin for indentation
+
+**Visual Design:**
+- Orange accent color (`--warning-color`) to differentiate from blue class features
+- Consistent card-based layout matching existing character sheet sections
+- Clear visual hierarchy: icon → name → description
+- Responsive spacing and padding
+
+**Character Sheet Display:**
+Players can now open the character sheet (C key) and see:
+- All weapon masteries they selected during character creation
+- Icons representing each mastery type
+- Full descriptions of how each mastery works in combat
+- Visual distinction from class features and other sections
+
+**Status:**
+- ✅ All 8 weapon masteries fully implemented in combat system
+- ✅ All masteries displayed on character sheet with full descriptions
+- ✅ CSS styling complete with orange accent theme
+- ✅ Character sheet integration complete
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 5)
+
+### Comprehensive Conditions System Implementation ✅
+Implemented a flexible, extensible conditions framework supporting buffs, debuffs, and various duration types, with full UI integration and proper cleanup. Migrated Slow weapon mastery as proof-of-concept.
+
+**Modified Files:**
+- `src/systems/CombatManager.js` - Added complete conditions system, migrated Slow mastery
+- `src/main.js` - Added conditions display to combatant cards
+- `styles.css` - Added conditions styling with tooltips
+
+**Implementation Details:**
+
+**1. Conditions Data Structure** ✅
+Created comprehensive object-based tracking in Combatant class:
+```javascript
+this.conditions = []; // Array of condition objects
+
+// Condition format:
+{
+  type: string,           // 'slowed', 'poisoned', 'blessed', 'shielded'
+  duration: string,       // 'untilStartOfTurn', 'untilEndOfTurn', 'rounds', 'combat', 'permanent'
+  appliedBy: string,      // ID of combatant who applied this
+  value: any,             // Effect value (e.g., -1 AC, +2 attack)
+  roundsRemaining: number,// For 'rounds' duration
+  isBuff: boolean,        // true = buff (positive), false = debuff (negative)
+  curable: boolean,       // Can be removed by spells/abilities
+  icon: string            // Display icon (e.g., '🐌', '🛡️', '⚔️')
+}
+```
+
+**2. Condition Management Methods** ✅
+- `addCondition(type, duration, appliedBy, options)` - Apply new condition with validation
+  - Prevents stacking (checks for existing condition)
+  - Accepts options: value, roundsRemaining, isBuff, curable, icon
+  - Warns if permanent condition doesn't explicitly set curable flag
+  - Returns true if added, false if already exists
+
+- `removeCondition(type, ignoreImmunity)` - Remove condition by type
+  - Checks curability before removal (unless ignoreImmunity = true)
+  - Warns and fails if condition is not curable
+  - Returns true if removed, false otherwise
+
+- `hasCondition(type)` - Check if condition exists
+- `getCondition(type)` - Get condition object by type
+- `removeCurableConditions()` - Remove all curable debuffs (for healing spells)
+  - Filters out buffs (only removes debuffs)
+  - Returns array of removed conditions
+- `getBuffs()` - Get all positive effects
+- `getDebuffs()` - Get all negative effects
+- `getConditionsDisplay()` - Returns icon string for UI (e.g., "🐌 🛡️ ⚔️")
+
+**3. Duration Types Supported** ✅
+- `'untilStartOfTurn'` - Clears when applier's turn starts (Slow uses this)
+- `'untilEndOfTurn'` - Clears when applier's turn ends
+- `'rounds'` - Lasts N rounds (requires roundsRemaining)
+- `'combat'` - Entire combat duration
+- `'permanent'` - Until explicitly removed (requires curable flag)
+
+**4. Slow Mastery Migration** ✅
+Migrated Slow from legacy `masteryEffects.slowedBy` to new conditions system:
+
+**Application (on hit):**
+```javascript
+if (this.hasWeaponMastery(attacker, weapon, 'slow')) {
+    const added = defender.addCondition('slowed', 'untilStartOfTurn', attacker.id, {
+        value: -1,
+        isBuff: false,
+        curable: false,
+        icon: '🐌'
+    });
+
+    if (added) {
+        defender.ac -= 1;
+        gameState.addMessage(`⚔️ Slow! ${defender.name}'s AC reduced by 1! 🐌`, 'warning');
+    }
+}
+```
+
+**Cleanup (at turn start):**
+```javascript
+this.combatants.forEach(target => {
+    const conditionsToRemove = target.conditions.filter(
+        c => c.duration === 'untilStartOfTurn' && c.appliedBy === combatant.id
+    );
+
+    conditionsToRemove.forEach(condition => {
+        if (condition.type === 'slowed') {
+            target.ac -= condition.value; // value is -1, so -= -1 = +1
+        }
+        target.removeCondition(condition.type, true);
+    });
+});
+```
+
+**5. Combat End Cleanup** ✅
+Added comprehensive cleanup for combat-only conditions:
+```javascript
+endCombat(result) {
+    this.combatants.forEach(combatant => {
+        const conditionsToRemove = combatant.conditions.filter(c =>
+            c.duration === 'combat' ||
+            c.duration === 'untilStartOfTurn' ||
+            c.duration === 'untilEndOfTurn'
+        );
+
+        conditionsToRemove.forEach(condition => {
+            if (condition.type === 'slowed') {
+                combatant.ac -= condition.value; // Restore AC
+            }
+            combatant.removeCondition(condition.type, true);
+        });
+    });
+}
+```
+
+**6. Visual UI Display** ✅
+Added conditions icons to combatant cards:
+- Shows condition icons below AC (e.g., "🐌 🛡️")
+- Tooltip on hover shows full condition names
+- Styled with border separator and centered display
+- Empty conditions hidden automatically
+
+**Example Tooltip:**
+```
+HP: 25/40
+AC: 15
+🐌 🛡️
+[Tooltip: "🐌 slowed, 🛡️ shielded"]
+```
+
+**7. Buff vs Debuff Handling** ✅
+- Buffs marked with `isBuff: true`, default icon: ✨
+- Debuffs marked with `isBuff: false`, default icon: 💢
+- Cure spells remove only debuffs (via `removeCurableConditions()`)
+- Buffs require explicit removal or dispel magic
+- Separate query methods: `getBuffs()` and `getDebuffs()`
+
+**8. Curability System** ✅
+- `curable: true` (default) - Can be removed by Lesser Restoration, etc.
+- `curable: false` - Cannot be cured, requires explicit removal
+- Slow is not curable (weapon mastery effect)
+- Buff example: Shield spell would be `curable: false` (requires dispel, not cure)
+- Poison would be `curable: true` (Lesser Restoration removes it)
+
+**Legacy Compatibility:**
+- Old `masteryEffects` object still exists for backward compatibility
+- Legacy cleanup code kept alongside new system
+- Can be removed once all masteries fully migrated
+
+**Example Usage - AC Buff Spell:**
+```javascript
+// Casting Shield spell (+5 AC until start of your next turn)
+caster.addCondition('shielded', 'untilStartOfTurn', caster.id, {
+    value: 5,
+    isBuff: true,
+    curable: false,  // Can't be cured, only dispelled
+    icon: '🛡️'
+});
+caster.ac += 5;
+
+// Visual: Combatant card shows "🛡️" icon
+// Cleanup: Automatic at turn start, AC restored
+```
+
+**Example Usage - Lesser Restoration Spell:**
+```javascript
+// Remove all curable debuffs from target
+const removed = target.removeCurableConditions();
+removed.forEach(condition => {
+    gameState.addMessage(`${condition.type} removed from ${target.name}`, 'success');
+});
+// Buffs are NOT removed by this
+```
+
+**Benefits of New System:**
+- ✅ Single unified system for all status effects
+- ✅ Supports weapon masteries, spells, and abilities
+- ✅ Flexible duration handling (turn-based, combat, permanent)
+- ✅ Proper buff/debuff distinction
+- ✅ Visual feedback with icons
+- ✅ Clean separation of curable vs non-curable effects
+- ✅ Extensible for future effects (poison, blind, haste, etc.)
+
+**Next Steps:**
+- Migrate remaining weapon masteries to new system (Sap, Topple, Vex)
+- Implement round-based duration countdown
+- Implement example buff spell (Shield, Bless, etc.)
+- Test multi-turn conditions and cleanup
+- Remove legacy masteryEffects once fully migrated
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 4)
+
+### All Weapon Masteries Implemented in Combat ✅
+Completed implementation of all 8 weapon mastery types with full D&D 5e rules, applying dynamic combat effects based on equipped weapons and character proficiencies.
+
+**Modified Files:**
+- `src/systems/CombatManager.js` - Implemented all 6 remaining weapon masteries (Nick, Push, Sap, Slow, Topple, Vex)
+
+**Implementation Details:**
+
+**All 8 Weapon Masteries Now Functional:**
+
+**1. Cleave (onHit)** ✅ - Already implemented
+- Attack adjacent enemy for ability modifier damage
+- Works with: Greataxe, Halberd, Glaive
+
+**2. Graze (onMiss)** ✅ - Already implemented
+- Deal ability modifier damage even on miss
+- Works with: Glaive, Greatsword
+
+**3. Nick (onHit - Special)** ✅ - NEW
+- Automatically make additional attack with off-hand light weapon as part of same action
+- Off-hand attack doesn't add ability modifier to damage (unless negative)
+- Requires: Light weapon in main hand + different light weapon in off-hand
+- Works with: Dagger, Light Hammer, Scimitar, Sickle
+- Example: Attack with dagger → Nick triggers → automatic shortsword attack (no modifier to damage)
+
+**4. Push (onHit)** ✅ - NEW
+- Push target 10 feet straight away (Large or smaller)
+- Narrative effect only (no grid positioning)
+- Works with: Greatclub, Pike, Warhammer, Heavy Crossbow
+
+**5. Sap (onHit)** ✅ - NEW
+- Target has disadvantage on next attack roll
+- Effect cleared when target makes their next attack
+- Works with: Flail, Longsword, Mace, Morningstar, Spear, War Pick
+
+**6. Slow (onHit)** ✅ - NEW
+- Reduce target speed by 10 feet until start of your next turn
+- Effect cleared at end of target's turn
+- Works with: Club, Javelin, Light Crossbow, Longbow, Sling, Whip
+
+**7. Topple (onHit)** ✅ - NEW
+- Force CON saving throw (DC 8 + proficiency + ability modifier)
+- On failed save, target gains Prone condition
+- Prone targets give advantage on melee attacks against them
+- Works with: Battleaxe, Lance, Maul, Quarterstaff, Trident
+
+**8. Vex (onHit)** ✅ - NEW
+- Attacker has advantage on next attack roll against this target
+- Effect cleared when used
+- Works with: Blowgun, Dart, Handaxe, Hand Crossbow, Rapier, Shortbow, Shortsword
+
+**Mastery Effects System:**
+Added `masteryEffects` object to Combatant class:
+```javascript
+masteryEffects: {
+    sapped: false,      // Disadvantage on next attack (Sap)
+    slowed: false,      // Speed reduced by 10 feet (Slow)
+    vexed: null,        // Target ID for advantage (Vex)
+    prone: false        // Knocked prone (Topple)
+}
+```
+
+**Advantage/Disadvantage Integration:**
+- Sap: Sapped combatants roll with disadvantage on their next attack
+- Vex: Vexed combatants roll with advantage vs specific target
+- Prone: Melee attackers have advantage vs prone targets
+- System properly handles advantage/disadvantage cancellation
+- Shows d20 rolls: "🎲 Advantage: Rolled 8 and 14, using 14"
+
+**Combat Flow Examples:**
+
+**Nick Mastery:**
+1. Player attacks goblin with dagger (main hand, Nick mastery)
+2. Hit! Deal 1d4 + DEX damage
+3. Nick triggers automatically
+4. Additional attack with shortsword (off-hand)
+5. Hit! Deal 1d6 damage (NO ability modifier)
+
+**Sap → Vex → Topple Chain:**
+1. Player hits goblin with longsword (Sap mastery) → Goblin is sapped
+2. Goblin's turn: Attacks player with disadvantage → miss!
+3. Player hits goblin with rapier (Vex mastery) → Player is vexed
+4. Player hits same goblin with quarterstaff (Topple mastery, with advantage from Vex)
+5. Goblin fails CON save → knocked prone
+6. Next melee attack vs goblin has advantage (prone)
+
+**D&D 5e Rules Compliance:**
+- ✅ Nick: Part of same action, no ability modifier to damage
+- ✅ Push: Only works on Large or smaller
+- ✅ Sap: Disadvantage on next attack only
+- ✅ Slow: Duration 1 round (until start of your next turn)
+- ✅ Topple: CON save DC = 8 + prof + ability mod
+- ✅ Vex: Advantage on next attack vs same target
+- ✅ Cleave: Ability modifier damage (min 1)
+- ✅ Graze: Ability modifier damage on miss
+
+**Next Steps:**
+- Implement class abilities (Action Surge, Rage, Bardic Inspiration, Wild Shape, etc.)
+- Implement spell casting system (cantrips + levels 1-2)
+- Implement resource tracking (Stamina, Sorcery Points, Pact Magic)
 
 ---
 

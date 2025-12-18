@@ -116,8 +116,8 @@ export const RULES = {
             // Enemy types change with level
             enemyTypesByLevel: {
                 1: ["bandit", "giantRat", "goblin", "wolf"],
-                3: ["goblin", "orc", "skeleton", "zombie", "wolf"],
-                5: ["orc", "bugbear", "skeleton", "zombie"],
+                3: ["goblin", "orc", "bugbear", "skeleton", "zombie", "wolf"],
+                5: ["orc", "skeleton", "zombie"],
                 7: ["bugbear", "ogre", "ghoul"],
                 10: ["veteran", "werewolf", "wraith"]
             }

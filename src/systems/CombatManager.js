@@ -116,6 +116,43 @@ class CombatManager {
 
         combatant.startTurn();
 
+        // Process round-based conditions on THIS combatant
+        combatant.conditions.forEach(condition => {
+            if (condition.duration === 'rounds') {
+                condition.roundsRemaining--;
+                if (condition.roundsRemaining <= 0) {
+                    combatant.removeCondition(condition.type, true);
+                    gameState.addMessage(`${combatant.name}'s ${condition.type} condition ends!`, 'info');
+                }
+            }
+        });
+
+        // Process conditions with 'untilStartOfTurn' duration where this combatant was the applier
+        this.combatants.forEach(target => {
+            // Find all conditions applied by this combatant that expire at their turn start
+            const conditionsToRemove = target.conditions.filter(
+                c => c.duration === 'untilStartOfTurn' && c.appliedBy === combatant.id
+            );
+
+            conditionsToRemove.forEach(condition => {
+                // Restore AC if slowed
+                if (condition.type === 'slowed') {
+                    target.ac -= condition.value; // value is -1, so -= -1 = +1
+                    gameState.addMessage(`${target.name}'s Slow effect ends (AC restored)`, 'info');
+                }
+
+                // Remove the condition
+                target.removeCondition(condition.type, true); // ignoreImmunity = true
+            });
+
+            // LEGACY: Clear old masteryEffects.slowedBy (can be removed once fully migrated)
+            if (target.masteryEffects.slowedBy === combatant.id) {
+                target.masteryEffects.slowedBy = null;
+                target.ac += 1;
+                gameState.addMessage(`${target.name}'s Slow effect ends (AC restored) [LEGACY]`, 'info');
+            }
+        });
+
         gameState.addMessage(
             `📍 ${combatant.name}'s turn (HP: ${combatant.hp}/${combatant.maxHP})`,
             combatant.team === 'player' ? 'success' : 'warning'
@@ -191,13 +228,20 @@ class CombatManager {
             return;
         }
 
-        const handLabel = isOffHandAttack ? ' (off-hand)' : '';
-        gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
-
         // Get weapon from specified slot
         const weapon = attacker.character.equipment?.[weaponSlot];
         const isRanged = weapon?.weaponType === 'ranged';
         const isFinesse = weapon?.properties?.includes('finesse');
+
+        // PUSH MASTERY RESTRICTION: Cannot make melee attacks while pushed
+        if (attacker.hasCondition('pushed') && !isRanged) {
+            console.log(`⚠️ ${attacker.name} is pushed and cannot make melee attacks!`);
+            gameState.addMessage(`💨 ${attacker.name} is pushed away! Cannot make melee attacks! Use ranged weapons, spells, or abilities instead!`, 'error');
+            return;
+        }
+
+        const handLabel = isOffHandAttack ? ' (off-hand)' : '';
+        gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
 
         let attackBonus = 0;
 
@@ -229,9 +273,65 @@ class CombatManager {
             gameState.addMessage(`🏹 Ranged attack: +2 to hit`, 'info');
         }
 
+        // Check for advantage/disadvantage from mastery effects
+        let hasAdvantage = false;
+        let hasDisadvantage = false;
+
+        // Prone condition: Attacker has disadvantage on their own attacks while prone
+        if (attacker.hasCondition('prone')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (prone)! 🔻`, 'warning');
+        }
+
+        // Sap mastery: Attacker has disadvantage if sapped (one-time use, then cleared)
+        if (attacker.hasCondition('sapped')) {
+            hasDisadvantage = true;
+            attacker.removeCondition('sapped', true); // Clear after use (ignoreImmunity = true)
+            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (Sapped)! 💫`, 'warning');
+        }
+
+        // Vex mastery: Attacker has advantage vs vexed target (one-time use, then cleared)
+        const vexCondition = attacker.getCondition('vexed');
+        if (vexCondition && vexCondition.value === defender.id) {
+            hasAdvantage = true;
+            attacker.removeCondition('vexed', true); // Clear after use (ignoreImmunity = true)
+            gameState.addMessage(`⚔️ ${attacker.name} has advantage (Vex)! ⚡`, 'success');
+        }
+
+        // LEGACY: Vex mastery via masteryEffects (backwards compatibility)
+        if (attacker.masteryEffects.vexed === defender.id) {
+            hasAdvantage = true;
+            attacker.masteryEffects.vexed = null; // Clear after use
+            gameState.addMessage(`⚔️ ${attacker.name} has advantage (Vex)! [LEGACY]`, 'success');
+        }
+
+        // Prone condition: Melee attackers have advantage vs prone targets
+        if (defender.hasCondition('prone') && !isRanged) {
+            hasAdvantage = true;
+            gameState.addMessage(`⚔️ ${attacker.name} has advantage (target prone)! 🔻`, 'success');
+        }
+
+        // LEGACY: Prone condition via masteryEffects (backwards compatibility)
+        if (defender.masteryEffects.prone && !isRanged) {
+            hasAdvantage = true;
+            gameState.addMessage(`⚔️ ${attacker.name} has advantage (target prone)! [LEGACY]`, 'success');
+        }
+
         // Attack roll: d20 + ability mod + proficiency + ranged bonus
-        const attackRollObj = rollD20();
-        const attackRoll = attackRollObj.result;
+        let attackRollObj = rollD20();
+        let attackRoll = attackRollObj.result;
+
+        // Apply advantage/disadvantage
+        if (hasAdvantage && !hasDisadvantage) {
+            const secondRoll = rollD20().result;
+            attackRoll = Math.max(attackRoll, secondRoll);
+            gameState.addMessage(`🎲 Advantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
+        } else if (hasDisadvantage && !hasAdvantage) {
+            const secondRoll = rollD20().result;
+            attackRoll = Math.min(attackRoll, secondRoll);
+            gameState.addMessage(`🎲 Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
+        }
+
         const attackTotal = attackRoll + attackBonus + proficiency + rangedBonus;
 
         const isCritical = RULES.combat.criticalHitRange.includes(attackRoll);
@@ -334,6 +434,55 @@ class CombatManager {
                     }
                 }
             }
+
+            // WEAPON MASTERY: Nick
+            // If attacker has Nick mastery with main hand weapon and has Light weapon in off-hand,
+            // make additional attack with off-hand (no ability modifier to damage)
+            if (!isOffHandAttack && weaponSlot === 'mainHand' &&
+                this.hasWeaponMastery(attacker, weapon, 'nick')) {
+
+                const offHandWeapon = attacker.character.equipment?.offHand;
+                const isOffHandLight = offHandWeapon?.properties?.includes('light');
+
+                if (offHandWeapon && isOffHandLight) {
+                    gameState.addMessage(`⚔️ Nick! ${attacker.name} makes additional attack with ${offHandWeapon.name}!`, 'warning');
+
+                    // Nick attack: Same attack roll logic but NO ability modifier to damage
+                    const nickAttackRoll = rollD20().result;
+                    const nickAttackTotal = nickAttackRoll + attackBonus + proficiency;
+
+                    gameState.addMessage(
+                        `Nick attack roll: ${nickAttackRoll} + ${attackBonus} (ability) + ${proficiency} (prof) = ${nickAttackTotal} vs AC ${defender.ac}`,
+                        'info'
+                    );
+
+                    if (nickAttackTotal >= defender.ac) {
+                        let nickDamageDice = 8; // Default d8
+                        if (offHandWeapon?.damage?.dice) {
+                            nickDamageDice = parseInt(offHandWeapon.damage.dice.split('d')[1]) || 8;
+                        }
+
+                        const nickDamageRoll = rollDice(1, nickDamageDice);
+                        // Nick: NO ability modifier to damage (unless negative)
+                        const nickDamageBonus = Math.min(0, attackBonus); // Only negative modifiers apply
+                        const nickDamageTotal = nickDamageRoll + nickDamageBonus;
+
+                        gameState.addMessage(
+                            `💥 Nick hits! ${nickDamageTotal} damage (no ability modifier)`,
+                            attacker.team === 'player' ? 'success' : 'error'
+                        );
+
+                        defender.takeDamage(nickDamageTotal);
+
+                        if (defender.hp <= 0) {
+                            gameState.addMessage(`💀 ${defender.name} is defeated by Nick!`, 'warning');
+                            this.handleDefeat(defender);
+                        }
+                    } else {
+                        gameState.addMessage(`Nick misses!`, 'info');
+                    }
+                }
+            }
         } else {
             gameState.addMessage(`Miss!`, 'info');
 
@@ -352,6 +501,117 @@ class CombatManager {
                         this.handleDefeat(defender);
                     }
                 }
+            }
+        }
+
+        // WEAPON MASTERY: Sap (onHit)
+        // Target has disadvantage on next attack roll (one-time use, then clears)
+        if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'sap')) {
+            const added = defender.addCondition('sapped', 'combat', attacker.id, {
+                value: null,
+                isBuff: false,
+                curable: true,
+                icon: '💫'
+            });
+
+            if (added) {
+                gameState.addMessage(`⚔️ Sap! ${defender.name} has disadvantage on next attack! 💫`, 'warning');
+            } else {
+                gameState.addMessage(`⚔️ ${defender.name} is already sapped!`, 'info');
+            }
+        }
+
+        // WEAPON MASTERY: Slow (onHit)
+        // -1 AC until start of attacker's next turn (does not stack)
+        if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'slow')) {
+            const added = defender.addCondition('slowed', 'untilStartOfTurn', attacker.id, {
+                value: -1,
+                isBuff: false,
+                curable: false,
+                icon: '🐌'
+            });
+
+            if (added) {
+                defender.ac -= 1;
+                gameState.addMessage(`⚔️ Slow! ${defender.name}'s AC reduced by 1! 🐌`, 'warning');
+            } else {
+                gameState.addMessage(`⚔️ Slow effect already active on ${defender.name}`, 'info');
+            }
+        }
+
+        // WEAPON MASTERY: Topple (onHit)
+        // Force CON save or knock prone (disadvantage on attacks, advantage for melee attackers)
+        if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'topple')) {
+            const saveDC = 8 + proficiency + attackBonus;
+            const saveRoll = rollD20().result;
+            const saveTotal = saveRoll + defender.character.abilityModifiers.con;
+
+            gameState.addMessage(
+                `⚔️ Topple! ${defender.name} must make CON save DC ${saveDC}...`,
+                'warning'
+            );
+            gameState.addMessage(
+                `CON save: ${saveRoll} + ${defender.character.abilityModifiers.con} = ${saveTotal}`,
+                'info'
+            );
+
+            if (saveTotal < saveDC) {
+                const added = defender.addCondition('prone', 'rounds', attacker.id, {
+                    value: null,
+                    roundsRemaining: 1,
+                    isBuff: false,
+                    curable: true,
+                    icon: '🔻'
+                });
+
+                if (added) {
+                    gameState.addMessage(`💥 ${defender.name} is knocked prone! 🔻`, 'error');
+                } else {
+                    gameState.addMessage(`💥 ${defender.name} is already prone!`, 'info');
+                }
+            } else {
+                gameState.addMessage(`${defender.name} resists being knocked prone.`, 'info');
+            }
+        }
+
+        // WEAPON MASTERY: Vex (onHit)
+        // Attacker has advantage on next attack vs this target (stores target ID as value, one-time use)
+        if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'vex')) {
+            const added = attacker.addCondition('vexed', 'combat', attacker.id, {
+                value: defender.id,      // Store target's ID
+                isBuff: true,            // Positive effect for attacker
+                curable: false,          // Cannot be removed by spells
+                icon: '⚡'
+            });
+
+            if (added) {
+                gameState.addMessage(`⚔️ Vex! ${attacker.name} has advantage on next attack vs ${defender.name}! ⚡`, 'success');
+            } else {
+                gameState.addMessage(`⚔️ ${attacker.name} is already vexed!`, 'info');
+            }
+        }
+
+        // WEAPON MASTERY: Push (onHit)
+        // Push target 10 feet away - cannot make melee attacks on their next turn
+        if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'push')) {
+            const targetSize = defender.character.size || 'Medium';
+            const canPush = ['Tiny', 'Small', 'Medium', 'Large'].includes(targetSize);
+
+            if (canPush) {
+                const added = defender.addCondition('pushed', 'untilEndOfTurn', defender.id, {
+                    value: null,
+                    isBuff: false,
+                    curable: false,
+                    icon: '💨'
+                });
+
+                if (added) {
+                    gameState.addMessage(`⚔️ Push! ${defender.name} is pushed away! Cannot make melee attacks next turn! 💨`, 'warning');
+                } else {
+                    gameState.addMessage(`⚔️ ${defender.name} is already pushed!`, 'info');
+                }
+            } else {
+                gameState.addMessage(`${defender.name} is too large to push!`, 'info');
             }
         }
 
@@ -465,6 +725,37 @@ class CombatManager {
      */
     endCombat(result) {
         this.active = false;
+
+        // Clean up all combat-only conditions and mastery effects
+        this.combatants.forEach(combatant => {
+            // Clean up conditions with 'combat' or 'untilStartOfTurn'/'untilEndOfTurn' duration
+            // Note: 'rounds' duration conditions (like prone) are handled by auto-countdown and don't need explicit cleanup
+            const conditionsToRemove = combatant.conditions.filter(c =>
+                c.duration === 'combat' ||
+                c.duration === 'untilStartOfTurn' ||
+                c.duration === 'untilEndOfTurn'
+            );
+
+            conditionsToRemove.forEach(condition => {
+                // Restore AC if slowed
+                if (condition.type === 'slowed') {
+                    combatant.ac -= condition.value; // value is -1, so -= -1 = +1
+                }
+
+                // Remove the condition
+                combatant.removeCondition(condition.type, true); // ignoreImmunity = true
+            });
+
+            // LEGACY: Restore AC if slowed (old system)
+            if (combatant.masteryEffects.slowedBy) {
+                combatant.ac += 1;
+                combatant.masteryEffects.slowedBy = null;
+            }
+            // Clear other temporary effects
+            combatant.masteryEffects.sapped = false;
+            combatant.masteryEffects.vexed = null;
+            combatant.masteryEffects.prone = false;
+        });
 
         if (result === 'victory') {
             gameState.addMessage('🎉 Victory! All enemies defeated!', 'success');
@@ -640,8 +931,134 @@ class Combatant {
             reaction: 1
         };
 
-        // Status
+        // Status conditions with structured tracking
+        // Format: {
+        //   type: string,           // e.g., 'slowed', 'poisoned', 'blessed', 'shielded'
+        //   duration: string,       // 'untilStartOfTurn', 'untilEndOfTurn', 'rounds', 'combat', 'permanent'
+        //   appliedBy: string,      // ID of combatant who applied this
+        //   value: any,             // Effect value (e.g., -1 AC, +2 attack)
+        //   roundsRemaining: number,// For 'rounds' duration
+        //   isBuff: boolean,        // true = buff (positive), false = debuff (negative)
+        //   curable: boolean,       // Can be removed by spells/abilities
+        //   icon: string            // Display icon (e.g., '🐌', '🛡️', '⚔️')
+        // }
         this.conditions = [];
+
+        // Weapon mastery effects (legacy - kept for backwards compatibility)
+        this.masteryEffects = {
+            sapped: false,          // DEPRECATED: Use conditions system. Has disadvantage on next attack (Sap mastery)
+            slowedBy: null,         // DEPRECATED: Use conditions system. AC reduced by 1 until start of attacker's turn (Slow mastery)
+            vexed: null,            // DEPRECATED: Use conditions system. Has advantage on next attack vs specific target (Vex mastery)
+            prone: false            // DEPRECATED: Use conditions system. Knocked prone (Topple mastery)
+        };
+    }
+
+    /**
+     * Add a condition to this combatant
+     * @param {string} type - Condition type (e.g., 'slowed', 'poisoned', 'blessed')
+     * @param {string} duration - 'untilStartOfTurn', 'untilEndOfTurn', 'rounds', 'combat', 'permanent'
+     * @param {string} appliedBy - ID of combatant who applied this
+     * @param {Object} options - { value, roundsRemaining, isBuff, curable, icon }
+     */
+    addCondition(type, duration, appliedBy, options = {}) {
+        const {
+            value = null,
+            roundsRemaining = 1,
+            isBuff = false,
+            curable = true,
+            icon = isBuff ? '✨' : '💢'
+        } = options;
+
+        // Check if condition already exists (non-stacking by default)
+        const existing = this.conditions.find(c => c.type === type);
+        if (existing) {
+            return false; // Already has this condition
+        }
+
+        // For 'permanent' conditions, only allow if curable is explicitly set
+        if (duration === 'permanent' && options.curable === undefined) {
+            console.warn(`Permanent condition '${type}' should explicitly set curable flag`);
+        }
+
+        this.conditions.push({
+            type,
+            duration,
+            appliedBy,
+            value,
+            roundsRemaining,
+            isBuff,
+            curable,
+            icon
+        });
+        return true;
+    }
+
+    /**
+     * Remove a condition by type
+     * @param {string} type - Condition type to remove
+     * @param {boolean} ignoreImmunity - If false, cannot remove non-curable conditions
+     */
+    removeCondition(type, ignoreImmunity = false) {
+        const index = this.conditions.findIndex(c => c.type === type);
+        if (index !== -1) {
+            const condition = this.conditions[index];
+
+            // Check if condition can be cured
+            if (!ignoreImmunity && !condition.curable) {
+                console.warn(`Cannot remove non-curable condition: ${type}`);
+                return false;
+            }
+
+            this.conditions.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Remove all curable conditions (for spell effects like Lesser Restoration)
+     */
+    removeCurableConditions() {
+        const removed = this.conditions.filter(c => c.curable && !c.isBuff);
+        this.conditions = this.conditions.filter(c => !c.curable || c.isBuff);
+        return removed;
+    }
+
+    /**
+     * Check if combatant has a specific condition
+     */
+    hasCondition(type) {
+        return this.conditions.some(c => c.type === type);
+    }
+
+    /**
+     * Get a specific condition
+     */
+    getCondition(type) {
+        return this.conditions.find(c => c.type === type);
+    }
+
+    /**
+     * Get all buffs (positive conditions)
+     */
+    getBuffs() {
+        return this.conditions.filter(c => c.isBuff);
+    }
+
+    /**
+     * Get all debuffs (negative conditions)
+     */
+    getDebuffs() {
+        return this.conditions.filter(c => !c.isBuff);
+    }
+
+    /**
+     * Get display string for all active conditions
+     */
+    getConditionsDisplay() {
+        if (this.conditions.length === 0) return '';
+
+        return this.conditions.map(c => c.icon).join(' ');
     }
 
     /**
@@ -677,7 +1094,17 @@ class Combatant {
      * End turn
      */
     endTurn() {
-        // Process end-of-turn effects here
+        // Clear conditions with 'untilEndOfTurn' duration
+        const conditionsToRemove = this.conditions.filter(c => c.duration === 'untilEndOfTurn');
+
+        conditionsToRemove.forEach(condition => {
+            this.removeCondition(condition.type);
+            console.log(`✅ ${this.name}'s '${condition.type}' condition cleared (end of turn)`);
+        });
+
+        // No longer clear Slow here - it clears at start of attacker's turn
+        // Note: sapped and vexed clear after being used (one-time effects)
+        // Note: prone clears via countdown (roundsRemaining)
     }
 
     /**
@@ -716,7 +1143,8 @@ class Combatant {
             ac: this.ac,
             initiative: this.initiative,
             actions: { ...this.actions },
-            conditions: [...this.conditions]
+            conditions: [...this.conditions],
+            masteryEffects: { ...this.masteryEffects }
         };
     }
 }
