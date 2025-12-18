@@ -163,23 +163,39 @@ class CombatManager {
 
     /**
      * Perform an attack
+     * @param {Object} attacker - Attacking combatant
+     * @param {Object} defender - Defending combatant
+     * @param {String} weaponSlot - 'mainHand' or 'offHand' (defaults to mainHand for backward compatibility)
      * @param {Object} options - { isCleaveAttack: boolean }
      */
-    async attack(attacker, defender, options = {}) {
+    async attack(attacker, defender, weaponSlot = 'mainHand', options = {}) {
+        // Handle backward compatibility: if weaponSlot is an object, it's actually options
+        if (typeof weaponSlot === 'object') {
+            options = weaponSlot;
+            weaponSlot = 'mainHand';
+        }
+
         const isCleaveAttack = options.isCleaveAttack || false;
+        const isOffHandAttack = weaponSlot === 'offHand';
 
-        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name, isCleaveAttack ? '(Cleave)' : '');
+        // Determine which action type to check/consume
+        const actionType = isOffHandAttack ? 'bonusAction' : 'action';
 
-        if (!attacker.hasAction('action')) {
-            console.log('⚠️ No action available!');
-            gameState.addMessage(`${attacker.name} has no action available!`, 'error');
+        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name,
+            isCleaveAttack ? '(Cleave)' : '',
+            isOffHandAttack ? '(Off-Hand)' : '(Main Hand)');
+
+        if (!attacker.hasAction(actionType)) {
+            console.log(`⚠️ No ${actionType} available!`);
+            gameState.addMessage(`${attacker.name} has no ${actionType} available!`, 'error');
             return;
         }
 
-        gameState.addMessage(`${attacker.name} attacks ${defender.name}!`, 'warning');
+        const handLabel = isOffHandAttack ? ' (off-hand)' : '';
+        gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
 
-        // Get weapon for attack bonus
-        const weapon = attacker.character.equipment?.mainHand;
+        // Get weapon from specified slot
+        const weapon = attacker.character.equipment?.[weaponSlot];
         const isRanged = weapon?.weaponType === 'ranged';
         const isFinesse = weapon?.properties?.includes('finesse');
 
@@ -232,7 +248,7 @@ class CombatManager {
 
         if (isCriticalMiss) {
             gameState.addMessage(`💥 Critical miss!`, 'error');
-            attacker.consumeAction('action');
+            attacker.consumeAction(actionType);
             this.updateGameState();
             return;
         }
@@ -250,17 +266,28 @@ class CombatManager {
                 gameState.addMessage(`⭐ Critical hit!`, 'success');
             }
 
-            // Calculate damage bonus (ranged weapons get -2 penalty)
+            // Calculate damage bonus
             let damageBonus = attackBonus;
-            if (isRanged) {
+
+            // TWO-WEAPON FIGHTING: Off-hand attacks don't add ability modifier to damage
+            // (unless character has Two-Weapon Fighting style - not yet implemented)
+            if (isOffHandAttack) {
+                damageBonus = 0;
+                gameState.addMessage(`⚔️ Off-hand attack: No ability modifier to damage`, 'info');
+            } else if (isRanged) {
+                // Ranged weapons get -2 penalty
                 damageBonus = Math.max(0, attackBonus - 2); // -2 damage for ranged, minimum 0
                 gameState.addMessage(`🏹 Ranged penalty: -2 damage`, 'info');
             }
 
             const damageTotal = damageRoll + damageBonus;
 
+            const damageMsg = damageBonus > 0
+                ? `💥 Hit! ${damageTotal} damage (${damageRoll} + ${damageBonus})`
+                : `💥 Hit! ${damageTotal} damage`;
+
             gameState.addMessage(
-                `💥 Hit! ${damageTotal} damage (${damageRoll} + ${damageBonus})`,
+                damageMsg,
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
@@ -328,7 +355,7 @@ class CombatManager {
             }
         }
 
-        attacker.consumeAction('action');
+        attacker.consumeAction(actionType);
         this.updateGameState();
     }
 

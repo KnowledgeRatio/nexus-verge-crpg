@@ -516,6 +516,10 @@ class Game {
         const hasAction = currentCombatant.hasAction('action');
         const hasBonusAction = currentCombatant.hasAction('bonusAction');
 
+        // Check if player has off-hand weapon equipped
+        const character = gameState.get('character');
+        const hasOffHandWeapon = character?.equipment?.offHand?.type === 'weapon';
+
         actionsEl.innerHTML = `
             <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 15px;">
                 <div style="text-align: center;">
@@ -536,6 +540,12 @@ class Game {
                         ${!hasAction ? 'disabled' : ''}>
                     ⚔️ Attack
                 </button>
+                ${hasOffHandWeapon ? `
+                    <button class="action-btn" onclick="window.game.selectAction('attackOffHand')"
+                            ${!hasBonusAction ? 'disabled' : ''}>
+                        ⚔️ Attack (Off-Hand)
+                    </button>
+                ` : ''}
                 <button class="action-btn" onclick="window.game.selectAction('ability')"
                         ${!hasAction ? 'disabled' : ''}>
                     ✨ Ability
@@ -600,7 +610,10 @@ class Game {
 
         switch(this.selectedAction) {
             case 'attack':
-                this.combatManager.attack(attacker, target);
+                this.combatManager.attack(attacker, target, 'mainHand');
+                break;
+            case 'attackOffHand':
+                this.combatManager.attack(attacker, target, 'offHand');
                 break;
             case 'ability':
                 gameState.addMessage('Abilities not yet implemented', 'error');
@@ -1907,13 +1920,50 @@ class Game {
 
         let description = item.description || '';
         if (item.type === 'weapon' && item.damage) {
-            description = `${item.damage.dice} ${item.damage.type}`;
-            if (item.properties?.includes('versatile') && item.versatileDamage) {
-                description += `, Versatile (${item.versatileDamage})`;
+            // Handle both old format (item.damage.dice) and new format (item.damage string)
+            const damageDice = item.damage.dice || item.damage;
+            const damageType = item.damage.type || item.damageType;
+            description = `${damageDice} ${damageType}`;
+            // Don't add versatile to description - will be a tag instead
+        } else if (item.type === 'armor' && item.armorClass) {
+            description = `AC ${item.armorClass}`;
+            // Add max DEX bonus info
+            if (item.maxDexBonus !== undefined && item.maxDexBonus !== null) {
+                description += ` (Max DEX +${item.maxDexBonus})`;
+            } else if (item.addDexModifier) {
+                description += ` (Max DEX Inf)`;
             }
-        } else if (item.type === 'armor' && item.ac) {
-            description = `AC ${item.ac}`;
         }
+
+        // Build stats tags array
+        const statTags = [];
+        statTags.push(`<span class="item-weight">${weight} lbs</span>`);
+
+        // Add weapon type tag for weapons
+        if (item.type === 'weapon' && item.weaponType) {
+            const weaponTypeClass = item.weaponType.toLowerCase();
+            statTags.push(`<span class="item-weapon-type ${weaponTypeClass}">${item.weaponType.charAt(0).toUpperCase() + item.weaponType.slice(1)}</span>`);
+        }
+
+        // Add weapon properties as tags
+        if (item.type === 'weapon' && item.properties && item.properties.length > 0) {
+            item.properties.forEach(prop => {
+                let displayText = prop.charAt(0).toUpperCase() + prop.slice(1);
+                // Add versatile damage to versatile tag
+                if (prop === 'versatile' && item.versatileDamage) {
+                    displayText += ` (${item.versatileDamage})`;
+                }
+                statTags.push(`<span class="item-weapon-property ${prop.toLowerCase()}">${displayText}</span>`);
+            });
+        }
+
+        // Add armor type tag for armor
+        if (item.type === 'armor' && item.armorType) {
+            const armorTypeClass = item.armorType.toLowerCase();
+            statTags.push(`<span class="item-armor-type ${armorTypeClass}">${item.armorType.charAt(0).toUpperCase() + item.armorType.slice(1)}</span>`);
+        }
+
+        statTags.push(`<span class="item-rarity ${rarity}">${rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>`);
 
         return `
             <div class="inventory-item ${isEquipped ? 'equipped' : ''}" data-item-id="${item.id}">
@@ -1926,8 +1976,7 @@ class Game {
                     </div>
                     <div class="item-description">${description}</div>
                     <div class="item-stats">
-                        <span class="item-weight">${weight} lbs</span>
-                        <span class="item-rarity ${rarity}">${rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>
+                        ${statTags.join('')}
                     </div>
                 </div>
                 <div class="item-actions">
@@ -1943,7 +1992,19 @@ class Game {
     renderItemActions(item, isEquipped, character) {
         const buttons = [];
 
-        if (item.type === 'weapon' || item.type === 'armor' || item.type === 'shield') {
+        if (item.type === 'weapon') {
+            if (isEquipped) {
+                buttons.push('<button class="item-action-btn equipped" data-action="unequip">Unequip</button>');
+            } else {
+                // Weapons can be equipped to main hand or off-hand (if Light property)
+                buttons.push('<button class="item-action-btn" data-action="equip">Equip Main Hand</button>');
+
+                // Only show "Equip Off-Hand" if weapon has Light property
+                if (item.properties && item.properties.includes('light')) {
+                    buttons.push('<button class="item-action-btn" data-action="equipOffHand">Equip Off-Hand</button>');
+                }
+            }
+        } else if (item.type === 'armor' || item.type === 'shield') {
             if (isEquipped) {
                 buttons.push('<button class="item-action-btn equipped" data-action="unequip">Unequip</button>');
             } else {
@@ -2017,6 +2078,9 @@ class Game {
             case 'equip':
                 this.equipItem(item, character);
                 break;
+            case 'equipOffHand':
+                this.equipItem(item, character, 'offHand');
+                break;
             case 'unequip':
                 this.unequipItem(item, character);
                 break;
@@ -2032,16 +2096,18 @@ class Game {
     /**
      * Equip Item
      */
-    equipItem(item, character) {
-        let slot = null;
+    equipItem(item, character, forceSlot = null) {
+        let slot = forceSlot; // Allow forced slot for off-hand weapons
 
-        // Determine equipment slot
-        if (item.type === 'weapon') {
-            slot = 'mainHand';
-        } else if (item.type === 'armor') {
-            slot = 'armor';
-        } else if (item.type === 'shield') {
-            slot = 'offHand';
+        // Determine equipment slot if not forced
+        if (!slot) {
+            if (item.type === 'weapon') {
+                slot = 'mainHand';
+            } else if (item.type === 'armor') {
+                slot = 'armor';
+            } else if (item.type === 'shield') {
+                slot = 'offHand';
+            }
         }
 
         if (!slot) {
@@ -2049,20 +2115,38 @@ class Game {
             return;
         }
 
-        // Check proficiency requirements
+        // VALIDATION: Off-hand weapons must have Light property
+        if (item.type === 'weapon' && slot === 'offHand') {
+            if (!item.properties || !item.properties.includes('light')) {
+                gameState.addMessage(`❌ Only weapons with the Light property can be equipped in the off-hand.`, 'error');
+                return;
+            }
+        }
+
+        // Check proficiency and strength requirements
         if (item.type === 'weapon') {
             if (!this.isCharacterProficientWithWeapon(character, item)) {
                 gameState.addMessage(`You are not proficient with ${item.name}. You cannot add your proficiency bonus to attack rolls with this weapon.`, 'warning');
                 // Still allow equipping, but warn about lack of proficiency bonus
             }
         } else if (item.type === 'armor') {
+            // Check armor proficiency (HARD REQUIREMENT)
             if (!this.isCharacterProficientWithArmor(character, item)) {
-                gameState.addMessage(`You are not proficient with ${item.armorType} armor. You will have disadvantage on ability checks, saving throws, and attack rolls while wearing this armor.`, 'error');
+                gameState.addMessage(`❌ You are not proficient with ${item.armorType} armor. You cannot wear this armor.`, 'error');
                 return; // Prevent equipping armor without proficiency (per D&D 5e rules)
+            }
+
+            // Check strength requirement (HARD REQUIREMENT)
+            if (item.strengthRequirement) {
+                const charStrength = character.abilities.str;
+                if (charStrength < item.strengthRequirement) {
+                    gameState.addMessage(`❌ You need ${item.strengthRequirement} Strength to wear ${item.name} (you have ${charStrength}). You cannot wear this armor.`, 'error');
+                    return; // Prevent equipping armor below strength requirement
+                }
             }
         } else if (item.type === 'shield') {
             if (!this.isCharacterProficientWithShield(character)) {
-                gameState.addMessage(`You are not proficient with shields. You will have disadvantage on ability checks, saving throws, and attack rolls while using this shield.`, 'error');
+                gameState.addMessage(`❌ You are not proficient with shields. You cannot use this shield.`, 'error');
                 return; // Prevent equipping shield without proficiency
             }
         }

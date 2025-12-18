@@ -1,15 +1,186 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-17
+**Last Updated:** 2025-12-18
 **Current Branch:** `main-beta-quests`
-<<<<<<< Updated upstream
-**Project Phase:** Phase 2 MVP - Core Systems Implementation
-**Latest Commit:** Equipment Proficiency Prerequisites & UI Cleanup (Complete)
-=======
 **Project Phase:** Phase 2 MVP - Core Systems Implementation + Class System Overhaul
-**Latest Commit:** New Calling System & Terminology Update (Data Complete, Code Integration Pending)
->>>>>>> Stashed changes
+**Latest Commit:** Two-Weapon Fighting System Implementation (Complete)
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 2)
+
+### Two-Weapon Fighting System ✅
+Implemented complete two-weapon fighting mechanics following D&D 5e rules, allowing characters to dual-wield light weapons and make off-hand attacks as bonus actions.
+
+**Modified Files:**
+- `src/main.js` - Added "Equip Off-Hand" button for light weapons, updated combat UI to show off-hand attack button
+- `src/systems/CombatManager.js` - Updated attack() method to handle main hand vs off-hand attacks with proper action economy
+
+**Implementation Details:**
+
+**1. Light Weapon Off-Hand Equipping** ✅
+- Weapons now have two equip options in inventory:
+  - "Equip Main Hand" (available for all weapons)
+  - "Equip Off-Hand" (only available for weapons with Light property)
+- Added validation: Only weapons with `properties: ['light']` can be equipped in off-hand slot
+- Error message if attempting to equip non-light weapon: "❌ Only weapons with the Light property can be equipped in the off-hand."
+- Light weapons include: dagger, handaxe, light hammer, scimitar, shortsword, sickle
+
+**2. Combat UI - Off-Hand Attack Button** ✅
+- Added conditional "⚔️ Attack (Off-Hand)" button that only appears when:
+  - Character has a weapon equipped in off-hand slot
+  - Character has bonus action available
+- Button disabled when bonus action is used
+- Main hand attack uses Action, off-hand attack uses Bonus Action
+
+**3. Separate Attack Calculations** ✅
+- Main hand and off-hand attacks are completely distinct
+- Updated `CombatManager.attack()` signature:
+  - `attack(attacker, defender, weaponSlot = 'mainHand', options = {})`
+  - Backward compatible with existing calls
+- Attack roll uses weapon from specified slot (`equipment.mainHand` or `equipment.offHand`)
+- Proper action economy: main hand consumes Action, off-hand consumes Bonus Action
+
+**4. Two-Weapon Fighting Damage Rules** ✅
+- **Main Hand Attack:** Deals weapon damage + ability modifier (STR/DEX based on weapon)
+- **Off-Hand Attack:** Deals weapon damage only (NO ability modifier added)
+  - Message: "⚔️ Off-hand attack: No ability modifier to damage"
+  - Follows D&D 5e RAW (Rules As Written)
+  - Future: Two-Weapon Fighting style will add modifier back
+- Attack bonus calculation unchanged (still adds STR/DEX + proficiency to hit)
+
+**D&D 5e Two-Weapon Fighting Rules Implemented:**
+- ✅ Both weapons must have Light property
+- ✅ Off-hand attack uses bonus action (not another action)
+- ✅ Off-hand attack doesn't add ability modifier to damage
+- ✅ Still adds ability modifier + proficiency to attack roll
+- ✅ Can only make one off-hand attack per turn (bonus action limit)
+- 🔄 Two-Weapon Fighting style (adds modifier to off-hand damage) - Not yet implemented
+
+**Example Combat Flow:**
+1. Player equips Shortsword (Light) in main hand
+2. Player equips Dagger (Light) in off-hand
+3. Combat starts - both "Attack" and "Attack (Off-Hand)" buttons appear
+4. Player clicks "Attack" → rolls d20+mods vs AC → deals 1d6+DEX damage (consumes Action)
+5. Player clicks "Attack (Off-Hand)" → rolls d20+mods vs AC → deals 1d4 damage only (consumes Bonus Action)
+6. Player clicks "End Turn" - both actions used
+
+**Testing:**
+- Equip non-light weapon to off-hand → blocked with error message
+- Equip light weapon to off-hand → success
+- Combat with off-hand weapon → button appears, uses bonus action
+- Off-hand attack damage → correctly excludes ability modifier
+
+**Next Steps:**
+- Implement remaining weapon masteries (Nick, Push, Sap, Slow, Topple, Vex)
+- Nick mastery specifically enhances two-weapon fighting
+- Implement Two-Weapon Fighting fighting style (adds modifier to off-hand damage)
+
+---
+
+## 🆕 Recent Changes (2025-12-18 - Session 1)
+
+### Weapon Mastery Combat Implementation & Inventory UI Enhancements ✅
+Implemented weapon masteries in combat (Cleave, Graze), enforced armor requirements, enhanced inventory display with comprehensive tagging system, and fixed character creation flow.
+
+**Modified Files:**
+- `src/systems/CombatManager.js` - Implemented Cleave and Graze weapon masteries
+- `src/main.js` - Updated load game screen, armor/shield requirements enforcement, inventory item rendering with tags
+- `src/ui/CharacterCreation.js` - Fixed weapon mastery duplication bug, swapped Background/Calling order
+- `src/systems/Player.js` - Removed "world map not yet implemented" message
+- `styles.css` - Added comprehensive tag styles for armor types, weapon types, and weapon properties
+
+**Implementation Details:**
+
+**1. Weapon Mastery - Cleave (onHit)** ✅
+- Implemented in CombatManager.js attack() method
+- When player with Cleave hits an enemy, makes additional attack on next enemy in combatant list
+- Additional attack deals ability modifier damage (minimum 1)
+- Cannot chain infinitely - only attacks next adjacent enemy
+- Example: Hit enemy_0 → auto-attack enemy_1 for ability modifier damage
+
+**2. Weapon Mastery - Graze (onMiss)** ✅
+- Implemented in CombatManager.js attack() method
+- When attack with Graze weapon misses, deals ability modifier damage anyway
+- Damage is same type as weapon (per mastery description)
+- Can defeat enemies even on a miss
+- Works with greatclub, maul, pike
+
+**3. Load Game Screen File Upload** ✅
+- Fixed main menu Load Game to use file upload instead of LocalStorage slots
+- Consistent with in-game import/export system
+- Added importSaveFileFromMenu() handler
+- Displays helpful instructions about save file location
+
+**4. Character Creation Order Swap** ✅
+- Changed order from: Name → Culture → Calling → Background
+- New order: Name → Culture → Background → Calling → Abilities → Skills → Masteries → Review
+- More natural narrative flow (background before profession)
+- Updated all step references and progress indicators
+
+**5. Weapon Mastery Duplication Fix** ✅
+- **Problem:** Each mastery appeared once per weapon (Nick appeared 6 times)
+- **Root Cause:** Code looped through weapon assignments, creating duplicate entries
+- **Fix:** Generate unique list from masteries object directly
+- Each mastery now appears exactly once with list of applicable weapons
+
+**6. World Map Message Removal** ✅
+- Removed "world map not yet implemented" message from Player.openMap()
+- World map is fully functional, message was outdated
+
+**7. Armor Requirements Enforcement (HARD BLOCKS)** ✅
+- **Armor Proficiency:** Cannot equip armor without proficiency in that armor type
+- **Strength Requirements:** Cannot equip armor if STR too low
+  - Chain Mail requires STR 13
+  - Plate Mail requires STR 15
+- **Shield Proficiency:** Cannot equip shields without shield proficiency
+- All requirements show clear error messages with ❌ emoji
+- Changed from warnings to complete prevention
+
+**8. Inventory Display Enhancements** ✅
+- **Armor Tags:**
+  - Armor type badges (Light/Medium/Heavy) with color coding
+  - Green = Light, Orange = Medium, Red = Heavy
+  - Max DEX bonus display: "+2" or "Inf" for unlimited
+
+- **Weapon Tags:**
+  - Weapon type badges (Melee/Ranged)
+  - Pink = Melee, Blue = Ranged
+  - Property tags for all weapon properties
+  - Versatile tag includes damage: "Versatile (1d10)"
+  - Removed properties from description text (now visual tags)
+
+- **Weapon Property Colors:**
+  - Versatile: Dark purple (#9C27B0)
+  - Finesse: Cyan (#00BCD4)
+  - Light: Light green (#8BC34A)
+  - Heavy: Brown (#795548)
+  - Reach: Yellow (#FFC107)
+  - Thrown: Orange-red (#FF5722)
+  - Two-Handed: Gray-blue (#607D8B)
+  - Ammunition: Gray (#9E9E9E)
+
+- **Fixed "undefined undefined" Bug:**
+  - Problem: Code expected `item.damage.dice` but items.json has `damage: "1d8"` (string)
+  - Solution: Handle both formats with fallback
+
+**Tag Display Format:**
+```
+Weight | Weapon/Armor Type | Properties | Rarity
+3 lbs | Melee | Versatile (1d10) | Common
+```
+
+**D&D 5e Rules Implemented:**
+- **Cleave Mastery:** Extra attack on adjacent enemy for ability modifier damage (once per turn)
+- **Graze Mastery:** Miss still deals ability modifier damage (greatclub, maul, pike)
+- **Armor Proficiency:** Must be proficient to wear armor (no disadvantage on attacks)
+- **STR Requirements:** Heavy armor requires minimum strength (Chain Mail 13, Plate 15)
+
+**Next Steps:**
+- Continue weapon mastery implementations (Nick, Push, Sap, Slow, Topple, Vex)
+- Implement two-weapon fighting system
+- Test all masteries in combat scenarios
 
 ---
 

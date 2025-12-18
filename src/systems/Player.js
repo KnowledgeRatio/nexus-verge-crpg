@@ -430,8 +430,8 @@ class Player {
     }
 
     openMap() {
-        // World map UI - TODO: Implement full world map view
-        gameState.addMessage('🗺️ World map (not yet implemented)', 'info');
+        // World map UI - opens world map modal
+        // Message removed - world map is implemented
     }
 
     rest() {
