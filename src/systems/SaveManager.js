@@ -88,6 +88,15 @@ class SaveManager {
 
         } catch (error) {
             console.error('Save error:', error);
+
+            // Special handling for quota exceeded
+            if (error.name === 'QuotaExceededError') {
+                return {
+                    success: false,
+                    message: 'Save file too large! Try saving in a different slot or clearing old saves.'
+                };
+            }
+
             return {
                 success: false,
                 message: `Failed to save: ${error.message}`
@@ -305,19 +314,71 @@ class SaveManager {
     }
 
     /**
-     * Serialize world object
+     * Serialize world object (compress terrain data, keep important state)
      * @param {Object} world - World state
      * @returns {Object} Serialized world
      */
     serializeWorld(world) {
         if (!world) return null;
 
+        const allRegions = world.generatedRegions || world.regions;
+        const compressedRegions = new Map();
+
+        if (allRegions && allRegions instanceof Map) {
+            for (const [key, region] of allRegions.entries()) {
+                // Only save fog of war and features, NOT terrain (it's regenerated from seed)
+                const compressedRegion = {
+                    // Save only explored/visible tiles (sparse array)
+                    exploredTiles: this.compressFogOfWar(region.tiles),
+                    // Save features (settlements, dungeons, etc.)
+                    features: region.features || [],
+                    // Save any modifications player made
+                    modifications: region.modifications || []
+                };
+
+                compressedRegions.set(key, compressedRegion);
+            }
+        }
+
+        const originalSize = allRegions?.size || 0;
+        const compressedSize = JSON.stringify(Array.from(compressedRegions.entries())).length;
+        console.log(`💾 Compressed ${originalSize} regions to ${(compressedSize / 1024).toFixed(2)} KB`);
+
         return {
-            regions: this.serializeMap(world.generatedRegions || world.regions),
+            regions: this.serializeMap(compressedRegions),
             settlements: world.settlements || [],
             npcs: this.serializeMap(world.npcs),
             currentLocation: world.currentLocation || { x: 0, y: 0 }
         };
+    }
+
+    /**
+     * Compress fog of war data (only save explored/visible tiles)
+     * @param {Array} tiles - 2D array of tile data
+     * @returns {Array} Compressed tile data (sparse array)
+     */
+    compressFogOfWar(tiles) {
+        if (!tiles || !Array.isArray(tiles)) return [];
+
+        const compressed = [];
+
+        for (let y = 0; y < tiles.length; y++) {
+            for (let x = 0; x < tiles[y].length; x++) {
+                const tile = tiles[y][x];
+                // Only save tiles that have been explored or modified
+                if (tile && (tile.explored || tile.visible || tile.modified)) {
+                    compressed.push({
+                        x,
+                        y,
+                        explored: tile.explored || false,
+                        visible: tile.visible || false,
+                        modified: tile.modified || false
+                    });
+                }
+            }
+        }
+
+        return compressed;
     }
 
     /**
@@ -369,6 +430,142 @@ class SaveManager {
         };
 
         localStorage.setItem(this.metadataKey, JSON.stringify(metadata));
+    }
+
+    /**
+     * Export save to downloadable file (no compression, full data)
+     * @param {number} slotId - Save slot ID (1-5) or 0 for current game
+     * @returns {Object} { success: boolean, message: string }
+     */
+    exportSaveToFile(slotId = 0) {
+        try {
+            let saveData;
+
+            if (slotId === 0) {
+                // Export current game state (full data, no compression)
+                saveData = this.serializeGameStateFull();
+            } else {
+                // Export from existing slot
+                const saveKey = `${this.storagePrefix}${slotId}`;
+                const saved = localStorage.getItem(saveKey);
+                if (!saved) {
+                    return { success: false, message: `No save in slot ${slotId}` };
+                }
+                saveData = JSON.parse(saved);
+            }
+
+            // Create filename
+            const character = saveData.character;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            const filename = `nexus-verge-${character?.name || 'save'}-lvl${character?.level || 1}-${timestamp}.json`;
+
+            // Create download
+            const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            console.log(`💾 Save exported to ${filename}`);
+
+            return {
+                success: true,
+                message: `Save exported to ${filename}`
+            };
+
+        } catch (error) {
+            console.error('Export error:', error);
+            return {
+                success: false,
+                message: `Failed to export: ${error.message}`
+            };
+        }
+    }
+
+    /**
+     * Import save from uploaded file
+     * @param {File} file - JSON file to import
+     * @returns {Promise<Object>} { success: boolean, message: string, saveData: Object }
+     */
+    async importSaveFromFile(file) {
+        try {
+            const text = await file.text();
+            const saveData = JSON.parse(text);
+
+            // Validate save data
+            if (!saveData.version || !saveData.character || !saveData.seed) {
+                return {
+                    success: false,
+                    message: 'Invalid save file format'
+                };
+            }
+
+            // Version check
+            if (saveData.version !== this.version) {
+                console.warn(`⚠️ Save version mismatch: ${saveData.version} vs ${this.version}`);
+            }
+
+            console.log(`📂 Save imported from ${file.name}`);
+
+            return {
+                success: true,
+                message: `Save imported from ${file.name}`,
+                saveData: saveData
+            };
+
+        } catch (error) {
+            console.error('Import error:', error);
+            return {
+                success: false,
+                message: `Failed to import: ${error.message}`
+            };
+        }
+    }
+
+    /**
+     * Serialize game state with FULL data (no compression)
+     * Used for file exports where size doesn't matter
+     * @returns {Object} Full serialized game state
+     */
+    serializeGameStateFull() {
+        const state = gameState.data;
+
+        return {
+            version: this.version,
+            timestamp: Date.now(),
+            seed: state.seed,
+            worldConfig: state.worldConfig,
+            character: this.serializeCharacter(state.character),
+            world: this.serializeWorldFull(state.world), // Full data, not compressed
+            quests: state.quests || { active: [], completed: [] },
+            factions: this.serializeMap(state.factions),
+            playtime: state.stats?.playTime || 0,
+            ui: {
+                currentScreen: state.ui?.currentScreen || 'game'
+            }
+        };
+    }
+
+    /**
+     * Serialize world with FULL data (all regions, all tiles)
+     * @param {Object} world - World state
+     * @returns {Object} Full serialized world
+     */
+    serializeWorldFull(world) {
+        if (!world) return null;
+
+        const allRegions = world.generatedRegions || world.regions;
+
+        console.log(`💾 Exporting ${allRegions?.size || 0} regions (FULL DATA)`);
+
+        return {
+            regions: this.serializeMap(allRegions), // ALL data, no compression
+            settlements: world.settlements || [],
+            npcs: this.serializeMap(world.npcs),
+            currentLocation: world.currentLocation || { x: 0, y: 0 }
+        };
     }
 
     /**

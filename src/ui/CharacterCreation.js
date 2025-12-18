@@ -11,7 +11,7 @@ export class CharacterCreationUI {
     constructor() {
         this.container = document.getElementById('charCreationContent');
         this.currentStep = 1;
-        this.maxSteps = 5;
+        this.maxSteps = 8; // Updated to include weapon masteries
 
         // Character creation data
         this.characterData = {
@@ -22,13 +22,15 @@ export class CharacterCreationUI {
             baseAbilities: {
                 str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10
             },
-            skillChoices: []
+            skillChoices: [],
+            weaponMasteries: [] // New: weapon mastery selections
         };
 
         // Loaded data
         this.racesData = null;
         this.classesData = null;
         this.backgroundsData = null;
+        this.weaponMasteriesData = null; // New: weapon mastery data
     }
 
     /**
@@ -36,15 +38,17 @@ export class CharacterCreationUI {
      */
     async loadData() {
         try {
-            const [races, classes, backgrounds] = await Promise.all([
+            const [races, classes, backgrounds, weaponMasteries] = await Promise.all([
                 fetch('data/races.json').then(r => r.json()),
                 fetch('data/classes.json').then(r => r.json()),
-                fetch('data/backgrounds.json').then(r => r.json())
+                fetch('data/backgrounds.json').then(r => r.json()),
+                fetch('data/weaponMasteries.json').then(r => r.json())
             ]);
 
             this.racesData = races.races;
             this.classesData = classes.classes;
             this.backgroundsData = backgrounds.backgrounds;
+            this.weaponMasteriesData = weaponMasteries.weaponMasteries;
         } catch (error) {
             console.error('Failed to load data:', error);
             this.container.innerHTML = '<p class="text-danger">Error loading character data. Please refresh.</p>';
@@ -87,10 +91,10 @@ export class CharacterCreationUI {
                 this.renderRaceStep(content);
                 break;
             case 3:
-                this.renderClassStep(content);
+                this.renderBackgroundStep(content);
                 break;
             case 4:
-                this.renderBackgroundStep(content);
+                this.renderClassStep(content);
                 break;
             case 5:
                 this.renderAbilityScoresStep(content);
@@ -99,6 +103,9 @@ export class CharacterCreationUI {
                 this.renderSkillsStep(content);
                 break;
             case 7:
+                this.renderWeaponMasteriesStep(content);
+                break;
+            case 8:
                 this.renderReviewStep(content);
                 break;
         }
@@ -113,7 +120,7 @@ export class CharacterCreationUI {
                 Previous
             </button>
             <button id="nextBtn" class="menu-btn">
-                ${this.currentStep === 7 ? 'Create Character' : 'Next'}
+                ${this.currentStep === 8 ? 'Create Character' : 'Next'}
             </button>
         `;
         this.container.appendChild(nav);
@@ -127,7 +134,7 @@ export class CharacterCreationUI {
      * Render progress steps
      */
     renderProgressSteps() {
-        const steps = ['Name', 'Culture', 'Calling', 'Background', 'Abilities', 'Skills', 'Review'];
+        const steps = ['Name', 'Culture', 'Background', 'Calling', 'Abilities', 'Skills', 'Masteries', 'Review'];
         return steps.map((step, index) => {
             const stepNum = index + 1;
             const isActive = stepNum === this.currentStep;
@@ -368,7 +375,81 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Step 7: Review
+     * Step 7: Weapon Masteries
+     */
+    renderWeaponMasteriesStep(container) {
+        const callingId = this.characterData.class.id;
+        const masteryProgression = this.weaponMasteriesData.callingMasteryProgression[callingId];
+        const numToChoose = masteryProgression ? masteryProgression['1'] : 0;
+
+        // Get all available masteries
+        const masteries = this.weaponMasteriesData.masteries;
+
+        // Build list of unique masteries (no duplicates)
+        const weaponMasteryOptions = Object.entries(masteries).map(([masteryId, mastery]) => ({
+            masteryId,
+            mastery
+        }));
+
+        container.innerHTML = `
+            <h3>Choose Your Weapon Masteries</h3>
+            <p class="step-description">
+                ${numToChoose === 0
+                    ? 'Your calling does not grant weapon masteries at level 1.'
+                    : `Choose <strong>${numToChoose}</strong> weapon mastery. Weapon masteries are special techniques you can use when proficient with a weapon.`
+                }
+            </p>
+            ${numToChoose > 0 ? `
+                <div class="weapon-mastery-selection">
+                    ${weaponMasteryOptions.map(option => {
+                        const isSelected = this.characterData.weaponMasteries.includes(option.masteryId);
+                        return `
+                            <label class="mastery-option ${isSelected ? 'selected' : ''}">
+                                <input type="checkbox"
+                                       value="${option.masteryId}"
+                                       ${isSelected ? 'checked' : ''}
+                                       class="mastery-choice">
+                                <div class="mastery-details">
+                                    <div class="mastery-name">${option.mastery.name}</div>
+                                    <div class="mastery-weapons">Weapons: ${option.mastery.weaponTypes.join(', ')}</div>
+                                    <div class="mastery-description">${option.mastery.description}</div>
+                                    ${option.mastery.usesPerTurn ? `<div class="mastery-uses">Uses: ${option.mastery.usesPerTurn} per turn</div>` : ''}
+                                </div>
+                            </label>
+                        `;
+                    }).join('')}
+                </div>
+            ` : '<p style="text-align: center; margin-top: 20px;">You will gain weapon masteries at higher levels.</p>'}
+        `;
+
+        if (numToChoose > 0) {
+            // Bind mastery checkboxes
+            const checkboxes = container.querySelectorAll('.mastery-choice');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const masteryId = e.target.value;
+                    if (e.target.checked) {
+                        if (this.characterData.weaponMasteries.length < numToChoose) {
+                            this.characterData.weaponMasteries.push(masteryId);
+                            e.target.closest('.mastery-option').classList.add('selected');
+                        } else {
+                            e.target.checked = false;
+                            alert(`You can only choose ${numToChoose} weapon mastery.`);
+                        }
+                    } else {
+                        const index = this.characterData.weaponMasteries.indexOf(masteryId);
+                        if (index > -1) {
+                            this.characterData.weaponMasteries.splice(index, 1);
+                            e.target.closest('.mastery-option').classList.remove('selected');
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    /**
+     * Step 8: Review
      */
     renderReviewStep(container) {
         // Calculate final abilities with racial bonuses
@@ -457,7 +538,7 @@ export class CharacterCreationUI {
             return;
         }
 
-        if (this.currentStep < 7) {
+        if (this.currentStep < 8) {
             this.currentStep++;
             this.renderStep();
         } else {
@@ -484,14 +565,14 @@ export class CharacterCreationUI {
                 }
                 break;
             case 3:
-                if (!this.characterData.class) {
-                    alert('Please select a class.');
+                if (!this.characterData.background) {
+                    alert('Please select a background.');
                     return false;
                 }
                 break;
             case 4:
-                if (!this.characterData.background) {
-                    alert('Please select a background.');
+                if (!this.characterData.class) {
+                    alert('Please select a class.');
                     return false;
                 }
                 break;
@@ -515,6 +596,17 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
+            case 7:
+                // Get number of weapon masteries for this calling at level 1
+                const callingId = this.characterData.class.id;
+                const masteryProgression = this.weaponMasteriesData.callingMasteryProgression[callingId];
+                const requiredMasteries = masteryProgression ? masteryProgression['1'] : 0;
+
+                if (this.characterData.weaponMasteries.length !== requiredMasteries) {
+                    alert(`Please choose exactly ${requiredMasteries} weapon mastery.`);
+                    return false;
+                }
+                break;
         }
         return true;
     }
@@ -531,6 +623,7 @@ export class CharacterCreationUI {
                 background: this.characterData.background,
                 baseAbilities: this.characterData.baseAbilities,
                 skillChoices: this.characterData.skillChoices,
+                weaponMasteries: this.characterData.weaponMasteries,
                 level: 1,
                 xp: 0
             });

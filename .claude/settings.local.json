@@ -10,7 +10,8 @@
       "Bash(netstat:*)",
       "Bash(taskkill:*)",
       "Bash(npx -y http-server -p 8080)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

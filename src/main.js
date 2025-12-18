@@ -488,27 +488,60 @@ class Game {
         const currentCombatant = this.combatManager.getCurrentCombatant();
 
         if (!currentCombatant || currentCombatant.team !== 'player') {
+            // Enemy turn - show their action economy
+            const enemyActions = currentCombatant?.actions || { action: 0, bonusAction: 0, reaction: 0 };
             actionsEl.innerHTML = `
-                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                <p style="color: var(--text-secondary); text-align: center; padding: 10px;">
                     ${currentCombatant?.name || 'Enemy'} is taking their turn...
                 </p>
+                <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-top: 10px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Actions</div>
+                        <div style="font-size: 18px; font-weight: bold; color: var(--accent);">${enemyActions.action}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Bonus</div>
+                        <div style="font-size: 18px; font-weight: bold; color: var(--secondary);">${enemyActions.bonusAction}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Reactions</div>
+                        <div style="font-size: 18px; font-weight: bold; color: var(--success);">${enemyActions.reaction}</div>
+                    </div>
+                </div>
             `;
             return;
         }
 
-        // Player turn - show action buttons
+        // Player turn - show action buttons and economy
+        const hasAction = currentCombatant.hasAction('action');
+        const hasBonusAction = currentCombatant.hasAction('bonusAction');
+
         actionsEl.innerHTML = `
+            <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 15px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Actions</div>
+                    <div style="font-size: 18px; font-weight: bold; color: ${hasAction ? 'var(--accent)' : 'var(--text-muted)'};">${currentCombatant.actions.action}</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Bonus</div>
+                    <div style="font-size: 18px; font-weight: bold; color: ${hasBonusAction ? 'var(--secondary)' : 'var(--text-muted)'};">${currentCombatant.actions.bonusAction}</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Reactions</div>
+                    <div style="font-size: 18px; font-weight: bold; color: ${currentCombatant.actions.reaction > 0 ? 'var(--success)' : 'var(--text-muted)'};">${currentCombatant.actions.reaction}</div>
+                </div>
+            </div>
             <div class="action-buttons">
                 <button class="action-btn" onclick="window.game.selectAction('attack')"
-                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                        ${!hasAction ? 'disabled' : ''}>
                     ⚔️ Attack
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('ability')"
-                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                        ${!hasAction ? 'disabled' : ''}>
                     ✨ Ability
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('spell')"
-                        ${!currentCombatant.actions.action ? 'disabled' : ''}>
+                        ${!hasAction ? 'disabled' : ''}>
                     🔮 Spell
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('flee')">
@@ -636,59 +669,30 @@ class Game {
     }
 
     /**
-     * Render load game save slots
+     * Render load game save slots (uses file import)
      */
     renderLoadGameSlots() {
         const slotsContainer = document.getElementById('saveSlots');
         if (!slotsContainer) return;
 
-        const slots = saveManager.getSaveSlots();
-
-        slotsContainer.innerHTML = '';
-
-        for (let i = 1; i <= saveManager.maxSlots; i++) {
-            const slot = slots[i];
-            const slotEl = document.createElement('div');
-            slotEl.className = `save-slot ${slot.isEmpty ? 'empty' : ''}`;
-            slotEl.dataset.slotId = i;
-
-            if (slot.isEmpty) {
-                slotEl.innerHTML = `
-                    <div class="save-slot-header">
-                        <span class="slot-number">Slot ${i}</span>
-                    </div>
-                    <div class="save-slot-body">
-                        <p class="empty-slot-text">Empty Slot</p>
-                    </div>
-                `;
-            } else {
-                slotEl.innerHTML = `
-                    <div class="save-slot-header">
-                        <span class="slot-number">Slot ${i}</span>
-                        <span class="slot-timestamp">${saveManager.formatTimestamp(slot.timestamp)}</span>
-                    </div>
-                    <div class="save-slot-body">
-                        <div class="save-slot-character">
-                            <span class="character-name">${slot.characterName}</span>
-                            <span class="character-class">Level ${slot.level} ${slot.class}</span>
-                        </div>
-                        <div class="save-slot-info">
-                            <span class="save-location">${slot.location}</span>
-                            <span class="save-playtime">${saveManager.formatPlaytime(slot.playtime)}</span>
-                        </div>
-                        <div class="save-slot-actions">
-                            <button class="btn-load" onclick="window.game.loadGameFromSlot(${i})">Load</button>
-                            <button class="btn-delete" onclick="window.game.confirmDeleteSave(${i})">Delete</button>
-                        </div>
-                    </div>
-                    <div class="save-slot-footer">
-                        <span class="save-seed">Seed: ${slot.seed}</span>
-                    </div>
-                `;
-            }
-
-            slotsContainer.appendChild(slotEl);
-        }
+        slotsContainer.innerHTML = `
+            <div style="padding: 40px; text-align: center;">
+                <h3 style="margin-bottom: 20px;">📤 Import Save</h3>
+                <p style="margin-bottom: 30px; color: var(--text-secondary);">
+                    Upload a <strong>.json save file</strong> to continue your adventure
+                </p>
+                <input type="file" id="importSaveInputMenu" accept=".json"
+                       style="display: none;"
+                       onchange="window.game.importSaveFileFromMenu(event)">
+                <button class="menu-btn" onclick="document.getElementById('importSaveInputMenu').click()"
+                        style="margin: 0 auto; font-size: 18px; padding: 15px 40px;">
+                    📤 Upload Save File
+                </button>
+                <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+                    Save files are created using the in-game save menu (press . or ESC during gameplay)
+                </p>
+            </div>
+        `;
     }
 
     /**
@@ -2251,31 +2255,31 @@ class Game {
         const slotsContainer = document.getElementById('saveMenuSlots');
         if (!slotsContainer) return;
 
-        const slots = saveManager.getSaveSlots();
+        const character = gameState.get('character');
 
-        slotsContainer.innerHTML = '';
-
-        for (let i = 1; i <= saveManager.maxSlots; i++) {
-            const slot = slots[i];
-            const slotEl = document.createElement('button');
-            slotEl.className = `save-menu-slot ${slot.isEmpty ? 'empty' : ''}`;
-            slotEl.onclick = () => this.saveToSlot(i);
-
-            if (slot.isEmpty) {
-                slotEl.innerHTML = `
-                    <span class="slot-number">Slot ${i}</span>
-                    <span class="empty-text">Empty</span>
-                `;
-            } else {
-                slotEl.innerHTML = `
-                    <span class="slot-number">Slot ${i}</span>
-                    <span class="slot-char">${slot.characterName} - Level ${slot.level}</span>
-                    <span class="slot-time">${saveManager.formatTimestamp(slot.timestamp)}</span>
-                `;
-            }
-
-            slotsContainer.appendChild(slotEl);
-        }
+        slotsContainer.innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+                <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--success);">
+                    <h3 style="margin: 0 0 10px 0; color: var(--success);">📥 Export Save</h3>
+                    <p style="margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                        Download your game as a <strong>.json file</strong><br>
+                        ✓ Full game state preserved<br>
+                        ✓ No size limits<br>
+                        ✓ Portable & backup-friendly<br>
+                        ✓ Share between devices
+                    </p>
+                    <div style="padding: 15px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 20px;">
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">Current Character:</div>
+                        <div style="font-size: 16px; font-weight: bold; color: var(--accent);">
+                            ${character?.name || 'Unknown'} - Level ${character?.level || 1} ${character?.class?.displayName || character?.class?.name || ''}
+                        </div>
+                    </div>
+                    <button class="menu-btn" onclick="window.game.exportCurrentGame()" style="width: 100%; font-size: 16px; padding: 15px;">
+                        📥 Download Save File
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     /**
@@ -2285,32 +2289,24 @@ class Game {
         const slotsContainer = document.getElementById('loadMenuSlots');
         if (!slotsContainer) return;
 
-        const slots = saveManager.getSaveSlots();
-
-        slotsContainer.innerHTML = '';
-
-        for (let i = 1; i <= saveManager.maxSlots; i++) {
-            const slot = slots[i];
-            const slotEl = document.createElement('button');
-            slotEl.className = `save-menu-slot ${slot.isEmpty ? 'empty' : ''}`;
-
-            if (slot.isEmpty) {
-                slotEl.disabled = true;
-                slotEl.innerHTML = `
-                    <span class="slot-number">Slot ${i}</span>
-                    <span class="empty-text">Empty</span>
-                `;
-            } else {
-                slotEl.onclick = () => this.loadFromSlot(i);
-                slotEl.innerHTML = `
-                    <span class="slot-number">Slot ${i}</span>
-                    <span class="slot-char">${slot.characterName} - Level ${slot.level}</span>
-                    <span class="slot-time">${saveManager.formatTimestamp(slot.timestamp)}</span>
-                `;
-            }
-
-            slotsContainer.appendChild(slotEl);
-        }
+        slotsContainer.innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+                <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--success);">
+                    <h3 style="margin: 0 0 10px 0; color: var(--success);">📤 Import Save</h3>
+                    <p style="margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                        Upload a <strong>.json save file</strong><br>
+                        ✓ Full game state restored<br>
+                        ✓ Load from any device<br>
+                        ✓ Resume where you left off<br>
+                        ✓ All quests & progress intact
+                    </p>
+                    <input type="file" id="importSaveInput" accept=".json" style="display: none;" onchange="window.game.importSaveFile(event)">
+                    <button class="menu-btn" onclick="document.getElementById('importSaveInput').click()" style="width: 100%; font-size: 16px; padding: 15px;">
+                        📤 Upload Save File
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     /**
@@ -2360,6 +2356,73 @@ class Game {
         } else {
             alert(result.message);
         }
+    }
+
+    /**
+     * Export current game to downloadable file
+     */
+    exportCurrentGame() {
+        const result = saveManager.exportSaveToFile(0); // 0 = current game
+
+        if (result.success) {
+            gameState.addMessage(result.message, 'success');
+        } else {
+            gameState.addMessage(result.message, 'error');
+        }
+    }
+
+    /**
+     * Import save file
+     */
+    async importSaveFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const result = await saveManager.importSaveFromFile(file);
+
+        if (result.success) {
+            // Deserialize and load the game
+            saveManager.deserializeGameState(result.saveData);
+
+            // Reinitialize game systems
+            await this.reinitializeGameAfterLoad();
+
+            // Close load menu and show game
+            this.showScreen('game');
+            gameState.addMessage('Save file imported successfully!', 'success');
+        } else {
+            alert(result.message);
+        }
+
+        // Reset file input
+        event.target.value = '';
+    }
+
+    /**
+     * Import save file from main menu load game screen
+     */
+    async importSaveFileFromMenu(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const result = await saveManager.importSaveFromFile(file);
+
+        if (result.success) {
+            // Deserialize and load the game
+            saveManager.deserializeGameState(result.saveData);
+
+            // Reinitialize game systems
+            await this.reinitializeGameAfterLoad();
+
+            // Show game screen
+            this.showScreen('game');
+            gameState.addMessage('Save file imported successfully!', 'success');
+        } else {
+            alert(result.message);
+        }
+
+        // Reset file input
+        event.target.value = '';
     }
 
     /**

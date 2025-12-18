@@ -163,11 +163,14 @@ class CombatManager {
 
     /**
      * Perform an attack
+     * @param {Object} options - { isCleaveAttack: boolean }
      */
-    async attack(attacker, defender) {
-        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name);
+    async attack(attacker, defender, options = {}) {
+        const isCleaveAttack = options.isCleaveAttack || false;
 
-        if (!attacker.actions.action) {
+        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name, isCleaveAttack ? '(Cleave)' : '');
+
+        if (!attacker.hasAction('action')) {
             console.log('⚠️ No action available!');
             gameState.addMessage(`${attacker.name} has no action available!`, 'error');
             return;
@@ -177,35 +180,59 @@ class CombatManager {
 
         // Get weapon for attack bonus
         const weapon = attacker.character.equipment?.mainHand;
-        let attackBonus = attacker.character.abilityModifiers.str;
+        const isRanged = weapon?.weaponType === 'ranged';
+        const isFinesse = weapon?.properties?.includes('finesse');
 
-        // If using DEX weapon or no weapon, use DEX
-        if (weapon?.properties?.includes('finesse') || !weapon) {
+        let attackBonus = 0;
+
+        // Determine which ability modifier to use
+        if (isRanged) {
+            // Ranged weapons use DEX
+            attackBonus = attacker.character.abilityModifiers.dex;
+        } else if (isFinesse) {
+            // Finesse weapons use higher of STR or DEX
             attackBonus = Math.max(
                 attacker.character.abilityModifiers.str,
                 attacker.character.abilityModifiers.dex
             );
+        } else if (weapon) {
+            // Melee weapons use STR
+            attackBonus = attacker.character.abilityModifiers.str;
+        } else {
+            // Unarmed uses STR
+            attackBonus = attacker.character.abilityModifiers.str;
         }
 
         // Add proficiency bonus
         const proficiency = attacker.character.proficiencyBonus;
 
-        // Attack roll: d20 + ability mod + proficiency
+        // Ranged weapon bonus: +2 to hit (easier to aim from distance)
+        let rangedBonus = 0;
+        if (isRanged) {
+            rangedBonus = 2;
+            gameState.addMessage(`🏹 Ranged attack: +2 to hit`, 'info');
+        }
+
+        // Attack roll: d20 + ability mod + proficiency + ranged bonus
         const attackRollObj = rollD20();
         const attackRoll = attackRollObj.result;
-        const attackTotal = attackRoll + attackBonus + proficiency;
+        const attackTotal = attackRoll + attackBonus + proficiency + rangedBonus;
 
         const isCritical = RULES.combat.criticalHitRange.includes(attackRoll);
         const isCriticalMiss = RULES.combat.criticalMissRange.includes(attackRoll);
 
-        gameState.addMessage(
-            `Attack roll: ${attackRoll} + ${attackBonus} + ${proficiency} = ${attackTotal} vs AC ${defender.ac}`,
-            'info'
-        );
+        // Build attack roll message
+        let attackMsg = `Attack roll: ${attackRoll}`;
+        if (attackBonus !== 0) attackMsg += ` + ${attackBonus} (ability)`;
+        if (proficiency !== 0) attackMsg += ` + ${proficiency} (prof)`;
+        if (rangedBonus !== 0) attackMsg += ` + ${rangedBonus} (ranged)`;
+        attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
+
+        gameState.addMessage(attackMsg, 'info');
 
         if (isCriticalMiss) {
             gameState.addMessage(`💥 Critical miss!`, 'error');
-            attacker.actions.action = false;
+            attacker.consumeAction('action');
             this.updateGameState();
             return;
         }
@@ -222,10 +249,18 @@ class CombatManager {
                 damageRoll += rollDice(1, damageDice); // Double dice on crit
                 gameState.addMessage(`⭐ Critical hit!`, 'success');
             }
-            const damageTotal = damageRoll + attackBonus;
+
+            // Calculate damage bonus (ranged weapons get -2 penalty)
+            let damageBonus = attackBonus;
+            if (isRanged) {
+                damageBonus = Math.max(0, attackBonus - 2); // -2 damage for ranged, minimum 0
+                gameState.addMessage(`🏹 Ranged penalty: -2 damage`, 'info');
+            }
+
+            const damageTotal = damageRoll + damageBonus;
 
             gameState.addMessage(
-                `💥 Hit! ${damageTotal} damage (${damageRoll} + ${attackBonus})`,
+                `💥 Hit! ${damageTotal} damage (${damageRoll} + ${damageBonus})`,
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
@@ -237,11 +272,63 @@ class CombatManager {
                 gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
                 this.handleDefeat(defender);
             }
+
+            // WEAPON MASTERY: Cleave
+            // If attacker hit with a melee weapon and has Cleave mastery, attack adjacent enemy
+            if (!isCleaveAttack && !isRanged && this.hasWeaponMastery(attacker, weapon, 'cleave')) {
+                const adjacentEnemy = this.getAdjacentEnemy(defender);
+                if (adjacentEnemy && adjacentEnemy.hp > 0) {
+                    gameState.addMessage(`⚔️ Cleave! ${attacker.name} attacks ${adjacentEnemy.name}!`, 'warning');
+
+                    // Cleave attack: make attack roll, deal ability modifier damage (minimum 1)
+                    const cleaveAttackRoll = rollD20().result;
+                    const cleaveAttackTotal = cleaveAttackRoll + attackBonus + proficiency;
+
+                    gameState.addMessage(
+                        `Cleave attack roll: ${cleaveAttackRoll} + ${attackBonus} (ability) + ${proficiency} (prof) = ${cleaveAttackTotal} vs AC ${adjacentEnemy.ac}`,
+                        'info'
+                    );
+
+                    if (cleaveAttackTotal >= adjacentEnemy.ac) {
+                        const cleaveDamage = Math.max(1, attackBonus); // Ability modifier, minimum 1
+                        gameState.addMessage(
+                            `💥 Cleave hits! ${cleaveDamage} damage`,
+                            attacker.team === 'player' ? 'success' : 'error'
+                        );
+
+                        adjacentEnemy.takeDamage(cleaveDamage);
+
+                        if (adjacentEnemy.hp <= 0) {
+                            gameState.addMessage(`💀 ${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
+                            this.handleDefeat(adjacentEnemy);
+                        }
+                    } else {
+                        gameState.addMessage(`Cleave misses!`, 'info');
+                    }
+                }
+            }
         } else {
             gameState.addMessage(`Miss!`, 'info');
+
+            // WEAPON MASTERY: Graze
+            // If attacker missed and has Graze mastery, deal ability modifier damage
+            if (this.hasWeaponMastery(attacker, weapon, 'graze')) {
+                const grazeDamage = Math.max(0, attackBonus); // Ability modifier, minimum 0
+
+                if (grazeDamage > 0) {
+                    gameState.addMessage(`⚔️ Graze! Despite missing, ${attacker.name} deals ${grazeDamage} damage!`, 'warning');
+
+                    defender.takeDamage(grazeDamage);
+
+                    if (defender.hp <= 0) {
+                        gameState.addMessage(`💀 ${defender.name} is defeated by Graze!`, 'warning');
+                        this.handleDefeat(defender);
+                    }
+                }
+            }
         }
 
-        attacker.actions.action = false;
+        attacker.consumeAction('action');
         this.updateGameState();
     }
 
@@ -272,7 +359,7 @@ class CombatManager {
             gameState.addMessage(`${combatant.name} fails to escape!`, 'error');
         }
 
-        combatant.actions.action = false;
+        combatant.consumeAction('action');
         this.updateGameState();
     }
 
@@ -447,6 +534,41 @@ class CombatManager {
     }
 
     /**
+     * Check if combatant has a specific weapon mastery
+     * @param {Combatant} combatant
+     * @param {Object} weapon - Equipped weapon
+     * @param {String} masteryId - Mastery to check for (e.g., 'cleave')
+     * @returns {Boolean}
+     */
+    hasWeaponMastery(combatant, weapon, masteryId) {
+        if (!combatant.character.weaponMasteries) return false;
+        if (!weapon) return false;
+
+        // Check if character has this mastery
+        return combatant.character.weaponMasteries.includes(masteryId);
+    }
+
+    /**
+     * Get adjacent enemy for Cleave mastery
+     * @param {Combatant} defender - The enemy that was just hit
+     * @returns {Combatant|null} - The adjacent enemy (next in enemy list)
+     */
+    getAdjacentEnemy(defender) {
+        // Parse enemy index from ID (e.g., "enemy_0" → 0)
+        const match = defender.id.match(/enemy_(\d+)/);
+        if (!match) return null;
+
+        const currentIndex = parseInt(match[1]);
+        const nextIndex = currentIndex + 1;
+        const nextId = `enemy_${nextIndex}`;
+
+        // Find the next enemy
+        const adjacentEnemy = this.enemyCombatants.find(c => c.id === nextId);
+
+        return adjacentEnemy || null;
+    }
+
+    /**
      * Update game state with current combat data
      */
     updateGameState() {
@@ -478,11 +600,17 @@ class Combatant {
         this.ac = character.ac;
         this.initiative = 0;
 
-        // Action economy (no movement)
+        // Action economy (counts per turn)
         this.actions = {
-            action: true,
-            bonusAction: true,
-            reaction: true
+            action: 1,
+            bonusAction: 1,
+            reaction: 1
+        };
+
+        this.maxActions = {
+            action: 1,
+            bonusAction: 1,
+            reaction: 1
         };
 
         // Status
@@ -494,10 +622,28 @@ class Combatant {
      */
     startTurn() {
         this.actions = {
-            action: true,
-            bonusAction: true,
-            reaction: true
+            action: this.maxActions.action,
+            bonusAction: this.maxActions.bonusAction,
+            reaction: this.maxActions.reaction
         };
+    }
+
+    /**
+     * Check if combatant has an action available
+     */
+    hasAction(actionType = 'action') {
+        return this.actions[actionType] > 0;
+    }
+
+    /**
+     * Consume an action
+     */
+    consumeAction(actionType = 'action') {
+        if (this.actions[actionType] > 0) {
+            this.actions[actionType]--;
+            return true;
+        }
+        return false;
     }
 
     /**

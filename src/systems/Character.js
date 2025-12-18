@@ -110,6 +110,9 @@ export class Character {
         // Background feature
         this.backgroundFeature = this.background?.feature || null;
 
+        // Weapon Masteries
+        this.weaponMasteries = data.weaponMasteries || [];
+
         // Status conditions
         this.conditions = data.conditions || [];
         this.effects = data.effects || [];

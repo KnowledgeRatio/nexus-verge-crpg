@@ -57,9 +57,15 @@ class WorldGenerator {
         // Check gameState cache first
         const cacheKey = `${regionX},${regionY}`;
         const generatedRegions = gameState.get('world.generatedRegions');
-        
+
         if (generatedRegions && generatedRegions.has(cacheKey)) {
-            return generatedRegions.get(cacheKey);
+            const cached = generatedRegions.get(cacheKey);
+            // Check if this is compressed saved data that needs restoration
+            if (cached.exploredTiles && !cached.tiles) {
+                // This is compressed data, regenerate and merge
+                return await this.regenerateAndMerge(regionX, regionY, cached);
+            }
+            return cached;
         }
 
         // Ensure terrain data is loaded
@@ -519,6 +525,76 @@ class WorldGenerator {
 
         // Set regions directly in gameState (they're already there from deserialization)
         console.log(`📂 Loaded ${savedRegions.size} regions from save`);
+    }
+
+    /**
+     * Regenerate region from seed and merge in saved data (fog of war, features)
+     * @param {number} regionX - Region X coordinate
+     * @param {number} regionY - Region Y coordinate
+     * @param {Object} compressedData - Compressed region data from save
+     * @returns {Object} Full region with merged data
+     */
+    async regenerateAndMerge(regionX, regionY, compressedData) {
+        console.log(`🔄 Regenerating region ${regionX},${regionY} from seed and merging saved data`);
+
+        // Ensure terrain data is loaded
+        await this.loadTerrainData();
+
+        // Regenerate terrain from seed (deterministic)
+        const regionSeedString = `${this.worldSeed}_${regionX}_${regionY}`;
+        const regionRNG = new SeededRandom(regionSeedString);
+
+        const regionSize = RULES.worldGen.regionSize;
+        const tiles = [];
+
+        // Generate tiles
+        for (let localY = 0; localY < regionSize; localY++) {
+            for (let localX = 0; localX < regionSize; localX++) {
+                const worldX = regionX * regionSize + localX;
+                const worldY = regionY * regionSize + localY;
+
+                const tile = this.generateTile(worldX, worldY, regionRNG);
+                tiles.push(tile);
+            }
+        }
+
+        // Restore fog of war from compressed data
+        if (compressedData.exploredTiles) {
+            for (const saved of compressedData.exploredTiles) {
+                const index = saved.y * regionSize + saved.x;
+                if (tiles[index]) {
+                    tiles[index].explored = saved.explored;
+                    tiles[index].visible = saved.visible;
+                    tiles[index].modified = saved.modified;
+                }
+            }
+        }
+
+        // Use saved features (settlements, dungeons, etc.) - don't regenerate!
+        const features = compressedData.features || [];
+
+        // Restore settlement data if present
+        this.restoreSettlementData(features);
+
+        // Create full region object
+        const region = {
+            x: regionX,
+            y: regionY,
+            tiles: tiles,
+            features: features,
+            modifications: compressedData.modifications || []
+        };
+
+        // Store in cache
+        const cacheKey = `${regionX},${regionY}`;
+        const generatedRegions = gameState.get('world.generatedRegions');
+        if (generatedRegions) {
+            generatedRegions.set(cacheKey, region);
+        }
+
+        console.log(`✅ Region ${regionX},${regionY} regenerated with ${features.length} features`);
+
+        return region;
     }
 }
 
