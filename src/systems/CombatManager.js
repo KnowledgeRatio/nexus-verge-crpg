@@ -6,6 +6,7 @@
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { rollDice, rollD20 } from '../utils/dice.js';
+import { SeededRandom } from '../utils/rng.js';
 
 class CombatManager {
     constructor() {
@@ -760,11 +761,58 @@ class CombatManager {
         if (result === 'victory') {
             gameState.addMessage('🎉 Victory! All enemies defeated!', 'success');
 
+            const character = gameState.get('character');
+
             // Award XP
             const xpGained = this.calculateXPReward();
-            gameState.addMessage(`+${xpGained} XP`, 'success');
+            character.xp += xpGained;
+            gameState.addMessage(`+${xpGained} XP (${character.xp} total)`, 'success');
 
-            // TODO: Add XP to character
+            // Check for level up
+            const leveledUp = character.checkLevelUp();
+            if (leveledUp) {
+                gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
+            }
+
+            // Generate loot from defeated enemies
+            if (window.lootManager) {
+                const worldSeed = gameState.get('seed');
+                const rng = new SeededRandom(`${worldSeed}_combat_${Date.now()}`);
+
+                let totalGold = 0;
+                const allLootItems = [];
+
+                for (const enemy of this.enemyCombatants) {
+                    if (enemy.hp <= 0) {
+                        const loot = window.lootManager.generateCombatLoot(
+                            enemy.character,
+                            character.level,
+                            rng
+                        );
+
+                        if (loot.gold > 0 || loot.items.length > 0) {
+                            totalGold += loot.gold;
+                            allLootItems.push(...loot.items);
+
+                            // Display loot message for this enemy
+                            const itemNames = loot.items.map(i => i.name + (i.quantity > 1 ? ` (${i.quantity})` : '')).join(', ');
+                            const lootMessage = `${enemy.name} dropped: ${loot.gold}g${itemNames ? ', ' + itemNames : ''}`;
+                            gameState.addMessage(lootMessage, 'success');
+                        }
+                    }
+                }
+
+                // Add loot to character
+                if (totalGold > 0) {
+                    character.gold += totalGold;
+                    gameState.set('character.gold', character.gold);
+                }
+
+                if (allLootItems.length > 0) {
+                    character.inventory.push(...allLootItems);
+                    gameState.set('character.inventory', character.inventory);
+                }
+            }
 
             // Notify quest system of kills
             if (window.questManager) {
@@ -778,11 +826,14 @@ class CombatManager {
                 });
             }
 
+            // Update character state
+            gameState.set('character', character);
+
             // Return to exploration after delay
             gameState.set('combat', null);
             setTimeout(() => {
                 gameState.set('ui.currentScreen', 'game');
-            }, 2000);
+            }, 3000); // Extended to 3 seconds to show loot messages
         } else if (result === 'defeat') {
             gameState.addMessage('💀 You have been defeated...', 'error');
             gameState.addMessage('🎮 Game Over', 'error');

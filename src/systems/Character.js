@@ -5,7 +5,7 @@
 
 import { generateUUID } from '../utils/helpers.js';
 import { getAbilityModifier, getProficiencyBonus, rollHitPoints, roll } from '../utils/dice.js';
-import { getProficiencyBonus as getRulesProfBonus, getLevelFromXP, isASILevel } from '../core/rulesEngine.js';
+import { getProficiencyBonus as getRulesProfBonus, getLevelFromXP, isASILevel, RULES } from '../core/rulesEngine.js';
 
 export class Character {
     constructor(data) {
@@ -550,6 +550,35 @@ export class Character {
 
         if (newLevel > this.level) {
             this.levelUp(newLevel);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if character has enough XP to level up and trigger level up
+     * Used after combat XP awards
+     * @returns {boolean} True if leveled up, false otherwise
+     */
+    checkLevelUp() {
+        const xpNeeded = RULES.progression.xpTable[this.level + 1];
+
+        if (!xpNeeded) {
+            // Already at max level
+            return false;
+        }
+
+        if (this.xp >= xpNeeded) {
+            const newLevel = getLevelFromXP(this.xp);
+            this.levelUp(newLevel);
+
+            // Import gameState to add level up message
+            import('../core/GameState.js').then(module => {
+                const gameState = module.gameState || module.default;
+                gameState.addMessage(`🎉 Level Up! You are now level ${this.level}!`, 'success');
+            });
+
             return true;
         }
 

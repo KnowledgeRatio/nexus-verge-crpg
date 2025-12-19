@@ -17,6 +17,7 @@ import SettlementManager from './systems/SettlementManager.js';
 import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
+import LootManager from './systems/LootManager.js';
 
 class Game {
     constructor() {
@@ -34,6 +35,9 @@ class Game {
         this.npcGenerator = null;
         this.questGenerator = null;
         this.questManager = null;
+
+        // Loot system
+        this.lootManager = null;
 
         // Combat systems
         this.combatManager = null;
@@ -266,6 +270,14 @@ class Game {
             console.log('📜 Initializing quest manager...');
             this.questManager = new QuestManager(this.questGenerator);
             await this.questManager.initialize();
+        }
+
+        if (!this.lootManager) {
+            console.log('💰 Initializing loot manager...');
+            this.lootManager = new LootManager(seed);
+            await this.lootManager.loadData();
+            // Make lootManager globally accessible for combat
+            window.lootManager = this.lootManager;
         }
 
         if (!this.settlementManager) {

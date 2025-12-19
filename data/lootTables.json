@@ -1,0 +1,316 @@
+{
+  "version": "1.0.0",
+  "description": "Level-scaled loot tables for combat drops with progressive magic item scaling",
+
+  "monsterLootTables": {
+    "byCreatureType": {
+      "humanoid": {
+        "1-4": {
+          "dropChance": 0.6,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier1", "rollCount": 1, "weight": 40 },
+            { "tableName": "humanoid_armor_tier1", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 35 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.7,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier2", "rollCount": 1, "weight": 40 },
+            { "tableName": "humanoid_armor_tier2", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 20 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 15 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.75,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier3", "rollCount": 1, "weight": 35 },
+            { "tableName": "humanoid_armor_tier3", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 15 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.8,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier4", "rollCount": 1, "weight": 30 },
+            { "tableName": "humanoid_armor_tier4", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 10 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 35 }
+          ]
+        }
+      },
+
+      "beast": {
+        "1-4": {
+          "dropChance": 0.4,
+          "tables": [
+            { "tableName": "beast_parts_tier1", "rollCount": 1, "weight": 60 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 40 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.5,
+          "tables": [
+            { "tableName": "beast_parts_tier2", "rollCount": 1, "weight": 50 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 35 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 15 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.55,
+          "tables": [
+            { "tableName": "beast_parts_tier3", "rollCount": 1, "weight": 45 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 30 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.6,
+          "tables": [
+            { "tableName": "beast_parts_tier4", "rollCount": 1, "weight": 40 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 25 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 35 }
+          ]
+        }
+      },
+
+      "undead": {
+        "1-4": {
+          "dropChance": 0.3,
+          "tables": [
+            { "tableName": "undead_remains_tier1", "rollCount": 1, "weight": 50 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 50 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.4,
+          "tables": [
+            { "tableName": "undead_remains_tier2", "rollCount": 1, "weight": 45 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 40 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 15 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.45,
+          "tables": [
+            { "tableName": "undead_remains_tier3", "rollCount": 1, "weight": 40 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 35 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.5,
+          "tables": [
+            { "tableName": "undead_remains_tier4", "rollCount": 1, "weight": 35 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 30 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 35 }
+          ]
+        }
+      }
+    }
+  },
+
+  "itemTables": {
+    "humanoid_weapons_tier1": [
+      { "itemId": "dagger", "weight": 30 },
+      { "itemId": "club", "weight": 25 },
+      { "itemId": "handaxe", "weight": 20 },
+      { "itemId": "mace", "weight": 15 },
+      { "itemId": "shortsword", "weight": 10 }
+    ],
+
+    "humanoid_weapons_tier2": [
+      { "itemId": "shortsword", "weight": 25 },
+      { "itemId": "longsword", "weight": 20 },
+      { "itemId": "battleaxe", "weight": 15 },
+      { "itemId": "rapier", "weight": 15 },
+      { "itemId": "shortbow", "weight": 15 },
+      { "itemId": "handaxe", "weight": 10 }
+    ],
+
+    "humanoid_weapons_tier3": [
+      { "itemId": "longsword", "weight": 25 },
+      { "itemId": "greatsword", "weight": 20 },
+      { "itemId": "battleaxe", "weight": 20 },
+      { "itemId": "rapier", "weight": 15 },
+      { "itemId": "longbow", "weight": 20 }
+    ],
+
+    "humanoid_weapons_tier4": [
+      { "itemId": "greatsword", "weight": 30 },
+      { "itemId": "glaive", "weight": 25 },
+      { "itemId": "halberd", "weight": 20 },
+      { "itemId": "rapier", "weight": 15 },
+      { "itemId": "longbow", "weight": 10 }
+    ],
+
+    "humanoid_armor_tier1": [
+      { "itemId": "leatherArmor", "weight": 50 },
+      { "itemId": "hide", "weight": 30 },
+      { "itemId": "studdedLeather", "weight": 20 }
+    ],
+
+    "humanoid_armor_tier2": [
+      { "itemId": "studdedLeather", "weight": 30 },
+      { "itemId": "chainShirt", "weight": 25 },
+      { "itemId": "scaleMail", "weight": 20 },
+      { "itemId": "shield", "weight": 25 }
+    ],
+
+    "humanoid_armor_tier3": [
+      { "itemId": "chainShirt", "weight": 25 },
+      { "itemId": "breastplate", "weight": 25 },
+      { "itemId": "halfPlate", "weight": 20 },
+      { "itemId": "shield", "weight": 30 }
+    ],
+
+    "humanoid_armor_tier4": [
+      { "itemId": "breastplate", "weight": 25 },
+      { "itemId": "halfPlate", "weight": 30 },
+      { "itemId": "chainMail", "weight": 20 },
+      { "itemId": "shield", "weight": 25 }
+    ],
+
+    "consumables_tier1": [
+      { "itemId": "potionOfHealing", "weight": 70 },
+      { "itemId": "healersKit", "weight": 15 },
+      { "itemId": "arrow", "count": "3d6", "weight": 10 },
+      { "itemId": "bolt", "count": "2d6", "weight": 5 }
+    ],
+
+    "consumables_tier2": [
+      { "itemId": "potionOfHealing", "weight": 50 },
+      { "itemId": "potionOfGreaterHealing", "weight": 20 },
+      { "itemId": "healersKit", "weight": 15 },
+      { "itemId": "arrow", "count": "3d6", "weight": 10 },
+      { "itemId": "antitoxin", "weight": 5 }
+    ],
+
+    "consumables_tier3": [
+      { "itemId": "potionOfGreaterHealing", "weight": 40 },
+      { "itemId": "potionOfHealing", "weight": 30 },
+      { "itemId": "potionOfSuperiorHealing", "weight": 15 },
+      { "itemId": "healersKit", "weight": 10 },
+      { "itemId": "antitoxin", "weight": 5 }
+    ],
+
+    "consumables_tier4": [
+      { "itemId": "potionOfSuperiorHealing", "weight": 40 },
+      { "itemId": "potionOfGreaterHealing", "weight": 30 },
+      { "itemId": "potionOfSupremeHealing", "weight": 15 },
+      { "itemId": "healersKit", "weight": 10 },
+      { "itemId": "antitoxin", "weight": 5 }
+    ],
+
+    "beast_parts_tier1": [
+      { "itemId": "animalPelt", "weight": 60 },
+      { "itemId": "animalBone", "weight": 30 },
+      { "itemId": "rawMeat", "weight": 10 }
+    ],
+
+    "beast_parts_tier2": [
+      { "itemId": "animalPelt", "weight": 40 },
+      { "itemId": "animalBone", "weight": 30 },
+      { "itemId": "rawMeat", "weight": 20 },
+      { "itemId": "rareHide", "weight": 10 }
+    ],
+
+    "beast_parts_tier3": [
+      { "itemId": "rareHide", "weight": 50 },
+      { "itemId": "animalBone", "weight": 30 },
+      { "itemId": "exoticMeat", "weight": 20 }
+    ],
+
+    "beast_parts_tier4": [
+      { "itemId": "rareHide", "weight": 40 },
+      { "itemId": "magicalBone", "weight": 30 },
+      { "itemId": "exoticMeat", "weight": 20 },
+      { "itemId": "enchantedPelt", "weight": 10 }
+    ],
+
+    "undead_remains_tier1": [
+      { "itemId": "boneDust", "weight": 60 },
+      { "itemId": "tarnishedCoin", "weight": 30 },
+      { "itemId": "rottenCloth", "weight": 10 }
+    ],
+
+    "undead_remains_tier2": [
+      { "itemId": "boneDust", "weight": 40 },
+      { "itemId": "cursedBone", "weight": 30 },
+      { "itemId": "tarnishedCoin", "weight": 20 },
+      { "itemId": "graveDirt", "weight": 10 }
+    ],
+
+    "undead_remains_tier3": [
+      { "itemId": "cursedBone", "weight": 50 },
+      { "itemId": "necroticEssence", "weight": 30 },
+      { "itemId": "ancientCoin", "weight": 20 }
+    ],
+
+    "undead_remains_tier4": [
+      { "itemId": "necroticEssence", "weight": 40 },
+      { "itemId": "cursedBone", "weight": 30 },
+      { "itemId": "soulGem", "weight": 20 },
+      { "itemId": "ancientCoin", "weight": 10 }
+    ],
+
+    "magic_items_tier1": [
+      { "itemId": "longsword-plus-1", "weight": 25 },
+      { "itemId": "shortsword-plus-1", "weight": 20 },
+      { "itemId": "battleaxe-plus-1", "weight": 15 },
+      { "itemId": "rapier-plus-1", "weight": 15 },
+      { "itemId": "shortbow-plus-1", "weight": 10 },
+      { "itemId": "chainShirt-plus-1", "weight": 10 },
+      { "itemId": "shield-plus-1", "weight": 5 }
+    ],
+
+    "magic_items_tier2_progressive": [
+      { "itemId": "longsword-plus-2", "weight": 25 },
+      { "itemId": "greatsword-plus-2", "weight": 20 },
+      { "itemId": "battleaxe-plus-2", "weight": 15 },
+      { "itemId": "rapier-plus-2", "weight": 15 },
+      { "itemId": "chainShirt-plus-2", "weight": 10 },
+      { "itemId": "breastplate-plus-2", "weight": 10 },
+      { "itemId": "longsword-plus-1", "weight": 3 },
+      { "itemId": "shortsword-plus-1", "weight": 2 }
+    ],
+
+    "magic_items_tier3_progressive": [
+      { "itemId": "longsword-plus-3", "weight": 20 },
+      { "itemId": "greatsword-plus-3", "weight": 18 },
+      { "itemId": "plateMail-plus-3", "weight": 15 },
+      { "itemId": "cloak-of-protection", "weight": 10 },
+      { "itemId": "ring-of-protection", "weight": 10 },
+      { "itemId": "longsword-plus-2", "weight": 12 },
+      { "itemId": "greatsword-plus-2", "weight": 10 },
+      { "itemId": "longsword-plus-1", "weight": 5 }
+    ]
+  },
+
+  "goldTables": {
+    "byLevelAndCR": {
+      "1-4": {
+        "0-0.5": { "min": 5, "max": 15 },
+        "1-2": { "min": 10, "max": 30 },
+        "3-5": { "min": 25, "max": 75 }
+      },
+      "5-9": {
+        "0-0.5": { "min": 15, "max": 40 },
+        "1-2": { "min": 25, "max": 75 },
+        "3-5": { "min": 50, "max": 150 }
+      },
+      "10-14": {
+        "0-0.5": { "min": 30, "max": 100 },
+        "1-2": { "min": 75, "max": 200 },
+        "3-5": { "min": 150, "max": 400 }
+      },
+      "15+": {
+        "0-0.5": { "min": 100, "max": 300 },
+        "1-2": { "min": 200, "max": 600 },
+        "3-5": { "min": 500, "max": 1500 }
+      }
+    }
+  }
+}
