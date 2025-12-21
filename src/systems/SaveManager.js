@@ -4,6 +4,7 @@
  */
 
 import { gameState } from '../core/GameState.js';
+import { Character } from './Character.js';
 
 class SaveManager {
     constructor() {
@@ -215,12 +216,18 @@ class SaveManager {
     serializeGameState() {
         const state = gameState.data;
 
+        // Snapshot weapon masteries explicitly for redundancy (helps migrate older saves)
+        const weaponMasteries = Array.isArray(state.character?.weaponMasteries)
+            ? [...state.character.weaponMasteries]
+            : [];
+
         return {
             version: this.version,
             timestamp: Date.now(),
             seed: state.seed,
             worldConfig: state.worldConfig,
             character: this.serializeCharacter(state.character),
+            weaponMasteries, // duplicate for backward compatibility/migration
             world: this.serializeWorld(state.world),
             quests: state.quests || { active: [], completed: [] },
             factions: this.serializeMap(state.factions),
@@ -240,10 +247,23 @@ class SaveManager {
         gameState.set('seed', saveData.seed);
         gameState.set('worldConfig', saveData.worldConfig);
 
-        // Restore character (need to reconstruct Character instance)
-        const Character = window.Character; // Assume Character class is globally available
-        if (Character && saveData.character) {
-            const character = Object.assign(new Character(), saveData.character);
+        const savedWeaponMasteries = Array.isArray(saveData.weaponMasteries)
+            ? saveData.weaponMasteries
+            : [];
+
+        // Restore character with Character prototype (without re-running constructor to avoid recalculating stats)
+        if (saveData.character) {
+            const character = Object.assign(
+                Object.create(Character.prototype),
+                saveData.character
+            );
+
+            // Backfill missing fields from older saves
+            const restoredMasteries = Array.isArray(saveData.character.weaponMasteries)
+                ? saveData.character.weaponMasteries
+                : savedWeaponMasteries;
+            character.weaponMasteries = restoredMasteries || [];
+
             gameState.set('character', character);
         } else {
             gameState.set('character', saveData.character);
@@ -305,6 +325,7 @@ class SaveManager {
             skills: character.skills,
             savingThrows: character.savingThrows,
             proficiencies: character.proficiencies,
+            weaponMasteries: character.weaponMasteries || [],
             equipment: character.equipment,
             inventory: character.inventory,
             spellcasting: character.spellcasting,

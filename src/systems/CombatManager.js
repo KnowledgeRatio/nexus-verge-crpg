@@ -20,6 +20,11 @@ class CombatManager {
         this.playerCombatant = null;
         this.enemyCombatants = [];
 
+        // Weapon mastery data (lazy-loaded from JSON)
+        this.weaponMasteryAssignments = this.getFallbackWeaponMasteryAssignments();
+        this.weaponMasteryProficiencyRequired = true;
+        this.weaponMasteryDataLoaded = false;
+
         console.log('⚔️ Combat Manager initialized');
     }
 
@@ -29,6 +34,8 @@ class CombatManager {
      * @param {Array} enemies - Array of enemy characters
      */
     async startCombat(player, enemies) {
+        // Ensure weapon mastery data is loaded before applying effects
+        await this.loadWeaponMasteryData();
         console.log('⚔️ Starting combat encounter!');
 
         this.active = true;
@@ -768,10 +775,14 @@ class CombatManager {
             character.xp += xpGained;
             gameState.addMessage(`+${xpGained} XP (${character.xp} total)`, 'success');
 
-            // Check for level up
-            const leveledUp = character.checkLevelUp();
-            if (leveledUp) {
-                gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
+            // Check for level up (guard for deserialized plain objects)
+            if (typeof character.checkLevelUp === 'function') {
+                const leveledUp = character.checkLevelUp();
+                if (leveledUp) {
+                    gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
+                }
+            } else {
+                console.warn('Character.checkLevelUp is missing; ensure character is properly rehydrated from save.');
             }
 
             // Generate loot from defeated enemies
@@ -913,8 +924,19 @@ class CombatManager {
         if (!combatant.character.weaponMasteries) return false;
         if (!weapon) return false;
 
-        // Check if character has this mastery
-        return combatant.character.weaponMasteries.includes(masteryId);
+        // Mastery must be assigned to this specific weapon
+        const assignedMastery = this.weaponMasteryAssignments[weapon.id];
+        if (!assignedMastery || assignedMastery !== masteryId) return false;
+
+        // Character must actually know the mastery
+        if (!combatant.character.weaponMasteries.includes(masteryId)) return false;
+
+        // Honor proficiency requirement toggle from data
+        if (this.weaponMasteryProficiencyRequired && !combatant.character.isProficientWithWeapon(weapon)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -935,6 +957,77 @@ class CombatManager {
         const adjacentEnemy = this.enemyCombatants.find(c => c.id === nextId);
 
         return adjacentEnemy || null;
+    }
+
+    /**
+     * Load weapon mastery assignments and proficiency rule from data file
+     */
+    async loadWeaponMasteryData() {
+        if (this.weaponMasteryDataLoaded) return;
+
+        try {
+            const response = await fetch(`data/weaponMasteries.json?v=${Date.now()}`);
+            const data = await response.json();
+
+            const assignments = data.weaponMasteries?.weaponMasteryAssignments?.assignments;
+            if (assignments) {
+                this.weaponMasteryAssignments = assignments;
+            }
+
+            const profRequirement = data.weaponMasteries?.proficiencyRequirement?.enabled;
+            this.weaponMasteryProficiencyRequired = profRequirement !== false; // default true
+
+            this.weaponMasteryDataLoaded = true;
+        } catch (error) {
+            console.error('Failed to load weapon mastery data; using fallback map.', error);
+            this.weaponMasteryAssignments = this.getFallbackWeaponMasteryAssignments();
+            this.weaponMasteryProficiencyRequired = true;
+            this.weaponMasteryDataLoaded = true;
+        }
+    }
+
+    /**
+     * Fallback weapon-to-mastery assignments (kept in sync with data/weaponMasteries.json)
+     */
+    getFallbackWeaponMasteryAssignments() {
+        return {
+            club: 'slow',
+            dagger: 'nick',
+            greatclub: 'push',
+            handaxe: 'vex',
+            javelin: 'slow',
+            lightHammer: 'nick',
+            mace: 'sap',
+            quarterstaff: 'topple',
+            sickle: 'nick',
+            spear: 'sap',
+            dart: 'vex',
+            lightCrossbow: 'slow',
+            shortbow: 'vex',
+            sling: 'slow',
+            battleaxe: 'topple',
+            flail: 'sap',
+            glaive: 'graze',
+            greataxe: 'cleave',
+            greatsword: 'graze',
+            halberd: 'cleave',
+            lance: 'topple',
+            longsword: 'sap',
+            maul: 'topple',
+            morningstar: 'sap',
+            pike: 'push',
+            rapier: 'vex',
+            scimitar: 'nick',
+            shortsword: 'vex',
+            trident: 'topple',
+            warhammer: 'push',
+            warpick: 'sap',
+            whip: 'slow',
+            blowgun: 'vex',
+            handCrossbow: 'vex',
+            heavyCrossbow: 'push',
+            longbow: 'slow'
+        };
     }
 
     /**
