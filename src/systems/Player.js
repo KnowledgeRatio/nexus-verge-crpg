@@ -261,7 +261,8 @@ class Player {
 
         const encounterChance = terrainDef.encounterModifier || 0.1;
 
-        if (Math.random() < encounterChance * 0.04) { // 4% base, modified by terrain
+        // Reduce base encounter rate to ~1% (previously 4%), still scaled by terrain modifier
+        if (Math.random() < encounterChance * 0.01) {
             gameState.addMessage('⚔️ A hostile creature appears!', 'warning');
             this.triggerCombatEncounter();
         }

@@ -790,6 +790,9 @@ class CombatManager {
                 const worldSeed = gameState.get('seed');
                 const rng = new SeededRandom(`${worldSeed}_combat_${Date.now()}`);
 
+                // Ensure gold is a valid number before awarding more
+                character.gold = Number(character.gold) || 0;
+
                 let totalGold = 0;
                 const allLootItems = [];
 

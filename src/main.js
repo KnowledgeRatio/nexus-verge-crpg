@@ -739,9 +739,15 @@ class Game {
         // Tab switching for save/load modal
         const tabButtons = document.querySelectorAll('.saveload-tab-btn');
         tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.switchSaveLoadTab(btn.dataset.tab);
-            });
+            // Disable in-game load tab; load is only available from main menu
+            if (btn.dataset.tab === 'load') {
+                btn.disabled = true;
+                btn.title = 'Load from main menu only';
+            } else {
+                btn.addEventListener('click', () => {
+                    this.switchSaveLoadTab(btn.dataset.tab);
+                });
+            }
         });
 
         // Period key (.) to open save/load menu (when in game screen)
@@ -796,6 +802,12 @@ class Game {
      * Switch between save/load tabs
      */
     switchSaveLoadTab(tabName) {
+        // In-game modal only supports saving; block load tab selection
+        if (tabName === 'load') {
+            gameState.addMessage('Load games from the main menu only.', 'warning');
+            tabName = 'save';
+        }
+
         // Update tab button active state
         document.querySelectorAll('.saveload-tab-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.tab === tabName);

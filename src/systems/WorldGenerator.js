@@ -25,6 +25,7 @@ class WorldGenerator {
         this.moistureNoise = new SimplexNoise(numericSeed + 1000);
         this.temperatureNoise = new SimplexNoise(numericSeed + 2000);
         this.featureNoise = new SimplexNoise(numericSeed + 3000);
+        this.riverNoise = new SimplexNoise(numericSeed + 4000); // Separate noise channel to carve rivers
 
         // Base RNG for discrete decisions
         this.baseRNG = new SeededRandom(worldSeed);
@@ -129,9 +130,19 @@ class WorldGenerator {
         const elevation = this.elevationNoise.octaveNoise2D(worldX * scale, worldY * scale, 4, 0.5);
         const moisture = this.moistureNoise.octaveNoise2D(worldX * scale * 0.6, worldY * scale * 0.6, 3, 0.5);
         const temperature = this.temperatureNoise.octaveNoise2D(worldX * scale * 0.8, worldY * scale * 0.8, 3, 0.5);
+        const riverMask = Math.abs(this.riverNoise.octaveNoise2D(worldX * 0.01, worldY * 0.01, 2, 0.8));
 
         // Select terrain based on noise values
-        const terrainType = this.selectTerrain(elevation, moisture, temperature);
+        let terrainType = this.selectTerrain(elevation, moisture, temperature);
+
+        // Carve rivers: thin, winding strips with occasional deeper channels
+        if (terrainType !== 'deepWater' && terrainType !== 'shallowWater') {
+            if (riverMask < 0.02 && elevation > -0.2) {
+                terrainType = 'deepWater';
+            } else if (riverMask < 0.04 && elevation > -0.2) {
+                terrainType = 'shallowWater';
+            }
+        }
 
         return {
             x: worldX,
@@ -154,9 +165,9 @@ class WorldGenerator {
         const m = (moisture + 1) / 2;
         const t = (temperature + 1) / 2;
 
-        // Water (low elevation)
-        if (e < 0.35) {
-            if (e < 0.25) return 'deepWater';
+        // Water (low elevation) - widen shallow band and deepen lowest areas for more lakes
+        if (e < 0.38) {
+            if (e < 0.22) return 'deepWater';
             return 'shallowWater';
         }
 

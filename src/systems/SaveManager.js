@@ -220,6 +220,7 @@ class SaveManager {
         const weaponMasteries = Array.isArray(state.character?.weaponMasteries)
             ? [...state.character.weaponMasteries]
             : [];
+        const gold = Number(state.character?.gold) || 0;
 
         return {
             version: this.version,
@@ -228,6 +229,7 @@ class SaveManager {
             worldConfig: state.worldConfig,
             character: this.serializeCharacter(state.character),
             weaponMasteries, // duplicate for backward compatibility/migration
+            gold, // duplicate gold for backward compatibility/migration
             world: this.serializeWorld(state.world),
             quests: state.quests || { active: [], completed: [] },
             factions: this.serializeMap(state.factions),
@@ -250,6 +252,7 @@ class SaveManager {
         const savedWeaponMasteries = Array.isArray(saveData.weaponMasteries)
             ? saveData.weaponMasteries
             : [];
+        const savedGold = Number(saveData.gold) || 0;
 
         // Restore character with Character prototype (without re-running constructor to avoid recalculating stats)
         if (saveData.character) {
@@ -263,6 +266,8 @@ class SaveManager {
                 ? saveData.character.weaponMasteries
                 : savedWeaponMasteries;
             character.weaponMasteries = restoredMasteries || [];
+            const loadedGold = saveData.character.gold !== undefined ? saveData.character.gold : savedGold;
+            character.gold = Number(loadedGold) || 0;
 
             gameState.set('character', character);
         } else {
@@ -326,6 +331,7 @@ class SaveManager {
             savingThrows: character.savingThrows,
             proficiencies: character.proficiencies,
             weaponMasteries: character.weaponMasteries || [],
+            gold: character.gold,
             equipment: character.equipment,
             inventory: character.inventory,
             spellcasting: character.spellcasting,

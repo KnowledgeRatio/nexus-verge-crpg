@@ -8,6 +8,30 @@
 
 ---
 
+## dY+`a Recent Changes (2025-12-21 - Session 8)
+
+### Hydrology Pass + Lower Encounter Rate バ.
+Improved water layout (lakes/rivers) and reduced random encounter frequency.
+
+**Modified Files:**
+- `src/systems/WorldGenerator.js` - Added dedicated river noise, widened shallow-water band, deepened lowest elevations for lake cores
+- `src/systems/Player.js` - Lowered base encounter roll from 4% to 1% (still scaled by terrain modifiers)
+
+**Implementation Details:**
+
+**1. Rivers + Lakes** バ.
+- New `riverNoise` channel carves narrow, winding strips; tight bands = `deepWater`, edges = `shallowWater`
+- Water thresholds shifted (`deepWater` < 0.22, `shallowWater` < 0.38) to form deeper lakes and fewer blobby puddles
+
+**2. Encounter Frequency** バ.
+- `checkForEncounters`: `Math.random() < encounterChance * 0.01` (was `* 0.04`) — roughly 1% base rate before terrain scaling
+
+**Next Steps:**
+- Tune river noise scale/thresholds for longer continuous flows and estuaries
+- Vary river widths by biome (wider in wetlands/jungle, narrower in hills)
+- Add encounter pacing by area (cooldowns after fights, safer roads/settlements)
+
+---
 ## 🆕 Recent Changes (2025-12-18 - Session 7)
 
 ### Multi-Enemy Encounter System & Bugbear Rebalancing ✅
@@ -2975,3 +2999,5 @@ npx serve .
 **End of Guide**
 
 This document should be updated as the project progresses. Keep it current with architectural changes, new patterns, and important decisions.
+
+
