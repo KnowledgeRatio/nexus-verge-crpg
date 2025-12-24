@@ -609,6 +609,113 @@
             </div>
         </div>
 
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal">
+            <div class="modal-dialog help-dialog">
+                <div class="modal-header">
+                    <h2>📖 Game Manual</h2>
+                    <button class="close-btn" id="closeHelpBtn">&times;</button>
+                </div>
+                <div class="modal-body help-body">
+                    <div class="help-content">
+                        <!-- Quick Reference -->
+                        <section class="help-section">
+                            <h3>⌨️ Controls</h3>
+                            <div class="help-grid">
+                                <div class="help-item"><kbd>W A S D</kbd> / <kbd>Arrow Keys</kbd> - Move</div>
+                                <div class="help-item"><kbd>E</kbd> - Enter settlement</div>
+                                <div class="help-item"><kbd>I</kbd> - Inventory</div>
+                                <div class="help-item"><kbd>C</kbd> - Character sheet</div>
+                                <div class="help-item"><kbd>Q</kbd> - Quest log</div>
+                                <div class="help-item"><kbd>M</kbd> - World map</div>
+                                <div class="help-item"><kbd>R</kbd> - Rest menu</div>
+                                <div class="help-item"><kbd>H</kbd> - Help (this screen)</div>
+                                <div class="help-item"><kbd>ESC</kbd> - Save menu</div>
+                            </div>
+                        </section>
+
+                        <!-- Exploration -->
+                        <section class="help-section">
+                            <h3>🗺️ Exploration</h3>
+                            <p><strong>World Generation:</strong> Each game seed creates a unique procedural world with 18 terrain types, settlements, dungeons, and points of interest.</p>
+                            <p><strong>Fog of War:</strong> Unexplored areas are hidden. Explored tiles remain visible but dimmed. Your vision radius reveals nearby areas.</p>
+                            <p><strong>Random Encounters:</strong> Moving through terrain has a chance to trigger combat encounters. Terrain difficulty affects encounter rate (1% base, scaled by terrain).</p>
+                            <p><strong>Settlements:</strong> Villages, towns, and cities offer NPCs, quests, trading, and rest opportunities. Press <kbd>E</kbd> when adjacent to enter.</p>
+                        </section>
+
+                        <!-- Combat -->
+                        <section class="help-section">
+                            <h3>⚔️ Combat</h3>
+                            <p><strong>Initiative:</strong> Turn order determined by d20 + DEX modifier. Combat is turn-based with action economy.</p>
+                            <p><strong>Actions:</strong> Each turn you have an Action, Bonus Action, and Reaction (not yet implemented).</p>
+                            <p><strong>Attacking:</strong> Roll d20 + ability modifier + proficiency bonus vs enemy AC. Natural 20 = critical hit (double damage dice).</p>
+                            <p><strong>Weapon Masteries:</strong> Special effects based on equipped weapon (Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex).</p>
+                            <p><strong>Fleeing:</strong> Roll d20 + initiative bonus vs DC 30. Success returns you to exploration.</p>
+                        </section>
+
+                        <!-- Character Progression -->
+                        <section class="help-section">
+                            <h3>📈 Character Progression</h3>
+                            <p><strong>Experience:</strong> Gain XP from combat victories based on enemy CR. Level up when reaching XP thresholds (follows D&D 5e progression).</p>
+                            <p><strong>HP & Hit Dice:</strong> HP = class hit die + CON modifier per level. Hit dice used during short rests for healing.</p>
+                            <p><strong>Abilities:</strong> Six ability scores (STR, DEX, CON, INT, WIS, CHA) determine modifiers for all rolls and stats.</p>
+                            <p><strong>Skills:</strong> 13 skills based on abilities. Proficiency bonus applies to skills you're proficient in.</p>
+                        </section>
+
+                        <!-- Rest System -->
+                        <section class="help-section">
+                            <h3>💤 Rest System</h3>
+                            <p><strong>Short Rest:</strong> Roll all hit dice for healing. Maximum 2 per long rest. Can be taken anywhere safe.</p>
+                            <p><strong>Long Rest:</strong> Fully restore HP, recover half hit dice, restore spell slots, reset short rest counter. <em>Requires tavern/inn or sanctuary.</em></p>
+                            <p><strong>Sanctuaries:</strong> Safe rest locations (☼) scattered across wilderness. Allow long rests without settlements.</p>
+                        </section>
+
+                        <!-- Trading & Economy -->
+                        <section class="help-section">
+                            <h3>💰 Trading & Economy</h3>
+                            <p><strong>Merchants:</strong> Found in settlements. Sell weapons, armor, consumables, and equipment.</p>
+                            <p><strong>Charisma Pricing:</strong> Your CHA modifier affects prices (±1% per modifier point). Higher CHA = better deals.</p>
+                            <p><strong>Inventory:</strong> Carrying capacity = STR × 15 lbs. Equip items from inventory to use them.</p>
+                            <p><strong>Equipment Slots:</strong> Main Hand, Off-Hand, Armor, accessories. Light weapons can dual-wield.</p>
+                        </section>
+
+                        <!-- Quests -->
+                        <section class="help-section">
+                            <h3>📜 Quests</h3>
+                            <p><strong>Quest Givers:</strong> NPCs in settlements offer quests based on their roles (leaders, merchants, innkeepers, guards).</p>
+                            <p><strong>Quest Types:</strong> Kill, Retrieve, Deliver, Explore, Skill Challenges. Objectives tracked automatically.</p>
+                            <p><strong>Rewards:</strong> XP, gold, items, reputation. Campaign quests advance the main storyline.</p>
+                            <p><strong>Quest Log:</strong> Press <kbd>Q</kbd> to view active, completed, and failed quests. Track specific quests to highlight them.</p>
+                        </section>
+
+                        <!-- D&D 5e Rules -->
+                        <section class="help-section">
+                            <h3>🎲 D&D 5e Rules</h3>
+                            <p><strong>Proficiency Bonus:</strong> Starts at +2, increases with level. Applies to proficient skills, saves, and attacks.</p>
+                            <p><strong>Armor Class (AC):</strong> Base 10 + DEX modifier + armor bonus + shield bonus.</p>
+                            <p><strong>Ability Modifiers:</strong> (Ability Score - 10) ÷ 2, rounded down. Applied to relevant rolls.</p>
+                            <p><strong>Advantage/Disadvantage:</strong> Roll 2d20, take higher (advantage) or lower (disadvantage).</p>
+                            <p><strong>Critical Hits:</strong> Natural 20 on attack roll = double damage dice (not modifiers).</p>
+                        </section>
+
+                        <!-- Tips -->
+                        <section class="help-section">
+                            <h3>💡 Tips & Tricks</h3>
+                            <ul class="help-tips">
+                                <li>Save frequently using <kbd>ESC</kbd> menu. 5 save slots available.</li>
+                                <li>Rest at settlements before long journeys. Sanctuaries are rare but valuable.</li>
+                                <li>Match weapon masteries to your playstyle. Nick for dual-wielding, Cleave for AoE, etc.</li>
+                                <li>Higher ground and cover don't exist in this simplified combat, focus on equipment and positioning order.</li>
+                                <li>Check character sheet (<kbd>C</kbd>) to review your stats, features, and equipment.</li>
+                                <li>World seeds are shareable! Same seed = same world layout and settlements.</li>
+                                <li>Terrain affects encounter rates: Roads are safer, mountains and swamps are dangerous.</li>
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Quest Notification Toast -->
         <div id="questNotification" class="quest-toast">
             <div class="toast-icon">📜</div>

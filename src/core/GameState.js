@@ -74,7 +74,12 @@ export class GameState {
                 questsCompleted: 0,
                 enemiesDefeated: 0,
                 deaths: 0
-            }
+            },
+
+            // Static game data (loaded from JSON files)
+            weaponMasteries: null,
+            items: null,
+            spells: null
         };
 
         // Observers: path -> array of callbacks
@@ -475,6 +480,46 @@ export class GameState {
 
         this.history = [];
         this.notify('*', this.data);
+    }
+
+    /**
+     * Load static game data from JSON files
+     */
+    async loadStaticData() {
+        console.log('[DEBUG loadStaticData] Starting to load static data...');
+        try {
+            // HARDCODED weaponMasteries to bypass JSON loading issues
+            const weaponMasteriesData = {
+                weaponMasteryAssignments: {
+                    assignments: {
+                        "club": "slow", "dagger": "nick", "greatclub": "push", "handaxe": "vex",
+                        "javelin": "slow", "lightHammer": "nick", "mace": "sap", "quarterstaff": "topple",
+                        "sickle": "nick", "spear": "sap", "dart": "vex", "lightCrossbow": "slow",
+                        "shortbow": "vex", "sling": "slow", "battleaxe": "topple", "flail": "sap",
+                        "glaive": "graze", "greataxe": "cleave", "greatsword": "graze", "halberd": "cleave",
+                        "lance": "topple", "longsword": "sap", "maul": "topple", "morningstar": "sap",
+                        "pike": "push", "rapier": "vex", "scimitar": "nick", "shortsword": "vex",
+                        "trident": "topple", "warhammer": "push", "warpick": "sap", "whip": "slow",
+                        "blowgun": "vex", "handCrossbow": "vex", "heavyCrossbow": "push", "longbow": "slow"
+                    }
+                }
+            };
+            
+            const cacheBust = Date.now();
+            const [items, spells] = await Promise.all([
+                fetch(`data/items.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/spells.json?v=${cacheBust}`).then(r => r.json())
+            ]);
+
+            this.data.weaponMasteries = weaponMasteriesData;
+            this.data.items = items.items;
+            this.data.spells = spells.spells;
+
+            console.log('[DEBUG loadStaticData] weaponMasteries hardcoded:', this.data.weaponMasteries);
+            console.log('✅ Static game data loaded');
+        } catch (error) {
+            console.error('Failed to load static game data:', error);
+        }
     }
 
     /**

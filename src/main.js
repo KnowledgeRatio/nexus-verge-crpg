@@ -72,7 +72,83 @@ class Game {
             this.updateDevModeIndicator(isDevMode);
         });
 
+        // Handle window resize for responsive viewport
+        window.addEventListener('resize', () => {
+            if (this.mapRenderer && this.currentScreen === 'game') {
+                this.handleWindowResize();
+            }
+        });
+
         console.log('✅ Game initialized');
+    }
+
+    /**
+     * Calculate optimal viewport size based on available screen space
+     */
+    calculateOptimalViewport() {
+        const TILE_WIDTH = 12;
+        const TILE_HEIGHT = 16;
+        const SIDE_PANEL_WIDTH = 400; // Widened from 300px
+        const HUD_HEIGHT = 60; // Top HUD
+        const CONTROLS_HEIGHT = 40; // Bottom controls
+        const MIN_WIDTH = 80; // Minimum viewport width in tiles
+        const MIN_HEIGHT = 40; // Minimum viewport height in tiles
+        const MAX_WIDTH = 150; // Maximum viewport width (prevents too wide)
+        const MAX_HEIGHT = 80; // Maximum viewport height (prevents too tall)
+
+        // Get available screen space
+        const availableWidth = window.innerWidth - SIDE_PANEL_WIDTH - 40; // 40px margins
+        const availableHeight = window.innerHeight - HUD_HEIGHT - CONTROLS_HEIGHT - 40; // 40px margins
+
+        // Calculate how many tiles fit
+        let tilesWide = Math.floor(availableWidth / TILE_WIDTH);
+        let tilesHigh = Math.floor(availableHeight / TILE_HEIGHT);
+
+        // Clamp to min/max bounds
+        tilesWide = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, tilesWide));
+        tilesHigh = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, tilesHigh));
+
+        console.log(`📐 Optimal viewport: ${tilesWide}x${tilesHigh} tiles (${tilesWide * TILE_WIDTH}x${tilesHigh * TILE_HEIGHT}px)`);
+
+        return {
+            width: tilesWide,
+            height: tilesHigh
+        };
+    }
+
+    /**
+     * Handle window resize - recalculate and resize viewport
+     */
+    handleWindowResize() {
+        if (!this.mapRenderer) return;
+
+        // Debounce resize events (wait 250ms after last resize)
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            const newSize = this.calculateOptimalViewport();
+            const currentWidth = this.mapRenderer.config.viewportWidth;
+            const currentHeight = this.mapRenderer.config.viewportHeight;
+
+            // Only resize if dimensions changed significantly (avoid flickering)
+            if (Math.abs(newSize.width - currentWidth) >= 5 ||
+                Math.abs(newSize.height - currentHeight) >= 5) {
+
+                this.mapRenderer.resize(
+                    newSize.width * 12,  // tileWidth
+                    newSize.height * 16  // tileHeight
+                );
+
+                // Re-render the map
+                if (this.player) {
+                    this.mapRenderer.renderWorld(
+                        gameState.get('world'),
+                        { x: this.player.x, y: this.player.y }
+                    );
+                }
+
+                console.log(`🔄 Viewport resized to ${newSize.width}x${newSize.height} tiles`);
+            }
+        }, 250);
     }
 
     /**
@@ -241,11 +317,12 @@ class Game {
 
         if (!this.mapRenderer) {
             console.log('🎨 Initializing map renderer...');
+            const viewportSize = this.calculateOptimalViewport();
             this.mapRenderer = new MapRenderer('gameCanvas', {
                 tileWidth: 12,
                 tileHeight: 16,
-                viewportWidth: 80,
-                viewportHeight: 40
+                viewportWidth: viewportSize.width,
+                viewportHeight: viewportSize.height
             });
         }
 
@@ -326,6 +403,9 @@ class Game {
 
         // Setup Inventory System
         this.setupInventory();
+
+        // Setup Help System
+        this.setupHelp();
 
         // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
@@ -1398,6 +1478,57 @@ class Game {
      */
     closeCharacterSheet() {
         const modal = document.getElementById('characterSheetModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Setup Help Modal
+     */
+    setupHelp() {
+        const modal = document.getElementById('helpModal');
+        const closeBtn = document.getElementById('closeHelpBtn');
+
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.closeHelp();
+            });
+        }
+
+        // Close on escape key (when modal is open)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                this.closeHelp();
+            }
+        });
+
+        // Close on backdrop click
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeHelp();
+                }
+            });
+        }
+    }
+
+    /**
+     * Open Help Modal
+     */
+    openHelp() {
+        const modal = document.getElementById('helpModal');
+        if (!modal) return;
+
+        modal.classList.add('active');
+    }
+
+    /**
+     * Close Help Modal
+     */
+    closeHelp() {
+        const modal = document.getElementById('helpModal');
         if (modal) {
             modal.classList.remove('active');
         }
@@ -2649,11 +2780,12 @@ class Game {
 
         // Reinitialize map renderer
         if (!this.mapRenderer) {
+            const viewportSize = this.calculateOptimalViewport();
             this.mapRenderer = new MapRenderer('gameCanvas', {
                 tileWidth: 12,
                 tileHeight: 16,
-                viewportWidth: 80,
-                viewportHeight: 40
+                viewportWidth: viewportSize.width,
+                viewportHeight: viewportSize.height
             });
         }
 

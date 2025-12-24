@@ -240,7 +240,9 @@ body {
 }
 
 .side-panel {
-    width: 300px;
+    width: 400px;
+    min-width: 350px;
+    max-width: 500px;
     background: var(--bg-secondary);
     border-left: 2px solid var(--border-color);
     display: flex;
@@ -264,7 +266,7 @@ body {
 .message-log {
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    max-height: 400px;
+    max-height: 600px;
     overflow-y: auto;
     line-height: 1.4;
 }
@@ -443,11 +445,13 @@ body {
 
 /* Combat Sidebar */
 .combat-sidebar {
-    width: 350px;
+    width: 500px;
+    min-width: 350px;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    overflow-y: auto;
+    overflow: hidden; /* Prevent sidebar scroll, let sections scroll individually */
 }
 
 .sidebar-section {
@@ -455,6 +459,9 @@ body {
     border: 1px solid var(--border-color);
     padding: 15px;
     border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent individual sections from overflowing */
 }
 
 .sidebar-section h4 {
@@ -465,20 +472,36 @@ body {
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
+    flex-shrink: 0; /* Don't shrink headers */
 }
 
 #turnOrder {
     font-family: var(--font-mono);
     font-size: 0.9rem;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 #combatActions {
-    flex: 1;
+    /* Actions section doesn't need max height, buttons are fixed */
 }
 
+/* Combat Log - Dedicated scrollable section */
 #combatLog {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    max-height: 400px; /* Fixed max height */
+    min-height: 200px; /* Minimum height for visibility */
+    overflow-y: auto; /* Always show scrollbar when needed */
+    overflow-x: hidden;
+    padding-right: 5px; /* Space for scrollbar */
+    line-height: 1.4;
+}
+
+/* Ensure combat log parent section grows to fill available space */
+.sidebar-section:has(#combatLog) {
     flex: 1;
-    overflow-y: auto;
+    min-height: 0; /* Allow flex shrinking */
 }
 
 /* Action Buttons */
@@ -597,13 +620,68 @@ body {
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+@media (min-width: 1920px) {
+    /* Large screens (1080p+) - maximize sidebar */
+    .combat-sidebar {
+        width: 600px;
+    }
+
+    #combatLog {
+        max-height: 500px;
+    }
+}
+
+@media (min-width: 1600px) and (max-width: 1919px) {
+    /* Medium-large screens */
+    .combat-sidebar {
+        width: 550px;
+    }
+
+    #combatLog {
+        max-height: 450px;
+    }
+}
+
+@media (max-width: 1599px) and (min-width: 1401px) {
+    /* Medium screens */
+    .combat-sidebar {
+        width: 500px;
+    }
+
+    #combatLog {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 1400px) {
     .side-panel {
-        width: 250px;
+        width: 350px;
     }
 
     .combat-sidebar {
+        width: 400px;
+    }
+
+    #combatLog {
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .side-panel {
         width: 300px;
+    }
+
+    .combat-sidebar {
+        width: 350px;
+    }
+
+    .message-log {
+        max-height: 400px;
+    }
+
+    #combatLog {
+        max-height: 300px;
     }
 }
 
@@ -3576,6 +3654,127 @@ body {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--accent-color);
+}
+
+/* ===================================
+   Help Modal Styles
+   =================================== */
+
+.help-dialog {
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+}
+
+.help-body {
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.help-content {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.help-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.help-section:last-child {
+    border-bottom: none;
+}
+
+.help-section h3 {
+    font-size: 1.3rem;
+    color: var(--text-highlight);
+    margin-bottom: 15px;
+    font-family: var(--font-display);
+}
+
+.help-section p {
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.help-section strong {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.help-section em {
+    color: var(--warning-color);
+    font-style: italic;
+}
+
+/* Keyboard shortcuts */
+.help-section kbd {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 0 var(--border-color);
+    margin: 0 2px;
+    color: var(--text-highlight);
+}
+
+/* Help grid for controls */
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.help-item {
+    padding: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+/* Tips list */
+.help-tips {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.help-tips li {
+    padding: 8px 0 8px 24px;
+    position: relative;
+    font-size: 0.95rem;
+}
+
+.help-tips li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Responsive help modal */
+@media (max-width: 768px) {
+    .help-dialog {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .help-section h3 {
+        font-size: 1.1rem;
+    }
 }
 
 /* ===== Inventory System ===== */

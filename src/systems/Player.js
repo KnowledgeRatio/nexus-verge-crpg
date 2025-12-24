@@ -20,6 +20,7 @@ class Player {
         this.keys = new Set();
         this.moveDelay = 150; // ms between moves
         this.lastMoveTime = 0;
+        this.shownCombatMovementWarning = false;
 
         // Bind input handlers
         this.bindInput();
@@ -105,6 +106,16 @@ class Player {
      * Handle movement input
      */
     async handleMovement(key) {
+        // Block movement during combat
+        if (gameState.get('combat')?.active) {
+            // Show warning message once per combat
+            if (!this.shownCombatMovementWarning) {
+                gameState.addMessage('⚔️ Cannot move during combat!', 'warning');
+                this.shownCombatMovementWarning = true;
+            }
+            return;
+        }
+
         const now = Date.now();
         if (now - this.lastMoveTime < this.moveDelay) {
             return; // Too soon
@@ -475,8 +486,10 @@ class Player {
     }
 
     showHelp() {
-        // Help overlay - TODO: Implement help UI
-        gameState.addMessage('❓ Press H for help (help UI not yet implemented)', 'info');
+        // Open help modal (main.js handles the actual modal)
+        if (window.game && typeof window.game.openHelp === 'function') {
+            window.game.openHelp();
+        }
     }
 }
 

@@ -734,6 +734,11 @@ class CombatManager {
     endCombat(result) {
         this.active = false;
 
+        // Reset combat movement warning flag
+        if (window.game?.player) {
+            window.game.player.shownCombatMovementWarning = false;
+        }
+
         // Clean up all combat-only conditions and mastery effects
         this.combatants.forEach(combatant => {
             // Clean up conditions with 'combat' or 'untilStartOfTurn'/'untilEndOfTurn' duration
