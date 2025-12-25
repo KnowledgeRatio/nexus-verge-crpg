@@ -1,0 +1,206 @@
+{
+  "spells": [
+    {
+      "_comment": "Example spell schema. Actual spells will be added later.",
+      "id": "magic_missile",
+      "type": "spell",
+      "name": "Magic Missile",
+      "tier": 1,
+      "calling": null,
+      "specialization": null,
+      "school": "evocation",
+      "level": 1,
+      "castingTime": "action",
+      "range": 120,
+      "components": ["verbal", "somatic"],
+      "duration": "instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "description": "You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously.",
+      "usableIn": ["combat", "exploration"],
+      "resourceCost": {
+        "type": "spellSlot",
+        "amount": 1,
+        "level": 1
+      },
+      "targeting": {
+        "type": "multiTarget",
+        "count": 3,
+        "range": 120,
+        "allowSameTarget": true,
+        "requireLineOfSight": true
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "damageType": "force",
+          "formula": "1d4 + 1",
+          "target": "each",
+          "autoHit": true
+        }
+      ],
+      "upcast": {
+        "enabled": true,
+        "perLevel": {
+          "type": "addMissiles",
+          "amount": 1
+        }
+      },
+      "visualFeedback": {
+        "icon": "✨",
+        "message": "{casterName} fires {count} glowing missiles!",
+        "animation": "missiles"
+      }
+    },
+    {
+      "_comment": "AOE spell example",
+      "id": "fireball",
+      "type": "spell",
+      "name": "Fireball",
+      "tier": 2,
+      "calling": null,
+      "specialization": null,
+      "school": "evocation",
+      "level": 3,
+      "castingTime": "action",
+      "range": 150,
+      "components": ["verbal", "somatic", "material"],
+      "duration": "instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "description": "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one.",
+      "usableIn": ["combat"],
+      "resourceCost": {
+        "type": "spellSlot",
+        "amount": 1,
+        "level": 3
+      },
+      "targeting": {
+        "type": "areaOfEffect",
+        "shape": "sphere",
+        "radius": 20,
+        "range": 150
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "damageType": "fire",
+          "formula": "8d6",
+          "savingThrow": {
+            "ability": "dex",
+            "dc": "@spellSaveDC",
+            "onSave": "half"
+          }
+        }
+      ],
+      "upcast": {
+        "enabled": true,
+        "perLevel": {
+          "type": "increaseDamage",
+          "formula": "+1d6"
+        }
+      },
+      "visualFeedback": {
+        "icon": "🔥",
+        "message": "{casterName} unleashes a massive fireball!",
+        "animation": "explosion"
+      }
+    },
+    {
+      "_comment": "Buff spell example",
+      "id": "bless",
+      "type": "spell",
+      "name": "Bless",
+      "tier": 1,
+      "calling": null,
+      "specialization": null,
+      "school": "enchantment",
+      "level": 1,
+      "castingTime": "action",
+      "range": 30,
+      "components": ["verbal", "somatic", "material"],
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "description": "You bless up to three creatures of your choice within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target can roll a d4 and add the number rolled to the attack roll or saving throw.",
+      "usableIn": ["combat", "exploration"],
+      "resourceCost": {
+        "type": "spellSlot",
+        "amount": 1,
+        "level": 1
+      },
+      "targeting": {
+        "type": "multiTarget",
+        "count": 3,
+        "range": 30,
+        "allowSameTarget": false,
+        "targetType": "ally"
+      },
+      "effects": [
+        {
+          "type": "applyCondition",
+          "conditionType": "blessed",
+          "duration": "rounds",
+          "roundsRemaining": 10,
+          "target": "each",
+          "executionContext": {
+            "combat": {
+              "message": "{casterName} blesses {targetNames}!",
+              "conditionEffect": {
+                "attackBonus": "1d4",
+                "saveBonus": "1d4"
+              }
+            },
+            "skillCheck": {
+              "message": "Your blessing aids you!",
+              "bonus": "1d4"
+            }
+          }
+        }
+      ],
+      "upcast": {
+        "enabled": true,
+        "perLevel": {
+          "type": "addTargets",
+          "amount": 1
+        }
+      },
+      "visualFeedback": {
+        "icon": "✝️",
+        "message": "{casterName} blesses {targetNames}!",
+        "animation": "goldGlow"
+      }
+    }
+  ],
+
+  "_schema": {
+    "description": "Schema definition for spells.json",
+    "required_fields": ["id", "type", "name", "tier", "school", "level", "castingTime", "range", "components", "duration", "description", "usableIn", "resourceCost", "effects"],
+    "optional_fields": ["calling", "specialization", "concentration", "ritual", "targeting", "upcast", "visualFeedback"],
+    "field_descriptions": {
+      "id": "Unique identifier (lowercase, underscores)",
+      "type": "Must be 'spell'",
+      "name": "Display name",
+      "tier": "Minimum tier required (1-4)",
+      "calling": "Required calling ID or null for any (most spells are null)",
+      "specialization": "Required specialization ID or null for any",
+      "school": "abjuration | conjuration | divination | enchantment | evocation | illusion | necromancy | transmutation",
+      "level": "0-6 (0 = cantrip)",
+      "castingTime": "action | bonusAction | reaction | 1 minute | 10 minutes | 1 hour",
+      "range": "In feet, or 'self' or 'touch'",
+      "components": "Array of: verbal, somatic, material",
+      "duration": "instantaneous | 1 round | 1 minute | 10 minutes | 1 hour | until dispelled",
+      "concentration": "Boolean - requires concentration",
+      "ritual": "Boolean - can be cast as ritual",
+      "resourceCost": "Always type: 'spellSlot', level matches spell level",
+      "upcast": {
+        "enabled": "Boolean",
+        "perLevel": {
+          "type": "increaseDamage | addMissiles | addTargets | extendDuration",
+          "formula": "Formula for damage increase",
+          "amount": "Number for missiles/targets"
+        }
+      }
+    }
+  }
+}

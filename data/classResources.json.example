@@ -1,0 +1,317 @@
+{
+  "classResources": {
+    "_comment": "Defines resource scaling for each calling and specialization",
+
+    "dedication_base": {
+      "stamina": {
+        "type": "stamina",
+        "displayName": "Stamina",
+        "description": "Used for defensive abilities like Second Wind",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": 1,
+          "2": 1,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 3,
+          "7": 3,
+          "8": 3,
+          "9": 3,
+          "10": 4
+        }
+      }
+    },
+
+    "dedication_bladedancer": {
+      "ki": {
+        "type": "ki",
+        "displayName": "Ki Points",
+        "description": "Used for bladedancer techniques",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10
+        }
+      },
+      "stamina": {
+        "_inherits": "dedication_base.stamina"
+      }
+    },
+
+    "dedication_juggernaut": {
+      "stamina": {
+        "type": "stamina",
+        "displayName": "Stamina",
+        "description": "Used for defensive abilities",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": 1,
+          "2": 1,
+          "3": 2,
+          "4": 3,
+          "5": 3,
+          "6": 4,
+          "7": 4,
+          "8": 5,
+          "9": 5,
+          "10": 6
+        }
+      }
+    },
+
+    "dedication_ascetic": {
+      "ki": {
+        "type": "ki",
+        "displayName": "Ki Points",
+        "description": "Used for monk abilities",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": 0,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10
+        }
+      }
+    },
+
+    "scholar_arcanist": {
+      "spellSlots": {
+        "type": "spellSlot",
+        "displayName": "Spell Slots",
+        "description": "Expended to cast spells",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": { "1": 2 },
+          "2": { "1": 3 },
+          "3": { "1": 4, "2": 2 },
+          "4": { "1": 5, "2": 3 },
+          "5": { "1": 5, "2": 3, "3": 2 },
+          "6": { "1": 5, "2": 3, "3": 3 },
+          "7": { "1": 5, "2": 3, "3": 3, "4": 1 },
+          "8": { "1": 5, "2": 3, "3": 3, "4": 2 },
+          "9": { "1": 5, "2": 3, "3": 3, "4": 3, "5": 1 },
+          "10": { "1": 5, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1 }
+        }
+      }
+    },
+
+    "scholar_artificer": {
+      "spellSlots": {
+        "type": "spellSlot",
+        "displayName": "Spell Slots",
+        "description": "Expended to cast spells",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": { "1": 2 },
+          "2": { "1": 2 },
+          "3": { "1": 3, "2": 2 },
+          "4": { "1": 3, "2": 3 },
+          "5": { "1": 4, "2": 3, "3": 2 },
+          "6": { "1": 4, "2": 3, "3": 2 },
+          "7": { "1": 4, "2": 3, "3": 3, "4": 1 },
+          "8": { "1": 4, "2": 3, "3": 3, "4": 1 },
+          "9": { "1": 4, "2": 3, "3": 3, "4": 2, "5": 1 },
+          "10": { "1": 4, "2": 3, "3": 3, "4": 2, "5": 1 }
+        }
+      },
+      "infusions": {
+        "type": "infusion",
+        "displayName": "Infusions",
+        "description": "Number of magical items you can infuse",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": 0,
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "5": 3,
+          "6": 3,
+          "7": 4,
+          "8": 4,
+          "9": 5,
+          "10": 5
+        }
+      }
+    },
+
+    "pact_divine_champion": {
+      "spellSlots": {
+        "type": "spellSlot",
+        "displayName": "Spell Slots",
+        "description": "Expended to cast divine spells",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": { "1": 2 },
+          "2": { "1": 3 },
+          "3": { "1": 4, "2": 2 },
+          "4": { "1": 4, "2": 3 },
+          "5": { "1": 4, "2": 3, "3": 2 },
+          "6": { "1": 4, "2": 3, "3": 3 },
+          "7": { "1": 4, "2": 3, "3": 3, "4": 1 },
+          "8": { "1": 4, "2": 3, "3": 3, "4": 2 },
+          "9": { "1": 4, "2": 3, "3": 3, "4": 3, "5": 1 },
+          "10": { "1": 4, "2": 3, "3": 3, "4": 3, "5": 2 }
+        }
+      },
+      "channelDivinity": {
+        "type": "channelDivinity",
+        "displayName": "Channel Divinity",
+        "description": "Divine power channeled for special effects",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": 0,
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 2,
+          "7": 2,
+          "8": 2,
+          "9": 2,
+          "10": 3
+        }
+      }
+    },
+
+    "pact_voidcaller": {
+      "spellSlots": {
+        "type": "spellSlot",
+        "displayName": "Spell Slots",
+        "description": "Warlock-style pact magic - fewer but higher level slots",
+        "restoredOn": "shortRest",
+        "levels": {
+          "1": { "1": 1 },
+          "2": { "1": 2 },
+          "3": { "2": 2 },
+          "4": { "2": 2 },
+          "5": { "3": 2 },
+          "6": { "3": 2 },
+          "7": { "4": 2 },
+          "8": { "4": 2 },
+          "9": { "5": 2 },
+          "10": { "5": 3 }
+        }
+      },
+      "invocations": {
+        "type": "invocation",
+        "displayName": "Eldritch Invocations",
+        "description": "Number of invocations known",
+        "restoredOn": null,
+        "levels": {
+          "1": 0,
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "5": 3,
+          "6": 3,
+          "7": 4,
+          "8": 4,
+          "9": 5,
+          "10": 5
+        }
+      }
+    },
+
+    "instinct_berserker": {
+      "rage": {
+        "type": "rage",
+        "displayName": "Rage Uses",
+        "description": "Number of times you can rage",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": 2,
+          "2": 2,
+          "3": 3,
+          "4": 3,
+          "5": 3,
+          "6": 4,
+          "7": 4,
+          "8": 4,
+          "9": 5,
+          "10": 5
+        }
+      }
+    },
+
+    "instinct_wildMage": {
+      "rage": {
+        "type": "rage",
+        "displayName": "Rage Uses",
+        "description": "Number of times you can rage",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 3,
+          "5": 3,
+          "6": 3,
+          "7": 4,
+          "8": 4,
+          "9": 4,
+          "10": 5
+        }
+      },
+      "sorceryPoints": {
+        "type": "sorceryPoints",
+        "displayName": "Sorcery Points",
+        "description": "Used for metamagic and creating spell slots",
+        "restoredOn": "longRest",
+        "levels": {
+          "1": 0,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9,
+          "10": 10
+        }
+      }
+    }
+  },
+
+  "_schema": {
+    "description": "Schema definition for classResources.json",
+    "naming_convention": "calling_specialization or calling_base for default resources",
+    "resource_types": {
+      "spellSlot": "Magic user spell slots, object mapping spell levels to counts",
+      "ki": "Monk ki points, integer",
+      "rage": "Barbarian rage uses, integer",
+      "stamina": "Fighter stamina/superiority, integer",
+      "sorceryPoints": "Sorcerer sorcery points, integer",
+      "channelDivinity": "Cleric channel divinity uses, integer",
+      "infusion": "Artificer infusion count, integer",
+      "invocation": "Warlock invocation count, integer (known, not consumed)",
+      "superiorityDice": "Battle master superiority dice, integer with diceType"
+    },
+    "restoredOn_values": {
+      "shortRest": "Resource fully restores on short rest",
+      "longRest": "Resource fully restores on long rest",
+      "null": "Resource doesn't restore (e.g., invocations known)"
+    },
+    "levels_format": {
+      "description": "Object mapping level (1-10) to resource amount",
+      "spellSlots_special": "Spell slots use nested object: level -> {slotLevel: count}",
+      "example_integer": "{ '1': 2, '2': 3, '3': 4 }",
+      "example_spellSlots": "{ '1': {'1': 2}, '2': {'1': 3}, '3': {'1': 4, '2': 2} }"
+    }
+  }
+}
