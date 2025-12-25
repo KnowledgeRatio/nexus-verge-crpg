@@ -6,14 +6,14 @@
       "name": "Bladedancer",
       "calling": "dedication",
       "description": "Masters of agile combat, bladedancers blend martial prowess with graceful movement. They favor finesse weapons and high mobility.",
-      "chosenAtLevel": 4,
+      "chosenAtLevel": 3,
       "primaryAttributes": ["dex", "wis"],
       "playstyle": "Mobile skirmisher with high AC and precision strikes",
       "flavorText": "You have dedicated yourself to the art of the blade dance, a fighting style that emphasizes speed, precision, and grace over brute force.",
 
       "specialAbilities": [
         {
-          "level": 4,
+          "level": 3,
           "type": "ability",
           "abilityId": "whirling_defense",
           "grantedAutomatically": true,
@@ -70,14 +70,14 @@
       "name": "Juggernaut",
       "calling": "dedication",
       "description": "Unstoppable tanks who wade into battle in heavy armor. They specialize in protection, control, and outlasting their foes.",
-      "chosenAtLevel": 4,
+      "chosenAtLevel": 3,
       "primaryAttributes": ["str", "con"],
       "playstyle": "Tanky defender with area control and durability",
       "flavorText": "You have become an immovable object, a wall of steel that protects your allies and crushes your enemies.",
 
       "specialAbilities": [
         {
-          "level": 4,
+          "level": 3,
           "type": "ability",
           "abilityId": "shield_wall",
           "grantedAutomatically": true
@@ -131,14 +131,14 @@
       "name": "Arcanist",
       "calling": "scholar",
       "description": "Pure spellcasters who master arcane theory and devastating magical power. They know the most spells and can manipulate magic itself.",
-      "chosenAtLevel": 4,
+      "chosenAtLevel": 3,
       "primaryAttributes": ["int"],
       "playstyle": "Glass cannon with versatile spellcasting and high spell damage",
       "flavorText": "You have devoted yourself to the study of pure magic, mastering spells that lesser wizards can only dream of.",
 
       "specialAbilities": [
         {
-          "level": 4,
+          "level": 3,
           "type": "trait",
           "abilityId": "spell_mastery",
           "grantedAutomatically": true,
@@ -205,7 +205,7 @@
       "name": "Display name",
       "calling": "Parent calling ID",
       "description": "Short description of the specialization",
-      "chosenAtLevel": "Always 4 for now (when Tier 2 begins)",
+      "chosenAtLevel": "Always 3 for now (when Tier 2 begins)",
       "primaryAttributes": "Array of primary attributes (e.g., ['dex', 'wis'])",
       "playstyle": "One-line summary of playstyle",
       "flavorText": "Roleplay flavor text shown when chosen",

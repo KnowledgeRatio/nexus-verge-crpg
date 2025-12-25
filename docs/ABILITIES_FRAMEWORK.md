@@ -113,8 +113,8 @@ Characters progress through 10 levels organized into 4 tiers:
 
 | Tier | Levels | Name | Description |
 |------|--------|------|-------------|
-| **1** | 1-3 | Adventurer | Learning the basics, establishing core identity |
-| **2** | 4-6 | Master | Mastering techniques, choosing specialization |
+| **1** | 1-2 | Adventurer | Learning the basics, establishing core identity |
+| **2** | 3-6 | Master | Mastering techniques, choosing specialization |
 | **3** | 7-9 | Legend | Legendary abilities, defining unique playstyle |
 | **4** | 10 | Myth | Mythic capstone, ultimate power |
 
@@ -122,51 +122,83 @@ Characters progress through 10 levels organized into 4 tiers:
 Every level grants:
 1. **HP Increase** - Max roll of hit dice + CON modifier
 2. **Attribute Point** - +1 to any attribute (STR, DEX, CON, INT, WIS, CHA)
-3. **Choice from Tier Unlocks** - Pick from anything available in current tier or below
+3. **Automatic Grants** - Some abilities/traits granted automatically at specific levels
+4. **Choice from Tier Unlocks** - Pick ONE from available unlockables in current tier or below
 
 ### Per-Tier Rewards
 Reaching a new tier grants:
 1. **Tier Unlocks** - New categories of unlockables become available
 2. **Resource Upgrades** - New spell slot levels, more ki points, etc.
-3. **Specialization Choice** - At Tier 2 (level 4), choose specialization
+3. **Specialization Choice** - At Tier 2 (level 3), choose specialization
+4. **Automatic Specialization Grants** - Some specializations grant abilities automatically
 
 ### Example Tier Unlocks
 
-**Tier 1 (Adventurer - Levels 1-3)**
-- Basic abilities (Second Wind, Martial Arts, Spellcasting)
-- Cantrips and 1st-level spells
-- Basic traits (Fighting Style, Unarmored Defense)
+**Tier 1 (Adventurer - Levels 1-2)**
+- **Automatic:** Fighting Style (level 1), Second Wind (level 1)
+- **Choice:** Basic abilities, cantrips, 1st-level spells
+- **Choice:** Basic traits (Unarmored Defense, etc.)
 
-**Tier 2 (Master - Levels 4-6)**
-- **Specialization Choice** (level 4)
-- Advanced abilities (Action Surge, Extra Attack, Cunning Action)
-- 2nd and 3rd level spells
-- Improved traits (Evasion, Improved Critical)
+**Tier 2 (Master - Levels 3-6)**
+- **Automatic:** Specialization Choice (level 3), specialization feature (level 3)
+- **Automatic:** Extra Attack (level 5 for martial classes)
+- **Choice:** Advanced abilities (Action Surge, Cunning Action, Stunning Strike)
+- **Choice:** 2nd and 3rd level spells
+- **Choice:** Improved traits (Evasion, Improved Critical)
 
 **Tier 3 (Legend - Levels 7-9)**
-- Legendary abilities (Stunning Strike, Relentless Rage)
-- 4th and 5th level spells
-- Legendary traits (Diamond Soul, Elusive)
+- **Automatic:** Specialization legendary feature (level 7)
+- **Choice:** Legendary abilities (Relentless Rage, Whirlwind Attack)
+- **Choice:** 4th and 5th level spells
+- **Choice:** Legendary traits (Diamond Soul, Elusive)
 
 **Tier 4 (Myth - Level 10)**
-- Mythic capstone ability unique to specialization
-- 6th level spells (if applicable)
-- Mythic traits (Perfect Self, Primal Champion)
+- **Automatic:** Mythic capstone unique to specialization
+- **Choice:** 6th level spells (if applicable)
+- **Choice:** Mythic traits (Perfect Self, Primal Champion)
 
 ### Leveling Flow
 
 ```
-Level Up (e.g., Level 1 → 2)
+Level Up (e.g., Level 2 → 3)
 ├─ Calculate New HP (d10 + CON mod)
 ├─ Grant Attribute Point (player chooses STR/DEX/CON/INT/WIS/CHA)
 ├─ Check Tier Change
 │  ├─ If new tier: Unlock new unlockables
-│  └─ If tier 2 (level 4): Force specialization choice
-├─ Present Choice UI
+│  └─ If tier 2 (level 3): Force specialization choice
+├─ Check Automatic Grants
+│  ├─ Check calling for automatic abilities at this level
+│  ├─ Check specialization for automatic abilities at this level
+│  └─ Grant automatically, no choice needed
+├─ Present Choice UI (if tier provides choices)
 │  ├─ Show all available unlockables (abilities, spells, traits)
 │  ├─ Filter by: tier ≤ current, calling match, specialization match
 │  └─ Player picks ONE
-└─ Apply Choice and Update Character
+└─ Apply Choices and Update Character
+```
+
+### Automatic vs. Choice-Based Unlockables
+
+The framework supports **two types of unlockable grants**:
+
+**1. Automatic Grants** - No player choice, always granted at specific level
+- Fighting Style at level 1 (all martial classes)
+- Second Wind at level 1 (Dedication)
+- Extra Attack at level 5 (martial classes)
+- Specialization features at levels 3, 7, 10
+- Example: All Dedication characters get Fighting Style + Second Wind at level 1
+
+**2. Choice-Based Unlockables** - Player picks ONE per level from available options
+- Each level, player chooses 1 ability/spell/trait from their tier or below
+- Filtered by calling, specialization, prerequisites
+- Example: At level 3, Bladedancer can choose from tier 1-2 abilities
+
+**Combined Example (Level 3 - Master Tier):**
+```
+1. AUTOMATIC: Choose specialization (Bladedancer/Juggernaut/Ascetic)
+2. AUTOMATIC: Grant specialization feature (e.g., Whirling Defense for Bladedancer)
+3. CHOICE: Pick 1 from available tier 1-2 unlockables (abilities/spells/traits)
+4. CHOICE: Allocate 1 attribute point
 ```
 
 ---
@@ -174,7 +206,7 @@ Level Up (e.g., Level 1 → 2)
 ## Specializations (Subclasses)
 
 ### Overview
-At **level 4 (Tier 2 - Master)**, players choose a specialization for their calling. This choice:
+At **level 3 (Tier 2 - Master)**, players choose a specialization for their calling. This choice:
 - **Unlocks unique abilities/spells/traits** available only to that specialization
 - **Modifies playstyle** (e.g., Bladedancer focuses on DEX + finesse, Juggernaut on STR + defense)
 - **Is permanent** for that character (no respec)
@@ -216,7 +248,7 @@ Each calling has **2-3 specializations**:
   "name": "Bladedancer",
   "calling": "dedication",
   "description": "Masters of agile combat, bladedancers blend martial prowess with graceful movement.",
-  "chosenAtLevel": 4,
+  "chosenAtLevel": 3,
   "primaryAttributes": ["dex", "wis"],
   "playstyle": "Mobile skirmisher with high AC and precision strikes",
 
@@ -261,8 +293,8 @@ Each calling has **2-3 specializations**:
 ### Specialization Selection Flow
 
 ```javascript
-// At level 4, force specialization choice
-if (character.level === 4 && !character.specialization) {
+// At level 3, force specialization choice
+if (character.level === 3 && !character.specialization) {
   // Show specialization modal
   const calling = character.class.id;
   const specs = specializationManager.getSpecializationsFor(calling);
@@ -274,7 +306,7 @@ if (character.level === 4 && !character.specialization) {
   character.specialization = chosen.id;
 
   // Grant automatic abilities
-  const autoGrants = chosen.specialAbilities.filter(a => a.level === 4 && a.grantedAutomatically);
+  const autoGrants = chosen.specialAbilities.filter(a => a.level === 3 && a.grantedAutomatically);
   autoGrants.forEach(grant => {
     character.learnUnlockable(grant.abilityId);
   });
@@ -1026,7 +1058,7 @@ class UnlockableManager {
   }
 
   calculateTier(level) {
-    if (level <= 3) return 1; // Adventurer
+    if (level <= 2) return 1; // Adventurer
     if (level <= 6) return 2; // Master
     if (level <= 9) return 3; // Legend
     return 4; // Myth
@@ -1262,14 +1294,14 @@ async levelUp(newLevel) {
   // NEW: Update resources for new level
   this.resources = this.initializeResources();
 
-  // NEW: Check for specialization choice (level 4)
-  if (newLevel === 4 && !this.specialization) {
+  // NEW: Check for specialization choice (level 3)
+  if (newLevel === 3 && !this.specialization) {
     const chosen = await specializationManager.showSpecializationChoice(this);
     this.specialization = chosen.id;
 
     // Grant automatic specialization abilities
     const autoGrants = chosen.specialAbilities.filter(
-      a => a.level === 4 && a.grantedAutomatically
+      a => a.level === 3 && a.grantedAutomatically
     );
     autoGrants.forEach(grant => this.learnUnlockable(grant.abilityId));
   }
