@@ -274,13 +274,6 @@ class CombatManager {
         // Add proficiency bonus
         const proficiency = attacker.character.proficiencyBonus;
 
-        // Ranged weapon bonus: +2 to hit (easier to aim from distance)
-        let rangedBonus = 0;
-        if (isRanged) {
-            rangedBonus = 2;
-            gameState.addMessage(`🏹 Ranged attack: +2 to hit`, 'info');
-        }
-
         // Check for advantage/disadvantage from mastery effects
         let hasAdvantage = false;
         let hasDisadvantage = false;
@@ -340,7 +333,7 @@ class CombatManager {
             gameState.addMessage(`🎲 Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
         }
 
-        const attackTotal = attackRoll + attackBonus + proficiency + rangedBonus;
+        const attackTotal = attackRoll + attackBonus + proficiency;
 
         const isCritical = RULES.combat.criticalHitRange.includes(attackRoll);
         const isCriticalMiss = RULES.combat.criticalMissRange.includes(attackRoll);
@@ -349,7 +342,6 @@ class CombatManager {
         let attackMsg = `Attack roll: ${attackRoll}`;
         if (attackBonus !== 0) attackMsg += ` + ${attackBonus} (ability)`;
         if (proficiency !== 0) attackMsg += ` + ${proficiency} (prof)`;
-        if (rangedBonus !== 0) attackMsg += ` + ${rangedBonus} (ranged)`;
         attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
 
         gameState.addMessage(attackMsg, 'info');
@@ -382,10 +374,6 @@ class CombatManager {
             if (isOffHandAttack) {
                 damageBonus = 0;
                 gameState.addMessage(`⚔️ Off-hand attack: No ability modifier to damage`, 'info');
-            } else if (isRanged) {
-                // Ranged weapons get -2 penalty
-                damageBonus = Math.max(0, attackBonus - 2); // -2 damage for ranged, minimum 0
-                gameState.addMessage(`🏹 Ranged penalty: -2 damage`, 'info');
             }
 
             const damageTotal = damageRoll + damageBonus;

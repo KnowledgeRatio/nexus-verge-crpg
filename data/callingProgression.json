@@ -1,0 +1,223 @@
+{
+  "progressionRules": {
+    "description": "Defines what is automatically granted or chosen at each level for each calling. This works alongside the tier-based unlockable system.",
+
+    "dedication": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "secondWind",
+            "source": "abilities.dedication",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "5": [
+          {
+            "type": "feature",
+            "id": "extraAttack",
+            "description": "Can attack twice when taking the Attack action"
+          }
+        ]
+      },
+
+      "automaticChoices": {
+        "1": [
+          {
+            "name": "Fighting Style",
+            "chooseFrom": "fightingStyles",
+            "count": 1,
+            "description": "Choose one Fighting Style that defines your combat specialty",
+            "options": [
+              "fighting_style_archery",
+              "fighting_style_defense",
+              "fighting_style_dueling",
+              "fighting_style_great_weapon_fighting",
+              "fighting_style_protection",
+              "fighting_style_two_weapon_fighting",
+              "fighting_style_thrown_weapon_fighting",
+              "fighting_style_unarmed_fighting",
+              "fighting_style_blind_fighting",
+              "fighting_style_interception",
+              "fighting_style_mariner"
+            ],
+            "source": "traits"
+          }
+        ]
+      }
+    },
+
+    "wanderlust": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "sneakAttack",
+            "source": "abilities.wanderlust",
+            "description": "Automatically granted at level 1"
+          },
+          {
+            "type": "ability",
+            "id": "bardicInspiration",
+            "source": "abilities.wanderlust",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "2": [
+          {
+            "type": "ability",
+            "id": "cunningAction",
+            "source": "abilities.wanderlust",
+            "description": "Automatically granted at level 2"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    },
+
+    "bond": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "huntersMark",
+            "source": "abilities.bond",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "2": [
+          {
+            "type": "ability",
+            "id": "wildShape",
+            "source": "abilities.bond",
+            "description": "Automatically granted at level 2"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    },
+
+    "oath": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "layOnHands",
+            "source": "abilities.oath",
+            "description": "Automatically granted at level 1"
+          },
+          {
+            "type": "ability",
+            "id": "crimsonRite",
+            "source": "abilities.oath",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "2": [
+          {
+            "type": "ability",
+            "id": "divineSmite",
+            "source": "abilities.oath",
+            "description": "Automatically granted at level 2"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    },
+
+    "instinct": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "rage",
+            "source": "abilities.instinct",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "2": [
+          {
+            "type": "ability",
+            "id": "recklessAttack",
+            "source": "abilities.instinct",
+            "description": "Automatically granted at level 2"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    },
+
+    "scholar": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "arcaneRecovery",
+            "source": "abilities.scholar",
+            "description": "Automatically granted at level 1"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    },
+
+    "pact": {
+      "automaticGrants": {
+        "1": [
+          {
+            "type": "ability",
+            "id": "eldritchBlast",
+            "source": "abilities.pact",
+            "description": "Automatically granted at level 1"
+          }
+        ],
+        "2": [
+          {
+            "type": "ability",
+            "id": "channelDivinity_turnUndead",
+            "source": "abilities.pact",
+            "description": "Automatically granted at level 2"
+          }
+        ]
+      },
+
+      "automaticChoices": {}
+    }
+  },
+
+  "schema": {
+    "automaticGrants": {
+      "description": "Abilities/features/traits granted automatically at specific levels with no player choice",
+      "structure": {
+        "level": [
+          {
+            "type": "ability | spell | trait | feature",
+            "id": "identifier matching data file",
+            "source": "which data file/section (e.g., 'abilities.dedication', 'traits')",
+            "description": "Why this is granted"
+          }
+        ]
+      }
+    },
+    "automaticChoices": {
+      "description": "Player must choose from a limited set of options at specific levels",
+      "structure": {
+        "level": [
+          {
+            "name": "Display name for the choice (e.g., 'Fighting Style')",
+            "chooseFrom": "category identifier",
+            "count": "number of choices (usually 1)",
+            "description": "Help text for the player",
+            "options": ["array", "of", "ids"],
+            "source": "which data file contains the options"
+          }
+        ]
+      }
+    }
+  }
+}

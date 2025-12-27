@@ -1,0 +1,207 @@
+{
+  "traits": [
+    {
+      "_comment": "Example trait schema. Actual traits will be added later.",
+      "id": "fighting_style_dueling",
+      "type": "trait",
+      "name": "Fighting Style: Dueling",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "description": "When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "damageBonus",
+          "amount": 2,
+          "condition": {
+            "weaponSlot": "mainHand",
+            "weaponType": "melee",
+            "offHandEmpty": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "⚔️",
+        "message": null
+      }
+    },
+    {
+      "_comment": "Another fighting style example",
+      "id": "fighting_style_archery",
+      "type": "trait",
+      "name": "Fighting Style: Archery",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "description": "You gain a +2 bonus to attack rolls you make with ranged weapons.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "attackBonus",
+          "amount": 2,
+          "condition": {
+            "weaponType": "ranged"
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🏹",
+        "message": null
+      }
+    },
+    {
+      "_comment": "Unarmored defense example",
+      "id": "unarmored_defense",
+      "type": "trait",
+      "name": "Unarmored Defense",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": "ascetic",
+      "description": "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Wisdom modifier.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "acCalculation",
+          "formula": "10 + @dexMod + @wisMod",
+          "condition": {
+            "noArmor": true
+          },
+          "overridesBaseAC": true
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🛡️",
+        "message": null
+      }
+    },
+    {
+      "_comment": "Alert feat example",
+      "id": "alert",
+      "type": "trait",
+      "name": "Alert",
+      "tier": 1,
+      "calling": null,
+      "specialization": null,
+      "description": "Always on the lookout for danger, you gain +5 to initiative rolls and can't be surprised while conscious.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "initiativeBonus",
+          "amount": 5
+        },
+        {
+          "type": "immuneToCondition",
+          "conditionType": "surprised",
+          "condition": {
+            "conscious": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "👁️",
+        "message": null
+      }
+    },
+    {
+      "_comment": "Evasion example",
+      "id": "evasion",
+      "type": "trait",
+      "name": "Evasion",
+      "tier": 2,
+      "calling": "wanderlust",
+      "specialization": null,
+      "prerequisite": null,
+      "description": "When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "savingThrowSpecial",
+          "ability": "dex",
+          "onSuccess": "noDamage",
+          "onFailure": "halfDamage"
+        }
+      ],
+      "visualFeedback": {
+        "icon": "💨",
+        "message": "{characterName} nimbly dodges the effect!"
+      }
+    },
+    {
+      "_comment": "Specialization capstone example",
+      "id": "mythic_bladedancer",
+      "type": "trait",
+      "name": "Dance of Ten Thousand Cuts",
+      "tier": 4,
+      "calling": "dedication",
+      "specialization": "bladedancer",
+      "description": "Your mastery of the bladedancer style has reached mythic levels. When you take the Attack action, you can make one additional attack. Additionally, your AC increases by 2 while you are not wearing heavy armor.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "extraAttack",
+          "amount": 1,
+          "condition": {
+            "actionType": "attack"
+          }
+        },
+        {
+          "type": "acBonus",
+          "amount": 2,
+          "condition": {
+            "noHeavyArmor": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "⚡",
+        "message": null
+      }
+    }
+  ],
+
+  "_schema": {
+    "description": "Schema definition for traits.json",
+    "required_fields": ["id", "type", "name", "tier", "calling", "description", "passive", "permanent", "effects"],
+    "optional_fields": ["specialization", "prerequisite", "visualFeedback"],
+    "field_descriptions": {
+      "id": "Unique identifier (lowercase, underscores)",
+      "type": "Must be 'trait'",
+      "name": "Display name",
+      "tier": "Minimum tier required (1-4)",
+      "calling": "Required calling ID or null for any",
+      "specialization": "Required specialization ID or null for any",
+      "prerequisite": "ID of required trait to learn this one",
+      "description": "Full text description",
+      "passive": "Always true for traits - effects always active",
+      "permanent": "Usually true - traits persist",
+      "effects": "Array of passive effect objects",
+      "visualFeedback": {
+        "icon": "Emoji or icon",
+        "message": "Usually null for passive traits, can have message for reactive traits like Evasion"
+      }
+    },
+    "common_effect_types_for_traits": {
+      "damageBonus": "Adds to damage rolls (Fighting Style: Dueling)",
+      "attackBonus": "Adds to attack rolls (Fighting Style: Archery)",
+      "acBonus": "Adds to AC",
+      "acCalculation": "Replaces AC calculation (Unarmored Defense)",
+      "initiativeBonus": "Adds to initiative (Alert)",
+      "skillBonus": "Adds to specific skill",
+      "skillExpertise": "Doubles proficiency on specific skill",
+      "saveBonus": "Adds to saving throws",
+      "speedBonus": "Adds to movement speed",
+      "extraAttack": "Grants additional attacks",
+      "immuneToCondition": "Immune to specific condition",
+      "resistanceTo": "Resistance to damage type",
+      "advantage": "Advantage on specific rolls",
+      "savingThrowSpecial": "Special saving throw behavior (Evasion)"
+    }
+  }
+}
