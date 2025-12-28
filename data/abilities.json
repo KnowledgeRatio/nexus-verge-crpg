@@ -4,16 +4,51 @@
 
     "dedication": [
       {
-        "id": "secondWind",
-        "name": "Second Wind",
+        "id": "steadyNerve",
+        "name": "Steady Nerve",
         "callings": ["dedication"],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "shortRest",
         "usesPerShortRest": 1,
-        "description": "You have a limited well of stamina to protect yourself. As a bonus action, regain hit points equal to 1d10 + your level.",
+        "description": "You have a well of inner resolve to draw upon. As a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + CON modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn).",
         "effects": {
-          "healing": "1d10 + level"
+          "choice": true,
+          "options": [
+            {
+              "id": "heal",
+              "name": "Heal",
+              "description": "Regain 1d8 + Dedication level + CON modifier hit points",
+              "healing": "1d8 + level + con"
+            },
+            {
+              "id": "attack",
+              "name": "Attack",
+              "description": "Make one weapon attack as part of this bonus action",
+              "effect": "weapon_attack"
+            },
+            {
+              "id": "dash",
+              "name": "Dash",
+              "description": "Double your movement speed for this turn (not yet implemented)",
+              "effect": "dash",
+              "implemented": false
+            },
+            {
+              "id": "disengage",
+              "name": "Disengage",
+              "description": "Your movement doesn't provoke opportunity attacks this turn (not yet implemented)",
+              "effect": "disengage",
+              "implemented": false
+            },
+            {
+              "id": "dodge",
+              "name": "Dodge",
+              "description": "Until the start of your next turn, attack rolls against you have disadvantage",
+              "effect": "dodge",
+              "implemented": true
+            }
+          ]
         }
       },
 

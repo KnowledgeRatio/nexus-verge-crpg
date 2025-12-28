@@ -278,6 +278,12 @@ class CombatManager {
         let hasAdvantage = false;
         let hasDisadvantage = false;
 
+        // Dodge: Defender is dodging - attacker has disadvantage
+        if (defender.hasCondition('dodging')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (${defender.name} is dodging)! 🛡️`, 'warning');
+        }
+
         // Prone condition: Attacker has disadvantage on their own attacks while prone
         if (attacker.hasCondition('prone')) {
             hasDisadvantage = true;
@@ -641,6 +647,39 @@ class CombatManager {
         } else {
             gameState.addMessage(`${combatant.name} fails to escape!`, 'error');
         }
+
+        combatant.consumeAction('action');
+        this.updateGameState();
+    }
+
+    /**
+     * Take the Dodge action
+     * D&D 5e SRD 5.2.1 2024: Until the start of your next turn, any attack roll made against you has disadvantage,
+     * and you make Dexterity saving throws with advantage (if not hidden from attacker)
+     */
+    dodge(combatant) {
+        if (!combatant.actions.action) {
+            gameState.addMessage(`${combatant.name} has no action available!`, 'error');
+            return;
+        }
+
+        gameState.addMessage(
+            `🛡️ ${combatant.name} takes the Dodge action, focusing entirely on avoiding attacks!`,
+            combatant.team === 'player' ? 'success' : 'warning'
+        );
+
+        // Apply dodging condition until start of next turn
+        combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
+            value: null,
+            isBuff: true,
+            curable: false,
+            icon: '🛡️'
+        });
+
+        gameState.addMessage(
+            `Attackers have disadvantage until the start of ${combatant.name}'s next turn!`,
+            'info'
+        );
 
         combatant.consumeAction('action');
         this.updateGameState();
