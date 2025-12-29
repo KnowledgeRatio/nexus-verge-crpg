@@ -7,7 +7,7 @@
         "1": [
           {
             "type": "ability",
-            "id": "secondWind",
+            "id": "steadyNerve",
             "source": "abilities.dedication",
             "description": "Automatically granted at level 1"
           }
