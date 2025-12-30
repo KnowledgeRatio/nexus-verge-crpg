@@ -15,6 +15,7 @@ export class Character {
         this.race = data.race;           // Race object from races.json
         this.class = data.class;         // Class object from classes.json
         this.background = data.background; // Background object from backgrounds.json
+        this.fightingStyle = data.fightingStyle || null; // Fighting style choice (if applicable)
         this.level = data.level || 1;
         this.xp = data.xp || 0;
 

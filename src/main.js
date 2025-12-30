@@ -5,6 +5,7 @@
 
 import { gameState } from './core/GameState.js';
 import { generateSeedString } from './utils/rng.js';
+import { rollDice } from './utils/dice.js';
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
 import SettlementUI from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
@@ -519,14 +520,16 @@ class Game {
 
         const currentTurn = combatState.currentTurn;
 
-        // Render player combatants
+        // Render player combatants (clickable for self-targeting)
         const playerCombatants = combatState.combatants.filter(c => c.team === 'player');
         playerDiv.innerHTML = playerCombatants.map(c => {
             const conditionsDisplay = c.conditions && c.conditions.length > 0
                 ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
                 : '';
             return `
-                <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}">
+                <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}"
+                     data-combatant-id="${c.id}"
+                     onclick="window.game.handleTargetClick('${c.id}')">
                     <div class="combatant-name">${c.name}</div>
                     <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
                     <div class="hp-bar">
@@ -674,12 +677,22 @@ class Game {
      */
     selectAction(actionType) {
         this.selectedAction = actionType;
-        gameState.addMessage(`Select a target to ${actionType}`, 'info');
 
         if (actionType === 'flee') {
             this.combatManager.flee(this.combatManager.playerCombatant);
             this.selectedAction = null;
+            return;
         }
+
+        if (actionType === 'ability') {
+            // Show ability selection modal instead of asking for target
+            this.showAbilitySelection();
+            this.selectedAction = null;
+            return;
+        }
+
+        // For attack actions, ask for target
+        gameState.addMessage(`Select a target to ${actionType}`, 'info');
     }
 
     /**
@@ -699,7 +712,14 @@ class Game {
             return;
         }
 
-        const target = this.combatManager.enemyCombatants.find(e => e.id === targetId);
+        // Allow targeting self or enemies
+        let target;
+        if (targetId === 'player' || targetId === currentCombatant.id) {
+            target = this.combatManager.playerCombatant;
+        } else {
+            target = this.combatManager.enemyCombatants.find(e => e.id === targetId);
+        }
+
         if (!target || target.hp <= 0) {
             gameState.addMessage('Invalid target!', 'error');
             return;
@@ -720,7 +740,8 @@ class Game {
                 this.combatManager.attack(attacker, target, 'offHand');
                 break;
             case 'ability':
-                gameState.addMessage('Abilities not yet implemented', 'error');
+                // This should not be called anymore - abilities go through modal
+                gameState.addMessage('Use the Ability button to select an ability', 'error');
                 break;
             case 'spell':
                 gameState.addMessage('Spells not yet implemented', 'error');
@@ -1180,6 +1201,323 @@ class Game {
         setTimeout(() => {
             toast.classList.remove('show');
         }, 4000);
+    }
+
+    /**
+     * Show ability selection modal
+     */
+    async showAbilitySelection() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Load abilities data if not already loaded
+        if (!this.abilitiesData) {
+            try {
+                const response = await fetch('data/abilities.json');
+                this.abilitiesData = await response.json();
+            } catch (error) {
+                console.error('Failed to load abilities data:', error);
+                gameState.addMessage('Failed to load abilities data', 'error');
+                return;
+            }
+        }
+
+        // Get available abilities for character's calling
+        const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
+        const availableAbilities = callingAbilities.filter(ability =>
+            character.level >= ability.levelRequired
+        );
+
+        if (availableAbilities.length === 0) {
+            gameState.addMessage('No abilities available yet', 'info');
+            return;
+        }
+
+        // Create ability selection modal HTML
+        const modalHTML = `
+            <div id="abilitySelectionModal" class="modal active">
+                <div class="modal-content ability-modal">
+                    <div class="modal-header">
+                        <h2>Select Ability</h2>
+                        <button id="closeAbilityModalBtn" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="ability-list">
+                            ${availableAbilities.map(ability => this.renderAbilityOption(ability, character)).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remove existing modal if any
+        const existingModal = document.getElementById('abilitySelectionModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // Setup event listeners
+        const modal = document.getElementById('abilitySelectionModal');
+        const closeBtn = document.getElementById('closeAbilityModalBtn');
+
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+
+        // Ability button clicks
+        document.querySelectorAll('.ability-option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const abilityId = btn.dataset.abilityId;
+                const ability = availableAbilities.find(a => a.id === abilityId);
+                if (ability) {
+                    this.useAbility(ability, character);
+                    modal.remove();
+                }
+            });
+        });
+    }
+
+    /**
+     * Render an ability option in the selection modal
+     */
+    renderAbilityOption(ability, character) {
+        // Check if ability is usable (has charges remaining)
+        const canUse = this.canUseAbility(ability, character);
+        const usesText = this.getAbilityUsesText(ability, character);
+
+        return `
+            <div class="ability-option ${!canUse ? 'disabled' : ''}">
+                <div class="ability-option-header">
+                    <h3>${ability.name}</h3>
+                    <span class="ability-uses">${usesText}</span>
+                </div>
+                <p class="ability-description">${ability.description}</p>
+                <div class="ability-meta">
+                    <span class="ability-action-type">${this.formatActionType(ability.actionType)}</span>
+                    ${ability.resourceType ? `<span class="ability-resource">${this.formatResourceType(ability.resourceType)}</span>` : ''}
+                </div>
+                <button class="ability-option-btn" data-ability-id="${ability.id}" ${!canUse ? 'disabled' : ''}>
+                    Use Ability
+                </button>
+            </div>
+        `;
+    }
+
+    /**
+     * Check if character can use an ability
+     */
+    canUseAbility(ability, character) {
+        // Check resource availability
+        if (ability.resourceType === 'shortRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerShortRest || 1;
+            return used < max;
+        }
+        // Add more resource type checks as needed
+        return true;
+    }
+
+    /**
+     * Get ability uses remaining text
+     */
+    getAbilityUsesText(ability, character) {
+        if (ability.resourceType === 'shortRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerShortRest || 1;
+            const remaining = max - used;
+            return `${remaining}/${max} uses`;
+        }
+        return 'Available';
+    }
+
+    /**
+     * Format action type for display
+     */
+    formatActionType(actionType) {
+        const types = {
+            action: 'Action',
+            bonusAction: 'Bonus Action',
+            reaction: 'Reaction',
+            free: 'Free'
+        };
+        return types[actionType] || actionType;
+    }
+
+    /**
+     * Format resource type for display
+     */
+    formatResourceType(resourceType) {
+        const types = {
+            shortRest: 'Short Rest',
+            longRest: 'Long Rest',
+            stamina: 'Stamina'
+        };
+        return types[resourceType] || resourceType;
+    }
+
+    /**
+     * Use an ability
+     */
+    async useAbility(ability, character) {
+        console.log('Using ability:', ability.name);
+
+        // Initialize abilityUses if not exists
+        if (!character.abilityUses) {
+            character.abilityUses = {};
+        }
+
+        // Handle Steady Nerve ability with choices
+        if (ability.id === 'steadyNerve' && ability.effects.choice) {
+            this.showSteadyNerveChoices(ability, character);
+            return;
+        }
+
+        // For other abilities, implement their effects
+        gameState.addMessage(`${ability.name} used! (Effect not yet implemented)`, 'info');
+
+        // Track usage
+        if (ability.resourceType === 'shortRest') {
+            character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
+            gameState.set('character', character);
+        }
+
+        // End turn if it consumed an action
+        if (ability.actionType === 'action' || ability.actionType === 'bonusAction') {
+            this.combatManager.endTurn();
+        }
+    }
+
+    /**
+     * Show Steady Nerve ability choices modal
+     */
+    showSteadyNerveChoices(ability, character) {
+        const options = ability.effects.options.filter(opt => opt.implemented !== false);
+
+        const modalHTML = `
+            <div id="steadyNerveModal" class="modal active">
+                <div class="modal-content ability-modal">
+                    <div class="modal-header">
+                        <h2>${ability.name}</h2>
+                        <button id="closeSteadyNerveBtn" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>${ability.description}</p>
+                        <div class="ability-choices">
+                            ${options.map(option => `
+                                <button class="ability-choice-btn" data-option-id="${option.id}">
+                                    <strong>${option.name}</strong>
+                                    <p>${option.description}</p>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remove existing modal
+        const existingModal = document.getElementById('steadyNerveModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Add modal
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        const modal = document.getElementById('steadyNerveModal');
+        const closeBtn = document.getElementById('closeSteadyNerveBtn');
+
+        closeBtn.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+
+        // Choice button clicks
+        document.querySelectorAll('.ability-choice-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const optionId = btn.dataset.optionId;
+                const option = options.find(o => o.id === optionId);
+                if (option) {
+                    this.executeSteadyNerveOption(option, ability, character);
+                    modal.remove();
+                }
+            });
+        });
+    }
+
+    /**
+     * Execute a Steady Nerve option
+     */
+    executeSteadyNerveOption(option, ability, character) {
+        const combatant = this.combatManager.playerCombatant;
+
+        switch (option.id) {
+            case 'heal':
+                // Heal: 1d8 + level + CON modifier
+                const healAmount = rollDice(1, 8) + character.level + character.abilityModifiers.con;
+                const oldHP = combatant.hp;
+                combatant.hp = Math.min(combatant.maxHP, combatant.hp + healAmount);
+                const actualHealing = combatant.hp - oldHP;
+
+                gameState.addMessage(`💚 Steady Nerve (Heal): ${character.name} heals for ${actualHealing} HP!`, 'success');
+
+                // Update combat state to reflect HP change
+                gameState.set('combat', {
+                    active: true,
+                    round: this.combatManager.round,
+                    currentTurn: this.combatManager.getCurrentCombatant()?.id,
+                    combatants: this.combatManager.combatants.map(c => c.toJSON())
+                });
+                break;
+
+            case 'attack':
+                // Make weapon attack - need to select target
+                gameState.addMessage(`⚔️ Steady Nerve (Attack): Select a target to attack`, 'info');
+                this.selectedAction = 'attack';
+                break;
+
+            case 'dodge':
+                // Apply Dodge condition
+                combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
+                    isBuff: true,
+                    curable: false,
+                    icon: '🛡️'
+                });
+                gameState.addMessage(`🛡️ Steady Nerve (Dodge): ${character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
+                break;
+
+            default:
+                gameState.addMessage(`${option.name} not yet implemented`, 'warning');
+        }
+
+        // Track usage
+        if (!character.abilityUses) {
+            character.abilityUses = {};
+        }
+        character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
+        gameState.set('character', character);
+
+        // Update combat state
+        gameState.set('combat', {
+            active: true,
+            round: this.combatManager.round,
+            currentTurn: this.combatManager.getCurrentCombatant()?.id,
+            combatants: this.combatManager.combatants.map(c => c.toJSON())
+        });
+
+        // End turn after using ability (bonus action consumed)
+        if (option.id !== 'attack') {
+            this.combatManager.endTurn();
+        }
     }
 
     /**

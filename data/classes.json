@@ -39,19 +39,19 @@
         "1": [
           {
             "name": "Fighting Style",
-            "description": "Choose a fighting style: Defense (+1 AC in armor), Dueling (+2 damage with one-handed melee weapon), Great Weapon Fighting (reroll 1s and 2s on two-handed weapon damage), or Unarmed Fighting (1d6 unarmed strikes, 1d8 if both hands free).",
+            "description": "Choose a fighting style: Archery (+2 ranged attack rolls), Defense (+1 AC in armor), Dueling (+2 damage with one-handed melee weapon), Great Weapon Fighting (reroll 1s and 2s on two-handed weapon damage), Mariner (traverse deep water, +1 AC if no heavy armor/shield), or Unarmed Fighting (1d6 unarmed strikes, 1d8 if both hands free).",
             "choices": {
               "choose": 1,
-              "from": ["defense", "dueling", "greatWeaponFighting", "unarmedFighting"]
+              "from": ["archery", "defense", "dueling", "greatWeaponFighting", "mariner", "unarmedFighting"]
             }
           },
           {
-            "name": "Second Wind",
-            "description": "Bonus action to regain 1d10 + your level HP. Once per short rest.",
+            "name": "Steady Nerve",
+            "description": "As a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + CON modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn). Once per short rest.",
             "type": "bonusAction",
             "uses": 1,
             "recharge": "shortRest",
-            "abilityRef": "secondWind"
+            "abilityRef": "steadyNerve"
           },
           {
             "name": "Martial Arts",

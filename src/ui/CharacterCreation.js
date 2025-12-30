@@ -11,7 +11,6 @@ export class CharacterCreationUI {
     constructor() {
         this.container = document.getElementById('charCreationContent');
         this.currentStep = 1;
-        this.maxSteps = 8; // Updated to include weapon masteries
 
         // Character creation data
         this.characterData = {
@@ -19,6 +18,7 @@ export class CharacterCreationUI {
             race: null,
             class: null,
             background: null,
+            fightingStyle: null, // New: fighting style selection (if applicable)
             baseAbilities: {
                 str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10
             },
@@ -85,29 +85,36 @@ export class CharacterCreationUI {
         const content = document.createElement('div');
         content.className = 'creation-step';
 
-        switch (this.currentStep) {
-            case 1:
+        // Dynamically render step based on current position
+        const steps = this.getSteps();
+        const currentStepName = steps[this.currentStep - 1];
+
+        switch (currentStepName) {
+            case 'Name':
                 this.renderNameStep(content);
                 break;
-            case 2:
+            case 'Culture':
                 this.renderRaceStep(content);
                 break;
-            case 3:
+            case 'Background':
                 this.renderBackgroundStep(content);
                 break;
-            case 4:
+            case 'Calling':
                 this.renderClassStep(content);
                 break;
-            case 5:
+            case 'Fighting Style':
+                this.renderFightingStyleStep(content);
+                break;
+            case 'Abilities':
                 this.renderAbilityScoresStep(content);
                 break;
-            case 6:
+            case 'Skills':
                 this.renderSkillsStep(content);
                 break;
-            case 7:
+            case 'Masteries':
                 this.renderWeaponMasteriesStep(content);
                 break;
-            case 8:
+            case 'Review':
                 this.renderReviewStep(content);
                 break;
         }
@@ -122,7 +129,7 @@ export class CharacterCreationUI {
                 Previous
             </button>
             <button id="nextBtn" class="menu-btn">
-                ${this.currentStep === 8 ? 'Create Character' : 'Next'}
+                ${this.currentStep === this.getSteps().length ? 'Create Character' : 'Next'}
             </button>
         `;
         this.container.appendChild(nav);
@@ -133,10 +140,43 @@ export class CharacterCreationUI {
     }
 
     /**
+     * Get dynamic step list based on selected class
+     */
+    getSteps() {
+        const baseSteps = ['Name', 'Culture', 'Background', 'Calling'];
+
+        // Conditionally add Fighting Style if class has it at level 1
+        if (this.hasFightingStyleAtLevel1()) {
+            baseSteps.push('Fighting Style');
+        }
+
+        baseSteps.push('Abilities', 'Skills', 'Masteries', 'Review');
+        return baseSteps;
+    }
+
+    /**
+     * Check if selected class gets Fighting Style at level 1
+     */
+    hasFightingStyleAtLevel1() {
+        if (!this.characterData.class) return false;
+
+        const level1Features = this.characterData.class.features?.['1'] || [];
+        return level1Features.some(f => f.name === 'Fighting Style');
+    }
+
+    /**
+     * Get step number for a given step type
+     */
+    getStepNumber(stepType) {
+        const steps = this.getSteps();
+        return steps.indexOf(stepType) + 1;
+    }
+
+    /**
      * Render progress steps
      */
     renderProgressSteps() {
-        const steps = ['Name', 'Culture', 'Background', 'Calling', 'Abilities', 'Skills', 'Masteries', 'Review'];
+        const steps = this.getSteps();
         return steps.map((step, index) => {
             const stepNum = index + 1;
             const isActive = stepNum === this.currentStep;
@@ -275,7 +315,82 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Step 5: Ability Scores
+     * Step: Fighting Style (conditional - only for callings with Fighting Style at level 1)
+     */
+    renderFightingStyleStep(container) {
+        // Get fighting style options from class features
+        const level1Features = this.characterData.class.features?.['1'] || [];
+        const fightingStyleFeature = level1Features.find(f => f.name === 'Fighting Style');
+
+        if (!fightingStyleFeature || !fightingStyleFeature.choices) {
+            container.innerHTML = '<p>Error: Fighting Style feature not found.</p>';
+            return;
+        }
+
+        const fightingStyles = {
+            archery: {
+                name: 'Archery',
+                description: 'You gain a +2 bonus to attack rolls you make with ranged weapons',
+                icon: '🏹'
+            },
+            defense: {
+                name: 'Defense',
+                description: '+1 AC while wearing armor',
+                icon: '🛡️'
+            },
+            dueling: {
+                name: 'Dueling',
+                description: '+2 damage when wielding a melee weapon in one hand with no weapon in the other hand',
+                icon: '⚔️'
+            },
+            greatWeaponFighting: {
+                name: 'Great Weapon Fighting',
+                description: 'When you roll a 1 or 2 on a damage die for an attack with a two-handed or versatile melee weapon, you can reroll the die (must use new roll)',
+                icon: '🪓'
+            },
+            mariner: {
+                name: 'Mariner',
+                description: 'As long as you are not wearing heavy armor or wielding a shield: you can traverse deep water terrain and you gain a +1 bonus to AC',
+                icon: '🌊'
+            },
+            unarmedFighting: {
+                name: 'Unarmed Fighting',
+                description: 'Your unarmed strikes deal 1d6 + STR damage (1d8 if both hands are free). When you grapple a creature, you can deal 1d4 damage at the start of each of your turns',
+                icon: '👊'
+            }
+        };
+
+        const availableStyles = fightingStyleFeature.choices.from;
+
+        container.innerHTML = `
+            <h3>Choose Your Fighting Style</h3>
+            <p class="step-description">Your fighting style represents your preferred combat technique.</p>
+            <div class="fighting-style-grid">
+                ${availableStyles.map(styleId => {
+                    const style = fightingStyles[styleId];
+                    return `
+                        <div class="fighting-style-card ${this.characterData.fightingStyle === styleId ? 'selected' : ''}"
+                             data-style-id="${styleId}">
+                            <h4>${style.icon} ${style.name}</h4>
+                            <p class="style-description">${style.description}</p>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        // Bind fighting style selection
+        container.querySelectorAll('.fighting-style-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const styleId = card.dataset.styleId;
+                this.characterData.fightingStyle = styleId;
+                this.renderStep();
+            });
+        });
+    }
+
+    /**
+     * Step: Ability Scores
      */
     renderAbilityScoresStep(container) {
         const standardArray = RULES.core.standardArray;
@@ -541,7 +656,8 @@ export class CharacterCreationUI {
             return;
         }
 
-        if (this.currentStep < 8) {
+        const totalSteps = this.getSteps().length;
+        if (this.currentStep < totalSteps) {
             this.currentStep++;
             this.renderStep();
         } else {
@@ -554,32 +670,41 @@ export class CharacterCreationUI {
      * Validate current step
      */
     validateStep() {
-        switch (this.currentStep) {
-            case 1:
+        const steps = this.getSteps();
+        const currentStepName = steps[this.currentStep - 1];
+
+        switch (currentStepName) {
+            case 'Name':
                 if (!this.characterData.name.trim()) {
                     alert('Please enter a character name.');
                     return false;
                 }
                 break;
-            case 2:
+            case 'Culture':
                 if (!this.characterData.race) {
-                    alert('Please select a race.');
+                    alert('Please select a culture.');
                     return false;
                 }
                 break;
-            case 3:
+            case 'Background':
                 if (!this.characterData.background) {
                     alert('Please select a background.');
                     return false;
                 }
                 break;
-            case 4:
+            case 'Calling':
                 if (!this.characterData.class) {
-                    alert('Please select a class.');
+                    alert('Please select a calling.');
                     return false;
                 }
                 break;
-            case 5:
+            case 'Fighting Style':
+                if (!this.characterData.fightingStyle) {
+                    alert('Please select a fighting style.');
+                    return false;
+                }
+                break;
+            case 'Abilities':
                 // Check all abilities assigned
                 const abilities = Object.values(this.characterData.baseAbilities);
                 const standardArray = RULES.core.standardArray;
@@ -593,13 +718,13 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
-            case 6:
+            case 'Skills':
                 if (this.characterData.skillChoices.length !== this.characterData.class.skillChoices.choose) {
                     alert(`Please choose exactly ${this.characterData.class.skillChoices.choose} skills.`);
                     return false;
                 }
                 break;
-            case 7:
+            case 'Masteries':
                 // Get number of weapon masteries for this calling at level 1
                 const callingId = this.characterData.class.id;
                 const masteryProgression = this.weaponMasteriesData.callingMasteryProgression[callingId];
@@ -624,6 +749,7 @@ export class CharacterCreationUI {
                 race: this.characterData.race,
                 class: this.characterData.class,
                 background: this.characterData.background,
+                fightingStyle: this.characterData.fightingStyle, // Pass fighting style if selected
                 baseAbilities: this.characterData.baseAbilities,
                 skillChoices: this.characterData.skillChoices,
                 weaponMasteries: this.characterData.weaponMasteries,

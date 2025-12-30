@@ -172,9 +172,15 @@ class Player {
             return false;
         }
 
+        // Check if terrain is normally traversable
         if (!terrainDef.traversable) {
-            gameState.addMessage(`You cannot move there - ${terrainDef.description}`, 'error');
-            return false;
+            // Check if character has special ability to traverse this terrain
+            if (this.canTraverseSpecialTerrain(tile.terrain)) {
+                // Allow movement through special terrain
+            } else {
+                gameState.addMessage(`You cannot move there - ${terrainDef.description}`, 'error');
+                return false;
+            }
         }
 
         // Move successful
@@ -490,6 +496,56 @@ class Player {
         if (window.game && typeof window.game.openHelp === 'function') {
             window.game.openHelp();
         }
+    }
+
+    /**
+     * Check if character can traverse special terrain types
+     * @param {string} terrainId - Terrain type ID (e.g., 'deepWater')
+     * @returns {boolean} - True if character can traverse this terrain
+     */
+    canTraverseSpecialTerrain(terrainId) {
+        const character = gameState.get('character');
+        if (!character) {
+            console.log('🌊 No character found');
+            return false;
+        }
+
+        console.log('🌊 Checking terrain traversal:', {
+            terrainId,
+            fightingStyle: character.fightingStyle,
+            armor: character.equipment?.armor?.id,
+            armorType: character.equipment?.armor?.armorType,
+            offHand: character.equipment?.offHand?.id,
+            offHandType: character.equipment?.offHand?.type
+        });
+
+        // Mariner Fighting Style: Can traverse deep water (if not wearing heavy armor or shield)
+        if (terrainId === 'deepWater' && character.fightingStyle === 'mariner') {
+            // Check if wearing heavy armor
+            const isWearingHeavyArmor = character.equipment?.armor?.armorType === 'heavy';
+            // Check if wielding a shield
+            const isWieldingShield = character.equipment?.offHand?.type === 'shield';
+
+            console.log('🌊 Mariner check:', {
+                isWearingHeavyArmor,
+                isWieldingShield,
+                canTraverse: !isWearingHeavyArmor && !isWieldingShield
+            });
+
+            if (!isWearingHeavyArmor && !isWieldingShield) {
+                gameState.addMessage('🌊 Swimming through deep water with Mariner training!', 'success');
+                return true;
+            } else {
+                if (isWearingHeavyArmor) {
+                    gameState.addMessage('🌊 Mariner: Remove heavy armor to swim!', 'warning');
+                }
+                if (isWieldingShield) {
+                    gameState.addMessage('🌊 Mariner: Unequip shield to swim!', 'warning');
+                }
+            }
+        }
+
+        return false;
     }
 }
 

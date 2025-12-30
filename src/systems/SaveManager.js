@@ -269,6 +269,11 @@ class SaveManager {
             const loadedGold = saveData.character.gold !== undefined ? saveData.character.gold : savedGold;
             character.gold = Number(loadedGold) || 0;
 
+            // Backfill fighting style if missing (for saves created before fighting style system)
+            if (character.fightingStyle === undefined) {
+                character.fightingStyle = null;
+            }
+
             gameState.set('character', character);
         } else {
             gameState.set('character', saveData.character);
