@@ -47,6 +47,17 @@
           {"id": "leatherArmor", "chance": 0.2},
           {"id": "potionOfHealing", "chance": 0.1}
         ]
+      },
+      "habitats": {
+        "preferred": ["hills", "mountain", "forest", "denseForest"],
+        "occasional": ["grassland", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "desert", "jungle"]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2,
+        "denseForest": 1.2
       }
     },
     {
@@ -97,6 +108,17 @@
       "lootTable": {
         "dropChance": 0.2,
         "items": []
+      },
+      "habitats": {
+        "preferred": ["forest", "denseForest", "grassland", "tundra"],
+        "occasional": ["plains", "hills", "snowyPlains"],
+        "never": ["ocean", "deepWater", "shallowWater", "desert", "jungle", "swamp"]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "grassland": 1.3,
+        "tundra": 1.2,
+        "hills": 1.1
       }
     },
     {
@@ -251,6 +273,17 @@
           {"id": "leatherArmor", "chance": 0.3},
           {"id": "potionOfHealing", "chance": 0.1}
         ]
+      },
+      "habitats": {
+        "preferred": ["road", "plains", "savanna", "grassland"],
+        "occasional": ["forest", "hills", "desert"],
+        "never": ["ocean", "deepWater", "shallowWater", "swamp", "tundra", "snowyPlains", "jungle"]
+      },
+      "spawnChanceModifier": {
+        "road": 2.0,
+        "plains": 1.4,
+        "savanna": 1.3,
+        "grassland": 1.2
       }
     },
     {
@@ -298,6 +331,16 @@
       "lootTable": {
         "dropChance": 0.2,
         "items": []
+      },
+      "habitats": {
+        "preferred": ["swamp", "forest", "denseForest"],
+        "occasional": ["grassland", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "desert", "tundra", "snowyPlains"]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3,
+        "denseForest": 1.2
       }
     },
     {

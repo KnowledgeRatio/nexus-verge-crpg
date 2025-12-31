@@ -26,6 +26,7 @@ class WorldGenerator {
         this.temperatureNoise = new SimplexNoise(numericSeed + 2000);
         this.featureNoise = new SimplexNoise(numericSeed + 3000);
         this.riverNoise = new SimplexNoise(numericSeed + 4000); // Separate noise channel to carve rivers
+        this.biomeNoise = new SimplexNoise(numericSeed + 5000); // Coarse noise for macro biome regions
 
         // Base RNG for discrete decisions
         this.baseRNG = new SeededRandom(worldSeed);
@@ -42,7 +43,8 @@ class WorldGenerator {
      */
     async loadTerrainData() {
         if (!this.terrainTypes) {
-            const response = await fetch('data/terrains.json');
+            // Add cache-busting timestamp to force fresh load
+            const response = await fetch(`data/terrains.json?v=${Date.now()}`);
             this.terrainTypes = await response.json();
         }
         return this.terrainTypes;
@@ -132,8 +134,11 @@ class WorldGenerator {
         const temperature = this.temperatureNoise.octaveNoise2D(worldX * scale * 0.8, worldY * scale * 0.8, 3, 0.5);
         const riverMask = Math.abs(this.riverNoise.octaveNoise2D(worldX * 0.01, worldY * 0.01, 2, 0.8));
 
-        // Select terrain based on noise values
-        let terrainType = this.selectTerrain(elevation, moisture, temperature);
+        // Coarse biome noise for macro-scale biome regions (larger, smoother)
+        const biomeNoise = this.biomeNoise.octaveNoise2D(worldX * 0.02, worldY * 0.02, 2, 0.5);
+
+        // Select terrain based on two-layer system: macro biome → micro terrain
+        let terrainType = this.selectTerrain(elevation, moisture, temperature, biomeNoise);
 
         // Carve rivers: thin, winding strips with occasional deeper channels
         if (terrainType !== 'deepWater' && terrainType !== 'shallowWater') {
@@ -157,51 +162,140 @@ class WorldGenerator {
     }
 
     /**
-     * Select terrain type based on environmental values
+     * Select macro biome based on elevation, moisture, temperature, and biome noise
+     * Returns a biome ID that determines which terrain types can appear
      */
-    selectTerrain(elevation, moisture, temperature) {
+    selectMacroBiome(elevation, moisture, temperature, biomeNoise) {
         // Normalize noise values from [-1, 1] to [0, 1]
         const e = (elevation + 1) / 2;
         const m = (moisture + 1) / 2;
         const t = (temperature + 1) / 2;
+        const b = (biomeNoise + 1) / 2;
 
-        // Water (low elevation) - widen shallow band and deepen lowest areas for more lakes
-        if (e < 0.38) {
-            if (e < 0.22) return 'deepWater';
-            return 'shallowWater';
+        // Ocean (extreme low elevation)
+        if (e < 0.10) return 'ocean';
+
+        // Coastal (low elevation near water)
+        if (e < 0.30) return 'coastal';
+
+        // Mountain (very high elevation)
+        if (e > 0.75) return 'mountain';
+
+        // Cold regions (low temperature)
+        if (t < 0.3) {
+            if (m > 0.5) return 'swampland'; // Cold swamps
+            return 'tundra';
         }
 
-        // Mountains (high elevation)
-        if (e > 0.75) {
+        // Hot regions (high temperature)
+        if (t > 0.7) {
+            if (m < 0.3) return 'desert';
+            if (m > 0.6) return 'jungle';
+            return 'grassland'; // Hot grasslands/savanna
+        }
+
+        // Temperate regions - use biome noise for variation
+        if (m > 0.6) {
+            // Wet temperate
+            if (b > 0.6) return 'swampland';
+            return 'temperateForest';
+        } else if (m > 0.3) {
+            // Medium moisture temperate
+            return 'grassland';
+        } else {
+            // Dry temperate
+            return 'grassland';
+        }
+    }
+
+    /**
+     * Select terrain type based on environmental values using two-layer system
+     * Layer 1: Determine macro biome (coarse, large regions)
+     * Layer 2: Select micro terrain from allowed pool (fine detail)
+     */
+    selectTerrain(elevation, moisture, temperature, biomeNoise) {
+        // Normalize noise values from [-1, 1] to [0, 1]
+        const e = (elevation + 1) / 2;
+        const m = (moisture + 1) / 2;
+
+        // Step 1: Determine macro biome using coarse biome noise
+        const macroBiome = this.selectMacroBiome(elevation, moisture, temperature, biomeNoise);
+
+        // Step 2: Get allowed terrain types for this biome
+        const allowedTerrains = RULES.biomes.terrainPools[macroBiome] || ['grassland'];
+
+        // Step 3: Select micro terrain from allowed pool based on elevation/moisture
+        // If only one terrain in pool, return it
+        if (allowedTerrains.length === 1) {
+            return allowedTerrains[0];
+        }
+
+        // Ocean biome - only ocean terrain
+        if (macroBiome === 'ocean') {
+            return 'ocean';
+        }
+
+        // Coastal biome - varies by elevation
+        // Beach only appears at true coastlines (narrow elevation band)
+        // Water appears at lower elevations (< 0.15)
+        if (macroBiome === 'coastal') {
+            if (e < 0.15) return 'shallowWater';
+            // Beach: narrow band between water and land (0.15-0.22)
+            // This prevents beach from appearing in middle of lakes
+            if (e < 0.22) return 'beach';
+            // Higher coastal elevations based on moisture
+            if (m > 0.6) return 'swamp';
+            if (e < 0.28) return 'grassland';
+            return 'plains'; // Transition to inland terrain
+        }
+
+        // Mountain biome - varies by elevation
+        if (macroBiome === 'mountain') {
             if (e > 0.85) return 'mountain';
             return 'hills';
         }
 
-        // Temperature-based biomes
-        if (t < 0.3) {
-            // Cold regions
+        // Temperate Forest biome - varies by moisture
+        if (macroBiome === 'temperateForest') {
+            if (m < 0.3) return 'grassland';
+            if (m < 0.5) return 'plains';
+            if (m < 0.75) return 'forest';
+            return 'denseForest';
+        }
+
+        // Grassland biome - subtle variation
+        if (macroBiome === 'grassland') {
+            if (m > 0.5) return 'savanna';
+            if (m > 0.3) return 'grassland';
+            return 'plains';
+        }
+
+        // Desert biome - single terrain
+        if (macroBiome === 'desert') {
+            return 'desert';
+        }
+
+        // Jungle biome - varies by moisture
+        if (macroBiome === 'jungle') {
+            if (m > 0.7) return 'swamp';
+            return 'jungle';
+        }
+
+        // Tundra biome - varies by temperature
+        if (macroBiome === 'tundra') {
             if (m > 0.5) return 'tundra';
             return 'snowyPlains';
         }
 
-        if (t > 0.7) {
-            // Hot regions
-            if (m < 0.3) return 'desert';
-            if (m > 0.6) return 'jungle';
-            return 'savanna';
+        // Swampland biome - varies by elevation
+        if (macroBiome === 'swampland') {
+            if (e < 0.35) return 'shallowWater';
+            if (m > 0.6) return 'swamp';
+            return 'grassland';
         }
 
-        // Temperate regions
-        if (m < 0.3) {
-            return 'plains';
-        } else if (m < 0.6) {
-            if (elevation > 0.55) return 'hills';
-            return 'grassland';
-        } else if (m < 0.75) {
-            return 'forest';
-        } else {
-            return 'denseForest';
-        }
+        // Fallback: Return first terrain in pool
+        return allowedTerrains[0];
     }
 
     /**

@@ -653,6 +653,10 @@ class Game {
                         ⚔️ Attack (Off-Hand)
                     </button>
                 ` : ''}
+                <button class="action-btn" onclick="window.game.selectAction('dodge')"
+                        ${!hasAction ? 'disabled' : ''}>
+                    🛡️ Dodge
+                </button>
                 <button class="action-btn" onclick="window.game.selectAction('ability')"
                         ${!hasAction ? 'disabled' : ''}>
                     ✨ Ability
@@ -680,6 +684,12 @@ class Game {
 
         if (actionType === 'flee') {
             this.combatManager.flee(this.combatManager.playerCombatant);
+            this.selectedAction = null;
+            return;
+        }
+
+        if (actionType === 'dodge') {
+            this.dodge();
             this.selectedAction = null;
             return;
         }
@@ -749,6 +759,53 @@ class Game {
         }
 
         this.selectedAction = null;
+    }
+
+    /**
+     * Dodge action - focus entirely on avoiding attacks
+     * D&D 5e: Until start of your next turn, attack rolls against you have disadvantage
+     * and you make DEX saving throws with advantage
+     */
+    dodge() {
+        if (!this.combatManager || !this.combatManager.active) {
+            gameState.addMessage('Cannot dodge outside of combat!', 'error');
+            return;
+        }
+
+        const combatant = this.combatManager.playerCombatant;
+
+        // Check if combatant has action available
+        if (!combatant.hasAction('action')) {
+            gameState.addMessage('No action available to dodge!', 'error');
+            return;
+        }
+
+        // Apply dodging condition
+        const added = combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
+            isBuff: true,
+            curable: false,
+            icon: '🛡️'
+        });
+
+        if (added) {
+            gameState.addMessage(`🛡️ ${combatant.name} takes the Dodge action! Attackers have disadvantage until the start of your next turn.`, 'success');
+
+            // Consume action
+            combatant.consumeAction('action');
+
+            // Update combat state
+            gameState.set('combat', {
+                active: true,
+                round: this.combatManager.round,
+                currentTurn: this.combatManager.getCurrentCombatant()?.id,
+                combatants: this.combatManager.combatants.map(c => c.toJSON())
+            });
+
+            // End turn after dodging
+            this.combatManager.endTurn();
+        } else {
+            gameState.addMessage('Already dodging!', 'warning');
+        }
     }
 
 
@@ -1855,11 +1912,82 @@ class Game {
     /**
      * Open Help Modal
      */
-    openHelp() {
+    async openHelp() {
         const modal = document.getElementById('helpModal');
         if (!modal) return;
 
+        // Load terrain reference data dynamically
+        await this.loadTerrainReference();
+
         modal.classList.add('active');
+    }
+
+    /**
+     * Load and render terrain reference section dynamically
+     */
+    async loadTerrainReference() {
+        const container = document.getElementById('terrainReference');
+        if (!container) return;
+
+        try {
+            // Fetch terrain data with cache-busting
+            const response = await fetch(`data/terrains.json?v=${Date.now()}`);
+            const terrainData = await response.json();
+
+            // Render terrain reference table
+            let html = '<div class="terrain-grid">';
+
+            terrainData.terrains.forEach(terrain => {
+                const { symbol, name, color, description, movementCost, difficultTerrain, traversable } = terrain;
+
+                // Format movement cost
+                const moveInfo = traversable
+                    ? `Movement: ${movementCost}×`
+                    : 'Impassable';
+
+                // Format terrain properties
+                const properties = [];
+                if (difficultTerrain) properties.push('Difficult');
+                if (!traversable) properties.push('Blocked');
+                const propsText = properties.length > 0 ? ` (${properties.join(', ')})` : '';
+
+                html += `
+                    <div class="terrain-item">
+                        <div class="terrain-symbol" style="background-color: ${color}; color: ${this.getContrastColor(color)};">
+                            ${symbol}
+                        </div>
+                        <div class="terrain-info">
+                            <div class="terrain-name">${name}${propsText}</div>
+                            <div class="terrain-desc">${description}</div>
+                            <div class="terrain-move">${moveInfo}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        } catch (error) {
+            console.error('Failed to load terrain reference:', error);
+            container.innerHTML = '<div class="terrain-error">Failed to load terrain data. Please refresh the page.</div>';
+        }
+    }
+
+    /**
+     * Get contrasting text color (black or white) based on background color
+     */
+    getContrastColor(hexColor) {
+        // Convert hex to RGB
+        const hex = hexColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+
+        // Calculate luminance
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        // Return black for light backgrounds, white for dark
+        return luminance > 0.5 ? '#000000' : '#ffffff';
     }
 
     /**
@@ -1873,11 +2001,87 @@ class Game {
     }
 
     /**
+     * Prompt Skill Check Modal
+     * @param {Object} config - Skill check configuration
+     * @returns {Promise<Object>} - { attempted: boolean, success: boolean }
+     */
+    async promptSkillCheck(config) {
+        const modal = document.getElementById('skillCheckModal');
+        const character = gameState.get('character');
+
+        // Calculate skill bonus
+        const skillBonus = character.getSkillBonus(config.skill);
+
+        // Populate modal
+        document.getElementById('skillCheckTitle').textContent = config.title;
+        document.getElementById('skillCheckDescription').textContent = config.description;
+        document.getElementById('skillCheckType').textContent = `${config.skill.toUpperCase()} Check`;
+        document.getElementById('skillCheckDC').textContent = `DC ${config.dc}`;
+        document.getElementById('skillCheckBonus').textContent = `+${skillBonus}`;
+
+        // Calculate success chance (simplified)
+        const successChance = Math.max(0, Math.min(100, ((21 - config.dc + skillBonus) * 5)));
+        document.getElementById('skillCheckChance').textContent = `${successChance}%`;
+
+        // Populate consequences
+        const consequencesList = document.getElementById('skillCheckConsequences');
+        consequencesList.innerHTML = config.consequences
+            .map(c => `<li>${c.description}</li>`)
+            .join('');
+
+        // Show modal
+        modal.classList.add('active');
+
+        // Wait for user decision
+        return new Promise((resolve) => {
+            const attemptBtn = document.getElementById('attemptSkillCheck');
+            const cancelBtn = document.getElementById('cancelSkillCheck');
+
+            const handleAttempt = () => {
+                cleanup();
+
+                // Roll skill check
+                const roll = character.rollSkill(config.skill);
+                const success = roll >= config.dc;
+
+                // Show result message
+                if (success) {
+                    gameState.addMessage(`✅ Skill Check Success! (Rolled ${roll} vs DC ${config.dc})`, 'success');
+                } else {
+                    gameState.addMessage(`❌ Skill Check Failed! (Rolled ${roll} vs DC ${config.dc})`, 'danger');
+                }
+
+                resolve({ attempted: true, success });
+            };
+
+            const handleCancel = () => {
+                cleanup();
+                resolve({ attempted: false, success: false });
+            };
+
+            const cleanup = () => {
+                modal.classList.remove('active');
+                attemptBtn.removeEventListener('click', handleAttempt);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+
+            attemptBtn.addEventListener('click', handleAttempt);
+            cancelBtn.addEventListener('click', handleCancel);
+        });
+    }
+
+    /**
      * Render Complete Character Sheet
      */
     renderCharacterSheet() {
         const character = gameState.get('character');
         if (!character) return;
+
+        // Debug logging for fighting style
+        console.log('🎯 Rendering character sheet');
+        console.log('Fighting Style:', character.fightingStyle);
+        console.log('Ability Uses:', character.abilityUses);
+        console.log('Weapon Masteries:', character.weaponMasteries);
 
         const content = document.getElementById('characterSheetContent');
         if (!content) return;
@@ -2137,9 +2341,22 @@ class Game {
         for (let level = 1; level <= character.level; level++) {
             if (classData.features && classData.features[level]) {
                 classData.features[level].forEach(feature => {
+                    // Skip "Fighting Style" feature - we'll display it separately
+                    if (feature.name === 'Fighting Style') {
+                        return;
+                    }
                     features.push(feature);
                 });
             }
+        }
+
+        // Add selected fighting style as a separate feature if one is selected
+        if (character.fightingStyle) {
+            const fightingStyleDetails = this.getFightingStyleDetails(character.fightingStyle);
+            features.unshift({
+                name: `Fighting Style: ${fightingStyleDetails.name}`,
+                description: fightingStyleDetails.description
+            });
         }
 
         if (features.length === 0) {
@@ -2152,6 +2369,64 @@ class Game {
                 <div class="feature-description">${feature.description}</div>
             </li>
         `).join('');
+    }
+
+    /**
+     * Get fighting style details by ID
+     */
+    getFightingStyleDetails(styleId) {
+        const styles = {
+            archery: {
+                name: 'Archery',
+                description: '+2 bonus to attack rolls with ranged weapons.'
+            },
+            defense: {
+                name: 'Defense',
+                description: '+1 bonus to AC while wearing armor.'
+            },
+            dueling: {
+                name: 'Dueling',
+                description: '+2 bonus to damage rolls when wielding a melee weapon in one hand and no other weapons.'
+            },
+            greatWeaponFighting: {
+                name: 'Great Weapon Fighting',
+                description: 'When you roll a 1 or 2 on a damage die for an attack with a two-handed melee weapon, you can reroll the die (must use new roll).'
+            },
+            mariner: {
+                name: 'Mariner',
+                description: 'You can traverse deep water without penalty. While not wearing heavy armor or using a shield, you gain +1 bonus to AC and swimming/climbing speed equal to walking speed.'
+            },
+            unarmedFighting: {
+                name: 'Unarmed Fighting',
+                description: 'Your unarmed strikes deal 1d6 bludgeoning damage (1d8 if both hands are free). At the start of your turn, you can deal 1d4 bludgeoning damage to one creature grappled by you.'
+            },
+            twoWeaponFighting: {
+                name: 'Two-Weapon Fighting',
+                description: 'When engaging in two-weapon fighting, you can add your ability modifier to the damage of the second attack.'
+            },
+            protection: {
+                name: 'Protection',
+                description: 'When a creature you can see attacks a target other than you within 5 feet, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield.'
+            },
+            blindFighting: {
+                name: 'Blind Fighting',
+                description: 'You have blindsight with a range of 10 feet. Within that range, you can see invisible creatures and objects, and darkness doesn\'t impose disadvantage on your attacks.'
+            },
+            interception: {
+                name: 'Interception',
+                description: 'When a creature you can see hits a target within 5 feet of you with an attack, you can use your reaction to reduce the damage by 1d10 + your proficiency bonus. You must be wielding a shield or simple/martial weapon.'
+            },
+            thrownWeaponFighting: {
+                name: 'Thrown Weapon Fighting',
+                description: 'You can draw a weapon with the thrown property as part of the attack. When you hit with a ranged attack using a thrown weapon, you gain +2 bonus to the damage roll.'
+            },
+            superiorTechnique: {
+                name: 'Superior Technique',
+                description: 'You learn one maneuver from the Battle Master archetype. You gain one superiority die (d6), which you can use to fuel the maneuver. It recharges on a short or long rest.'
+            }
+        };
+
+        return styles[styleId] || { name: 'Unknown', description: 'Fighting style not found.' };
     }
 
     /**

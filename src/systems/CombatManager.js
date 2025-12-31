@@ -1241,6 +1241,71 @@ class Combatant {
     }
 
     /**
+     * Make a saving throw
+     * @param {string} ability - Ability to use (str, dex, con, int, wis, cha)
+     * @param {number} dc - Difficulty Class
+     * @param {Object} options - { advantage: boolean, disadvantage: boolean, description: string }
+     * @returns {Object} - { success: boolean, total: number, roll: number, modifier: number }
+     */
+    makeSavingThrow(ability, dc, options = {}) {
+        const { advantage = false, disadvantage = false, description = '' } = options;
+
+        // Check for advantage from conditions
+        let hasAdvantage = advantage;
+        let hasDisadvantage = disadvantage;
+
+        // Dodge gives advantage on DEX saves
+        if (ability === 'dex' && this.hasCondition('dodging')) {
+            hasAdvantage = true;
+        }
+
+        // Roll d20 with advantage/disadvantage
+        let roll;
+        if (hasAdvantage && !hasDisadvantage) {
+            const roll1 = rollD20().result;
+            const roll2 = rollD20().result;
+            roll = Math.max(roll1, roll2);
+            gameState.addMessage(
+                `🎲 Advantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
+                'info'
+            );
+        } else if (hasDisadvantage && !hasAdvantage) {
+            const roll1 = rollD20().result;
+            const roll2 = rollD20().result;
+            roll = Math.min(roll1, roll2);
+            gameState.addMessage(
+                `🎲 Disadvantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
+                'warning'
+            );
+        } else {
+            roll = rollD20().result;
+        }
+
+        // Get ability modifier and proficiency
+        const abilityMod = this.character.abilityModifiers[ability];
+        const isProficient = this.character.savingThrows[ability].proficient;
+        const profBonus = isProficient ? this.character.proficiencyBonus : 0;
+        const total = roll + abilityMod + profBonus;
+
+        // Message
+        const abilityName = ability.toUpperCase();
+        const profText = isProficient ? ' (proficient)' : '';
+        gameState.addMessage(
+            `${abilityName} save${profText}: ${roll} + ${abilityMod + profBonus} = ${total} vs DC ${dc}`,
+            'info'
+        );
+
+        const success = total >= dc;
+
+        return {
+            success,
+            total,
+            roll,
+            modifier: abilityMod + profBonus
+        };
+    }
+
+    /**
      * Start turn - reset action economy
      */
     startTurn() {

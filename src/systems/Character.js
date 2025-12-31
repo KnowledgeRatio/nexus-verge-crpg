@@ -133,8 +133,18 @@ export class Character {
         this.shortRestsUsed = data.shortRestsUsed || 0;
         this.lastLongRest = data.lastLongRest || Date.now();
 
+        // Traversal abilities (for impassable terrain navigation)
+        this.traversalAbilities = data.traversalAbilities || ['swimming']; // Base ability for all characters
+
+        // Exhaustion tracking (D&D 5e exhaustion levels 0-6)
+        this.exhaustionLevel = data.exhaustionLevel || 0;
+        this.injuries = data.injuries || [];
+
         // Currency
         this.gold = data.gold !== undefined ? data.gold : (this.background?.startingGold || 150);
+
+        // Ability uses tracking (for abilities with limited uses)
+        this.abilityUses = data.abilityUses || {};
     }
 
     /**
@@ -727,8 +737,11 @@ export class Character {
         
         this.shortRestsUsed++;
 
-        // Recover some class features (e.g., Fighter's Second Wind, Action Surge)
-        // TODO: Implement class feature recovery
+        // Reset short rest abilities (abilities with resourceType: 'shortRest')
+        if (this.abilityUses) {
+            // Reset all ability uses that recharge on short rest
+            this.abilityUses = {};
+        }
 
         return {
             success: true,
@@ -767,6 +780,80 @@ export class Character {
         return {
             success: true
         };
+    }
+
+    /**
+     * Traversal Abilities - Add/remove special terrain traversal abilities
+     */
+    addTraversalAbility(ability) {
+        if (!this.traversalAbilities.includes(ability)) {
+            this.traversalAbilities.push(ability);
+        }
+    }
+
+    removeTraversalAbility(ability) {
+        this.traversalAbilities = this.traversalAbilities.filter(a => a !== ability);
+    }
+
+    hasTraversalAbility(ability) {
+        return this.traversalAbilities.includes(ability);
+    }
+
+    /**
+     * Exhaustion System - D&D 5e exhaustion levels (0-6)
+     */
+    addExhaustion(levels = 1) {
+        this.exhaustionLevel = Math.min(6, this.exhaustionLevel + levels); // Max 6 levels
+
+        // Apply exhaustion penalties
+        if (this.exhaustionLevel >= 6) {
+            this.die(); // Death at level 6
+        }
+    }
+
+    removeExhaustion(levels = 1) {
+        this.exhaustionLevel = Math.max(0, this.exhaustionLevel - levels);
+    }
+
+    getExhaustionPenalties() {
+        // D&D 5e exhaustion levels
+        const penalties = [
+            "None",
+            "Disadvantage on ability checks",
+            "Speed halved",
+            "Disadvantage on attack rolls and saving throws",
+            "Hit point maximum halved",
+            "Speed reduced to 0",
+            "Death"
+        ];
+
+        return penalties[this.exhaustionLevel];
+    }
+
+    /**
+     * Equipment Loss - Randomly lose an equipped item
+     */
+    loseRandomEquipment() {
+        const equipped = this.inventory.filter(item => item.equipped);
+        if (equipped.length === 0) return null;
+
+        const randomIndex = Math.floor(Math.random() * equipped.length);
+        const lostItem = equipped[randomIndex];
+
+        // Remove from inventory
+        this.inventory = this.inventory.filter(item => item.id !== lostItem.id);
+
+        // Unequip if it was equipped
+        for (const slot in this.equipment) {
+            if (this.equipment[slot]?.id === lostItem.id) {
+                this.equipment[slot] = null;
+            }
+        }
+
+        // Recalculate AC (armor/shield might be lost)
+        this.ac = this.calculateAC();
+
+        return lostItem;
     }
 
     /**
@@ -1114,6 +1201,7 @@ export class Character {
             race: this.race,
             class: this.class,
             background: this.background,
+            fightingStyle: this.fightingStyle,
             level: this.level,
             xp: this.xp,
             baseAbilities: this.baseAbilities,
@@ -1128,11 +1216,13 @@ export class Character {
             equipment: this.equipment,
             gold: this.gold,
             spellcasting: this.spellcasting,
+            weaponMasteries: this.weaponMasteries,
             conditions: this.conditions,
             effects: this.effects,
             position: this.position,
             shortRestsUsed: this.shortRestsUsed,
             lastLongRest: this.lastLongRest,
+            abilityUses: this.abilityUses,
             isNPC: this.isNPC,
             isHostile: this.isHostile,
             faction: this.faction

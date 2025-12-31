@@ -34,6 +34,9 @@ class MapRenderer {
         this.terrainTypes = null;
         this.terrainMap = new Map();
 
+        // Track if we've warned about beach terrain (only warn once)
+        this.hasWarnedAboutBeach = false;
+
         // Player sprite
         this.playerSymbol = '@';
         this.playerColor = '#ffff00'; // Yellow
@@ -50,16 +53,35 @@ class MapRenderer {
      */
     async loadTerrainData() {
         if (!this.terrainTypes) {
-            const response = await fetch('data/terrains.json');
-            const data = await response.json();
-            this.terrainTypes = data.terrains;
+            try {
+                // Add cache-busting timestamp to force fresh load
+                const response = await fetch(`data/terrains.json?v=${Date.now()}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to load terrains.json: ${response.status}`);
+                }
 
-            // Create map for quick lookups
-            this.terrainTypes.forEach(terrain => {
-                this.terrainMap.set(terrain.id, terrain);
-            });
+                const data = await response.json();
+                this.terrainTypes = data.terrains;
 
-            console.log(`✅ Loaded ${this.terrainTypes.length} terrain types`);
+                // Create map for quick lookups
+                this.terrainMap.clear(); // Clear any existing entries
+                this.terrainTypes.forEach(terrain => {
+                    this.terrainMap.set(terrain.id, terrain);
+                });
+
+                console.log(`✅ Loaded ${this.terrainTypes.length} terrain types:`,
+                    Array.from(this.terrainMap.keys()).join(', '));
+
+                // Debug: Check if beach is loaded
+                if (this.terrainMap.has('beach')) {
+                    console.log('✅ Beach terrain found in terrainMap:', this.terrainMap.get('beach'));
+                } else {
+                    console.error('❌ Beach terrain NOT found in terrainMap!');
+                }
+            } catch (error) {
+                console.error('❌ Failed to load terrain data:', error);
+                throw error;
+            }
         }
         return this.terrainTypes;
     }
@@ -150,20 +172,28 @@ class MapRenderer {
      * Render a single tile
      */
     renderTile(screenX, screenY, tile, playerPosition) {
-        const terrain = this.terrainMap.get(tile.terrain);
-
-        if (!terrain) {
-            // Unknown terrain type, render as error
-            this.drawTile(screenX, screenY, '?', '#ff0000', '#440000');
-            return;
-        }
-
-        // Check if tile is visible (fog of war)
+        // Check if tile is visible (fog of war) FIRST
         const visible = tile.visible || this.isNearPlayer(tile, playerPosition, 10);
 
         if (!visible && !tile.explored) {
-            // Not explored yet - black
+            // Not explored yet - completely hidden under fog of war
             this.drawTile(screenX, screenY, ' ', '#000000', '#000000');
+            return;
+        }
+
+        // Now lookup terrain (only for explored/visible tiles)
+        const terrain = this.terrainMap.get(tile.terrain);
+
+        if (!terrain) {
+            // Unknown terrain type - log error ONCE for beach, always for others
+            if (tile.terrain === 'beach' && !this.hasWarnedAboutBeach) {
+                console.error(`❌ BEACH TERRAIN NOT FOUND! terrainMap has:`, Array.from(this.terrainMap.keys()));
+                console.error(`❌ Beach tile data:`, tile);
+                this.hasWarnedAboutBeach = true;
+            } else if (tile.terrain !== 'beach') {
+                console.warn(`⚠️ Unknown terrain type: "${tile.terrain}" at (${tile.x}, ${tile.y})`);
+            }
+            this.drawTile(screenX, screenY, '?', '#ff0000', '#440000');
             return;
         }
 

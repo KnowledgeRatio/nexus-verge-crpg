@@ -3913,6 +3913,82 @@ body {
     font-weight: bold;
 }
 
+/* Terrain Reference */
+.terrain-reference {
+    margin-top: 10px;
+}
+
+.terrain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.terrain-item {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.terrain-symbol {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.terrain-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.terrain-name {
+    font-weight: bold;
+    color: var(--accent-color);
+    font-size: 0.95rem;
+}
+
+.terrain-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.terrain-move {
+    font-size: 0.8rem;
+    color: var(--warning-color);
+    margin-top: 2px;
+}
+
+.terrain-loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.terrain-error {
+    padding: 20px;
+    background: rgba(139, 0, 0, 0.2);
+    border: 1px solid #8B0000;
+    border-radius: 5px;
+    color: var(--danger-color);
+    text-align: center;
+}
+
 /* Responsive help modal */
 @media (max-width: 768px) {
     .help-dialog {
@@ -3927,6 +4003,98 @@ body {
     .help-section h3 {
         font-size: 1.1rem;
     }
+}
+
+/* ===== Skill Check Modal ===== */
+.skill-check-modal {
+    max-width: 500px;
+    padding: 30px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.skill-check-modal h2 {
+    color: var(--text-highlight);
+    font-family: var(--font-mono);
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.skill-check-description {
+    font-style: italic;
+    color: #ccc;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.skill-check-stats {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: var(--font-mono);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.success-chance {
+    font-weight: bold;
+    color: var(--warning-color);
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid var(--border-color);
+}
+
+.skill-check-consequences {
+    background: rgba(139, 0, 0, 0.2);
+    border: 1px solid #8B0000;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.skill-check-consequences h3 {
+    color: var(--danger-color);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-family: var(--font-mono);
+}
+
+.skill-check-consequences ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #ff8888;
+}
+
+.skill-check-consequences li {
+    padding: 4px 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.skill-check-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.skill-check-actions .btn {
+    flex: 1;
+    max-width: 200px;
 }
 
 /* ===== Inventory System ===== */

@@ -5,6 +5,7 @@
 
 import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
+import { rollDice } from '../utils/dice.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null) {
@@ -21,6 +22,9 @@ class Player {
         this.moveDelay = 150; // ms between moves
         this.lastMoveTime = 0;
         this.shownCombatMovementWarning = false;
+
+        // Terrain tracking for description messages
+        this.lastTerrainType = null;
 
         // Bind input handlers
         this.bindInput();
@@ -174,10 +178,54 @@ class Player {
 
         // Check if terrain is normally traversable
         if (!terrainDef.traversable) {
+            const character = gameState.get('character');
+            const requirements = terrainDef.traversalRequirements || [];
+
             // Check if character has special ability to traverse this terrain
             if (this.canTraverseSpecialTerrain(tile.terrain)) {
-                // Allow movement through special terrain
+                // Allow movement through special terrain (Mariner Fighting Style, etc.)
+            } else if (requirements.length > 0 && character.traversalAbilities) {
+                // Check if player has any required traversal ability
+                const hasAbility = requirements.some(req =>
+                    character.traversalAbilities.includes(req)
+                );
+
+                if (hasAbility) {
+                    // Player has required ability, allow movement
+                } else {
+                    // No ability, check if skill check available
+                    const skillCheckConfig = this.getSkillCheckForTerrain(terrainDef);
+
+                    if (skillCheckConfig) {
+                        // Show skill check modal, await user decision
+                        const result = await this.promptSkillCheck(skillCheckConfig);
+
+                        if (result.attempted && result.success) {
+                            // Successful skill check, allow movement
+                            gameState.addMessage('✅ Skill check success! You cross the dangerous terrain.', 'success');
+                        } else if (result.attempted && !result.success) {
+                            // Failed skill check - apply consequences
+                            this.applySkillCheckFailure(skillCheckConfig.consequences);
+                            return false; // Blocked from moving
+                        } else {
+                            // User turned back
+                            gameState.addMessage('You decide not to risk the crossing.', 'info');
+                            return false;
+                        }
+                    } else {
+                        // No skill check available, hard block
+                        const formattedReqs = requirements.map(r =>
+                            r.replace(/([A-Z])/g, ' $1').trim().toLowerCase()
+                        );
+                        gameState.addMessage(
+                            `⛔ ${terrainDef.name} is impassable! You need: ${formattedReqs.join(' OR ')}`,
+                            'danger'
+                        );
+                        return false;
+                    }
+                }
             } else {
+                // No requirements defined, completely impassable
                 gameState.addMessage(`You cannot move there - ${terrainDef.description}`, 'error');
                 return false;
             }
@@ -198,9 +246,10 @@ class Player {
         // Update visibility
         await this.updateVisibility();
 
-        // Show terrain description occasionally
-        if (Math.random() < 0.1) {
-            gameState.addMessage(terrainDef.description, 'info');
+        // Show terrain description when entering a NEW terrain type
+        if (!this.lastTerrainType || this.lastTerrainType !== tile.terrain) {
+            gameState.addMessage(`⛰️ ${terrainDef.name}: ${terrainDef.description}`, 'info');
+            this.lastTerrainType = tile.terrain;
         }
 
         // Check for encounters
@@ -281,14 +330,14 @@ class Player {
         // Reduce base encounter rate to ~1% (previously 4%), still scaled by terrain modifier
         if (Math.random() < encounterChance * 0.01) {
             gameState.addMessage('⚔️ A hostile creature appears!', 'warning');
-            this.triggerCombatEncounter();
+            this.triggerCombatEncounter(terrainDef);
         }
     }
 
     /**
      * Trigger a combat encounter
      */
-    async triggerCombatEncounter() {
+    async triggerCombatEncounter(terrainDef) {
         // Generate enemies based on player level
         const playerLevel = gameState.get('character.level') || 1;
 
@@ -313,7 +362,7 @@ class Player {
 
         const enemies = [];
         for (let i = 0; i < numEnemies; i++) {
-            const enemy = await this.generateEnemy(playerLevel);
+            const enemy = await this.generateEnemy(playerLevel, terrainDef);
             enemies.push(enemy);
         }
 
@@ -325,7 +374,7 @@ class Player {
     /**
      * Generate an enemy for encounter
      */
-    async generateEnemy(playerLevel) {
+    async generateEnemy(playerLevel, terrainDef) {
         // Load monster data
         const response = await fetch('data/monsters.json');
         const monsterData = await response.json();
@@ -353,21 +402,43 @@ class Player {
             }
         }
 
-        // Filter by appropriate CR (within ±1 of target) and optionally by type
+        // Get current terrain ID for habitat filtering
+        const terrainId = terrainDef?.id || 'grassland';
+
+        // Filter by appropriate CR (within ±1 of target), optionally by type, and by habitat
         let appropriateMonsters = monsterData.monsters.filter(m => {
             const cr = m.challengeRating || 0.25;
             const crMatch = cr >= targetCR - 1 && cr <= targetCR + 1;
-            
+
             // If level-based types are defined, also filter by type
             if (allowedTypes && allowedTypes.length > 0) {
-                const typeMatch = allowedTypes.some(type => 
+                const typeMatch = allowedTypes.some(type =>
                     m.type.toLowerCase().includes(type.toLowerCase()) ||
                     m.name.toLowerCase().includes(type.toLowerCase())
                 );
-                return crMatch && typeMatch;
+                if (!crMatch || !typeMatch) return false;
+            } else if (!crMatch) {
+                return false;
             }
-            
-            return crMatch;
+
+            // Habitat filtering (backward-compatible - only if monster has habitats defined)
+            if (m.habitats) {
+                const { preferred, occasional, never } = m.habitats;
+
+                // Never spawn in forbidden terrains
+                if (never && never.includes(terrainId)) {
+                    return false;
+                }
+
+                // Apply spawn chance modifier (preferred > occasional > neutral)
+                const spawnWeight = m.spawnChanceModifier?.[terrainId] ?? 1.0;
+
+                // Random check weighted by habitat preference
+                return Math.random() < spawnWeight;
+            }
+
+            // Legacy monsters without habitats spawn everywhere
+            return true;
         });
 
         // Fallback: If no monsters match, widen CR range but keep type restrictions
@@ -546,6 +617,121 @@ class Player {
         }
 
         return false;
+    }
+
+    /**
+     * Get skill check configuration for impassable terrain
+     * @param {Object} terrainDef - Terrain definition object
+     * @returns {Object|null} - Skill check config or null if no check available
+     */
+    getSkillCheckForTerrain(terrainDef) {
+        // Map terrain types to skill check configurations
+        const skillChecks = {
+            ocean: {
+                skill: 'athletics',
+                dc: 20,
+                title: 'Attempt Ocean Crossing?',
+                description: 'The churning ocean waters are too deep to swim across. You might drown.',
+                consequences: [
+                    { type: 'damage', dice: '2d6', damageType: 'drowning', description: 'Take 2d6 drowning damage' },
+                    { type: 'exhaustion', level: 1, description: 'Gain Exhaustion (level 1)' },
+                    { type: 'equipmentLoss', chance: 0.25, description: '25% chance to lose random equipment' }
+                ]
+            },
+            deepWater: {
+                skill: 'athletics',
+                dc: 15,
+                title: 'Attempt to Cross Deep Water?',
+                description: 'The water is very deep. Swimming across is risky.',
+                consequences: [
+                    { type: 'damage', dice: '1d6', damageType: 'drowning', description: 'Take 1d6 drowning damage' },
+                    { type: 'exhaustion', level: 1, description: 'Gain Exhaustion (level 1)' }
+                ]
+            }
+        };
+
+        return skillChecks[terrainDef.id] || null;
+    }
+
+    /**
+     * Prompt player with skill check dialogue
+     * @param {Object} config - Skill check configuration
+     * @returns {Promise<Object>} - { attempted: boolean, success: boolean }
+     */
+    async promptSkillCheck(config) {
+        // Delegate to Game.promptSkillCheck() in main.js
+        if (window.game && typeof window.game.promptSkillCheck === 'function') {
+            return await window.game.promptSkillCheck(config);
+        }
+
+        // Fallback if game instance not available
+        console.warn('Game instance not available for skill check prompt');
+        return { attempted: false, success: false };
+    }
+
+    /**
+     * Apply consequences of failed skill check
+     * @param {Array} consequences - Array of consequence objects
+     */
+    applySkillCheckFailure(consequences) {
+        const character = gameState.get('character');
+
+        consequences.forEach(consequence => {
+            switch (consequence.type) {
+                case 'damage':
+                    const damage = rollDice(consequence.dice);
+                    character.takeDamage(damage);
+                    gameState.addMessage(
+                        `💥 ${consequence.damageType} damage: ${damage} HP!`,
+                        'danger'
+                    );
+                    break;
+
+                case 'exhaustion':
+                    character.addExhaustion(consequence.level);
+                    gameState.addMessage(
+                        `😓 You gain Exhaustion level ${consequence.level}!`,
+                        'warning'
+                    );
+                    break;
+
+                case 'equipmentLoss':
+                    if (Math.random() < consequence.chance) {
+                        const lostItem = character.loseRandomEquipment();
+                        if (lostItem) {
+                            gameState.addMessage(
+                                `🌊 Your ${lostItem.name} was swept away by the current!`,
+                                'danger'
+                            );
+                        }
+                    }
+                    break;
+
+                case 'injury':
+                    character.addInjury();
+                    gameState.addMessage(
+                        `🩹 You suffer an injury!`,
+                        'danger'
+                    );
+                    break;
+
+                case 'death':
+                    character.die();
+                    gameState.addMessage(
+                        `💀 You fall to your death...`,
+                        'danger'
+                    );
+                    break;
+            }
+        });
+
+        // Update character state
+        gameState.set('character', character);
+
+        // Update HUD via Game instance
+        if (window.game && typeof window.game.updateHUD === 'function') {
+            window.game.updateHUD();
+        }
     }
 }
 

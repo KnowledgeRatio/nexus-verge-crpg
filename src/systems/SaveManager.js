@@ -254,25 +254,20 @@ class SaveManager {
             : [];
         const savedGold = Number(saveData.gold) || 0;
 
-        // Restore character with Character prototype (without re-running constructor to avoid recalculating stats)
+        // Restore character by creating a new Character instance with saved data
         if (saveData.character) {
-            const character = Object.assign(
-                Object.create(Character.prototype),
-                saveData.character
-            );
-
             // Backfill missing fields from older saves
-            const restoredMasteries = Array.isArray(saveData.character.weaponMasteries)
-                ? saveData.character.weaponMasteries
-                : savedWeaponMasteries;
-            character.weaponMasteries = restoredMasteries || [];
-            const loadedGold = saveData.character.gold !== undefined ? saveData.character.gold : savedGold;
-            character.gold = Number(loadedGold) || 0;
+            const characterData = {
+                ...saveData.character,
+                weaponMasteries: saveData.character.weaponMasteries || savedWeaponMasteries || [],
+                gold: saveData.character.gold !== undefined ? saveData.character.gold : savedGold,
+                fightingStyle: saveData.character.fightingStyle !== undefined ? saveData.character.fightingStyle : null,
+                abilityUses: saveData.character.abilityUses || {},
+                baseAbilities: saveData.character.baseAbilities || saveData.character.abilities
+            };
 
-            // Backfill fighting style if missing (for saves created before fighting style system)
-            if (character.fightingStyle === undefined) {
-                character.fightingStyle = null;
-            }
+            // Create proper Character instance using fromJSON (which calls constructor)
+            const character = Character.fromJSON(characterData);
 
             gameState.set('character', character);
         } else {
@@ -315,33 +310,49 @@ class SaveManager {
     serializeCharacter(character) {
         if (!character) return null;
 
-        // Create plain object copy (handle Character class instance)
+        // Use Character's toJSON method if available, otherwise manually serialize
+        if (typeof character.toJSON === 'function') {
+            return character.toJSON();
+        }
+
+        // Fallback: Create plain object copy (handle Character class instance)
         return {
+            id: character.id,
             name: character.name,
             race: character.race,
             class: character.class,
             background: character.background,
+            fightingStyle: character.fightingStyle || null,
             level: character.level,
             xp: character.xp,
+            baseAbilities: character.baseAbilities,
             abilities: character.abilities,
             abilityModifiers: character.abilityModifiers,
             proficiencyBonus: character.proficiencyBonus,
             maxHP: character.maxHP,
             currentHP: character.currentHP,
+            tempHP: character.tempHP || 0,
             ac: character.ac,
             speed: character.speed,
             hitDice: character.hitDice,
             shortRestsUsed: character.shortRestsUsed,
+            lastLongRest: character.lastLongRest,
             skills: character.skills,
             savingThrows: character.savingThrows,
             proficiencies: character.proficiencies,
             weaponMasteries: character.weaponMasteries || [],
+            abilityUses: character.abilityUses || {},
             gold: character.gold,
             equipment: character.equipment,
             inventory: character.inventory,
             spellcasting: character.spellcasting,
             features: character.features,
-            conditions: character.conditions || []
+            conditions: character.conditions || [],
+            effects: character.effects || [],
+            position: character.position,
+            isNPC: character.isNPC || false,
+            isHostile: character.isHostile || false,
+            faction: character.faction || null
         };
     }
 

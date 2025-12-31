@@ -698,6 +698,16 @@
                             <p><strong>Critical Hits:</strong> Natural 20 on attack roll = double damage dice (not modifiers).</p>
                         </section>
 
+                        <!-- Terrain Reference -->
+                        <section class="help-section">
+                            <h3>🗺️ Terrain Reference</h3>
+                            <p>All terrain symbols and their meanings:</p>
+                            <div class="terrain-reference" id="terrainReference">
+                                <!-- Terrain data will be loaded dynamically from terrains.json -->
+                                <div class="terrain-loading">Loading terrain data...</div>
+                            </div>
+                        </section>
+
                         <!-- Tips -->
                         <section class="help-section">
                             <h3>💡 Tips & Tricks</h3>
@@ -712,6 +722,43 @@
                             </ul>
                         </section>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill Check Modal -->
+        <div id="skillCheckModal" class="modal">
+            <div class="modal-content skill-check-modal">
+                <h2 id="skillCheckTitle">Attempt Crossing?</h2>
+                <div class="skill-check-description" id="skillCheckDescription"></div>
+
+                <div class="skill-check-stats">
+                    <div class="stat-row">
+                        <span>Skill Check:</span>
+                        <span id="skillCheckType"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span>DC Required:</span>
+                        <span id="skillCheckDC"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Your Bonus:</span>
+                        <span id="skillCheckBonus"></span>
+                    </div>
+                    <div class="stat-row success-chance">
+                        <span>Estimated Chance:</span>
+                        <span id="skillCheckChance"></span>
+                    </div>
+                </div>
+
+                <div class="skill-check-consequences">
+                    <h3>Failure Consequences:</h3>
+                    <ul id="skillCheckConsequences"></ul>
+                </div>
+
+                <div class="skill-check-actions">
+                    <button id="attemptSkillCheck" class="btn btn-danger">Attempt Crossing</button>
+                    <button id="cancelSkillCheck" class="btn btn-secondary">Turn Back</button>
                 </div>
             </div>
         </div>

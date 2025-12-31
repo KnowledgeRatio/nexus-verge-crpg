@@ -380,6 +380,40 @@ export const RULES = {
     },
 
     // ====================
+    // BIOME TERRAIN POOLS
+    // ====================
+    biomes: {
+        // Macro biome definitions - each biome restricts which terrain types can appear
+        terrainPools: {
+            ocean: ['ocean'],
+            coastal: ['shallowWater', 'beach', 'swamp'],
+            temperateForest: ['grassland', 'plains', 'forest', 'denseForest'],
+            coldForest: ['tundra', 'snowyPlains'],
+            grassland: ['plains', 'grassland', 'savanna'],
+            desert: ['desert'],
+            jungle: ['jungle', 'swamp'],
+            mountain: ['hills', 'mountain'],
+            tundra: ['snowyPlains', 'tundra'],
+            swampland: ['swamp', 'grassland', 'shallowWater']
+        },
+
+        // Macro biome selection based on elevation, moisture, temperature
+        // This determines which pool to use for terrain selection
+        macroTypes: {
+            ocean: 'ocean',
+            coastal: 'coastal',
+            temperateForest: 'temperateForest',
+            coldForest: 'coldForest',
+            grassland: 'grassland',
+            desert: 'desert',
+            jungle: 'jungle',
+            mountain: 'mountain',
+            tundra: 'tundra',
+            swampland: 'swampland'
+        }
+    },
+
+    // ====================
     // REPUTATION SYSTEM
     // ====================
     reputation: {

@@ -37,6 +37,19 @@
       "difficultTerrain": true
     },
     {
+      "id": "ocean",
+      "name": "Ocean",
+      "symbol": "≈",
+      "color": "#0047AB",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Deep ocean waters, impossible to swim across.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "traversalRequirements": ["waterWalking", "ship", "flying"]
+    },
+    {
       "id": "deepWater",
       "name": "Deep Water",
       "symbol": "~",
@@ -62,18 +75,6 @@
       "canLongRest": true
     },
     {
-      "id": "water",
-      "name": "Water",
-      "symbol": "~",
-      "color": "#4a9eff",
-      "traversable": false,
-      "movementCost": null,
-      "description": "Deep water blocks your path.",
-      "encounterModifier": 0,
-      "coverType": null,
-      "difficultTerrain": false
-    },
-    {
       "id": "shallowWater",
       "name": "Shallow Water",
       "symbol": "≈",
@@ -84,6 +85,18 @@
       "encounterModifier": 0.5,
       "coverType": null,
       "difficultTerrain": true
+    },
+    {
+      "id": "beach",
+      "name": "Beach",
+      "symbol": "≈",
+      "color": "#f4e4c1",
+      "traversable": true,
+      "movementCost": 1.2,
+      "description": "Sandy coastline where land meets sea.",
+      "encounterModifier": 0.4,
+      "coverType": null,
+      "difficultTerrain": false
     },
     {
       "id": "road",
@@ -113,18 +126,6 @@
     {
       "id": "hills",
       "name": "Hills",
-      "symbol": "n",
-      "color": "#9aad72",
-      "traversable": true,
-      "movementCost": 1.5,
-      "description": "Rolling hills provide vantage points.",
-      "encounterModifier": 0.8,
-      "coverType": "half",
-      "difficultTerrain": true
-    },
-    {
-      "id": "hill",
-      "name": "Hill",
       "symbol": "n",
       "color": "#9aad72",
       "traversable": true,
