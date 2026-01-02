@@ -64,7 +64,7 @@
     {
       "id": "sanctuary",
       "name": "Sanctuary",
-      "symbol": "☼",
+      "symbol": "⛩️",
       "color": "#f0e68c",
       "traversable": true,
       "movementCost": 1,
@@ -162,7 +162,7 @@
     {
       "id": "cave",
       "name": "Cave Entrance",
-      "symbol": "O",
+      "symbol": "🕳️",
       "color": "#3d3d3d",
       "traversable": true,
       "movementCost": 1,
@@ -175,7 +175,7 @@
     {
       "id": "ruins",
       "name": "Ruins",
-      "symbol": "R",
+      "symbol": "🏛️",
       "color": "#7a7a7a",
       "traversable": true,
       "movementCost": 1.5,

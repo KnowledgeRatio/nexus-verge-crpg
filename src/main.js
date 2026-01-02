@@ -4,6 +4,7 @@
  */
 
 import { gameState } from './core/GameState.js';
+import { RULES } from './core/rulesEngine.js';
 import { generateSeedString } from './utils/rng.js';
 import { rollDice } from './utils/dice.js';
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
@@ -318,6 +319,17 @@ class Game {
         if (!this.worldGenerator) {
             console.log('🌍 Initializing world generator...');
             this.worldGenerator = new WorldGenerator(seed, worldConfig);
+
+            // Generate world metadata upfront (finite world system)
+            if (RULES.worldGen.finiteWorld.enabled && RULES.worldGen.finiteWorld.preGenerateMetadata) {
+                console.log('🗺️ Pre-generating world metadata (settlements, roads, features)...');
+                try {
+                    await this.worldGenerator.generateWorldMetadata();
+                } catch (error) {
+                    console.error('❌ Failed to generate world metadata:', error);
+                    gameState.addMessage('Warning: World generation encountered an error. Some features may be missing.', 'warning');
+                }
+            }
         }
 
         if (!this.mapRenderer) {
@@ -753,6 +765,7 @@ class Game {
         }
 
         const attacker = this.combatManager.playerCombatant;
+        const character = gameState.get('character');
 
         switch(this.selectedAction) {
             case 'attack':
@@ -760,6 +773,30 @@ class Game {
                 break;
             case 'attackOffHand':
                 this.combatManager.attack(attacker, target, 'offHand');
+                break;
+            case 'steadyNerveAttack':
+                // This is a bonus action attack from Steady Nerve
+                // Check if bonus action is still available
+                if (!attacker.hasAction('bonusAction')) {
+                    gameState.addMessage('❌ No bonus action available!', 'error');
+                    this.selectedAction = null;
+                    return;
+                }
+
+                // Make the attack (using mainHand weapon, but as a bonus action)
+                this.combatManager.attack(attacker, target, 'mainHand', { consumeAction: false });
+
+                // Consume bonus action instead of action
+                attacker.consumeAction('bonusAction');
+
+                // Track Steady Nerve usage
+                if (!character.abilityUses) {
+                    character.abilityUses = {};
+                }
+                character.abilityUses['steadyNerve'] = (character.abilityUses['steadyNerve'] || 0) + 1;
+                gameState.set('character', character);
+
+                gameState.addMessage('💪 Steady Nerve attack complete! (Bonus Action used)', 'success');
                 break;
             case 'ability':
                 // This should not be called anymore - abilities go through modal
@@ -1529,6 +1566,12 @@ class Game {
     executeSteadyNerveOption(option, ability, character) {
         const combatant = this.combatManager.playerCombatant;
 
+        // Check if bonus action is available
+        if (!combatant.hasAction('bonusAction')) {
+            gameState.addMessage('❌ No bonus action available!', 'error');
+            return;
+        }
+
         switch (option.id) {
             case 'heal':
                 // Heal: 1d8 + level + CON modifier
@@ -1546,12 +1589,17 @@ class Game {
                     currentTurn: this.combatManager.getCurrentCombatant()?.id,
                     combatants: this.combatManager.combatants.map(c => c.toJSON())
                 });
+
+                // Consume bonus action
+                combatant.consumeAction('bonusAction');
                 break;
 
             case 'attack':
                 // Make weapon attack - need to select target
                 gameState.addMessage(`⚔️ Steady Nerve (Attack): Select a target to attack`, 'info');
-                this.selectedAction = 'attack';
+                this.selectedAction = 'steadyNerveAttack'; // Special flag to track this is a bonus action attack
+                // Don't consume bonus action yet - wait until attack is executed
+                return; // Early return - don't track usage or end turn yet
                 break;
 
             case 'dodge':
@@ -1562,10 +1610,14 @@ class Game {
                     icon: '🛡️'
                 });
                 gameState.addMessage(`🛡️ Steady Nerve (Dodge): ${character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
+
+                // Consume bonus action
+                combatant.consumeAction('bonusAction');
                 break;
 
             default:
                 gameState.addMessage(`${option.name} not yet implemented`, 'warning');
+                return;
         }
 
         // Track usage
@@ -1584,9 +1636,7 @@ class Game {
         });
 
         // End turn after using ability (bonus action consumed)
-        if (option.id !== 'attack') {
-            this.combatManager.endTurn();
-        }
+        this.combatManager.endTurn();
     }
 
     /**

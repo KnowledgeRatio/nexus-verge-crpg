@@ -211,7 +211,7 @@ class CombatManager {
      * @param {Object} attacker - Attacking combatant
      * @param {Object} defender - Defending combatant
      * @param {String} weaponSlot - 'mainHand' or 'offHand' (defaults to mainHand for backward compatibility)
-     * @param {Object} options - { isCleaveAttack: boolean }
+     * @param {Object} options - { isCleaveAttack: boolean, consumeAction: boolean }
      */
     async attack(attacker, defender, weaponSlot = 'mainHand', options = {}) {
         // Handle backward compatibility: if weaponSlot is an object, it's actually options
@@ -222,6 +222,7 @@ class CombatManager {
 
         const isCleaveAttack = options.isCleaveAttack || false;
         const isOffHandAttack = weaponSlot === 'offHand';
+        const shouldConsumeAction = options.consumeAction !== false; // Default to true
 
         // Determine which action type to check/consume
         const actionType = isOffHandAttack ? 'bonusAction' : 'action';
@@ -354,7 +355,9 @@ class CombatManager {
 
         if (isCriticalMiss) {
             gameState.addMessage(`💥 Critical miss!`, 'error');
-            attacker.consumeAction(actionType);
+            if (shouldConsumeAction) {
+                attacker.consumeAction(actionType);
+            }
             this.updateGameState();
             return;
         }
@@ -617,7 +620,9 @@ class CombatManager {
             }
         }
 
-        attacker.consumeAction(actionType);
+        if (shouldConsumeAction) {
+            attacker.consumeAction(actionType);
+        }
         this.updateGameState();
     }
 

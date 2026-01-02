@@ -352,6 +352,13 @@ export const RULES = {
         // Region size (tiles per region chunk)
         regionSize: 32, // 32x32 tiles per region
 
+        // World size configuration (finite world boundaries)
+        worldSizes: {
+            small: 50,    // 50x50 regions = 1,600x1,600 tiles (~50 MB metadata)
+            medium: 100,  // 100x100 regions = 3,200x3,200 tiles (~200 MB metadata)
+            large: 150    // 150x150 regions = 4,800x4,800 tiles (~450 MB metadata)
+        },
+
         // Settlement generation
         townSpacing: 5,           // Minimum regions between towns
         villageFrequency: 0.02,   // 2% chance per region
@@ -377,6 +384,15 @@ export const RULES = {
         // Starting location
         startingRegion: {x: 0, y: 0},
         guaranteeStartingTown: true,
+
+        // Finite world generation settings
+        finiteWorld: {
+            enabled: true,                    // Use finite pre-generated worlds
+            defaultSize: 'medium',            // Default world size
+            preGenerateMetadata: true,        // Generate all settlements/roads upfront
+            terrainOnDemand: true,            // Generate terrain tiles on-demand (deterministic)
+            metadataGenerationTimeout: 30000, // Max time to generate metadata (30s)
+        }
     },
 
     // ====================
