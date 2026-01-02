@@ -737,11 +737,20 @@ class SettlementUI {
    * Setup trading modal event listeners
    */
   setupTradingEventListeners() {
-    // Close button
+    // Close button (header)
     const closeBtn = document.getElementById('closeTradingBtn');
     if (closeBtn) {
       closeBtn.replaceWith(closeBtn.cloneNode(true)); // Remove old listeners
       document.getElementById('closeTradingBtn').addEventListener('click', () => {
+        this.closeTradingModal();
+      });
+    }
+
+    // Close button (footer)
+    const closeFooterBtn = document.getElementById('closeTradingFooterBtn');
+    if (closeFooterBtn) {
+      closeFooterBtn.replaceWith(closeFooterBtn.cloneNode(true));
+      document.getElementById('closeTradingFooterBtn').addEventListener('click', () => {
         this.closeTradingModal();
       });
     }

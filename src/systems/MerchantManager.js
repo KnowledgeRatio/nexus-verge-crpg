@@ -3,7 +3,7 @@
  * Handles trading logic, inventory generation, and CHA-modified pricing
  */
 
-import { createRNG, seedToNumber } from '../utils/rng.js';
+import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
 
 class MerchantManager {
@@ -41,7 +41,7 @@ class MerchantManager {
 
     const settlementType = settlement.settlementType || 'village';
     const seed = `${this.worldSeed}_${settlement.x}_${settlement.y}_${merchantType}`;
-    const rng = createRNG(seedToNumber(seed));
+    const rng = new SeededRandom(seed);
 
     const inventory = [];
     const config = RULES.merchant.inventoryBySettlementType[settlementType];
@@ -52,7 +52,7 @@ class MerchantManager {
       : this.merchantInventoryData.merchantItems;
 
     // Get item count range
-    const itemCount = rng.intBetween(config.minItems, config.maxItems);
+    const itemCount = rng.nextInt(config.minItems, config.maxItems);
 
     // Filter items by rarity allowed in this settlement
     const allowedRarities = config.allowedRarities;
@@ -63,24 +63,24 @@ class MerchantManager {
     // Select random items
     const selectedItems = new Set();
     while (selectedItems.size < Math.min(itemCount, availableItems.length)) {
-      const item = rng.pick(availableItems);
+      const item = rng.choice(availableItems);
       selectedItems.add(item);
     }
 
     // Add items to inventory with quantities
     for (const item of selectedItems) {
-      let quantity = 1;
+      let stock = 1;
 
       // Consumables have multiple stock
       if (item.type === 'consumable') {
-        quantity = rng.intBetween(3, 12);
+        stock = rng.nextInt(3, 12);
       } else if (item.type === 'misc') {
-        quantity = rng.intBetween(1, 5);
+        stock = rng.nextInt(1, 5);
       }
 
       inventory.push({
         ...item,
-        quantity,
+        stock,
         stockId: `${settlement.x}_${settlement.y}_${merchantType}_${item.id}`
       });
     }

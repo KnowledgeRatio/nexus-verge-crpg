@@ -113,7 +113,7 @@
     {
       "id": "town",
       "name": "Town",
-      "symbol": "#",
+      "symbol": "🏘️",
       "color": "#d4af37",
       "traversable": true,
       "movementCost": 1,

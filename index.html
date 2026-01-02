@@ -453,75 +453,52 @@
                 </div>
 
                 <div class="trading-body">
-                    <!-- Left Panel - Merchant Inventory -->
-                    <div class="merchant-panel">
-                        <h3>Merchant Inventory</h3>
+                    <!-- Left Panel - Items List -->
+                    <div class="items-panel">
                         <div class="trading-tabs">
-                            <button class="trading-tab-btn active" data-tab="buy">Buy</button>
-                            <button class="trading-tab-btn" data-tab="sell">Sell</button>
+                            <button id="buyTab" class="tab-btn active">Buy</button>
+                            <button id="sellTab" class="tab-btn">Sell</button>
                         </div>
-
-                        <!-- Buy Tab -->
-                        <div id="buyTab" class="trading-tab active">
-                            <div id="merchantItemsList" class="trading-items-list">
-                                <!-- Merchant items rendered here -->
-                            </div>
-                        </div>
-
-                        <!-- Sell Tab -->
-                        <div id="sellTab" class="trading-tab" style="display: none;">
-                            <div id="playerItemsList" class="trading-items-list">
-                                <!-- Player items rendered here -->
-                            </div>
+                        <div id="tradingItemsList" class="trading-items-list">
+                            <!-- Items rendered here by SettlementUI -->
                         </div>
                     </div>
 
                     <!-- Right Panel - Transaction Info -->
                     <div class="transaction-panel">
-                        <h3>Your Inventory</h3>
+                        <h3>Transaction</h3>
 
-                        <div class="info-section">
-                            <div class="info-stat">
-                                <span class="label">Gold:</span>
-                                <span class="value gold-value" id="tradingPlayerGold">150 gp</span>
-                            </div>
-                            <div class="info-stat">
-                                <span class="label">Weight:</span>
-                                <span class="value" id="tradingPlayerWeight">45 / 150 lbs</span>
+                        <div id="selectedItemDisplay" class="selected-item-display">
+                            <div class="no-selection">Select an item to trade</div>
+                        </div>
+
+                        <div class="quantity-controls">
+                            <label>Quantity:</label>
+                            <div class="qty-buttons">
+                                <button id="qtyDecrease" class="qty-btn">-</button>
+                                <input type="number" id="qtyInput" value="1" min="1" max="1">
+                                <button id="qtyIncrease" class="qty-btn">+</button>
                             </div>
                         </div>
 
-                        <div class="transaction-area">
-                            <h4>Selected Item</h4>
-                            <div id="selectedItemDisplay" class="selected-item-card">
-                                <p class="empty-message">Click an item to view details</p>
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span>Total:</span>
+                                <span id="totalPrice" class="total-price">0 gp</span>
                             </div>
+                        </div>
 
-                            <div class="quantity-selector" style="display: none;">
-                                <label>Quantity:</label>
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" id="qtyMinus">-</button>
-                                    <input type="number" id="qtyInput" value="1" min="1" max="1">
-                                    <button class="qty-btn" id="qtyPlus">+</button>
-                                </div>
-                            </div>
+                        <button id="executeTrade" class="trade-btn" disabled>
+                            BUY
+                        </button>
 
-                            <div class="transaction-total" style="display: none;">
-                                <div class="total-row">
-                                    <span>Total:</span>
-                                    <span id="transactionTotal" class="total-price">50 gp</span>
-                                </div>
-                            </div>
-
-                            <button id="executeTradeBtn" class="trade-btn" style="display: none;">
-                                <span id="tradeBtnText">Buy</span>
-                            </button>
+                        <div id="chaHint" class="cha-hint">
+                            Your Charisma gives you a <span class="cha-bonus">0% discount</span> on prices
                         </div>
                     </div>
                 </div>
 
                 <div class="trading-footer">
-                    <p class="trading-hint">💡 Your CHA modifier affects prices!</p>
                     <button id="closeTradingFooterBtn" class="menu-btn secondary">Close</button>
                 </div>
             </div>

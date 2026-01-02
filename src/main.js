@@ -19,6 +19,7 @@ import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
 import LootManager from './systems/LootManager.js';
+import MerchantManager from './systems/MerchantManager.js';
 
 class Game {
     constructor() {
@@ -39,6 +40,9 @@ class Game {
 
         // Loot system
         this.lootManager = null;
+
+        // Merchant system
+        this.merchantManager = null;
 
         // Combat systems
         this.combatManager = null;
@@ -356,6 +360,14 @@ class Game {
             await this.lootManager.loadData();
             // Make lootManager globally accessible for combat
             window.lootManager = this.lootManager;
+        }
+
+        if (!this.merchantManager) {
+            console.log('🏪 Initializing merchant manager...');
+            this.merchantManager = new MerchantManager(seed);
+            await this.merchantManager.loadData();
+            // Pass merchant manager to settlement UI
+            this.settlementUI.merchantManager = this.merchantManager;
         }
 
         if (!this.settlementManager) {
@@ -3425,6 +3437,14 @@ class Game {
             console.log('📜 Initializing quest manager...');
             this.questManager = new QuestManager(this.questGenerator);
             await this.questManager.initialize();
+        }
+
+        // Initialize merchant manager
+        if (!this.merchantManager) {
+            console.log('🏪 Initializing merchant manager...');
+            this.merchantManager = new MerchantManager(seed);
+            await this.merchantManager.loadData();
+            this.settlementUI.merchantManager = this.merchantManager;
         }
 
         // Initialize settlement manager with all dependencies
