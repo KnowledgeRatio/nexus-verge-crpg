@@ -355,6 +355,12 @@ class CombatManager {
 
         if (isCriticalMiss) {
             gameState.addMessage(`💥 Critical miss!`, 'error');
+
+            // Floating combat text for critical miss
+            if (window.game) {
+                window.game.showFloatingCombatText(defender.id, 'CRITICAL MISS!', 'miss');
+            }
+
             if (shouldConsumeAction) {
                 attacker.consumeAction(actionType);
             }
@@ -396,6 +402,13 @@ class CombatManager {
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
+            // Floating combat text for damage
+            if (window.game) {
+                const floatingText = `-${damageTotal}`;
+                const floatingType = isCritical ? 'critical' : 'damage';
+                window.game.showFloatingCombatText(defender.id, floatingText, floatingType);
+            }
+
             // Apply damage
             defender.takeDamage(damageTotal);
 
@@ -428,6 +441,11 @@ class CombatManager {
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
+                        // Floating combat text for Cleave
+                        if (window.game) {
+                            window.game.showFloatingCombatText(adjacentEnemy.id, `-${cleaveDamage} CLEAVE`, 'damage');
+                        }
+
                         adjacentEnemy.takeDamage(cleaveDamage);
 
                         if (adjacentEnemy.hp <= 0) {
@@ -436,6 +454,11 @@ class CombatManager {
                         }
                     } else {
                         gameState.addMessage(`Cleave misses!`, 'info');
+
+                        // Floating combat text for Cleave miss
+                        if (window.game) {
+                            window.game.showFloatingCombatText(adjacentEnemy.id, 'MISS', 'miss');
+                        }
                     }
                 }
             }
@@ -477,6 +500,11 @@ class CombatManager {
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
+                        // Floating combat text for Nick
+                        if (window.game) {
+                            window.game.showFloatingCombatText(defender.id, `-${nickDamageTotal} NICK`, 'damage');
+                        }
+
                         defender.takeDamage(nickDamageTotal);
 
                         if (defender.hp <= 0) {
@@ -485,11 +513,21 @@ class CombatManager {
                         }
                     } else {
                         gameState.addMessage(`Nick misses!`, 'info');
+
+                        // Floating combat text for Nick miss
+                        if (window.game) {
+                            window.game.showFloatingCombatText(defender.id, 'MISS', 'miss');
+                        }
                     }
                 }
             }
         } else {
             gameState.addMessage(`Miss!`, 'info');
+
+            // Floating combat text for regular miss
+            if (window.game) {
+                window.game.showFloatingCombatText(defender.id, 'MISS', 'miss');
+            }
 
             // WEAPON MASTERY: Graze
             // If attacker missed and has Graze mastery, deal ability modifier damage
@@ -498,6 +536,11 @@ class CombatManager {
 
                 if (grazeDamage > 0) {
                     gameState.addMessage(`⚔️ Graze! Despite missing, ${attacker.name} deals ${grazeDamage} damage!`, 'warning');
+
+                    // Floating combat text for Graze
+                    if (window.game) {
+                        window.game.showFloatingCombatText(defender.id, `-${grazeDamage} GRAZE`, 'damage');
+                    }
 
                     defender.takeDamage(grazeDamage);
 
@@ -521,6 +564,11 @@ class CombatManager {
 
             if (added) {
                 gameState.addMessage(`⚔️ Sap! ${defender.name} has disadvantage on next attack! 💫`, 'warning');
+
+                // Floating combat text for Sap condition (delayed 300ms to appear after damage)
+                if (window.game) {
+                    window.game.showFloatingCombatText(defender.id, 'SAPPED! 💫', 'condition', 300);
+                }
             } else {
                 gameState.addMessage(`⚔️ ${defender.name} is already sapped!`, 'info');
             }
@@ -539,6 +587,11 @@ class CombatManager {
             if (added) {
                 defender.ac -= 1;
                 gameState.addMessage(`⚔️ Slow! ${defender.name}'s AC reduced by 1! 🐌`, 'warning');
+
+                // Floating combat text for Slow condition (delayed 300ms to appear after damage)
+                if (window.game) {
+                    window.game.showFloatingCombatText(defender.id, 'SLOWED! 🐌', 'condition', 300);
+                }
             } else {
                 gameState.addMessage(`⚔️ Slow effect already active on ${defender.name}`, 'info');
             }
@@ -571,6 +624,11 @@ class CombatManager {
 
                 if (added) {
                     gameState.addMessage(`💥 ${defender.name} is knocked prone! 🔻`, 'error');
+
+                    // Floating combat text for Topple condition (delayed 300ms to appear after damage)
+                    if (window.game) {
+                        window.game.showFloatingCombatText(defender.id, 'PRONE! 🔻', 'condition', 300);
+                    }
                 } else {
                     gameState.addMessage(`💥 ${defender.name} is already prone!`, 'info');
                 }
@@ -612,6 +670,11 @@ class CombatManager {
 
                 if (added) {
                     gameState.addMessage(`⚔️ Push! ${defender.name} is pushed away! Cannot make melee attacks next turn! 💨`, 'warning');
+
+                    // Floating combat text for Push condition (delayed 300ms to appear after damage)
+                    if (window.game) {
+                        window.game.showFloatingCombatText(defender.id, 'PUSHED! 💨', 'condition', 300);
+                    }
                 } else {
                     gameState.addMessage(`⚔️ ${defender.name} is already pushed!`, 'info');
                 }
@@ -680,6 +743,11 @@ class CombatManager {
             curable: false,
             icon: '🛡️'
         });
+
+        // Floating combat text for Dodge buff
+        if (window.game) {
+            window.game.showFloatingCombatText(combatant.id, 'DODGING! 🛡️', 'buff');
+        }
 
         gameState.addMessage(
             `Attackers have disadvantage until the start of ${combatant.name}'s next turn!`,

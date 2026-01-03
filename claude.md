@@ -1,10 +1,134 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2025-12-23
+**Last Updated:** 2026-01-03
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** In-Game Help Manual (Feature Complete)
+**Latest Commit:** Floating Combat Text System (UX Enhancement)
+
+---
+
+## 🆕 Recent Changes (2026-01-03 - Session 10)
+
+### Floating Combat Text System - UX Enhancement ✅
+Implemented arcade-style floating combat text that appears above combatant cards during combat, providing instant visual feedback for damage, conditions, and buffs with exciting animations.
+
+**Modified Files:**
+- `index.html` - Added floatingCombatTextContainer div
+- `styles.css` - Added floating combat text styles with animations (~120 lines)
+- `src/main.js` - Added showFloatingCombatText() method
+- `src/systems/CombatManager.js` - Integrated floating text calls throughout combat flow
+
+**Implementation Details:**
+
+**1. Visual Feedback Types** ✅
+Color-coded text for instant recognition:
+- **Red (`damage`):** Regular damage numbers (e.g., "-15")
+- **Yellow (`critical`):** Critical hits with 2.8rem size, pulsing glow, rotation animation
+- **Green (`healing`):** Healing effects (e.g., "+8 HP") - ready for future healing
+- **Cyan (`buff`):** Positive buffs (e.g., "DODGING! 🛡️")
+- **Orange (`condition`):** Debuffs (e.g., "SAPPED! 💫", "SLOWED! 🐌", "PRONE! 🔻")
+- **Grey/White (`miss`):** Misses with 0.7 opacity and smaller 1.6rem size
+
+**2. Animation System** ✅
+Two custom CSS animations:
+- **`floatUp`:** Standard animation - floats up 100px over 1.5s, scales 0.8→1.1→0.8, fades out
+- **`floatUpCrit`:** Critical animation - rotates ±5°, scales up to 1.4x at peak, travels 120px, dramatic entrance
+
+**3. Combat Integration** ✅
+Added floating text calls for all combat events:
+
+**Damage & Hits:**
+- Regular hits: Shows `-{damage}` in red
+- Critical hits: Shows `-{damage}` in yellow with special animation
+- Cleave mastery: Shows `-{damage} CLEAVE` in red
+- Nick mastery: Shows `-{damage} NICK` in red
+- Graze mastery: Shows `-{damage} GRAZE` in red (even on miss!)
+
+**Misses:**
+- Regular miss: Shows `MISS` in grey
+- Critical miss: Shows `CRITICAL MISS!` in grey
+
+**Conditions (Orange):**
+- Sap: `SAPPED! 💫`
+- Slow: `SLOWED! 🐌`
+- Push: `PUSHED! 💨`
+- Topple/Prone: `PRONE! 🔻`
+
+**Buffs (Cyan):**
+- Dodge action: `DODGING! 🛡️`
+
+**4. Technical Implementation** ✅
+```javascript
+// Main function in main.js
+showFloatingCombatText(combatantId, text, type = 'damage') {
+    const combatantCard = document.querySelector(`.combatant-card[data-combatant-id="${combatantId}"]`);
+    const rect = combatantCard.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 3; // Position near top of card
+
+    const floatingText = document.createElement('div');
+    floatingText.className = `floating-combat-text ${type}`;
+    floatingText.textContent = text;
+    floatingText.style.left = `${centerX}px`;
+    floatingText.style.top = `${centerY}px`;
+
+    document.getElementById('floatingCombatTextContainer').appendChild(floatingText);
+    setTimeout(() => floatingText.remove(), 1500); // Auto-cleanup
+}
+
+// Usage in CombatManager.js
+window.game.showFloatingCombatText(defender.id, `-${damageTotal}`, isCritical ? 'critical' : 'damage');
+window.game.showFloatingCombatText(defender.id, 'SAPPED! 💫', 'condition');
+window.game.showFloatingCombatText(combatant.id, 'DODGING! 🛡️', 'buff');
+```
+
+**5. CSS Styling** ✅
+```css
+.floating-combat-text {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-weight: 900;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(0,0,0,0.9), 2px 2px 4px rgba(0,0,0,0.8);
+    animation: floatUp 1.5s ease-out forwards;
+    z-index: 10000;
+}
+
+.floating-combat-text.critical {
+    color: #ffff00;
+    font-size: 2.8rem;
+    text-shadow: 0 0 20px rgba(255,255,0,1), 0 0 30px rgba(255,215,0,0.8);
+    animation: floatUpCrit 1.5s ease-out forwards;
+}
+
+@keyframes floatUpCrit {
+    0% { transform: translateY(0) scale(0.8) rotate(-5deg); opacity: 1; }
+    20% { transform: translateY(-20px) scale(1.4) rotate(5deg); opacity: 1; }
+    50% { transform: translateY(-50px) scale(1.2) rotate(-2deg); opacity: 1; }
+    100% { transform: translateY(-120px) scale(0.9) rotate(0deg); opacity: 0; }
+}
+```
+
+**Benefits:**
+- ✅ **Instant visual feedback** - See damage/effects exactly where you're looking (on target)
+- ✅ **Exciting crits** - Yellow text with rotation and 1.4x scale creates "dopamine hit" moments
+- ✅ **Clear communication** - Color coding instantly tells you what happened (red=damage, green=healing, orange=debuff)
+- ✅ **Professional polish** - Smooth animations and glowing shadows make combat feel AAA-quality
+- ✅ **Dual feedback** - Text appears above target AND logs to combat log for full history
+- ✅ **No save impact** - Purely presentational, ephemeral (1.5s lifetime), no state to serialize
+
+**User Experience Impact:**
+- ✅ Creates visceral, arcade-style combat feel while maintaining D&D 5e tactical depth
+- ✅ Every hit, crit, miss, and condition has immediate visual impact
+- ✅ Players can track multiple damage sources at a glance (main attack + Cleave + Nick)
+- ✅ Adrenaline and dopamine boost from critical hit animations
+- ✅ Easier to parse combat flow without reading every log message
+
+**Future Enhancements Ready:**
+- ✅ Healing text (green) styled and ready for healing spells/potions
+- ✅ Buff text (cyan) ready for Shield, Bless, Haste spells
+- ✅ Easy to extend with new types (just add CSS class and call function)
 
 ---
 

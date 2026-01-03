@@ -158,6 +158,52 @@ class Game {
     }
 
     /**
+     * Show floating combat text above a combatant card
+     * @param {string} combatantId - ID of the target combatant
+     * @param {string} text - Text to display (e.g., "-15", "MISS!", "+8 HP")
+     * @param {string} type - Type of text: 'damage', 'critical', 'healing', 'buff', 'miss', 'condition'
+     * @param {number} delay - Optional delay in ms before showing (for staggering multiple texts)
+     */
+    showFloatingCombatText(combatantId, text, type = 'damage', delay = 0) {
+        setTimeout(() => {
+            const combatantCard = document.querySelector(`.combatant-card[data-combatant-id="${combatantId}"]`);
+            if (!combatantCard) {
+                console.warn(`⚠️ Combatant card not found for ID: ${combatantId}`);
+                return;
+            }
+
+            // Get position of combatant card
+            const rect = combatantCard.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 3; // Position near top of card
+
+            // Count existing floating texts for this combatant to stagger position
+            const existingTexts = document.querySelectorAll(
+                `.floating-combat-text[data-combatant="${combatantId}"]`
+            );
+            const offsetY = existingTexts.length * 40; // Offset by 40px for each existing text
+
+            // Create floating text element
+            const floatingText = document.createElement('div');
+            floatingText.className = `floating-combat-text ${type}`;
+            floatingText.textContent = text;
+            floatingText.setAttribute('data-combatant', combatantId);
+            floatingText.style.left = `${centerX}px`;
+            floatingText.style.top = `${centerY + offsetY}px`;
+            floatingText.style.transform = 'translate(-50%, -50%)'; // Center on position
+
+            // Add to container
+            const container = document.getElementById('floatingCombatTextContainer');
+            container.appendChild(floatingText);
+
+            // Remove after animation completes
+            setTimeout(() => {
+                floatingText.remove();
+            }, 1500);
+        }, delay);
+    }
+
+    /**
      * Show a specific screen
      */
     showScreen(screenName) {
