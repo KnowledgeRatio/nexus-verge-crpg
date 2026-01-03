@@ -1669,7 +1669,7 @@ class Player {
   async generateEnemy(playerLevel) {
     const episode = gameState.get('campaignProgress') || 1;
     const monsterOverrides = this.campaignManager.getMonsterOverrides(episode);
-
+7
     // Apply overrides to monster pool
     let monsterPool = await this.loadMonsters();
     monsterPool = this.applyMonsterOverrides(monsterPool, monsterOverrides);

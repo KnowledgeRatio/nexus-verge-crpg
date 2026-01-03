@@ -127,7 +127,7 @@
     {
       "id": "scholar",
       "name": "Scholar",
-      "displayName": "Scholar",
+      "displayName": "Scholar - COMING SOON",
       "description": "Scholars are masters of arcane knowledge, blending theoretical mastery with practical innovation. Combining the spellcasting prowess of wizards with the inventive genius of artificers, Scholars bend reality through intellect and ingenuity.",
       "flavor": "Merges Wizard + Artificer",
       "hitDie": 6,
@@ -219,7 +219,7 @@
     {
       "id": "pact",
       "name": "Pact",
-      "displayName": "Pact",
+      "displayName": "Pact - COMING SOON",
       "description": "Those who walk the path of Pact draw power from otherworldly beings and divine entities. Merging the devotion of clerics with the forbidden knowledge of warlocks, Pact wielders channel forces beyond mortal comprehension.",
       "flavor": "Merges Cleric + Warlock",
       "hitDie": 8,
@@ -340,7 +340,7 @@
     {
       "id": "wanderlust",
       "name": "Wanderlust",
-      "displayName": "Wanderlust",
+      "displayName": "Wanderlust - COMING SOON",
       "description": "Wanderlust represents those driven by curiosity and freedom, masters of versatility who refuse to be bound by convention. Combining the cunning of rogues with the charisma of bards, they are jack-of-all-trades who excel through adaptability.",
       "flavor": "Merges Rogue + Bard",
       "hitDie": 8,
@@ -469,7 +469,7 @@
     {
       "id": "bond",
       "name": "Bond",
-      "displayName": "Bond",
+      "displayName": "Bond - COMING SOON",
       "description": "Bond represents those who form deep connections with the natural world and its creatures. Merging the tracking prowess of rangers with the primal magic of druids, they are protectors of wilderness and champions of balance.",
       "flavor": "Merges Ranger + Druid",
       "hitDie": 10,
@@ -590,7 +590,7 @@
     {
       "id": "oath",
       "name": "Oath",
-      "displayName": "Oath",
+      "displayName": "Oath - COMING SOON",
       "description": "Oath represents warriors bound by sacred vows, wielding divine power through conviction. Merging the holy might of paladins with the blood magic of blood hunters, they are relentless crusaders who pay a price for power.",
       "flavor": "Merges Paladin + Blood Hunter",
       "hitDie": 10,
@@ -714,7 +714,7 @@
     {
       "id": "instinct",
       "name": "Instinct",
-      "displayName": "Instinct",
+      "displayName": "Instinct - COMING SOON",
       "description": "Instinct embodies raw, primal power channeled through emotion and will. Merging the savage fury of barbarians with the innate magic of sorcerers, they are forces of nature who bend reality through sheer force of personality.",
       "flavor": "Merges Barbarian + Sorcerer",
       "hitDie": 12,
