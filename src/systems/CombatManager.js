@@ -375,9 +375,14 @@ class CombatManager {
                 damageDice = parseInt(weapon.damage.dice.split('d')[1]) || 8;
             }
 
-            let damageRoll = rollDice(1, damageDice);
+            // Roll damage dice
+            const firstRoll = rollDice(1, damageDice);
+            let damageRoll = firstRoll;
+            let secondRoll = 0;
+
             if (isCritical) {
-                damageRoll += rollDice(1, damageDice); // Double dice on crit
+                secondRoll = rollDice(1, damageDice); // Double dice on crit
+                damageRoll += secondRoll;
                 gameState.addMessage(`⭐ Critical hit!`, 'success');
             }
 
@@ -393,9 +398,23 @@ class CombatManager {
 
             const damageTotal = damageRoll + damageBonus;
 
-            const damageMsg = damageBonus > 0
-                ? `💥 Hit! ${damageTotal} damage (${damageRoll} + ${damageBonus})`
-                : `💥 Hit! ${damageTotal} damage`;
+            // Build detailed damage message
+            let damageMsg = '💥 Hit! ';
+            if (isCritical) {
+                // Critical: show both dice rolls
+                damageMsg += `Damage: ${firstRoll} + ${secondRoll} (crit)`;
+                if (damageBonus !== 0) {
+                    damageMsg += ` + ${damageBonus} (ability)`;
+                }
+                damageMsg += ` = ${damageTotal}`;
+            } else {
+                // Normal hit: show single die roll
+                damageMsg += `Damage: ${firstRoll}`;
+                if (damageBonus !== 0) {
+                    damageMsg += ` + ${damageBonus} (ability)`;
+                }
+                damageMsg += ` = ${damageTotal}`;
+            }
 
             gameState.addMessage(
                 damageMsg,
@@ -436,8 +455,11 @@ class CombatManager {
 
                     if (cleaveAttackTotal >= adjacentEnemy.ac) {
                         const cleaveDamage = Math.max(1, attackBonus); // Ability modifier, minimum 1
+                        const cleaveMsg = attackBonus >= 1
+                            ? `💢 Cleave hits! Damage: ${attackBonus} (ability, min 1) = ${cleaveDamage}`
+                            : `💢 Cleave hits! Damage: 1 (minimum)`;
                         gameState.addMessage(
-                            `💥 Cleave hits! ${cleaveDamage} damage`,
+                            cleaveMsg,
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
@@ -495,8 +517,16 @@ class CombatManager {
                         const nickDamageBonus = Math.min(0, attackBonus); // Only negative modifiers apply
                         const nickDamageTotal = nickDamageRoll + nickDamageBonus;
 
+                        let nickMsg = `💢 Nick hits! Damage: ${nickDamageRoll}`;
+                        if (nickDamageBonus < 0) {
+                            nickMsg += ` + ${nickDamageBonus} (negative ability)`;
+                        } else {
+                            nickMsg += ` (no ability modifier)`;
+                        }
+                        nickMsg += ` = ${nickDamageTotal}`;
+
                         gameState.addMessage(
-                            `💥 Nick hits! ${nickDamageTotal} damage (no ability modifier)`,
+                            nickMsg,
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
@@ -535,7 +565,10 @@ class CombatManager {
                 const grazeDamage = Math.max(0, attackBonus); // Ability modifier, minimum 0
 
                 if (grazeDamage > 0) {
-                    gameState.addMessage(`⚔️ Graze! Despite missing, ${attacker.name} deals ${grazeDamage} damage!`, 'warning');
+                    gameState.addMessage(
+                        `💢 Graze! Despite missing, ${attacker.name} deals damage: ${attackBonus} (ability) = ${grazeDamage}`,
+                        'warning'
+                    );
 
                     // Floating combat text for Graze
                     if (window.game) {

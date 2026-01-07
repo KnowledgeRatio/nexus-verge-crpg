@@ -17,6 +17,7 @@ export class CharacterCreationUI {
             name: '',
             race: null,
             class: null,
+            kit: null, // New: selected kit (custom or preset)
             background: null,
             fightingStyle: null, // New: fighting style selection (if applicable)
             baseAbilities: {
@@ -31,6 +32,7 @@ export class CharacterCreationUI {
         this.classesData = null;
         this.backgroundsData = null;
         this.weaponMasteriesData = null; // New: weapon mastery data
+        this.kitsData = null; // New: kits data
     }
 
     /**
@@ -40,17 +42,19 @@ export class CharacterCreationUI {
         try {
             // Add cache-busting parameter to force reload of updated data
             const cacheBust = Date.now();
-            const [races, classes, backgrounds, weaponMasteries] = await Promise.all([
+            const [races, classes, backgrounds, weaponMasteries, kits] = await Promise.all([
                 fetch(`data/races.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/classes.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/backgrounds.json?v=${cacheBust}`).then(r => r.json()),
-                fetch(`data/weaponMasteries.json?v=${cacheBust}`).then(r => r.json())
+                fetch(`data/weaponMasteries.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/kits.json?v=${cacheBust}`).then(r => r.json())
             ]);
 
             this.racesData = races.races;
             this.classesData = classes.classes;
             this.backgroundsData = backgrounds.backgrounds;
             this.weaponMasteriesData = weaponMasteries.weaponMasteries;
+            this.kitsData = kits;
         } catch (error) {
             console.error('Failed to load data:', error);
             this.container.innerHTML = '<p class="text-danger">Error loading character data. Please refresh.</p>';
@@ -102,6 +106,9 @@ export class CharacterCreationUI {
             case 'Calling':
                 this.renderClassStep(content);
                 break;
+            case 'Kit':
+                this.renderKitStep(content);
+                break;
             case 'Fighting Style':
                 this.renderFightingStyleStep(content);
                 break;
@@ -140,17 +147,29 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Get dynamic step list based on selected class
+     * Get dynamic step list based on selected class and kit
      */
     getSteps() {
-        const baseSteps = ['Name', 'Culture', 'Background', 'Calling'];
+        const baseSteps = ['Name', 'Culture', 'Calling'];
 
-        // Conditionally add Fighting Style if class has it at level 1
-        if (this.hasFightingStyleAtLevel1()) {
-            baseSteps.push('Fighting Style');
+        // Always add Kit step after Calling
+        if (this.characterData.class) {
+            baseSteps.push('Kit');
         }
 
-        baseSteps.push('Abilities', 'Skills', 'Masteries', 'Review');
+        // If custom kit is selected, show all customization steps
+        if (this.characterData.kit && this.characterData.kit.isCustom) {
+            baseSteps.push('Background');
+
+            // Conditionally add Fighting Style if class has it at level 1
+            if (this.hasFightingStyleAtLevel1()) {
+                baseSteps.push('Fighting Style');
+            }
+
+            baseSteps.push('Abilities', 'Skills', 'Masteries');
+        }
+
+        baseSteps.push('Review');
         return baseSteps;
     }
 
@@ -279,6 +298,130 @@ export class CharacterCreationUI {
                 this.renderStep();
             });
         });
+    }
+
+    /**
+     * Step: Kit Selection
+     */
+    renderKitStep(container) {
+        const callingId = this.characterData.class.id;
+        const kits = this.kitsData[callingId] || [];
+
+        container.innerHTML = `
+            <h3>Choose Your Kit</h3>
+            <p class="step-description">Select a preset character build or customize your own.</p>
+            <div class="kit-grid">
+                ${kits.map(kit => `
+                    <div class="kit-card ${this.characterData.kit?.id === kit.id ? 'selected' : ''}"
+                         data-kit-id="${kit.id}">
+                        <h4>${kit.name}</h4>
+                        <p class="kit-description">${kit.description}</p>
+                        ${!kit.isCustom && kit.preset ? `
+                            <div class="kit-preset-details">
+                                <div class="kit-detail"><strong>Fighting Style:</strong> ${this.formatFightingStyleName(kit.preset.fightingStyle)}</div>
+                                <div class="kit-detail"><strong>Background:</strong> ${this.formatBackgroundName(kit.preset.background)}</div>
+                                <div class="kit-detail"><strong>Abilities:</strong>
+                                    STR ${kit.preset.abilities.str},
+                                    DEX ${kit.preset.abilities.dex},
+                                    CON ${kit.preset.abilities.con},
+                                    INT ${kit.preset.abilities.int},
+                                    WIS ${kit.preset.abilities.wis},
+                                    CHA ${kit.preset.abilities.cha}
+                                </div>
+                                <div class="kit-detail"><strong>Skills:</strong> ${kit.preset.skills.map(s => this.formatSkillName(s)).join(', ')}</div>
+                                <div class="kit-detail"><strong>Weapon Masteries:</strong> ${kit.preset.weaponMasteries.map(m => this.formatMasteryName(m)).join(', ')}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        // Bind kit selection
+        container.querySelectorAll('.kit-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const kitId = card.dataset.kitId;
+                const selectedKit = kits.find(k => k.id === kitId);
+                this.characterData.kit = selectedKit;
+
+                // If preset kit (not custom), apply all presets
+                if (!selectedKit.isCustom && selectedKit.preset) {
+                    this.applyKitPreset(selectedKit.preset);
+                }
+
+                this.renderStep();
+            });
+        });
+    }
+
+    /**
+     * Apply kit preset to character data
+     */
+    applyKitPreset(preset) {
+        // Apply fighting style
+        if (preset.fightingStyle) {
+            this.characterData.fightingStyle = preset.fightingStyle;
+        }
+
+        // Apply background
+        if (preset.background) {
+            this.characterData.background = this.backgroundsData.find(b => b.id === preset.background);
+        }
+
+        // Apply abilities
+        if (preset.abilities) {
+            this.characterData.baseAbilities = { ...preset.abilities };
+        }
+
+        // Apply skills
+        if (preset.skills) {
+            this.characterData.skillChoices = [...preset.skills];
+        }
+
+        // Apply weapon masteries
+        if (preset.weaponMasteries) {
+            this.characterData.weaponMasteries = [...preset.weaponMasteries];
+        }
+    }
+
+    /**
+     * Format fighting style name for display
+     */
+    formatFightingStyleName(styleId) {
+        const styles = {
+            archery: 'Archery',
+            defense: 'Defense',
+            dueling: 'Dueling',
+            greatWeaponFighting: 'Great Weapon Fighting',
+            protection: 'Protection',
+            twoWeaponFighting: 'Two-Weapon Fighting'
+        };
+        return styles[styleId] || styleId;
+    }
+
+    /**
+     * Format background name for display
+     */
+    formatBackgroundName(bgId) {
+        const bg = this.backgroundsData.find(b => b.id === bgId);
+        return bg ? bg.name : bgId;
+    }
+
+    /**
+     * Format mastery name for display
+     */
+    formatMasteryName(masteryId) {
+        const names = {
+            cleave: 'Cleave',
+            graze: 'Graze',
+            nick: 'Nick',
+            push: 'Push',
+            sap: 'Sap',
+            slow: 'Slow',
+            topple: 'Topple',
+            vex: 'Vex'
+        };
+        return names[masteryId] || masteryId;
     }
 
     /**
@@ -578,6 +721,31 @@ export class CharacterCreationUI {
             }
         }
 
+        // Build kit display
+        const kitDisplay = this.characterData.kit ?
+            `<p><strong>Kit:</strong> ${this.characterData.kit.name}</p>` : '';
+
+        // Build fighting style display (if applicable)
+        const fightingStyleDisplay = this.characterData.fightingStyle ?
+            `<p><strong>Fighting Style:</strong> ${this.formatFightingStyleName(this.characterData.fightingStyle)}</p>` : '';
+
+        // Build weapon masteries display
+        const masteriesDisplay = this.characterData.weaponMasteries.length > 0 ?
+            `<p><strong>Weapon Masteries:</strong> ${this.characterData.weaponMasteries.map(m => this.formatMasteryName(m)).join(', ')}</p>` : '';
+
+        // Build class features display
+        const level1Features = this.characterData.class.features?.['1'] || [];
+        const featuresDisplay = level1Features.length > 0 ?
+            `<div class="review-section">
+                <h4>Class Features (Level 1)</h4>
+                ${level1Features.map(feature => `
+                    <div class="feature-review">
+                        <p><strong>${feature.name}</strong></p>
+                        <p class="feature-desc">${feature.description}</p>
+                    </div>
+                `).join('')}
+            </div>` : '';
+
         container.innerHTML = `
             <h3>Review Your Character</h3>
             <p class="step-description">Review your choices before finalizing your character.</p>
@@ -588,6 +756,7 @@ export class CharacterCreationUI {
                     <p><strong>Name:</strong> ${this.characterData.name}</p>
                     <p><strong>Culture:</strong> ${this.characterData.race.name}</p>
                     <p><strong>Calling:</strong> ${this.characterData.class.displayName || this.characterData.class.name}</p>
+                    ${kitDisplay}
                     <p><strong>Background:</strong> ${this.characterData.background.name}</p>
                 </div>
 
@@ -603,6 +772,12 @@ export class CharacterCreationUI {
                 </div>
 
                 <div class="review-section">
+                    <h4>Combat Options</h4>
+                    ${fightingStyleDisplay}
+                    ${masteriesDisplay}
+                </div>
+
+                <div class="review-section">
                     <h4>Proficiencies</h4>
                     <p><strong>Skills:</strong> ${[
                         ...this.characterData.skillChoices,
@@ -611,6 +786,8 @@ export class CharacterCreationUI {
                     <p><strong>Armor:</strong> ${this.characterData.class.armorProficiencies.join(', ') || 'None'}</p>
                     <p><strong>Weapons:</strong> ${this.characterData.class.weaponProficiencies.join(', ')}</p>
                 </div>
+
+                ${featuresDisplay}
 
                 <div class="review-section">
                     <h4>Starting Stats</h4>
@@ -695,6 +872,12 @@ export class CharacterCreationUI {
             case 'Calling':
                 if (!this.characterData.class) {
                     alert('Please select a calling.');
+                    return false;
+                }
+                break;
+            case 'Kit':
+                if (!this.characterData.kit) {
+                    alert('Please select a kit.');
                     return false;
                 }
                 break;

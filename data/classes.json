@@ -54,16 +54,6 @@
             "abilityRef": "steadyNerve"
           },
           {
-            "name": "Martial Arts",
-            "description": "Your unarmed strikes and monk weapons (simple melee weapons without two-handed or heavy properties) gain benefits: Use DEX instead of STR, deal 1d6 damage (increases with level), and you can make one unarmed strike as a bonus action when you Attack with a monk weapon or unarmed strike.",
-            "unarmedDamage": "1d6",
-            "scaling": {
-              "5": { "unarmedDamage": "1d8" },
-              "11": { "unarmedDamage": "1d10" },
-              "17": { "unarmedDamage": "1d12" }
-            }
-          },
-          {
             "name": "Weapon Mastery",
             "description": "You master 3 weapons of your choice. You can use the mastery property of any weapon you're proficient with and have mastered.",
             "masteredWeapons": 3

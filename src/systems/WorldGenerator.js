@@ -1099,24 +1099,40 @@ class WorldGenerator {
     }
 
     /**
-     * Generate road path between two points (straight line)
+     * Generate road path between two points using Bresenham's line algorithm
+     * Ensures continuous path with no gaps
      * Returns array of {x, y} coordinates
      */
     generateRoadPath(start, end) {
         const path = [];
-        const dx = end.x - start.x;
-        const dy = end.y - start.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Normalize direction
-        const stepX = dx / distance;
-        const stepY = dy / distance;
+        // Bresenham's line algorithm for pixel-perfect straight line
+        let x0 = Math.round(start.x);
+        let y0 = Math.round(start.y);
+        const x1 = Math.round(end.x);
+        const y1 = Math.round(end.y);
 
-        // Generate path coordinates
-        for (let step = 0; step <= distance; step++) {
-            const x = Math.round(start.x + stepX * step);
-            const y = Math.round(start.y + stepY * step);
-            path.push({ x, y });
+        const dx = Math.abs(x1 - x0);
+        const dy = Math.abs(y1 - y0);
+        const sx = x0 < x1 ? 1 : -1;
+        const sy = y0 < y1 ? 1 : -1;
+        let err = dx - dy;
+
+        while (true) {
+            path.push({ x: x0, y: y0 });
+
+            // Reached destination
+            if (x0 === x1 && y0 === y1) break;
+
+            const e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
         }
 
         return path;

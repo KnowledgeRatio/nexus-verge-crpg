@@ -1,0 +1,78 @@
+{
+  "dedication": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Dedication character with full control over all choices.",
+      "isCustom": true
+    },
+    {
+      "id": "knight",
+      "name": "Knight",
+      "description": "A noble warrior trained in defensive combat, skilled in protecting allies and commanding respect on the battlefield.",
+      "isCustom": false,
+      "preset": {
+        "fightingStyle": "dueling",
+        "abilities": {
+          "str": 15,
+          "dex": 10,
+          "con": 14,
+          "int": 8,
+          "wis": 12,
+          "cha": 13
+        },
+        "background": "soldier",
+        "skills": ["empathy", "perception", "endurance"],
+        "weaponMasteries": ["sap", "topple", "vex"]
+      }
+    }
+  ],
+  "scholar": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Scholar character with full control over all choices.",
+      "isCustom": true
+    }
+  ],
+  "pact": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Pact character with full control over all choices.",
+      "isCustom": true
+    }
+  ],
+  "wanderlust": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Wanderlust character with full control over all choices.",
+      "isCustom": true
+    }
+  ],
+  "bond": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Bond character with full control over all choices.",
+      "isCustom": true
+    }
+  ],
+  "oath": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Oath character with full control over all choices.",
+      "isCustom": true
+    }
+  ],
+  "instinct": [
+    {
+      "id": "custom",
+      "name": "Custom",
+      "description": "Create your own unique Instinct character with full control over all choices.",
+      "isCustom": true
+    }
+  ]
+}
