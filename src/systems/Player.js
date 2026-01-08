@@ -6,6 +6,7 @@
 import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
 import { rollDice } from '../utils/dice.js';
+import audioManager from './AudioManager.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null) {
@@ -234,6 +235,9 @@ class Player {
         // Move successful
         this.x = newX;
         this.y = newY;
+
+        // Play footstep sound
+        audioManager.playFootstepSound();
 
         // Update game state
         gameState.set('player.position', { x: this.x, y: this.y });

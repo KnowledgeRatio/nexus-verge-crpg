@@ -46,8 +46,15 @@ class AudioManager {
             // Healing/ability sounds
             heal: 'data/sound/Ice Freeze 1.wav',
 
+            // === EXPLORATION SOUNDS ===
+            // Footstep sounds (dirt/terrain)
+            footstep1: 'data/sound/Dirt Run 1.wav',
+            footstep2: 'data/sound/Dirt Run 2.wav',
+            footstep3: 'data/sound/Dirt Run 3.wav',
+            footstep4: 'data/sound/Dirt Run 4.wav',
+            footstep5: 'data/sound/Dirt Run 5.wav',
+
             // === EXPLORATION SOUNDS (placeholders for future) ===
-            // footstep: 'data/sound/footstep.wav',
             // doorOpen: 'data/sound/door_open.wav',
             // doorClose: 'data/sound/door_close.wav',
             // itemPickup: 'data/sound/item_pickup.wav',
@@ -188,6 +195,17 @@ class AudioManager {
      */
     playHealSound() {
         this.play('heal', 0.8);
+    }
+
+    /**
+     * Play random footstep sound
+     * @param {number} volumeMultiplier - Optional volume multiplier (default: 0.3 for subtle footsteps)
+     */
+    playFootstepSound(volumeMultiplier = 0.3) {
+        // Pick random footstep sound (1-5)
+        const randomIndex = Math.floor(Math.random() * 5) + 1;
+        const soundKey = `footstep${randomIndex}`;
+        this.play(soundKey, volumeMultiplier);
     }
 
     /**
