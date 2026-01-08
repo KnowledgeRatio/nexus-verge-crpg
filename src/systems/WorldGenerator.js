@@ -589,6 +589,45 @@ class WorldGenerator {
     }
 
     /**
+     * Get tile from cache synchronously (returns null if region not cached or compressed)
+     * Used for HUD updates where async is not possible
+     */
+    getCachedTile(worldX, worldY) {
+        const { regionX, regionY, localX, localY } = this.getRegionCoords(worldX, worldY);
+        const cacheKey = `${regionX},${regionY}`;
+        const generatedRegions = gameState.get('world.generatedRegions');
+
+        if (!generatedRegions || !generatedRegions.has(cacheKey)) {
+            return null; // Region not cached
+        }
+
+        const region = generatedRegions.get(cacheKey);
+
+        // Check if region is in compressed save format (has exploredTiles but no tiles)
+        if (region && region.exploredTiles && !region.tiles) {
+            // Region is compressed, need to regenerate it asynchronously
+            // For now, return null and trigger async regeneration
+            this.getTile(worldX, worldY).then(() => {
+                // After regeneration, trigger location update
+                const game = window.game;
+                if (game && game.updateLocationDisplay) {
+                    game.updateLocationDisplay();
+                }
+            });
+            return null;
+        }
+
+        if (!region || !region.tiles) {
+            return null;
+        }
+
+        const regionSize = RULES.worldGen.regionSize;
+        const index = localY * regionSize + localX;
+
+        return region.tiles[index];
+    }
+
+    /**
      * Clear distant regions from cache to save memory
      */
     pruneCache(centerX, centerY, keepRadius = 3) {

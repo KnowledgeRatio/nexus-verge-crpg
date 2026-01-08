@@ -11,7 +11,8 @@
       "Bash(taskkill:*)",
       "Bash(npx -y http-server -p 8080)",
       "Bash(python:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(grep -rn \"world\\\\.currentLocation\" \"c:\\\\Users\\\\josh_\\\\git\\\\nexus-verge-crpg-5e\\\\src\"\" --include=\"*.js \")"
     ]
   }
 }

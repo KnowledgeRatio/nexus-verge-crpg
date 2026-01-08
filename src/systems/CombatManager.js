@@ -66,6 +66,8 @@ class CombatManager {
         });
 
         // Add combat start messages
+        const enemyNames = this.enemyCombatants.map(e => e.name).join(', ');
+        gameState.addMessage(`⚔️ You encounter: ${enemyNames}!`, 'warning');
         gameState.addMessage(`⚔️ Combat begins! Round ${this.round}`, 'warning');
         gameState.addMessage(`Turn order: ${this.turnOrder.map(c => c.name).join(' → ')}`, 'info');
 

@@ -267,14 +267,16 @@ class Player {
     }
 
     /**
-     * Check if player is at a settlement
+     * Check if player is at a settlement and auto-enter
      */
-    checkForSettlement() {
+    async checkForSettlement() {
         if (!this.settlementManager) return;
 
         const settlement = this.settlementManager.getSettlementAtPlayerPosition();
         if (settlement) {
-            gameState.addMessage(`🏘️ Press E to enter ${settlement.name}`, 'info');
+            // Auto-enter settlement when landing on it
+            gameState.addMessage(`🏘️ Entering ${settlement.name}...`, 'info');
+            await this.enterSettlement();
         }
     }
 
@@ -329,7 +331,7 @@ class Player {
 
         // Reduce base encounter rate to ~1% (previously 4%), still scaled by terrain modifier
         if (Math.random() < encounterChance * 0.01) {
-            gameState.addMessage('⚔️ A hostile creature appears!', 'warning');
+            // Don't add message here - it will be added by CombatManager when combat starts
             this.triggerCombatEncounter(terrainDef);
         }
     }
@@ -365,6 +367,9 @@ class Player {
             const enemy = await this.generateEnemy(playerLevel, terrainDef);
             enemies.push(enemy);
         }
+
+        // Set combat state IMMEDIATELY to block further movement
+        gameState.set('combat', { active: true, pending: true });
 
         // Trigger combat event
         gameState.set('ui.pendingCombat', { enemies });

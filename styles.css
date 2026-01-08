@@ -4253,3 +4253,794 @@ body {
         opacity: 0;
     }
 }
+
+/* ===================================
+   MOUSE-CLICKABLE QUICK MENU BAR
+   =================================== */
+
+.quick-menu {
+    position: fixed;
+    bottom: 20px; /* Bottom of screen */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: rgba(26, 26, 26, 0.75); /* More transparent */
+    border: 2px solid rgba(74, 74, 74, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.quick-menu.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(20px);
+}
+
+/* Collapsed state - only show toggle chevron */
+.quick-menu.collapsed {
+    padding: 6px 12px;
+    gap: 0;
+}
+
+.quick-menu.collapsed .quick-menu-btn {
+    display: none;
+}
+
+.quick-menu.collapsed .quick-menu-toggle-btn {
+    display: flex;
+}
+
+.quick-menu-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px; /* Reduced from 4px */
+    padding: 6px 10px; /* Reduced from 10px 14px */
+    background: rgba(38, 38, 38, 0.5); /* 50% transparent background */
+    border: 2px solid rgba(74, 74, 74, 0.5);
+    border-radius: 6px; /* Reduced from 8px */
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans);
+    min-width: 60px; /* Reduced from 70px */
+    position: relative;
+    backdrop-filter: blur(4px); /* Slight blur for glassmorphism effect */
+}
+
+.quick-menu-btn:hover {
+    background: rgba(48, 48, 48, 0.9); /* More opaque on hover */
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(74, 158, 255, 0.3);
+}
+
+.quick-menu-btn:active {
+    transform: translateY(-1px);
+}
+
+.quick-menu-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.quick-menu-btn.disabled:hover {
+    transform: none;
+    border-color: var(--border-color);
+    box-shadow: none;
+}
+
+.quick-menu-icon {
+    font-size: 1.4rem; /* Reduced from 1.8rem */
+    line-height: 1;
+}
+
+.quick-menu-label {
+    font-size: 0.65rem; /* Reduced from 0.75rem */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.quick-menu-kbd {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    font-size: 0.75rem; /* Increased from 0.65rem */
+    padding: 3px 6px; /* Increased from 2px 4px */
+    background: rgba(0, 0, 0, 0.7); /* More opaque for better visibility */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* More visible border */
+    border-radius: 4px; /* Increased from 3px */
+    font-family: var(--font-mono);
+    color: var(--text-primary); /* Changed from secondary to primary for better visibility */
+    font-weight: 600; /* Added bold */
+}
+
+/* Quick menu notification badge */
+.quick-menu-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--danger-color);
+    color: white;
+    border-radius: 9px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-primary);
+}
+
+/* Collapse/Expand chevron button (inline with buttons) */
+.quick-menu-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background: transparent;
+    border: 2px solid rgba(74, 74, 74, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    margin-left: 4px;
+    min-width: 40px;
+    flex-shrink: 0; /* Prevent chevron from shrinking */
+}
+
+.quick-menu-chevron:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1.05);
+}
+
+/* When collapsed, keep chevron in same position */
+.quick-menu.collapsed .quick-menu-chevron {
+    margin-left: 4px; /* Keep same margin as when expanded */
+}
+
+/* Mobile toggle button for quick menu */
+.quick-menu-toggle {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    background: var(--accent-color);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.quick-menu-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(74, 158, 255, 0.5);
+}
+
+.quick-menu-toggle:active {
+    transform: scale(0.95);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Large Desktop (1920px+) */
+@media (min-width: 1920px) {
+    .side-panel {
+        width: 600px;
+    }
+
+    .combat-sidebar {
+        width: 600px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 500px;
+    }
+
+    .title {
+        font-size: 5rem;
+    }
+}
+
+/* Desktop (1600px - 1920px) */
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .side-panel {
+        width: 550px;
+    }
+
+    .combat-sidebar {
+        width: 550px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 450px;
+    }
+}
+
+/* Desktop (1400px - 1600px) */
+@media (min-width: 1400px) and (max-width: 1599px) {
+    .side-panel {
+        width: 500px;
+    }
+
+    .combat-sidebar {
+        width: 500px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 400px;
+    }
+}
+
+/* Desktop (1200px - 1400px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .side-panel {
+        width: 400px;
+    }
+
+    .combat-sidebar {
+        width: 400px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 350px;
+    }
+
+    .title {
+        font-size: 3.5rem;
+    }
+}
+
+/* Tablet Landscape (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .side-panel {
+        width: 350px;
+    }
+
+    .combat-sidebar {
+        width: 350px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 300px;
+    }
+
+    .title {
+        font-size: 3rem;
+    }
+
+    .quick-menu {
+        gap: 6px;
+        padding: 8px 12px;
+    }
+
+    .quick-menu-btn {
+        min-width: 60px;
+        padding: 8px 10px;
+    }
+
+    .quick-menu-icon {
+        font-size: 1.5rem;
+    }
+
+    .quick-menu-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .game-container {
+        flex-direction: column;
+    }
+
+    .map-container {
+        flex: 1;
+        width: 100%;
+    }
+
+    .side-panel {
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        border-left: none;
+        border-top: 2px solid var(--border-color);
+    }
+
+    .combat-content {
+        flex-direction: column;
+    }
+
+    .combat-sidebar {
+        width: 100%;
+        max-height: 250px;
+        border-left: none;
+        border-top: 2px solid var(--border-color);
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .controls {
+        font-size: 0.85rem;
+    }
+
+    .quick-menu {
+        bottom: 60px;
+        gap: 5px;
+        padding: 6px 10px;
+    }
+
+    .quick-menu-btn {
+        min-width: 55px;
+        padding: 6px 8px;
+    }
+
+    .quick-menu-icon {
+        font-size: 1.3rem;
+    }
+
+    .quick-menu-label {
+        font-size: 0.65rem;
+    }
+
+    .quick-menu-kbd {
+        display: none;
+    }
+
+    /* Modal adjustments */
+    .modal-dialog,
+    .inventory-container,
+    .trading-container,
+    .quest-container {
+        width: 95%;
+        max-height: 90vh;
+    }
+}
+
+/* Mobile Landscape (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+    body {
+        overflow: auto;
+    }
+
+    .hud {
+        flex-wrap: wrap;
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+
+    .game-container {
+        flex-direction: column;
+        min-height: 500px;
+    }
+
+    .map-container {
+        flex: 1;
+        min-height: 400px;
+    }
+
+    .side-panel {
+        width: 100%;
+        max-height: 180px;
+        border-top: 2px solid var(--border-color);
+        border-left: none;
+    }
+
+    .controls {
+        padding: 8px;
+        font-size: 0.75rem;
+    }
+
+    .control-hint kbd {
+        padding: 2px 4px;
+        font-size: 0.7rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .menu-btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+    }
+
+    /* Show mobile quick menu toggle */
+    .quick-menu {
+        bottom: 10px;
+        left: 50%;
+        flex-wrap: wrap;
+        max-width: 90vw;
+        justify-content: center;
+    }
+
+    .quick-menu.hidden {
+        display: none;
+    }
+
+    .quick-menu-toggle {
+        display: flex;
+    }
+
+    .quick-menu-btn {
+        min-width: 50px;
+        padding: 8px;
+        flex: 0 0 auto;
+    }
+
+    .quick-menu-icon {
+        font-size: 1.2rem;
+    }
+
+    .quick-menu-label {
+        font-size: 0.6rem;
+    }
+
+    /* Combat adjustments */
+    .combatants-display {
+        flex-direction: column;
+    }
+
+    .combat-sidebar {
+        width: 100%;
+        max-height: 200px;
+        border-top: 2px solid var(--border-color);
+        border-left: none;
+    }
+
+    .combatant-card {
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile Portrait (up to 639px) */
+@media (max-width: 639px) {
+    body {
+        overflow: auto;
+    }
+
+    .hud {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+
+    .hud-left,
+    .hud-center,
+    .hud-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .game-container {
+        flex-direction: column;
+        min-height: 450px;
+    }
+
+    .map-container {
+        flex: 1;
+        min-height: 350px;
+    }
+
+    #gameCanvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .side-panel {
+        width: 100%;
+        max-height: 150px;
+        border-top: 2px solid var(--border-color);
+        border-left: none;
+        padding: 8px;
+    }
+
+    .panel-section h3 {
+        font-size: 0.9rem;
+    }
+
+    .message-log {
+        max-height: 100px !important;
+        font-size: 0.75rem;
+    }
+
+    .controls {
+        display: none; /* Hide keyboard controls on mobile */
+    }
+
+    .title {
+        font-size: 1.8rem;
+        letter-spacing: 0.1em;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 30px;
+    }
+
+    .menu-btn {
+        font-size: 0.95rem;
+        padding: 10px 16px;
+    }
+
+    /* Mobile quick menu */
+    .quick-menu {
+        bottom: auto;
+        top: auto;
+        left: 0;
+        right: 0;
+        transform: none;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 6px;
+        gap: 4px;
+        justify-content: space-around;
+        position: fixed;
+        bottom: 0;
+    }
+
+    .quick-menu.hidden {
+        display: none;
+    }
+
+    .quick-menu-toggle {
+        display: flex;
+        bottom: 10px;
+        right: 10px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+
+    .quick-menu-btn {
+        min-width: 45px;
+        padding: 6px 4px;
+        gap: 2px;
+        flex: 1;
+        max-width: 60px;
+    }
+
+    .quick-menu-icon {
+        font-size: 1.1rem;
+    }
+
+    .quick-menu-label {
+        font-size: 0.55rem;
+    }
+
+    .quick-menu-kbd,
+    .quick-menu-badge {
+        display: none;
+    }
+
+    /* Combat mobile layout */
+    .combat-container {
+        padding: 10px;
+    }
+
+    .combat-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .combatants-display {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .combat-sidebar {
+        width: 100%;
+        max-height: 180px;
+        border-top: 2px solid var(--border-color);
+        border-left: none;
+    }
+
+    .combatant-card {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    .combatant-stats {
+        font-size: 0.75rem;
+    }
+
+    .combat-action-btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+
+    /* Modal full-screen on mobile */
+    .modal-dialog,
+    .inventory-container,
+    .trading-container,
+    .quest-container,
+    .settlement-container,
+    .building-container {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .close-btn {
+        font-size: 1.5rem;
+        padding: 4px 8px;
+    }
+
+    /* Inventory mobile */
+    .inventory-body {
+        flex-direction: column;
+    }
+
+    .inventory-info-panel,
+    .inventory-items-panel {
+        width: 100%;
+    }
+
+    .inventory-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .inv-tab-btn {
+        font-size: 0.75rem;
+        padding: 8px 12px;
+    }
+
+    /* Trading mobile */
+    .trading-body {
+        flex-direction: column;
+    }
+
+    .items-panel,
+    .transaction-panel {
+        width: 100%;
+    }
+
+    /* Character sheet mobile */
+    .char-sheet-body {
+        font-size: 0.85rem;
+    }
+
+    .ability-scores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Ultra-wide monitors (2560px+) */
+@media (min-width: 2560px) {
+    .side-panel {
+        width: 700px;
+    }
+
+    .combat-sidebar {
+        width: 700px;
+    }
+
+    #combatLog,
+    .message-log {
+        max-height: 600px;
+    }
+
+    .title {
+        font-size: 6rem;
+    }
+
+    .quick-menu-btn {
+        min-width: 80px;
+    }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    .menu-btn,
+    .quick-menu-btn,
+    .combat-action-btn,
+    .item-action-btn,
+    .enter-btn,
+    .trade-btn {
+        min-height: 44px; /* iOS minimum tap target */
+    }
+
+    .quick-menu-btn:hover {
+        transform: none; /* Disable hover effects on touch */
+    }
+
+    .quick-menu-btn:active {
+        background: var(--accent-color);
+        transform: scale(0.95);
+    }
+}
+
+/* Landscape mode on phones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hud {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+
+    .side-panel {
+        max-height: 120px;
+    }
+
+    .quick-menu {
+        gap: 3px;
+        padding: 4px;
+    }
+
+    .quick-menu-btn {
+        padding: 4px;
+        min-width: 40px;
+    }
+
+    .quick-menu-icon {
+        font-size: 1rem;
+    }
+
+    .quick-menu-label {
+        font-size: 0.5rem;
+    }
+}
+
+/* Print styles (hide interactive elements) */
+@media print {
+    .quick-menu,
+    .quick-menu-toggle,
+    .controls,
+    .hud,
+    .modal,
+    .combat-sidebar,
+    .side-panel {
+        display: none !important;
+    }
+
+    .map-container {
+        width: 100%;
+        height: 100%;
+    }
+}

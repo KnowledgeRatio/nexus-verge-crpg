@@ -115,20 +115,6 @@
                 </div>
             </div>
 
-            <!-- Bottom Controls -->
-            <div class="controls">
-                <div class="control-hint">
-                    <kbd>WASD</kbd> Move |
-                    <kbd>E</kbd> Enter Settlement |
-                    <kbd>I</kbd> Inventory |
-                    <kbd>C</kbd> Character |
-                    <kbd>Q</kbd> Quests |
-                    <kbd>R</kbd> Rest |
-                    <kbd>M</kbd> Map |
-                    <kbd>.</kbd> Save |
-                    <kbd>H</kbd> Help
-                </div>
-            </div>
         </div>
 
         <!-- Combat Screen -->
@@ -751,6 +737,54 @@
 
         <!-- Floating Combat Text Container -->
         <div id="floatingCombatTextContainer"></div>
+
+        <!-- Quick Menu Bar (Mouse-Clickable) -->
+        <div id="quickMenu" class="quick-menu hidden">
+            <button class="quick-menu-btn" data-action="inventory" title="Inventory (I)">
+                <span class="quick-menu-kbd">I</span>
+                <span class="quick-menu-icon">🎒</span>
+                <span class="quick-menu-label">Inventory</span>
+            </button>
+            <button class="quick-menu-btn" data-action="character" title="Character Sheet (C)">
+                <span class="quick-menu-kbd">C</span>
+                <span class="quick-menu-icon">📜</span>
+                <span class="quick-menu-label">Character</span>
+            </button>
+            <button class="quick-menu-btn" data-action="quests" title="Quest Log (Q)">
+                <span class="quick-menu-kbd">Q</span>
+                <span class="quick-menu-icon">📋</span>
+                <span class="quick-menu-label">Quests</span>
+                <span class="quick-menu-badge" id="questBadge" style="display: none;">0</span>
+            </button>
+            <button class="quick-menu-btn" data-action="rest" title="Rest (R)">
+                <span class="quick-menu-kbd">R</span>
+                <span class="quick-menu-icon">💤</span>
+                <span class="quick-menu-label">Rest</span>
+            </button>
+            <button class="quick-menu-btn" data-action="map" title="World Map (M)">
+                <span class="quick-menu-kbd">M</span>
+                <span class="quick-menu-icon">🗺️</span>
+                <span class="quick-menu-label">Map</span>
+            </button>
+            <button class="quick-menu-btn" data-action="save" title="Save/Load (ESC)">
+                <span class="quick-menu-kbd">ESC</span>
+                <span class="quick-menu-icon">💾</span>
+                <span class="quick-menu-label">Save</span>
+            </button>
+            <button class="quick-menu-btn" data-action="help" title="Help (H)">
+                <span class="quick-menu-kbd">H</span>
+                <span class="quick-menu-icon">❓</span>
+                <span class="quick-menu-label">Help</span>
+            </button>
+
+            <!-- Hide/Show Chevron Button -->
+            <button id="quickMenuChevron" class="quick-menu-chevron" title="Collapse/Expand Menu">▲</button>
+        </div>
+
+        <!-- Mobile Quick Menu Toggle Button -->
+        <button id="quickMenuToggle" class="quick-menu-toggle" title="Toggle Quick Menu">
+            ☰
+        </button>
     </div>
 
     <script type="module" src="src/main.js"></script>

@@ -446,10 +446,9 @@ class Game {
             await this.player.spawn();
         }
 
-        // Add welcome messages
+        // Add welcome messages (only shown once at game start, not after combat)
         gameState.addMessage(`Welcome to Nexus Verge, ${character.name}!`, 'success');
         gameState.addMessage(`You are a Level ${character.level} ${character.race.name} ${character.class.displayName || character.class.name}.`, 'info');
-        gameState.addMessage('Use WASD or Arrow keys to move.', 'info');
 
         // Subscribe to messages
         this.setupMessageLog();
@@ -477,6 +476,9 @@ class Game {
 
         // Setup Help System
         this.setupHelp();
+
+        // Setup Quick Menu System (mouse-clickable UI)
+        this.setupQuickMenu();
 
         // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
@@ -912,11 +914,15 @@ class Game {
         const charLevel = document.getElementById('charLevel');
         const hpDisplay = document.getElementById('hpDisplay');
         const acDisplay = document.getElementById('acDisplay');
+        const locationDisplay = document.getElementById('location');
 
         if (charName) charName.textContent = character.name;
         if (charLevel) charLevel.textContent = `Level ${character.level} ${character.class.displayName || character.class.name}`;
         if (hpDisplay) hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
         if (acDisplay) acDisplay.textContent = `AC: ${character.ac}`;
+
+        // Update location display
+        this.updateLocationDisplay();
 
         // Update dev mode indicator
         this.updateDevModeIndicator(gameState.get('devMode'));
@@ -938,6 +944,88 @@ class Game {
                 hpDisplay.textContent = `HP: ${hp}/${char.maxHP}`;
             }
         });
+
+        // Subscribe to location changes
+        gameState.subscribe('world.currentLocation', () => {
+            this.updateLocationDisplay();
+        });
+    }
+
+    /**
+     * Update location display in HUD
+     */
+    updateLocationDisplay() {
+        const locationDisplay = document.getElementById('location');
+        if (!locationDisplay) return;
+
+        const location = this.getCurrentLocationString();
+        locationDisplay.textContent = location;
+    }
+
+    /**
+     * Get current location string for HUD
+     * Returns settlement name if in/near settlement, otherwise terrain type + coordinates
+     */
+    getCurrentLocationString() {
+        // Check if player is in/near a settlement
+        if (this.settlementManager && this.player) {
+            const settlement = this.settlementManager.getSettlementAtPlayerPosition();
+            if (settlement) {
+                console.log(`📍 Location: Settlement "${settlement.name}"`);
+                return settlement.name;
+            }
+        }
+
+        // Get current position and terrain
+        const currentLocation = gameState.get('world.currentLocation');
+        if (!currentLocation) {
+            console.log('📍 Location: Unknown (no currentLocation)');
+            return 'Unknown';
+        }
+
+        const { x, y } = currentLocation;
+
+        // Get terrain type at current position
+        if (this.worldGenerator) {
+            const tile = this.worldGenerator.getCachedTile(x, y);
+            console.log(`📍 Location: Tile at (${x}, ${y}):`, tile);
+
+            if (tile && tile.terrain) {
+                // tile.terrain is a string ID (e.g., "grassland"), need to look up terrain object
+                const terrainId = tile.terrain;
+                const terrainData = this.worldGenerator.terrainData;
+
+                if (terrainData && terrainData.terrains) {
+                    const terrainObj = terrainData.terrains.find(t => t.id === terrainId);
+                    if (terrainObj && terrainObj.name) {
+                        const terrainName = terrainObj.name; // Already capitalized in JSON
+                        console.log(`📍 Location: ${terrainName} (${x}, ${y})`);
+                        return `${terrainName} (${x}, ${y})`;
+                    } else {
+                        console.log(`📍 Location: Terrain object not found for ID "${terrainId}"`);
+                        // Fallback: capitalize the ID
+                        const terrainName = terrainId.charAt(0).toUpperCase() + terrainId.slice(1);
+                        return `${terrainName} (${x}, ${y})`;
+                    }
+                } else {
+                    console.log(`📍 Location: No terrain data available`);
+                    // Fallback: use terrain ID
+                    const terrainName = terrainId.charAt(0).toUpperCase() + terrainId.slice(1);
+                    return `${terrainName} (${x}, ${y})`;
+                }
+            } else if (!tile) {
+                // Tile not in cache yet (region compressed or not generated)
+                // Show coordinates while waiting for region to load
+                console.log(`📍 Location: Loading... (${x}, ${y}) - tile not cached`);
+                return `Loading... (${x}, ${y})`;
+            }
+        } else {
+            console.log(`📍 Location: No worldGenerator available`);
+        }
+
+        // Fallback to just coordinates
+        console.log(`📍 Location: Fallback to coordinates (${x}, ${y})`);
+        return `(${x}, ${y})`;
     }
 
     /**
@@ -2105,6 +2193,124 @@ class Game {
         const modal = document.getElementById('helpModal');
         if (modal) {
             modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Setup Quick Menu System (mouse-clickable UI bar)
+     */
+    setupQuickMenu() {
+        const quickMenu = document.getElementById('quickMenu');
+        const quickMenuToggle = document.getElementById('quickMenuToggle');
+        const quickMenuChevron = document.getElementById('quickMenuChevron');
+        const questBadge = document.getElementById('questBadge');
+
+        if (!quickMenu || !quickMenuToggle) return;
+
+        // Track collapsed state
+        let isCollapsed = false;
+
+        // Show quick menu when game screen is active
+        const showQuickMenu = () => {
+            if (this.currentScreen === 'game') {
+                quickMenu.classList.remove('hidden');
+            } else {
+                quickMenu.classList.add('hidden');
+            }
+        };
+
+        // Hide quick menu when combat starts
+        gameState.subscribe('combat', (combat) => {
+            if (combat && combat.active) {
+                quickMenu.classList.add('hidden');
+            } else if (this.currentScreen === 'game') {
+                quickMenu.classList.remove('hidden');
+            }
+        });
+
+        // Update quest badge count
+        gameState.subscribe('quests', (quests) => {
+            const activeCount = quests?.active?.length || 0;
+            if (activeCount > 0) {
+                questBadge.textContent = activeCount;
+                questBadge.style.display = 'flex';
+            } else {
+                questBadge.style.display = 'none';
+            }
+        });
+
+        // Collapse/Expand chevron button
+        if (quickMenuChevron) {
+            quickMenuChevron.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isCollapsed = !isCollapsed;
+                quickMenu.classList.toggle('collapsed', isCollapsed);
+                quickMenuChevron.textContent = isCollapsed ? '▼' : '▲';
+                quickMenuChevron.title = isCollapsed ? 'Expand Menu' : 'Collapse Menu';
+            });
+        }
+
+        // Mobile toggle button
+        quickMenuToggle.addEventListener('click', () => {
+            quickMenu.classList.toggle('hidden');
+        });
+
+        // Quick menu button handlers
+        const buttons = quickMenu.querySelectorAll('.quick-menu-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                this.handleQuickMenuAction(action);
+            });
+        });
+
+        // Show/hide based on screen changes
+        gameState.subscribe('ui.currentScreen', () => {
+            showQuickMenu();
+        });
+
+        // Show quick menu immediately if already on game screen
+        showQuickMenu();
+
+        console.log('✅ Quick Menu initialized');
+    }
+
+    /**
+     * Handle Quick Menu Actions
+     */
+    handleQuickMenuAction(action) {
+        const combat = gameState.get('combat');
+
+        // Prevent actions during combat (except help)
+        if (combat && combat.active && action !== 'help') {
+            gameState.addMessage('⚠️ Cannot access this during combat!', 'warning');
+            return;
+        }
+
+        switch (action) {
+            case 'inventory':
+                this.openInventory();
+                break;
+            case 'character':
+                this.openCharacterSheet();
+                break;
+            case 'quests':
+                this.openQuestLog();
+                break;
+            case 'rest':
+                restManager.openRestMenu();
+                break;
+            case 'map':
+                this.openWorldMap();
+                break;
+            case 'save':
+                this.openSaveMenu();
+                break;
+            case 'help':
+                this.openHelp();
+                break;
+            default:
+                console.warn(`Unknown quick menu action: ${action}`);
         }
     }
 
