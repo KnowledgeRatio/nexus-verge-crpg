@@ -21,6 +21,7 @@ import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
 import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
+import audioManager from './systems/AudioManager.js';
 
 class Game {
     constructor() {
@@ -48,6 +49,9 @@ class Game {
         // Combat systems
         this.combatManager = null;
         this.combatRenderer = null;
+
+        // Audio system (singleton, initialized on import)
+        this.audioManager = audioManager;
 
         // Game loop
         this.gameLoopId = null;
@@ -588,7 +592,7 @@ class Game {
         const playerDiv = document.getElementById('playerCombatants');
         const enemyDiv = document.getElementById('enemyCombatants');
 
-        if (!playerDiv || !enemyDiv || !combatState) return;
+        if (!playerDiv || !enemyDiv || !combatState || !combatState.combatants) return;
 
         const currentTurn = combatState.currentTurn;
 
@@ -971,7 +975,6 @@ class Game {
         if (this.settlementManager && this.player) {
             const settlement = this.settlementManager.getSettlementAtPlayerPosition();
             if (settlement) {
-                console.log(`📍 Location: Settlement "${settlement.name}"`);
                 return settlement.name;
             }
         }
@@ -979,7 +982,6 @@ class Game {
         // Get current position and terrain
         const currentLocation = gameState.get('world.currentLocation');
         if (!currentLocation) {
-            console.log('📍 Location: Unknown (no currentLocation)');
             return 'Unknown';
         }
 
@@ -988,7 +990,6 @@ class Game {
         // Get terrain type at current position
         if (this.worldGenerator) {
             const tile = this.worldGenerator.getCachedTile(x, y);
-            console.log(`📍 Location: Tile at (${x}, ${y}):`, tile);
 
             if (tile && tile.terrain) {
                 // tile.terrain is a string ID (e.g., "grassland"), need to look up terrain object
@@ -999,16 +1000,13 @@ class Game {
                     const terrainObj = terrainData.terrains.find(t => t.id === terrainId);
                     if (terrainObj && terrainObj.name) {
                         const terrainName = terrainObj.name; // Already capitalized in JSON
-                        console.log(`📍 Location: ${terrainName} (${x}, ${y})`);
                         return `${terrainName} (${x}, ${y})`;
                     } else {
-                        console.log(`📍 Location: Terrain object not found for ID "${terrainId}"`);
                         // Fallback: capitalize the ID
                         const terrainName = terrainId.charAt(0).toUpperCase() + terrainId.slice(1);
                         return `${terrainName} (${x}, ${y})`;
                     }
                 } else {
-                    console.log(`📍 Location: No terrain data available`);
                     // Fallback: use terrain ID
                     const terrainName = terrainId.charAt(0).toUpperCase() + terrainId.slice(1);
                     return `${terrainName} (${x}, ${y})`;
@@ -1016,15 +1014,11 @@ class Game {
             } else if (!tile) {
                 // Tile not in cache yet (region compressed or not generated)
                 // Show coordinates while waiting for region to load
-                console.log(`📍 Location: Loading... (${x}, ${y}) - tile not cached`);
                 return `Loading... (${x}, ${y})`;
             }
-        } else {
-            console.log(`📍 Location: No worldGenerator available`);
         }
 
         // Fallback to just coordinates
-        console.log(`📍 Location: Fallback to coordinates (${x}, ${y})`);
         return `(${x}, ${y})`;
     }
 

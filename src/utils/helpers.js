@@ -37,10 +37,15 @@ export function setNestedProperty(obj, path, value) {
     const parts = path.split('.');
     const last = parts.pop();
     const target = parts.reduce((current, prop) => {
+        if (!current || typeof current !== 'object') return null;
         if (!(prop in current)) current[prop] = {};
         return current[prop];
     }, obj);
-    target[last] = value;
+
+    // Don't try to set property on null/undefined target
+    if (target && typeof target === 'object') {
+        target[last] = value;
+    }
 }
 
 /**

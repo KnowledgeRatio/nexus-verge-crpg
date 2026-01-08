@@ -1,10 +1,195 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-01-03
+**Last Updated:** 2026-01-08
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Floating Combat Text System (UX Enhancement)
+**Latest Commit:** Combat Audio System (UX Enhancement)
+
+---
+
+## 🆕 Recent Changes (2026-01-08 - Session 11)
+
+### Combat Audio System - UX Enhancement ✅
+Implemented comprehensive audio system with combat sound effects that dynamically play based on weapon type, hit/miss, and critical status. Built with extensible framework supporting future exploration sounds, ambient music, and UI audio.
+
+**New Files Created:**
+- `src/systems/AudioManager.js` - Complete audio management system with pooling, volume control, and music support
+
+**Modified Files:**
+- `src/systems/CombatManager.js` - Integrated combat sound effects throughout attack flow
+- `src/main.js` - Added AudioManager import and initialization
+
+**Implementation Details:**
+
+**1. Sound Effects Mapping** ✅
+Combat sounds triggered automatically based on attack outcomes:
+- **Melee Critical Hit:** `Sword Impact Hit 2.wav` (dramatic metal clang)
+- **Melee Regular Hit:** `Sword Impact Hit 3.wav` (solid impact)
+- **Melee Miss:** `Sword Attack 1.wav` (whoosh/swing)
+- **Ranged Critical Hit:** `Spell Impact 2.wav` (magical explosion)
+- **Ranged Regular Hit:** `Spell Impact 1.wav` (projectile impact)
+- **Ranged Miss:** `Bow Blocked 1.wav` (deflection sound)
+- **Healing/Buffs:** `Ice Freeze 1.wav` (magical restoration effect)
+
+**2. Audio Pooling System** ✅
+Created efficient audio pooling to handle overlapping sounds:
+- 3 audio instances per sound effect (prevents cutoff during rapid attacks)
+- Automatic instance rotation (finds paused instance or interrupts oldest)
+- Preloaded audio files for instant playback
+- Volume management per pool instance
+
+**3. Volume Control Architecture** ✅
+Three-tier volume system for fine-grained control:
+- **Master Volume** (0.0-1.0): Global volume control
+- **SFX Volume** (0.0-1.0): Sound effects multiplier
+- **Music Volume** (0.0-1.0): Background music multiplier
+- Final volume calculation: `masterVolume × categoryVolume`
+- Real-time volume updates for all audio instances
+
+**4. Combat Integration** ✅
+Seamless integration with CombatManager attack flow:
+```javascript
+// After hit/miss determination
+audioManager.playCombatSound({
+    weaponType: isRanged ? 'ranged' : 'melee',
+    hit: true,
+    critical: isCritical
+});
+```
+
+**Sound Trigger Points:**
+- **Critical Miss** (line 367): Plays miss sound with critical flag
+- **Regular Miss** (line 579): Plays miss sound for normal misses
+- **Regular Hit** (line 441): Plays hit sound with weapon type detection
+- **Critical Hit** (line 441): Plays critical hit sound with enhanced audio
+
+**5. Weapon Type Detection** ✅
+Automatic weapon type identification for correct sound selection:
+```javascript
+const weapon = attacker.character.equipment?.[weaponSlot];
+const isRanged = weapon?.weaponType === 'ranged';
+```
+- Melee weapons (swords, axes, etc.) trigger sword impact sounds
+- Ranged weapons (bows, crossbows) trigger spell/projectile sounds
+- Unarmed attacks default to melee sounds
+
+**6. Extensible Framework** ✅
+Future-ready architecture with placeholder categories:
+
+**Exploration Sounds (Ready for Implementation):**
+```javascript
+// footstep: 'data/sound/footstep.wav',
+// doorOpen: 'data/sound/door_open.wav',
+// itemPickup: 'data/sound/item_pickup.wav',
+// gold: 'data/sound/gold.wav',
+// levelUp: 'data/sound/level_up.wav',
+// questComplete: 'data/sound/quest_complete.wav'
+```
+
+**UI Sounds (Ready for Implementation):**
+```javascript
+// menuOpen: 'data/sound/menu_open.wav',
+// buttonClick: 'data/sound/button_click.wav',
+// uiHover: 'data/sound/ui_hover.wav',
+// uiError: 'data/sound/ui_error.wav'
+```
+
+**Terrain Sounds (Ready for Implementation):**
+```javascript
+// grassStep: 'data/sound/grass_step.wav',
+// waterSplash: 'data/sound/water_splash.wav',
+// rockStep: 'data/sound/rock_step.wav',
+// snowCrunch: 'data/sound/snow_crunch.wav'
+```
+
+**Ambient Music (Ready for Implementation):**
+```javascript
+// explorationCalm: 'data/music/exploration_calm.mp3',
+// combatIntense: 'data/music/combat_intense.mp3',
+// townPeaceful: 'data/music/town_peaceful.mp3',
+// dungeonOminous: 'data/music/dungeon_ominous.mp3'
+```
+
+**7. Music System (Framework Complete)** ✅
+Background music support with smooth transitions:
+- `playMusic(trackKey, loop, fadeInDuration)` - Start music track with fade-in
+- `stopMusic(fadeOutDuration)` - Stop current music with fade-out
+- Automatic track switching with crossfade
+- Loop control for ambient tracks
+- 50-step volume fade algorithm (smooth audio transitions)
+
+**8. Dynamic Sound Registration** ✅
+Runtime sound registration for mods/DLC:
+```javascript
+audioManager.registerSound('customSound', 'path/to/sound.wav', 'sfx');
+// Immediately available with audio pooling
+```
+
+**9. Audio Manager API** ✅
+Complete public API for game integration:
+```javascript
+// Sound Effects
+audioManager.play(soundKey, volumeMultiplier);
+audioManager.playCombatSound({ weaponType, hit, critical });
+audioManager.playHealSound();
+
+// Music
+audioManager.playMusic(musicKey, loop, fadeInDuration);
+audioManager.stopMusic(fadeOutDuration);
+
+// Volume Control
+audioManager.setMasterVolume(0.5);
+audioManager.setSFXVolume(0.8);
+audioManager.setMusicVolume(0.6);
+audioManager.getMasterVolume() / getSFXVolume() / getMusicVolume();
+
+// State Management
+audioManager.setEnabled(true/false);
+audioManager.isEnabled();
+audioManager.stopAll();
+
+// Dynamic Registration
+audioManager.registerSound(key, path, category);
+```
+
+**10. Performance Optimizations** ✅
+- Preloaded audio (no loading delay during gameplay)
+- HTML5 Audio API (wide browser compatibility)
+- Web Audio API fallback detection (future enhancement ready)
+- Efficient audio pooling (prevents memory leaks)
+- Automatic cleanup on audio end
+
+**Benefits:**
+- ✅ **Immersive combat** - Every hit, miss, and crit has audio feedback
+- ✅ **Weapon-appropriate sounds** - Melee vs ranged distinction
+- ✅ **Critical hit emphasis** - Special sounds for dramatic moments
+- ✅ **No audio cutoff** - Pooling allows overlapping sounds
+- ✅ **Future-ready** - Framework supports exploration, UI, terrain, and music
+- ✅ **Modular design** - Easy to add new sounds without code changes
+- ✅ **Volume control** - Separate SFX and music volume sliders (ready for settings UI)
+- ✅ **Professional quality** - Smooth fades, proper pooling, error handling
+
+**User Experience Impact:**
+- ✅ Combat feels visceral and impactful with every action
+- ✅ Critical hits create dopamine-inducing audiovisual moments
+- ✅ Weapon type distinction adds realism (sword clang vs arrow thud)
+- ✅ Ready for ambient music to enhance exploration mood
+- ✅ Foundation for full audio landscape (footsteps, UI feedback, terrain sounds)
+
+**Technical Notes:**
+- All sounds stored in `data/sound/` directory
+- Audio files: `.wav` format (high quality, low latency)
+- Music files: `.mp3` format recommended (smaller file size, streaming-friendly)
+- Singleton pattern: One AudioManager instance shared across game
+- Global access: `window.game.audioManager` or direct import
+
+**Next Steps:**
+- Add footstep sounds on player movement (terrain-dependent)
+- Implement UI sounds for button clicks, menu open/close
+- Add ambient music for exploration, combat, settlements
+- Create in-game settings UI for volume sliders
+- Add sound effects for spell casting, abilities, loot drops
 
 ---
 

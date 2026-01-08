@@ -7,6 +7,7 @@ import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { rollDice, rollD20 } from '../utils/dice.js';
 import { SeededRandom } from '../utils/rng.js';
+import audioManager from './AudioManager.js';
 
 class CombatManager {
     constructor() {
@@ -363,6 +364,13 @@ class CombatManager {
                 window.game.showFloatingCombatText(defender.id, 'CRITICAL MISS!', 'miss');
             }
 
+            // Play miss sound (critical miss uses same sound)
+            audioManager.playCombatSound({
+                weaponType: isRanged ? 'ranged' : 'melee',
+                hit: false,
+                critical: true
+            });
+
             if (shouldConsumeAction) {
                 attacker.consumeAction(actionType);
             }
@@ -429,6 +437,13 @@ class CombatManager {
                 const floatingType = isCritical ? 'critical' : 'damage';
                 window.game.showFloatingCombatText(defender.id, floatingText, floatingType);
             }
+
+            // Play hit sound
+            audioManager.playCombatSound({
+                weaponType: isRanged ? 'ranged' : 'melee',
+                hit: true,
+                critical: isCritical
+            });
 
             // Apply damage
             defender.takeDamage(damageTotal);
@@ -560,6 +575,13 @@ class CombatManager {
             if (window.game) {
                 window.game.showFloatingCombatText(defender.id, 'MISS', 'miss');
             }
+
+            // Play miss sound
+            audioManager.playCombatSound({
+                weaponType: isRanged ? 'ranged' : 'melee',
+                hit: false,
+                critical: false
+            });
 
             // WEAPON MASTERY: Graze
             // If attacker missed and has Graze mastery, deal ability modifier damage
@@ -856,11 +878,17 @@ class CombatManager {
         if (this.currentTurnIndex === 0 || this.currentTurnIndex < (this.currentTurnIndex - 1)) {
             this.round++;
             gameState.addMessage(`⚔️ Round ${this.round} begins!`, 'warning');
-            gameState.set('combat.round', this.round);
+
+            // Only update combat state if combat is still active
+            if (this.active && gameState.get('combat')) {
+                gameState.set('combat.round', this.round);
+            }
         }
 
-        // Start next turn
-        this.startTurn();
+        // Start next turn (only if combat still active)
+        if (this.active) {
+            this.startTurn();
+        }
     }
 
     /**
