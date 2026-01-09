@@ -481,6 +481,9 @@ class Game {
         // Setup Help System
         this.setupHelp();
 
+        // Setup Settings System
+        this.setupSettings();
+
         // Setup Quick Menu System (mouse-clickable UI)
         this.setupQuickMenu();
 
@@ -551,7 +554,19 @@ class Game {
 
         // Subscribe to combat state updates
         gameState.subscribe('combat', (combatState) => {
-            if (!combatState || !combatState.active) return;
+            if (!combatState || !combatState.active) {
+                // Combat ended - return to game screen
+                if (this.currentScreen === 'combatScreen' || this.currentScreen === 'combat') {
+                    this.showScreen('game');
+                }
+                return;
+            }
+
+            // Combat started - switch to combat screen
+            if (this.currentScreen !== 'combatScreen' && this.currentScreen !== 'combat') {
+                this.showScreen('combatScreen');
+            }
+
             this.renderCombatScreen(combatState);
         });
 
@@ -1092,10 +1107,25 @@ class Game {
             }
         });
 
+        // Backtick key (`) to open settings (when in game screen)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '`' && this.currentScreen === 'game' && !gameState.get('combat')) {
+                this.openSettings();
+            }
+        });
+
         // ESC key to close any open modal (when in game screen)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.currentScreen === 'game' && !gameState.get('combat')) {
-                this.handleEscapeKey();
+            if (e.key === 'Escape' && this.currentScreen === 'game') {
+                const combat = gameState.get('combat');
+                const inCombat = combat && combat.active;
+
+                // Allow ESC during non-combat gameplay
+                if (!inCombat) {
+                    this.closeAnyOpenModal();
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             }
         });
 
@@ -1103,9 +1133,9 @@ class Game {
     }
 
     /**
-     * Handle ESC key press - close open modals
+     * Close any open modals
      */
-    handleEscapeKey() {
+    closeAnyOpenModal() {
         // Check if any modal is currently open
         const modalIds = [
             'saveLoadModal',
@@ -1116,21 +1146,21 @@ class Game {
             'buildingModal',
             'npcDialogueModal',
             'inventoryModal',
-            'modalOverlay',
             'worldMapModal',
-            'characterSheetModal'
+            'characterSheetModal',
+            'skillCheckModal',
+            'settingsModal',
+            'helpModal'
         ];
 
         const openModals = modalIds
             .map(id => document.getElementById(id))
             .filter(modal => modal && modal.classList.contains('active'));
 
-        if (openModals.length > 0) {
-            // Close all open modals
-            openModals.forEach(modal => {
-                modal.classList.remove('active');
-            });
-        }
+        // Close all open modals
+        openModals.forEach(modal => {
+            modal.classList.remove('active');
+        });
     }
 
     /**
@@ -2082,13 +2112,6 @@ class Game {
             });
         }
 
-        // Close on escape key (when modal is open)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
-                this.closeHelp();
-            }
-        });
-
         // Close on backdrop click
         if (modal) {
             modal.addEventListener('click', (e) => {
@@ -2161,6 +2184,98 @@ class Game {
             console.error('Failed to load terrain reference:', error);
             container.innerHTML = '<div class="terrain-error">Failed to load terrain data. Please refresh the page.</div>';
         }
+    }
+
+    /**
+     * Setup Settings Modal
+     */
+    setupSettings() {
+        const modal = document.getElementById('settingsModal');
+        const closeBtn = document.getElementById('closeSettingsBtn');
+
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeSettings());
+        }
+
+        // Close on backdrop click
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeSettings();
+                }
+            });
+        }
+
+        // Volume sliders
+        const masterSlider = document.getElementById('masterVolumeSlider');
+        const sfxSlider = document.getElementById('sfxVolumeSlider');
+        const musicSlider = document.getElementById('musicVolumeSlider');
+
+        if (masterSlider) {
+            masterSlider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                document.getElementById('masterVolumeValue').textContent = `${value}%`;
+                audioManager.setMasterVolume(value / 100);
+            });
+        }
+
+        if (sfxSlider) {
+            sfxSlider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                document.getElementById('sfxVolumeValue').textContent = `${value}%`;
+                audioManager.setSFXVolume(value / 100);
+            });
+        }
+
+        if (musicSlider) {
+            musicSlider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                document.getElementById('musicVolumeValue').textContent = `${value}%`;
+                audioManager.setMusicVolume(value / 100);
+            });
+        }
+
+        // Test sound button
+        const testSoundBtn = document.getElementById('testSoundBtn');
+        if (testSoundBtn) {
+            testSoundBtn.addEventListener('click', () => {
+                audioManager.play('meleeHit', 1.0);
+            });
+        }
+    }
+
+    /**
+     * Open Settings Modal
+     */
+    openSettings() {
+        const modal = document.getElementById('settingsModal');
+        if (!modal) return;
+
+        // Load current volume values
+        const masterVolume = Math.round(audioManager.getMasterVolume() * 100);
+        const sfxVolume = Math.round(audioManager.getSFXVolume() * 100);
+        const musicVolume = Math.round(audioManager.getMusicVolume() * 100);
+
+        document.getElementById('masterVolumeSlider').value = masterVolume;
+        document.getElementById('masterVolumeValue').textContent = `${masterVolume}%`;
+
+        document.getElementById('sfxVolumeSlider').value = sfxVolume;
+        document.getElementById('sfxVolumeValue').textContent = `${sfxVolume}%`;
+
+        document.getElementById('musicVolumeSlider').value = musicVolume;
+        document.getElementById('musicVolumeValue').textContent = `${musicVolume}%`;
+
+        modal.classList.add('active');
+    }
+
+    /**
+     * Close Settings Modal
+     */
+    closeSettings() {
+        const modal = document.getElementById('settingsModal');
+        if (!modal) return;
+        modal.classList.remove('active');
     }
 
     /**
@@ -2302,6 +2417,9 @@ class Game {
                 break;
             case 'help':
                 this.openHelp();
+                break;
+            case 'settings':
+                this.openSettings();
                 break;
             default:
                 console.warn(`Unknown quick menu action: ${action}`);

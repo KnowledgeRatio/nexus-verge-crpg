@@ -593,7 +593,9 @@
                                 <div class="help-item"><kbd>M</kbd> - World map</div>
                                 <div class="help-item"><kbd>R</kbd> - Rest menu</div>
                                 <div class="help-item"><kbd>H</kbd> - Help (this screen)</div>
-                                <div class="help-item"><kbd>ESC</kbd> - Save menu</div>
+                                <div class="help-item"><kbd>.</kbd> - Save menu</div>
+                                <div class="help-item"><kbd>`</kbd> - Settings</div>
+                                <div class="help-item"><kbd>ESC</kbd> - Close any modal</div>
                             </div>
                         </section>
 
@@ -675,7 +677,7 @@
                         <section class="help-section">
                             <h3>💡 Tips & Tricks</h3>
                             <ul class="help-tips">
-                                <li>Save frequently using <kbd>ESC</kbd> menu. 5 save slots available.</li>
+                                <li>Save frequently using <kbd>.</kbd> menu. 5 save slots available.</li>
                                 <li>Rest at settlements before long journeys. Sanctuaries are rare but valuable.</li>
                                 <li>Match weapon masteries to your playstyle. Nick for dual-wielding, Cleave for AoE, etc.</li>
                                 <li>Higher ground and cover don't exist in this simplified combat, focus on equipment and positioning order.</li>
@@ -726,6 +728,49 @@
             </div>
         </div>
 
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>⚙️ Settings</h2>
+                    <button class="close-btn" id="closeSettingsBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h3>🔊 Audio</h3>
+
+                        <div class="setting-item">
+                            <label for="masterVolumeSlider">
+                                <span class="setting-label">Master Volume</span>
+                                <span class="setting-value" id="masterVolumeValue">50%</span>
+                            </label>
+                            <input type="range" id="masterVolumeSlider" min="0" max="100" value="50" class="volume-slider">
+                        </div>
+
+                        <div class="setting-item">
+                            <label for="sfxVolumeSlider">
+                                <span class="setting-label">Sound Effects</span>
+                                <span class="setting-value" id="sfxVolumeValue">100%</span>
+                            </label>
+                            <input type="range" id="sfxVolumeSlider" min="0" max="100" value="100" class="volume-slider">
+                        </div>
+
+                        <div class="setting-item">
+                            <label for="musicVolumeSlider">
+                                <span class="setting-label">Music</span>
+                                <span class="setting-value" id="musicVolumeValue">70%</span>
+                            </label>
+                            <input type="range" id="musicVolumeSlider" min="0" max="100" value="70" class="volume-slider">
+                        </div>
+
+                        <div class="setting-item">
+                            <button id="testSoundBtn" class="btn btn-secondary">Test Sound</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Quest Notification Toast -->
         <div id="questNotification" class="quest-toast">
             <div class="toast-icon">📜</div>
@@ -766,8 +811,8 @@
                 <span class="quick-menu-icon">🗺️</span>
                 <span class="quick-menu-label">Map</span>
             </button>
-            <button class="quick-menu-btn" data-action="save" title="Save/Load (ESC)">
-                <span class="quick-menu-kbd">ESC</span>
+            <button class="quick-menu-btn" data-action="save" title="Save/Load (.)">
+                <span class="quick-menu-kbd">.</span>
                 <span class="quick-menu-icon">💾</span>
                 <span class="quick-menu-label">Save</span>
             </button>
@@ -775,6 +820,11 @@
                 <span class="quick-menu-kbd">H</span>
                 <span class="quick-menu-icon">❓</span>
                 <span class="quick-menu-label">Help</span>
+            </button>
+            <button class="quick-menu-btn" data-action="settings" title="Settings (`)">
+                <span class="quick-menu-kbd">`</span>
+                <span class="quick-menu-icon">⚙️</span>
+                <span class="quick-menu-label">Settings</span>
             </button>
 
             <!-- Hide/Show Chevron Button -->

@@ -4036,6 +4036,93 @@ body {
     }
 }
 
+/* ===================================
+   Settings Modal Styles
+   =================================== */
+
+.settings-section {
+    padding: 20px 0;
+}
+
+.settings-section h3 {
+    color: var(--text-highlight);
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.setting-item {
+    margin-bottom: 25px;
+}
+
+.setting-item label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.setting-label {
+    font-weight: 600;
+}
+
+.setting-value {
+    color: var(--accent-color);
+    font-weight: 700;
+    min-width: 50px;
+    text-align: right;
+}
+
+.volume-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    background: #6bb3ff;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    background: #6bb3ff;
+}
+
+#testSoundBtn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
 /* ===== Skill Check Modal ===== */
 .skill-check-modal {
     max-width: 500px;
