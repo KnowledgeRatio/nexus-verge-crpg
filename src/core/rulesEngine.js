@@ -346,6 +346,104 @@ export const RULES = {
     },
 
     // ====================
+    // SKILL CHALLENGES
+    // ====================
+    skillChallenges: {
+        // Balance system for skill challenge rewards
+        balancing: {
+            // Skill value multipliers - skills with high external value get lower challenge rewards
+            // very_high: Skills that already provide major benefits (stealth = sneak attack + combat avoidance)
+            // high: Skills with significant external benefits (influence = better prices, quest alternatives)
+            // medium: Skills with moderate external benefits (investigation = find clues)
+            // low: Skills with limited external benefits (athletics = grapple, climb)
+            // very_low: Rarely-used skills that need incentive
+            skillValueMultipliers: {
+                very_high: 0.5,   // 50% rewards (stealth, perception)
+                high: 0.75,       // 75% rewards (influence, deception)
+                medium: 1.0,      // 100% rewards (investigation, arcana)
+                low: 1.25,        // 125% rewards (athletics, endurance)
+                very_low: 1.5     // 150% rewards (rarely-used skills)
+            },
+
+            // Base reward rates - starting point for scaling
+            baseRewardRates: {
+                xpPerDCPoint: 10,       // 10 XP per DC point
+                goldPerDCPoint: 5,      // 5 gold per DC point
+                lootChancePerDC: 0.02   // 2% loot chance per DC point
+            },
+
+            // Level scaling parameters
+            levelScaling: {
+                dcIncreasePerLevel: 0.5,      // +0.5 DC per player level
+                xpMultiplierPerLevel: 0.15,   // +15% XP per level
+                goldMultiplierPerLevel: 0.20  // +20% gold per level
+            },
+
+            // Risk level modifiers - higher risk (combat on failure) = higher rewards
+            riskLevelModifiers: {
+                low: 0.8,      // 80% rewards (low risk)
+                medium: 1.0,   // 100% rewards (standard)
+                high: 1.3,     // 130% rewards (failure = combat)
+                deadly: 1.6    // 160% rewards (failure = death possible)
+            },
+
+            // Critical success/failure thresholds
+            criticalThresholds: {
+                naturalCrit: true,          // Natural 20/1 = critical
+                marginCrit: true,           // ±10 from DC = critical
+                critMargin: 10,             // DC ± 10 triggers critical
+                critSuccessBonus: 0.5,      // +50% rewards on crit success
+                critFailureSeverity: 1.5    // 150% damage/consequences on crit failure
+            },
+
+            // Trigger frequency modifiers by context
+            triggerFrequencyModifiers: {
+                terrain_base: 1.0,          // 1.0 = use challenge's base frequency (15-25%)
+                quest_objective: 10.0,      // 10.0 = guaranteed trigger if quest requires
+                npc_dialogue: 1.0,          // 1.0 = use base frequency for NPC dialogue
+                dungeon_feature: 1.5        // 1.5 = 50% higher chance in dungeons
+            },
+
+            // Loot chance modifiers by skill value
+            lootChanceBySkillValue: {
+                very_high: 0.3,   // 30% base loot chance (stealth, perception)
+                high: 0.5,        // 50% (influence, deception)
+                medium: 0.7,      // 70% (investigation, arcana)
+                low: 1.0,         // 100% (athletics, endurance)
+                very_low: 1.2     // 120% (can roll multiple times)
+            }
+        },
+
+        // Challenge difficulty scaling by player level
+        difficultyScaling: {
+            enabled: true,
+            method: "additive", // "additive" or "multiplicative"
+        },
+
+        // Cooldown system to prevent spam
+        cooldowns: {
+            enabled: true,
+            defaultCooldown: 300000, // 5 minutes in milliseconds
+            perChallengeOverride: true // Allow per-challenge cooldown settings
+        },
+
+        // Critical success/failure outcomes
+        criticals: {
+            enabled: true,
+            naturalCritOnly: false,  // If false, also check margin (±10 from DC)
+            critSuccessRewards: {
+                xpBonus: 0.5,        // +50% XP
+                goldBonus: 0.5,      // +50% gold
+                lootRollsBonus: 1    // +1 extra loot roll
+            },
+            critFailureConsequences: {
+                damageMultiplier: 1.5,  // 150% damage
+                conditionChance: 0.5     // 50% chance of additional condition
+            }
+        }
+    },
+
+    // ====================
     // WORLD GENERATION
     // ====================
     worldGen: {

@@ -12,7 +12,11 @@
       "Bash(npx -y http-server -p 8080)",
       "Bash(python:*)",
       "Bash(node -e:*)",
-      "Bash(grep -rn \"world\\\\.currentLocation\" \"c:\\\\Users\\\\josh_\\\\git\\\\nexus-verge-crpg-5e\\\\src\"\" --include=\"*.js \")"
+      "Bash(grep -rn \"world\\\\.currentLocation\" \"c:\\\\Users\\\\josh_\\\\git\\\\nexus-verge-crpg-5e\\\\src\"\" --include=\"*.js \")",
+      "Bash(python -m json.tool:*)",
+      "Bash(cat:*)",
+      "Bash(node -pe:*)",
+      "Bash(node -e \"const fs = require\\(''fs''\\); const save = JSON.parse\\(fs.readFileSync\\(''C:/Users/josh_/AppData/Local/Google/Chrome/User Data/Default/Local Storage/leveldb/MANIFEST-000001'', ''utf8''\\)\\); console.log\\(save\\);\")"
     ]
   }
 }

@@ -402,6 +402,66 @@ class QuestManager {
   }
 
   /**
+   * Update progress on skill challenge completion
+   * @param {string} challengeId - Skill challenge ID
+   * @param {Object} result - Challenge result {success, critical, rollResult}
+   */
+  onSkillChallengeCompleted(challengeId, result) {
+    const quests = gameState.get('quests');
+    if (!quests || !quests.active) return;
+
+    let updated = false;
+
+    quests.active.forEach(quest => {
+      quest.objectives.forEach(objective => {
+        if (objective.type === 'skill' && !objective.completed) {
+          const req = objective.requirement;
+
+          // Check if this challenge matches
+          const matchesChallenge = req.challengeId === challengeId;
+
+          // Check if success is required
+          const meetsSuccessReq = !req.requireSuccess || result.success;
+
+          if (matchesChallenge && meetsSuccessReq) {
+            objective.progress++;
+            if (objective.progress >= objective.required) {
+              objective.completed = true;
+              gameState.addMessage(`Quest Objective Complete: ${objective.description}`, 'success');
+            } else {
+              gameState.addMessage(`Quest Progress: ${quest.name} (${objective.progress}/${objective.required})`, 'info');
+            }
+            updated = true;
+          }
+        }
+      });
+    });
+
+    if (updated) {
+      gameState.set('quests', quests);
+      this.checkQuestCompletion();
+    }
+  }
+
+  /**
+   * Get active quests that require a specific skill challenge
+   * @param {string} challengeId - Challenge ID
+   * @returns {Array<Object>} Quests requiring this challenge
+   */
+  getQuestsRequiringChallenge(challengeId) {
+    const quests = gameState.get('quests');
+    if (!quests || !quests.active) return [];
+
+    return quests.active.filter(quest => {
+      return quest.objectives.some(obj =>
+        obj.type === 'skill' &&
+        !obj.completed &&
+        obj.requirement.challengeId === challengeId
+      );
+    });
+  }
+
+  /**
    * Check all active quests for completion
    * @returns {Array<string>} Completed quest IDs
    */

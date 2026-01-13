@@ -337,6 +337,7 @@ class SaveManager {
             hitDice: character.hitDice,
             shortRestsUsed: character.shortRestsUsed,
             lastLongRest: character.lastLongRest,
+            skillChoices: character.skillChoices || [], // Include chosen skill proficiencies
             skills: character.skills,
             savingThrows: character.savingThrows,
             proficiencies: character.proficiencies,

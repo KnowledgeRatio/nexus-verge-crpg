@@ -329,6 +329,18 @@ class SettlementUI {
       `;
     }
 
+    // Skill challenge option (contextual based on NPC role)
+    if (window.skillChallengeManager && window.skillChallengeManager.challenges) {
+      const challenges = this.getContextualSkillChallenges(npc);
+      if (challenges.length > 0) {
+        optionsHTML += `
+          <button class="dialogue-option skill-challenge-option" data-action="skill-challenge">
+            ⚡ Test Your Skills
+          </button>
+        `;
+      }
+    }
+
     // Goodbye option
     optionsHTML += `
       <button class="dialogue-option" data-action="goodbye">
@@ -385,6 +397,11 @@ class SettlementUI {
         import('../systems/RestManager.js').then(module => {
           module.default.openRestMenu();
         });
+        break;
+
+      case 'skill-challenge':
+        // Show skill challenge options
+        this.showSkillChallengeOptions(npc, textEl, optionsEl);
         break;
 
       case 'goodbye':
@@ -1106,6 +1123,167 @@ class SettlementUI {
     this.currentMerchant = null;
     this.merchantInventory = [];
     this.selectedItem = null;
+  }
+
+  /**
+   * Get contextual skill challenges for an NPC
+   * @param {Object} npc - NPC data
+   * @returns {Array<Object>} Available challenges
+   */
+  getContextualSkillChallenges(npc) {
+    if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+      return [];
+    }
+
+    const allChallenges = window.skillChallengeManager.challenges.challenges;
+    const availableChallenges = [];
+
+    // Map NPC roles to appropriate challenge types
+    const roleChallengeMap = {
+      'merchant': ['haggle', 'appraise_goods', 'detect_lie'],
+      'blacksmith': ['identify_item_quality', 'craft_assistance'],
+      'innkeeper': ['gather_rumors', 'detect_lie', 'social_challenge'],
+      'leader': ['intimidate_threat', 'negotiate', 'persuade'],
+      'guard': ['intimidate_threat', 'detect_lie', 'gather_information']
+    };
+
+    const possibleChallengeIds = roleChallengeMap[npc.role] || [];
+
+    // Find challenges that match and player can attempt
+    for (const challengeId of possibleChallengeIds) {
+      const challenge = allChallenges[challengeId];
+      if (challenge && window.skillChallengeManager.canAttemptChallenge(challengeId)) {
+        availableChallenges.push(challenge);
+      }
+    }
+
+    return availableChallenges;
+  }
+
+  /**
+   * Show skill challenge options to player
+   * @param {Object} npc - NPC data
+   * @param {HTMLElement} textEl - Dialogue text element
+   * @param {HTMLElement} optionsEl - Dialogue options element
+   */
+  showSkillChallengeOptions(npc, textEl, optionsEl) {
+    const challenges = this.getContextualSkillChallenges(npc);
+
+    if (challenges.length === 0) {
+      textEl.textContent = "I don't have any challenges for you right now. Perhaps come back later?";
+      return;
+    }
+
+    textEl.textContent = npc.dialogue.skillChallengeOffer || "Care to test your skills? I have something in mind...";
+
+    let optionsHTML = '<div class="skill-challenge-list">';
+    for (const challenge of challenges) {
+      const difficultyStars = this.getChallengeDifficultyStars(challenge);
+      optionsHTML += `
+        <button class="dialogue-option skill-challenge-offer" data-challenge-id="${challenge.id}">
+          ${difficultyStars} ${challenge.name}
+        </button>
+      `;
+    }
+    optionsHTML += `
+      <button class="dialogue-option" data-action="back">
+        ← Back
+      </button>
+    `;
+    optionsHTML += '</div>';
+
+    optionsEl.innerHTML = optionsHTML;
+
+    // Add event listeners
+    optionsEl.querySelectorAll('.skill-challenge-offer').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.startSkillChallenge(e.target.dataset.challengeId, npc);
+      });
+    });
+
+    // Back button
+    optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+      this.showNPCDialogue(npc);
+    });
+  }
+
+  /**
+   * Start a skill challenge from NPC dialogue
+   * @param {string} challengeId - Challenge ID
+   * @param {Object} npc - NPC data
+   */
+  async startSkillChallenge(challengeId, npc) {
+    if (!window.skillChallengeManager || !window.game) {
+      console.error('Skill challenge system not initialized');
+      return;
+    }
+
+    const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+    if (!challenge) {
+      console.error(`Challenge ${challengeId} not found`);
+      return;
+    }
+
+    // Close dialogue modal before starting challenge
+    this.closeNPCDialogue();
+
+    // Get character
+    const character = window.gameState?.get('character');
+    if (!character) {
+      console.error('No character found');
+      return;
+    }
+
+    // Record attempt for cooldown
+    window.skillChallengeManager.recordChallengeAttempt(challengeId);
+
+    // Calculate level-adjusted DC
+    const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
+    const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
+
+    // Execute challenge based on type
+    if (challenge.type === 'single') {
+      const config = {
+        title: challenge.name,
+        description: challenge.description,
+        skill: challenge.skill,
+        dc: adjustedDC
+      };
+
+      const result = await window.game.promptSkillCheck(config, challenge, null);
+
+      if (result.attempted) {
+        // Notify QuestManager
+        if (window.questManager) {
+          window.questManager.onSkillChallengeCompleted(challengeId, result);
+        }
+
+        // Show completion dialogue
+        const message = result.success
+          ? npc.dialogue.skillChallengeSuccess || "Well done! You passed the test."
+          : npc.dialogue.skillChallengeFailure || "Better luck next time.";
+
+        window.gameState?.addMessage(`${npc.name}: ${message}`, result.success ? 'success' : 'info');
+      }
+    } else if (challenge.type === 'sequential') {
+      // Sequential challenges handled by Player methods
+      await window.game.player.handleSequentialSkillChallenge(challenge);
+    } else if (challenge.type === 'choice') {
+      // Choice challenges handled by Player methods
+      await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
+    }
+  }
+
+  /**
+   * Get difficulty stars for challenge
+   * @param {Object} challenge - Challenge template
+   * @returns {string} Star rating
+   */
+  getChallengeDifficultyStars(challenge) {
+    const dc = challenge.baseDC || challenge.stages?.[0]?.baseDC || 10;
+    if (dc >= 20) return '⭐⭐⭐'; // Hard
+    if (dc >= 15) return '⭐⭐'; // Medium
+    return '⭐'; // Easy
   }
 
   /**

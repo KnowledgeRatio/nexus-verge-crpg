@@ -90,8 +90,11 @@ export class Character {
         // Proficiencies
         this.proficiencies = this.initializeProficiencies();
 
+        // Track chosen skill proficiencies (needed for save/load)
+        this.skillChoices = data.skillChoices || [];
+
         // Skills (proficiency tracking and bonuses)
-        this.skills = this.initializeSkills(data.skillChoices);
+        this.skills = this.initializeSkills(this.skillChoices);
 
         // Saving throws
         this.savingThrows = this.initializeSavingThrows();
@@ -331,6 +334,67 @@ export class Character {
 
             data.bonus = bonus;
         }
+    }
+
+    /**
+     * Get skill bonus (ability modifier + proficiency)
+     * @param {string} skillId - Skill ID
+     * @returns {number} - Total skill bonus
+     */
+    getSkillBonus(skillId) {
+        const skill = this.skills[skillId];
+        if (!skill) {
+            console.warn(`⚠️ Skill not found: ${skillId}`);
+            return 0;
+        }
+
+        return skill.bonus;
+    }
+
+    /**
+     * Roll a skill check with advantage/disadvantage support
+     * @param {string} skillId - Skill ID
+     * @param {Object} options - Options (advantage, disadvantage)
+     * @returns {Object} - Roll result with total, modifier, and roll details
+     */
+    rollSkill(skillId, options = {}) {
+        const { advantage = false, disadvantage = false } = options;
+
+        const skillBonus = this.getSkillBonus(skillId);
+
+        // Roll d20 (with advantage/disadvantage)
+        let roll = 0;
+        let rolls = [];
+
+        if (advantage && !disadvantage) {
+            // Roll twice, take higher
+            const roll1 = Math.floor(Math.random() * 20) + 1;
+            const roll2 = Math.floor(Math.random() * 20) + 1;
+            roll = Math.max(roll1, roll2);
+            rolls = [roll1, roll2];
+        } else if (disadvantage && !advantage) {
+            // Roll twice, take lower
+            const roll1 = Math.floor(Math.random() * 20) + 1;
+            const roll2 = Math.floor(Math.random() * 20) + 1;
+            roll = Math.min(roll1, roll2);
+            rolls = [roll1, roll2];
+        } else {
+            // Normal roll
+            roll = Math.floor(Math.random() * 20) + 1;
+            rolls = [roll];
+        }
+
+        const total = roll + skillBonus;
+
+        return {
+            roll,           // Natural d20 roll (before modifiers)
+            total,          // Total result (roll + modifier)
+            modifier: skillBonus,
+            advantage,
+            disadvantage,
+            rolls,          // All rolls (for display)
+            skillId
+        };
     }
 
     /**
@@ -1211,6 +1275,7 @@ export class Character {
             hitDice: this.hitDice,
             ac: this.ac,
             speed: this.speed,
+            skillChoices: this.skillChoices, // Save chosen skill proficiencies for proper restoration
             skills: this.skills,
             inventory: this.inventory,
             equipment: this.equipment,

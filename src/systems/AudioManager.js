@@ -46,6 +46,9 @@ class AudioManager {
             // Healing/ability sounds
             heal: 'data/sound/Ice Freeze 1.wav',
 
+            // Death/defeat sound (plays 1 second after fatal damage)
+            death: 'data/sound/Light Torch 2.wav',
+
             // === EXPLORATION SOUNDS ===
             // Footstep sounds (dirt/terrain)
             footstep1: 'data/sound/Dirt Run 1.wav',

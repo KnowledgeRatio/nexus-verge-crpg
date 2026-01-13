@@ -121,6 +121,12 @@ class Player {
             return;
         }
 
+        // Block movement when any modal is open
+        const activeModal = document.querySelector('.modal.active');
+        if (activeModal) {
+            return; // Silently block movement while modal is open
+        }
+
         const now = Date.now();
         if (now - this.lastMoveTime < this.moveDelay) {
             return; // Too soon
@@ -259,6 +265,9 @@ class Player {
         // Check for encounters
         this.checkForEncounters(tile, terrainDef);
 
+        // Check for terrain-based skill challenges (after encounters to avoid spam)
+        await this.checkForTerrainSkillChallenge(tile, terrainDef);
+
         // Check for features
         if (tile.feature) {
             this.handleFeature(tile.feature);
@@ -300,6 +309,305 @@ class Player {
         }
 
         await this.settlementManager.enterSettlement();
+    }
+
+    /**
+     * Check for terrain-based skill challenges
+     * @param {Object} tile - Current tile
+     * @param {Object} terrainDef - Terrain definition
+     */
+    async checkForTerrainSkillChallenge(tile, terrainDef) {
+        // Don't trigger during combat
+        if (gameState.get('combat')?.active) return;
+
+        // Don't trigger if no skill challenge manager
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) return;
+
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Map terrain types to challenge IDs
+        const terrainChallengeMap = {
+            'mountain': ['cliff_climb', 'boulder_push'],
+            'hills': ['cliff_climb'],
+            'dungeon': ['trap_detect_disarm', 'locked_door', 'hidden_treasure'],
+            'ruins': ['trap_detect_disarm', 'ancient_text', 'arcane_puzzle'],
+            'forest': ['track_creature', 'calm_wild_beast'],
+            'denseForest': ['sneak_past_guards', 'track_creature'],
+            'swamp': ['endure_harsh_environment'],
+            'desert': ['endure_harsh_environment'],
+            'tundra': ['endure_harsh_environment'],
+            'jungle': ['track_creature', 'endure_harsh_environment']
+        };
+
+        const possibleChallenges = terrainChallengeMap[tile.terrain];
+        if (!possibleChallenges || possibleChallenges.length === 0) return;
+
+        // Pick a random challenge from the terrain's list
+        const challengeId = possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
+        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+
+        if (!challenge) return;
+
+        // Check if challenge should trigger
+        const context = {
+            terrain: true,
+            terrainType: tile.terrain
+        };
+
+        if (!window.skillChallengeManager.shouldTriggerChallenge(challengeId, context)) {
+            return; // Frequency check failed or on cooldown
+        }
+
+        // Record attempt for cooldown
+        window.skillChallengeManager.recordChallengeAttempt(challengeId);
+
+        // Calculate level-adjusted DC
+        const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
+        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
+
+        // Handle challenge types
+        if (challenge.type === 'single') {
+            // Single skill check
+            await this.handleSingleSkillChallenge(challenge, adjustedDC);
+        } else if (challenge.type === 'sequential') {
+            // Multi-stage challenge
+            await this.handleSequentialSkillChallenge(challenge);
+        } else if (challenge.type === 'choice') {
+            // Multiple skill options
+            await this.handleChoiceSkillChallenge(challenge, adjustedDC);
+        }
+    }
+
+    /**
+     * Handle single-skill challenge
+     * @param {Object} challenge - Challenge template
+     * @param {number} adjustedDC - Level-adjusted DC
+     */
+    async handleSingleSkillChallenge(challenge, adjustedDC) {
+        const character = gameState.get('character');
+
+        // Create config for skill check modal
+        const config = {
+            title: challenge.name,
+            description: challenge.description,
+            skill: challenge.skill,
+            dc: adjustedDC
+        };
+
+        // Prompt skill check with challenge integration
+        const result = await window.game.promptSkillCheck(config, challenge, null);
+
+        if (!result.attempted) {
+            gameState.addMessage('You decide to avoid the challenge.', 'info');
+            return;
+        }
+
+        // Check if combat was initiated
+        if (result.consequences?.initiateCombat) {
+            gameState.addMessage('⚔️ Combat begins!', 'danger');
+
+            // Hide skill challenge modal during combat
+            const skillCheckModal = document.getElementById('skillCheckModal');
+            if (skillCheckModal) {
+                skillCheckModal.classList.remove('active');
+            }
+
+            // Save challenge state for resumption after combat
+            gameState.set('pendingChallenge', {
+                challenge,
+                result,
+                type: 'single'
+            });
+
+            // Trigger combat encounter
+            await this.triggerCombatFromChallenge();
+
+            // Challenge ends after combat (single challenges don't resume)
+            gameState.set('pendingChallenge', null);
+            return;
+        }
+
+        // Notify QuestManager of challenge completion
+        if (window.questManager) {
+            window.questManager.onSkillChallengeCompleted(challenge.id, result);
+        }
+    }
+
+    /**
+     * Handle sequential (multi-stage) skill challenge
+     * @param {Object} challenge - Challenge template
+     */
+    async handleSequentialSkillChallenge(challenge) {
+        const character = gameState.get('character');
+        let currentStageIndex = 0;
+
+        while (currentStageIndex < challenge.stages.length) {
+            const stage = challenge.stages[currentStageIndex];
+
+            // Calculate level-adjusted DC for this stage
+            const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(stage.baseDC, character.level);
+
+            // Create config for this stage
+            const config = {
+                title: `${challenge.name} - Stage ${currentStageIndex + 1}/${challenge.stages.length}`,
+                description: stage.description || challenge.description,
+                skill: stage.skill,
+                dc: adjustedDC
+            };
+
+            // Prompt skill check
+            const result = await window.game.promptSkillCheck(config, challenge, stage);
+
+            if (!result.attempted) {
+                gameState.addMessage('You abandon the challenge.', 'info');
+                break;
+            }
+
+            // Check if combat was initiated
+            if (result.consequences?.initiateCombat) {
+                gameState.addMessage('⚔️ Combat begins!', 'danger');
+
+                // Hide skill challenge modal during combat
+                const skillCheckModal = document.getElementById('skillCheckModal');
+                if (skillCheckModal) {
+                    skillCheckModal.classList.remove('active');
+                }
+
+                // Save challenge state for resumption after combat
+                gameState.set('pendingChallenge', {
+                    challenge,
+                    currentStageIndex,
+                    result,
+                    type: 'sequential'
+                });
+
+                // Trigger combat encounter
+                await this.triggerCombatFromChallenge();
+
+                // Check if combat was fled or defeated - if so, abandon challenge
+                const combat = gameState.get('combat');
+                if (!combat?.active) {
+                    const combatResult = gameState.get('lastCombatResult');
+                    if (combatResult === 'fled' || combatResult === 'defeat') {
+                        gameState.addMessage('Challenge abandoned due to combat outcome.', 'warning');
+                        gameState.set('pendingChallenge', null);
+                        break;
+                    }
+                }
+
+                // Combat won - continue challenge from saved state
+                const pendingChallenge = gameState.get('pendingChallenge');
+                if (!pendingChallenge) break; // Challenge was cleared
+
+                // Continue from where we left off
+                // Combat success allows progression
+            }
+
+            if (!result.success) {
+                // Stage failed - check if there's a nextStage on failure or if challenge ends
+                if (stage.onFailure?.nextStage) {
+                    // Find next stage by ID
+                    currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onFailure.nextStage);
+                    if (currentStageIndex === -1) break; // Stage not found, end challenge
+                } else {
+                    // Challenge failed, end
+                    break;
+                }
+            } else {
+                // Stage succeeded - check for next stage
+                if (stage.onSuccess?.nextStage) {
+                    // Find next stage by ID
+                    currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onSuccess.nextStage);
+                    if (currentStageIndex === -1) break; // Stage not found, end challenge
+                } else {
+                    // Final stage completed
+                    gameState.addMessage(`✨ Challenge complete: ${challenge.name}`, 'success');
+
+                    // Notify QuestManager of challenge completion
+                    if (window.questManager) {
+                        window.questManager.onSkillChallengeCompleted(challenge.id, result);
+                    }
+
+                    // Clear pending challenge
+                    gameState.set('pendingChallenge', null);
+
+                    break;
+                }
+            }
+        }
+
+        // Clear pending challenge if we exit loop early
+        gameState.set('pendingChallenge', null);
+    }
+
+    /**
+     * Trigger combat encounter from skill challenge failure
+     */
+    async triggerCombatFromChallenge() {
+        const character = gameState.get('character');
+        const location = gameState.get('world.currentLocation');
+
+        // Generate appropriate enemy based on location/terrain
+        // For now, use checkForEncounters logic
+        await this.checkForEncounters(location, null); // Will trigger combat if enemy generated
+    }
+
+    /**
+     * Handle choice-based skill challenge
+     * @param {Object} challenge - Challenge template
+     * @param {number} baseAdjustedDC - Base level-adjusted DC
+     */
+    async handleChoiceSkillChallenge(challenge, baseAdjustedDC) {
+        // For now, randomly pick one option (future: add UI for player choice)
+        const option = challenge.options[Math.floor(Math.random() * challenge.options.length)];
+
+        const character = gameState.get('character');
+        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(option.baseDC || baseAdjustedDC, character.level);
+
+        const config = {
+            title: challenge.name,
+            description: `${challenge.description}\n\n${option.description}`,
+            skill: option.skill,
+            dc: adjustedDC
+        };
+
+        const result = await window.game.promptSkillCheck(config, challenge, null);
+
+        if (!result.attempted) {
+            gameState.addMessage('You decide to find another way.', 'info');
+            return;
+        }
+
+        // Check if combat was initiated
+        if (result.consequences?.initiateCombat) {
+            gameState.addMessage('⚔️ Combat begins!', 'danger');
+
+            // Hide skill challenge modal during combat
+            const skillCheckModal = document.getElementById('skillCheckModal');
+            if (skillCheckModal) {
+                skillCheckModal.classList.remove('active');
+            }
+
+            // Save challenge state for resumption after combat
+            gameState.set('pendingChallenge', {
+                challenge,
+                result,
+                type: 'choice'
+            });
+
+            // Trigger combat encounter
+            await this.triggerCombatFromChallenge();
+
+            // Challenge ends after combat (choice challenges don't resume)
+            gameState.set('pendingChallenge', null);
+            return;
+        }
+
+        // Notify QuestManager of challenge completion
+        if (window.questManager) {
+            window.questManager.onSkillChallengeCompleted(challenge.id, result);
+        }
     }
 
     /**

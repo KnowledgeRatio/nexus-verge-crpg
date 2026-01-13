@@ -451,6 +451,12 @@ class CombatManager {
             // Check if defender is defeated
             if (defender.hp <= 0) {
                 gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+
+                // Play death sound 1 second after damage sound
+                setTimeout(() => {
+                    audioManager.play('death');
+                }, 1000);
+
                 this.handleDefeat(defender);
             }
 
@@ -489,6 +495,12 @@ class CombatManager {
 
                         if (adjacentEnemy.hp <= 0) {
                             gameState.addMessage(`💀 ${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
+
+                            // Play death sound 1 second after damage sound
+                            setTimeout(() => {
+                                audioManager.play('death');
+                            }, 1000);
+
                             this.handleDefeat(adjacentEnemy);
                         }
                     } else {
@@ -556,6 +568,12 @@ class CombatManager {
 
                         if (defender.hp <= 0) {
                             gameState.addMessage(`💀 ${defender.name} is defeated by Nick!`, 'warning');
+
+                            // Play death sound 1 second after damage sound
+                            setTimeout(() => {
+                                audioManager.play('death');
+                            }, 1000);
+
                             this.handleDefeat(defender);
                         }
                     } else {
@@ -603,6 +621,12 @@ class CombatManager {
 
                     if (defender.hp <= 0) {
                         gameState.addMessage(`💀 ${defender.name} is defeated by Graze!`, 'warning');
+
+                        // Play death sound 1 second after damage sound
+                        setTimeout(() => {
+                            audioManager.play('death');
+                        }, 1000);
+
                         this.handleDefeat(defender);
                     }
                 }
@@ -934,35 +958,31 @@ class CombatManager {
         });
 
         if (result === 'victory') {
-            gameState.addMessage('🎉 Victory! All enemies defeated!', 'success');
-
             const character = gameState.get('character');
 
             // Award XP
             const xpGained = this.calculateXPReward();
             character.xp += xpGained;
-            gameState.addMessage(`+${xpGained} XP (${character.xp} total)`, 'success');
 
             // Check for level up (guard for deserialized plain objects)
+            let leveledUp = false;
             if (typeof character.checkLevelUp === 'function') {
-                const leveledUp = character.checkLevelUp();
-                if (leveledUp) {
-                    gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
-                }
+                leveledUp = character.checkLevelUp();
             } else {
                 console.warn('Character.checkLevelUp is missing; ensure character is properly rehydrated from save.');
             }
 
             // Generate loot from defeated enemies
+            let totalGold = 0;
+            const allLootItems = [];
+            const lootMessages = [];
+
             if (window.lootManager) {
                 const worldSeed = gameState.get('seed');
                 const rng = new SeededRandom(`${worldSeed}_combat_${Date.now()}`);
 
                 // Ensure gold is a valid number before awarding more
                 character.gold = Number(character.gold) || 0;
-
-                let totalGold = 0;
-                const allLootItems = [];
 
                 for (const enemy of this.enemyCombatants) {
                     if (enemy.hp <= 0) {
@@ -976,10 +996,10 @@ class CombatManager {
                             totalGold += loot.gold;
                             allLootItems.push(...loot.items);
 
-                            // Display loot message for this enemy
+                            // Store loot message for later
                             const itemNames = loot.items.map(i => i.name + (i.quantity > 1 ? ` (${i.quantity})` : '')).join(', ');
                             const lootMessage = `${enemy.name} dropped: ${loot.gold}g${itemNames ? ', ' + itemNames : ''}`;
-                            gameState.addMessage(lootMessage, 'success');
+                            lootMessages.push(lootMessage);
                         }
                     }
                 }
@@ -1011,14 +1031,20 @@ class CombatManager {
             // Update character state
             gameState.set('character', character);
 
+            // Store combat result for challenge resumption
+            gameState.set('lastCombatResult', 'victory');
+
+            // Show victory modal
+            this.showVictoryModal(xpGained, character.xp, leveledUp, totalGold, allLootItems, lootMessages);
+
             // Return to exploration after delay
             gameState.set('combat', null);
-            setTimeout(() => {
-                gameState.set('ui.currentScreen', 'game');
-            }, 3000); // Extended to 3 seconds to show loot messages
         } else if (result === 'defeat') {
             gameState.addMessage('💀 You have been defeated...', 'error');
             gameState.addMessage('🎮 Game Over', 'error');
+
+            // Store combat result for challenge resumption
+            gameState.set('lastCombatResult', 'defeat');
 
             // Show game over screen
             gameState.set('combat', null);
@@ -1028,11 +1054,97 @@ class CombatManager {
         } else if (result === 'fled') {
             gameState.addMessage('🏃 You have escaped from combat!', 'warning');
 
+            // Store combat result for challenge resumption
+            gameState.set('lastCombatResult', 'fled');
+
             // Return to exploration after delay
             gameState.set('combat', null);
             setTimeout(() => {
                 gameState.set('ui.currentScreen', 'game');
             }, 2000);
+        }
+    }
+
+    /**
+     * Show victory modal with loot summary
+     */
+    showVictoryModal(xpGained, totalXP, leveledUp, totalGold, allLootItems, lootMessages) {
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
+
+        if (modalOverlay && modalContent) {
+            // Build loot summary
+            let lootSummary = '';
+            if (totalGold > 0 || allLootItems.length > 0) {
+                lootSummary = '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: left;">';
+                lootSummary += '<h3 style="color: var(--accent-color); margin-bottom: 10px;">💰 Loot:</h3>';
+
+                if (totalGold > 0) {
+                    lootSummary += `<p style="color: var(--warning-color); margin: 5px 0;">+${totalGold} gold</p>`;
+                }
+
+                if (allLootItems.length > 0) {
+                    allLootItems.forEach(item => {
+                        const quantity = item.quantity > 1 ? ` (x${item.quantity})` : '';
+                        lootSummary += `<p style="color: var(--success-color); margin: 5px 0;">• ${item.name}${quantity}</p>`;
+                    });
+                }
+
+                lootSummary += '</div>';
+            }
+
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: var(--success-color); font-size: 3rem; margin-bottom: 20px;">🎉 VICTORY! 🎉</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 20px;">All enemies defeated!</p>
+
+                    <div style="margin: 20px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                        <p style="font-size: 1.1rem; color: var(--accent-color); margin: 10px 0;">
+                            +${xpGained} XP
+                        </p>
+                        <p style="color: var(--text-secondary); margin: 5px 0;">
+                            Total XP: ${totalXP}
+                        </p>
+                        ${leveledUp ? '<p style="color: var(--warning-color); font-size: 1.2rem; margin-top: 10px;">⭐ LEVEL UP! ⭐</p>' : ''}
+                    </div>
+
+                    ${lootSummary}
+
+                    <button class="menu-btn" id="victoryContinueBtn" style="margin: 30px auto 0;">
+                        Continue
+                    </button>
+                </div>
+            `;
+            modalOverlay.classList.add('active');
+
+            // Add click handler to continue button
+            setTimeout(() => {
+                const continueBtn = document.getElementById('victoryContinueBtn');
+                if (continueBtn) {
+                    continueBtn.addEventListener('click', () => {
+                        modalOverlay.classList.remove('active');
+
+                        // Add loot messages to message log AFTER modal closes
+                        gameState.addMessage('🎉 Victory! All enemies defeated!', 'success');
+                        gameState.addMessage(`+${xpGained} XP (${totalXP} total)`, 'success');
+
+                        if (leveledUp) {
+                            const character = gameState.get('character');
+                            gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
+                        }
+
+                        // Add loot messages
+                        lootMessages.forEach(msg => {
+                            gameState.addMessage(msg, 'success');
+                        });
+
+                        // Return to exploration
+                        setTimeout(() => {
+                            gameState.set('ui.currentScreen', 'game');
+                        }, 100);
+                    });
+                }
+            }, 100);
         }
     }
 

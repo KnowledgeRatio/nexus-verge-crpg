@@ -22,6 +22,7 @@ import QuestManager from './systems/QuestManager.js';
 import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
+import skillChallengeManager from './systems/SkillChallengeManager.js';
 
 class Game {
     constructor() {
@@ -45,6 +46,9 @@ class Game {
 
         // Merchant system
         this.merchantManager = null;
+
+        // Skill challenge system
+        this.skillChallengeManager = skillChallengeManager;
 
         // Combat systems
         this.combatManager = null;
@@ -430,6 +434,14 @@ class Game {
             await this.merchantManager.loadData();
             // Pass merchant manager to settlement UI
             this.settlementUI.merchantManager = this.merchantManager;
+        }
+
+        if (!this.skillChallengeManager.challenges) {
+            console.log('🎲 Initializing skill challenge system...');
+            const skillChallengesData = await fetch('data/skillChallenges.json').then(r => r.json());
+            await this.skillChallengeManager.loadChallenges(skillChallengesData);
+            // Make globally accessible for UI
+            window.skillChallengeManager = this.skillChallengeManager;
         }
 
         if (!this.settlementManager) {
@@ -862,6 +874,14 @@ class Game {
                 }
                 character.abilityUses['steadyNerve'] = (character.abilityUses['steadyNerve'] || 0) + 1;
                 gameState.set('character', character);
+
+                // Update combat state to reflect bonus action consumption
+                gameState.set('combat', {
+                    active: true,
+                    round: this.combatManager.round,
+                    currentTurn: this.combatManager.getCurrentCombatant()?.id,
+                    combatants: this.combatManager.combatants.map(c => c.toJSON())
+                });
 
                 gameState.addMessage('💪 Steady Nerve attack complete! (Bonus Action used)', 'success');
                 break;
@@ -2427,33 +2447,235 @@ class Game {
     }
 
     /**
-     * Prompt Skill Check Modal
+     * Execute Passive Skill Check (Auto-roll, no user interaction)
+     * Used for perception checks, passive detection, etc.
      * @param {Object} config - Skill check configuration
-     * @returns {Promise<Object>} - { attempted: boolean, success: boolean }
+     * @param {Object} challenge - Challenge template
+     * @param {Object} stage - Current stage
+     * @param {Object} character - Character object
+     * @param {string} skillId - Skill ID
+     * @param {number} dc - Difficulty class
+     * @param {number} skillBonus - Skill bonus
+     * @returns {Promise<Object>} - Roll result and consequences
      */
-    async promptSkillCheck(config) {
+    async executePassiveSkillCheck(config, challenge, stage, character, skillId, dc, skillBonus) {
+        const modal = document.getElementById('skillCheckModal');
+
+        // Auto-roll the skill check
+        const rollResult = character.rollSkill(skillId, {
+            advantage: config.advantage || false,
+            disadvantage: config.disadvantage || false
+        });
+
+        const success = rollResult.total >= dc;
+
+        // Build roll message
+        let rollMessage = '';
+        if (rollResult.advantage) {
+            rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+        } else if (rollResult.disadvantage) {
+            rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+        } else {
+            rollMessage = `🎲 Rolled ${rollResult.roll}`;
+        }
+        rollMessage += ` + ${skillBonus} = ${rollResult.total}`;
+
+        // Check for critical success/failure
+        let criticalInfo = null;
+        if (challenge && window.skillChallengeManager) {
+            criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, rollResult.total, dc);
+        }
+
+        // Log to message system
+        if (success) {
+            if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
+                gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
+            } else {
+                gameState.addMessage(`✅ Success! ${rollMessage} vs DC ${dc}`, 'success');
+            }
+        } else {
+            if (criticalInfo?.isCritical && criticalInfo.type === 'failure') {
+                gameState.addMessage(`💥 CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
+            } else {
+                gameState.addMessage(`❌ Failed! ${rollMessage} vs DC ${dc}`, 'danger');
+            }
+        }
+
+        // Apply consequences if challenge provided
+        let consequences = null;
+        if (challenge && window.skillChallengeManager) {
+            const outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+            if (outcome) {
+                consequences = window.skillChallengeManager.applyConsequences(
+                    character,
+                    challenge,
+                    outcome,
+                    {
+                        success,
+                        critical: criticalInfo?.isCritical || false,
+                        criticalType: criticalInfo?.type || null,
+                        ...rollResult
+                    }
+                );
+
+                // Display consequence messages
+                consequences.messages.forEach(msg => {
+                    gameState.addMessage(msg, success ? 'success' : 'warning');
+                });
+
+                // Handle combat initiation
+                if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
+                    consequences.initiateCombat = true;
+                }
+            }
+        }
+
+        // Show result modal briefly (2 seconds) then auto-close
+        this.showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus);
+
+        return {
+            attempted: true,
+            success,
+            rollResult: {
+                ...rollResult,
+                dc,
+                critical: criticalInfo?.isCritical || false,
+                criticalType: criticalInfo?.type || null
+            },
+            consequences
+        };
+    }
+
+    /**
+     * Show passive check result modal (auto-closes after delay)
+     */
+    showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus) {
+        const modal = document.getElementById('skillCheckModal');
+        const skillId = stage?.skill || config.skill;
+        const description = stage?.description || config.description;
+
+        // Populate modal with result
+        document.getElementById('skillCheckTitle').textContent = (config.title || challenge?.name || 'Skill Challenge') + ' - Result';
+        document.getElementById('skillCheckDescription').textContent = description;
+        document.getElementById('skillCheckType').textContent = `${skillId.toUpperCase()} Check (Passive)`;
+        document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
+        document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
+
+        // Show roll result
+        const successChance = success ? '✅ SUCCESS' : '❌ FAILED';
+        document.getElementById('skillCheckChance').textContent = successChance;
+
+        // Show consequences
+        const outcome = success ? (stage?.onSuccess || challenge?.onSuccess) : (stage?.onFailure || challenge?.onFailure);
+        const consequencesList = document.getElementById('skillCheckConsequences');
+        const resultMessages = [];
+
+        if (success) {
+            resultMessages.push(`<strong style="color: var(--success-color);">✅ ${outcome?.message || 'Success!'}</strong>`);
+        } else {
+            resultMessages.push(`<strong style="color: var(--error-color);">❌ ${outcome?.message || 'Failed!'}</strong>`);
+        }
+
+        consequencesList.innerHTML = resultMessages.join('<br>');
+
+        // Hide buttons (passive roll, no interaction needed)
+        document.getElementById('attemptSkillCheck').style.display = 'none';
+        document.getElementById('cancelSkillCheck').style.display = 'none';
+
+        // Show modal
+        modal.classList.add('active');
+
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+            modal.classList.remove('active');
+            // Restore buttons for future active challenges
+            document.getElementById('attemptSkillCheck').style.display = 'inline-block';
+            document.getElementById('cancelSkillCheck').style.display = 'inline-block';
+        }, 2000);
+    }
+
+    /**
+     * Prompt Skill Check Modal (Enhanced for Skill Challenges)
+     * @param {Object} config - Skill check configuration
+     * @param {Object} challenge - Optional challenge template from SkillChallengeManager
+     * @param {Object} stage - Optional current stage for sequential challenges
+     * @returns {Promise<Object>} - { attempted: boolean, success: boolean, rollResult: Object, consequences: Object }
+     */
+    async promptSkillCheck(config, challenge = null, stage = null) {
         const modal = document.getElementById('skillCheckModal');
         const character = gameState.get('character');
 
+        // Get skill for current stage (sequential challenges) or main config
+        const skillId = stage?.skill || config.skill;
+        const dc = stage?.baseDC || config.dc;
+        const description = stage?.description || config.description;
+        const isPassiveRoll = stage?.passiveRoll || config.passiveRoll || false;
+
         // Calculate skill bonus
-        const skillBonus = character.getSkillBonus(config.skill);
+        const skillBonus = character.getSkillBonus(skillId);
+
+        // If passive roll, auto-execute immediately
+        if (isPassiveRoll) {
+            return this.executePassiveSkillCheck(config, challenge, stage, character, skillId, dc, skillBonus);
+        }
 
         // Populate modal
-        document.getElementById('skillCheckTitle').textContent = config.title;
-        document.getElementById('skillCheckDescription').textContent = config.description;
-        document.getElementById('skillCheckType').textContent = `${config.skill.toUpperCase()} Check`;
-        document.getElementById('skillCheckDC').textContent = `DC ${config.dc}`;
-        document.getElementById('skillCheckBonus').textContent = `+${skillBonus}`;
+        document.getElementById('skillCheckTitle').textContent = config.title || challenge?.name || 'Skill Challenge';
+        document.getElementById('skillCheckDescription').textContent = description;
+        document.getElementById('skillCheckType').textContent = `${skillId.toUpperCase()} Check`;
+        document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
+        document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
 
-        // Calculate success chance (simplified)
-        const successChance = Math.max(0, Math.min(100, ((21 - config.dc + skillBonus) * 5)));
+        // Calculate success chance (d20 + bonus >= DC)
+        const successChance = Math.max(0, Math.min(100, ((21 - dc + skillBonus) * 5)));
         document.getElementById('skillCheckChance').textContent = `${successChance}%`;
 
-        // Populate consequences
+        // Populate consequences (show outcomes but hide exact rewards)
         const consequencesList = document.getElementById('skillCheckConsequences');
-        consequencesList.innerHTML = config.consequences
-            .map(c => `<li>${c.description}</li>`)
-            .join('');
+        if (config.consequences && config.consequences.length > 0) {
+            consequencesList.innerHTML = config.consequences
+                .map(c => `<li>${c.description}</li>`)
+                .join('');
+        } else if (challenge) {
+            // Auto-generate consequences from challenge template
+            const consequences = [];
+
+            // Success outcomes
+            if (stage?.onSuccess || challenge.onSuccess) {
+                const successData = stage?.onSuccess || challenge.onSuccess;
+                if (successData.xp) consequences.push(`<strong>Success:</strong> Gain experience`);
+                if (successData.gold) consequences.push(`<strong>Success:</strong> Find gold`);
+                if (successData.loot) consequences.push(`<strong>Success:</strong> Discover treasure`);
+                if (successData.message) consequences.push(`<strong>Success:</strong> ${successData.message}`);
+            }
+
+            // Failure outcomes
+            if (stage?.onFailure || challenge.onFailure) {
+                const failureData = stage?.onFailure || challenge.onFailure;
+                if (failureData.damage) consequences.push(`<strong>Failure:</strong> Take damage`);
+                if (failureData.condition) consequences.push(`<strong>Failure:</strong> Suffer ${failureData.condition}`);
+                if (failureData.consequences) {
+                    if (failureData.consequences.includes('initiateCombat')) {
+                        consequences.push(`<strong>Failure:</strong> Combat!`);
+                    }
+                }
+                if (failureData.message) consequences.push(`<strong>Failure:</strong> ${failureData.message}`);
+            }
+
+            consequencesList.innerHTML = consequences.join('<br>');
+        } else {
+            consequencesList.innerHTML = '<li>Unknown consequences</li>';
+        }
+
+        // Show/hide cancel button based on challenge
+        const cancelBtn = document.getElementById('cancelSkillCheck');
+        const canTurnBack = challenge?.canTurnBack !== false; // Default to true if not specified
+
+        if (canTurnBack) {
+            cancelBtn.style.display = 'inline-block';
+        } else {
+            cancelBtn.style.display = 'none';
+        }
 
         // Show modal
         modal.classList.add('active');
@@ -2461,38 +2683,104 @@ class Game {
         // Wait for user decision
         return new Promise((resolve) => {
             const attemptBtn = document.getElementById('attemptSkillCheck');
-            const cancelBtn = document.getElementById('cancelSkillCheck');
 
             const handleAttempt = () => {
                 cleanup();
 
-                // Roll skill check
-                const roll = character.rollSkill(config.skill);
-                const success = roll >= config.dc;
+                // Roll skill check using Character.rollSkill() with advantage/disadvantage support
+                const rollResult = character.rollSkill(skillId, {
+                    advantage: config.advantage || false,
+                    disadvantage: config.disadvantage || false
+                });
 
-                // Show result message
-                if (success) {
-                    gameState.addMessage(`✅ Skill Check Success! (Rolled ${roll} vs DC ${config.dc})`, 'success');
+                const success = rollResult.total >= dc;
+
+                // Show result message with roll details
+                let rollMessage = '';
+                if (rollResult.advantage) {
+                    rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+                } else if (rollResult.disadvantage) {
+                    rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
                 } else {
-                    gameState.addMessage(`❌ Skill Check Failed! (Rolled ${roll} vs DC ${config.dc})`, 'danger');
+                    rollMessage = `🎲 Rolled ${rollResult.roll}`;
                 }
 
-                resolve({ attempted: true, success });
+                rollMessage += ` + ${skillBonus} = ${rollResult.total}`;
+
+                // Check for critical success/failure (if using SkillChallengeManager)
+                let criticalInfo = null;
+                if (challenge && window.skillChallengeManager) {
+                    criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, rollResult.total, dc);
+                }
+
+                if (success) {
+                    if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
+                        gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
+                    } else {
+                        gameState.addMessage(`✅ Success! ${rollMessage} vs DC ${dc}`, 'success');
+                    }
+                } else {
+                    if (criticalInfo?.isCritical && criticalInfo.type === 'failure') {
+                        gameState.addMessage(`💥 CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
+                    } else {
+                        gameState.addMessage(`❌ Failed! ${rollMessage} vs DC ${dc}`, 'danger');
+                    }
+                }
+
+                // Apply consequences if challenge provided
+                let consequences = null;
+                if (challenge && window.skillChallengeManager) {
+                    const outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+                    if (outcome) {
+                        consequences = window.skillChallengeManager.applyConsequences(
+                            character,
+                            challenge,
+                            outcome,
+                            {
+                                success,
+                                critical: criticalInfo?.isCritical || false,
+                                criticalType: criticalInfo?.type || null,
+                                ...rollResult
+                            }
+                        );
+
+                        // Display consequence messages
+                        consequences.messages.forEach(msg => {
+                            gameState.addMessage(msg, success ? 'success' : 'warning');
+                        });
+                    }
+                }
+
+                resolve({
+                    attempted: true,
+                    success,
+                    rollResult: {
+                        ...rollResult,
+                        dc,
+                        critical: criticalInfo?.isCritical || false,
+                        criticalType: criticalInfo?.type || null
+                    },
+                    consequences
+                });
             };
 
             const handleCancel = () => {
                 cleanup();
-                resolve({ attempted: false, success: false });
+                resolve({ attempted: false, success: false, rollResult: null, consequences: null });
             };
 
             const cleanup = () => {
                 modal.classList.remove('active');
                 attemptBtn.removeEventListener('click', handleAttempt);
-                cancelBtn.removeEventListener('click', handleCancel);
+                if (canTurnBack) {
+                    cancelBtn.removeEventListener('click', handleCancel);
+                }
             };
 
             attemptBtn.addEventListener('click', handleAttempt);
-            cancelBtn.addEventListener('click', handleCancel);
+            if (canTurnBack) {
+                cancelBtn.addEventListener('click', handleCancel);
+            }
         });
     }
 
@@ -3859,6 +4147,14 @@ class Game {
             this.merchantManager = new MerchantManager(seed);
             await this.merchantManager.loadData();
             this.settlementUI.merchantManager = this.merchantManager;
+        }
+
+        // Initialize skill challenge system
+        if (!this.skillChallengeManager.challenges) {
+            console.log('🎲 Initializing skill challenge system...');
+            const skillChallengesData = await fetch('data/skillChallenges.json').then(r => r.json());
+            await this.skillChallengeManager.loadChallenges(skillChallengesData);
+            window.skillChallengeManager = this.skillChallengeManager;
         }
 
         // Initialize settlement manager with all dependencies

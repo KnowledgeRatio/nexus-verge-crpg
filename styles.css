@@ -952,6 +952,23 @@ body {
     margin-right: 8px;
 }
 
+.skill-checkbox.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-secondary);
+}
+
+.skill-checkbox.disabled:hover {
+    background: var(--bg-secondary);
+}
+
+.skill-note {
+    margin-left: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 .background-skills {
     margin-top: 20px;
     padding: 15px;
@@ -5036,6 +5053,466 @@ body {
 
     .skills-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   SKILL CHALLENGE MODAL
+   ======================================== */
+
+/* Skill Challenge Modal Container */
+#skillChallengeModal .modal-content {
+    max-width: 600px;
+}
+
+/* Challenge Header */
+.skill-challenge-header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 15px;
+}
+
+.skill-challenge-title {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    margin: 0 0 8px 0;
+    font-weight: bold;
+}
+
+.skill-challenge-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Challenge Body */
+.skill-challenge-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Skill Info Section */
+.skill-challenge-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.skill-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skill-info-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.skill-info-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.skill-info-value.skill-name {
+    color: var(--accent-color);
+    text-transform: capitalize;
+}
+
+.skill-info-value.dc {
+    color: var(--warning-color);
+}
+
+.skill-info-value.modifier {
+    color: var(--success-color);
+}
+
+.skill-info-value.modifier.negative {
+    color: var(--error-color);
+}
+
+/* Choice Options (for choice-type challenges) */
+.skill-challenge-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skill-choice-btn {
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skill-choice-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-color);
+    transform: translateX(4px);
+}
+
+.skill-choice-btn:active {
+    transform: translateX(2px);
+}
+
+.skill-choice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.skill-choice-skill {
+    color: var(--accent-color);
+}
+
+.skill-choice-dc {
+    color: var(--warning-color);
+    font-size: 0.9rem;
+}
+
+.skill-choice-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+/* Sequential Challenge Stage Display */
+.skill-challenge-stage {
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 4px;
+}
+
+.skill-stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.skill-stage-number {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.skill-stage-progress {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.skill-stage-description {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.skill-stage-info {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9rem;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.skill-stage-info span {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.skill-stage-skill {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.skill-stage-dc {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+/* Roll Results Display */
+.skill-challenge-result {
+    padding: 20px;
+    background: var(--bg-secondary);
+    border: 3px solid var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+    animation: resultAppear 0.3s ease-out;
+}
+
+@keyframes resultAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.skill-challenge-result.success {
+    border-color: var(--success-color);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.skill-challenge-result.failure {
+    border-color: var(--error-color);
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.skill-challenge-result.critical {
+    border-color: var(--warning-color);
+    background: rgba(255, 193, 7, 0.1);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+}
+
+.skill-result-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.skill-result-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.skill-challenge-result.success .skill-result-title {
+    color: var(--success-color);
+}
+
+.skill-challenge-result.failure .skill-result-title {
+    color: var(--error-color);
+}
+
+.skill-challenge-result.critical .skill-result-title {
+    color: var(--warning-color);
+}
+
+.skill-result-roll {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin: 0 0 8px 0;
+    font-family: var(--font-mono);
+}
+
+.skill-result-message {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Rewards Display */
+.skill-challenge-rewards {
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--success-color);
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.skill-rewards-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--success-color);
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.skill-rewards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skill-reward-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.skill-reward-label {
+    color: var(--text-secondary);
+}
+
+.skill-reward-value {
+    font-weight: bold;
+    color: var(--accent-color);
+    font-family: var(--font-mono);
+}
+
+.skill-reward-value.xp {
+    color: var(--success-color);
+}
+
+.skill-reward-value.gold {
+    color: var(--warning-color);
+}
+
+/* Challenge Actions */
+.skill-challenge-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.skill-challenge-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 4px;
+    color: var(--bg-primary);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.skill-challenge-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.skill-challenge-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.skill-challenge-btn:disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.skill-challenge-btn.cancel {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.skill-challenge-btn.cancel:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--error-color);
+}
+
+/* Breakdown Display (for transparency) */
+.skill-challenge-breakdown {
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-top: 15px;
+    font-size: 0.85rem;
+}
+
+.skill-breakdown-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.skill-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.skill-breakdown-row:last-child {
+    border-bottom: none;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.skill-breakdown-label {
+    color: var(--text-secondary);
+}
+
+.skill-breakdown-value {
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.skill-breakdown-value.multiplier {
+    color: var(--warning-color);
+}
+
+.skill-breakdown-value.final {
+    color: var(--success-color);
+    font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    #skillChallengeModal .modal-content {
+        max-width: 95%;
+        margin: 20px auto;
+    }
+
+    .skill-challenge-info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .skill-challenge-actions {
+        flex-direction: column;
+    }
+
+    .skill-challenge-btn {
+        width: 100%;
+    }
+
+    .skill-result-icon {
+        font-size: 2rem;
+    }
+
+    .skill-result-title {
+        font-size: 1.2rem;
     }
 }
 

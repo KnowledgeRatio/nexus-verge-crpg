@@ -1,19 +1,66 @@
 {
-  "description": "Reusable skill challenge templates for contextual gameplay",
-  "version": "2.0.0",
-  "note": "Updated for new 13-skill system: removed Medicine, Animal Handling, Survival, History, Nature, Religion, Insight, Persuasion, Intimidation, Performance, Stealth. Added Endurance, Academia, Cunning, Creativity, Empathy, Influence.",
+  "description": "Reusable skill challenge templates for contextual gameplay with balance tuning",
+  "version": "3.0.0",
+  "note": "Updated for new 13-skill system with comprehensive balance framework. Skills: athletics, acrobatics, sleightOfHand, endurance, academia, arcana, investigation, perception, cunning, creativity, empathy, influence, deception.",
 
-  "challengeTemplates": [
-    {
+  "balancing": {
+    "skillValueMultipliers": {
+      "very_high": 0.5,
+      "high": 0.75,
+      "medium": 1.0,
+      "low": 1.25,
+      "very_low": 1.5
+    },
+    "baseRewardRates": {
+      "xpPerDCPoint": 10,
+      "goldPerDCPoint": 5,
+      "lootChancePerDC": 0.02
+    },
+    "levelScaling": {
+      "dcIncreasePerLevel": 0.5,
+      "xpMultiplierPerLevel": 0.15,
+      "goldMultiplierPerLevel": 0.20
+    },
+    "riskLevelModifiers": {
+      "low": 0.8,
+      "medium": 1.0,
+      "high": 1.3,
+      "deadly": 1.6
+    },
+    "criticalThresholds": {
+      "naturalCrit": true,
+      "marginCrit": true,
+      "critMargin": 10,
+      "critSuccessBonus": 0.5,
+      "critFailureSeverity": 1.5
+    },
+    "triggerFrequencyModifiers": {
+      "terrain_base": 0.10,
+      "quest_objective": 1.0,
+      "npc_dialogue": 0.30
+    }
+  },
+
+  "challenges": {
+    "trap_detect_disarm": {
       "id": "trap_detect_disarm",
       "name": "Trap Detection & Disarm",
-      "description": "Spot and disable a dangerous trap",
+      "description": "You notice suspicious markings on the floor ahead...",
       "type": "sequential",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "medium",
+        "lootChanceMultiplier": 0.8
+      },
       "stages": [
         {
           "id": "detect",
           "skill": "perception",
-          "dc": 15,
+          "baseDC": 13,
+          "passiveRoll": true,
           "description": "Notice the trap before triggering it",
           "onSuccess": {
             "message": "You spot the trap mechanism!",
@@ -22,56 +69,96 @@
           "onFailure": {
             "message": "You trigger the trap!",
             "damage": "2d6",
-            "damageType": "piercing",
-            "saveType": "dex",
-            "saveDC": 13
+            "damageType": "piercing"
           }
         },
         {
           "id": "disarm",
           "skill": "sleightOfHand",
-          "dc": 13,
+          "baseDC": 14,
           "description": "Carefully disable the trap mechanism",
           "onSuccess": {
             "message": "You successfully disarm the trap!",
-            "xp": 100
+            "xp": 100,
+            "gold": 25,
+            "loot": {
+              "table": "trapDisarm_common",
+              "rolls": 1,
+              "chance": 0.8,
+              "rarityFilter": {
+                "1-4": ["common"],
+                "5-9": ["common", "uncommon"],
+                "10+": ["uncommon", "rare"]
+              }
+            }
           },
           "onFailure": {
-            "message": "You fumble with the mechanism and trigger the trap!",
-            "damage": "2d6",
+            "message": "Your hand slips...",
+            "damage": "1d6",
             "damageType": "piercing"
           }
         }
-      ]
+      ],
+      "criticalSuccess": {
+        "xp": 150,
+        "gold": 40,
+        "message": "Masterful work! You find a hidden compartment with treasure",
+        "loot": {
+          "table": "trapDisarm_uncommon",
+          "rolls": 2,
+          "chance": 1.0
+        }
+      },
+      "criticalFailure": {
+        "damage": "3d6",
+        "damageType": "piercing",
+        "message": "The trap was more deadly than you thought..."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["dungeon", "ruins", "cave"],
+          "terrain": ["dungeon"]
+        },
+        "quest": {
+          "objectiveType": ["explore", "retrieve"]
+        }
+      }
     },
-    {
+
+    "locked_door": {
       "id": "locked_door",
       "name": "Locked Door",
       "description": "A locked door bars your way",
       "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.20,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "options": [
         {
-          "id": "lockpick",
           "skill": "sleightOfHand",
-          "dc": 15,
-          "description": "Pick the lock",
-          "toolRequired": "thieves' tools",
+          "baseDC": 15,
+          "description": "Pick the lock with finesse",
           "onSuccess": {
-            "message": "You pick the lock and the door swings open.",
-            "xp": 50
+            "message": "You pick the lock and the door swings open silently.",
+            "xp": 75,
+            "gold": 15
           },
           "onFailure": {
             "message": "You break your lockpick. The lock remains intact."
           }
         },
         {
-          "id": "force",
           "skill": "athletics",
-          "dc": 18,
-          "description": "Force the door open",
+          "baseDC": 18,
+          "description": "Force the door open with brute strength",
           "onSuccess": {
             "message": "You smash the door open with brute force!",
-            "xp": 25,
+            "xp": 50,
+            "gold": 10,
             "alertEnemies": true
           },
           "onFailure": {
@@ -81,86 +168,116 @@
           }
         },
         {
-          "id": "arcana",
           "skill": "arcana",
-          "dc": 14,
+          "baseDC": 14,
           "description": "Detect and dispel magical lock",
           "onSuccess": {
             "message": "You identify a magical seal and dispel it!",
-            "xp": 75
+            "xp": 100,
+            "gold": 20
           },
           "onFailure": {
             "message": "The magical seal resists your attempts."
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["dungeon", "ruins", "settlement"],
+          "terrain": ["dungeon"]
+        },
+        "quest": {
+          "objectiveType": ["explore", "infiltration", "retrieve"]
+        }
+      }
     },
-    {
+
+    "bandit_negotiation": {
       "id": "bandit_negotiation",
       "name": "Bandit Negotiation",
-      "description": "Convince bandits to leave peacefully",
+      "description": "Bandits block your path. Perhaps you can avoid bloodshed?",
       "type": "choice",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.6,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
       "options": [
         {
-          "id": "influence_threat",
           "skill": "influence",
-          "dc": 14,
+          "baseDC": 14,
           "description": "Threaten or persuade the bandits to leave",
           "onSuccess": {
             "message": "The bandits are convinced by your words and flee!",
-            "xp": 225,
-            "reputation": 35
+            "xp": 150,
+            "gold": 30,
+            "consequences": ["avoidCombat"]
           },
           "onFailure": {
             "message": "The bandits reject your words and attack!",
-            "initiateCombat": true,
-            "enemies": ["bandit", "bandit", "bandit_captain"]
+            "consequences": ["initiateCombat"]
           }
         },
         {
-          "id": "deception",
           "skill": "deception",
-          "dc": 15,
+          "baseDC": 15,
           "description": "Trick the bandits with false information",
           "onSuccess": {
             "message": "The bandits believe your lie about approaching guards and flee!",
-            "xp": 225,
-            "reputation": 35
+            "xp": 150,
+            "gold": 30,
+            "consequences": ["avoidCombat"]
           },
           "onFailure": {
             "message": "The bandits see through your deception and attack!",
-            "initiateCombat": true,
-            "enemies": ["bandit", "bandit", "bandit_captain"]
+            "consequences": ["initiateCombat"]
           }
         },
         {
-          "id": "empathy",
           "skill": "empathy",
-          "dc": 16,
+          "baseDC": 16,
           "description": "Appeal to their better nature",
           "onSuccess": {
             "message": "You connect with the bandits emotionally. They agree to leave peacefully!",
-            "xp": 250,
-            "reputation": 40
+            "xp": 175,
+            "gold": 35,
+            "consequences": ["avoidCombat"]
           },
           "onFailure": {
             "message": "Your emotional appeal falls flat and they attack!",
-            "initiateCombat": true,
-            "enemies": ["bandit", "bandit", "bandit_captain"]
+            "consequences": ["initiateCombat"]
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["forest", "grassland", "hills"]
+        },
+        "social": {
+          "npcType": ["hostile", "bandit"]
+        }
+      }
     },
-    {
+
+    "cliff_climb": {
       "id": "cliff_climb",
       "name": "Cliff Climbing",
-      "description": "Scale a treacherous cliff face",
+      "description": "A towering cliff face blocks your path",
       "type": "sequential",
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.25,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
       "stages": [
         {
           "id": "assess",
           "skill": "perception",
-          "dc": 12,
+          "baseDC": 12,
           "description": "Spot the best climbing route",
           "onSuccess": {
             "message": "You identify handholds and a safe path.",
@@ -175,33 +292,45 @@
         {
           "id": "climb",
           "skill": "athletics",
-          "dc": 15,
+          "baseDC": 15,
           "description": "Climb the cliff face",
           "onSuccess": {
             "message": "You reach the top safely!",
-            "xp": 100
+            "xp": 120,
+            "gold": 30,
+            "consequences": ["unlockPath"]
           },
           "onFailure": {
             "message": "You slip and fall!",
             "damage": "3d6",
-            "damageType": "bludgeoning",
-            "saveType": "dex",
-            "saveDC": 14,
-            "halfDamageOnSave": true
+            "damageType": "bludgeoning"
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["mountains", "hills", "cliff"]
+        }
+      }
     },
-    {
+
+    "hidden_treasure": {
       "id": "hidden_treasure",
       "name": "Hidden Treasure Search",
-      "description": "Search for hidden valuables",
+      "description": "This chamber looks like it might hide secrets...",
       "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.12,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "stages": [
         {
           "id": "investigation",
           "skill": "investigation",
-          "dc": 13,
+          "baseDC": 13,
           "description": "Search the area methodically",
           "onSuccess": {
             "message": "You find signs of a hidden compartment!",
@@ -214,191 +343,308 @@
         {
           "id": "retrieve",
           "skill": "sleightOfHand",
-          "dc": 12,
+          "baseDC": 12,
           "description": "Open the hidden compartment",
           "onSuccess": {
             "message": "You retrieve the hidden treasure!",
             "xp": 75,
-            "lootTable": "treasure_minor"
+            "gold": 20,
+            "loot": {
+              "table": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.9
+            }
           },
           "onFailure": {
             "message": "The compartment is stuck. You cannot open it."
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["dungeon", "ruins", "cave"]
+        },
+        "quest": {
+          "objectiveType": ["retrieve", "explore"]
+        }
+      }
     },
-    {
+
+    "calm_wild_beast": {
       "id": "calm_wild_beast",
       "name": "Calm Wild Beast",
-      "description": "Attempt to calm an aggressive wild animal",
+      "description": "A wild animal blocks your path, snarling aggressively",
       "type": "single",
       "skill": "empathy",
-      "dc": 14,
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 0.8,
+        "triggerFrequency": 0.18,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
       "onSuccess": {
         "message": "You connect with the animal. It calms down and leaves peacefully.",
-        "xp": 100,
-        "avoidCombat": true
+        "xp": 80,
+        "gold": 15,
+        "consequences": ["avoidCombat"]
       },
       "onFailure": {
         "message": "The animal remains hostile and attacks!",
-        "initiateCombat": true,
-        "enemies": ["{animalType}"]
+        "consequences": ["initiateCombat"]
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["forest", "jungle", "grassland", "mountains"]
+        }
       }
     },
-    {
+
+    "sneak_past_guards": {
       "id": "sneak_past_guards",
       "name": "Sneak Past Guards",
-      "description": "Move silently and stay hidden past enemy guards",
+      "description": "Guards patrol the corridor ahead...",
       "type": "choice",
+      "balance": {
+        "skillValue": "very_high",
+        "rewardMultiplier": 0.5,
+        "triggerFrequency": 0.10,
+        "cooldown": 600000,
+        "riskLevel": "high",
+        "lootChanceMultiplier": 0.3
+      },
       "options": [
         {
-          "id": "stealth_move",
           "skill": "acrobatics",
-          "dc": 14,
+          "baseDC": 14,
           "description": "Move silently past the guards",
           "onSuccess": {
             "message": "You slip past the guards unnoticed.",
-            "xp": 150
+            "xp": 50,
+            "gold": 15,
+            "consequences": ["avoidCombat"],
+            "loot": {
+              "table": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.3
+            }
           },
           "onFailure": {
             "message": "You make a noise and a guard spots you!",
-            "initiateCombat": true,
-            "enemies": ["guard", "guard"],
-            "surprised": false
+            "consequences": ["initiateCombat"]
           }
         },
         {
-          "id": "hide",
           "skill": "cunning",
-          "dc": 13,
+          "baseDC": 13,
           "description": "Hide in the shadows and wait for an opening",
           "onSuccess": {
             "message": "You blend into the shadows and slip past when they're not looking.",
-            "xp": 150
+            "xp": 50,
+            "gold": 15,
+            "consequences": ["avoidCombat"],
+            "loot": {
+              "table": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.3
+            }
           },
           "onFailure": {
             "message": "A guard spots you hiding!",
-            "initiateCombat": true,
-            "enemies": ["guard", "guard"],
-            "surprised": false
+            "consequences": ["initiateCombat"]
+          }
+        },
+        {
+          "skill": "influence",
+          "baseDC": 12,
+          "description": "Bluff your way past with confidence",
+          "onSuccess": {
+            "message": "You walk past confidently and the guards don't question you.",
+            "xp": 60,
+            "gold": 18,
+            "consequences": ["avoidCombat"]
+          },
+          "onFailure": {
+            "message": "The guards challenge you and attack!",
+            "consequences": ["initiateCombat"]
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["guardpost", "settlement"],
+          "terrain": ["settlement"]
+        },
+        "quest": {
+          "objectiveType": ["infiltration", "stealth"]
+        },
+        "social": {
+          "npcType": ["guard"]
+        }
+      }
     },
-    {
+
+    "arcane_puzzle": {
       "id": "arcane_puzzle",
       "name": "Arcane Puzzle",
-      "description": "Solve a magical puzzle to unlock a door",
+      "description": "Ancient runes glow faintly on the door ahead",
       "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "options": [
         {
-          "id": "arcana",
           "skill": "arcana",
-          "dc": 16,
+          "baseDC": 16,
           "description": "Use magical knowledge to solve the puzzle",
           "onSuccess": {
             "message": "You understand the magical principles and solve the puzzle!",
-            "xp": 200
+            "xp": 120,
+            "gold": 25
           },
           "onFailure": {
             "message": "The puzzle remains unsolved."
           }
         },
         {
-          "id": "investigation",
           "skill": "investigation",
-          "dc": 18,
+          "baseDC": 18,
           "description": "Examine the puzzle for patterns",
           "onSuccess": {
             "message": "Through careful observation, you solve the puzzle!",
-            "xp": 150
+            "xp": 100,
+            "gold": 20
           },
           "onFailure": {
             "message": "The puzzle is too complex to understand."
           }
         },
         {
-          "id": "creativity",
           "skill": "creativity",
-          "dc": 17,
-          "description": "Think outside the box to find an unconventional solution",
+          "baseDC": 17,
+          "description": "Think outside the box for an unconventional solution",
           "onSuccess": {
             "message": "Your creative approach reveals a hidden solution!",
-            "xp": 175
+            "xp": 110,
+            "gold": 22
           },
           "onFailure": {
             "message": "Your unconventional approach doesn't work."
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["dungeon", "ruins", "temple"]
+        },
+        "quest": {
+          "objectiveType": ["explore", "investigate"]
+        }
+      }
     },
-    {
+
+    "ancient_text": {
       "id": "ancient_text",
       "name": "Decipher Ancient Text",
-      "description": "Read an ancient inscription or tome",
+      "description": "Ancient writing covers the stone tablet",
       "type": "single",
       "skill": "academia",
-      "dc": 15,
+      "baseDC": 15,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.12,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "onSuccess": {
         "message": "You translate the ancient text and gain valuable information!",
-        "xp": 100,
-        "revealInformation": true,
-        "questClue": true
+        "xp": 125,
+        "gold": 25,
+        "consequences": ["revealInformation", "questClue"]
       },
       "onFailure": {
         "message": "The text is too damaged or complex to understand."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["ruins", "temple", "dungeon"]
+        },
+        "quest": {
+          "objectiveType": ["investigate"]
+        }
       }
     },
-    {
+
+    "stabilize_wounded": {
       "id": "stabilize_wounded",
       "name": "Stabilize Wounded NPC",
-      "description": "Provide aid to a critically wounded person",
+      "description": "A wounded person lies before you, bleeding heavily",
       "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.10,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
       "options": [
         {
-          "id": "academia",
           "skill": "academia",
-          "dc": 13,
+          "baseDC": 13,
           "description": "Apply scholarly medical knowledge",
           "onSuccess": {
             "message": "You stabilize the wounded person using your medical knowledge!",
-            "xp": 75,
-            "reputation": 25,
-            "questUpdate": true
+            "xp": 100,
+            "gold": 20
           },
           "onFailure": {
-            "message": "Despite your efforts, the person's condition worsens.",
-            "reputation": -10
+            "message": "Despite your efforts, the person's condition worsens."
           }
         },
         {
-          "id": "investigation",
           "skill": "investigation",
-          "dc": 14,
+          "baseDC": 14,
           "description": "Examine the wounds and apply practical first aid",
           "onSuccess": {
             "message": "You identify the injury and treat it effectively!",
-            "xp": 75,
-            "reputation": 25,
-            "questUpdate": true
+            "xp": 100,
+            "gold": 20
           },
           "onFailure": {
-            "message": "You cannot determine how to help them.",
-            "reputation": -10
+            "message": "You cannot determine how to help them."
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "quest": {
+          "objectiveType": ["rescue"]
+        }
+      }
     },
-    {
+
+    "track_creature": {
       "id": "track_creature",
       "name": "Track Creature",
-      "description": "Follow tracks to find a creature",
+      "description": "You search for signs of your quarry",
       "type": "sequential",
+      "balance": {
+        "skillValue": "very_high",
+        "rewardMultiplier": 0.5,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "low"
+      },
       "stages": [
         {
           "id": "find_tracks",
           "skill": "perception",
-          "dc": 13,
+          "baseDC": 13,
           "description": "Find tracks of the creature",
           "onSuccess": {
             "message": "You discover fresh tracks!",
@@ -411,109 +657,228 @@
         {
           "id": "follow",
           "skill": "investigation",
-          "dc": 14,
+          "baseDC": 14,
           "description": "Follow the tracks to the creature",
           "onSuccess": {
             "message": "You track the creature to its location!",
-            "xp": 100,
-            "revealLocation": true
+            "xp": 60,
+            "gold": 15,
+            "consequences": ["revealLocation"]
           },
           "onFailure": {
             "message": "You lose the trail."
           }
         }
-      ]
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["forest", "grassland", "mountains", "desert"]
+        },
+        "quest": {
+          "objectiveType": ["hunt", "track"]
+        }
+      }
     },
-    {
+
+    "detect_lie": {
       "id": "detect_lie",
       "name": "Detect Deception",
-      "description": "Determine if an NPC is lying",
+      "description": "Something about their story doesn't add up...",
       "type": "contested",
       "playerSkill": "empathy",
       "opposingSkill": "deception",
-      "opposingDC": 14,
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.20,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "onSuccess": {
         "message": "You sense the NPC is being deceptive!",
-        "xp": 50,
-        "revealInformation": true
+        "xp": 75,
+        "gold": 15,
+        "consequences": ["revealInformation"]
       },
       "onFailure": {
         "message": "You believe the NPC is telling the truth."
+      },
+      "contextualTriggers": {
+        "social": {
+          "npcType": ["merchant", "hostile", "stranger"]
+        },
+        "quest": {
+          "objectiveType": ["investigate", "social"]
+        }
       }
     },
-    {
+
+    "creative_distraction": {
       "id": "creative_distraction",
       "name": "Create Distraction",
-      "description": "Create an improvised distraction to divert guards",
+      "description": "You need to divert attention away from your true goal",
       "type": "single",
       "skill": "creativity",
-      "dc": 13,
+      "baseDC": 13,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
       "onSuccess": {
         "message": "Your clever distraction works perfectly, creating an opening!",
-        "xp": 100,
-        "distraction": true,
-        "timeWindow": 60
+        "xp": 125,
+        "gold": 25
       },
       "onFailure": {
-        "message": "Your distraction attempt fails to fool the guards."
+        "message": "Your distraction attempt fails to fool anyone."
+      },
+      "contextualTriggers": {
+        "social": {
+          "npcType": ["guard"]
+        },
+        "quest": {
+          "objectiveType": ["infiltration", "stealth"]
+        }
       }
     },
-    {
+
+    "holy_ritual": {
       "id": "holy_ritual",
       "name": "Perform Holy Ritual",
-      "description": "Conduct a religious ceremony to consecrate an area",
+      "description": "The sacred site calls for blessing",
       "type": "single",
       "skill": "academia",
-      "dc": 14,
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.08,
+        "cooldown": 600000,
+        "riskLevel": "low"
+      },
       "onSuccess": {
-        "message": "You successfully perform the ritual using your religious knowledge. The area is blessed!",
+        "message": "You successfully perform the ritual. The area is blessed!",
         "xp": 150,
-        "areaEffect": "consecrated",
-        "duration": 86400
+        "gold": 30
       },
       "onFailure": {
         "message": "The ritual fails to take effect."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": ["temple", "shrine"]
+        },
+        "quest": {
+          "objectiveType": ["ritual", "religious"]
+        }
       }
     },
-    {
+
+    "narrow_ledge": {
       "id": "narrow_ledge",
       "name": "Narrow Ledge",
-      "description": "Cross a narrow ledge without falling",
+      "description": "A narrow ledge is the only way forward",
       "type": "single",
       "skill": "acrobatics",
-      "dc": 13,
+      "baseDC": 13,
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.18,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
       "onSuccess": {
         "message": "You nimbly cross the narrow ledge!",
-        "xp": 75
+        "xp": 75,
+        "gold": 15
       },
       "onFailure": {
         "message": "You lose your balance and fall!",
         "damage": "2d6",
-        "damageType": "bludgeoning",
-        "saveType": "dex",
-        "saveDC": 12,
-        "halfDamageOnSave": true
+        "damageType": "bludgeoning"
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["mountains", "cliff", "cave"]
+        }
       }
     },
-    {
+
+    "endure_harsh_environment": {
       "id": "endure_harsh_environment",
       "name": "Endure Harsh Environment",
-      "description": "Push through extreme heat, cold, or exhaustion",
+      "description": "The extreme conditions test your limits",
       "type": "single",
       "skill": "endurance",
-      "dc": 14,
+      "baseDC": 14,
+      "canTurnBack": false,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.20,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
       "onSuccess": {
         "message": "You push through the harsh conditions!",
-        "xp": 100
+        "xp": 125,
+        "gold": 25
       },
       "onFailure": {
         "message": "The conditions overwhelm you.",
         "damage": "2d4",
-        "damageType": "environmental",
-        "exhaustion": 1
+        "damageType": "environmental"
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["desert", "tundra", "mountains"]
+        }
+      }
+    },
+
+    "boulder_push": {
+      "id": "boulder_push",
+      "name": "Move Heavy Boulder",
+      "description": "A massive boulder blocks your path",
+      "type": "single",
+      "skill": "athletics",
+      "baseDC": 16,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.25,
+        "cooldown": 300000,
+        "riskLevel": "low",
+        "lootChanceMultiplier": 1.5
+      },
+      "onSuccess": {
+        "message": "With a mighty heave, you roll the boulder aside, revealing a hidden cache!",
+        "xp": 120,
+        "gold": 30,
+        "consequences": ["unlockPath", "revealFeature"],
+        "loot": {
+          "table": "boulderReward_low",
+          "rolls": 2,
+          "chance": 1.0
+        }
+      },
+      "onFailure": {
+        "message": "You strain your muscles but the boulder won't budge.",
+        "damage": "1d4",
+        "damageType": "bludgeoning"
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["mountains", "hills", "ruins"]
+        }
       }
     }
-  ],
+  },
 
   "dcThresholds": {
     "easy": 10,
@@ -521,36 +886,5 @@
     "hard": 15,
     "veryHard": 18,
     "nearlyImpossible": 20
-  },
-
-  "contextualTriggers": {
-    "exploration": {
-      "terrain": {
-        "mountain": ["cliff_climb", "narrow_ledge", "endure_harsh_environment"],
-        "forest": ["calm_wild_beast", "track_creature"],
-        "dungeon": ["trap_detect_disarm", "locked_door", "arcane_puzzle"],
-        "desert": ["endure_harsh_environment", "track_creature"],
-        "tundra": ["endure_harsh_environment"]
-      },
-      "featureType": {
-        "ruins": ["ancient_text", "arcane_puzzle", "hidden_treasure"],
-        "cave": ["hidden_treasure", "cliff_climb"],
-        "temple": ["holy_ritual", "arcane_puzzle", "ancient_text"]
-      }
-    },
-    "social": {
-      "npcType": {
-        "hostile": ["detect_lie", "bandit_negotiation"],
-        "merchant": ["detect_lie", "influence"],
-        "guard": ["sneak_past_guards", "creative_distraction"]
-      }
-    },
-    "quest": {
-      "objectiveType": {
-        "investigate": ["investigation", "ancient_text"],
-        "rescue": ["stabilize_wounded", "sneak_past_guards"],
-        "retrieve": ["hidden_treasure", "locked_door"]
-      }
-    }
   }
 }

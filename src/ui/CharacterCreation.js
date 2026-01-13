@@ -18,6 +18,7 @@ export class CharacterCreationUI {
             race: null,
             class: null,
             kit: null, // New: selected kit (custom or preset)
+            customClassName: '', // New: custom class name (if using custom kit)
             background: null,
             fightingStyle: null, // New: fighting style selection (if applicable)
             baseAbilities: {
@@ -109,6 +110,9 @@ export class CharacterCreationUI {
             case 'Kit':
                 this.renderKitStep(content);
                 break;
+            case 'Custom Class Name':
+                this.renderCustomClassNameStep(content);
+                break;
             case 'Fighting Style':
                 this.renderFightingStyleStep(content);
                 break;
@@ -159,6 +163,7 @@ export class CharacterCreationUI {
 
         // If custom kit is selected, show all customization steps
         if (this.characterData.kit && this.characterData.kit.isCustom) {
+            baseSteps.push('Custom Class Name'); // New: Custom class name input
             baseSteps.push('Background');
 
             // Conditionally add Fighting Style if class has it at level 1
@@ -385,6 +390,34 @@ export class CharacterCreationUI {
     }
 
     /**
+     * Step: Custom Class Name (only for custom kit)
+     */
+    renderCustomClassNameStep(container) {
+        container.innerHTML = `
+            <h3>Name Your Class</h3>
+            <p class="step-description">Give your custom class a unique name that represents your character's path.</p>
+            <div class="form-group">
+                <label for="customClassNameInput">Class Name:</label>
+                <input type="text"
+                       id="customClassNameInput"
+                       value="${this.characterData.customClassName || ''}"
+                       placeholder="Enter your class name (e.g., Battle Mage, Shadow Knight)"
+                       maxlength="30"
+                       autofocus />
+                <p class="input-hint" style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary); font-style: italic;">
+                    Examples: Battle Mage, Shadow Knight, Arcane Warrior, Divine Protector, Fist of the North Star
+                </p>
+            </div>
+        `;
+
+        // Bind input handler
+        const input = container.querySelector('#customClassNameInput');
+        input.addEventListener('input', (e) => {
+            this.characterData.customClassName = e.target.value;
+        });
+    }
+
+    /**
      * Format fighting style name for display
      */
     formatFightingStyleName(styleId) {
@@ -589,6 +622,14 @@ export class CharacterCreationUI {
         const availableSkills = skillChoices.from;
         const numToChoose = skillChoices.choose;
 
+        // Get background skill proficiencies to filter them out
+        const backgroundSkills = this.characterData.background.skillProficiencies || [];
+
+        // Clean up any accidentally selected skills that overlap with background
+        this.characterData.skillChoices = this.characterData.skillChoices.filter(
+            skill => !backgroundSkills.includes(skill)
+        );
+
         container.innerHTML = `
             <h3>Choose Your Skills</h3>
             <p class="step-description">
@@ -597,18 +638,24 @@ export class CharacterCreationUI {
             </p>
             <div class="skill-selection">
                 <h4>Calling Skills (Choose ${numToChoose}):</h4>
-                ${availableSkills.map(skill => `
-                    <label class="skill-checkbox">
-                        <input type="checkbox" value="${skill}"
-                               ${this.characterData.skillChoices.includes(skill) ? 'checked' : ''}
-                               class="skill-choice">
-                        ${this.formatSkillName(skill)}
-                    </label>
-                `).join('')}
+                ${availableSkills.map(skill => {
+                    const isFromBackground = backgroundSkills.includes(skill);
+                    const isSelected = this.characterData.skillChoices.includes(skill);
+                    return `
+                        <label class="skill-checkbox ${isFromBackground ? 'disabled' : ''}">
+                            <input type="checkbox" value="${skill}"
+                                   ${isSelected ? 'checked' : ''}
+                                   ${isFromBackground ? 'disabled' : ''}
+                                   class="skill-choice">
+                            ${this.formatSkillName(skill)}
+                            ${isFromBackground ? '<span class="skill-note">(from background)</span>' : ''}
+                        </label>
+                    `;
+                }).join('')}
             </div>
             <div class="background-skills">
                 <h4>Background Skills (Automatic):</h4>
-                <p>${this.characterData.background.skillProficiencies.map(s => this.formatSkillName(s)).join(', ')}</p>
+                <p>${backgroundSkills.map(s => this.formatSkillName(s)).join(', ')}</p>
             </div>
         `;
 
@@ -721,9 +768,15 @@ export class CharacterCreationUI {
             }
         }
 
-        // Build kit display
-        const kitDisplay = this.characterData.kit ?
-            `<p><strong>Kit:</strong> ${this.characterData.kit.name}</p>` : '';
+        // Determine the class display name (custom name, kit name, or calling name)
+        let classDisplayName;
+        if (this.characterData.kit.isCustom && this.characterData.customClassName) {
+            classDisplayName = this.characterData.customClassName;
+        } else if (this.characterData.kit && !this.characterData.kit.isCustom) {
+            classDisplayName = this.characterData.kit.name;
+        } else {
+            classDisplayName = this.characterData.class.displayName || this.characterData.class.name;
+        }
 
         // Build fighting style display (if applicable)
         const fightingStyleDisplay = this.characterData.fightingStyle ?
@@ -756,7 +809,7 @@ export class CharacterCreationUI {
                     <p><strong>Name:</strong> ${this.characterData.name}</p>
                     <p><strong>Culture:</strong> ${this.characterData.race.name}</p>
                     <p><strong>Calling:</strong> ${this.characterData.class.displayName || this.characterData.class.name}</p>
-                    ${kitDisplay}
+                    <p><strong>Class:</strong> ${classDisplayName}</p>
                     <p><strong>Background:</strong> ${this.characterData.background.name}</p>
                 </div>
 
@@ -881,6 +934,12 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
+            case 'Custom Class Name':
+                if (!this.characterData.customClassName.trim()) {
+                    alert('Please enter a name for your custom class.');
+                    return false;
+                }
+                break;
             case 'Fighting Style':
                 if (!this.characterData.fightingStyle) {
                     alert('Please select a fighting style.');
@@ -927,10 +986,22 @@ export class CharacterCreationUI {
      */
     async createCharacter() {
         try {
+            // Determine the display name for the class
+            // If custom kit with custom name, use that; otherwise use kit name
+            const classData = { ...this.characterData.class };
+            if (this.characterData.kit.isCustom && this.characterData.customClassName) {
+                classData.displayName = this.characterData.customClassName;
+            } else if (this.characterData.kit && !this.characterData.kit.isCustom) {
+                classData.displayName = this.characterData.kit.name;
+            } else {
+                // Fallback to class name
+                classData.displayName = classData.displayName || classData.name;
+            }
+
             const character = new Character({
                 name: this.characterData.name,
                 race: this.characterData.race,
-                class: this.characterData.class,
+                class: classData,
                 background: this.characterData.background,
                 fightingStyle: this.characterData.fightingStyle, // Pass fighting style if selected
                 baseAbilities: this.characterData.baseAbilities,
