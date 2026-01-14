@@ -204,7 +204,7 @@ class CombatManager {
 
         // End turn after a delay
         setTimeout(() => {
-            console.log(`Enemy turn ending`);
+            console.log('Enemy turn ending');
             this.endTurn();
         }, 1000);
     }
@@ -230,7 +230,7 @@ class CombatManager {
         // Determine which action type to check/consume
         const actionType = isOffHandAttack ? 'bonusAction' : 'action';
 
-        console.log(`⚔️ ATTACK:`, attacker.name, 'attacks', defender.name,
+        console.log('⚔️ ATTACK:', attacker.name, 'attacks', defender.name,
             isCleaveAttack ? '(Cleave)' : '',
             isOffHandAttack ? '(Off-Hand)' : '(Main Hand)');
 
@@ -329,7 +329,7 @@ class CombatManager {
         }
 
         // Attack roll: d20 + ability mod + proficiency + ranged bonus
-        let attackRollObj = rollD20();
+        const attackRollObj = rollD20();
         let attackRoll = attackRollObj.result;
 
         // Apply advantage/disadvantage
@@ -350,14 +350,18 @@ class CombatManager {
 
         // Build attack roll message
         let attackMsg = `Attack roll: ${attackRoll}`;
-        if (attackBonus !== 0) attackMsg += ` + ${attackBonus} (ability)`;
-        if (proficiency !== 0) attackMsg += ` + ${proficiency} (prof)`;
+        if (attackBonus !== 0) {
+            attackMsg += ` + ${attackBonus} (ability)`;
+        }
+        if (proficiency !== 0) {
+            attackMsg += ` + ${proficiency} (prof)`;
+        }
         attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
 
         gameState.addMessage(attackMsg, 'info');
 
         if (isCriticalMiss) {
-            gameState.addMessage(`💥 Critical miss!`, 'error');
+            gameState.addMessage('💥 Critical miss!', 'error');
 
             // Floating combat text for critical miss
             if (window.game) {
@@ -393,7 +397,7 @@ class CombatManager {
             if (isCritical) {
                 secondRoll = rollDice(1, damageDice); // Double dice on crit
                 damageRoll += secondRoll;
-                gameState.addMessage(`⭐ Critical hit!`, 'success');
+                gameState.addMessage('⭐ Critical hit!', 'success');
             }
 
             // Calculate damage bonus
@@ -403,7 +407,7 @@ class CombatManager {
             // (unless character has Two-Weapon Fighting style - not yet implemented)
             if (isOffHandAttack) {
                 damageBonus = 0;
-                gameState.addMessage(`⚔️ Off-hand attack: No ability modifier to damage`, 'info');
+                gameState.addMessage('⚔️ Off-hand attack: No ability modifier to damage', 'info');
             }
 
             const damageTotal = damageRoll + damageBonus;
@@ -480,7 +484,7 @@ class CombatManager {
                         const cleaveDamage = Math.max(1, attackBonus); // Ability modifier, minimum 1
                         const cleaveMsg = attackBonus >= 1
                             ? `💢 Cleave hits! Damage: ${attackBonus} (ability, min 1) = ${cleaveDamage}`
-                            : `💢 Cleave hits! Damage: 1 (minimum)`;
+                            : '💢 Cleave hits! Damage: 1 (minimum)';
                         gameState.addMessage(
                             cleaveMsg,
                             attacker.team === 'player' ? 'success' : 'error'
@@ -504,7 +508,7 @@ class CombatManager {
                             this.handleDefeat(adjacentEnemy);
                         }
                     } else {
-                        gameState.addMessage(`Cleave misses!`, 'info');
+                        gameState.addMessage('Cleave misses!', 'info');
 
                         // Floating combat text for Cleave miss
                         if (window.game) {
@@ -550,7 +554,7 @@ class CombatManager {
                         if (nickDamageBonus < 0) {
                             nickMsg += ` + ${nickDamageBonus} (negative ability)`;
                         } else {
-                            nickMsg += ` (no ability modifier)`;
+                            nickMsg += ' (no ability modifier)';
                         }
                         nickMsg += ` = ${nickDamageTotal}`;
 
@@ -577,7 +581,7 @@ class CombatManager {
                             this.handleDefeat(defender);
                         }
                     } else {
-                        gameState.addMessage(`Nick misses!`, 'info');
+                        gameState.addMessage('Nick misses!', 'info');
 
                         // Floating combat text for Nick miss
                         if (window.game) {
@@ -587,7 +591,7 @@ class CombatManager {
                 }
             }
         } else {
-            gameState.addMessage(`Miss!`, 'info');
+            gameState.addMessage('Miss!', 'info');
 
             // Floating combat text for regular miss
             if (window.game) {
@@ -998,7 +1002,7 @@ class CombatManager {
 
                             // Store loot message for later
                             const itemNames = loot.items.map(i => i.name + (i.quantity > 1 ? ` (${i.quantity})` : '')).join(', ');
-                            const lootMessage = `${enemy.name} dropped: ${loot.gold}g${itemNames ? ', ' + itemNames : ''}`;
+                            const lootMessage = `${enemy.name} dropped: ${loot.gold}g${itemNames ? `, ${  itemNames}` : ''}`;
                             lootMessages.push(lootMessage);
                         }
                     }
@@ -1204,15 +1208,23 @@ class CombatManager {
      * @returns {Boolean}
      */
     hasWeaponMastery(combatant, weapon, masteryId) {
-        if (!combatant.character.weaponMasteries) return false;
-        if (!weapon) return false;
+        if (!combatant.character.weaponMasteries) {
+            return false;
+        }
+        if (!weapon) {
+            return false;
+        }
 
         // Mastery must be assigned to this specific weapon
         const assignedMastery = this.weaponMasteryAssignments[weapon.id];
-        if (!assignedMastery || assignedMastery !== masteryId) return false;
+        if (!assignedMastery || assignedMastery !== masteryId) {
+            return false;
+        }
 
         // Character must actually know the mastery
-        if (!combatant.character.weaponMasteries.includes(masteryId)) return false;
+        if (!combatant.character.weaponMasteries.includes(masteryId)) {
+            return false;
+        }
 
         // Honor proficiency requirement toggle from data
         if (this.weaponMasteryProficiencyRequired && !combatant.character.isProficientWithWeapon(weapon)) {
@@ -1230,7 +1242,9 @@ class CombatManager {
     getAdjacentEnemy(defender) {
         // Parse enemy index from ID (e.g., "enemy_0" → 0)
         const match = defender.id.match(/enemy_(\d+)/);
-        if (!match) return null;
+        if (!match) {
+            return null;
+        }
 
         const currentIndex = parseInt(match[1]);
         const nextIndex = currentIndex + 1;
@@ -1246,7 +1260,9 @@ class CombatManager {
      * Load weapon mastery assignments and proficiency rule from data file
      */
     async loadWeaponMasteryData() {
-        if (this.weaponMasteryDataLoaded) return;
+        if (this.weaponMasteryDataLoaded) {
+            return;
+        }
 
         try {
             const response = await fetch(`data/weaponMasteries.json?v=${Date.now()}`);
@@ -1317,7 +1333,9 @@ class CombatManager {
      * Update game state with current combat data
      */
     updateGameState() {
-        if (!this.active) return;
+        if (!this.active) {
+            return;
+        }
 
         gameState.set('combat', {
             active: true,
@@ -1483,7 +1501,9 @@ class Combatant {
      * Get display string for all active conditions
      */
     getConditionsDisplay() {
-        if (this.conditions.length === 0) return '';
+        if (this.conditions.length === 0) {
+            return '';
+        }
 
         return this.conditions.map(c => c.icon).join(' ');
     }
@@ -1500,7 +1520,7 @@ class Combatant {
 
         // Check for advantage from conditions
         let hasAdvantage = advantage;
-        let hasDisadvantage = disadvantage;
+        const hasDisadvantage = disadvantage;
 
         // Dodge gives advantage on DEX saves
         if (ability === 'dex' && this.hasCondition('dodging')) {

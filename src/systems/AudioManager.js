@@ -55,7 +55,7 @@ class AudioManager {
             footstep2: 'data/sound/Dirt Run 2.wav',
             footstep3: 'data/sound/Dirt Run 3.wav',
             footstep4: 'data/sound/Dirt Run 4.wav',
-            footstep5: 'data/sound/Dirt Run 5.wav',
+            footstep5: 'data/sound/Dirt Run 5.wav'
 
             // === EXPLORATION SOUNDS (placeholders for future) ===
             // doorOpen: 'data/sound/door_open.wav',
@@ -279,7 +279,9 @@ class AudioManager {
 
             if (currentStep >= steps) {
                 clearInterval(fadeInterval);
-                if (callback) callback();
+                if (callback) {
+                    callback();
+                }
             }
         }, stepDuration);
     }

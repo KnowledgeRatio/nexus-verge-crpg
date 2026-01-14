@@ -35,7 +35,7 @@ export const RULES = {
         pointBuyMax: 15,
 
         // Advantage/disadvantage mode
-        advantageMode: "rollTwice", // "rollTwice" or "static" (+5/-5)
+        advantageMode: 'rollTwice' // "rollTwice" or "static" (+5/-5)
     },
 
     // ====================
@@ -55,7 +55,7 @@ export const RULES = {
         deathSaveDC: 10,
         deathSaveSuccessThreshold: 3,
         deathSaveFailureThreshold: 3,
-        instantDeathThreshold: "maxHP", // or specific number
+        instantDeathThreshold: 'maxHP', // or specific number
 
         // Cover bonuses
         coverBonuses: {
@@ -66,7 +66,7 @@ export const RULES = {
 
         // Initiative
         initiative: {
-            tiebreaker: "dexterity", // "dexterity", "reroll", or "random"
+            tiebreaker: 'dexterity' // "dexterity", "reroll", or "random"
         },
 
         // Flanking (optional rule)
@@ -74,7 +74,7 @@ export const RULES = {
 
         // Grid combat
         gridSize: 5, // feet per square
-        diagonalMovementCost: 1, // 1 (simple) or 1.5 (alternating 5/10)
+        diagonalMovementCost: 1 // 1 (simple) or 1.5 (alternating 5/10)
     },
 
     // ====================
@@ -87,19 +87,19 @@ export const RULES = {
                 skillCheckDCModifier: -2,  // Reduce DC by 2
                 enemyCRModifier: -0.5,     // Enemies 0.5 CR lower
                 encounterFrequency: 0.7,   // 70% of normal encounters
-                enemyStatMultiplier: 0.9,  // 90% HP/damage
+                enemyStatMultiplier: 0.9  // 90% HP/damage
             },
             normal: {
                 skillCheckDCModifier: 0,
                 enemyCRModifier: 0,
                 encounterFrequency: 1.0,
-                enemyStatMultiplier: 1.0,
+                enemyStatMultiplier: 1.0
             },
             hard: {
                 skillCheckDCModifier: +2,  // Increase DC by 2
                 enemyCRModifier: +1,       // Enemies 1 CR higher
                 encounterFrequency: 1.3,   // 130% encounter rate
-                enemyStatMultiplier: 1.2,  // 120% HP/damage
+                enemyStatMultiplier: 1.2  // 120% HP/damage
             }
         },
 
@@ -115,11 +115,11 @@ export const RULES = {
             },
             // Enemy types change with level
             enemyTypesByLevel: {
-                1: ["bandit", "giantRat", "goblin", "wolf"],
-                3: ["goblin", "orc", "bugbear", "skeleton", "zombie", "wolf"],
-                5: ["orc", "skeleton", "zombie"],
-                7: ["bugbear", "ogre", "ghoul"],
-                10: ["veteran", "werewolf", "wraith"]
+                1: ['bandit', 'giantRat', 'goblin', 'wolf'],
+                3: ['goblin', 'orc', 'bugbear', 'skeleton', 'zombie', 'wolf'],
+                5: ['orc', 'skeleton', 'zombie'],
+                7: ['bugbear', 'ogre', 'ghoul'],
+                10: ['veteran', 'werewolf', 'wraith']
             }
         }
     },
@@ -159,7 +159,7 @@ export const RULES = {
         asiLevels: [4, 8, 12, 16, 19],
 
         // Max ability score increase per ASI
-        asiIncrease: 2, // Can split into two +1s
+        asiIncrease: 2 // Can split into two +1s
     },
 
     // ====================
@@ -173,7 +173,7 @@ export const RULES = {
         treasureFrequency: 0.10,    // 10% hidden caches
 
         // CR scaling method
-        crScaling: "levelBased", // "levelBased", "static", "randomRange"
+        crScaling: 'levelBased', // "levelBased", "static", "randomRange"
 
         // CR offset from player level (min, max)
         crRangeOffset: [-1, 2], // Enemy CR = playerLevel + random(-1 to 2)
@@ -183,7 +183,7 @@ export const RULES = {
             min: 1,
             max: 3, // For Phase 1, limited to 3
             scaleWithLevel: true
-        },
+        }
     },
 
     // ====================
@@ -250,7 +250,7 @@ export const RULES = {
 
         // Spell slot recovery
         shortRestSpellSlots: false, // Warlocks only (not in Phase 1)
-        longRestSpellSlots: true,   // All spellcasters recover on long rest
+        longRestSpellSlots: true   // All spellcasters recover on long rest
     },
 
     // ====================
@@ -286,9 +286,9 @@ export const RULES = {
 
         // NPC personality types
         personalityTypes: [
-            "friendly", "grumpy", "mysterious", "fearful",
-            "jovial", "stern", "greedy", "nervous",
-            "wise", "honorable", "proud"
+            'friendly', 'grumpy', 'mysterious', 'fearful',
+            'jovial', 'stern', 'greedy', 'nervous',
+            'wise', 'honorable', 'proud'
         ]
     },
 
@@ -342,7 +342,7 @@ export const RULES = {
         passiveDisadvantageBonus: -5,
 
         // Expertise multiplier (Rogue feature)
-        expertiseMultiplier: 2,
+        expertiseMultiplier: 2
     },
 
     // ====================
@@ -417,7 +417,7 @@ export const RULES = {
         // Challenge difficulty scaling by player level
         difficultyScaling: {
             enabled: true,
-            method: "additive", // "additive" or "multiplicative"
+            method: 'additive' // "additive" or "multiplicative"
         },
 
         // Cooldown system to prevent spam
@@ -475,12 +475,12 @@ export const RULES = {
             grassland: 0.2,       // < 0.2 = grassland
             forest: 0.4,          // < 0.4 = forest
             hill: 0.6,            // < 0.6 = hill
-            mountain: 0.8,        // < 0.8 = mountain
+            mountain: 0.8        // < 0.8 = mountain
             // > 0.8 = peaks
         },
 
         // Starting location
-        startingRegion: {x: 0, y: 0},
+        startingRegion: { x: 0, y: 0 },
         guaranteeStartingTown: true,
 
         // Finite world generation settings
@@ -489,7 +489,7 @@ export const RULES = {
             defaultSize: 'medium',            // Default world size
             preGenerateMetadata: true,        // Generate all settlements/roads upfront
             terrainOnDemand: true,            // Generate terrain tiles on-demand (deterministic)
-            metadataGenerationTimeout: 30000, // Max time to generate metadata (30s)
+            metadataGenerationTimeout: 30000 // Max time to generate metadata (30s)
         }
     },
 
@@ -533,11 +533,11 @@ export const RULES = {
     reputation: {
         // Reputation levels (0-100 scale)
         levels: {
-            stranger: {min: 0, max: 19},
-            acquaintance: {min: 20, max: 39},
-            friendly: {min: 40, max: 59},
-            honored: {min: 60, max: 79},
-            exalted: {min: 80, max: 100}
+            stranger: { min: 0, max: 19 },
+            acquaintance: { min: 20, max: 39 },
+            friendly: { min: 40, max: 59 },
+            honored: { min: 60, max: 79 },
+            exalted: { min: 80, max: 100 }
         },
 
         // Reputation rewards from quests
@@ -550,7 +550,7 @@ export const RULES = {
         },
 
         // Reputation loss from opposing faction quests
-        opposingFactionPenalty: -10,
+        opposingFactionPenalty: -10
     },
 
     // ====================
@@ -566,11 +566,11 @@ export const RULES = {
 
         // Quest difficulty scaling
         questDifficultyByLevel: {
-            1: "easy",
-            3: "medium",
-            5: "medium",
-            7: "hard",
-            10: "hard"
+            1: 'easy',
+            3: 'medium',
+            5: 'medium',
+            7: 'hard',
+            10: 'hard'
         },
 
         // Quest rewards
@@ -602,7 +602,7 @@ export const RULES = {
         // (no base)
 
         // Upcasting
-        allowUpcasting: true,
+        allowUpcasting: true
     },
 
     // ====================
@@ -618,7 +618,7 @@ export const RULES = {
 
         // Victory conditions
         victoryXP: 0, // Bonus XP on campaign completion
-        victoryReputation: 50, // Bonus reputation with relevant faction
+        victoryReputation: 50 // Bonus reputation with relevant faction
     }
 };
 
@@ -647,10 +647,10 @@ export function getXPForLevel(currentLevel) {
  */
 export function getLevelFromXP(xp) {
     const levels = Object.entries(RULES.progression.xpTable)
-        .map(([level, requiredXP]) => ({level: parseInt(level), xp: requiredXP}))
+        .map(([level, requiredXP]) => ({ level: parseInt(level), xp: requiredXP }))
         .sort((a, b) => b.xp - a.xp); // Sort descending
 
-    for (const {level, xp: requiredXP} of levels) {
+    for (const { level, xp: requiredXP } of levels) {
         if (xp >= requiredXP) {
             return level;
         }
@@ -665,7 +665,7 @@ export function getLevelFromXP(xp) {
  * @param {string} gameDifficulty - "easy", "normal", "hard"
  * @returns {number} - DC
  */
-export function getSkillCheckDC(difficulty, playerLevel, gameDifficulty = "normal") {
+export function getSkillCheckDC(difficulty, playerLevel, gameDifficulty = 'normal') {
     let baseDC = RULES.skills.baseDC[difficulty] || 15;
 
     // Apply game difficulty modifier
@@ -674,10 +674,10 @@ export function getSkillCheckDC(difficulty, playerLevel, gameDifficulty = "norma
 
     // Apply level scaling
     const levelBrackets = Object.entries(RULES.difficulty.scalingByLevel.skillCheckDCScaling)
-        .map(([level, mod]) => ({level: parseInt(level), mod}))
+        .map(([level, mod]) => ({ level: parseInt(level), mod }))
         .sort((a, b) => b.level - a.level); // Sort descending
 
-    for (const {level, mod} of levelBrackets) {
+    for (const { level, mod } of levelBrackets) {
         if (playerLevel >= level) {
             baseDC += mod;
             break;
@@ -693,12 +693,12 @@ export function getSkillCheckDC(difficulty, playerLevel, gameDifficulty = "norma
  * @returns {string} - Reputation level name
  */
 export function getReputationLevel(reputation) {
-    for (const [level, {min, max}] of Object.entries(RULES.reputation.levels)) {
+    for (const [level, { min, max }] of Object.entries(RULES.reputation.levels)) {
         if (reputation >= min && reputation <= max) {
             return level;
         }
     }
-    return "stranger";
+    return 'stranger';
 }
 
 /**
@@ -707,7 +707,7 @@ export function getReputationLevel(reputation) {
  * @param {string} difficulty - Game difficulty
  * @returns {number} - Suggested CR
  */
-export function getEncounterCR(playerLevel, difficulty = "normal") {
+export function getEncounterCR(playerLevel, difficulty = 'normal') {
     const difficultyMod = RULES.difficulty.levels[difficulty]?.enemyCRModifier || 0;
     const [min, max] = RULES.encounters.crRangeOffset;
 

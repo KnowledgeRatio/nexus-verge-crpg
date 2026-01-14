@@ -118,7 +118,9 @@ export class SeededRandom {
      * Select random element from array
      */
     choice(array) {
-        if (!array || array.length === 0) return null;
+        if (!array || array.length === 0) {
+            return null;
+        }
         return array[Math.floor(this.next() * array.length)];
     }
 
@@ -138,7 +140,9 @@ export class SeededRandom {
      * Select N unique random elements from array
      */
     sample(array, n) {
-        if (n >= array.length) return [...array];
+        if (n >= array.length) {
+            return [...array];
+        }
         const shuffled = this.shuffle(array);
         return shuffled.slice(0, n);
     }

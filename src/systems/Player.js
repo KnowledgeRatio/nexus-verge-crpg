@@ -44,7 +44,7 @@ class Player {
         // Update game state
         gameState.set('player.position', { x: this.x, y: this.y });
         gameState.set('world.currentLocation', { x: this.x, y: this.y });
-        gameState.addMessage(`You awaken in an unfamiliar land...`, 'info');
+        gameState.addMessage('You awaken in an unfamiliar land...', 'info');
 
         console.log(`📍 Player spawned at (${this.x}, ${this.y})`);
 
@@ -79,7 +79,7 @@ class Player {
         }
 
         // Action keys
-        switch(key) {
+        switch (key) {
             case 'e':
                 this.enterSettlement();
                 break;
@@ -134,7 +134,7 @@ class Player {
 
         let dx = 0, dy = 0;
 
-        switch(key) {
+        switch (key) {
             case 'w':
             case 'arrowup':
                 dy = -1;
@@ -283,7 +283,9 @@ class Player {
      * Check if player is at a settlement and auto-enter
      */
     async checkForSettlement() {
-        if (!this.settlementManager) return;
+        if (!this.settlementManager) {
+            return;
+        }
 
         const settlement = this.settlementManager.getSettlementAtPlayerPosition();
         if (settlement) {
@@ -318,13 +320,19 @@ class Player {
      */
     async checkForTerrainSkillChallenge(tile, terrainDef) {
         // Don't trigger during combat
-        if (gameState.get('combat')?.active) return;
+        if (gameState.get('combat')?.active) {
+            return;
+        }
 
         // Don't trigger if no skill challenge manager
-        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) return;
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+            return;
+        }
 
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Map terrain types to challenge IDs
         const terrainChallengeMap = {
@@ -341,13 +349,17 @@ class Player {
         };
 
         const possibleChallenges = terrainChallengeMap[tile.terrain];
-        if (!possibleChallenges || possibleChallenges.length === 0) return;
+        if (!possibleChallenges || possibleChallenges.length === 0) {
+            return;
+        }
 
         // Pick a random challenge from the terrain's list
         const challengeId = possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
         const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
 
-        if (!challenge) return;
+        if (!challenge) {
+            return;
+        }
 
         // Check if challenge should trigger
         const context = {
@@ -498,7 +510,9 @@ class Player {
 
                 // Combat won - continue challenge from saved state
                 const pendingChallenge = gameState.get('pendingChallenge');
-                if (!pendingChallenge) break; // Challenge was cleared
+                if (!pendingChallenge) {
+                    break;
+                } // Challenge was cleared
 
                 // Continue from where we left off
                 // Combat success allows progression
@@ -509,7 +523,9 @@ class Player {
                 if (stage.onFailure?.nextStage) {
                     // Find next stage by ID
                     currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onFailure.nextStage);
-                    if (currentStageIndex === -1) break; // Stage not found, end challenge
+                    if (currentStageIndex === -1) {
+                        break;
+                    } // Stage not found, end challenge
                 } else {
                     // Challenge failed, end
                     break;
@@ -519,7 +535,9 @@ class Player {
                 if (stage.onSuccess?.nextStage) {
                     // Find next stage by ID
                     currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onSuccess.nextStage);
-                    if (currentStageIndex === -1) break; // Stage not found, end challenge
+                    if (currentStageIndex === -1) {
+                        break;
+                    } // Stage not found, end challenge
                 } else {
                     // Final stage completed
                     gameState.addMessage(`✨ Challenge complete: ${challenge.name}`, 'success');
@@ -708,11 +726,11 @@ class Player {
 
         // Get appropriate monster types for level (if defined)
         const levelBrackets = Object.entries(RULES.difficulty.scalingByLevel.enemyTypesByLevel)
-            .map(([level, types]) => ({level: parseInt(level), types}))
+            .map(([level, types]) => ({ level: parseInt(level), types }))
             .sort((a, b) => b.level - a.level); // Sort descending
 
         let allowedTypes = null;
-        for (const {level, types} of levelBrackets) {
+        for (const { level, types } of levelBrackets) {
             if (playerLevel >= level) {
                 allowedTypes = types;
                 break;
@@ -733,7 +751,9 @@ class Player {
                     m.type.toLowerCase().includes(type.toLowerCase()) ||
                     m.name.toLowerCase().includes(type.toLowerCase())
                 );
-                if (!crMatch || !typeMatch) return false;
+                if (!crMatch || !typeMatch) {
+                    return false;
+                }
             } else if (!crMatch) {
                 return false;
             }
@@ -779,7 +799,7 @@ class Player {
 
         // Final fallback: Get any low-CR monster
         const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)]
-            || monsterData.monsters.reduce((lowest, m) => 
+            || monsterData.monsters.reduce((lowest, m) =>
                 (m.challengeRating || 0.25) < (lowest.challengeRating || 0.25) ? m : lowest
             );
 
@@ -1027,7 +1047,7 @@ class Player {
                 case 'injury':
                     character.addInjury();
                     gameState.addMessage(
-                        `🩹 You suffer an injury!`,
+                        '🩹 You suffer an injury!',
                         'danger'
                     );
                     break;
@@ -1035,7 +1055,7 @@ class Player {
                 case 'death':
                     character.die();
                     gameState.addMessage(
-                        `💀 You fall to your death...`,
+                        '💀 You fall to your death...',
                         'danger'
                     );
                     break;

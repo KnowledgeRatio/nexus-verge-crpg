@@ -8,7 +8,7 @@
  * @returns {string} - UUID string
  */
 export function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         const r = Math.random() * 16 | 0;
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
@@ -37,8 +37,12 @@ export function setNestedProperty(obj, path, value) {
     const parts = path.split('.');
     const last = parts.pop();
     const target = parts.reduce((current, prop) => {
-        if (!current || typeof current !== 'object') return null;
-        if (!(prop in current)) current[prop] = {};
+        if (!current || typeof current !== 'object') {
+            return null;
+        }
+        if (!(prop in current)) {
+            current[prop] = {};
+        }
         return current[prop];
     }, obj);
 
@@ -118,7 +122,9 @@ export function formatModifier(num) {
  * @returns {string} - Capitalized string
  */
 export function capitalize(str) {
-    if (!str) return '';
+    if (!str) {
+        return '';
+    }
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -128,7 +134,9 @@ export function capitalize(str) {
  * @returns {string} - Title Case string
  */
 export function camelToTitle(str) {
-    if (!str) return '';
+    if (!str) {
+        return '';
+    }
     const result = str.replace(/([A-Z])/g, ' $1');
     return result.charAt(0).toUpperCase() + result.slice(1);
 }
@@ -174,7 +182,9 @@ export function throttle(func, limit) {
  * @returns {any} - Random element
  */
 export function randomChoice(array) {
-    if (!array || array.length === 0) return null;
+    if (!array || array.length === 0) {
+        return null;
+    }
     return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -201,7 +211,9 @@ export function shuffle(array) {
 export function groupBy(array, key) {
     return array.reduce((result, item) => {
         const groupKey = item[key];
-        if (!result[groupKey]) result[groupKey] = [];
+        if (!result[groupKey]) {
+            result[groupKey] = [];
+        }
         result[groupKey].push(item);
         return result;
     }, {});
@@ -218,8 +230,12 @@ export function sortBy(array, key, ascending = true) {
     return [...array].sort((a, b) => {
         const aVal = a[key];
         const bVal = b[key];
-        if (aVal < bVal) return ascending ? -1 : 1;
-        if (aVal > bVal) return ascending ? 1 : -1;
+        if (aVal < bVal) {
+            return ascending ? -1 : 1;
+        }
+        if (aVal > bVal) {
+            return ascending ? 1 : -1;
+        }
         return 0;
     });
 }
@@ -293,12 +309,16 @@ export class EventEmitter {
     }
 
     off(event, callback) {
-        if (!this.events[event]) return;
+        if (!this.events[event]) {
+            return;
+        }
         this.events[event] = this.events[event].filter(cb => cb !== callback);
     }
 
     emit(event, data) {
-        if (!this.events[event]) return;
+        if (!this.events[event]) {
+            return;
+        }
         this.events[event].forEach(callback => callback(data));
     }
 

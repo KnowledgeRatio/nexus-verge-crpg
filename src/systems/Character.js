@@ -566,7 +566,9 @@ export class Character {
      * Initialize spellcasting for spellcasters
      */
     initializeSpellcasting() {
-        if (!this.class.spellcaster) return null;
+        if (!this.class.spellcaster) {
+            return null;
+        }
 
         return {
             spellcastingAbility: this.class.spellcastingAbility,
@@ -584,7 +586,9 @@ export class Character {
      * Get spell slots for current level
      */
     getSpellSlots() {
-        if (!this.class.spellcaster) return {};
+        if (!this.class.spellcaster) {
+            return {};
+        }
 
         const slots = this.class.spellSlotsByLevel?.[this.level] || [];
         const slotsByLevel = {};
@@ -784,7 +788,7 @@ export class Character {
     shortRest() {
         // Can only take 2 short rests per long rest
         if (this.shortRestsUsed >= 2) {
-            return { success: false, reason: "Already used all short rests. Need a long rest." };
+            return { success: false, reason: 'Already used all short rests. Need a long rest.' };
         }
 
         // Roll ALL hit dice to heal (hit dice = level, they don't deplete)
@@ -798,7 +802,7 @@ export class Character {
         if (healing > 0) {
             this.heal(healing);
         }
-        
+
         this.shortRestsUsed++;
 
         // Reset short rest abilities (abilities with resourceType: 'shortRest')
@@ -882,13 +886,13 @@ export class Character {
     getExhaustionPenalties() {
         // D&D 5e exhaustion levels
         const penalties = [
-            "None",
-            "Disadvantage on ability checks",
-            "Speed halved",
-            "Disadvantage on attack rolls and saving throws",
-            "Hit point maximum halved",
-            "Speed reduced to 0",
-            "Death"
+            'None',
+            'Disadvantage on ability checks',
+            'Speed halved',
+            'Disadvantage on attack rolls and saving throws',
+            'Hit point maximum halved',
+            'Speed reduced to 0',
+            'Death'
         ];
 
         return penalties[this.exhaustionLevel];
@@ -899,7 +903,9 @@ export class Character {
      */
     loseRandomEquipment() {
         const equipped = this.inventory.filter(item => item.equipped);
-        if (equipped.length === 0) return null;
+        if (equipped.length === 0) {
+            return null;
+        }
 
         const randomIndex = Math.floor(Math.random() * equipped.length);
         const lostItem = equipped[randomIndex];
@@ -947,7 +953,9 @@ export class Character {
      * Check if proficient with weapon
      */
     isProficientWithWeapon(weapon) {
-        if (!weapon) return false;
+        if (!weapon) {
+            return false;
+        }
 
         // Check if proficient with weapon category (simple, martial)
         if (this.proficiencies.weapons.includes(weapon.category)) {
@@ -966,7 +974,9 @@ export class Character {
      * Check if proficient with armor
      */
     isProficientWithArmor(armor) {
-        if (!armor) return false;
+        if (!armor) {
+            return false;
+        }
 
         // Check if proficient with armor type (light, medium, heavy)
         if (this.proficiencies.armor.includes(armor.armorType)) {

@@ -124,8 +124,12 @@ export function abilityCheck(modifier, type = 'normal', dc = null) {
         result.dc = dc;
         result.success = total >= dc;
         // Natural 1 always fails, natural 20 always succeeds (for some DMs)
-        if (roll.result === 1) result.criticalFailure = true;
-        if (roll.result === 20) result.criticalSuccess = true;
+        if (roll.result === 1) {
+            result.criticalFailure = true;
+        }
+        if (roll.result === 20) {
+            result.criticalSuccess = true;
+        }
     }
 
     return result;
@@ -197,7 +201,7 @@ export function damageRoll(damageDice, critical = false) {
     const sides = parseInt(match[2]);
     const modifier = match[3] ? parseInt(match[3]) : 0;
 
-    let rolls = [];
+    const rolls = [];
     let total = 0;
 
     // Roll dice (double if critical)

@@ -108,7 +108,9 @@ class CombatRenderer {
 
         positions.forEach(pos => {
             const combatant = combatants.find(c => c.id === pos.id);
-            if (!combatant) return;
+            if (!combatant) {
+                return;
+            }
 
             const x = pos.x * this.config.tileSize;
             const y = pos.y * this.config.tileSize;
@@ -153,13 +155,27 @@ class CombatRenderer {
     getEnemySymbol(combatant) {
         const name = combatant.name.toLowerCase();
 
-        if (name.includes('goblin')) return 'g';
-        if (name.includes('orc')) return 'o';
-        if (name.includes('skeleton')) return 's';
-        if (name.includes('zombie')) return 'z';
-        if (name.includes('bandit')) return 'b';
-        if (name.includes('wolf')) return 'w';
-        if (name.includes('dragon')) return 'D';
+        if (name.includes('goblin')) {
+            return 'g';
+        }
+        if (name.includes('orc')) {
+            return 'o';
+        }
+        if (name.includes('skeleton')) {
+            return 's';
+        }
+        if (name.includes('zombie')) {
+            return 'z';
+        }
+        if (name.includes('bandit')) {
+            return 'b';
+        }
+        if (name.includes('wolf')) {
+            return 'w';
+        }
+        if (name.includes('dragon')) {
+            return 'D';
+        }
 
         return 'E'; // Generic enemy
     }
@@ -198,11 +214,15 @@ class CombatRenderer {
             c => c.id === combatState.currentTurn
         );
 
-        if (!currentCombatant) return;
+        if (!currentCombatant) {
+            return;
+        }
 
         // Find position
         const pos = combatState.grid.positions.find(p => p.id === currentCombatant.id);
-        if (!pos) return;
+        if (!pos) {
+            return;
+        }
 
         // Draw arrow above current combatant
         const x = pos.x * this.config.tileSize + this.config.tileSize / 2;

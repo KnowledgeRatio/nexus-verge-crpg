@@ -187,8 +187,8 @@ class MapRenderer {
         if (!terrain) {
             // Unknown terrain type - log error ONCE for beach, always for others
             if (tile.terrain === 'beach' && !this.hasWarnedAboutBeach) {
-                console.error(`❌ BEACH TERRAIN NOT FOUND! terrainMap has:`, Array.from(this.terrainMap.keys()));
-                console.error(`❌ Beach tile data:`, tile);
+                console.error('❌ BEACH TERRAIN NOT FOUND! terrainMap has:', Array.from(this.terrainMap.keys()));
+                console.error('❌ Beach tile data:', tile);
                 this.hasWarnedAboutBeach = true;
             } else if (tile.terrain !== 'beach') {
                 console.warn(`⚠️ Unknown terrain type: "${tile.terrain}" at (${tile.x}, ${tile.y})`);

@@ -16,7 +16,12 @@
       "Bash(python -m json.tool:*)",
       "Bash(cat:*)",
       "Bash(node -pe:*)",
-      "Bash(node -e \"const fs = require\\(''fs''\\); const save = JSON.parse\\(fs.readFileSync\\(''C:/Users/josh_/AppData/Local/Google/Chrome/User Data/Default/Local Storage/leveldb/MANIFEST-000001'', ''utf8''\\)\\); console.log\\(save\\);\")"
+      "Bash(node -e \"const fs = require\\(''fs''\\); const save = JSON.parse\\(fs.readFileSync\\(''C:/Users/josh_/AppData/Local/Google/Chrome/User Data/Default/Local Storage/leveldb/MANIFEST-000001'', ''utf8''\\)\\); console.log\\(save\\);\")",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run lint)",
+      "Bash(del .eslintrc.json)",
+      "Bash(del:*)"
     ]
   }
 }

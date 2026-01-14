@@ -205,48 +205,70 @@ class WorldGenerator {
         const b = (biomeNoise + 1) / 2;
 
         // Ocean (extreme low elevation)
-        if (e < 0.10) return 'ocean';
+        if (e < 0.10) {
+            return 'ocean';
+        }
 
         // Coastal (low elevation near water)
-        if (e < 0.30) return 'coastal';
+        if (e < 0.30) {
+            return 'coastal';
+        }
 
         // Mountain (very high elevation)
-        if (e > 0.75) return 'mountain';
+        if (e > 0.75) {
+            return 'mountain';
+        }
 
         // SMOOTHED TEMPERATURE ZONES - wider thresholds prevent harsh adjacency
         // Very cold regions (temperature < 0.25)
         if (t < 0.25) {
-            if (m > 0.5) return 'swampland'; // Cold swamps
+            if (m > 0.5) {
+                return 'swampland';
+            } // Cold swamps
             return 'tundra';
         }
 
         // Cold-to-temperate transition zone (0.25-0.35)
         if (t < 0.35) {
             // Mix of cold forest and grassland based on moisture
-            if (m > 0.6) return 'swampland';
-            if (m > 0.4) return 'temperateForest'; // Cold forests
+            if (m > 0.6) {
+                return 'swampland';
+            }
+            if (m > 0.4) {
+                return 'temperateForest';
+            } // Cold forests
             return 'grassland'; // Cool grasslands
         }
 
         // Very hot regions (temperature > 0.75)
         if (t > 0.75) {
-            if (m < 0.3) return 'desert';
-            if (m > 0.6) return 'jungle';
+            if (m < 0.3) {
+                return 'desert';
+            }
+            if (m > 0.6) {
+                return 'jungle';
+            }
             return 'grassland'; // Hot grasslands/savanna
         }
 
         // Hot-to-temperate transition zone (0.65-0.75)
         if (t > 0.65) {
             // Mix of warm grassland and light forests
-            if (m < 0.25) return 'grassland'; // Warm dry grasslands (approaching desert)
-            if (m > 0.7) return 'temperateForest'; // Warm wet forests (approaching jungle)
+            if (m < 0.25) {
+                return 'grassland';
+            } // Warm dry grasslands (approaching desert)
+            if (m > 0.7) {
+                return 'temperateForest';
+            } // Warm wet forests (approaching jungle)
             return 'grassland'; // Savanna-like temperate grasslands
         }
 
         // Temperate core zone (0.35-0.65) - use moisture + biome noise for variation
         if (m > 0.6) {
             // Wet temperate
-            if (b > 0.6) return 'swampland';
+            if (b > 0.6) {
+                return 'swampland';
+            }
             return 'temperateForest';
         } else if (m > 0.3) {
             // Medium moisture temperate
@@ -288,34 +310,54 @@ class WorldGenerator {
         // Beach only appears at true coastlines (narrow elevation band)
         // Water appears at lower elevations (< 0.15)
         if (macroBiome === 'coastal') {
-            if (e < 0.15) return 'shallowWater';
+            if (e < 0.15) {
+                return 'shallowWater';
+            }
             // Beach: narrow band between water and land (0.15-0.22)
             // This prevents beach from appearing in middle of lakes
-            if (e < 0.22) return 'beach';
+            if (e < 0.22) {
+                return 'beach';
+            }
             // Higher coastal elevations based on moisture
-            if (m > 0.6) return 'swamp';
-            if (e < 0.28) return 'grassland';
+            if (m > 0.6) {
+                return 'swamp';
+            }
+            if (e < 0.28) {
+                return 'grassland';
+            }
             return 'plains'; // Transition to inland terrain
         }
 
         // Mountain biome - varies by elevation
         if (macroBiome === 'mountain') {
-            if (e > 0.85) return 'mountain';
+            if (e > 0.85) {
+                return 'mountain';
+            }
             return 'hills';
         }
 
         // Temperate Forest biome - varies by moisture
         if (macroBiome === 'temperateForest') {
-            if (m < 0.3) return 'grassland';
-            if (m < 0.5) return 'plains';
-            if (m < 0.75) return 'forest';
+            if (m < 0.3) {
+                return 'grassland';
+            }
+            if (m < 0.5) {
+                return 'plains';
+            }
+            if (m < 0.75) {
+                return 'forest';
+            }
             return 'denseForest';
         }
 
         // Grassland biome - subtle variation
         if (macroBiome === 'grassland') {
-            if (m > 0.5) return 'savanna';
-            if (m > 0.3) return 'grassland';
+            if (m > 0.5) {
+                return 'savanna';
+            }
+            if (m > 0.3) {
+                return 'grassland';
+            }
             return 'plains';
         }
 
@@ -326,20 +368,28 @@ class WorldGenerator {
 
         // Jungle biome - varies by moisture
         if (macroBiome === 'jungle') {
-            if (m > 0.7) return 'swamp';
+            if (m > 0.7) {
+                return 'swamp';
+            }
             return 'jungle';
         }
 
         // Tundra biome - varies by temperature
         if (macroBiome === 'tundra') {
-            if (m > 0.5) return 'tundra';
+            if (m > 0.5) {
+                return 'tundra';
+            }
             return 'snowyPlains';
         }
 
         // Swampland biome - varies by elevation
         if (macroBiome === 'swampland') {
-            if (e < 0.35) return 'shallowWater';
-            if (m > 0.6) return 'swamp';
+            if (e < 0.35) {
+                return 'shallowWater';
+            }
+            if (m > 0.6) {
+                return 'swamp';
+            }
             return 'grassland';
         }
 
@@ -632,7 +682,9 @@ class WorldGenerator {
      */
     pruneCache(centerX, centerY, keepRadius = 3) {
         const generatedRegions = gameState.get('world.generatedRegions');
-        if (!generatedRegions) return;
+        if (!generatedRegions) {
+            return;
+        }
 
         const toDelete = [];
 
@@ -661,7 +713,9 @@ class WorldGenerator {
      * Stores settlement state in gameState.world.settlements
      */
     persistSettlementData(region) {
-        if (!region || !region.features) return;
+        if (!region || !region.features) {
+            return;
+        }
 
         const settlements = gameState.get('world.settlements') || [];
         const existingSettlementIds = new Set(settlements.map(s => `${s.x},${s.y}`));
@@ -707,7 +761,9 @@ class WorldGenerator {
     restoreSettlementData(features) {
         const persistedSettlements = gameState.get('world.settlements') || [];
 
-        if (persistedSettlements.length === 0) return;
+        if (persistedSettlements.length === 0) {
+            return;
+        }
 
         // Build lookup map by coordinates
         const persistedByCoords = new Map();
@@ -823,7 +879,9 @@ class WorldGenerator {
      */
     async generateRoads(regionX, regionY, tiles, features) {
         const settlements = features.filter(f => f.type === 'settlement');
-        if (settlements.length === 0) return; // No settlements to connect
+        if (settlements.length === 0) {
+            return;
+        } // No settlements to connect
 
         const generatedRegions = gameState.get('world.generatedRegions') || new Map();
         const searchRadius = 3; // Check 3 regions in each direction
@@ -833,7 +891,9 @@ class WorldGenerator {
 
         for (let dx = -searchRadius; dx <= searchRadius; dx++) {
             for (let dy = -searchRadius; dy <= searchRadius; dy++) {
-                if (dx === 0 && dy === 0) continue; // Skip current region (already added)
+                if (dx === 0 && dy === 0) {
+                    continue;
+                } // Skip current region (already added)
 
                 const neighborKey = `${regionX + dx},${regionY + dy}`;
                 const neighborRegion = generatedRegions.get(neighborKey);
@@ -849,11 +909,13 @@ class WorldGenerator {
         for (const settlement of settlements) {
             // Find nearest settlement
             const otherSettlements = nearbySettlements.filter(s => s !== settlement);
-            if (otherSettlements.length === 0) continue;
+            if (otherSettlements.length === 0) {
+                continue;
+            }
 
             // Sort by distance and take closest 1-3 settlements
             const maxConnections = settlement.settlementType === 'city' ? 3 :
-                                   settlement.settlementType === 'town' ? 2 : 1;
+                settlement.settlementType === 'town' ? 2 : 1;
 
             const sortedByDistance = otherSettlements
                 .map(s => ({
@@ -865,7 +927,7 @@ class WorldGenerator {
                 .slice(0, maxConnections);
 
             // For each nearby settlement, create a simple straight-line road path in current region
-            for (const {settlement: targetSettlement} of sortedByDistance) {
+            for (const { settlement: targetSettlement } of sortedByDistance) {
                 this.createSimpleRoad(settlement, targetSettlement, tiles);
             }
         }
@@ -951,7 +1013,7 @@ class WorldGenerator {
         gameState.set('world.metadata', this.worldMetadata);
 
         const elapsed = performance.now() - start;
-        console.log(`✅ World metadata generated in ${(elapsed/1000).toFixed(2)}s`);
+        console.log(`✅ World metadata generated in ${(elapsed / 1000).toFixed(2)}s`);
         console.log(`   - ${this.worldMetadata.settlements.length} settlements`);
         console.log(`   - ${this.worldMetadata.roads.length} road segments`);
         console.log(`   - ${this.worldMetadata.features.length} features`);
@@ -1046,7 +1108,9 @@ class WorldGenerator {
                     Math.floor(s.x / regionSize) === rx &&
                     Math.floor(s.y / regionSize) === ry
                 );
-                if (hasSettlement) continue;
+                if (hasSettlement) {
+                    continue;
+                }
 
                 // Check for dungeon/ruins
                 if (regionRNG.next() < RULES.worldGen.dungeonFrequency) {
@@ -1097,7 +1161,7 @@ class WorldGenerator {
         // For each settlement, connect to nearest 1-3 settlements
         for (const settlement of this.worldMetadata.settlements) {
             const maxConnections = settlement.settlementType === 'city' ? 3 :
-                                   settlement.settlementType === 'town' ? 2 : 1;
+                settlement.settlementType === 'town' ? 2 : 1;
 
             // Find nearest settlements
             const nearestSettlements = this.worldMetadata.settlements
@@ -1114,7 +1178,7 @@ class WorldGenerator {
                 .slice(0, maxConnections);
 
             // Create road paths to each nearby settlement
-            for (const {settlement: target} of nearestSettlements) {
+            for (const { settlement: target } of nearestSettlements) {
                 const roadPath = this.generateRoadPath(settlement, target);
 
                 // Avoid duplicate roads (check if reverse path already exists)
@@ -1161,7 +1225,9 @@ class WorldGenerator {
             path.push({ x: x0, y: y0 });
 
             // Reached destination
-            if (x0 === x1 && y0 === y1) break;
+            if (x0 === x1 && y0 === y1) {
+                break;
+            }
 
             const e2 = 2 * err;
             if (e2 > -dy) {
@@ -1181,12 +1247,16 @@ class WorldGenerator {
      * Check if tile should be a road (called during terrain generation)
      */
     isRoadTile(worldX, worldY) {
-        if (!this.worldMetadata.generated) return false;
+        if (!this.worldMetadata.generated) {
+            return false;
+        }
 
         // Check if this coordinate is on any road path
         for (const road of this.worldMetadata.roads) {
             const isOnPath = road.path.some(p => p.x === worldX && p.y === worldY);
-            if (isOnPath) return true;
+            if (isOnPath) {
+                return true;
+            }
         }
 
         return false;
@@ -1196,7 +1266,9 @@ class WorldGenerator {
      * Get settlement at specific coordinates (from pre-generated metadata)
      */
     getSettlementAt(worldX, worldY) {
-        if (!this.worldMetadata.generated) return null;
+        if (!this.worldMetadata.generated) {
+            return null;
+        }
 
         return this.worldMetadata.settlements.find(s => s.x === worldX && s.y === worldY);
     }
@@ -1205,7 +1277,9 @@ class WorldGenerator {
      * Get feature at specific coordinates (from pre-generated metadata)
      */
     getFeatureAt(worldX, worldY) {
-        if (!this.worldMetadata.generated) return null;
+        if (!this.worldMetadata.generated) {
+            return null;
+        }
 
         return this.worldMetadata.features.find(f => f.x === worldX && f.y === worldY);
     }

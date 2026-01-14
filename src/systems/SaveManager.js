@@ -308,7 +308,9 @@ class SaveManager {
      * @returns {Object} Serialized character
      */
     serializeCharacter(character) {
-        if (!character) return null;
+        if (!character) {
+            return null;
+        }
 
         // Use Character's toJSON method if available, otherwise manually serialize
         if (typeof character.toJSON === 'function') {
@@ -363,7 +365,9 @@ class SaveManager {
      * @returns {Object} Serialized world
      */
     serializeWorld(world) {
-        if (!world) return null;
+        if (!world) {
+            return null;
+        }
 
         const allRegions = world.generatedRegions || world.regions;
         const compressedRegions = new Map();
@@ -402,7 +406,9 @@ class SaveManager {
      * @returns {Array} Compressed tile data (sparse array)
      */
     compressFogOfWar(tiles) {
-        if (!tiles || !Array.isArray(tiles)) return [];
+        if (!tiles || !Array.isArray(tiles)) {
+            return [];
+        }
 
         const compressed = [];
 
@@ -598,7 +604,9 @@ class SaveManager {
      * @returns {Object} Full serialized world
      */
     serializeWorldFull(world) {
-        if (!world) return null;
+        if (!world) {
+            return null;
+        }
 
         const allRegions = world.generatedRegions || world.regions;
 
@@ -618,7 +626,9 @@ class SaveManager {
      * @returns {string} Location description
      */
     getLocationName(coords) {
-        if (!coords) return 'Unknown';
+        if (!coords) {
+            return 'Unknown';
+        }
         return `(${coords.x}, ${coords.y})`;
     }
 

@@ -19,27 +19,27 @@ class RestManager {
     canShortRest() {
         // Cannot rest in combat
         if (gameState.get('combat')) {
-            return { canRest: false, reason: "Cannot rest during combat!" };
+            return { canRest: false, reason: 'Cannot rest during combat!' };
         }
 
         const character = gameState.get('character');
-        
+
         // Check if short rests remaining
         if (character.shortRestsUsed >= RULES.rest.shortRestsPerLongRest) {
-            return { canRest: false, reason: "No short rests remaining. You need a long rest." };
+            return { canRest: false, reason: 'No short rests remaining. You need a long rest.' };
         }
 
         // In D&D 5e, you can take a short rest even without hit dice to spend
         // (for class features, or just to take a break)
         // Only prevent if already fully recovered AND at max hit dice AND no class features to recover
-        if (character.currentHP >= character.maxHP && 
+        if (character.currentHP >= character.maxHP &&
             character.hitDice.current >= character.hitDice.max) {
             // For now, allow rest even if at full health - player may want to rest for RP reasons
             // or we may add class features that recover on short rest
-            return { canRest: true, reason: "" };
+            return { canRest: true, reason: '' };
         }
 
-        return { canRest: true, reason: "" };
+        return { canRest: true, reason: '' };
     }
 
     /**
@@ -49,7 +49,7 @@ class RestManager {
     canLongRest() {
         // Cannot rest in combat
         if (gameState.get('combat')) {
-            return { canRest: false, reason: "Cannot rest during combat!" };
+            return { canRest: false, reason: 'Cannot rest during combat!' };
         }
 
         const character = gameState.get('character');
@@ -58,21 +58,21 @@ class RestManager {
         if (RULES.rest.longRestRequiresTavern) {
             const playerPos = gameState.get('player.position');
             if (!playerPos) {
-                return { canRest: false, reason: "You must be in a tavern or inn to take a long rest." };
+                return { canRest: false, reason: 'You must be in a tavern or inn to take a long rest.' };
             }
 
             // Check if current tile has a tavern/inn feature
             const isInTavern = this.isPlayerInTavern();
             if (!isInTavern) {
-                return { canRest: false, reason: "You must be in a tavern or inn to take a long rest." };
+                return { canRest: false, reason: 'You must be in a tavern or inn to take a long rest.' };
             }
         }
 
         // Check if rest is needed
-        if (character.currentHP >= character.maxHP && 
+        if (character.currentHP >= character.maxHP &&
             character.hitDice.current >= character.hitDice.max &&
             character.shortRestsUsed === 0) {
-            
+
             // Check spell slots for casters
             if (character.spellcasting) {
                 let needsSlots = false;
@@ -91,7 +91,7 @@ class RestManager {
             }
         }
 
-        return { canRest: true, reason: "" };
+        return { canRest: true, reason: '' };
     }
 
     /**
@@ -135,7 +135,7 @@ class RestManager {
 
         console.log(`🏨 Tavern check at world (${playerPos.x},${playerPos.y}), local (${localX},${localY})`);
         console.log(`   - tile.terrain: ${tile.terrain}`);
-        console.log(`   - tile.feature:`, tile.feature);
+        console.log('   - tile.feature:', tile.feature);
 
         // Check if tile has a settlement feature (any settlement has tavern/inn)
         if (tile.feature && tile.feature.type === 'settlement') {
@@ -156,23 +156,27 @@ class RestManager {
         // Check nearby tiles for settlement or sanctuary features (within 1-2 tiles)
         for (let dy = -2; dy <= 2; dy++) {
             for (let dx = -2; dx <= 2; dx++) {
-                if (dx === 0 && dy === 0) continue;
-                
+                if (dx === 0 && dy === 0) {
+                    continue;
+                }
+
                 const checkX = playerPos.x + dx;
                 const checkY = playerPos.y + dy;
-                
+
                 // Get region for this position
                 const checkRegionX = Math.floor(checkX / 32);
                 const checkRegionY = Math.floor(checkY / 32);
                 const checkRegionKey = `${checkRegionX},${checkRegionY}`;
-                
+
                 const checkRegion = world.generatedRegions.get(checkRegionKey);
-                if (!checkRegion) continue;
-                
+                if (!checkRegion) {
+                    continue;
+                }
+
                 const checkLocalX = ((checkX % 32) + 32) % 32;
                 const checkLocalY = ((checkY % 32) + 32) % 32;
                 const checkTile = checkRegion.tiles[checkLocalY]?.[checkLocalX];
-                
+
                 if (checkTile && checkTile.feature) {
                     if (checkTile.feature.type === 'settlement' || checkTile.feature.type === 'sanctuary') {
                         return true;
@@ -366,7 +370,9 @@ class RestManager {
      */
     updateRestUI() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Update character status display
         const statusEl = document.getElementById('restCharacterStatus');
@@ -388,9 +394,9 @@ class RestManager {
                     <div class="rest-stat">
                         <span class="label">Spell Slots:</span>
                         <div class="spell-slots">
-                            ${Object.entries(character.spellcasting.spellSlots).map(([level, slots]) => 
-                                `<span>L${level}: ${slots.current}/${slots.max}</span>`
-                            ).join(' ')}
+                            ${Object.entries(character.spellcasting.spellSlots).map(([level, slots]) =>
+        `<span>L${level}: ${slots.current}/${slots.max}</span>`
+    ).join(' ')}
                         </div>
                     </div>
                 ` : ''}
@@ -424,9 +430,9 @@ class RestManager {
             infoEl.innerHTML = `
                 <p><strong>Short Rest:</strong> Roll all your hit dice to recover HP. Max ${RULES.rest.shortRestsPerLongRest} per long rest.</p>
                 <p><strong>Long Rest:</strong> Fully restore HP, regain all spell slots, and reset short rest counter. ${RULES.rest.longRestRequiresTavern ? '(Requires tavern or inn)' : ''}</p>
-                ${RULES.rest.longRestRequiresTavern && !isInTavern ? 
-                    '<p class="warning">⚠️ You are not in a tavern. Find an inn to take a long rest.</p>' : 
-                    ''}
+                ${RULES.rest.longRestRequiresTavern && !isInTavern ?
+        '<p class="warning">⚠️ You are not in a tavern. Find an inn to take a long rest.</p>' :
+        ''}
             `;
         }
     }

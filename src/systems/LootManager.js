@@ -257,9 +257,15 @@ class LootManager {
      * @returns {string} Tier string ("1-4", "5-9", "10-14", "15+")
      */
     getLevelTier(level) {
-        if (level <= 4) return '1-4';
-        if (level <= 9) return '5-9';
-        if (level <= 14) return '10-14';
+        if (level <= 4) {
+            return '1-4';
+        }
+        if (level <= 9) {
+            return '5-9';
+        }
+        if (level <= 14) {
+            return '10-14';
+        }
         return '15+';
     }
 
@@ -269,8 +275,12 @@ class LootManager {
      * @returns {string} CR bracket ("0-0.5", "1-2", "3-5")
      */
     getCRBracket(cr) {
-        if (cr <= 0.5) return '0-0.5';
-        if (cr <= 2) return '1-2';
+        if (cr <= 0.5) {
+            return '0-0.5';
+        }
+        if (cr <= 2) {
+            return '1-2';
+        }
         return '3-5';
     }
 
@@ -282,7 +292,9 @@ class LootManager {
      */
     isItemAvailableAtLevel(itemId, playerLevel) {
         const item = this.allItems[itemId];
-        if (!item) return false;
+        if (!item) {
+            return false;
+        }
 
         if (item.minimumLevel && playerLevel < item.minimumLevel) {
             return false;

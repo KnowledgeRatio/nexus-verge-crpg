@@ -145,8 +145,8 @@ export class SkillChallengeManager {
         }
 
         // Base reward values
-        let xp = baseRewards.xp || 0;
-        let gold = baseRewards.gold || 0;
+        const xp = baseRewards.xp || 0;
+        const gold = baseRewards.gold || 0;
 
         // Apply skill value multiplier
         const skillValueMult = RULES.skillChallenges.balancing.skillValueMultipliers[balance.skillValue] || 1.0;
@@ -235,9 +235,15 @@ export class SkillChallengeManager {
      * @returns {string} - Level tier (e.g., "1-4", "5-9")
      */
     getLevelTier(level) {
-        if (level <= 4) return '1-4';
-        if (level <= 9) return '5-9';
-        if (level <= 14) return '10-14';
+        if (level <= 4) {
+            return '1-4';
+        }
+        if (level <= 9) {
+            return '5-9';
+        }
+        if (level <= 14) {
+            return '10-14';
+        }
         return '15+';
     }
 
@@ -408,7 +414,7 @@ export class SkillChallengeManager {
                     const allowedRarities = lootConfig.rarityFilter;
 
                     // Roll on loot table using LootManager
-                    const rng = createRNG(challenge.seed + '_loot');
+                    const rng = createRNG(`${challenge.seed  }_loot`);
                     const items = window.lootManager.rollOnTable(
                         lootTable,
                         rollCount,
@@ -439,7 +445,7 @@ export class SkillChallengeManager {
                     }
                 } else {
                     // Loot chance failed
-                    consequences.messages.push(`🔍 You search but find nothing of value`);
+                    consequences.messages.push('🔍 You search but find nothing of value');
                 }
             }
         }

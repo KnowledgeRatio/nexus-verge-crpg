@@ -4,189 +4,213 @@
  */
 
 class SettlementUI {
-  constructor(settlementManager, merchantManager = null) {
-    this.settlementManager = settlementManager;
-    this.merchantManager = merchantManager;
-    this.currentMerchant = null;
-    this.merchantInventory = [];
-    this.initializeEventListeners();
-  }
+    constructor(settlementManager, merchantManager = null) {
+        this.settlementManager = settlementManager;
+        this.merchantManager = merchantManager;
+        this.currentMerchant = null;
+        this.merchantInventory = [];
+        this.initializeEventListeners();
+    }
 
-  /**
+    /**
    * Initialize all event listeners for settlement UI
    */
-  initializeEventListeners() {
+    initializeEventListeners() {
     // Close settlement modal button
-    const closeSettlementBtn = document.getElementById('closeSettlementBtn');
-    if (closeSettlementBtn) {
-      closeSettlementBtn.addEventListener('click', () => {
-        this.settlementManager.exitSettlement();
-      });
-    }
-
-    // Leave settlement button
-    const leaveSettlementBtn = document.getElementById('leaveSettlementBtn');
-    if (leaveSettlementBtn) {
-      leaveSettlementBtn.addEventListener('click', () => {
-        this.settlementManager.exitSettlement();
-      });
-    }
-
-    // Building enter buttons
-    document.querySelectorAll('.building .enter-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const building = e.target.closest('.building');
-        if (building) {
-          const buildingType = building.dataset.building;
-          this.settlementManager.enterBuilding(buildingType);
+        const closeSettlementBtn = document.getElementById('closeSettlementBtn');
+        if (closeSettlementBtn) {
+            closeSettlementBtn.addEventListener('click', () => {
+                this.settlementManager.exitSettlement();
+            });
         }
-      });
-    });
 
-    // Close building modal button
-    const closeBuildingBtn = document.getElementById('closeBuildingBtn');
-    if (closeBuildingBtn) {
-      closeBuildingBtn.addEventListener('click', () => {
-        this.settlementManager.exitBuilding();
-      });
+        // Leave settlement button
+        const leaveSettlementBtn = document.getElementById('leaveSettlementBtn');
+        if (leaveSettlementBtn) {
+            leaveSettlementBtn.addEventListener('click', () => {
+                this.settlementManager.exitSettlement();
+            });
+        }
+
+        // Building enter buttons
+        document.querySelectorAll('.building .enter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const building = e.target.closest('.building');
+                if (building) {
+                    const buildingType = building.dataset.building;
+                    this.settlementManager.enterBuilding(buildingType);
+                }
+            });
+        });
+
+        // Close building modal button
+        const closeBuildingBtn = document.getElementById('closeBuildingBtn');
+        if (closeBuildingBtn) {
+            closeBuildingBtn.addEventListener('click', () => {
+                this.settlementManager.exitBuilding();
+            });
+        }
+
+        // Leave building button
+        const leaveBuildingBtn = document.getElementById('leaveBuildingBtn');
+        if (leaveBuildingBtn) {
+            leaveBuildingBtn.addEventListener('click', () => {
+                this.settlementManager.exitBuilding();
+            });
+        }
+
+        console.log('🏘️ Settlement UI event listeners initialized');
     }
 
-    // Leave building button
-    const leaveBuildingBtn = document.getElementById('leaveBuildingBtn');
-    if (leaveBuildingBtn) {
-      leaveBuildingBtn.addEventListener('click', () => {
-        this.settlementManager.exitBuilding();
-      });
-    }
-
-    console.log('🏘️ Settlement UI event listeners initialized');
-  }
-
-  /**
+    /**
    * Show settlement town map modal
    * @param {Object} settlement - Settlement data
    */
-  showSettlementModal(settlement) {
+    showSettlementModal(settlement) {
     // Hide game screen
-    const gameScreen = document.getElementById('gameScreen');
-    if (gameScreen) gameScreen.style.display = 'none';
+        const gameScreen = document.getElementById('gameScreen');
+        if (gameScreen) {
+            gameScreen.style.display = 'none';
+        }
 
-    // Show settlement modal
-    const settlementModal = document.getElementById('settlementModal');
-    if (!settlementModal) {
-      console.error('Settlement modal not found in HTML');
-      return;
+        // Show settlement modal
+        const settlementModal = document.getElementById('settlementModal');
+        if (!settlementModal) {
+            console.error('Settlement modal not found in HTML');
+            return;
+        }
+
+        settlementModal.style.display = 'flex';
+
+        // Update settlement info
+        this.renderSettlementInfo(settlement);
     }
 
-    settlementModal.style.display = 'flex';
-
-    // Update settlement info
-    this.renderSettlementInfo(settlement);
-  }
-
-  /**
+    /**
    * Hide settlement modal and return to game screen
    */
-  hideSettlementModal() {
+    hideSettlementModal() {
     // Hide settlement modal
-    const settlementModal = document.getElementById('settlementModal');
-    if (settlementModal) settlementModal.style.display = 'none';
+        const settlementModal = document.getElementById('settlementModal');
+        if (settlementModal) {
+            settlementModal.style.display = 'none';
+        }
 
-    // Hide any open building interiors
-    const buildingModal = document.getElementById('buildingModal');
-    if (buildingModal) buildingModal.style.display = 'none';
+        // Hide any open building interiors
+        const buildingModal = document.getElementById('buildingModal');
+        if (buildingModal) {
+            buildingModal.style.display = 'none';
+        }
 
-    // Show game screen
-    const gameScreen = document.getElementById('gameScreen');
-    if (gameScreen) gameScreen.style.display = 'flex';
-  }
+        // Show game screen
+        const gameScreen = document.getElementById('gameScreen');
+        if (gameScreen) {
+            gameScreen.style.display = 'flex';
+        }
+    }
 
-  /**
+    /**
    * Render settlement information (name, type, population)
    * @param {Object} settlement - Settlement data
    */
-  renderSettlementInfo(settlement) {
-    if (!settlement) return;
+    renderSettlementInfo(settlement) {
+        if (!settlement) {
+            return;
+        }
 
-    const nameEl = document.getElementById('settlementName');
-    const typeEl = document.getElementById('settlementType');
+        const nameEl = document.getElementById('settlementName');
+        const typeEl = document.getElementById('settlementType');
 
-    if (nameEl) nameEl.textContent = settlement.name;
-    if (typeEl) {
-      const type = settlement.settlementType || 'village';
-      typeEl.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+        if (nameEl) {
+            nameEl.textContent = settlement.name;
+        }
+        if (typeEl) {
+            const type = settlement.settlementType || 'village';
+            typeEl.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        const popEl = document.getElementById('settlementPopulation');
+        if (popEl && settlement.population) {
+            popEl.textContent = `Population: ${settlement.population}`;
+        }
     }
 
-    const popEl = document.getElementById('settlementPopulation');
-    if (popEl && settlement.population) {
-      popEl.textContent = `Population: ${settlement.population}`;
-    }
-  }
-
-  /**
+    /**
    * Show building interior modal
    * @param {string} buildingType - Type of building ('tavern', 'merchant', etc.)
    */
-  showBuildingModal(buildingType) {
-    const buildingModal = document.getElementById('buildingModal');
-    if (!buildingModal) {
-      console.error('Building modal not found in HTML');
-      return;
+    showBuildingModal(buildingType) {
+        const buildingModal = document.getElementById('buildingModal');
+        if (!buildingModal) {
+            console.error('Building modal not found in HTML');
+            return;
+        }
+
+        // Hide settlement town map
+        const settlementModal = document.getElementById('settlementModal');
+        if (settlementModal) {
+            settlementModal.style.display = 'none';
+        }
+
+        buildingModal.style.display = 'flex';
+
+        // Update building title
+        const titleEl = document.getElementById('buildingTitle');
+        if (titleEl) {
+            titleEl.textContent = this.getBuildingName(buildingType);
+        }
+
+        // Render building-specific content
+        this.renderBuildingContent(buildingType);
     }
 
-    // Hide settlement town map
-    const settlementModal = document.getElementById('settlementModal');
-    if (settlementModal) settlementModal.style.display = 'none';
-
-    buildingModal.style.display = 'flex';
-
-    // Update building title
-    const titleEl = document.getElementById('buildingTitle');
-    if (titleEl) titleEl.textContent = this.getBuildingName(buildingType);
-
-    // Render building-specific content
-    this.renderBuildingContent(buildingType);
-  }
-
-  /**
+    /**
    * Hide building modal and return to settlement town map
    */
-  hideBuildingModal() {
+    hideBuildingModal() {
     // Hide building modal
-    const buildingModal = document.getElementById('buildingModal');
-    if (buildingModal) buildingModal.style.display = 'none';
+        const buildingModal = document.getElementById('buildingModal');
+        if (buildingModal) {
+            buildingModal.style.display = 'none';
+        }
 
-    // Show settlement town map again
-    const settlementModal = document.getElementById('settlementModal');
-    if (settlementModal) settlementModal.style.display = 'flex';
-  }
+        // Show settlement town map again
+        const settlementModal = document.getElementById('settlementModal');
+        if (settlementModal) {
+            settlementModal.style.display = 'flex';
+        }
+    }
 
-  /**
+    /**
    * Render building-specific content
    * @param {string} buildingType - Type of building
    */
-  renderBuildingContent(buildingType) {
-    const contentEl = document.getElementById('buildingContent');
-    if (!contentEl) return;
+    renderBuildingContent(buildingType) {
+        const contentEl = document.getElementById('buildingContent');
+        if (!contentEl) {
+            return;
+        }
 
-    const settlement = this.settlementManager?.currentSettlement;
-    if (!settlement) return;
+        const settlement = this.settlementManager?.currentSettlement;
+        if (!settlement) {
+            return;
+        }
 
-    // Get NPCs for this building
-    const buildingNPCs = settlement.npcs?.filter(npc => npc.building === buildingType) || [];
+        // Get NPCs for this building
+        const buildingNPCs = settlement.npcs?.filter(npc => npc.building === buildingType) || [];
 
-    if (buildingNPCs.length === 0) {
-      contentEl.innerHTML = `
+        if (buildingNPCs.length === 0) {
+            contentEl.innerHTML = `
         <div style="padding: 20px; text-align: center;">
           <h3>Welcome to the ${this.getBuildingName(buildingType)}</h3>
           <p>The building is empty...</p>
         </div>
       `;
-      return;
-    }
+            return;
+        }
 
-    // Render NPCs list
-    let html = `
+        // Render NPCs list
+        let html = `
       <div class="building-interior">
         <h3>${this.getBuildingName(buildingType)}</h3>
         <p class="building-description">${this.getBuildingDescription(buildingType)}</p>
@@ -194,9 +218,9 @@ class SettlementUI {
         <div class="npc-list">
     `;
 
-    buildingNPCs.forEach(npc => {
-      const questBadge = npc.offersQuest ? '<span class="quest-badge">!</span>' : '';
-      html += `
+        buildingNPCs.forEach(npc => {
+            const questBadge = npc.offersQuest ? '<span class="quest-badge">!</span>' : '';
+            html += `
         <div class="npc-card" data-npc-id="${npc.id}">
           <div class="npc-header">
             <h4>${npc.name}${questBadge}</h4>
@@ -206,342 +230,352 @@ class SettlementUI {
           <button class="btn-primary talk-btn" data-npc-id="${npc.id}">Talk</button>
         </div>
       `;
-    });
+        });
 
-    html += `
+        html += `
         </div>
       </div>
     `;
 
-    contentEl.innerHTML = html;
+        contentEl.innerHTML = html;
 
-    // Add click handlers for Talk buttons
-    contentEl.querySelectorAll('.talk-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const npcId = e.target.dataset.npcId;
-        const npc = buildingNPCs.find(n => n.id === npcId);
-        if (npc) {
-          this.showNPCDialogue(npc);
-        }
-      });
-    });
-  }
+        // Add click handlers for Talk buttons
+        contentEl.querySelectorAll('.talk-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const npcId = e.target.dataset.npcId;
+                const npc = buildingNPCs.find(n => n.id === npcId);
+                if (npc) {
+                    this.showNPCDialogue(npc);
+                }
+            });
+        });
+    }
 
-  /**
+    /**
    * Get building description text
    * @param {string} buildingType - Building type
    * @returns {string} Description
    */
-  getBuildingDescription(buildingType) {
-    const descriptions = {
-      'tavern': 'The smell of roasted meat and ale fills the air. Locals gather around the hearth.',
-      'merchant': 'Shelves lined with goods and supplies. The merchant eyes you with interest.',
-      'blacksmith': 'The heat from the forge warms the room. Tools and weapons line the walls.',
-      'greathall': 'A grand hall where the settlement\'s leaders conduct their business.'
-    };
-    return descriptions[buildingType] || '';
-  }
+    getBuildingDescription(buildingType) {
+        const descriptions = {
+            'tavern': 'The smell of roasted meat and ale fills the air. Locals gather around the hearth.',
+            'merchant': 'Shelves lined with goods and supplies. The merchant eyes you with interest.',
+            'blacksmith': 'The heat from the forge warms the room. Tools and weapons line the walls.',
+            'greathall': 'A grand hall where the settlement\'s leaders conduct their business.'
+        };
+        return descriptions[buildingType] || '';
+    }
 
-  /**
+    /**
    * Format role name for display
    * @param {string} role - Role ID
    * @returns {string} Formatted role
    */
-  formatRole(role) {
-    const roleNames = {
-      'innkeeper': 'Innkeeper',
-      'patron': 'Patron',
-      'merchant': 'Merchant',
-      'blacksmith': 'Blacksmith',
-      'leader': 'Settlement Leader',
-      'guard': 'Guard',
-      'citizen': 'Citizen'
-    };
-    return roleNames[role] || role;
-  }
+    formatRole(role) {
+        const roleNames = {
+            'innkeeper': 'Innkeeper',
+            'patron': 'Patron',
+            'merchant': 'Merchant',
+            'blacksmith': 'Blacksmith',
+            'leader': 'Settlement Leader',
+            'guard': 'Guard',
+            'citizen': 'Citizen'
+        };
+        return roleNames[role] || role;
+    }
 
-  /**
+    /**
    * Show NPC dialogue modal
    * @param {Object} npc - NPC data
    */
-  showNPCDialogue(npc) {
-    const modal = document.getElementById('npcDialogueModal');
-    if (!modal) {
-      console.error('NPC dialogue modal not found');
-      return;
-    }
+    showNPCDialogue(npc) {
+        const modal = document.getElementById('npcDialogueModal');
+        if (!modal) {
+            console.error('NPC dialogue modal not found');
+            return;
+        }
 
-    // Update modal content
-    const nameEl = document.getElementById('npcDialogueName');
-    const roleEl = document.getElementById('npcDialogueRole');
-    const textEl = document.getElementById('npcDialogueText');
-    const optionsEl = document.getElementById('npcDialogueOptions');
+        // Update modal content
+        const nameEl = document.getElementById('npcDialogueName');
+        const roleEl = document.getElementById('npcDialogueRole');
+        const textEl = document.getElementById('npcDialogueText');
+        const optionsEl = document.getElementById('npcDialogueOptions');
 
-    if (nameEl) nameEl.textContent = npc.name;
-    if (roleEl) roleEl.textContent = this.formatRole(npc.role);
-    if (textEl) textEl.textContent = npc.dialogue.greeting;
+        if (nameEl) {
+            nameEl.textContent = npc.name;
+        }
+        if (roleEl) {
+            roleEl.textContent = this.formatRole(npc.role);
+        }
+        if (textEl) {
+            textEl.textContent = npc.dialogue.greeting;
+        }
 
-    // Debug logging for NPC quest status
-    console.log(`💬 Showing dialogue for ${npc.name} (${npc.role})`);
-    console.log(`   - offersQuest: ${npc.offersQuest}`);
-    console.log(`   - questIds:`, npc.questIds);
-    console.log(`   - questIds.length: ${npc.questIds?.length || 0}`);
+        // Debug logging for NPC quest status
+        console.log(`💬 Showing dialogue for ${npc.name} (${npc.role})`);
+        console.log(`   - offersQuest: ${npc.offersQuest}`);
+        console.log('   - questIds:', npc.questIds);
+        console.log(`   - questIds.length: ${npc.questIds?.length || 0}`);
 
-    // Build dialogue options
-    let optionsHTML = '';
+        // Build dialogue options
+        let optionsHTML = '';
 
-    // Flavor dialogue option
-    if (npc.dialogue.flavorDialogue && npc.dialogue.flavorDialogue.length > 0) {
-      optionsHTML += `
+        // Flavor dialogue option
+        if (npc.dialogue.flavorDialogue && npc.dialogue.flavorDialogue.length > 0) {
+            optionsHTML += `
         <button class="dialogue-option" data-action="flavor">
           💬 Chat
         </button>
       `;
-    }
+        }
 
-    // Quest option (if NPC offers quest)
-    if (npc.offersQuest && npc.questIds && npc.questIds.length > 0) {
-      console.log(`   ✅ Adding "Ask about work" button`);
-      optionsHTML += `
+        // Quest option (if NPC offers quest)
+        if (npc.offersQuest && npc.questIds && npc.questIds.length > 0) {
+            console.log('   ✅ Adding "Ask about work" button');
+            optionsHTML += `
         <button class="dialogue-option quest-option" data-action="quest">
           ❗ Ask about work
         </button>
       `;
-    } else if (npc.offersQuest) {
-      console.log(`   ⚠️ NPC offers quests but has no questIds assigned yet`);
-    }
+        } else if (npc.offersQuest) {
+            console.log('   ⚠️ NPC offers quests but has no questIds assigned yet');
+        }
 
-    // Trade option (for merchants/blacksmiths)
-    if (npc.role === 'merchant' || npc.role === 'blacksmith') {
-      optionsHTML += `
+        // Trade option (for merchants/blacksmiths)
+        if (npc.role === 'merchant' || npc.role === 'blacksmith') {
+            optionsHTML += `
         <button class="dialogue-option" data-action="trade">
           💰 Trade
         </button>
       `;
-    }
+        }
 
-    // Rest option (for innkeepers)
-    if (npc.role === 'innkeeper') {
-      optionsHTML += `
+        // Rest option (for innkeepers)
+        if (npc.role === 'innkeeper') {
+            optionsHTML += `
         <button class="dialogue-option" data-action="rest">
           🛏️ Rest
         </button>
       `;
-    }
+        }
 
-    // Skill challenge option (contextual based on NPC role)
-    if (window.skillChallengeManager && window.skillChallengeManager.challenges) {
-      const challenges = this.getContextualSkillChallenges(npc);
-      if (challenges.length > 0) {
-        optionsHTML += `
+        // Skill challenge option (contextual based on NPC role)
+        if (window.skillChallengeManager && window.skillChallengeManager.challenges) {
+            const challenges = this.getContextualSkillChallenges(npc);
+            if (challenges.length > 0) {
+                optionsHTML += `
           <button class="dialogue-option skill-challenge-option" data-action="skill-challenge">
             ⚡ Test Your Skills
           </button>
         `;
-      }
-    }
+            }
+        }
 
-    // Goodbye option
-    optionsHTML += `
+        // Goodbye option
+        optionsHTML += `
       <button class="dialogue-option" data-action="goodbye">
         👋 Goodbye
       </button>
     `;
 
-    if (optionsEl) optionsEl.innerHTML = optionsHTML;
+        if (optionsEl) {
+            optionsEl.innerHTML = optionsHTML;
+        }
 
-    // Add event listeners
-    modal.querySelectorAll('.dialogue-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.handleDialogueOption(e.target.dataset.action, npc);
-      });
-    });
+        // Add event listeners
+        modal.querySelectorAll('.dialogue-option').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.handleDialogueOption(e.target.dataset.action, npc);
+            });
+        });
 
-    // Show modal
-    modal.style.display = 'flex';
-  }
+        // Show modal
+        modal.style.display = 'flex';
+    }
 
-  /**
+    /**
    * Handle dialogue option selection
    * @param {string} action - Action type
    * @param {Object} npc - NPC data
    */
-  handleDialogueOption(action, npc) {
-    const textEl = document.getElementById('npcDialogueText');
-    const optionsEl = document.getElementById('npcDialogueOptions');
-    if (!textEl || !optionsEl) return;
+    handleDialogueOption(action, npc) {
+        const textEl = document.getElementById('npcDialogueText');
+        const optionsEl = document.getElementById('npcDialogueOptions');
+        if (!textEl || !optionsEl) {
+            return;
+        }
 
-    switch (action) {
-      case 'flavor':
-        // Show random flavor dialogue
-        const flavorLine = npc.dialogue.flavorDialogue[
-          Math.floor(Math.random() * npc.dialogue.flavorDialogue.length)
-        ];
-        textEl.textContent = flavorLine;
-        break;
+        switch (action) {
+            case 'flavor':
+                // Show random flavor dialogue
+                const flavorLine = npc.dialogue.flavorDialogue[
+                    Math.floor(Math.random() * npc.dialogue.flavorDialogue.length)
+                ];
+                textEl.textContent = flavorLine;
+                break;
 
-      case 'quest':
-        // Show available quests from this NPC
-        this.showQuestOptions(npc, textEl, optionsEl);
-        break;
+            case 'quest':
+                // Show available quests from this NPC
+                this.showQuestOptions(npc, textEl, optionsEl);
+                break;
 
-      case 'trade':
-        // Open trading UI
-        this.closeNPCDialogue();
-        this.openTradingModal(npc);
-        break;
+            case 'trade':
+                // Open trading UI
+                this.closeNPCDialogue();
+                this.openTradingModal(npc);
+                break;
 
-      case 'rest':
-        // Open rest menu
-        this.closeNPCDialogue();
-        import('../systems/RestManager.js').then(module => {
-          module.default.openRestMenu();
-        });
-        break;
+            case 'rest':
+                // Open rest menu
+                this.closeNPCDialogue();
+                import('../systems/RestManager.js').then(module => {
+                    module.default.openRestMenu();
+                });
+                break;
 
-      case 'skill-challenge':
-        // Show skill challenge options
-        this.showSkillChallengeOptions(npc, textEl, optionsEl);
-        break;
+            case 'skill-challenge':
+                // Show skill challenge options
+                this.showSkillChallengeOptions(npc, textEl, optionsEl);
+                break;
 
-      case 'goodbye':
-        textEl.textContent = npc.dialogue.goodbye;
-        setTimeout(() => {
-          this.closeNPCDialogue();
-        }, 1000);
-        break;
+            case 'goodbye':
+                textEl.textContent = npc.dialogue.goodbye;
+                setTimeout(() => {
+                    this.closeNPCDialogue();
+                }, 1000);
+                break;
+        }
     }
-  }
 
-  /**
+    /**
    * Show quest options from NPC
    * @param {Object} npc - NPC data
    * @param {HTMLElement} textEl - Dialogue text element
    * @param {HTMLElement} optionsEl - Dialogue options element
    */
-  showQuestOptions(npc, textEl, optionsEl) {
-    if (!window.questManager) {
-      textEl.textContent = "I might have some work for you, but I can't quite remember... (Quest system not initialized)";
-      return;
-    }
+    showQuestOptions(npc, textEl, optionsEl) {
+        if (!window.questManager) {
+            textEl.textContent = "I might have some work for you, but I can't quite remember... (Quest system not initialized)";
+            return;
+        }
 
-    // Debug logging
-    console.log(`🔍 Checking quests for NPC: ${npc.name} (ID: ${npc.id})`);
-    console.log(`   - offersQuest: ${npc.offersQuest}`);
-    console.log(`   - questIds:`, npc.questIds);
-    console.log(`   - availableQuests in manager:`, window.questManager.availableQuests?.length || 0);
+        // Debug logging
+        console.log(`🔍 Checking quests for NPC: ${npc.name} (ID: ${npc.id})`);
+        console.log(`   - offersQuest: ${npc.offersQuest}`);
+        console.log('   - questIds:', npc.questIds);
+        console.log('   - availableQuests in manager:', window.questManager.availableQuests?.length || 0);
 
-    // Get quests from this NPC
-    const availableQuests = window.questManager.getQuestsFromNPC(npc.id, 'available');
-    const activeQuests = window.questManager.getQuestsFromNPC(npc.id, 'active');
-    const completedQuests = window.questManager.getQuestsFromNPC(npc.id, 'completed');
+        // Get quests from this NPC
+        const availableQuests = window.questManager.getQuestsFromNPC(npc.id, 'available');
+        const activeQuests = window.questManager.getQuestsFromNPC(npc.id, 'active');
+        const completedQuests = window.questManager.getQuestsFromNPC(npc.id, 'completed');
 
-    console.log(`   - Available quests found: ${availableQuests.length}`);
-    console.log(`   - Active quests found: ${activeQuests.length}`);
-    console.log(`   - Completed quests found: ${completedQuests.length}`);
+        console.log(`   - Available quests found: ${availableQuests.length}`);
+        console.log(`   - Active quests found: ${activeQuests.length}`);
+        console.log(`   - Completed quests found: ${completedQuests.length}`);
 
-    // Check if player has completed quests ready to turn in
-    const readyToTurnIn = activeQuests.filter(q => window.questManager.isQuestReadyToComplete(q.id));
+        // Check if player has completed quests ready to turn in
+        const readyToTurnIn = activeQuests.filter(q => window.questManager.isQuestReadyToComplete(q.id));
 
-    if (readyToTurnIn.length > 0) {
-      // Show turn-in options
-      textEl.textContent = "Ah, you've completed your tasks! Let me see...";
-      
-      let optionsHTML = '<div class="quest-turn-in-list">';
-      for (const quest of readyToTurnIn) {
-        optionsHTML += `
+        if (readyToTurnIn.length > 0) {
+            // Show turn-in options
+            textEl.textContent = "Ah, you've completed your tasks! Let me see...";
+
+            let optionsHTML = '<div class="quest-turn-in-list">';
+            for (const quest of readyToTurnIn) {
+                optionsHTML += `
           <button class="dialogue-option quest-turn-in" data-quest-id="${quest.id}">
             ✅ Turn in: ${quest.name}
           </button>
         `;
-      }
-      optionsHTML += `
+            }
+            optionsHTML += `
         <button class="dialogue-option" data-action="back">
           ← Back
         </button>
       `;
-      optionsHTML += '</div>';
+            optionsHTML += '</div>';
 
-      optionsEl.innerHTML = optionsHTML;
+            optionsEl.innerHTML = optionsHTML;
 
-      // Add event listeners for turn-in
-      optionsEl.querySelectorAll('.quest-turn-in').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          this.turnInQuest(e.target.dataset.questId, npc);
-        });
-      });
+            // Add event listeners for turn-in
+            optionsEl.querySelectorAll('.quest-turn-in').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.turnInQuest(e.target.dataset.questId, npc);
+                });
+            });
 
-      // Back button
-      optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
-        this.showNPCDialogue(npc);
-      });
+            // Back button
+            optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+                this.showNPCDialogue(npc);
+            });
 
-    } else if (availableQuests.length > 0) {
-      // Show available quest offers
-      textEl.textContent = npc.dialogue.questOffer || "I have some work that needs doing, if you're interested.";
-      
-      let optionsHTML = '<div class="quest-offer-list">';
-      for (const quest of availableQuests) {
-        const difficultyIcon = this.getQuestDifficultyIcon(quest.difficulty);
-        optionsHTML += `
+        } else if (availableQuests.length > 0) {
+            // Show available quest offers
+            textEl.textContent = npc.dialogue.questOffer || "I have some work that needs doing, if you're interested.";
+
+            let optionsHTML = '<div class="quest-offer-list">';
+            for (const quest of availableQuests) {
+                const difficultyIcon = this.getQuestDifficultyIcon(quest.difficulty);
+                optionsHTML += `
           <button class="dialogue-option quest-offer" data-quest-id="${quest.id}">
             ${difficultyIcon} ${quest.name}
           </button>
         `;
-      }
-      optionsHTML += `
+            }
+            optionsHTML += `
         <button class="dialogue-option" data-action="back">
           ← Back
         </button>
       `;
-      optionsHTML += '</div>';
+            optionsHTML += '</div>';
 
-      optionsEl.innerHTML = optionsHTML;
+            optionsEl.innerHTML = optionsHTML;
 
-      // Add event listeners for quest details
-      optionsEl.querySelectorAll('.quest-offer').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          this.showQuestDetails(e.target.dataset.questId, npc);
-        });
-      });
+            // Add event listeners for quest details
+            optionsEl.querySelectorAll('.quest-offer').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.showQuestDetails(e.target.dataset.questId, npc);
+                });
+            });
 
-      // Back button
-      optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
-        this.showNPCDialogue(npc);
-      });
+            // Back button
+            optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+                this.showNPCDialogue(npc);
+            });
 
-    } else if (activeQuests.length > 0) {
-      // Player has active quests but not completed
-      textEl.textContent = "You're still working on the tasks I gave you. Come back when you're done!";
-    } else if (completedQuests.length > 0) {
-      // No more quests available
-      textEl.textContent = "I don't have any more work for you right now. Check back later!";
-    } else {
-      // No quests at all
-      textEl.textContent = "I don't have any work available at the moment.";
+        } else if (activeQuests.length > 0) {
+            // Player has active quests but not completed
+            textEl.textContent = "You're still working on the tasks I gave you. Come back when you're done!";
+        } else if (completedQuests.length > 0) {
+            // No more quests available
+            textEl.textContent = "I don't have any more work for you right now. Check back later!";
+        } else {
+            // No quests at all
+            textEl.textContent = "I don't have any work available at the moment.";
+        }
     }
-  }
 
-  /**
+    /**
    * Show detailed quest information
    * @param {string} questId - Quest ID
    * @param {Object} npc - NPC data
    */
-  showQuestDetails(questId, npc) {
-    const quest = window.questManager.getQuest(questId);
-    if (!quest) {
-      console.error(`Quest ${questId} not found`);
-      return;
-    }
+    showQuestDetails(questId, npc) {
+        const quest = window.questManager.getQuest(questId);
+        if (!quest) {
+            console.error(`Quest ${questId} not found`);
+            return;
+        }
 
-    const textEl = document.getElementById('npcDialogueText');
-    const optionsEl = document.getElementById('npcDialogueOptions');
+        const textEl = document.getElementById('npcDialogueText');
+        const optionsEl = document.getElementById('npcDialogueOptions');
 
-    // Show quest details
-    const objectivesText = quest.objectives.map(obj => obj.description).join('; ');
-    const rewardText = `${quest.rewards.xp} XP, ${quest.rewards.gold} gold`;
+        // Show quest details
+        const objectivesText = quest.objectives.map(obj => obj.description).join('; ');
+        const rewardText = `${quest.rewards.xp} XP, ${quest.rewards.gold} gold`;
 
-    textEl.innerHTML = `
+        textEl.innerHTML = `
       <div class="quest-details">
         <h4>${quest.name}</h4>
         <p class="quest-difficulty">Difficulty: ${quest.difficulty}</p>
@@ -551,8 +585,8 @@ class SettlementUI {
       </div>
     `;
 
-    // Show accept/decline options
-    optionsEl.innerHTML = `
+        // Show accept/decline options
+        optionsEl.innerHTML = `
       <button class="dialogue-option btn-primary" data-action="accept-quest" data-quest-id="${questId}">
         ✅ Accept Quest
       </button>
@@ -561,321 +595,329 @@ class SettlementUI {
       </button>
     `;
 
-    // Add event listeners
-    optionsEl.querySelector('[data-action="accept-quest"]')?.addEventListener('click', (e) => {
-      this.acceptQuest(e.target.dataset.questId, npc);
-    });
+        // Add event listeners
+        optionsEl.querySelector('[data-action="accept-quest"]')?.addEventListener('click', (e) => {
+            this.acceptQuest(e.target.dataset.questId, npc);
+        });
 
-    optionsEl.querySelector('[data-action="decline-quest"]')?.addEventListener('click', () => {
-      this.showNPCDialogue(npc);
-    });
-  }
+        optionsEl.querySelector('[data-action="decline-quest"]')?.addEventListener('click', () => {
+            this.showNPCDialogue(npc);
+        });
+    }
 
-  /**
+    /**
    * Accept a quest from an NPC
    * @param {string} questId - Quest ID
    * @param {Object} npc - NPC data
    */
-  acceptQuest(questId, npc) {
-    if (!window.questManager) {
-      console.error('QuestManager not initialized');
-      return;
+    acceptQuest(questId, npc) {
+        if (!window.questManager) {
+            console.error('QuestManager not initialized');
+            return;
+        }
+
+        const success = window.questManager.acceptQuest(questId);
+
+        if (success) {
+            const textEl = document.getElementById('npcDialogueText');
+            if (textEl) {
+                textEl.textContent = npc.dialogue.questAccepted || "Thank you! I'm counting on you. Good luck!";
+            }
+
+            // Show notification
+            if (window.showQuestNotification) {
+                const quest = window.questManager.getQuest(questId);
+                window.showQuestNotification('Quest Accepted', quest.name, 'success');
+            }
+
+            // Close dialogue after a moment
+            setTimeout(() => {
+                this.closeNPCDialogue();
+            }, 1500);
+        } else {
+            const textEl = document.getElementById('npcDialogueText');
+            if (textEl) {
+                textEl.textContent = "Hmm, something's not right. Perhaps you already have this quest?";
+            }
+        }
     }
 
-    const success = window.questManager.acceptQuest(questId);
-    
-    if (success) {
-      const textEl = document.getElementById('npcDialogueText');
-      if (textEl) {
-        textEl.textContent = npc.dialogue.questAccepted || "Thank you! I'm counting on you. Good luck!";
-      }
-
-      // Show notification
-      if (window.showQuestNotification) {
-        const quest = window.questManager.getQuest(questId);
-        window.showQuestNotification('Quest Accepted', quest.name, 'success');
-      }
-
-      // Close dialogue after a moment
-      setTimeout(() => {
-        this.closeNPCDialogue();
-      }, 1500);
-    } else {
-      const textEl = document.getElementById('npcDialogueText');
-      if (textEl) {
-        textEl.textContent = "Hmm, something's not right. Perhaps you already have this quest?";
-      }
-    }
-  }
-
-  /**
+    /**
    * Turn in a completed quest
    * @param {string} questId - Quest ID
    * @param {Object} npc - NPC data
    */
-  turnInQuest(questId, npc) {
-    if (!window.questManager) {
-      console.error('QuestManager not initialized');
-      return;
-    }
+    turnInQuest(questId, npc) {
+        if (!window.questManager) {
+            console.error('QuestManager not initialized');
+            return;
+        }
 
-    const result = window.questManager.completeQuest(questId);
-    
-    if (result.success) {
-      const textEl = document.getElementById('npcDialogueText');
-      if (textEl) {
-        textEl.innerHTML = `
+        const result = window.questManager.completeQuest(questId);
+
+        if (result.success) {
+            const textEl = document.getElementById('npcDialogueText');
+            if (textEl) {
+                textEl.innerHTML = `
           <div class="quest-complete">
             <p>${npc.dialogue.questComplete || "Excellent work! Here's your reward."}</p>
             <p class="rewards-received">
               <strong>Received:</strong><br>
               ${result.rewards.xp} XP<br>
               ${result.rewards.gold} Gold
-              ${result.rewards.items && result.rewards.items.length > 0 ? '<br>' + result.rewards.items.join(', ') : ''}
+              ${result.rewards.items && result.rewards.items.length > 0 ? `<br>${  result.rewards.items.join(', ')}` : ''}
             </p>
           </div>
         `;
-      }
+            }
 
-      // Show notification
-      if (window.showQuestNotification) {
-        window.showQuestNotification('Quest Complete!', result.quest.name, 'success');
-      }
+            // Show notification
+            if (window.showQuestNotification) {
+                window.showQuestNotification('Quest Complete!', result.quest.name, 'success');
+            }
 
-      // Close dialogue after showing rewards
-      setTimeout(() => {
-        this.closeNPCDialogue();
-      }, 3000);
-    } else {
-      const textEl = document.getElementById('npcDialogueText');
-      if (textEl) {
-        textEl.textContent = "Hmm, you haven't completed all the objectives yet. Come back when you're done!";
-      }
+            // Close dialogue after showing rewards
+            setTimeout(() => {
+                this.closeNPCDialogue();
+            }, 3000);
+        } else {
+            const textEl = document.getElementById('npcDialogueText');
+            if (textEl) {
+                textEl.textContent = "Hmm, you haven't completed all the objectives yet. Come back when you're done!";
+            }
+        }
     }
-  }
 
-  /**
+    /**
    * Get difficulty icon for quest
    * @param {string} difficulty - Quest difficulty
    * @returns {string} Icon
    */
-  getQuestDifficultyIcon(difficulty) {
-    const icons = {
-      'easy': '⭐',
-      'normal': '⭐⭐',
-      'hard': '⭐⭐⭐',
-      'deadly': '💀'
-    };
-    return icons[difficulty?.toLowerCase()] || '❓';
-  }
+    getQuestDifficultyIcon(difficulty) {
+        const icons = {
+            'easy': '⭐',
+            'normal': '⭐⭐',
+            'hard': '⭐⭐⭐',
+            'deadly': '💀'
+        };
+        return icons[difficulty?.toLowerCase()] || '❓';
+    }
 
-  /**
+    /**
    * Close NPC dialogue modal
    */
-  closeNPCDialogue() {
-    const modal = document.getElementById('npcDialogueModal');
-    if (modal) {
-      modal.style.display = 'none';
+    closeNPCDialogue() {
+        const modal = document.getElementById('npcDialogueModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
-  }
 
-  /**
+    /**
    * Get friendly name for building type
    * @param {string} buildingType - Building type ID
    * @returns {string} Display name
    */
-  getBuildingName(buildingType) {
-    const names = {
-      'tavern': 'Tavern',
-      'merchant': 'General Goods',
-      'blacksmith': 'Blacksmith',
-      'greathall': 'Great Hall'
-    };
-    return names[buildingType] || buildingType;
-  }
+    getBuildingName(buildingType) {
+        const names = {
+            'tavern': 'Tavern',
+            'merchant': 'General Goods',
+            'blacksmith': 'Blacksmith',
+            'greathall': 'Great Hall'
+        };
+        return names[buildingType] || buildingType;
+    }
 
-  /**
+    /**
    * Open trading modal with merchant/blacksmith
    * @param {Object} npc - NPC merchant data
    */
-  async openTradingModal(npc) {
-    if (!this.merchantManager) {
-      console.error('MerchantManager not initialized');
-      return;
+    async openTradingModal(npc) {
+        if (!this.merchantManager) {
+            console.error('MerchantManager not initialized');
+            return;
+        }
+
+        // Get character from gameState
+        const character = window.gameState?.get('character');
+        if (!character) {
+            console.error('No character found');
+            return;
+        }
+
+        // Store current merchant
+        this.currentMerchant = npc;
+
+        // Generate merchant inventory
+        const settlement = this.settlementManager?.currentSettlement;
+        const merchantType = npc.role; // 'merchant' or 'blacksmith'
+        this.merchantInventory = await this.merchantManager.generateMerchantInventory(
+            settlement,
+            merchantType
+        );
+
+        // Update modal content
+        const modal = document.getElementById('tradingModal');
+        if (!modal) {
+            console.error('Trading modal not found');
+            return;
+        }
+
+        // Set merchant name and shop name
+        const merchantNameEl = document.getElementById('tradingMerchantName');
+        const shopNameEl = document.getElementById('tradingShopName');
+        if (merchantNameEl) {
+            merchantNameEl.textContent = npc.name;
+        }
+        if (shopNameEl) {
+            shopNameEl.textContent = npc.shopName || 'Shop';
+        }
+
+        // Initialize state
+        this.selectedItem = null;
+        this.tradeMode = 'buy'; // 'buy' or 'sell'
+        this.tradeQuantity = 1;
+
+        // Render initial view
+        this.renderTradingView();
+
+        // Setup event listeners
+        this.setupTradingEventListeners();
+
+        // Show modal
+        modal.style.display = 'flex';
     }
 
-    // Get character from gameState
-    const character = window.gameState?.get('character');
-    if (!character) {
-      console.error('No character found');
-      return;
-    }
-
-    // Store current merchant
-    this.currentMerchant = npc;
-
-    // Generate merchant inventory
-    const settlement = this.settlementManager?.currentSettlement;
-    const merchantType = npc.role; // 'merchant' or 'blacksmith'
-    this.merchantInventory = await this.merchantManager.generateMerchantInventory(
-      settlement,
-      merchantType
-    );
-
-    // Update modal content
-    const modal = document.getElementById('tradingModal');
-    if (!modal) {
-      console.error('Trading modal not found');
-      return;
-    }
-
-    // Set merchant name and shop name
-    const merchantNameEl = document.getElementById('tradingMerchantName');
-    const shopNameEl = document.getElementById('tradingShopName');
-    if (merchantNameEl) merchantNameEl.textContent = npc.name;
-    if (shopNameEl) shopNameEl.textContent = npc.shopName || 'Shop';
-
-    // Initialize state
-    this.selectedItem = null;
-    this.tradeMode = 'buy'; // 'buy' or 'sell'
-    this.tradeQuantity = 1;
-
-    // Render initial view
-    this.renderTradingView();
-
-    // Setup event listeners
-    this.setupTradingEventListeners();
-
-    // Show modal
-    modal.style.display = 'flex';
-  }
-
-  /**
+    /**
    * Setup trading modal event listeners
    */
-  setupTradingEventListeners() {
+    setupTradingEventListeners() {
     // Close button (header)
-    const closeBtn = document.getElementById('closeTradingBtn');
-    if (closeBtn) {
-      closeBtn.replaceWith(closeBtn.cloneNode(true)); // Remove old listeners
-      document.getElementById('closeTradingBtn').addEventListener('click', () => {
-        this.closeTradingModal();
-      });
+        const closeBtn = document.getElementById('closeTradingBtn');
+        if (closeBtn) {
+            closeBtn.replaceWith(closeBtn.cloneNode(true)); // Remove old listeners
+            document.getElementById('closeTradingBtn').addEventListener('click', () => {
+                this.closeTradingModal();
+            });
+        }
+
+        // Close button (footer)
+        const closeFooterBtn = document.getElementById('closeTradingFooterBtn');
+        if (closeFooterBtn) {
+            closeFooterBtn.replaceWith(closeFooterBtn.cloneNode(true));
+            document.getElementById('closeTradingFooterBtn').addEventListener('click', () => {
+                this.closeTradingModal();
+            });
+        }
+
+        // Tab buttons
+        const buyTab = document.getElementById('buyTab');
+        const sellTab = document.getElementById('sellTab');
+        if (buyTab) {
+            buyTab.replaceWith(buyTab.cloneNode(true));
+            document.getElementById('buyTab').addEventListener('click', () => {
+                this.switchTradeMode('buy');
+            });
+        }
+        if (sellTab) {
+            sellTab.replaceWith(sellTab.cloneNode(true));
+            document.getElementById('sellTab').addEventListener('click', () => {
+                this.switchTradeMode('sell');
+            });
+        }
+
+        // Quantity buttons
+        const qtyDecrease = document.getElementById('qtyDecrease');
+        const qtyIncrease = document.getElementById('qtyIncrease');
+        const qtyInput = document.getElementById('qtyInput');
+
+        if (qtyDecrease) {
+            qtyDecrease.replaceWith(qtyDecrease.cloneNode(true));
+            document.getElementById('qtyDecrease').addEventListener('click', () => {
+                this.changeQuantity(-1);
+            });
+        }
+        if (qtyIncrease) {
+            qtyIncrease.replaceWith(qtyIncrease.cloneNode(true));
+            document.getElementById('qtyIncrease').addEventListener('click', () => {
+                this.changeQuantity(1);
+            });
+        }
+        if (qtyInput) {
+            qtyInput.replaceWith(qtyInput.cloneNode(true));
+            document.getElementById('qtyInput').addEventListener('change', (e) => {
+                this.setQuantity(parseInt(e.target.value) || 1);
+            });
+        }
+
+        // Trade button
+        const tradeBtn = document.getElementById('executeTrade');
+        if (tradeBtn) {
+            tradeBtn.replaceWith(tradeBtn.cloneNode(true));
+            document.getElementById('executeTrade').addEventListener('click', () => {
+                this.executeTrade();
+            });
+        }
     }
 
-    // Close button (footer)
-    const closeFooterBtn = document.getElementById('closeTradingFooterBtn');
-    if (closeFooterBtn) {
-      closeFooterBtn.replaceWith(closeFooterBtn.cloneNode(true));
-      document.getElementById('closeTradingFooterBtn').addEventListener('click', () => {
-        this.closeTradingModal();
-      });
-    }
-
-    // Tab buttons
-    const buyTab = document.getElementById('buyTab');
-    const sellTab = document.getElementById('sellTab');
-    if (buyTab) {
-      buyTab.replaceWith(buyTab.cloneNode(true));
-      document.getElementById('buyTab').addEventListener('click', () => {
-        this.switchTradeMode('buy');
-      });
-    }
-    if (sellTab) {
-      sellTab.replaceWith(sellTab.cloneNode(true));
-      document.getElementById('sellTab').addEventListener('click', () => {
-        this.switchTradeMode('sell');
-      });
-    }
-
-    // Quantity buttons
-    const qtyDecrease = document.getElementById('qtyDecrease');
-    const qtyIncrease = document.getElementById('qtyIncrease');
-    const qtyInput = document.getElementById('qtyInput');
-
-    if (qtyDecrease) {
-      qtyDecrease.replaceWith(qtyDecrease.cloneNode(true));
-      document.getElementById('qtyDecrease').addEventListener('click', () => {
-        this.changeQuantity(-1);
-      });
-    }
-    if (qtyIncrease) {
-      qtyIncrease.replaceWith(qtyIncrease.cloneNode(true));
-      document.getElementById('qtyIncrease').addEventListener('click', () => {
-        this.changeQuantity(1);
-      });
-    }
-    if (qtyInput) {
-      qtyInput.replaceWith(qtyInput.cloneNode(true));
-      document.getElementById('qtyInput').addEventListener('change', (e) => {
-        this.setQuantity(parseInt(e.target.value) || 1);
-      });
-    }
-
-    // Trade button
-    const tradeBtn = document.getElementById('executeTrade');
-    if (tradeBtn) {
-      tradeBtn.replaceWith(tradeBtn.cloneNode(true));
-      document.getElementById('executeTrade').addEventListener('click', () => {
-        this.executeTrade();
-      });
-    }
-  }
-
-  /**
+    /**
    * Render the trading view (items list + transaction panel)
    */
-  renderTradingView() {
+    renderTradingView() {
     // Update tab states
-    const buyTab = document.getElementById('buyTab');
-    const sellTab = document.getElementById('sellTab');
-    if (buyTab) {
-      buyTab.classList.toggle('active', this.tradeMode === 'buy');
+        const buyTab = document.getElementById('buyTab');
+        const sellTab = document.getElementById('sellTab');
+        if (buyTab) {
+            buyTab.classList.toggle('active', this.tradeMode === 'buy');
+        }
+        if (sellTab) {
+            sellTab.classList.toggle('active', this.tradeMode === 'sell');
+        }
+
+        // Render items list
+        this.renderTradingItems();
+
+        // Render transaction panel
+        this.renderTransactionPanel();
     }
-    if (sellTab) {
-      sellTab.classList.toggle('active', this.tradeMode === 'sell');
-    }
 
-    // Render items list
-    this.renderTradingItems();
-
-    // Render transaction panel
-    this.renderTransactionPanel();
-  }
-
-  /**
+    /**
    * Render items list (merchant inventory or player inventory)
    */
-  renderTradingItems() {
-    const itemsListEl = document.getElementById('tradingItemsList');
-    if (!itemsListEl) return;
+    renderTradingItems() {
+        const itemsListEl = document.getElementById('tradingItemsList');
+        if (!itemsListEl) {
+            return;
+        }
 
-    const character = window.gameState?.get('character');
-    if (!character) return;
+        const character = window.gameState?.get('character');
+        if (!character) {
+            return;
+        }
 
-    const items = this.tradeMode === 'buy' ? this.merchantInventory : (character.inventory || []);
+        const items = this.tradeMode === 'buy' ? this.merchantInventory : (character.inventory || []);
 
-    if (items.length === 0) {
-      itemsListEl.innerHTML = `
+        if (items.length === 0) {
+            itemsListEl.innerHTML = `
         <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
           <p>No items available</p>
         </div>
       `;
-      return;
-    }
+            return;
+        }
 
-    let html = '';
-    items.forEach((item, index) => {
-      const isSelected = this.selectedItem?.id === item.id;
-      const price = this.tradeMode === 'buy'
-        ? this.merchantManager.calculateBuyPrice(item, character)
-        : this.merchantManager.calculateSellPrice(item, character);
+        let html = '';
+        items.forEach((item, index) => {
+            const isSelected = this.selectedItem?.id === item.id;
+            const price = this.tradeMode === 'buy'
+                ? this.merchantManager.calculateBuyPrice(item, character)
+                : this.merchantManager.calculateSellPrice(item, character);
 
-      const stockText = this.tradeMode === 'buy' && item.stock !== undefined
-        ? `Stock: ${item.stock}`
-        : (item.quantity > 1 ? `Owned: ${item.quantity}` : '');
+            const stockText = this.tradeMode === 'buy' && item.stock !== undefined
+                ? `Stock: ${item.stock}`
+                : (item.quantity > 1 ? `Owned: ${item.quantity}` : '');
 
-      html += `
+            html += `
         <div class="trading-item ${isSelected ? 'selected' : ''}" data-item-index="${index}">
           <div class="trading-item-icon">${this.getItemIcon(item.type)}</div>
           <div class="trading-item-details">
@@ -892,52 +934,60 @@ class SettlementUI {
           </div>
         </div>
       `;
-    });
+        });
 
-    itemsListEl.innerHTML = html;
+        itemsListEl.innerHTML = html;
 
-    // Add click handlers
-    itemsListEl.querySelectorAll('.trading-item').forEach(itemEl => {
-      itemEl.addEventListener('click', (e) => {
-        const index = parseInt(e.currentTarget.dataset.itemIndex);
-        const item = items[index];
-        this.selectItem(item);
-      });
-    });
-  }
-
-  /**
-   * Render transaction panel (selected item + quantity + total)
-   */
-  renderTransactionPanel() {
-    const selectedItemEl = document.getElementById('selectedItemDisplay');
-    const qtyInput = document.getElementById('qtyInput');
-    const totalPriceEl = document.getElementById('totalPrice');
-    const tradeBtnEl = document.getElementById('executeTrade');
-
-    const character = window.gameState?.get('character');
-    if (!character) return;
-
-    // Update selected item display
-    if (!this.selectedItem) {
-      if (selectedItemEl) {
-        selectedItemEl.innerHTML = `<div class="no-selection">Select an item to trade</div>`;
-      }
-      if (qtyInput) qtyInput.disabled = true;
-      if (tradeBtnEl) tradeBtnEl.disabled = true;
-      if (totalPriceEl) totalPriceEl.textContent = '0 gp';
-      return;
+        // Add click handlers
+        itemsListEl.querySelectorAll('.trading-item').forEach(itemEl => {
+            itemEl.addEventListener('click', (e) => {
+                const index = parseInt(e.currentTarget.dataset.itemIndex);
+                const item = items[index];
+                this.selectItem(item);
+            });
+        });
     }
 
-    // Calculate prices
-    const unitPrice = this.tradeMode === 'buy'
-      ? this.merchantManager.calculateBuyPrice(this.selectedItem, character)
-      : this.merchantManager.calculateSellPrice(this.selectedItem, character);
-    const totalPrice = unitPrice * this.tradeQuantity;
+    /**
+   * Render transaction panel (selected item + quantity + total)
+   */
+    renderTransactionPanel() {
+        const selectedItemEl = document.getElementById('selectedItemDisplay');
+        const qtyInput = document.getElementById('qtyInput');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const tradeBtnEl = document.getElementById('executeTrade');
 
-    // Update selected item display
-    if (selectedItemEl) {
-      selectedItemEl.innerHTML = `
+        const character = window.gameState?.get('character');
+        if (!character) {
+            return;
+        }
+
+        // Update selected item display
+        if (!this.selectedItem) {
+            if (selectedItemEl) {
+                selectedItemEl.innerHTML = '<div class="no-selection">Select an item to trade</div>';
+            }
+            if (qtyInput) {
+                qtyInput.disabled = true;
+            }
+            if (tradeBtnEl) {
+                tradeBtnEl.disabled = true;
+            }
+            if (totalPriceEl) {
+                totalPriceEl.textContent = '0 gp';
+            }
+            return;
+        }
+
+        // Calculate prices
+        const unitPrice = this.tradeMode === 'buy'
+            ? this.merchantManager.calculateBuyPrice(this.selectedItem, character)
+            : this.merchantManager.calculateSellPrice(this.selectedItem, character);
+        const totalPrice = unitPrice * this.tradeQuantity;
+
+        // Update selected item display
+        if (selectedItemEl) {
+            selectedItemEl.innerHTML = `
         <div class="selected-item-header">
           <div class="icon">${this.getItemIcon(this.selectedItem.type)}</div>
           <div class="selected-item-info">
@@ -964,344 +1014,356 @@ class SettlementUI {
           ` : ''}
         </div>
       `;
+        }
+
+        // Update quantity input
+        if (qtyInput) {
+            qtyInput.disabled = false;
+            qtyInput.value = this.tradeQuantity;
+            qtyInput.max = this.tradeMode === 'buy'
+                ? (this.selectedItem.stock || 99)
+                : (this.selectedItem.quantity || 1);
+        }
+
+        // Update total price
+        if (totalPriceEl) {
+            totalPriceEl.textContent = `${totalPrice} gp`;
+        }
+
+        // Update trade button
+        if (tradeBtnEl) {
+            const canAfford = this.tradeMode === 'buy'
+                ? character.gold >= totalPrice
+                : true;
+            const hasStock = this.tradeMode === 'buy'
+                ? (this.selectedItem.stock || 0) >= this.tradeQuantity
+                : (this.selectedItem.quantity || 0) >= this.tradeQuantity;
+
+            tradeBtnEl.disabled = !canAfford || !hasStock;
+            tradeBtnEl.textContent = this.tradeMode === 'buy' ? 'BUY' : 'SELL';
+            tradeBtnEl.className = `trade-btn${  this.tradeMode === 'sell' ? ' sell-mode' : ''}`;
+
+            if (!canAfford) {
+                tradeBtnEl.title = 'Not enough gold';
+            } else if (!hasStock) {
+                tradeBtnEl.title = this.tradeMode === 'buy' ? 'Out of stock' : 'Not enough items';
+            } else {
+                tradeBtnEl.title = '';
+            }
+        }
+
+        // Update CHA hint
+        const chaHintEl = document.getElementById('chaHint');
+        if (chaHintEl) {
+            const chaModifier = character.getAbilityModifier(character.abilities.cha);
+            const chaPercent = Math.abs(chaModifier);
+            const direction = this.tradeMode === 'buy' ? 'discount' : 'bonus';
+            chaHintEl.innerHTML = `Your Charisma gives you a <span class="cha-bonus">${chaPercent}% ${direction}</span> on prices`;
+        }
     }
 
-    // Update quantity input
-    if (qtyInput) {
-      qtyInput.disabled = false;
-      qtyInput.value = this.tradeQuantity;
-      qtyInput.max = this.tradeMode === 'buy'
-        ? (this.selectedItem.stock || 99)
-        : (this.selectedItem.quantity || 1);
-    }
-
-    // Update total price
-    if (totalPriceEl) {
-      totalPriceEl.textContent = `${totalPrice} gp`;
-    }
-
-    // Update trade button
-    if (tradeBtnEl) {
-      const canAfford = this.tradeMode === 'buy'
-        ? character.gold >= totalPrice
-        : true;
-      const hasStock = this.tradeMode === 'buy'
-        ? (this.selectedItem.stock || 0) >= this.tradeQuantity
-        : (this.selectedItem.quantity || 0) >= this.tradeQuantity;
-
-      tradeBtnEl.disabled = !canAfford || !hasStock;
-      tradeBtnEl.textContent = this.tradeMode === 'buy' ? 'BUY' : 'SELL';
-      tradeBtnEl.className = 'trade-btn' + (this.tradeMode === 'sell' ? ' sell-mode' : '');
-
-      if (!canAfford) {
-        tradeBtnEl.title = 'Not enough gold';
-      } else if (!hasStock) {
-        tradeBtnEl.title = this.tradeMode === 'buy' ? 'Out of stock' : 'Not enough items';
-      } else {
-        tradeBtnEl.title = '';
-      }
-    }
-
-    // Update CHA hint
-    const chaHintEl = document.getElementById('chaHint');
-    if (chaHintEl) {
-      const chaModifier = character.getAbilityModifier(character.abilities.cha);
-      const chaPercent = Math.abs(chaModifier);
-      const direction = this.tradeMode === 'buy' ? 'discount' : 'bonus';
-      chaHintEl.innerHTML = `Your Charisma gives you a <span class="cha-bonus">${chaPercent}% ${direction}</span> on prices`;
-    }
-  }
-
-  /**
+    /**
    * Switch between buy and sell modes
    * @param {string} mode - 'buy' or 'sell'
    */
-  switchTradeMode(mode) {
-    this.tradeMode = mode;
-    this.selectedItem = null;
-    this.tradeQuantity = 1;
-    this.renderTradingView();
-  }
+    switchTradeMode(mode) {
+        this.tradeMode = mode;
+        this.selectedItem = null;
+        this.tradeQuantity = 1;
+        this.renderTradingView();
+    }
 
-  /**
+    /**
    * Select an item for trading
    * @param {Object} item - Item data
    */
-  selectItem(item) {
-    this.selectedItem = item;
-    this.tradeQuantity = 1;
-    this.renderTradingView();
-  }
+    selectItem(item) {
+        this.selectedItem = item;
+        this.tradeQuantity = 1;
+        this.renderTradingView();
+    }
 
-  /**
+    /**
    * Change quantity by delta
    * @param {number} delta - Amount to change (-1 or +1)
    */
-  changeQuantity(delta) {
-    if (!this.selectedItem) return;
+    changeQuantity(delta) {
+        if (!this.selectedItem) {
+            return;
+        }
 
-    const maxQty = this.tradeMode === 'buy'
-      ? (this.selectedItem.stock || 99)
-      : (this.selectedItem.quantity || 1);
+        const maxQty = this.tradeMode === 'buy'
+            ? (this.selectedItem.stock || 99)
+            : (this.selectedItem.quantity || 1);
 
-    this.tradeQuantity = Math.max(1, Math.min(maxQty, this.tradeQuantity + delta));
-    this.renderTransactionPanel();
-  }
+        this.tradeQuantity = Math.max(1, Math.min(maxQty, this.tradeQuantity + delta));
+        this.renderTransactionPanel();
+    }
 
-  /**
+    /**
    * Set quantity to specific value
    * @param {number} qty - Quantity value
    */
-  setQuantity(qty) {
-    if (!this.selectedItem) return;
+    setQuantity(qty) {
+        if (!this.selectedItem) {
+            return;
+        }
 
-    const maxQty = this.tradeMode === 'buy'
-      ? (this.selectedItem.stock || 99)
-      : (this.selectedItem.quantity || 1);
+        const maxQty = this.tradeMode === 'buy'
+            ? (this.selectedItem.stock || 99)
+            : (this.selectedItem.quantity || 1);
 
-    this.tradeQuantity = Math.max(1, Math.min(maxQty, qty));
-    this.renderTransactionPanel();
-  }
+        this.tradeQuantity = Math.max(1, Math.min(maxQty, qty));
+        this.renderTransactionPanel();
+    }
 
-  /**
+    /**
    * Execute the trade (buy or sell)
    */
-  executeTrade() {
-    if (!this.selectedItem || !this.merchantManager) return;
-
-    const character = window.gameState?.get('character');
-    if (!character) return;
-
-    try {
-      let result;
-      if (this.tradeMode === 'buy') {
-        result = this.merchantManager.buyItem(this.selectedItem, character, this.tradeQuantity);
-      } else {
-        result = this.merchantManager.sellItem(this.selectedItem, character, this.tradeQuantity);
-      }
-
-      if (result.success) {
-        // Add message to log
-        const action = this.tradeMode === 'buy' ? 'Bought' : 'Sold';
-        const message = `${action} ${this.tradeQuantity}x ${this.selectedItem.name} for ${result.totalCost} gp`;
-        window.gameState?.addMessage(message, 'success');
-
-        // Update merchant inventory stock
-        if (this.tradeMode === 'buy' && this.selectedItem.stock !== undefined) {
-          this.selectedItem.stock -= this.tradeQuantity;
+    executeTrade() {
+        if (!this.selectedItem || !this.merchantManager) {
+            return;
         }
 
-        // Reset selection
-        this.selectedItem = null;
-        this.tradeQuantity = 1;
-
-        // Re-render view
-        this.renderTradingView();
-
-        // Update HUD
-        if (window.game?.updateHUD) {
-          window.game.updateHUD();
+        const character = window.gameState?.get('character');
+        if (!character) {
+            return;
         }
-      } else {
-        // Show error message
-        window.gameState?.addMessage(result.error || 'Trade failed', 'combat');
-      }
-    } catch (error) {
-      console.error('Trade failed:', error);
-      window.gameState?.addMessage('Trade failed: ' + error.message, 'combat');
+
+        try {
+            let result;
+            if (this.tradeMode === 'buy') {
+                result = this.merchantManager.buyItem(this.selectedItem, character, this.tradeQuantity);
+            } else {
+                result = this.merchantManager.sellItem(this.selectedItem, character, this.tradeQuantity);
+            }
+
+            if (result.success) {
+                // Add message to log
+                const action = this.tradeMode === 'buy' ? 'Bought' : 'Sold';
+                const message = `${action} ${this.tradeQuantity}x ${this.selectedItem.name} for ${result.totalCost} gp`;
+                window.gameState?.addMessage(message, 'success');
+
+                // Update merchant inventory stock
+                if (this.tradeMode === 'buy' && this.selectedItem.stock !== undefined) {
+                    this.selectedItem.stock -= this.tradeQuantity;
+                }
+
+                // Reset selection
+                this.selectedItem = null;
+                this.tradeQuantity = 1;
+
+                // Re-render view
+                this.renderTradingView();
+
+                // Update HUD
+                if (window.game?.updateHUD) {
+                    window.game.updateHUD();
+                }
+            } else {
+                // Show error message
+                window.gameState?.addMessage(result.error || 'Trade failed', 'combat');
+            }
+        } catch (error) {
+            console.error('Trade failed:', error);
+            window.gameState?.addMessage(`Trade failed: ${  error.message}`, 'combat');
+        }
     }
-  }
 
-  /**
+    /**
    * Close trading modal
    */
-  closeTradingModal() {
-    const modal = document.getElementById('tradingModal');
-    if (modal) {
-      modal.style.display = 'none';
+    closeTradingModal() {
+        const modal = document.getElementById('tradingModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        this.currentMerchant = null;
+        this.merchantInventory = [];
+        this.selectedItem = null;
     }
-    this.currentMerchant = null;
-    this.merchantInventory = [];
-    this.selectedItem = null;
-  }
 
-  /**
+    /**
    * Get contextual skill challenges for an NPC
    * @param {Object} npc - NPC data
    * @returns {Array<Object>} Available challenges
    */
-  getContextualSkillChallenges(npc) {
-    if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
-      return [];
+    getContextualSkillChallenges(npc) {
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+            return [];
+        }
+
+        const allChallenges = window.skillChallengeManager.challenges.challenges;
+        const availableChallenges = [];
+
+        // Map NPC roles to appropriate challenge types
+        const roleChallengeMap = {
+            'merchant': ['haggle', 'appraise_goods', 'detect_lie'],
+            'blacksmith': ['identify_item_quality', 'craft_assistance'],
+            'innkeeper': ['gather_rumors', 'detect_lie', 'social_challenge'],
+            'leader': ['intimidate_threat', 'negotiate', 'persuade'],
+            'guard': ['intimidate_threat', 'detect_lie', 'gather_information']
+        };
+
+        const possibleChallengeIds = roleChallengeMap[npc.role] || [];
+
+        // Find challenges that match and player can attempt
+        for (const challengeId of possibleChallengeIds) {
+            const challenge = allChallenges[challengeId];
+            if (challenge && window.skillChallengeManager.canAttemptChallenge(challengeId)) {
+                availableChallenges.push(challenge);
+            }
+        }
+
+        return availableChallenges;
     }
 
-    const allChallenges = window.skillChallengeManager.challenges.challenges;
-    const availableChallenges = [];
-
-    // Map NPC roles to appropriate challenge types
-    const roleChallengeMap = {
-      'merchant': ['haggle', 'appraise_goods', 'detect_lie'],
-      'blacksmith': ['identify_item_quality', 'craft_assistance'],
-      'innkeeper': ['gather_rumors', 'detect_lie', 'social_challenge'],
-      'leader': ['intimidate_threat', 'negotiate', 'persuade'],
-      'guard': ['intimidate_threat', 'detect_lie', 'gather_information']
-    };
-
-    const possibleChallengeIds = roleChallengeMap[npc.role] || [];
-
-    // Find challenges that match and player can attempt
-    for (const challengeId of possibleChallengeIds) {
-      const challenge = allChallenges[challengeId];
-      if (challenge && window.skillChallengeManager.canAttemptChallenge(challengeId)) {
-        availableChallenges.push(challenge);
-      }
-    }
-
-    return availableChallenges;
-  }
-
-  /**
+    /**
    * Show skill challenge options to player
    * @param {Object} npc - NPC data
    * @param {HTMLElement} textEl - Dialogue text element
    * @param {HTMLElement} optionsEl - Dialogue options element
    */
-  showSkillChallengeOptions(npc, textEl, optionsEl) {
-    const challenges = this.getContextualSkillChallenges(npc);
+    showSkillChallengeOptions(npc, textEl, optionsEl) {
+        const challenges = this.getContextualSkillChallenges(npc);
 
-    if (challenges.length === 0) {
-      textEl.textContent = "I don't have any challenges for you right now. Perhaps come back later?";
-      return;
-    }
+        if (challenges.length === 0) {
+            textEl.textContent = "I don't have any challenges for you right now. Perhaps come back later?";
+            return;
+        }
 
-    textEl.textContent = npc.dialogue.skillChallengeOffer || "Care to test your skills? I have something in mind...";
+        textEl.textContent = npc.dialogue.skillChallengeOffer || 'Care to test your skills? I have something in mind...';
 
-    let optionsHTML = '<div class="skill-challenge-list">';
-    for (const challenge of challenges) {
-      const difficultyStars = this.getChallengeDifficultyStars(challenge);
-      optionsHTML += `
+        let optionsHTML = '<div class="skill-challenge-list">';
+        for (const challenge of challenges) {
+            const difficultyStars = this.getChallengeDifficultyStars(challenge);
+            optionsHTML += `
         <button class="dialogue-option skill-challenge-offer" data-challenge-id="${challenge.id}">
           ${difficultyStars} ${challenge.name}
         </button>
       `;
-    }
-    optionsHTML += `
+        }
+        optionsHTML += `
       <button class="dialogue-option" data-action="back">
         ← Back
       </button>
     `;
-    optionsHTML += '</div>';
+        optionsHTML += '</div>';
 
-    optionsEl.innerHTML = optionsHTML;
+        optionsEl.innerHTML = optionsHTML;
 
-    // Add event listeners
-    optionsEl.querySelectorAll('.skill-challenge-offer').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.startSkillChallenge(e.target.dataset.challengeId, npc);
-      });
-    });
+        // Add event listeners
+        optionsEl.querySelectorAll('.skill-challenge-offer').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.startSkillChallenge(e.target.dataset.challengeId, npc);
+            });
+        });
 
-    // Back button
-    optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
-      this.showNPCDialogue(npc);
-    });
-  }
+        // Back button
+        optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => {
+            this.showNPCDialogue(npc);
+        });
+    }
 
-  /**
+    /**
    * Start a skill challenge from NPC dialogue
    * @param {string} challengeId - Challenge ID
    * @param {Object} npc - NPC data
    */
-  async startSkillChallenge(challengeId, npc) {
-    if (!window.skillChallengeManager || !window.game) {
-      console.error('Skill challenge system not initialized');
-      return;
-    }
-
-    const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
-    if (!challenge) {
-      console.error(`Challenge ${challengeId} not found`);
-      return;
-    }
-
-    // Close dialogue modal before starting challenge
-    this.closeNPCDialogue();
-
-    // Get character
-    const character = window.gameState?.get('character');
-    if (!character) {
-      console.error('No character found');
-      return;
-    }
-
-    // Record attempt for cooldown
-    window.skillChallengeManager.recordChallengeAttempt(challengeId);
-
-    // Calculate level-adjusted DC
-    const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
-    const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
-
-    // Execute challenge based on type
-    if (challenge.type === 'single') {
-      const config = {
-        title: challenge.name,
-        description: challenge.description,
-        skill: challenge.skill,
-        dc: adjustedDC
-      };
-
-      const result = await window.game.promptSkillCheck(config, challenge, null);
-
-      if (result.attempted) {
-        // Notify QuestManager
-        if (window.questManager) {
-          window.questManager.onSkillChallengeCompleted(challengeId, result);
+    async startSkillChallenge(challengeId, npc) {
+        if (!window.skillChallengeManager || !window.game) {
+            console.error('Skill challenge system not initialized');
+            return;
         }
 
-        // Show completion dialogue
-        const message = result.success
-          ? npc.dialogue.skillChallengeSuccess || "Well done! You passed the test."
-          : npc.dialogue.skillChallengeFailure || "Better luck next time.";
+        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+        if (!challenge) {
+            console.error(`Challenge ${challengeId} not found`);
+            return;
+        }
 
-        window.gameState?.addMessage(`${npc.name}: ${message}`, result.success ? 'success' : 'info');
-      }
-    } else if (challenge.type === 'sequential') {
-      // Sequential challenges handled by Player methods
-      await window.game.player.handleSequentialSkillChallenge(challenge);
-    } else if (challenge.type === 'choice') {
-      // Choice challenges handled by Player methods
-      await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
+        // Close dialogue modal before starting challenge
+        this.closeNPCDialogue();
+
+        // Get character
+        const character = window.gameState?.get('character');
+        if (!character) {
+            console.error('No character found');
+            return;
+        }
+
+        // Record attempt for cooldown
+        window.skillChallengeManager.recordChallengeAttempt(challengeId);
+
+        // Calculate level-adjusted DC
+        const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
+        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
+
+        // Execute challenge based on type
+        if (challenge.type === 'single') {
+            const config = {
+                title: challenge.name,
+                description: challenge.description,
+                skill: challenge.skill,
+                dc: adjustedDC
+            };
+
+            const result = await window.game.promptSkillCheck(config, challenge, null);
+
+            if (result.attempted) {
+                // Notify QuestManager
+                if (window.questManager) {
+                    window.questManager.onSkillChallengeCompleted(challengeId, result);
+                }
+
+                // Show completion dialogue
+                const message = result.success
+                    ? npc.dialogue.skillChallengeSuccess || 'Well done! You passed the test.'
+                    : npc.dialogue.skillChallengeFailure || 'Better luck next time.';
+
+                window.gameState?.addMessage(`${npc.name}: ${message}`, result.success ? 'success' : 'info');
+            }
+        } else if (challenge.type === 'sequential') {
+            // Sequential challenges handled by Player methods
+            await window.game.player.handleSequentialSkillChallenge(challenge);
+        } else if (challenge.type === 'choice') {
+            // Choice challenges handled by Player methods
+            await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
+        }
     }
-  }
 
-  /**
+    /**
    * Get difficulty stars for challenge
    * @param {Object} challenge - Challenge template
    * @returns {string} Star rating
    */
-  getChallengeDifficultyStars(challenge) {
-    const dc = challenge.baseDC || challenge.stages?.[0]?.baseDC || 10;
-    if (dc >= 20) return '⭐⭐⭐'; // Hard
-    if (dc >= 15) return '⭐⭐'; // Medium
-    return '⭐'; // Easy
-  }
+    getChallengeDifficultyStars(challenge) {
+        const dc = challenge.baseDC || challenge.stages?.[0]?.baseDC || 10;
+        if (dc >= 20) {
+            return '⭐⭐⭐';
+        } // Hard
+        if (dc >= 15) {
+            return '⭐⭐';
+        } // Medium
+        return '⭐'; // Easy
+    }
 
-  /**
+    /**
    * Get icon for item type
    * @param {string} type - Item type
    * @returns {string} Emoji icon
    */
-  getItemIcon(type) {
-    const icons = {
-      'weapon': '⚔️',
-      'armor': '🛡️',
-      'consumable': '🧪',
-      'misc': '📦',
-      'tool': '🔧',
-      'shield': '🛡️'
-    };
-    return icons[type] || '📦';
-  }
+    getItemIcon(type) {
+        const icons = {
+            'weapon': '⚔️',
+            'armor': '🛡️',
+            'consumable': '🧪',
+            'misc': '📦',
+            'tool': '🔧',
+            'shield': '🛡️'
+        };
+        return icons[type] || '📦';
+    }
 
 }
 

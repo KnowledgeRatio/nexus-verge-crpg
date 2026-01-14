@@ -182,7 +182,9 @@ export class CharacterCreationUI {
      * Check if selected class gets Fighting Style at level 1
      */
     hasFightingStyleAtLevel1() {
-        if (!this.characterData.class) return false;
+        if (!this.characterData.class) {
+            return false;
+        }
 
         const level1Features = this.characterData.class.features?.['1'] || [];
         return level1Features.some(f => f.name === 'Fighting Style');
@@ -543,15 +545,15 @@ export class CharacterCreationUI {
             <p class="step-description">Your fighting style represents your preferred combat technique.</p>
             <div class="fighting-style-grid">
                 ${availableStyles.map(styleId => {
-                    const style = fightingStyles[styleId];
-                    return `
+        const style = fightingStyles[styleId];
+        return `
                         <div class="fighting-style-card ${this.characterData.fightingStyle === styleId ? 'selected' : ''}"
                              data-style-id="${styleId}">
                             <h4>${style.icon} ${style.name}</h4>
                             <p class="style-description">${style.description}</p>
                         </div>
                     `;
-                }).join('')}
+    }).join('')}
             </div>
         `;
 
@@ -639,9 +641,9 @@ export class CharacterCreationUI {
             <div class="skill-selection">
                 <h4>Calling Skills (Choose ${numToChoose}):</h4>
                 ${availableSkills.map(skill => {
-                    const isFromBackground = backgroundSkills.includes(skill);
-                    const isSelected = this.characterData.skillChoices.includes(skill);
-                    return `
+        const isFromBackground = backgroundSkills.includes(skill);
+        const isSelected = this.characterData.skillChoices.includes(skill);
+        return `
                         <label class="skill-checkbox ${isFromBackground ? 'disabled' : ''}">
                             <input type="checkbox" value="${skill}"
                                    ${isSelected ? 'checked' : ''}
@@ -651,7 +653,7 @@ export class CharacterCreationUI {
                             ${isFromBackground ? '<span class="skill-note">(from background)</span>' : ''}
                         </label>
                     `;
-                }).join('')}
+    }).join('')}
             </div>
             <div class="background-skills">
                 <h4>Background Skills (Automatic):</h4>
@@ -702,16 +704,16 @@ export class CharacterCreationUI {
             <h3>Choose Your Weapon Masteries</h3>
             <p class="step-description">
                 ${numToChoose === 0
-                    ? 'Your calling does not grant weapon masteries at level 1.'
-                    : `Choose <strong>${numToChoose}</strong> weapon mastery. Weapon masteries are special techniques you can use when proficient with a weapon.`
-                }
+        ? 'Your calling does not grant weapon masteries at level 1.'
+        : `Choose <strong>${numToChoose}</strong> weapon mastery. Weapon masteries are special techniques you can use when proficient with a weapon.`
+}
             </p>
             ${numToChoose > 0 ? `
                 <div class="weapon-mastery-selection">
                     ${weaponMasteryOptions.map(option => {
-                        const isSelected = this.characterData.weaponMasteries.includes(option.masteryId);
-                        const weaponNames = option.mastery.weaponTypes.map(id => this.formatWeaponName(id)).join(', ');
-                        return `
+        const isSelected = this.characterData.weaponMasteries.includes(option.masteryId);
+        const weaponNames = option.mastery.weaponTypes.map(id => this.formatWeaponName(id)).join(', ');
+        return `
                             <label class="mastery-option ${isSelected ? 'selected' : ''}">
                                 <input type="checkbox"
                                        value="${option.masteryId}"
@@ -725,7 +727,7 @@ export class CharacterCreationUI {
                                 </div>
                             </label>
                         `;
-                    }).join('')}
+    }).join('')}
                 </div>
             ` : '<p style="text-align: center; margin-top: 20px;">You will gain weapon masteries at higher levels.</p>'}
         `;
@@ -833,9 +835,9 @@ export class CharacterCreationUI {
                 <div class="review-section">
                     <h4>Proficiencies</h4>
                     <p><strong>Skills:</strong> ${[
-                        ...this.characterData.skillChoices,
-                        ...this.characterData.background.skillProficiencies
-                    ].map(s => this.formatSkillName(s)).join(', ')}</p>
+        ...this.characterData.skillChoices,
+        ...this.characterData.background.skillProficiencies
+    ].map(s => this.formatSkillName(s)).join(', ')}</p>
                     <p><strong>Armor:</strong> ${this.characterData.class.armorProficiencies.join(', ') || 'None'}</p>
                     <p><strong>Weapons:</strong> ${this.characterData.class.weaponProficiencies.join(', ')}</p>
                 </div>
