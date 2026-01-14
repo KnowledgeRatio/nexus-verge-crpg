@@ -360,6 +360,14 @@
                                     <span class="slot-label">Off-Hand:</span>
                                     <span class="slot-value" id="eqOffHand">—</span>
                                 </div>
+                                <div class="equipment-slot" data-slot="helmet">
+                                    <span class="slot-label">Helmet:</span>
+                                    <span class="slot-value" id="eqHelmet">—</span>
+                                </div>
+                                <div class="equipment-slot" data-slot="artifact">
+                                    <span class="slot-label">Artifact:</span>
+                                    <span class="slot-value" id="eqArtifact">—</span>
+                                </div>
                             </div>
                         </div>
 
@@ -835,6 +843,161 @@
         <button id="quickMenuToggle" class="quick-menu-toggle" title="Toggle Quick Menu">
             ☰
         </button>
+
+        <!-- Legal / Licensing Modal -->
+        <div id="legalModal" class="modal">
+            <div class="modal-content legal-modal-content">
+                <div class="modal-header">
+                    <h2>Legal & Licensing Information</h2>
+                    <button class="modal-close" id="closeLegalBtn">×</button>
+                </div>
+                <div class="modal-body legal-body">
+                    <!-- SRD Attribution Section -->
+                    <section class="legal-section">
+                        <h3>📜 D&D 5e System Reference Document (SRD 5.2.1)</h3>
+                        <div class="legal-content">
+                            <p class="srd-statement">
+                                This work includes material taken from the <strong>System Reference Document 5.2.1</strong> ("SRD 5.2.1")
+                                by Wizards of the Coast LLC, available at
+                                <a href="https://www.dndbeyond.com/attachments/39j2li89/SRD_CC_v5.2.pdf" target="_blank" rel="noopener noreferrer">
+                                    https://www.dndbeyond.com/attachments/39j2li89/SRD_CC_v5.2.pdf
+                                </a>.
+                                The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License,
+                                available at
+                                <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener noreferrer">
+                                    https://creativecommons.org/licenses/by/4.0/legalcode
+                                </a>.
+                            </p>
+                            <p class="srd-trademark">
+                                <strong>Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks
+                                of Wizards of the Coast LLC in the USA and other countries. © Wizards of the Coast LLC.</strong>
+                            </p>
+                            <div class="legal-links">
+                                <a href="legal/SRD_ATTRIBUTION.md" target="_blank">📄 Full SRD Attribution</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Project License Section -->
+                    <section class="legal-section">
+                        <h3>⚖️ Project License</h3>
+                        <div class="legal-content">
+                            <p>
+                                <strong>Nexus Verge</strong> original code and content is licensed under the
+                                <strong>MIT License</strong>. This includes:
+                            </p>
+                            <ul>
+                                <li>All source code and implementation</li>
+                                <li>Original game mechanics and systems</li>
+                                <li>User interface and styling</li>
+                                <li>Procedural generation algorithms</li>
+                            </ul>
+                            <div class="legal-links">
+                                <a href="LICENSE" target="_blank">📄 View License</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Third-Party Dependencies Section -->
+                    <section class="legal-section">
+                        <h3>📦 Third-Party Dependencies</h3>
+                        <div class="legal-content">
+                            <p>
+                                This project uses <strong>zero runtime dependencies</strong>. The game is built with
+                                vanilla JavaScript and native browser APIs.
+                            </p>
+                            <p>
+                                Development dependencies (used only for code quality, not distributed):
+                            </p>
+                            <ul>
+                                <li><strong>ESLint</strong> (v9.39.2) - MIT License</li>
+                            </ul>
+                            <div class="legal-links">
+                                <a href="legal/THIRD_PARTY_NOTICES.md" target="_blank">📄 Full Third-Party Notices</a>
+                                <a href="legal/sbom/npm-dependencies.json" target="_blank">📋 SBOM (JSON)</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Asset Attributions Section -->
+                    <section class="legal-section">
+                        <h3>🎵 Asset Attributions</h3>
+                        <div class="legal-content">
+                            <h4>Audio by Thomas Devlin</h4>
+                            <p>
+                                <strong>All audio assets</strong> (combat sounds, footsteps, UI sounds) are created by <strong>Thomas Devlin</strong>.
+                            </p>
+                            <ul>
+                                <li>Combat sounds (sword, bow, spell impacts) - 7 files</li>
+                                <li>Movement sounds (footsteps) - 5 files</li>
+                                <li>UI interaction sounds - 1 file</li>
+                                <li><strong>Total: 13 audio files</strong></li>
+                            </ul>
+                            <p class="attribution-statement">
+                                <strong>All Audio by Thomas Devlin</strong><br>
+                                Website: <a href="https://tommusic.itch.io/" target="_blank" rel="noopener noreferrer">
+                                    tommusic.itch.io
+                                </a>
+                            </p>
+
+                            <div class="legal-links">
+                                <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">📄 Full Asset Attributions</a>
+                                <a href="https://tommusic.itch.io/" target="_blank" rel="noopener noreferrer">🔗 Thomas Devlin Music</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Open Source Compliance Section -->
+                    <section class="legal-section">
+                        <h3>✅ Open Source Compliance</h3>
+                        <div class="legal-content">
+                            <p>
+                                We are committed to open source compliance. All required notices and attributions
+                                are provided in accordance with the terms of each license.
+                            </p>
+                            <h4>Verification</h4>
+                            <p>To verify license compliance:</p>
+                            <pre><code>npm run legal:generate
+npm run legal:verify</code></pre>
+                            <h4>SBOM Generation</h4>
+                            <p>Software Bill of Materials (SBOM) is automatically generated and available:</p>
+                            <ul>
+                                <li><a href="legal/sbom/npm-dependencies.json" target="_blank">Full dependency tree (JSON)</a></li>
+                                <li><a href="legal/sbom/npm-production.json" target="_blank">Production dependencies only (JSON)</a></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Contact Section -->
+                    <section class="legal-section">
+                        <h3>📧 Contact</h3>
+                        <div class="legal-content">
+                            <p>
+                                For licensing questions, compliance issues, or to report attribution errors:
+                            </p>
+                            <ul>
+                                <li><strong>GitHub Issues:</strong> <a href="https://github.com/yourusername/nexus-verge-crpg-5e/issues" target="_blank">Report an issue</a></li>
+                                <li><strong>Email:</strong> legal@nexusverge.com (if applicable)</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer (visible on all screens except game screen) -->
+        <footer id="appFooter" class="app-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <span>&copy; 2026 Nexus Verge</span>
+                    <span class="footer-separator">•</span>
+                    <a href="#" id="footerLegalLink" class="footer-link">Legal / Licensing</a>
+                </div>
+                <div class="footer-right">
+                    <span>Made with ❤️ for D&D fans</span>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script type="module" src="src/main.js"></script>

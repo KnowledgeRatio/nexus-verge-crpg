@@ -217,7 +217,8 @@
           },
           "onFailure": {
             "message": "The bandits reject your words and attack!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit"]
           }
         },
         {
@@ -232,7 +233,8 @@
           },
           "onFailure": {
             "message": "The bandits see through your deception and attack!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit"]
           }
         },
         {
@@ -247,7 +249,8 @@
           },
           "onFailure": {
             "message": "Your emotional appeal falls flat and they attack!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit"]
           }
         }
       ],
@@ -392,7 +395,8 @@
       },
       "onFailure": {
         "message": "The animal remains hostile and attacks!",
-        "consequences": ["initiateCombat"]
+        "consequences": ["initiateCombat"],
+        "enemyTypes": ["wolf"]
       },
       "contextualTriggers": {
         "exploration": {
@@ -432,7 +436,8 @@
           },
           "onFailure": {
             "message": "You make a noise and a guard spots you!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit", "orc", "skeleton"]
           }
         },
         {
@@ -452,7 +457,8 @@
           },
           "onFailure": {
             "message": "A guard spots you hiding!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit", "orc", "skeleton"]
           }
         },
         {
@@ -467,7 +473,8 @@
           },
           "onFailure": {
             "message": "The guards challenge you and attack!",
-            "consequences": ["initiateCombat"]
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["bandit", "orc", "skeleton"]
           }
         }
       ],

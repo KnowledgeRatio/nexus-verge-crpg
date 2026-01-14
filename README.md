@@ -302,11 +302,46 @@ This is currently a solo project in active development. Contributions, bug repor
 
 ---
 
-## 📜 License
+## 📜 License & Legal
 
-MIT License - See LICENSE file for details
+### Project License
+**Nexus Verge** is licensed under the **MIT License** - see [LICENSE](LICENSE) file for details.
 
-D&D 5e content used under the Open Game License (OGL) and System Reference Document (SRD).
+### D&D 5e System Reference Document
+This project uses content from the **System Reference Document 5.2.1** (SRD 5.2.1) by Wizards of the Coast LLC, licensed under the **Creative Commons Attribution 4.0 International License** (CC BY 4.0).
+
+**Full SRD Attribution:** [legal/SRD_ATTRIBUTION.md](legal/SRD_ATTRIBUTION.md)
+
+**Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks of Wizards of the Coast LLC. © Wizards of the Coast LLC.**
+
+### Third-Party Dependencies
+- **Runtime Dependencies:** None (100% vanilla JavaScript)
+- **Development Dependencies:** ESLint (MIT License)
+
+**Full Third-Party Notices:** [legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md)
+
+### Asset Attributions
+**All Audio Assets** (13 files) created by **Thomas Devlin** ([tommusic.itch.io](https://tommusic.itch.io/)).
+
+**Full Asset Attributions:** [legal/ASSET_ATTRIBUTIONS.md](legal/ASSET_ATTRIBUTIONS.md)
+
+### Legal Compliance
+All legal and licensing information is accessible in-game via the **Legal / Licensing** modal (footer link) and in the [legal/](legal/) directory:
+
+- 📄 [SRD Attribution](legal/SRD_ATTRIBUTION.md) - D&D 5e SRD 5.2.1 compliance
+- 📄 [Third-Party Notices](legal/THIRD_PARTY_NOTICES.md) - Dependency licenses
+- 📄 [Asset Attributions](legal/ASSET_ATTRIBUTIONS.md) - Sound effects and assets
+- 📋 [SBOM](legal/sbom/) - Software Bill of Materials (npm + CycloneDX for Dependency-Track)
+
+**Verify Compliance:**
+```bash
+npm run legal:verify
+```
+
+**Regenerate Legal Artifacts:**
+```bash
+npm run legal:generate
+```
 
 ---
 

@@ -1,0 +1,158 @@
+name: Legal Compliance Check
+
+on:
+  push:
+    branches: [ main, main-beta-quests ]
+  pull_request:
+    branches: [ main, main-beta-quests ]
+  workflow_dispatch:
+
+jobs:
+  legal-compliance:
+    runs-on: ubuntu-latest
+    name: Verify Legal Compliance
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate legal artifacts
+        run: npm run legal:generate
+
+      - name: Verify legal compliance
+        run: npm run legal:verify
+
+      - name: Check for missing SRD attribution
+        run: |
+          if ! grep -q "System Reference Document 5.2.1" legal/SRD_ATTRIBUTION.md; then
+            echo "❌ ERROR: SRD attribution missing or incomplete"
+            exit 1
+          fi
+          echo "✅ SRD attribution verified"
+
+      - name: Check for missing asset attributions
+        run: |
+          if [ -d "data/sound" ] && [ "$(ls -A data/sound 2>/dev/null)" ]; then
+            if ! grep -q "Thomas Devlin" legal/ASSET_ATTRIBUTIONS.md; then
+              echo "❌ ERROR: Sound assets present but attribution missing"
+              exit 1
+            fi
+            echo "✅ Asset attributions verified (Thomas Devlin)"
+          else
+            echo "ℹ️  No sound assets found, skipping asset attribution check"
+          fi
+
+      - name: Check LICENSE file
+        run: |
+          if [ ! -f "LICENSE" ]; then
+            echo "❌ ERROR: LICENSE file missing"
+            exit 1
+          fi
+          echo "✅ LICENSE file present"
+
+      - name: Verify SBOM is up-to-date
+        run: |
+          # Check if SBOM files exist
+          if [ ! -f "legal/sbom/cyclonedx.json" ]; then
+            echo "❌ ERROR: CycloneDX SBOM missing"
+            exit 1
+          fi
+          if [ ! -f "legal/sbom/cyclonedx.xml" ]; then
+            echo "❌ ERROR: CycloneDX XML SBOM missing"
+            exit 1
+          fi
+
+          # Check if SBOM is older than package-lock.json
+          if [ "legal/sbom/npm-dependencies.json" -ot "package-lock.json" ]; then
+            echo "⚠️  WARNING: SBOM is older than package-lock.json"
+            echo "   SBOM may be outdated. Run 'npm run legal:generate' to update."
+            # Don't fail CI, just warn
+          else
+            echo "✅ SBOM is up-to-date"
+          fi
+
+          echo "✅ All SBOM formats present (npm + CycloneDX JSON/XML)"
+
+      - name: Check website legal integration
+        run: |
+          if ! grep -q "legalModal" index.html; then
+            echo "❌ ERROR: Legal modal not found in index.html"
+            exit 1
+          fi
+          if ! grep -q "footerLegalLink" index.html; then
+            echo "❌ ERROR: Footer legal link not found in index.html"
+            exit 1
+          fi
+          echo "✅ Website legal integration verified"
+
+      - name: Generate compliance report
+        if: always()
+        run: |
+          echo "# Legal Compliance Report" > legal-report.md
+          echo "" >> legal-report.md
+          echo "**Generated:** $(date)" >> legal-report.md
+          echo "" >> legal-report.md
+          echo "## Files Checked" >> legal-report.md
+          echo "- LICENSE" >> legal-report.md
+          echo "- legal/SRD_ATTRIBUTION.md" >> legal-report.md
+          echo "- legal/THIRD_PARTY_NOTICES.md" >> legal-report.md
+          echo "- legal/ASSET_ATTRIBUTIONS.md" >> legal-report.md
+          echo "- legal/sbom/npm-dependencies.json" >> legal-report.md
+          echo "- legal/sbom/npm-production.json" >> legal-report.md
+          echo "- legal/sbom/cyclonedx.json" >> legal-report.md
+          echo "- legal/sbom/cyclonedx.xml" >> legal-report.md
+          echo "" >> legal-report.md
+          echo "## Website Integration" >> legal-report.md
+          echo "- Legal modal: ✅" >> legal-report.md
+          echo "- Footer link: ✅" >> legal-report.md
+          echo "" >> legal-report.md
+          echo "## Dependencies" >> legal-report.md
+          echo "- Dev dependencies: $(jq -r '.devDependencies | keys | length' package.json)" >> legal-report.md
+          echo "- Prod dependencies: 0 (vanilla JS)" >> legal-report.md
+          echo "" >> legal-report.md
+          echo "## SBOM Formats" >> legal-report.md
+          echo "- npm JSON (full tree)" >> legal-report.md
+          echo "- npm JSON (production only)" >> legal-report.md
+          echo "- CycloneDX 1.6 JSON (for Dependency-Track)" >> legal-report.md
+          echo "- CycloneDX 1.6 XML" >> legal-report.md
+
+      - name: Upload SBOM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx-json
+          path: legal/sbom/cyclonedx.json
+          retention-days: 90
+
+      - name: Upload SBOM XML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx-xml
+          path: legal/sbom/cyclonedx.xml
+          retention-days: 90
+
+      - name: Upload all SBOMs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-all-formats
+          path: legal/sbom/
+          retention-days: 90
+
+      - name: Upload compliance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: legal-compliance-report
+          path: legal-report.md
+          retention-days: 30

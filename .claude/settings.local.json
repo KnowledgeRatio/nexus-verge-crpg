@@ -21,7 +21,10 @@
       "Bash(npm install:*)",
       "Bash(npm run lint)",
       "Bash(del .eslintrc.json)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(npm run legal:verify:*)",
+      "Bash(npm run legal:all:*)",
+      "Bash(npm run legal:generate:*)"
     ]
   }
 }

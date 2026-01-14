@@ -1,10 +1,138 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-01-08
+**Last Updated:** 2026-01-14
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Combat Audio System (UX Enhancement)
+**Latest Commit:** Skill Challenge Damage Persistence Fix
+
+---
+
+## 🆕 Recent Changes (2026-01-14 - Session 12)
+
+### Skill Challenge Damage Persistence - Critical Bug Fix 🐛 ✅
+Fixed critical bug where skill challenge damage was being logged but never actually applied to character HP, causing players to enter combat at full health despite taking environmental damage.
+
+**Modified Files:**
+- `src/main.js` - Added character state persistence and HUD updates after applyConsequences
+
+**Bug Description:**
+- **Problem:** Skill challenges called `character.takeDamage()` successfully, but modified character was never saved back to gameState
+- **Symptom:** Console showed "💔 Applying 13 damage" but HP remained unchanged
+- **Impact:** Players took environmental damage (traps, falling, etc.) but always entered combat at full health
+- **Root Cause:** Character object modified in memory but never persisted to gameState
+
+**Implementation Details:**
+
+**1. Character State Persistence** ✅
+Added after both `applyConsequences()` call sites (passive and active skill checks):
+```javascript
+// Save modified character back to gameState (damage, conditions, etc.)
+gameState.set('character', character);
+
+// Update HUD to reflect HP changes
+this.updateHUD(character);
+```
+
+**2. Fixed Locations** ✅
+- **Passive Skill Checks** (line 2596-2599): Auto-triggered checks (traps, environmental hazards)
+- **Active Skill Checks** (line 2828-2831): Player-initiated modal checks
+
+**3. Why This Was Missed** 🤔
+- `applyConsequences()` correctly modified character object in memory
+- Logging showed damage being applied (misleading success indicator)
+- Character changes were lost when function returned (no persistence)
+- Combat system pulled fresh character from gameState (unmodified)
+
+**Benefits:**
+- ✅ **Skill challenge damage now persists** - HP changes carry over to combat
+- ✅ **HUD updates immediately** - Players see HP drop when taking damage
+- ✅ **Conditions persist** - Status effects (prone, poisoned) now properly applied
+- ✅ **Consistent state** - Character modifications always saved to gameState
+
+**Testing:**
+- Trigger trap skill challenge (e.g., boulder trap, spike pit)
+- Fail check → Take damage (e.g., 3d6 bludgeoning = 13 damage)
+- Verify HP bar updates in HUD
+- Enter combat → Verify HP reflects damage taken
+
+**User Experience Impact:**
+- ✅ Environmental hazards now have real consequences
+- ✅ Failed skill checks properly weaken player before combat
+- ✅ HP bar accurately reflects character state at all times
+- ✅ Conditions from skill challenges carry into combat
+
+---
+
+### Equipment Slot Harmonization - QoL Update ✅
+Harmonized equipment display between character sheet and inventory, removing redundant Shield slot and adding Helmet and Artifact slots to both interfaces.
+
+**Modified Files:**
+- `src/main.js` - Removed Shield slot from character sheet, added Helmet/Artifact to inventory display
+- `src/systems/Character.js` - Removed redundant shield slot, fixed shield equipping logic, added helmet equipping
+- `index.html` - Added Helmet and Artifact slots to inventory modal
+
+**Implementation Details:**
+
+**1. Equipment Slot Standardization** ✅
+Unified equipment structure across all interfaces:
+- **Main Hand** - Primary weapon
+- **Off-Hand** - Secondary weapon OR shield (dual purpose)
+- **Armor** - Body armor
+- **Helmet** - Head armor (ready for future implementation)
+- **Artifact** - Special magical items (ready for future implementation)
+
+**2. Removed Redundant Shield Slot** ✅
+- Character sheet previously showed both "Off-Hand" and "Shield" slots
+- Shield slot removed from character sheet equipment display
+- Shield logic now unified: shields always equip to off-hand slot
+- `Character.js` equipment initialization updated (removed `shield: null`)
+
+**3. Character.js Equipment Logic Fixed** ✅
+Updated `equipItem()` method to properly route items:
+```javascript
+if (item.type === 'shield') {
+    slot = 'offHand';  // Shields equip to off-hand slot
+} else if (item.type === 'helmet') {
+    slot = 'helmet';
+} else if (item.type === 'artifact') {
+    slot = 'artifact';
+}
+```
+
+**4. Inventory Display Enhanced** ✅
+Added missing equipment slots to inventory modal:
+- Helmet slot with ID `eqHelmet`
+- Artifact slot with ID `eqArtifact`
+- `updateEquipmentSlots()` method now populates all 5 slots
+
+**5. Equipment Slot Display Order** ✅
+Consistent across both interfaces:
+1. Main Hand (weapon)
+2. Off-Hand (weapon or shield)
+3. Armor (body armor)
+4. Helmet (head armor)
+5. Artifact (special items)
+
+**Benefits:**
+- ✅ **No more confusion** - Off-hand slot clearly shows either weapon or shield
+- ✅ **Consistent UI** - Character sheet and inventory display match
+- ✅ **Future-ready** - Helmet and Artifact slots prepared for implementation
+- ✅ **Cleaner design** - Removed redundant Shield slot
+- ✅ **Better UX** - Players see complete equipment layout in both interfaces
+
+**Technical Notes:**
+- Shields always equip to `equipment.offHand` (type check: `item.type === 'shield'`)
+- AC calculation already uses `equipment.offHand` for shield bonuses (no changes needed)
+- Helmet and Artifact types can be added to items.json when ready
+- All equipment slots now properly synchronized across Character.js, main.js, and index.html
+
+**User Experience Impact:**
+- ✅ Character sheet now shows 5 equipment slots (not 6)
+- ✅ Inventory modal shows all 5 slots with proper labels
+- ✅ Shield equipping works correctly (to off-hand slot)
+- ✅ Helmet/Artifact slots visible (show "—" when empty)
+- ✅ No more duplicate shield display
 
 ---
 

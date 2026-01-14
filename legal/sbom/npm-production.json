@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "name": "nexus-verge-crpg-5e",
+  "problems": [
+    "extraneous: @pkgjs/parseargs@0.11.0 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\@pkgjs\\parseargs",
+    "extraneous: encoding@0.1.13 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\encoding",
+    "extraneous: iconv-lite@0.6.3 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\iconv-lite",
+    "extraneous: safer-buffer@2.1.2 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\safer-buffer"
+  ],
+  "dependencies": {
+    "@pkgjs/parseargs": {
+      "version": "0.11.0",
+      "resolved": "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz",
+      "overridden": false,
+      "extraneous": true,
+      "problems": [
+        "extraneous: @pkgjs/parseargs@0.11.0 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\@pkgjs\\parseargs"
+      ]
+    },
+    "encoding": {
+      "version": "0.1.13",
+      "resolved": "https://registry.npmjs.org/encoding/-/encoding-0.1.13.tgz",
+      "overridden": false,
+      "extraneous": true,
+      "problems": [
+        "extraneous: encoding@0.1.13 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\encoding"
+      ]
+    },
+    "iconv-lite": {
+      "version": "0.6.3",
+      "resolved": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.6.3.tgz",
+      "overridden": false,
+      "extraneous": true,
+      "problems": [
+        "extraneous: iconv-lite@0.6.3 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\iconv-lite"
+      ]
+    },
+    "safer-buffer": {
+      "version": "2.1.2",
+      "resolved": "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz",
+      "overridden": false,
+      "extraneous": true,
+      "problems": [
+        "extraneous: safer-buffer@2.1.2 c:\\Users\\josh_\\git\\nexus-verge-crpg-5e\\node_modules\\safer-buffer"
+      ]
+    }
+  }
+}

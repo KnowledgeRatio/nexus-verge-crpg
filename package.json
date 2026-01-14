@@ -12,12 +12,17 @@
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "lint:all": "eslint .",
-    "lint:report": "eslint src/**/*.js --output-file eslint-report.txt"
+    "lint:report": "eslint src/**/*.js --output-file eslint-report.txt",
+    "legal:generate": "node scripts/generate_legal_artifacts.js",
+    "legal:verify": "node scripts/verify_legal_compliance.js",
+    "legal:verify-assets": "node scripts/verify_legal_compliance.js",
+    "legal:all": "npm run legal:generate && npm run legal:verify"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@cyclonedx/cyclonedx-npm": "^4.1.2",
     "eslint": "^9.39.2"
   }
 }

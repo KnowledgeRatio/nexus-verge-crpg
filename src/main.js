@@ -496,6 +496,9 @@ class Game {
         // Setup Settings System
         this.setupSettings();
 
+        // Setup Legal Modal System
+        this.setupLegalModal();
+
         // Setup Quick Menu System (mouse-clickable UI)
         this.setupQuickMenu();
 
@@ -2299,6 +2302,77 @@ class Game {
     }
 
     /**
+     * Setup Legal Modal
+     */
+    setupLegalModal() {
+        const modal = document.getElementById('legalModal');
+        const closeBtn = document.getElementById('closeLegalBtn');
+        const footerLink = document.getElementById('footerLegalLink');
+
+        console.log('Legal Modal Setup:', {
+            modal: modal ? 'Found' : 'NOT FOUND',
+            closeBtn: closeBtn ? 'Found' : 'NOT FOUND',
+            footerLink: footerLink ? 'Found' : 'NOT FOUND'
+        });
+
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeLegal());
+        }
+
+        // Footer link
+        if (footerLink) {
+            footerLink.addEventListener('click', (e) => {
+                console.log('Footer legal link clicked!');
+                e.preventDefault();
+                this.openLegal();
+            });
+        }
+
+        // Close on backdrop click
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeLegal();
+                }
+            });
+        }
+
+        // ESC key to close (when modal is open)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                this.closeLegal();
+            }
+        });
+    }
+
+    /**
+     * Open Legal Modal
+     */
+    openLegal() {
+        const modal = document.getElementById('legalModal');
+        console.log('openLegal called:', {
+            modal: modal ? 'Found' : 'NOT FOUND',
+            hasActiveClass: modal?.classList.contains('active')
+        });
+        if (!modal) {
+            console.error('Legal modal element not found!');
+            return;
+        }
+        modal.classList.add('active');
+        console.log('Legal modal opened - active class added');
+    }
+
+    /**
+     * Close Legal Modal
+     */
+    closeLegal() {
+        const modal = document.getElementById('legalModal');
+        if (!modal) return;
+        modal.classList.remove('active');
+    }
+
+    /**
      * Get contrasting text color (black or white) based on background color
      */
     getContrastColor(hexColor) {
@@ -2517,6 +2591,12 @@ class Game {
                         ...rollResult
                     }
                 );
+
+                // Save modified character back to gameState (damage, conditions, etc.)
+                gameState.set('character', character);
+
+                // Update HUD to reflect HP changes
+                this.updateHUD(character);
 
                 // Display consequence messages
                 consequences.messages.forEach(msg => {
@@ -2744,10 +2824,21 @@ class Game {
                             }
                         );
 
+                        // Save modified character back to gameState (damage, conditions, etc.)
+                        gameState.set('character', character);
+
+                        // Update HUD to reflect HP changes
+                        this.updateHUD(character);
+
                         // Display consequence messages
                         consequences.messages.forEach(msg => {
                             gameState.addMessage(msg, success ? 'success' : 'warning');
                         });
+
+                        // Handle combat initiation
+                        if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
+                            consequences.initiateCombat = true;
+                        }
                     }
                 }
 
@@ -2913,7 +3004,6 @@ class Game {
                     ${this.renderEquipmentSlot('Main Hand', character.equipment.mainHand)}
                     ${this.renderEquipmentSlot('Off Hand', character.equipment.offHand)}
                     ${this.renderEquipmentSlot('Armor', character.equipment.armor)}
-                    ${this.renderEquipmentSlot('Shield', character.equipment.shield)}
                     ${this.renderEquipmentSlot('Helmet', character.equipment.helmet)}
                     ${this.renderEquipmentSlot('Artifact', character.equipment.artifact)}
                 </div>
@@ -3368,7 +3458,9 @@ class Game {
         const slots = {
             weapon: character.equipment.mainHand,
             armor: character.equipment.armor,
-            offHand: character.equipment.offHand
+            offHand: character.equipment.offHand,
+            helmet: character.equipment.helmet,
+            artifact: character.equipment.artifact
         };
 
         Object.entries(slots).forEach(([slotName, item]) => {

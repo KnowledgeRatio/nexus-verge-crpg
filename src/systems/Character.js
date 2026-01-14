@@ -61,7 +61,6 @@ export class Character {
             offHand: null,
             armor: null,
             helmet: null,
-            shield: null,
             artifact: null
         };
 
@@ -1085,9 +1084,11 @@ export class Character {
         } else if (item.type === 'armor') {
             slot = 'armor';
         } else if (item.type === 'shield') {
-            slot = 'shield';
+            slot = 'offHand';  // Shields equip to off-hand slot
         } else if (item.type === 'artifact') {
             slot = 'artifact';
+        } else if (item.type === 'helmet') {
+            slot = 'helmet';
         } else {
             console.warn(`Item ${item.id} cannot be equipped (type: ${item.type})`);
             return false;

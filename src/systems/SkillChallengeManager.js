@@ -491,6 +491,63 @@ export class SkillChallengeManager {
             consequences.messages.push(`🌀 Afflicted: ${outcome.condition}`);
         }
 
+        // Handle special consequences (narrative/gameplay effects)
+        if (outcome.consequences && Array.isArray(outcome.consequences)) {
+            outcome.consequences.forEach(consequenceType => {
+                switch (consequenceType) {
+                    case 'initiateCombat':
+                        // Handled in main.js after applyConsequences returns
+                        console.log('⚔️ Combat will be initiated');
+                        break;
+
+                    case 'avoidCombat':
+                        consequences.messages.push('✅ You avoided combat!');
+                        console.log('✅ Combat avoided');
+                        break;
+
+                    case 'unlockPath':
+                        consequences.messages.push('🚪 A new path opens before you!');
+                        // TODO: Could mark a specific map tile as passable, or reveal a hidden door
+                        console.log('🚪 Path unlocked');
+                        break;
+
+                    case 'revealInformation':
+                        consequences.messages.push('📖 You learn something important!');
+                        // TODO: Could add lore entry to character's journal
+                        console.log('📖 Information revealed');
+                        break;
+
+                    case 'questClue':
+                        consequences.messages.push('🔍 You discovered a quest clue!');
+                        // TODO: Could trigger quest objective update
+                        console.log('🔍 Quest clue found');
+                        break;
+
+                    case 'revealLocation':
+                        consequences.messages.push('🗺️ You discovered a hidden location!');
+                        // TODO: Could mark a POI on the world map
+                        console.log('🗺️ Location revealed');
+                        break;
+
+                    case 'revealFeature':
+                        consequences.messages.push('✨ You found something hidden!');
+                        // TODO: Could spawn a treasure cache or hidden object
+                        console.log('✨ Feature revealed');
+                        break;
+
+                    case 'alertEnemies':
+                        consequences.messages.push('⚠️ You made too much noise - enemies are alerted!');
+                        // TODO: Could increase encounter rate temporarily, or add enemies to combat
+                        console.log('⚠️ Enemies alerted');
+                        break;
+
+                    default:
+                        console.warn(`⚠️ Unknown consequence type: ${consequenceType}`);
+                        break;
+                }
+            });
+        }
+
         return consequences;
     }
 }

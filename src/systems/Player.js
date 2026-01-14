@@ -432,8 +432,8 @@ class Player {
                 type: 'single'
             });
 
-            // Trigger combat encounter
-            await this.triggerCombatFromChallenge();
+            // Trigger combat encounter with challenge-specific enemy types
+            await this.triggerCombatFromChallenge(result.enemyTypes || null);
 
             // Challenge ends after combat (single challenges don't resume)
             gameState.set('pendingChallenge', null);
@@ -494,8 +494,8 @@ class Player {
                     type: 'sequential'
                 });
 
-                // Trigger combat encounter
-                await this.triggerCombatFromChallenge();
+                // Trigger combat encounter with challenge-specific enemy types
+                await this.triggerCombatFromChallenge(result.enemyTypes || null);
 
                 // Check if combat was fled or defeated - if so, abandon challenge
                 const combat = gameState.get('combat');
@@ -561,14 +561,25 @@ class Player {
 
     /**
      * Trigger combat encounter from skill challenge failure
+     * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
-    async triggerCombatFromChallenge() {
+    async triggerCombatFromChallenge(enemyTypes = null) {
         const character = gameState.get('character');
         const location = gameState.get('world.currentLocation');
 
+        // Get terrain at current location
+        const tile = await this.worldGenerator.getTile(location.x, location.y);
+
+        if (!tile) {
+            console.error('⚠️ Cannot trigger combat - no tile data at location:', location);
+            gameState.addMessage('⚠️ Combat encounter failed to trigger', 'warning');
+            return;
+        }
+
         // Generate appropriate enemy based on location/terrain
-        // For now, use checkForEncounters logic
-        await this.checkForEncounters(location, null); // Will trigger combat if enemy generated
+        // Force trigger combat (don't use random encounter check)
+        // Pass enemyTypes to ensure contextually appropriate enemies (e.g., wolves for wild beast challenge)
+        this.triggerCombatEncounter(tile.terrain, enemyTypes);
     }
 
     /**
@@ -614,8 +625,8 @@ class Player {
                 type: 'choice'
             });
 
-            // Trigger combat encounter
-            await this.triggerCombatFromChallenge();
+            // Trigger combat encounter with challenge-specific enemy types
+            await this.triggerCombatFromChallenge(result.enemyTypes || null);
 
             // Challenge ends after combat (choice challenges don't resume)
             gameState.set('pendingChallenge', null);
@@ -668,8 +679,10 @@ class Player {
 
     /**
      * Trigger a combat encounter
+     * @param {Object} terrainDef - Terrain definition
+     * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
-    async triggerCombatEncounter(terrainDef) {
+    async triggerCombatEncounter(terrainDef, enemyTypes = null) {
         // Generate enemies based on player level
         const playerLevel = gameState.get('character.level') || 1;
 
@@ -694,7 +707,7 @@ class Player {
 
         const enemies = [];
         for (let i = 0; i < numEnemies; i++) {
-            const enemy = await this.generateEnemy(playerLevel, terrainDef);
+            const enemy = await this.generateEnemy(playerLevel, terrainDef, enemyTypes);
             enemies.push(enemy);
         }
 
@@ -708,8 +721,11 @@ class Player {
 
     /**
      * Generate an enemy for encounter
+     * @param {number} playerLevel - Player character level
+     * @param {Object} terrainDef - Terrain definition
+     * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
-    async generateEnemy(playerLevel, terrainDef) {
+    async generateEnemy(playerLevel, terrainDef, enemyTypes = null) {
         // Load monster data
         const response = await fetch('data/monsters.json');
         const monsterData = await response.json();
@@ -723,6 +739,33 @@ class Player {
 
         // Use rules engine to calculate target CR
         const targetCR = getEncounterCR(playerLevel, difficulty);
+
+        // If specific enemy types are provided (from skill challenge), filter by those first
+        if (enemyTypes && Array.isArray(enemyTypes) && enemyTypes.length > 0) {
+            console.log(`🎯 Filtering enemies by challenge-specific types:`, enemyTypes);
+
+            // Filter monsters by ID matching the enemyTypes array
+            let specificMonsters = monsterData.monsters.filter(m =>
+                enemyTypes.includes(m.id)
+            );
+
+            // If we found matching monsters, pick one randomly
+            if (specificMonsters.length > 0) {
+                const monster = specificMonsters[Math.floor(Math.random() * specificMonsters.length)];
+                console.log(`✅ Selected challenge-specific enemy: ${monster.name} (${monster.id})`);
+
+                // Roll HP and create enemy character
+                const hp = roll(monster.hitPoints);
+                return {
+                    ...monster,
+                    currentHP: hp,
+                    maxHP: hp,
+                    isNPC: true
+                };
+            } else {
+                console.warn(`⚠️ No monsters found matching enemyTypes:`, enemyTypes, '- falling back to terrain-based selection');
+            }
+        }
 
         // Get appropriate monster types for level (if defined)
         const levelBrackets = Object.entries(RULES.difficulty.scalingByLevel.enemyTypesByLevel)
