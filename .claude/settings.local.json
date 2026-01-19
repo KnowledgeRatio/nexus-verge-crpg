@@ -24,7 +24,12 @@
       "Bash(del:*)",
       "Bash(npm run legal:verify:*)",
       "Bash(npm run legal:all:*)",
-      "Bash(npm run legal:generate:*)"
+      "Bash(npm run legal:generate:*)",
+      "Bash(npm start)",
+      "Bash(node --check:*)",
+      "Bash(npx http-server:*)",
+      "Bash(node scripts/addCampaignIds.js:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

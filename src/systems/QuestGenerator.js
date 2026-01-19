@@ -5,12 +5,50 @@
 
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class QuestGenerator {
-    constructor(worldSeed) {
+    constructor(worldSeed, campaignId = null) {
         this.worldSeed = worldSeed;
+        this.campaignId = campaignId;
         this.questData = null;
         this.monsterData = null;
+    }
+
+    /**
+     * Set the campaign ID for filtering
+     * @param {string} campaignId - Campaign ID
+     */
+    setCampaignId(campaignId) {
+        this.campaignId = campaignId;
+        // Re-filter data if already loaded
+        if (this.rawQuestData) {
+            this.applyFiltering();
+        }
+    }
+
+    /**
+     * Apply campaign filtering to loaded data
+     */
+    applyFiltering() {
+        const campaignId = this.campaignId || getDefaultCampaignId();
+
+        // Filter quest templates
+        this.questData = {
+            ...this.rawQuestData,
+            sideQuestTemplates: filterByCampaign(this.rawQuestData.sideQuestTemplates, campaignId),
+            campaignQuests: filterByCampaign(this.rawQuestData.campaignQuests, campaignId)
+        };
+
+        // Filter monsters
+        this.monsterData = {
+            ...this.rawMonsterData,
+            monsters: filterByCampaign(this.rawMonsterData.monsters, campaignId)
+        };
+
+        console.log(`🎯 Quest data filtered for campaign: ${campaignId}`);
+        console.log(`   - ${this.questData.sideQuestTemplates?.length || 0} quest templates`);
+        console.log(`   - ${this.monsterData.monsters?.length || 0} monsters`);
     }
 
     /**
@@ -22,13 +60,20 @@ class QuestGenerator {
         }
 
         try {
+            // Load campaign data for filtering
+            await loadCampaigns();
+
             const [questResponse, monsterResponse] = await Promise.all([
                 fetch('data/quests.json'),
                 fetch('data/monsters.json')
             ]);
 
-            this.questData = await questResponse.json();
-            this.monsterData = await monsterResponse.json();
+            // Store raw data
+            this.rawQuestData = await questResponse.json();
+            this.rawMonsterData = await monsterResponse.json();
+
+            // Apply campaign filtering
+            this.applyFiltering();
 
             console.log('📜 Quest data loaded successfully');
         } catch (error) {

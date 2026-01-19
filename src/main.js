@@ -311,6 +311,233 @@ class Game {
         if (!seedInput.value) {
             seedInput.value = generateSeedString();
         }
+
+        // Worldbuilder button
+        this.setupWorldbuilder();
+    }
+
+    /**
+     * Setup Worldbuilder modal
+     */
+    setupWorldbuilder() {
+        const worldbuilderBtn = document.getElementById('worldbuilderBtn');
+        const worldbuilderModal = document.getElementById('worldbuilderModal');
+        const closeBtn = document.getElementById('closeWorldbuilderBtn');
+        const resetBtn = document.getElementById('wbResetBtn');
+        const applyBtn = document.getElementById('wbApplyBtn');
+        const mapSizeSelect = document.getElementById('mapSize');
+
+        // Store custom overrides
+        this.worldbuilderOverrides = null;
+
+        if (!worldbuilderBtn || !worldbuilderModal) return;
+
+        // Open modal
+        worldbuilderBtn.addEventListener('click', () => {
+            this.updateWorldbuilderDefaults();
+            worldbuilderModal.classList.add('active');
+        });
+
+        // Close modal
+        closeBtn.addEventListener('click', () => {
+            worldbuilderModal.classList.remove('active');
+        });
+
+        // Close on backdrop click
+        worldbuilderModal.addEventListener('click', (e) => {
+            if (e.target === worldbuilderModal) {
+                worldbuilderModal.classList.remove('active');
+            }
+        });
+
+        // Reset to defaults
+        resetBtn.addEventListener('click', () => {
+            this.worldbuilderOverrides = null;
+            this.updateWorldbuilderDefaults();
+        });
+
+        // Apply changes
+        applyBtn.addEventListener('click', () => {
+            this.applyWorldbuilderSettings();
+            worldbuilderModal.classList.remove('active');
+        });
+
+        // Update when map size changes
+        mapSizeSelect.addEventListener('change', () => {
+            // Reset overrides when map size changes (user can re-customize)
+            this.worldbuilderOverrides = null;
+            if (worldbuilderModal.classList.contains('active')) {
+                this.updateWorldbuilderDefaults();
+            }
+        });
+
+        // Update when campaign changes (load campaign-specific overrides)
+        const campaignSelect = document.getElementById('campaign');
+        if (campaignSelect) {
+            campaignSelect.addEventListener('change', () => {
+                this.loadCampaignFeatureOverrides();
+                if (worldbuilderModal.classList.contains('active')) {
+                    this.updateWorldbuilderDefaults();
+                }
+            });
+            // Load initial campaign overrides
+            this.loadCampaignFeatureOverrides();
+        }
+
+        // Update summary on input change
+        ['wbSettlements', 'wbDungeons', 'wbSanctuaries', 'wbPOIs', 'wbVillageRatio', 'wbTownRatio', 'wbCityRatio'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', () => this.updateWorldbuilderSummary());
+            }
+        });
+    }
+
+    /**
+     * Load feature generation overrides from selected campaign
+     */
+    async loadCampaignFeatureOverrides() {
+        const campaignId = document.getElementById('campaign')?.value;
+        if (!campaignId) return;
+
+        try {
+            // Load campaigns.json
+            const response = await fetch('data/campaigns.json');
+            const data = await response.json();
+
+            // Find the selected campaign
+            const allCampaigns = [...(data.campaigns || []), ...(data.templateCampaigns || [])];
+            const campaign = allCampaigns.find(c => c.id === campaignId);
+
+            if (campaign && campaign.featureGeneration) {
+                // Merge campaign overrides into RULES
+                RULES.worldGen.campaignOverrides = { ...campaign.featureGeneration };
+                console.log(`📜 Loaded campaign overrides for "${campaign.name}":`, campaign.featureGeneration);
+
+                // Reset user overrides so campaign settings take effect
+                this.worldbuilderOverrides = null;
+            } else {
+                // No overrides for this campaign
+                RULES.worldGen.campaignOverrides = {};
+            }
+        } catch (error) {
+            console.warn('Failed to load campaign overrides:', error);
+            RULES.worldGen.campaignOverrides = {};
+        }
+    }
+
+    /**
+     * Update Worldbuilder modal with default values for current map size
+     * Priority: User overrides > Campaign overrides > Base defaults (scaled by map size)
+     */
+    updateWorldbuilderDefaults() {
+        const mapSize = document.getElementById('mapSize').value;
+        const fg = RULES.worldGen.featureGeneration;
+        const campaignOverrides = RULES.worldGen.campaignOverrides || {};
+
+        // Calculate scale factor
+        const sizes = RULES.worldGen.worldSizes;
+        const regionCount = sizes[mapSize] || sizes.medium;
+        const totalRegions = regionCount * regionCount;
+        const scaleFactor = totalRegions / 10000;
+
+        // Get base values (campaign override or default, then scaled)
+        const baseSettlements = campaignOverrides.baseSettlements || fg.baseSettlements;
+        const baseDungeons = campaignOverrides.baseDungeons || fg.baseDungeons;
+        const baseSanctuaries = campaignOverrides.baseSanctuaries || fg.baseSanctuaries;
+        const basePOIs = campaignOverrides.basePOIs || fg.basePOIs;
+
+        // Get settlement distribution (campaign override or default)
+        const distrib = campaignOverrides.settlementDistribution || fg.settlementDistribution;
+
+        // If we have user overrides, use those; otherwise use scaled campaign/base defaults
+        const settlements = this.worldbuilderOverrides?.baseSettlements ?? Math.round(baseSettlements * scaleFactor);
+        const dungeons = this.worldbuilderOverrides?.baseDungeons ?? Math.round(baseDungeons * scaleFactor);
+        const sanctuaries = this.worldbuilderOverrides?.baseSanctuaries ?? Math.round(baseSanctuaries * scaleFactor);
+        const pois = this.worldbuilderOverrides?.basePOIs ?? Math.round(basePOIs * scaleFactor);
+
+        const villageRatio = this.worldbuilderOverrides?.villageRatio ?? Math.round(distrib.village * 100);
+        const townRatio = this.worldbuilderOverrides?.townRatio ?? Math.round(distrib.town * 100);
+        const cityRatio = this.worldbuilderOverrides?.cityRatio ?? Math.round(distrib.city * 100);
+
+        // Set input values
+        document.getElementById('wbSettlements').value = settlements;
+        document.getElementById('wbDungeons').value = dungeons;
+        document.getElementById('wbSanctuaries').value = sanctuaries;
+        document.getElementById('wbPOIs').value = pois;
+        document.getElementById('wbVillageRatio').value = villageRatio;
+        document.getElementById('wbTownRatio').value = townRatio;
+        document.getElementById('wbCityRatio').value = cityRatio;
+
+        this.updateWorldbuilderSummary();
+    }
+
+    /**
+     * Update Worldbuilder summary display
+     */
+    updateWorldbuilderSummary() {
+        const settlements = parseInt(document.getElementById('wbSettlements').value) || 0;
+        const dungeons = parseInt(document.getElementById('wbDungeons').value) || 0;
+        const sanctuaries = parseInt(document.getElementById('wbSanctuaries').value) || 0;
+        const pois = parseInt(document.getElementById('wbPOIs').value) || 0;
+
+        const villageRatio = parseInt(document.getElementById('wbVillageRatio').value) || 0;
+        const townRatio = parseInt(document.getElementById('wbTownRatio').value) || 0;
+        const cityRatio = parseInt(document.getElementById('wbCityRatio').value) || 0;
+
+        const villages = Math.round(settlements * villageRatio / 100);
+        const towns = Math.round(settlements * townRatio / 100);
+        const cities = Math.round(settlements * cityRatio / 100);
+
+        const totalFeatures = settlements + dungeons + sanctuaries + pois;
+        const ratioSum = villageRatio + townRatio + cityRatio;
+
+        const summaryEl = document.getElementById('worldbuilderSummary');
+        summaryEl.innerHTML = `
+            <strong>World Summary:</strong><br>
+            🏘️ ${villages} villages, ${towns} towns, ${cities} cities<br>
+            🏛️ ${dungeons} dungeons to explore<br>
+            ☼ ${sanctuaries} safe rest locations<br>
+            📍 ${pois} points of interest<br>
+            <br>
+            <strong>Total: ${totalFeatures} features</strong>
+            ${ratioSum !== 100 ? `<br><span style="color: var(--warning-color);">⚠️ Settlement ratios sum to ${ratioSum}% (should be 100%)</span>` : ''}
+        `;
+    }
+
+    /**
+     * Apply Worldbuilder settings as campaign overrides
+     */
+    applyWorldbuilderSettings() {
+        const settlements = parseInt(document.getElementById('wbSettlements').value) || 150;
+        const dungeons = parseInt(document.getElementById('wbDungeons').value) || 200;
+        const sanctuaries = parseInt(document.getElementById('wbSanctuaries').value) || 100;
+        const pois = parseInt(document.getElementById('wbPOIs').value) || 300;
+
+        const villageRatio = (parseInt(document.getElementById('wbVillageRatio').value) || 60) / 100;
+        const townRatio = (parseInt(document.getElementById('wbTownRatio').value) || 30) / 100;
+        const cityRatio = (parseInt(document.getElementById('wbCityRatio').value) || 10) / 100;
+
+        // Store as overrides (these will be passed to WorldGenerator)
+        this.worldbuilderOverrides = {
+            baseSettlements: settlements,
+            baseDungeons: dungeons,
+            baseSanctuaries: sanctuaries,
+            basePOIs: pois,
+            villageRatio: Math.round(villageRatio * 100),
+            townRatio: Math.round(townRatio * 100),
+            cityRatio: Math.round(cityRatio * 100),
+            settlementDistribution: {
+                village: villageRatio,
+                town: townRatio,
+                city: cityRatio
+            }
+        };
+
+        // Update the RULES.worldGen.campaignOverrides so WorldGenerator uses them
+        RULES.worldGen.campaignOverrides = this.worldbuilderOverrides;
+
+        console.log('⚙️ Worldbuilder settings applied:', this.worldbuilderOverrides);
     }
 
     /**
@@ -347,7 +574,11 @@ class Game {
         if (!this.characterCreationUI) {
             this.characterCreationUI = new CharacterCreationUI();
         }
-        await this.characterCreationUI.init();
+        // Get campaign ID from game state or world config
+        const worldConfig = gameState.get('worldConfig');
+        const campaignId = worldConfig?.campaignId || 'nexus-verge';
+        console.log(`🎯 Starting character creation for campaign: ${campaignId}`);
+        await this.characterCreationUI.init(campaignId);
     }
 
     /**
@@ -402,15 +633,18 @@ class Game {
             this.settlementUI = new SettlementUI(null); // Will set manager reference after creation
         }
 
+        // Get campaign ID for filtering
+        const campaignId = worldConfig?.campaignId || 'nexus-verge';
+
         if (!this.npcGenerator) {
             console.log('👥 Initializing NPC generator...');
-            this.npcGenerator = new NPCGenerator(seed);
+            this.npcGenerator = new NPCGenerator(seed, campaignId);
             await this.npcGenerator.loadData();
         }
 
         if (!this.questGenerator) {
             console.log('📜 Initializing quest generator...');
-            this.questGenerator = new QuestGenerator(seed);
+            this.questGenerator = new QuestGenerator(seed, campaignId);
             await this.questGenerator.loadData();
         }
 
@@ -422,7 +656,7 @@ class Game {
 
         if (!this.lootManager) {
             console.log('💰 Initializing loot manager...');
-            this.lootManager = new LootManager(seed);
+            this.lootManager = new LootManager(seed, campaignId);
             await this.lootManager.loadData();
             // Make lootManager globally accessible for combat
             window.lootManager = this.lootManager;
@@ -430,7 +664,7 @@ class Game {
 
         if (!this.merchantManager) {
             console.log('🏪 Initializing merchant manager...');
-            this.merchantManager = new MerchantManager(seed);
+            this.merchantManager = new MerchantManager(seed, campaignId);
             await this.merchantManager.loadData();
             // Pass merchant manager to settlement UI
             this.settlementUI.merchantManager = this.merchantManager;
@@ -2577,8 +2811,9 @@ class Game {
 
         // Apply consequences if challenge provided
         let consequences = null;
+        let outcome = null;
         if (challenge && window.skillChallengeManager) {
-            const outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+            outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
             if (outcome) {
                 consequences = window.skillChallengeManager.applyConsequences(
                     character,
@@ -2598,7 +2833,7 @@ class Game {
                 // Update HUD to reflect HP changes
                 this.updateHUD(character);
 
-                // Display consequence messages
+                // Display consequence messages (kept for message log history)
                 consequences.messages.forEach(msg => {
                     gameState.addMessage(msg, success ? 'success' : 'warning');
                 });
@@ -2610,19 +2845,40 @@ class Game {
             }
         }
 
-        // Show result modal briefly (2 seconds) then auto-close
-        this.showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus);
+        // Build final roll result object
+        const finalRollResult = {
+            ...rollResult,
+            dc,
+            modifier: skillBonus,
+            critical: criticalInfo?.isCritical || false,
+            criticalType: criticalInfo?.type || null
+        };
+
+        // Show outcome screen for passive checks (replaces old showPassiveCheckResult)
+        if (challenge) {
+            const triggersCombat = consequences?.initiateCombat || false;
+            await this.showSkillChallengeOutcome({
+                challenge,
+                stage,
+                rollResult: finalRollResult,
+                success,
+                consequences,
+                outcome,
+                stageHistory: config.stageHistory || [],
+                triggersCombat
+            });
+        } else {
+            // Fallback for non-challenge passive checks (show old modal briefly)
+            this.showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus);
+        }
 
         return {
             attempted: true,
             success,
-            rollResult: {
-                ...rollResult,
-                dc,
-                critical: criticalInfo?.isCritical || false,
-                criticalType: criticalInfo?.type || null
-            },
-            consequences
+            rollResult: finalRollResult,
+            consequences,
+            // Pass enemyTypes for combat initiation from skill challenges
+            enemyTypes: consequences?.enemyTypes || (outcome?.enemyTypes || null)
         };
     }
 
@@ -2764,7 +3020,7 @@ class Game {
         return new Promise((resolve) => {
             const attemptBtn = document.getElementById('attemptSkillCheck');
 
-            const handleAttempt = () => {
+            const handleAttempt = async () => {
                 cleanup();
 
                 // Roll skill check using Character.rollSkill() with advantage/disadvantage support
@@ -2809,8 +3065,9 @@ class Game {
 
                 // Apply consequences if challenge provided
                 let consequences = null;
+                let outcome = null;
                 if (challenge && window.skillChallengeManager) {
-                    const outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+                    outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
                     if (outcome) {
                         consequences = window.skillChallengeManager.applyConsequences(
                             character,
@@ -2830,7 +3087,7 @@ class Game {
                         // Update HUD to reflect HP changes
                         this.updateHUD(character);
 
-                        // Display consequence messages
+                        // Display consequence messages (kept for message log history)
                         consequences.messages.forEach(msg => {
                             gameState.addMessage(msg, success ? 'success' : 'warning');
                         });
@@ -2842,22 +3099,45 @@ class Game {
                     }
                 }
 
+                // Build the final roll result object
+                const finalRollResult = {
+                    ...rollResult,
+                    dc,
+                    modifier: skillBonus,
+                    critical: criticalInfo?.isCritical || false,
+                    criticalType: criticalInfo?.type || null
+                };
+
+                // Show outcome screen if this is a skill challenge (not just a simple skill check)
+                if (challenge) {
+                    const triggersCombat = consequences?.initiateCombat || false;
+                    console.log('🎭 Calling showSkillChallengeOutcome with outcome:', outcome);
+                    console.log('🎭 Outcome keys:', outcome ? Object.keys(outcome) : 'null');
+                    await this.showSkillChallengeOutcome({
+                        challenge,
+                        stage,
+                        rollResult: finalRollResult,
+                        success,
+                        consequences,
+                        outcome,
+                        stageHistory: config.stageHistory || [],
+                        triggersCombat
+                    });
+                }
+
                 resolve({
                     attempted: true,
                     success,
-                    rollResult: {
-                        ...rollResult,
-                        dc,
-                        critical: criticalInfo?.isCritical || false,
-                        criticalType: criticalInfo?.type || null
-                    },
-                    consequences
+                    rollResult: finalRollResult,
+                    consequences,
+                    // Pass enemyTypes for combat initiation from skill challenges
+                    enemyTypes: consequences?.enemyTypes || (outcome?.enemyTypes || null)
                 });
             };
 
             const handleCancel = () => {
                 cleanup();
-                resolve({ attempted: false, success: false, rollResult: null, consequences: null });
+                resolve({ attempted: false, success: false, rollResult: null, consequences: null, enemyTypes: null });
             };
 
             const cleanup = () => {
@@ -2872,6 +3152,205 @@ class Game {
             if (canTurnBack) {
                 cancelBtn.addEventListener('click', handleCancel);
             }
+        });
+    }
+
+    /**
+     * Show Skill Challenge Outcome Screen
+     * Displays a dedicated outcome modal with narrative, dice breakdown, rewards/consequences
+     * @param {Object} params - Outcome parameters
+     * @param {Object} params.challenge - The challenge template
+     * @param {Object} params.stage - Current stage (for sequential challenges)
+     * @param {Object} params.rollResult - Roll result with dc, total, roll, critical, criticalType
+     * @param {boolean} params.success - Whether the check was successful
+     * @param {Object} params.consequences - Applied consequences (xp, gold, damage, items, messages)
+     * @param {Object} params.outcome - The outcome object (onSuccess or onFailure)
+     * @param {Array} params.stageHistory - History of completed stages for sequential challenges
+     * @param {boolean} params.triggersCombat - Whether this outcome will initiate combat
+     * @returns {Promise<void>} - Resolves when user dismisses the modal
+     */
+    showSkillChallengeOutcome({
+        challenge,
+        stage = null,
+        rollResult,
+        success,
+        consequences,
+        outcome,
+        stageHistory = [],
+        triggersCombat = false
+    }) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('skillOutcomeModal');
+            const header = document.getElementById('outcomeHeader');
+            const icon = document.getElementById('outcomeIcon');
+            const title = document.getElementById('outcomeTitle');
+            const challengeName = document.getElementById('outcomeChallengeName');
+            const narrativeEl = document.getElementById('outcomeNarrative');
+            const rollDetails = document.getElementById('outcomeRollDetails');
+            const stageProgress = document.getElementById('outcomeStageProgress');
+            const rewardsSection = document.getElementById('outcomeRewards');
+            const consequencesSection = document.getElementById('outcomeConsequences');
+            const combatWarning = document.getElementById('outcomeCombatWarning');
+            const closeBtn = document.getElementById('outcomeCloseBtn');
+
+            // Determine outcome type for styling
+            const isCriticalSuccess = rollResult.critical && rollResult.criticalType === 'success';
+            const isCriticalFailure = rollResult.critical && rollResult.criticalType === 'failure';
+
+            let outcomeClass = success ? 'success' : 'failure';
+            if (isCriticalSuccess) outcomeClass = 'critical-success';
+            if (isCriticalFailure) outcomeClass = 'critical-failure';
+
+            // Set header styling
+            header.className = `outcome-header ${outcomeClass}`;
+
+            // Set icon and title
+            if (isCriticalSuccess) {
+                icon.textContent = '🌟';
+                title.textContent = 'Critical Success!';
+            } else if (isCriticalFailure) {
+                icon.textContent = '💥';
+                title.textContent = 'Critical Failure!';
+            } else if (success) {
+                icon.textContent = '✅';
+                title.textContent = 'Success!';
+            } else {
+                icon.textContent = '❌';
+                title.textContent = 'Failed!';
+            }
+
+            // Challenge name
+            const stageName = stage?.description ? ` - ${stage.description}` : '';
+            challengeName.textContent = (challenge?.name || 'Skill Challenge') + stageName;
+
+            // Narrative text
+            console.log('🎭 Outcome modal - outcome object:', outcome);
+            console.log('🎭 Outcome message:', outcome?.message);
+            const narrativeText = outcome?.message ||
+                (success ? 'You succeed in your endeavor.' : 'Your attempt fails.');
+            console.log('🎭 Final narrative text:', narrativeText);
+            narrativeEl.textContent = narrativeText;
+
+            // Roll details breakdown
+            const skillId = stage?.skill || challenge?.skill || 'skill';
+            const skillBonus = rollResult.modifier || 0;
+            const dc = rollResult.dc;
+
+            document.getElementById('outcomeRollDice').textContent = rollResult.roll;
+            document.getElementById('outcomeRollBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
+            document.getElementById('outcomeRollTotal').textContent = rollResult.total;
+            document.getElementById('outcomeRollDC').textContent = dc;
+
+            // Result indicator
+            const resultEl = document.getElementById('outcomeRollResult');
+            if (success) {
+                resultEl.textContent = `Pass by ${rollResult.total - dc}`;
+                resultEl.className = 'roll-value pass';
+            } else {
+                resultEl.textContent = `Miss by ${dc - rollResult.total}`;
+                resultEl.className = 'roll-value fail';
+            }
+
+            // Stage progress (for sequential challenges)
+            const stageList = document.getElementById('outcomeStageList');
+            if (stageHistory && stageHistory.length > 0) {
+                stageProgress.classList.add('active');
+                stageList.innerHTML = stageHistory.map((s, i) => {
+                    const stageClass = s.success ? 'completed' : 'failed';
+                    const stageIcon = s.success ? '✅' : '❌';
+                    const resultClass = s.success ? 'pass' : 'fail';
+                    const resultText = s.success ?
+                        `${s.rollResult.total} ≥ ${s.dc}` :
+                        `${s.rollResult.total} < ${s.dc}`;
+                    return `
+                        <div class="stage-item ${stageClass}">
+                            <span class="stage-icon">${stageIcon}</span>
+                            <div class="stage-info">
+                                <div class="stage-name">Stage ${i + 1}: ${s.description || s.skill}</div>
+                                <div class="stage-skill">${s.skill?.toUpperCase() || 'SKILL'} Check (DC ${s.dc})</div>
+                            </div>
+                            <span class="stage-result ${resultClass}">${resultText}</span>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                stageProgress.classList.remove('active');
+            }
+
+            // Rewards (on success)
+            const rewardsList = document.getElementById('outcomeRewardsList');
+            if (success && consequences && (consequences.xp > 0 || consequences.gold > 0 || (consequences.items && consequences.items.length > 0))) {
+                rewardsSection.classList.add('active');
+                let rewardsHTML = '';
+                if (consequences.xp > 0) {
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">✨</span><span class="reward-value">+${consequences.xp} XP</span></div>`;
+                }
+                if (consequences.gold > 0) {
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">💰</span><span class="reward-value">+${consequences.gold} Gold</span></div>`;
+                }
+                if (consequences.items && consequences.items.length > 0) {
+                    consequences.items.forEach(item => {
+                        rewardsHTML += `<div class="reward-item"><span class="reward-icon">📦</span><span class="reward-value">${item.name}</span></div>`;
+                    });
+                }
+                rewardsList.innerHTML = rewardsHTML;
+            } else {
+                rewardsSection.classList.remove('active');
+            }
+
+            // Consequences (damage, conditions on failure)
+            const consequencesList = document.getElementById('outcomeConsequencesList');
+            if (consequences && (consequences.damage > 0 || (consequences.conditions && consequences.conditions.length > 0))) {
+                consequencesSection.classList.add('active');
+                let consequencesHTML = '';
+                if (consequences.damage > 0) {
+                    const damageType = outcome?.damageType || 'damage';
+                    consequencesHTML += `
+                        <div class="consequence-item">
+                            <span class="consequence-icon">💔</span>
+                            <span class="consequence-text">Took</span>
+                            <span class="consequence-value">${consequences.damage} ${damageType}</span>
+                        </div>
+                    `;
+                }
+                if (consequences.conditions && consequences.conditions.length > 0) {
+                    consequences.conditions.forEach(condition => {
+                        consequencesHTML += `
+                            <div class="consequence-item">
+                                <span class="consequence-icon">🌀</span>
+                                <span class="consequence-text">Afflicted:</span>
+                                <span class="consequence-value">${condition}</span>
+                            </div>
+                        `;
+                    });
+                }
+                consequencesList.innerHTML = consequencesHTML;
+            } else {
+                consequencesSection.classList.remove('active');
+            }
+
+            // Combat warning
+            if (triggersCombat) {
+                combatWarning.classList.add('active');
+                closeBtn.classList.add('combat');
+                closeBtn.textContent = 'Engage Combat!';
+            } else {
+                combatWarning.classList.remove('active');
+                closeBtn.classList.remove('combat');
+                closeBtn.textContent = 'Continue';
+            }
+
+            // Show modal
+            modal.classList.add('active');
+
+            // Handle close
+            const handleClose = () => {
+                modal.classList.remove('active');
+                closeBtn.removeEventListener('click', handleClose);
+                resolve();
+            };
+
+            closeBtn.addEventListener('click', handleClose);
         });
     }
 
@@ -4213,17 +4692,20 @@ class Game {
             this.settlementUI = new SettlementUI(null);
         }
 
+        // Get campaign ID for filtering
+        const campaignId = worldConfig?.campaignId || 'nexus-verge';
+
         // Initialize NPC generator
         if (!this.npcGenerator) {
             console.log('👥 Initializing NPC generator...');
-            this.npcGenerator = new NPCGenerator(seed);
+            this.npcGenerator = new NPCGenerator(seed, campaignId);
             await this.npcGenerator.loadData();
         }
 
         // Initialize quest systems
         if (!this.questGenerator) {
             console.log('📜 Initializing quest generator...');
-            this.questGenerator = new QuestGenerator(seed);
+            this.questGenerator = new QuestGenerator(seed, campaignId);
             await this.questGenerator.loadData();
         }
 
@@ -4236,7 +4718,7 @@ class Game {
         // Initialize merchant manager
         if (!this.merchantManager) {
             console.log('🏪 Initializing merchant manager...');
-            this.merchantManager = new MerchantManager(seed);
+            this.merchantManager = new MerchantManager(seed, campaignId);
             await this.merchantManager.loadData();
             this.settlementUI.merchantManager = this.merchantManager;
         }

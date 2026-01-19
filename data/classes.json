@@ -2,6 +2,7 @@
   "classes": [
     {
       "id": "dedication",
+      "campaignIds": ["core"],
       "name": "Dedication",
       "displayName": "Dedication",
       "description": "Those who follow the path of Dedication master martial combat through discipline and training. Combining the versatility of a warrior with the focused precision of a monk, Dedication embodies the perfection of body and mind through endless practice.",
@@ -116,6 +117,7 @@
 
     {
       "id": "scholar",
+      "campaignIds": ["core"],
       "name": "Scholar",
       "displayName": "Scholar - COMING SOON",
       "description": "Scholars are masters of arcane knowledge, blending theoretical mastery with practical innovation. Combining the spellcasting prowess of wizards with the inventive genius of artificers, Scholars bend reality through intellect and ingenuity.",
@@ -208,6 +210,7 @@
 
     {
       "id": "pact",
+      "campaignIds": ["core"],
       "name": "Pact",
       "displayName": "Pact - COMING SOON",
       "description": "Those who walk the path of Pact draw power from otherworldly beings and divine entities. Merging the devotion of clerics with the forbidden knowledge of warlocks, Pact wielders channel forces beyond mortal comprehension.",
@@ -329,6 +332,7 @@
 
     {
       "id": "wanderlust",
+      "campaignIds": ["core"],
       "name": "Wanderlust",
       "displayName": "Wanderlust - COMING SOON",
       "description": "Wanderlust represents those driven by curiosity and freedom, masters of versatility who refuse to be bound by convention. Combining the cunning of rogues with the charisma of bards, they are jack-of-all-trades who excel through adaptability.",
@@ -458,6 +462,7 @@
 
     {
       "id": "bond",
+      "campaignIds": ["core"],
       "name": "Bond",
       "displayName": "Bond - COMING SOON",
       "description": "Bond represents those who form deep connections with the natural world and its creatures. Merging the tracking prowess of rangers with the primal magic of druids, they are protectors of wilderness and champions of balance.",
@@ -579,6 +584,7 @@
 
     {
       "id": "oath",
+      "campaignIds": ["core"],
       "name": "Oath",
       "displayName": "Oath - COMING SOON",
       "description": "Oath represents warriors bound by sacred vows, wielding divine power through conviction. Merging the holy might of paladins with the blood magic of blood hunters, they are relentless crusaders who pay a price for power.",
@@ -703,6 +709,7 @@
 
     {
       "id": "instinct",
+      "campaignIds": ["core"],
       "name": "Instinct",
       "displayName": "Instinct - COMING SOON",
       "description": "Instinct embodies raw, primal power channeled through emotion and will. Merging the savage fury of barbarians with the innate magic of sorcerers, they are forces of nature who bend reality through sheer force of personality.",

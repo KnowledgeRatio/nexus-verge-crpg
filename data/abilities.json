@@ -1,12 +1,13 @@
 {
   "abilities": {
     "description": "Abilities are non-magical special actions that use Stamina (short rest resource) or have limited uses. Unlike spells, abilities don't require spellcasting ability and can be used by any calling.",
-
     "dedication": [
       {
         "id": "steadyNerve",
         "name": "Steady Nerve",
-        "callings": ["dedication"],
+        "callings": [
+          "dedication"
+        ],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "shortRest",
@@ -49,13 +50,17 @@
               "implemented": true
             }
           ]
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "actionSurge",
         "name": "Action Surge",
-        "callings": ["dedication"],
+        "callings": [
+          "dedication"
+        ],
         "levelRequired": 2,
         "actionType": "free",
         "resourceType": "shortRest",
@@ -65,14 +70,20 @@
           "extraAction": 1
         },
         "scaling": {
-          "17": { "usesPerShortRest": 2 }
-        }
+          "17": {
+            "usesPerShortRest": 2
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "indomitable",
         "name": "Indomitable",
-        "callings": ["dedication"],
+        "callings": [
+          "dedication"
+        ],
         "levelRequired": 9,
         "actionType": "reaction",
         "resourceType": "longRest",
@@ -82,15 +93,23 @@
           "rerollSavingThrow": true
         },
         "scaling": {
-          "13": { "usesPerLongRest": 2 },
-          "17": { "usesPerLongRest": 3 }
-        }
+          "13": {
+            "usesPerLongRest": 2
+          },
+          "17": {
+            "usesPerLongRest": 3
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "flurryOfBlows",
         "name": "Flurry of Blows",
-        "callings": ["dedication"],
+        "callings": [
+          "dedication"
+        ],
         "levelRequired": 2,
         "actionType": "bonusAction",
         "resourceType": "stamina",
@@ -99,13 +118,17 @@
         "effects": {
           "attacks": 2,
           "damageType": "unarmed"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "patientDefense",
         "name": "Patient Defense",
-        "callings": ["dedication"],
+        "callings": [
+          "dedication"
+        ],
         "levelRequired": 2,
         "actionType": "bonusAction",
         "resourceType": "stamina",
@@ -113,28 +136,40 @@
         "description": "Spend 1 stamina to take the Dodge action as a bonus action.",
         "effects": {
           "dodge": true
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "wanderlust": [
       {
         "id": "cunningAction",
         "name": "Cunning Action",
-        "callings": ["wanderlust"],
+        "callings": [
+          "wanderlust"
+        ],
         "levelRequired": 2,
         "actionType": "bonusAction",
         "resourceType": "none",
         "description": "You can Dash, Disengage, or Hide as a bonus action.",
         "effects": {
-          "bonusActionOptions": ["dash", "disengage", "hide"]
-        }
+          "bonusActionOptions": [
+            "dash",
+            "disengage",
+            "hide"
+          ]
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "sneakAttack",
         "name": "Sneak Attack",
-        "callings": ["wanderlust"],
+        "callings": [
+          "wanderlust"
+        ],
         "levelRequired": 1,
         "actionType": "passive",
         "resourceType": "perTurn",
@@ -143,30 +178,46 @@
           "extraDamage": "1d6"
         },
         "scaling": {
-          "3": { "extraDamage": "2d6" },
-          "5": { "extraDamage": "3d6" },
-          "7": { "extraDamage": "4d6" },
-          "9": { "extraDamage": "5d6" }
-        }
+          "3": {
+            "extraDamage": "2d6"
+          },
+          "5": {
+            "extraDamage": "3d6"
+          },
+          "7": {
+            "extraDamage": "4d6"
+          },
+          "9": {
+            "extraDamage": "5d6"
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "uncannyDodge",
         "name": "Uncanny Dodge",
-        "callings": ["wanderlust"],
+        "callings": [
+          "wanderlust"
+        ],
         "levelRequired": 5,
         "actionType": "reaction",
         "resourceType": "none",
         "description": "When an attacker you can see hits you, use your reaction to halve the attack's damage.",
         "effects": {
           "damageMitigation": "half"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "bardicInspiration",
         "name": "Bardic Inspiration",
-        "callings": ["wanderlust"],
+        "callings": [
+          "wanderlust"
+        ],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "shortRest",
@@ -176,18 +227,28 @@
           "inspirationDie": "1d6"
         },
         "scaling": {
-          "5": { "inspirationDie": "1d8" },
-          "10": { "inspirationDie": "1d10" },
-          "15": { "inspirationDie": "1d12" }
-        }
+          "5": {
+            "inspirationDie": "1d8"
+          },
+          "10": {
+            "inspirationDie": "1d10"
+          },
+          "15": {
+            "inspirationDie": "1d12"
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "bond": [
       {
         "id": "huntersMark",
         "name": "Hunter's Mark",
-        "callings": ["bond"],
+        "callings": [
+          "bond"
+        ],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "longRest",
@@ -196,27 +257,40 @@
         "effects": {
           "extraDamage": "1d6",
           "duration": 3600
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "primalStrike",
         "name": "Primal Strike",
-        "callings": ["bond"],
+        "callings": [
+          "bond"
+        ],
         "levelRequired": 2,
         "actionType": "free",
         "resourceType": "passive",
         "description": "Your connection to nature empowers your strikes. When you hit with a melee weapon attack, you can deal an additional 1d8 damage. The damage type is your choice of cold, fire, lightning, or poison.",
         "effects": {
           "extraDamage": "1d8",
-          "damageTypes": ["cold", "fire", "lightning", "poison"]
-        }
+          "damageTypes": [
+            "cold",
+            "fire",
+            "lightning",
+            "poison"
+          ]
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "wildShape",
         "name": "Wild Shape",
-        "callings": ["bond"],
+        "callings": [
+          "bond"
+        ],
         "levelRequired": 2,
         "actionType": "action",
         "resourceType": "shortRest",
@@ -228,17 +302,25 @@
           "duration": "level / 2"
         },
         "scaling": {
-          "4": { "maxCR": 0.5 },
-          "8": { "maxCR": 1 }
-        }
+          "4": {
+            "maxCR": 0.5
+          },
+          "8": {
+            "maxCR": 1
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "oath": [
       {
         "id": "layOnHands",
         "name": "Lay on Hands",
-        "callings": ["oath"],
+        "callings": [
+          "oath"
+        ],
         "levelRequired": 1,
         "actionType": "action",
         "resourceType": "pool",
@@ -249,13 +331,17 @@
           "healing": "pool",
           "curePoison": 5,
           "cureDisease": 5
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "divineSmite",
         "name": "Divine Smite",
-        "callings": ["oath"],
+        "callings": [
+          "oath"
+        ],
         "levelRequired": 2,
         "actionType": "free",
         "resourceType": "spellSlot",
@@ -265,13 +351,17 @@
           "damageType": "radiant",
           "bonusVsUndead": "1d8",
           "maxDice": "5d8"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "crimsonRite",
         "name": "Crimson Rite",
-        "callings": ["oath"],
+        "callings": [
+          "oath"
+        ],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "hpCost",
@@ -280,21 +370,34 @@
         "effects": {
           "hpCost": "1 hit die",
           "extraDamage": "1d4",
-          "damageTypes": ["fire", "cold", "lightning", "necrotic"],
+          "damageTypes": [
+            "fire",
+            "cold",
+            "lightning",
+            "necrotic"
+          ],
           "duration": "rest"
         },
         "scaling": {
-          "5": { "extraDamage": "1d6" },
-          "11": { "extraDamage": "1d8" }
-        }
+          "5": {
+            "extraDamage": "1d6"
+          },
+          "11": {
+            "extraDamage": "1d8"
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "instinct": [
       {
         "id": "rage",
         "name": "Rage",
-        "callings": ["instinct"],
+        "callings": [
+          "instinct"
+        ],
         "levelRequired": 1,
         "actionType": "bonusAction",
         "resourceType": "longRest",
@@ -303,20 +406,36 @@
         "effects": {
           "advantageStr": true,
           "bonusMeleeDamage": 2,
-          "damageResistance": ["bludgeoning", "piercing", "slashing"],
+          "damageResistance": [
+            "bludgeoning",
+            "piercing",
+            "slashing"
+          ],
           "duration": 10
         },
         "scaling": {
-          "3": { "usesPerLongRest": 3 },
-          "6": { "usesPerLongRest": 4, "bonusMeleeDamage": 3 },
-          "12": { "usesPerLongRest": 5, "bonusMeleeDamage": 4 }
-        }
+          "3": {
+            "usesPerLongRest": 3
+          },
+          "6": {
+            "usesPerLongRest": 4,
+            "bonusMeleeDamage": 3
+          },
+          "12": {
+            "usesPerLongRest": 5,
+            "bonusMeleeDamage": 4
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "recklessAttack",
         "name": "Reckless Attack",
-        "callings": ["instinct"],
+        "callings": [
+          "instinct"
+        ],
         "levelRequired": 2,
         "actionType": "free",
         "resourceType": "none",
@@ -324,13 +443,17 @@
         "effects": {
           "advantageAttack": true,
           "disadvantageDefense": true
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "metamagic_quicken",
         "name": "Quickened Spell (Metamagic)",
-        "callings": ["instinct"],
+        "callings": [
+          "instinct"
+        ],
         "levelRequired": 3,
         "actionType": "metamagic",
         "resourceType": "sorceryPoints",
@@ -338,13 +461,17 @@
         "description": "Spend 2 sorcery points to cast a spell with a casting time of 1 action as a bonus action.",
         "effects": {
           "castTimeReduction": "bonus_action"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "metamagic_empower",
         "name": "Empowered Spell (Metamagic)",
-        "callings": ["instinct"],
+        "callings": [
+          "instinct"
+        ],
         "levelRequired": 3,
         "actionType": "metamagic",
         "resourceType": "sorceryPoints",
@@ -352,15 +479,19 @@
         "description": "Spend 1 sorcery point when rolling damage for a spell to reroll up to your CHA modifier of the damage dice. You must use the new rolls.",
         "effects": {
           "rerollDamageDice": "cha_mod"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "scholar": [
       {
         "id": "arcaneRecovery",
         "name": "Arcane Recovery",
-        "callings": ["scholar"],
+        "callings": [
+          "scholar"
+        ],
         "levelRequired": 1,
         "actionType": "shortRest",
         "resourceType": "longRest",
@@ -368,13 +499,17 @@
         "description": "During a short rest, recover expended spell slots with a combined level up to half your level (rounded up). No slot can be 6th level or higher.",
         "effects": {
           "recoverSlotLevels": "level / 2"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "flashOfGenius",
         "name": "Flash of Genius",
-        "callings": ["scholar"],
+        "callings": [
+          "scholar"
+        ],
         "levelRequired": 7,
         "actionType": "reaction",
         "resourceType": "longRest",
@@ -383,13 +518,17 @@
         "effects": {
           "bonus": "int_mod",
           "range": 30
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "infuseItem",
         "name": "Infuse Item",
-        "callings": ["scholar"],
+        "callings": [
+          "scholar"
+        ],
         "levelRequired": 2,
         "actionType": "longRest",
         "resourceType": "infusions",
@@ -397,20 +536,35 @@
         "infusionsActive": 2,
         "description": "Imbue mundane items with magic. You know 4 infusion recipes and can have 2 active at a time. Active infusions last until your next long rest.",
         "effects": {
-          "infusionOptions": ["enhanced_weapon", "enhanced_armor", "resistant_armor", "returning_weapon"]
+          "infusionOptions": [
+            "enhanced_weapon",
+            "enhanced_armor",
+            "resistant_armor",
+            "returning_weapon"
+          ]
         },
         "scaling": {
-          "6": { "infusionsKnown": 6, "infusionsActive": 3 },
-          "10": { "infusionsKnown": 8, "infusionsActive": 4 }
-        }
+          "6": {
+            "infusionsKnown": 6,
+            "infusionsActive": 3
+          },
+          "10": {
+            "infusionsKnown": 8,
+            "infusionsActive": 4
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ],
-
     "pact": [
       {
         "id": "eldritchBlast",
         "name": "Eldritch Blast",
-        "callings": ["pact"],
+        "callings": [
+          "pact"
+        ],
         "levelRequired": 1,
         "actionType": "action",
         "resourceType": "cantrip",
@@ -421,34 +575,57 @@
           "damageType": "force"
         },
         "scaling": {
-          "5": { "beams": 2 },
-          "11": { "beams": 3 },
-          "17": { "beams": 4 }
-        }
+          "5": {
+            "beams": 2
+          },
+          "11": {
+            "beams": 3
+          },
+          "17": {
+            "beams": 4
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "eldritchInvocations",
         "name": "Eldritch Invocations",
-        "callings": ["pact"],
+        "callings": [
+          "pact"
+        ],
         "levelRequired": 2,
         "actionType": "passive",
         "resourceType": "invocations",
         "invocationsKnown": 2,
         "description": "Learn fragments of forbidden knowledge (invocations) that grant ongoing benefits. Choose 2 invocations at 2nd level.",
         "effects": {
-          "invocationOptions": ["agonizing_blast", "devils_sight", "armor_of_shadows", "repelling_blast"]
+          "invocationOptions": [
+            "agonizing_blast",
+            "devils_sight",
+            "armor_of_shadows",
+            "repelling_blast"
+          ]
         },
         "scaling": {
-          "5": { "invocationsKnown": 3 },
-          "9": { "invocationsKnown": 4 }
-        }
+          "5": {
+            "invocationsKnown": 3
+          },
+          "9": {
+            "invocationsKnown": 4
+          }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "channelDivinity_turnUndead",
         "name": "Channel Divinity: Turn Undead",
-        "callings": ["pact"],
+        "callings": [
+          "pact"
+        ],
         "levelRequired": 2,
         "actionType": "action",
         "resourceType": "shortRest",
@@ -459,13 +636,17 @@
           "range": 30,
           "duration": 10,
           "saveDC": "8 + proficiency + wis_mod"
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       },
-
       {
         "id": "channelDivinity_preserveLife",
         "name": "Channel Divinity: Preserve Life",
-        "callings": ["pact"],
+        "callings": [
+          "pact"
+        ],
         "levelRequired": 2,
         "actionType": "action",
         "resourceType": "shortRest",
@@ -475,7 +656,10 @@
           "healing": "level * 5",
           "range": 30,
           "maxHealPercent": 0.5
-        }
+        },
+        "campaignIds": [
+          "core"
+        ]
       }
     ]
   }

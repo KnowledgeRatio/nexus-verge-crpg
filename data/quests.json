@@ -1,7 +1,6 @@
 {
   "description": "Quest templates for campaign and procedural side quest generation",
   "version": "1.0.0",
-
   "campaignQuests": [
     {
       "id": "campaign-stage-1",
@@ -39,7 +38,10 @@
           "amount": 50
         }
       },
-      "nextStage": 2
+      "nextStage": 2,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "campaign-stage-2",
@@ -86,7 +88,10 @@
           "amount": 100
         }
       },
-      "nextStage": 3
+      "nextStage": 3,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "campaign-stage-3",
@@ -125,7 +130,10 @@
           "amount": 150
         }
       },
-      "nextStage": 4
+      "nextStage": 4,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "campaign-stage-4",
@@ -155,10 +163,12 @@
         },
         "gameComplete": true
       },
-      "nextStage": null
+      "nextStage": null,
+      "campaignIds": [
+        "core"
+      ]
     }
   ],
-
   "sideQuestTemplates": [
     {
       "id": "kill-creatures-basic",
@@ -171,7 +181,9 @@
           "type": "kill",
           "description": "Slay {count} {creatureName}",
           "requirement": {
-            "creatureTypes": ["{creatureType}"],
+            "creatureTypes": [
+              "{creatureType}"
+            ],
             "count": "{countValue}",
             "location": {
               "nearSettlement": "{settlement}",
@@ -191,9 +203,20 @@
       "generation": {
         "minCR": 0.125,
         "maxCRFormula": "playerLevel + 2",
-        "countRange": [3, 8],
-        "validNPCRoles": ["innkeeper", "leader", "merchant", "guard"]
-      }
+        "countRange": [
+          3,
+          8
+        ],
+        "validNPCRoles": [
+          "innkeeper",
+          "leader",
+          "merchant",
+          "guard"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "kill-creatures-elite",
@@ -206,7 +229,9 @@
           "type": "kill",
           "description": "Hunt and slay the elite {creatureName}",
           "requirement": {
-            "creatureTypes": ["{creatureType}"],
+            "creatureTypes": [
+              "{creatureType}"
+            ],
             "count": 1,
             "elite": true,
             "location": {
@@ -228,8 +253,15 @@
       "generation": {
         "minCRFormula": "playerLevel",
         "maxCRFormula": "playerLevel + 3",
-        "validNPCRoles": ["leader", "guard", "innkeeper"]
-      }
+        "validNPCRoles": [
+          "leader",
+          "guard",
+          "innkeeper"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "retrieve-item-dungeon",
@@ -272,10 +304,29 @@
         }
       },
       "generation": {
-        "validItemTypes": ["heirloom", "artifact", "treasure", "relic"],
-        "dungeonTypes": ["Cave", "Ruins", "Crypt", "Lair", "Hideout"],
-        "validNPCRoles": ["merchant", "innkeeper", "leader", "citizen"]
-      }
+        "validItemTypes": [
+          "heirloom",
+          "artifact",
+          "treasure",
+          "relic"
+        ],
+        "dungeonTypes": [
+          "Cave",
+          "Ruins",
+          "Crypt",
+          "Lair",
+          "Hideout"
+        ],
+        "validNPCRoles": [
+          "merchant",
+          "innkeeper",
+          "leader",
+          "citizen"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "deliver-message",
@@ -310,9 +361,21 @@
       "generation": {
         "minDistance": 50,
         "maxDistance": 300,
-        "validNPCRoles": ["merchant", "leader", "innkeeper"],
-        "urgencyWords": ["Urgent", "Critical", "Important", "Time-Sensitive"]
-      }
+        "validNPCRoles": [
+          "merchant",
+          "leader",
+          "innkeeper"
+        ],
+        "urgencyWords": [
+          "Urgent",
+          "Critical",
+          "Important",
+          "Time-Sensitive"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "deliver-item",
@@ -356,9 +419,19 @@
       "generation": {
         "minDistance": 50,
         "maxDistance": 250,
-        "validNPCRoles": ["merchant", "blacksmith"],
-        "itemTypes": ["supplies", "goods", "materials"]
-      }
+        "validNPCRoles": [
+          "merchant",
+          "blacksmith"
+        ],
+        "itemTypes": [
+          "supplies",
+          "goods",
+          "materials"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "explore-location",
@@ -392,9 +465,20 @@
         }
       },
       "generation": {
-        "locationTypes": ["dungeon", "ruins", "cave", "landmark"],
-        "validNPCRoles": ["leader", "guard"]
-      }
+        "locationTypes": [
+          "dungeon",
+          "ruins",
+          "cave",
+          "landmark"
+        ],
+        "validNPCRoles": [
+          "leader",
+          "guard"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "skill-challenge-trap",
@@ -432,8 +516,14 @@
         }
       },
       "generation": {
-        "validNPCRoles": ["guard", "leader"]
-      }
+        "validNPCRoles": [
+          "guard",
+          "leader"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "skill-challenge-social",
@@ -454,7 +544,10 @@
           "type": "skill_choice",
           "description": "Intimidate or Persuade the bandits to leave",
           "requirement": {
-            "skills": ["intimidation", "persuasion"],
+            "skills": [
+              "intimidation",
+              "persuasion"
+            ],
             "dc": 14
           }
         }
@@ -471,15 +564,25 @@
         {
           "trigger": "skill_failure",
           "result": "combat",
-          "enemies": ["bandit", "bandit", "bandit_captain"]
+          "enemies": [
+            "bandit",
+            "bandit",
+            "bandit_captain"
+          ]
         }
       ],
       "generation": {
-        "validNPCRoles": ["leader", "guard", "merchant"]
-      }
+        "validNPCRoles": [
+          "leader",
+          "guard",
+          "merchant"
+        ]
+      },
+      "campaignIds": [
+        "core"
+      ]
     }
   ],
-
   "wordLists": {
     "creatureAdjectives": [
       "Vicious",

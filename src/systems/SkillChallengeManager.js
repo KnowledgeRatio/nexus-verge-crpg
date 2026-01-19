@@ -126,11 +126,13 @@ export class SkillChallengeManager {
      * @param {number} playerLevel - Player's level
      * @param {boolean} success - Whether challenge was successful
      * @param {boolean} critical - Whether roll was critical (success or failure)
+     * @param {Object} outcome - Optional outcome object (for sequential challenges where rewards are per-stage)
      * @returns {Object} - Final rewards with breakdown
      */
-    calculateFinalRewards(template, playerLevel, success, critical) {
+    calculateFinalRewards(template, playerLevel, success, critical, outcome = null) {
         const balance = template.balance || {};
-        const baseRewards = success ? (template.onSuccess || {}) : {};
+        // For sequential challenges, rewards come from the stage's outcome, not template.onSuccess
+        const baseRewards = success ? (outcome || template.onSuccess || {}) : {};
 
         if (!success) {
             return {
@@ -170,7 +172,7 @@ export class SkillChallengeManager {
         return {
             xp: finalXP,
             gold: finalGold,
-            loot: this.calculateLootReward(template, playerLevel, critical),
+            loot: this.calculateLootReward(template, playerLevel, critical, baseRewards),
             breakdown: {
                 base: { xp, gold },
                 skillValueMult,
@@ -188,11 +190,13 @@ export class SkillChallengeManager {
      * @param {Object} template - Challenge template
      * @param {number} playerLevel - Player's level
      * @param {boolean} critical - Whether critical success
+     * @param {Object} outcome - Optional outcome object (for sequential challenges)
      * @returns {Object|null} - Loot configuration or null
      */
-    calculateLootReward(template, playerLevel, critical) {
+    calculateLootReward(template, playerLevel, critical, outcome = null) {
         const balance = template.balance || {};
-        const lootConfig = template.onSuccess?.loot;
+        // For sequential challenges, loot config may be in the stage outcome
+        const lootConfig = outcome?.loot || template.onSuccess?.loot;
 
         if (!lootConfig) {
             return null;
@@ -384,7 +388,8 @@ export class SkillChallengeManager {
 
         // XP and Gold rewards (only on success)
         if (success) {
-            const rewards = this.calculateFinalRewards(challenge, playerLevel, true, critical && criticalType === 'success');
+            // Pass outcome for sequential challenges where rewards are defined per-stage
+            const rewards = this.calculateFinalRewards(challenge, playerLevel, true, critical && criticalType === 'success', outcome);
 
             if (rewards.xp > 0) {
                 character.gainXP(rewards.xp);
@@ -524,9 +529,16 @@ export class SkillChallengeManager {
                         break;
 
                     case 'revealLocation':
-                        consequences.messages.push('🗺️ You discovered a hidden location!');
-                        // TODO: Could mark a POI on the world map
-                        console.log('🗺️ Location revealed');
+                        // Find and reveal a nearby dungeon or POI
+                        const revealResult = this.revealNearbyLocation();
+                        if (revealResult.found) {
+                            consequences.messages.push(`🗺️ The tracks lead to ${revealResult.name}! You've discovered its location.`);
+                            consequences.revealedLocation = revealResult;
+                            console.log('🗺️ Location revealed:', revealResult);
+                        } else {
+                            consequences.messages.push('🗺️ The trail leads to an area you already know.');
+                            console.log('🗺️ No new location to reveal');
+                        }
                         break;
 
                     case 'revealFeature':
@@ -548,7 +560,126 @@ export class SkillChallengeManager {
             });
         }
 
+        // Extract enemy types for combat initiation (if specified)
+        if (outcome.enemyTypes && Array.isArray(outcome.enemyTypes)) {
+            consequences.enemyTypes = outcome.enemyTypes;
+            console.log(`🎯 Challenge specifies enemy types:`, outcome.enemyTypes);
+        }
+
         return consequences;
+    }
+
+    /**
+     * Find and reveal a nearby dungeon or POI
+     * Searches current region and adjacent regions for undiscovered locations
+     * @returns {Object} - { found: boolean, name: string, type: string, x: number, y: number }
+     */
+    revealNearbyLocation() {
+        const playerPos = gameState.get('world.currentLocation');
+        if (!playerPos) {
+            console.warn('⚠️ No player position found');
+            return { found: false };
+        }
+
+        const world = gameState.get('world');
+        const regionSize = RULES.worldGen.regionSize || 32;
+
+        // Calculate current region
+        const currentRegionX = Math.floor(playerPos.x / regionSize);
+        const currentRegionY = Math.floor(playerPos.y / regionSize);
+
+        // Search current region and adjacent regions
+        const searchRadius = 1;
+        const candidateLocations = [];
+
+        for (let dx = -searchRadius; dx <= searchRadius; dx++) {
+            for (let dy = -searchRadius; dy <= searchRadius; dy++) {
+                const regionKey = `${currentRegionX + dx},${currentRegionY + dy}`;
+                const region = world.generatedRegions?.get(regionKey);
+
+                if (region && region.features) {
+                    for (const feature of region.features) {
+                        // Look for dungeons or POIs that haven't been discovered
+                        if (feature.type === 'dungeon' && !feature.explored) {
+                            candidateLocations.push({
+                                feature,
+                                regionKey,
+                                distance: Math.abs(feature.x - playerPos.x) + Math.abs(feature.y - playerPos.y)
+                            });
+                        } else if (feature.type === 'poi' && !feature.discovered) {
+                            candidateLocations.push({
+                                feature,
+                                regionKey,
+                                distance: Math.abs(feature.x - playerPos.x) + Math.abs(feature.y - playerPos.y)
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (candidateLocations.length === 0) {
+            return { found: false };
+        }
+
+        // Sort by distance and pick the closest
+        candidateLocations.sort((a, b) => a.distance - b.distance);
+        const chosen = candidateLocations[0];
+        const feature = chosen.feature;
+
+        // Mark as discovered/explored
+        if (feature.type === 'dungeon') {
+            feature.explored = true;
+        } else if (feature.type === 'poi') {
+            feature.discovered = true;
+        }
+
+        // Generate a name for the location
+        const locationName = this.generateLocationName(feature);
+
+        // Update the region in gameState
+        const region = world.generatedRegions.get(chosen.regionKey);
+        if (region) {
+            gameState.set('world.generatedRegions', world.generatedRegions);
+        }
+
+        console.log(`🗺️ Revealed ${feature.type} at (${feature.x}, ${feature.y}): ${locationName}`);
+
+        return {
+            found: true,
+            name: locationName,
+            type: feature.type,
+            subType: feature.poiType || null,
+            x: feature.x,
+            y: feature.y,
+            difficulty: feature.difficulty || 1
+        };
+    }
+
+    /**
+     * Generate a descriptive name for a revealed location
+     * @param {Object} feature - The feature object
+     * @returns {string} - Generated name
+     */
+    generateLocationName(feature) {
+        if (feature.type === 'dungeon') {
+            const dungeonPrefixes = ['Dark', 'Ancient', 'Forgotten', 'Cursed', 'Shadow', 'Lost', 'Hidden', 'Sunken'];
+            const dungeonTypes = ['Caverns', 'Catacombs', 'Ruins', 'Depths', 'Lair', 'Tunnels', 'Crypts', 'Warren'];
+            const prefix = dungeonPrefixes[Math.floor(Math.random() * dungeonPrefixes.length)];
+            const type = dungeonTypes[Math.floor(Math.random() * dungeonTypes.length)];
+            return `the ${prefix} ${type}`;
+        } else if (feature.type === 'poi') {
+            const poiNames = {
+                shrine: ['an ancient shrine', 'a weathered shrine', 'a forgotten altar'],
+                ruins: ['crumbling ruins', 'ancient ruins', 'mysterious ruins'],
+                cave: ['a hidden cave', 'a dark cave entrance', 'a concealed cavern'],
+                camp: ['an abandoned camp', 'a hidden encampment', 'a creature\'s den'],
+                landmark: ['a strange landmark', 'an unusual formation', 'a notable site']
+            };
+            const options = poiNames[feature.poiType] || ['a mysterious location'];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+        return 'a mysterious location';
     }
 }
 

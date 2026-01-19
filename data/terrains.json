@@ -10,7 +10,8 @@
       "description": "Open fields of grass sway gently in the breeze.",
       "encounterModifier": 1.0,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
     },
     {
       "id": "forest",
@@ -22,7 +23,8 @@
       "description": "Dense trees provide shade and cover.",
       "encounterModifier": 1.3,
       "coverType": "half",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "mountain",
@@ -34,7 +36,8 @@
       "description": "Rocky peaks reach toward the sky.",
       "encounterModifier": 0.7,
       "coverType": "threeQuarters",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "ocean",
@@ -47,7 +50,8 @@
       "encounterModifier": 0,
       "coverType": null,
       "difficultTerrain": false,
-      "traversalRequirements": ["waterWalking", "ship", "flying"]
+      "traversalRequirements": ["waterWalking", "ship", "flying"],
+      "campaignIds": ["core"]
     },
     {
       "id": "deepWater",
@@ -59,7 +63,8 @@
       "description": "Deep water blocks your path.",
       "encounterModifier": 0,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
     },
     {
       "id": "sanctuary",
@@ -72,7 +77,8 @@
       "encounterModifier": 0,
       "coverType": null,
       "difficultTerrain": false,
-      "canLongRest": true
+      "canLongRest": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "shallowWater",
@@ -84,7 +90,8 @@
       "description": "Shallow water that can be waded through.",
       "encounterModifier": 0.5,
       "coverType": null,
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "beach",
@@ -96,7 +103,8 @@
       "description": "Sandy coastline where land meets sea.",
       "encounterModifier": 0.4,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
     },
     {
       "id": "road",
@@ -108,7 +116,21 @@
       "description": "A well-worn path connects settlements.",
       "encounterModifier": 0.5,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "symbol": "≡",
+      "color": "#8b7355",
+      "traversable": true,
+      "movementCost": 0.8,
+      "description": "A sturdy bridge spans the water.",
+      "encounterModifier": 0.5,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
     },
     {
       "id": "town",
@@ -121,7 +143,8 @@
       "encounterModifier": 0,
       "coverType": null,
       "difficultTerrain": false,
-      "isSettlement": true
+      "isSettlement": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "hills",
@@ -133,7 +156,8 @@
       "description": "Rolling hills provide vantage points.",
       "encounterModifier": 0.8,
       "coverType": "half",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "swamp",
@@ -145,7 +169,8 @@
       "description": "A murky wetland filled with thick vegetation.",
       "encounterModifier": 1.2,
       "coverType": "half",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "desert",
@@ -157,7 +182,8 @@
       "description": "Endless sands stretch in all directions.",
       "encounterModifier": 0.6,
       "coverType": null,
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "cave",
@@ -170,7 +196,8 @@
       "encounterModifier": 1.5,
       "coverType": "full",
       "difficultTerrain": false,
-      "isDungeon": true
+      "isDungeon": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "ruins",
@@ -183,7 +210,8 @@
       "encounterModifier": 1.4,
       "coverType": "threeQuarters",
       "difficultTerrain": true,
-      "isDungeon": true
+      "isDungeon": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "plains",
@@ -195,7 +223,8 @@
       "description": "Flat, open plains stretch to the horizon.",
       "encounterModifier": 0.9,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
     },
     {
       "id": "denseForest",
@@ -207,7 +236,8 @@
       "description": "Thick forest with towering trees and dense undergrowth.",
       "encounterModifier": 1.5,
       "coverType": "threeQuarters",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "tundra",
@@ -219,7 +249,8 @@
       "description": "Frozen ground with sparse vegetation.",
       "encounterModifier": 0.7,
       "coverType": null,
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "snowyPlains",
@@ -231,7 +262,8 @@
       "description": "Snow-covered plains glitter in the cold.",
       "encounterModifier": 0.6,
       "coverType": null,
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "jungle",
@@ -243,7 +275,8 @@
       "description": "Dense tropical jungle teeming with life.",
       "encounterModifier": 1.8,
       "coverType": "threeQuarters",
-      "difficultTerrain": true
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
     },
     {
       "id": "savanna",
@@ -255,7 +288,50 @@
       "description": "Golden grasslands dotted with acacia trees.",
       "encounterModifier": 1.1,
       "coverType": null,
-      "difficultTerrain": false
+      "difficultTerrain": false,
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "residential",
+      "name": "Residential",
+      "symbol": "H",
+      "color": "#d2b48c",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Houses and shops line the streets of the settlement outskirts.",
+      "encounterModifier": 0.3,
+      "coverType": "half",
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "farmland",
+      "name": "Farmland",
+      "symbol": "#",
+      "color": "#f5deb3",
+      "traversable": true,
+      "movementCost": 1.2,
+      "description": "Cultivated fields and pastures surround the settlement.",
+      "encounterModifier": 0.4,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "symbol": "I",
+      "color": "#a0826d",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Warehouses, workshops, and forges bustle with activity.",
+      "encounterModifier": 0.5,
+      "coverType": "half",
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": ["core"]
     }
   ]
 }

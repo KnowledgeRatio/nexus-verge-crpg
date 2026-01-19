@@ -1,0 +1,149 @@
+{
+  "description": "Campaign definitions and configuration for Nexus Verge",
+  "version": "1.0.0",
+
+  "campaigns": [
+    {
+      "id": "core",
+      "name": "Core Rules",
+      "description": "Standard D&D 5e SRD content that appears in all campaigns",
+      "isBase": true,
+      "inherits": [],
+      "settings": {
+        "allowAllContent": true
+      }
+    },
+    {
+      "id": "nexus-verge",
+      "name": "Nexus Verge",
+      "description": "The default Nexus Verge campaign - a procedurally generated world of exploration and adventure",
+      "isBase": false,
+      "inherits": ["core"],
+      "settings": {
+        "proceduralWorld": true,
+        "reputationSystem": true,
+        "urbanSprawl": true
+      },
+      "worldGenOverrides": {
+        "biomeScale": "continental",
+        "settlementDensity": "normal"
+      },
+      "featureGeneration": {}
+    },
+    {
+      "id": "defeatLichKing",
+      "name": "Defeat the Lich King",
+      "description": "A dark threat rises - the Lich King amasses an undead army. Hunt down his phylactery and end his reign.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Locate the Lich King's phylactery and destroy it before his undead army consumes the realm.",
+      "featureGeneration": {
+        "baseDungeons": 250,
+        "baseSanctuaries": 80
+      }
+    },
+    {
+      "id": "uniteKingdoms",
+      "name": "Unite the Kingdoms",
+      "description": "War threatens to tear the land apart. Forge alliances, broker peace, and unite the fractured kingdoms.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Earn the trust of all major factions and unite them against a common threat.",
+      "featureGeneration": {
+        "baseSettlements": 200,
+        "settlementDistribution": {
+          "village": 0.50,
+          "town": 0.35,
+          "city": 0.15
+        },
+        "baseDungeons": 150
+      }
+    },
+    {
+      "id": "recoverArtifact",
+      "name": "Recover the Lost Artifact",
+      "description": "An ancient artifact of immense power has been lost. Explore forgotten ruins and dangerous dungeons to recover it.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Explore the world's dungeons and ruins to find the Lost Artifact before it falls into the wrong hands.",
+      "featureGeneration": {
+        "baseDungeons": 350,
+        "basePOIs": 400,
+        "baseSettlements": 100
+      }
+    }
+  ],
+
+  "defaultCampaignId": "nexus-verge",
+
+  "filteringRules": {
+    "missingCampaignIds": "core",
+    "inheritanceMode": "additive",
+    "strictMode": false
+  },
+
+  "templateCampaigns": [
+    {
+      "id": "dark-sun",
+      "name": "Dark Sun (Template)",
+      "description": "Post-apocalyptic desert world - defiling magic, limited metal, survival focus",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "defilerMagic": true,
+        "limitedMetal": true,
+        "psionicsCommon": true,
+        "noGods": true
+      },
+      "restrictions": {
+        "excludeRaces": ["dragonborn"],
+        "excludeClasses": ["pact"],
+        "excludeSpellSchools": ["conjuration"],
+        "metalItemsRare": true
+      },
+      "worldGenOverrides": {
+        "primaryBiome": "desert",
+        "waterScarcity": 0.9,
+        "settlementDensity": "sparse"
+      }
+    },
+    {
+      "id": "ravenloft",
+      "name": "Ravenloft (Template)",
+      "description": "Gothic horror domains of dread - dark powers, mists, and despair",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "darkPowers": true,
+        "mistsOfRavenloft": true,
+        "horrorChecks": true
+      },
+      "worldGenOverrides": {
+        "primaryBiome": "temperateForest",
+        "atmosphereModifier": "dark",
+        "undead Frequency": 2.0
+      }
+    },
+    {
+      "id": "nautical",
+      "name": "Nautical Campaign (Template)",
+      "description": "Seafaring adventure - ships, islands, pirates, and sea monsters",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "shipCombat": true,
+        "islandHopping": true,
+        "navalFactions": true
+      },
+      "additionalSkills": ["sailing", "navigation"],
+      "worldGenOverrides": {
+        "waterCoverage": 0.7,
+        "islandFrequency": "high",
+        "coastalSettlements": true
+      }
+    }
+  ]
+}

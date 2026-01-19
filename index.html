@@ -62,6 +62,10 @@
                     </select>
                 </div>
 
+                <div class="setup-section">
+                    <button id="worldbuilderBtn" class="menu-btn secondary" style="width: 100%;">⚙️ Worldbuilder (Advanced)</button>
+                </div>
+
                 <div class="menu-buttons">
                     <button id="startGameBtn" class="menu-btn">Create Character</button>
                     <button id="backToMenuBtn" class="menu-btn secondary">Back</button>
@@ -736,6 +740,94 @@
             </div>
         </div>
 
+        <!-- Skill Challenge Outcome Modal -->
+        <div id="skillOutcomeModal" class="modal">
+            <div class="skill-outcome-content">
+                <!-- Outcome Header with Icon -->
+                <div class="outcome-header" id="outcomeHeader">
+                    <span id="outcomeIcon">✅</span>
+                    <h2 id="outcomeTitle">Challenge Complete</h2>
+                </div>
+
+                <!-- Outcome Body -->
+                <div class="outcome-body">
+                    <!-- Challenge Name -->
+                    <div id="outcomeChallengeName">Calm Wild Beast</div>
+
+                    <!-- Narrative Description -->
+                    <div class="outcome-narrative">
+                        <h4>What Happened</h4>
+                        <p id="outcomeNarrative">You connect with the animal. It calms down and leaves peacefully.</p>
+                    </div>
+
+                    <!-- Dice Roll Details -->
+                    <div class="outcome-roll-details" id="outcomeRollDetails">
+                        <h4>Roll Details</h4>
+                        <div class="roll-breakdown">
+                            <div class="roll-item">
+                                <span class="roll-label">🎲 Dice Roll</span>
+                                <span class="roll-value dice" id="outcomeRollDice">14</span>
+                            </div>
+                            <div class="roll-item">
+                                <span class="roll-label">Skill Bonus</span>
+                                <span class="roll-value bonus" id="outcomeRollBonus">+3</span>
+                            </div>
+                            <div class="roll-item">
+                                <span class="roll-label">Total</span>
+                                <span class="roll-value total" id="outcomeRollTotal">17</span>
+                            </div>
+                            <div class="roll-item">
+                                <span class="roll-label">vs DC</span>
+                                <span class="roll-value dc" id="outcomeRollDC">14</span>
+                            </div>
+                            <div class="roll-item full-width">
+                                <span class="roll-label">Result</span>
+                                <span class="roll-value pass" id="outcomeRollResult">Pass by 3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage Progress (for multi-stage challenges) -->
+                    <div class="outcome-stage-progress" id="outcomeStageProgress">
+                        <h4>Challenge Progress</h4>
+                        <div class="stage-list" id="outcomeStageList">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Rewards Section -->
+                    <div class="outcome-rewards" id="outcomeRewards">
+                        <h4>Rewards</h4>
+                        <div class="rewards-list" id="outcomeRewardsList">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Consequences Section -->
+                    <div class="outcome-consequences" id="outcomeConsequences">
+                        <h4>Consequences</h4>
+                        <div class="consequences-list" id="outcomeConsequencesList">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Combat Warning -->
+                    <div class="outcome-combat-warning" id="outcomeCombatWarning">
+                        <span class="combat-warning-icon">⚔️</span>
+                        <div class="combat-warning-text">
+                            <strong>Combat Initiated!</strong>
+                            <span>Prepare for battle when you continue.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outcome Footer -->
+                <div class="outcome-footer">
+                    <button id="outcomeCloseBtn">Continue</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Settings Modal -->
         <div id="settingsModal" class="modal">
             <div class="modal-dialog">
@@ -775,6 +867,71 @@
                             <button id="testSoundBtn" class="btn btn-secondary">Test Sound</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worldbuilder Modal -->
+        <div id="worldbuilderModal" class="modal">
+            <div class="modal-dialog worldbuilder-dialog">
+                <div class="modal-header">
+                    <h2>⚙️ Worldbuilder</h2>
+                    <button class="close-btn" id="closeWorldbuilderBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="worldbuilder-intro">Customize world generation parameters. Values shown are calculated for your selected map size.</p>
+
+                    <div class="worldbuilder-section">
+                        <h3>🏘️ Settlements</h3>
+                        <div class="worldbuilder-row">
+                            <label for="wbSettlements">Total Settlements:</label>
+                            <input type="number" id="wbSettlements" min="10" max="1000" value="150">
+                        </div>
+                        <div class="worldbuilder-row">
+                            <label for="wbVillageRatio">Village %:</label>
+                            <input type="number" id="wbVillageRatio" min="0" max="100" value="60">
+                        </div>
+                        <div class="worldbuilder-row">
+                            <label for="wbTownRatio">Town %:</label>
+                            <input type="number" id="wbTownRatio" min="0" max="100" value="30">
+                        </div>
+                        <div class="worldbuilder-row">
+                            <label for="wbCityRatio">City %:</label>
+                            <input type="number" id="wbCityRatio" min="0" max="100" value="10">
+                        </div>
+                    </div>
+
+                    <div class="worldbuilder-section">
+                        <h3>🏛️ Dungeons</h3>
+                        <div class="worldbuilder-row">
+                            <label for="wbDungeons">Total Dungeons:</label>
+                            <input type="number" id="wbDungeons" min="0" max="2000" value="200">
+                        </div>
+                    </div>
+
+                    <div class="worldbuilder-section">
+                        <h3>☼ Sanctuaries</h3>
+                        <div class="worldbuilder-row">
+                            <label for="wbSanctuaries">Total Sanctuaries:</label>
+                            <input type="number" id="wbSanctuaries" min="0" max="500" value="100">
+                        </div>
+                    </div>
+
+                    <div class="worldbuilder-section">
+                        <h3>📍 Points of Interest</h3>
+                        <div class="worldbuilder-row">
+                            <label for="wbPOIs">Total POIs:</label>
+                            <input type="number" id="wbPOIs" min="0" max="2000" value="300">
+                        </div>
+                    </div>
+
+                    <div class="worldbuilder-summary" id="worldbuilderSummary">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="wbResetBtn" class="btn btn-secondary">Reset to Defaults</button>
+                    <button id="wbApplyBtn" class="btn btn-primary">Apply</button>
                 </div>
             </div>
         </div>

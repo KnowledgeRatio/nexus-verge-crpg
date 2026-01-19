@@ -453,6 +453,7 @@ class Player {
     async handleSequentialSkillChallenge(challenge) {
         const character = gameState.get('character');
         let currentStageIndex = 0;
+        const stageHistory = []; // Track stage results for outcome display
 
         while (currentStageIndex < challenge.stages.length) {
             const stage = challenge.stages[currentStageIndex];
@@ -460,16 +461,28 @@ class Player {
             // Calculate level-adjusted DC for this stage
             const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(stage.baseDC, character.level);
 
-            // Create config for this stage
+            // Create config for this stage with stage history
             const config = {
                 title: `${challenge.name} - Stage ${currentStageIndex + 1}/${challenge.stages.length}`,
                 description: stage.description || challenge.description,
                 skill: stage.skill,
-                dc: adjustedDC
+                dc: adjustedDC,
+                stageHistory: [...stageHistory] // Pass current history for display
             };
 
             // Prompt skill check
             const result = await window.game.promptSkillCheck(config, challenge, stage);
+
+            // Record this stage's result for history (if attempted)
+            if (result.attempted) {
+                stageHistory.push({
+                    description: stage.description,
+                    skill: stage.skill,
+                    dc: adjustedDC,
+                    success: result.success,
+                    rollResult: result.rollResult
+                });
+            }
 
             if (!result.attempted) {
                 gameState.addMessage('You abandon the challenge.', 'info');
@@ -491,6 +504,7 @@ class Player {
                     challenge,
                     currentStageIndex,
                     result,
+                    stageHistory: [...stageHistory], // Include stage history for outcome display
                     type: 'sequential'
                 });
 
@@ -754,12 +768,34 @@ class Player {
                 const monster = specificMonsters[Math.floor(Math.random() * specificMonsters.length)];
                 console.log(`✅ Selected challenge-specific enemy: ${monster.name} (${monster.id})`);
 
-                // Roll HP and create enemy character
+                // Roll HP and create enemy character with proper structure
                 const hp = roll(monster.hitPoints);
                 return {
-                    ...monster,
-                    currentHP: hp,
+                    name: monster.name,
+                    race: { name: monster.type },
+                    class: { name: 'Monster' },
+                    level: playerLevel,
+                    cr: monster.challengeRating,
                     maxHP: hp,
+                    currentHP: hp,
+                    ac: monster.armorClass,
+                    speed: monster.speed || 30,
+                    abilities: monster.abilities,
+                    abilityModifiers: {
+                        str: Math.floor((monster.abilities.str - 10) / 2),
+                        dex: Math.floor((monster.abilities.dex - 10) / 2),
+                        con: Math.floor((monster.abilities.con - 10) / 2),
+                        int: Math.floor((monster.abilities.int - 10) / 2),
+                        wis: Math.floor((monster.abilities.wis - 10) / 2),
+                        cha: Math.floor((monster.abilities.cha - 10) / 2)
+                    },
+                    proficiencyBonus: 2,
+                    skills: monster.skills || {},
+                    equipment: {
+                        mainHand: null,
+                        offHand: null,
+                        armor: null
+                    },
                     isNPC: true
                 };
             } else {

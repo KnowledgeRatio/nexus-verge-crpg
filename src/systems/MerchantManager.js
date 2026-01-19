@@ -5,11 +5,21 @@
 
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class MerchantManager {
-    constructor(worldSeed) {
+    constructor(worldSeed, campaignId = null) {
         this.worldSeed = worldSeed;
+        this.campaignId = campaignId;
         this.merchantInventoryData = null;
+    }
+
+    /**
+     * Set the campaign ID for filtering
+     * @param {string} campaignId - Campaign ID
+     */
+    setCampaignId(campaignId) {
+        this.campaignId = campaignId;
     }
 
     /**
@@ -21,9 +31,21 @@ class MerchantManager {
         }
 
         try {
+            // Load campaign data for filtering
+            await loadCampaigns();
+            const campaignId = this.campaignId || getDefaultCampaignId();
+
             const response = await fetch('data/merchantInventory.json');
-            this.merchantInventoryData = await response.json();
-            console.log('📦 Merchant inventory data loaded');
+            const rawData = await response.json();
+
+            // Filter merchant items by campaign
+            this.merchantInventoryData = {
+                ...rawData,
+                merchantItems: filterByCampaign(rawData.merchantItems, campaignId),
+                blacksmithItems: filterByCampaign(rawData.blacksmithItems, campaignId)
+            };
+
+            console.log(`📦 Merchant inventory data loaded (campaign: ${campaignId})`);
         } catch (error) {
             console.error('Failed to load merchant inventory data:', error);
             throw error;

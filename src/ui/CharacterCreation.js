@@ -6,11 +6,13 @@
 import { Character } from '../systems/Character.js';
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
+import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 export class CharacterCreationUI {
     constructor() {
         this.container = document.getElementById('charCreationContent');
         this.currentStep = 1;
+        this.campaignId = null; // Campaign ID for filtering content
 
         // Character creation data
         this.characterData = {
@@ -28,12 +30,19 @@ export class CharacterCreationUI {
             weaponMasteries: [] // New: weapon mastery selections
         };
 
-        // Loaded data
+        // Loaded data (raw, before filtering)
+        this.rawRacesData = null;
+        this.rawClassesData = null;
+        this.rawBackgroundsData = null;
+        this.rawWeaponMasteriesData = null;
+        this.rawKitsData = null;
+
+        // Filtered data (based on campaign)
         this.racesData = null;
         this.classesData = null;
         this.backgroundsData = null;
-        this.weaponMasteriesData = null; // New: weapon mastery data
-        this.kitsData = null; // New: kits data
+        this.weaponMasteriesData = null;
+        this.kitsData = null;
     }
 
     /**
@@ -41,6 +50,9 @@ export class CharacterCreationUI {
      */
     async loadData() {
         try {
+            // Load campaign data first for filtering
+            await loadCampaigns();
+
             // Add cache-busting parameter to force reload of updated data
             const cacheBust = Date.now();
             const [races, classes, backgrounds, weaponMasteries, kits] = await Promise.all([
@@ -51,11 +63,15 @@ export class CharacterCreationUI {
                 fetch(`data/kits.json?v=${cacheBust}`).then(r => r.json())
             ]);
 
-            this.racesData = races.races;
-            this.classesData = classes.classes;
-            this.backgroundsData = backgrounds.backgrounds;
-            this.weaponMasteriesData = weaponMasteries.weaponMasteries;
-            this.kitsData = kits;
+            // Store raw data
+            this.rawRacesData = races.races;
+            this.rawClassesData = classes.classes;
+            this.rawBackgroundsData = backgrounds.backgrounds;
+            this.rawWeaponMasteriesData = weaponMasteries.weaponMasteries;
+            this.rawKitsData = kits;
+
+            // Apply campaign filtering
+            this.applyFiltering();
         } catch (error) {
             console.error('Failed to load data:', error);
             this.container.innerHTML = '<p class="text-danger">Error loading character data. Please refresh.</p>';
@@ -63,9 +79,50 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Initialize character creation
+     * Apply campaign filtering to all loaded data
      */
-    async init() {
+    applyFiltering() {
+        const campaignId = this.campaignId || getDefaultCampaignId();
+        console.log(`🎯 Filtering character creation data for campaign: ${campaignId}`);
+
+        this.racesData = filterByCampaign(this.rawRacesData, campaignId);
+        this.classesData = filterByCampaign(this.rawClassesData, campaignId);
+        this.backgroundsData = filterByCampaign(this.rawBackgroundsData, campaignId);
+        this.weaponMasteriesData = filterByCampaign(this.rawWeaponMasteriesData, campaignId);
+
+        // Filter kits if they have campaignIds
+        if (this.rawKitsData?.kits) {
+            this.kitsData = {
+                ...this.rawKitsData,
+                kits: filterByCampaign(this.rawKitsData.kits, campaignId)
+            };
+        } else {
+            this.kitsData = this.rawKitsData;
+        }
+
+        console.log(`📊 Filtered: ${this.racesData?.length || 0} races, ${this.classesData?.length || 0} classes, ${this.backgroundsData?.length || 0} backgrounds`);
+    }
+
+    /**
+     * Set the campaign ID and re-filter data if already loaded
+     * @param {string} campaignId - The campaign ID to filter by
+     */
+    setCampaignId(campaignId) {
+        this.campaignId = campaignId;
+        if (this.rawRacesData) {
+            // Data already loaded, re-filter
+            this.applyFiltering();
+        }
+    }
+
+    /**
+     * Initialize character creation
+     * @param {string} campaignId - Optional campaign ID for filtering content
+     */
+    async init(campaignId = null) {
+        if (campaignId) {
+            this.campaignId = campaignId;
+        }
         await this.loadData();
         this.renderStep();
     }

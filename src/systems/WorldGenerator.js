@@ -5,7 +5,7 @@
 
 import SimplexNoise from '../utils/simplexNoise.js';
 import { SeededRandom, hashString } from '../utils/rng.js';
-import { RULES } from '../core/rulesEngine.js';
+import { RULES, getScaledFeatureGeneration } from '../core/rulesEngine.js';
 import { gameState } from '../core/GameState.js';
 import NPCGenerator from './NPCGenerator.js';
 
@@ -161,23 +161,36 @@ class WorldGenerator {
         // Select terrain based on two-layer system: macro biome → micro terrain
         let terrainType = this.selectTerrain(elevation, moisture, temperature, biomeNoise);
 
-        // Check if this tile is on a pre-generated road (FINITE WORLD FEATURE)
-        if (this.isRoadTile(worldX, worldY)) {
-            // Only place roads on traversable land (not water/mountains)
-            if (terrainType !== 'deepWater' &&
-                terrainType !== 'shallowWater' &&
-                terrainType !== 'ocean' &&
-                terrainType !== 'mountain') {
-                terrainType = 'road';
-            }
+        // PRIORITY 2.5: Urban sprawl around settlements
+        // Check if this tile is within urban sprawl zone of any settlement
+        const urbanTerrain = this.getUrbanSprawlTerrain(worldX, worldY, rng);
+        if (urbanTerrain && terrainType !== 'deepWater' && terrainType !== 'shallowWater' && terrainType !== 'ocean' && terrainType !== 'mountain') {
+            terrainType = urbanTerrain;
         }
 
-        // Carve rivers: thin, winding strips with occasional deeper channels
-        if (terrainType !== 'deepWater' && terrainType !== 'shallowWater' && terrainType !== 'road') {
+        // Carve rivers BEFORE roads so roads can create bridges
+        // Rivers: thin, winding strips with occasional deeper channels
+        if (terrainType !== 'deepWater' && terrainType !== 'shallowWater') {
             if (riverMask < 0.02 && elevation > -0.2) {
                 terrainType = 'deepWater';
             } else if (riverMask < 0.04 && elevation > -0.2) {
                 terrainType = 'shallowWater';
+            }
+        }
+
+        // Check if this tile is on a pre-generated road (FINITE WORLD FEATURE)
+        // Roads now take priority and can create bridges over shallow water
+        if (this.isRoadTile(worldX, worldY)) {
+            // Roads can go over shallow water (bridges) but not deep water, ocean, or mountains
+            if (terrainType !== 'deepWater' &&
+                terrainType !== 'ocean' &&
+                terrainType !== 'mountain') {
+                // If crossing shallow water, it becomes a bridge
+                if (terrainType === 'shallowWater') {
+                    terrainType = 'bridge';
+                } else {
+                    terrainType = 'road';
+                }
             }
         }
 
@@ -395,6 +408,73 @@ class WorldGenerator {
 
         // Fallback: Return first terrain in pool
         return allowedTerrains[0];
+    }
+
+    /**
+     * Get urban sprawl terrain type based on distance from settlement
+     * Creates realistic urban sprawl zones around settlements:
+     * - Inner ring: industrial (workshops, warehouses near settlement core)
+     * - Middle ring: residential (houses, shops in suburbs)
+     * - Outer ring: farmland (crops, pastures)
+     *
+     * @param {number} worldX - World X coordinate
+     * @param {number} worldY - World Y coordinate
+     * @param {Object} rng - Seeded RNG for variation
+     * @returns {string|null} Urban terrain type or null if not in sprawl zone
+     */
+    getUrbanSprawlTerrain(worldX, worldY, rng) {
+        // Check if finite world metadata is available
+        if (!this.worldMetadata.generated) {
+            return null;
+        }
+
+        // Get sprawl radii from rules (with defaults)
+        // Config order: industrial (inner/smallest) < residential (middle) < farmland (outer/largest)
+        const sprawlRadii = RULES.worldGen.urbanSprawl || {
+            city: { industrial: 8, residential: 15, farmland: 25 },
+            town: { industrial: 5, residential: 10, farmland: 18 },
+            village: { industrial: 3, residential: 5, farmland: 10 }
+        };
+
+        // Check each settlement for proximity
+        for (const settlement of this.worldMetadata.settlements) {
+            const distance = Math.sqrt(
+                Math.pow(worldX - settlement.x, 2) +
+                Math.pow(worldY - settlement.y, 2)
+            );
+
+            // Get radii for this settlement type
+            const radii = sprawlRadii[settlement.settlementType];
+            if (!radii) continue;
+
+            // Skip if outside all sprawl zones
+            if (distance > radii.farmland) continue;
+
+            // Skip the exact settlement tile
+            if (distance < 1) continue;
+
+            // Determine zone based on distance (with some randomness for natural edges)
+            const variation = (rng ? rng.next() : Math.random()) * 1.5;
+
+            // Inner ring: Industrial (workshops, warehouses near the settlement core)
+            if (distance < radii.industrial + variation) {
+                return 'industrial';
+            }
+
+            // Middle ring: Residential (houses, shops in suburbs)
+            if (distance < radii.residential + variation) {
+                // Mix of residential and industrial
+                return (rng ? rng.next() : Math.random()) < 0.7 ? 'residential' : 'industrial';
+            }
+
+            // Outer ring: Farmland (crops, pastures)
+            if (distance < radii.farmland + variation) {
+                // Mostly farmland with some residential at inner edge
+                return (rng ? rng.next() : Math.random()) < 0.85 ? 'farmland' : 'residential';
+            }
+        }
+
+        return null; // Not in any urban sprawl zone
     }
 
     /**
@@ -1022,133 +1102,294 @@ class WorldGenerator {
     }
 
     /**
-     * Pre-generate all settlement locations
-     * Iterates through all regions in world bounds
+     * Pre-generate all settlement locations using quota-based system
+     * Uses featureGeneration config from rulesEngine for counts and distribution
      */
     async preGenerateSettlements() {
         const settlements = [];
         const regionSize = RULES.worldGen.regionSize;
 
-        // Iterate through all regions in world bounds
+        // Get scaled feature counts for this world size
+        const featureConfig = getScaledFeatureGeneration(this.config.mapSize, RULES.worldGen.campaignOverrides);
+        const targetCounts = featureConfig.settlementCounts;
+        const spacing = featureConfig.settlementSpacing;
+
+        console.log(`   Target settlements: ${featureConfig.settlements} (${targetCounts.village} villages, ${targetCounts.town} towns, ${targetCounts.city} cities)`);
+
+        // Track placed settlements for spacing checks
+        const placedSettlements = [];
+        const currentCounts = { village: 0, town: 0, city: 0 };
+
+        // Build list of all valid region coordinates
+        const allRegions = [];
         for (let rx = this.worldBounds.minX; rx <= this.worldBounds.maxX; rx++) {
             for (let ry = this.worldBounds.minY; ry <= this.worldBounds.maxY; ry++) {
-                // Use same RNG logic as original generateFeatures
+                allRegions.push({ rx, ry });
+            }
+        }
+
+        // Shuffle regions deterministically for even distribution
+        const shuffleRNG = new SeededRandom(`${this.worldSeed}_settlements`);
+        for (let i = allRegions.length - 1; i > 0; i--) {
+            const j = shuffleRNG.nextInt(0, i);
+            [allRegions[i], allRegions[j]] = [allRegions[j], allRegions[i]];
+        }
+
+        // Guarantee starting town at (0,0)
+        if (RULES.worldGen.guaranteeStartingTown) {
+            const startX = 0 * regionSize + Math.floor(regionSize / 2);
+            const startY = 0 * regionSize + Math.floor(regionSize / 2);
+            const startRNG = new SeededRandom(`${this.worldSeed}_0_0`);
+
+            settlements.push({
+                id: `${startX},${startY}`,
+                x: startX,
+                y: startY,
+                type: 'settlement',
+                settlementType: 'town',
+                name: this.generateSettlementName(startRNG, 'town'),
+                npcs: [],
+                questsGenerated: false,
+                visitedAt: null,
+                merchantInventory: null
+            });
+            placedSettlements.push({ x: startX, y: startY, type: 'town' });
+            currentCounts.town++;
+        }
+
+        // Helper to check spacing constraints
+        const meetsSpacing = (x, y, type) => {
+            const minSpacing = spacing[type] * regionSize;
+            for (const placed of placedSettlements) {
+                const dist = Math.sqrt(Math.pow(placed.x - x, 2) + Math.pow(placed.y - y, 2));
+                // Use the larger of the two spacing requirements
+                const requiredSpacing = Math.max(minSpacing, spacing[placed.type] * regionSize);
+                if (dist < requiredSpacing) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        // Place cities first (need most spacing), then towns, then villages
+        const placementOrder = ['city', 'town', 'village'];
+
+        for (const settlementType of placementOrder) {
+            const target = targetCounts[settlementType];
+
+            for (const { rx, ry } of allRegions) {
+                if (currentCounts[settlementType] >= target) break;
+
+                // Skip starting region (already handled)
+                if (rx === 0 && ry === 0) continue;
+
                 const regionSeedString = `${this.worldSeed}_${rx}_${ry}`;
                 const regionRNG = new SeededRandom(regionSeedString);
 
-                // Check for settlement (same logic as generateFeatures)
-                const distanceFromCenter = Math.sqrt(rx * rx + ry * ry);
-                const townSpacing = RULES.worldGen.townSpacing;
+                // Calculate position
+                const settlementX = rx * regionSize + Math.floor(regionSize / 2);
+                const settlementY = ry * regionSize + Math.floor(regionSize / 2);
 
-                let settlementType = null;
+                // Check if location already has a settlement
+                const alreadyOccupied = placedSettlements.some(s =>
+                    Math.abs(s.x - settlementX) < regionSize && Math.abs(s.y - settlementY) < regionSize
+                );
+                if (alreadyOccupied) continue;
 
-                // Starting region always gets a town
-                if (rx === 0 && ry === 0 && RULES.worldGen.guaranteeStartingTown) {
-                    settlementType = 'town';
-                }
-                // Towns at regular intervals
-                else if (distanceFromCenter > 0 &&
-                         distanceFromCenter % townSpacing === 0 &&
-                         regionRNG.next() < 0.7) {
-                    settlementType = 'town';
-                }
-                // Cities (rare)
-                else if (distanceFromCenter > townSpacing * 2 && regionRNG.next() < 0.05) {
-                    settlementType = 'city';
-                }
-                // Villages (common)
-                else if (regionRNG.next() < RULES.worldGen.villageFrequency) {
-                    settlementType = 'village';
-                }
+                // Check spacing constraints
+                if (!meetsSpacing(settlementX, settlementY, settlementType)) continue;
 
-                if (settlementType) {
-                    // Calculate settlement position (center of region)
-                    const settlementX = rx * regionSize + Math.floor(regionSize / 2);
-                    const settlementY = ry * regionSize + Math.floor(regionSize / 2);
+                // Use RNG to add some randomness (not every valid spot gets a settlement)
+                const placementChance = settlementType === 'city' ? 0.8 :
+                                       settlementType === 'town' ? 0.7 : 0.6;
+                if (regionRNG.next() > placementChance) continue;
 
-                    // Generate settlement name
-                    const settlementName = this.generateSettlementName(regionRNG, settlementType);
-
-                    settlements.push({
-                        id: `${settlementX},${settlementY}`,
-                        x: settlementX,
-                        y: settlementY,
-                        type: 'settlement',
-                        settlementType: settlementType,
-                        name: settlementName,
-                        // Dynamic state (populated when player visits)
-                        npcs: [],
-                        questsGenerated: false,
-                        visitedAt: null,
-                        merchantInventory: null
-                    });
-                }
+                // Place the settlement
+                settlements.push({
+                    id: `${settlementX},${settlementY}`,
+                    x: settlementX,
+                    y: settlementY,
+                    type: 'settlement',
+                    settlementType: settlementType,
+                    name: this.generateSettlementName(regionRNG, settlementType),
+                    npcs: [],
+                    questsGenerated: false,
+                    visitedAt: null,
+                    merchantInventory: null
+                });
+                placedSettlements.push({ x: settlementX, y: settlementY, type: settlementType });
+                currentCounts[settlementType]++;
             }
         }
 
         this.worldMetadata.settlements = settlements;
-        console.log(`   Generated ${settlements.length} settlements across world`);
+        console.log(`   Generated ${settlements.length} settlements (${currentCounts.village} villages, ${currentCounts.town} towns, ${currentCounts.city} cities)`);
     }
 
     /**
-     * Pre-generate all feature locations (dungeons, shrines, etc.)
+     * Pre-generate all feature locations (dungeons, sanctuaries, POIs)
+     * Uses featureGeneration config from rulesEngine for counts and distribution
      */
     async preGenerateFeatures() {
         const features = [];
         const regionSize = RULES.worldGen.regionSize;
 
-        // Iterate through all regions
+        // Get scaled feature counts for this world size
+        const featureConfig = getScaledFeatureGeneration(this.config.mapSize, RULES.worldGen.campaignOverrides);
+
+        console.log(`   Target features: ${featureConfig.dungeons} dungeons, ${featureConfig.sanctuaries} sanctuaries, ${featureConfig.pois} POIs`);
+
+        // Build list of valid regions (excluding those with settlements)
+        const validRegions = [];
         for (let rx = this.worldBounds.minX; rx <= this.worldBounds.maxX; rx++) {
             for (let ry = this.worldBounds.minY; ry <= this.worldBounds.maxY; ry++) {
-                const regionSeedString = `${this.worldSeed}_${rx}_${ry}`;
-                const regionRNG = new SeededRandom(regionSeedString);
-
-                // Skip if this region has a settlement (already added)
+                // Skip regions with settlements
                 const hasSettlement = this.worldMetadata.settlements.some(s =>
                     Math.floor(s.x / regionSize) === rx &&
                     Math.floor(s.y / regionSize) === ry
                 );
-                if (hasSettlement) {
-                    continue;
-                }
-
-                // Check for dungeon/ruins
-                if (regionRNG.next() < RULES.worldGen.dungeonFrequency) {
-                    const featureX = rx * regionSize + regionRNG.nextInt(10, regionSize - 10);
-                    const featureY = ry * regionSize + regionRNG.nextInt(10, regionSize - 10);
-
-                    const featureType = regionRNG.next() < 0.5 ? 'ruins' : 'cave';
-
-                    features.push({
-                        id: `${featureX},${featureY}`,
-                        x: featureX,
-                        y: featureY,
-                        type: 'poi',
-                        poiType: featureType,
-                        explored: false
-                    });
-                }
-
-                // Check for sanctuary (2x as common as settlements)
-                if (regionRNG.next() < (RULES.worldGen.villageFrequency * 2)) {
-                    const sanctuaryX = rx * regionSize + regionRNG.nextInt(10, regionSize - 10);
-                    const sanctuaryY = ry * regionSize + regionRNG.nextInt(10, regionSize - 10);
-
-                    const sanctuaryName = this.generateSanctuaryName(regionRNG);
-
-                    features.push({
-                        id: `${sanctuaryX},${sanctuaryY}`,
-                        x: sanctuaryX,
-                        y: sanctuaryY,
-                        type: 'sanctuary',
-                        name: sanctuaryName
-                    });
+                if (!hasSettlement) {
+                    validRegions.push({ rx, ry });
                 }
             }
         }
 
+        // Shuffle regions deterministically
+        const shuffleRNG = new SeededRandom(`${this.worldSeed}_features`);
+        for (let i = validRegions.length - 1; i > 0; i--) {
+            const j = shuffleRNG.nextInt(0, i);
+            [validRegions[i], validRegions[j]] = [validRegions[j], validRegions[i]];
+        }
+
+        // Track what we've placed
+        const placedLocations = new Set(); // "x,y" strings to avoid duplicates
+        let dungeonsPlaced = 0;
+        let sanctuariesPlaced = 0;
+        const poisPlaced = { shrine: 0, ruins: 0, cave: 0, camp: 0, landmark: 0 };
+
+        // Helper to get a unique position within a region
+        const getUniquePosition = (rx, ry, rng) => {
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const x = rx * regionSize + rng.nextInt(5, regionSize - 5);
+                const y = ry * regionSize + rng.nextInt(5, regionSize - 5);
+                const key = `${x},${y}`;
+                if (!placedLocations.has(key)) {
+                    placedLocations.add(key);
+                    return { x, y };
+                }
+            }
+            return null;
+        };
+
+        // Place dungeons first (most important)
+        const dungeonRNG = new SeededRandom(`${this.worldSeed}_dungeons`);
+
+        for (const { rx, ry } of validRegions) {
+            if (dungeonsPlaced >= featureConfig.dungeons) break;
+
+            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_dungeon`);
+
+            // Apply terrain weight preferences (dungeons favor mountains/hills)
+            // Use simple random check since we don't have terrain data at metadata time
+            if (dungeonRNG.next() > 0.5) continue; // ~50% of valid regions checked
+
+            const pos = getUniquePosition(rx, ry, regionRNG);
+            if (!pos) continue;
+
+            // Determine difficulty based on distribution
+            const diffRoll = regionRNG.next();
+            let difficulty = 1;
+            let cumulative = 0;
+            for (const [diff, chance] of Object.entries(featureConfig.dungeonDifficultyDistribution)) {
+                cumulative += chance;
+                if (diffRoll < cumulative) {
+                    difficulty = parseInt(diff);
+                    break;
+                }
+            }
+
+            features.push({
+                id: `${pos.x},${pos.y}`,
+                x: pos.x,
+                y: pos.y,
+                type: 'dungeon',
+                difficulty: difficulty,
+                explored: false
+            });
+            dungeonsPlaced++;
+        }
+
+        // Place sanctuaries
+        const sanctuaryRNG = new SeededRandom(`${this.worldSeed}_sanctuaries`);
+
+        for (const { rx, ry } of validRegions) {
+            if (sanctuariesPlaced >= featureConfig.sanctuaries) break;
+
+            if (sanctuaryRNG.next() > 0.3) continue; // Check ~30% of regions
+
+            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_sanctuary`);
+            const pos = getUniquePosition(rx, ry, regionRNG);
+            if (!pos) continue;
+
+            features.push({
+                id: `${pos.x},${pos.y}`,
+                x: pos.x,
+                y: pos.y,
+                type: 'sanctuary',
+                name: this.generateSanctuaryName(regionRNG)
+            });
+            sanctuariesPlaced++;
+        }
+
+        // Place POIs by type
+        const poiTypes = ['shrine', 'ruins', 'cave', 'camp', 'landmark'];
+        const poiRNG = new SeededRandom(`${this.worldSeed}_pois`);
+
+        for (const { rx, ry } of validRegions) {
+            const totalPoisPlaced = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
+            if (totalPoisPlaced >= featureConfig.pois) break;
+
+            if (poiRNG.next() > 0.4) continue; // Check ~40% of regions
+
+            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_poi`);
+            const pos = getUniquePosition(rx, ry, regionRNG);
+            if (!pos) continue;
+
+            // Pick POI type based on distribution, prioritizing under-quota types
+            let poiType = null;
+            const typeRoll = regionRNG.next();
+            let cumulative = 0;
+
+            for (const type of poiTypes) {
+                const targetCount = featureConfig.poiCounts[type];
+                if (poisPlaced[type] >= targetCount) continue;
+
+                cumulative += featureConfig.poiDistribution[type];
+                if (typeRoll < cumulative || !poiType) {
+                    poiType = type;
+                }
+            }
+
+            if (!poiType) continue;
+
+            features.push({
+                id: `${pos.x},${pos.y}`,
+                x: pos.x,
+                y: pos.y,
+                type: 'poi',
+                poiType: poiType,
+                discovered: false
+            });
+            poisPlaced[poiType]++;
+        }
+
         this.worldMetadata.features = features;
-        console.log(`   Generated ${features.length} features (dungeons, sanctuaries)`);
+
+        const totalPois = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
+        console.log(`   Generated ${features.length} features:`);
+        console.log(`     - ${dungeonsPlaced} dungeons`);
+        console.log(`     - ${sanctuariesPlaced} sanctuaries`);
+        console.log(`     - ${totalPois} POIs (${poisPlaced.shrine} shrines, ${poisPlaced.ruins} ruins, ${poisPlaced.cave} caves, ${poisPlaced.camp} camps, ${poisPlaced.landmark} landmarks)`);
     }
 
     /**
@@ -1157,13 +1398,19 @@ class WorldGenerator {
      */
     async preGenerateRoads() {
         const roads = [];
+        let totalConnections = 0;
+        let failedPaths = 0;
 
-        // For each settlement, connect to nearest 1-3 settlements
+        console.log(`🛣️ Road generation starting with ${this.worldMetadata.settlements.length} settlements`);
+
+        // For each settlement, connect to nearest 2-4 settlements
+        // Increased connection counts for better road network connectivity
         for (const settlement of this.worldMetadata.settlements) {
-            const maxConnections = settlement.settlementType === 'city' ? 3 :
-                settlement.settlementType === 'town' ? 2 : 1;
+            const maxConnections = settlement.settlementType === 'city' ? 4 :
+                settlement.settlementType === 'town' ? 3 : 2;
 
             // Find nearest settlements
+            // Max connection distance increased to 400 tiles to ensure cities (320 tile spacing) can connect
             const nearestSettlements = this.worldMetadata.settlements
                 .filter(s => s !== settlement)
                 .map(s => ({
@@ -1173,13 +1420,18 @@ class WorldGenerator {
                         Math.pow(s.y - settlement.y, 2)
                     )
                 }))
-                .filter(s => s.distance < 200) // Max connection distance
+                .filter(s => s.distance < 400) // Max connection distance (covers city spacing of 320)
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, maxConnections);
 
+            if (nearestSettlements.length === 0) {
+                console.log(`   ⚠️ ${settlement.name} (${settlement.settlementType}) has no nearby settlements within 400 tiles`);
+            }
+
             // Create road paths to each nearby settlement
-            for (const { settlement: target } of nearestSettlements) {
+            for (const { settlement: target, distance } of nearestSettlements) {
                 const roadPath = this.generateRoadPath(settlement, target);
+                totalConnections++;
 
                 // Avoid duplicate roads (check if reverse path already exists)
                 const isDuplicate = roads.some(r =>
@@ -1193,27 +1445,180 @@ class WorldGenerator {
                         end: { x: target.x, y: target.y },
                         path: roadPath // Array of {x, y} coordinates
                     });
+
+                    if (roadPath.length < 5) {
+                        failedPaths++;
+                        console.log(`   ⚠️ Short road path (${roadPath.length} tiles) from ${settlement.name} to ${target.name} (distance: ${Math.round(distance)} tiles)`);
+                    }
                 }
             }
         }
 
         this.worldMetadata.roads = roads;
-        console.log(`   Generated ${roads.length} road segments`);
+        console.log(`   Generated ${roads.length} road segments from ${totalConnections} connections`);
+        if (failedPaths > 0) {
+            console.log(`   ⚠️ ${failedPaths} roads have unexpectedly short paths`);
+        }
+
+        // Log total road tiles
+        let totalRoadTiles = 0;
+        for (const road of roads) {
+            totalRoadTiles += road.path.length;
+        }
+        console.log(`   📏 Total road tiles: ${totalRoadTiles}`);
     }
 
     /**
-     * Generate road path between two points using Bresenham's line algorithm
-     * Ensures continuous path with no gaps
+     * Generate road path between two points using A* pathfinding
+     * Routes around impassable terrain (deep water, ocean, mountains)
+     * Falls back to Bresenham if path is impossible
      * Returns array of {x, y} coordinates
      */
     generateRoadPath(start, end) {
-        const path = [];
-
-        // Bresenham's line algorithm for pixel-perfect straight line
-        let x0 = Math.round(start.x);
-        let y0 = Math.round(start.y);
+        const x0 = Math.round(start.x);
+        const y0 = Math.round(start.y);
         const x1 = Math.round(end.x);
         const y1 = Math.round(end.y);
+
+        // Try A* pathfinding first
+        const astarPath = this.astarRoadPath(x0, y0, x1, y1);
+        if (astarPath && astarPath.length > 0) {
+            return astarPath;
+        }
+
+        // Fallback to Bresenham if A* fails (shouldn't happen but safety)
+        return this.bresenhamPath(x0, y0, x1, y1);
+    }
+
+    /**
+     * A* pathfinding for roads - routes around impassable terrain
+     * Uses noise functions to predict terrain without generating tiles
+     */
+    astarRoadPath(x0, y0, x1, y1) {
+        const scale = RULES.worldGen.biomeNoiseScale;
+        const maxIterations = 100000; // Prevent infinite loops (increased for longer paths)
+        let iterations = 0;
+
+        // Helper to check if terrain is passable for roads
+        const isPassable = (x, y) => {
+            const elevation = this.elevationNoise.octaveNoise2D(x * scale, y * scale, 4, 0.5);
+            const moisture = this.moistureNoise.octaveNoise2D(x * scale * 0.6, y * scale * 0.6, 3, 0.5);
+            const e = (elevation + 1) / 2;
+            const m = (moisture + 1) / 2;
+
+            // Check for impassable terrain
+            // Deep water/ocean: very low elevation
+            if (e < 0.15) return false;
+            // Mountains: very high elevation
+            if (e > 0.78) return false;
+
+            return true;
+        };
+
+        // Get terrain cost (prefer flat, dry terrain for roads)
+        const getTerrainCost = (x, y) => {
+            const elevation = this.elevationNoise.octaveNoise2D(x * scale, y * scale, 4, 0.5);
+            const moisture = this.moistureNoise.octaveNoise2D(x * scale * 0.6, y * scale * 0.6, 3, 0.5);
+            const riverMask = Math.abs(this.riverNoise.octaveNoise2D(x * 0.01, y * 0.01, 2, 0.8));
+            const e = (elevation + 1) / 2;
+            const m = (moisture + 1) / 2;
+
+            let cost = 1;
+
+            // Hills are slightly more expensive
+            if (e > 0.6 && e <= 0.78) cost += 1;
+
+            // Wet areas (potential swamps/rivers) are more expensive
+            if (m > 0.65) cost += 1;
+
+            // River crossings (shallow water) add cost but are passable
+            if (riverMask < 0.04 && e > -0.2) cost += 2;
+
+            return cost;
+        };
+
+        // Heuristic: Manhattan distance (faster than Euclidean)
+        const heuristic = (x, y) => Math.abs(x - x1) + Math.abs(y - y1);
+
+        // Priority queue using array (simple but works)
+        const openSet = [{ x: x0, y: y0, g: 0, f: heuristic(x0, y0) }];
+        const cameFrom = new Map();
+        const gScore = new Map();
+        gScore.set(`${x0},${y0}`, 0);
+
+        // Directions: 8-way movement for smoother roads
+        const directions = [
+            { dx: 1, dy: 0 }, { dx: -1, dy: 0 },
+            { dx: 0, dy: 1 }, { dx: 0, dy: -1 },
+            { dx: 1, dy: 1 }, { dx: -1, dy: 1 },
+            { dx: 1, dy: -1 }, { dx: -1, dy: -1 }
+        ];
+
+        while (openSet.length > 0 && iterations < maxIterations) {
+            iterations++;
+
+            // Get node with lowest f score
+            openSet.sort((a, b) => a.f - b.f);
+            const current = openSet.shift();
+
+            // Reached destination
+            if (current.x === x1 && current.y === y1) {
+                // Reconstruct path
+                const path = [];
+                let node = `${x1},${y1}`;
+                while (node) {
+                    const [x, y] = node.split(',').map(Number);
+                    path.unshift({ x, y });
+                    node = cameFrom.get(node);
+                }
+                return path;
+            }
+
+            // Explore neighbors
+            for (const { dx, dy } of directions) {
+                const nx = current.x + dx;
+                const ny = current.y + dy;
+                const neighborKey = `${nx},${ny}`;
+
+                // Skip impassable terrain
+                if (!isPassable(nx, ny)) continue;
+
+                // Calculate tentative g score
+                const moveCost = (dx !== 0 && dy !== 0) ? 1.414 : 1; // Diagonal costs more
+                const terrainCost = getTerrainCost(nx, ny);
+                const tentativeG = gScore.get(`${current.x},${current.y}`) + moveCost * terrainCost;
+
+                // Skip if we've found a better path
+                const existingG = gScore.get(neighborKey);
+                if (existingG !== undefined && tentativeG >= existingG) continue;
+
+                // This is the best path so far
+                cameFrom.set(neighborKey, `${current.x},${current.y}`);
+                gScore.set(neighborKey, tentativeG);
+
+                // Add to open set if not already there
+                const inOpenSet = openSet.some(n => n.x === nx && n.y === ny);
+                if (!inOpenSet) {
+                    openSet.push({
+                        x: nx,
+                        y: ny,
+                        g: tentativeG,
+                        f: tentativeG + heuristic(nx, ny)
+                    });
+                }
+            }
+        }
+
+        // No path found - return null to trigger fallback
+        console.warn(`A* pathfinding failed for road from (${x0},${y0}) to (${x1},${y1}) after ${iterations} iterations`);
+        return null;
+    }
+
+    /**
+     * Bresenham's line algorithm - fallback for road generation
+     */
+    bresenhamPath(x0, y0, x1, y1) {
+        const path = [];
 
         const dx = Math.abs(x1 - x0);
         const dy = Math.abs(y1 - y0);
@@ -1224,10 +1629,7 @@ class WorldGenerator {
         while (true) {
             path.push({ x: x0, y: y0 });
 
-            // Reached destination
-            if (x0 === x1 && y0 === y1) {
-                break;
-            }
+            if (x0 === x1 && y0 === y1) break;
 
             const e2 = 2 * err;
             if (e2 > -dy) {

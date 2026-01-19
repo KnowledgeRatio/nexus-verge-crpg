@@ -8,17 +8,27 @@
       "weaponType": "melee",
       "damage": "1d4",
       "damageType": "piercing",
-      "properties": ["finesse", "light", "thrown"],
+      "properties": [
+        "finesse",
+        "light",
+        "thrown"
+      ],
       "weight": 1,
       "description": "A simple blade, easily concealed.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "range": {
         "normal": 20,
         "long": 60
       },
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "mace",
@@ -31,10 +41,15 @@
       "properties": [],
       "weight": 4,
       "description": "A heavy club with a metal head.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "quarterstaff",
@@ -44,14 +59,22 @@
       "weaponType": "melee",
       "damage": "1d6",
       "damageType": "bludgeoning",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "versatileDamage": "1d8",
       "weight": 4,
       "description": "A simple wooden staff.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "spear",
@@ -61,18 +84,27 @@
       "weaponType": "melee",
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["thrown", "versatile"],
+      "properties": [
+        "thrown",
+        "versatile"
+      ],
       "versatileDamage": "1d8",
       "weight": 3,
       "description": "A simple weapon with a pointed head on a long shaft.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "range": {
         "normal": 20,
         "long": 60
       },
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "handaxe",
@@ -82,17 +114,26 @@
       "weaponType": "melee",
       "damage": "1d6",
       "damageType": "slashing",
-      "properties": ["light", "thrown"],
+      "properties": [
+        "light",
+        "thrown"
+      ],
       "weight": 2,
       "description": "A light axe designed for throwing or melee combat.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "range": {
         "normal": 20,
         "long": 60
       },
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "shortbow",
@@ -102,10 +143,15 @@
       "weaponType": "ranged",
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["ammunition", "twoHanded"],
+      "properties": [
+        "ammunition",
+        "twoHanded"
+      ],
       "weight": 2,
       "description": "A compact bow for ranged combat.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": true,
       "range": {
         "normal": 80,
@@ -113,7 +159,10 @@
       },
       "ammunition": "arrow",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "lightCrossbow",
@@ -123,10 +172,16 @@
       "weaponType": "ranged",
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["ammunition", "loading", "twoHanded"],
+      "properties": [
+        "ammunition",
+        "loading",
+        "twoHanded"
+      ],
       "weight": 5,
       "description": "A mechanical bow that fires bolts.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": true,
       "range": {
         "normal": 80,
@@ -134,7 +189,10 @@
       },
       "ammunition": "bolt",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "shortsword",
@@ -144,13 +202,22 @@
       "weaponType": "melee",
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["finesse", "light"],
+      "properties": [
+        "finesse",
+        "light"
+      ],
       "weight": 2,
       "description": "A light, quick blade favored by rogues.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "longsword",
@@ -160,14 +227,22 @@
       "weaponType": "melee",
       "damage": "1d8",
       "damageType": "slashing",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "versatileDamage": "1d10",
       "weight": 3,
       "description": "A classic knightly sword, effective in one or two hands.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "greatsword",
@@ -177,13 +252,21 @@
       "weaponType": "melee",
       "damage": "2d6",
       "damageType": "slashing",
-      "properties": ["heavy", "twoHanded"],
+      "properties": [
+        "heavy",
+        "twoHanded"
+      ],
       "weight": 6,
       "description": "A massive two-handed blade.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": true,
       "rarity": "common",
-      "reputationRequirement": 10
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "battleaxe",
@@ -193,14 +276,22 @@
       "weaponType": "melee",
       "damage": "1d8",
       "damageType": "slashing",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "versatileDamage": "1d10",
       "weight": 4,
       "description": "A heavy axe used in battle.",
-      "equipSlots": ["mainHand", "offHand"],
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "longbow",
@@ -210,10 +301,16 @@
       "weaponType": "ranged",
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["ammunition", "heavy", "twoHanded"],
+      "properties": [
+        "ammunition",
+        "heavy",
+        "twoHanded"
+      ],
       "weight": 2,
       "description": "A tall bow that fires arrows with great force.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": true,
       "range": {
         "normal": 150,
@@ -221,7 +318,10 @@
       },
       "ammunition": "arrow",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "rapier",
@@ -231,13 +331,20 @@
       "weaponType": "melee",
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["finesse"],
+      "properties": [
+        "finesse"
+      ],
       "weight": 2,
       "description": "An elegant thrusting sword.",
-      "equipSlots": ["mainHand"],
+      "equipSlots": [
+        "mainHand"
+      ],
       "twoHanded": false,
       "rarity": "common",
-      "reputationRequirement": 5
+      "reputationRequirement": 5,
+      "campaignIds": [
+        "core"
+      ]
     }
   ],
   "armor": [
@@ -255,7 +362,10 @@
       "description": "Simple garments that provide no protection.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "leatherArmor",
@@ -271,7 +381,10 @@
       "description": "Boiled leather provides some protection without restricting movement.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "studdedLeather",
@@ -287,7 +400,10 @@
       "description": "Leather armor reinforced with metal studs.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 10
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "hideArmor",
@@ -303,7 +419,10 @@
       "description": "Crude armor made from thick furs and pelts.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "chainShirt",
@@ -319,7 +438,10 @@
       "description": "A shirt made of interlocking metal rings.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 10
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "scaleMail",
@@ -335,7 +457,10 @@
       "description": "Armor consisting of a coat and leggings of leather covered with overlapping pieces of metal.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 15
+      "reputationRequirement": 15,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "breastplate",
@@ -351,7 +476,10 @@
       "description": "A fitted metal chest piece.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 20
+      "reputationRequirement": 20,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "ringMail",
@@ -367,7 +495,10 @@
       "description": "Leather armor with heavy rings sewn into it.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 15
+      "reputationRequirement": 15,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "chainMail",
@@ -383,7 +514,10 @@
       "description": "Made of interlocking metal rings, chain mail is heavy but protective.",
       "equipSlot": "armor",
       "rarity": "common",
-      "reputationRequirement": 20
+      "reputationRequirement": 20,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "plateMail",
@@ -399,7 +533,10 @@
       "description": "Full plate armor consisting of shaped, interlocking metal plates.",
       "equipSlot": "armor",
       "rarity": "uncommon",
-      "reputationRequirement": 40
+      "reputationRequirement": 40,
+      "campaignIds": [
+        "core"
+      ]
     }
   ],
   "shields": [
@@ -426,7 +563,10 @@
       "description": "A character who drinks this potion regains 2d4 + 2 hit points. Drinking or administering a potion takes an action.",
       "rarity": "common",
       "reputationRequirement": 10,
-      "consumable": true
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "potionOfGreaterHealing",
@@ -438,7 +578,10 @@
       "description": "A character who drinks this potion regains 4d4 + 4 hit points.",
       "rarity": "uncommon",
       "reputationRequirement": 30,
-      "consumable": true
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
     }
   ],
   "ammunition": [
@@ -469,7 +612,10 @@
       "weight": 61.5,
       "description": "Includes a backpack, a crowbar, a hammer, 10 pitons, 10 torches, a tinderbox, 10 days of rations, and a waterskin.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "explorersPack",
@@ -478,7 +624,10 @@
       "weight": 59,
       "description": "Includes a backpack, a bedroll, a mess kit, a tinderbox, 10 torches, 10 days of rations, and a waterskin.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "scholarsPack",
@@ -487,7 +636,10 @@
       "weight": 22,
       "description": "Includes a backpack, a book of lore, a bottle of ink, an ink pen, 10 sheets of parchment, a little bag of sand, and a small knife.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "priestsPack",
@@ -496,7 +648,10 @@
       "weight": 24,
       "description": "Includes a backpack, a blanket, 10 candles, a tinderbox, an alms box, 2 blocks of incense, a censer, vestments, 2 days of rations, and a waterskin.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "burglarsPack",
@@ -505,7 +660,10 @@
       "weight": 46.5,
       "description": "Includes a backpack, a bag of 1,000 ball bearings, 10 feet of string, a bell, 5 candles, a crowbar, a hammer, 10 pitons, a hooded lantern, 2 flasks of oil, 5 days rations, a tinderbox, and a waterskin.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "componentPouch",
@@ -514,7 +672,10 @@
       "weight": 2,
       "description": "A small, watertight leather belt pouch containing spell components for spellcasting.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "holySymbol",
@@ -523,7 +684,10 @@
       "weight": 1,
       "description": "A representation of a deity or pantheon used as a spellcasting focus for divine magic.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "spellbook",
@@ -532,7 +696,10 @@
       "weight": 3,
       "description": "A leather-bound tome with 100 blank vellum pages for recording spells.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "thievesTools",
@@ -541,7 +708,10 @@
       "weight": 1,
       "description": "A set of tools including a small file, a set of lock picks, a small mirror, a set of narrow-bladed scissors, and a pair of pliers.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "healersKit",
@@ -550,7 +720,10 @@
       "weight": 3,
       "description": "A leather pouch containing bandages, salves, and splints. Has 10 uses.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "quiver",
@@ -559,7 +732,10 @@
       "weight": 1,
       "description": "A container for holding arrows or crossbow bolts.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "travelersClothes",
@@ -568,7 +744,10 @@
       "weight": 4,
       "description": "Practical clothing suitable for traveling.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "commonClothes",
@@ -577,7 +756,10 @@
       "weight": 3,
       "description": "Simple, everyday clothing.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "prayerBook",
@@ -586,7 +768,10 @@
       "weight": 2,
       "description": "A book containing religious prayers and hymns.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "incense",
@@ -595,7 +780,10 @@
       "weight": 0.1,
       "description": "A stick of aromatic incense.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "vestments",
@@ -604,7 +792,10 @@
       "weight": 4,
       "description": "Religious ceremonial robes.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "crowbar",
@@ -613,7 +804,10 @@
       "weight": 5,
       "description": "An iron bar used as a lever. Grants advantage on Strength checks where leverage can be applied.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "pouch",
@@ -622,7 +816,10 @@
       "weight": 1,
       "description": "A small belt pouch for carrying coins and small items.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "darkClothes",
@@ -631,7 +828,10 @@
       "weight": 3,
       "description": "Dark-colored clothing suitable for blending into shadows.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "book",
@@ -640,7 +840,10 @@
       "weight": 5,
       "description": "A bound book containing knowledge on various subjects.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "parchment",
@@ -649,7 +852,10 @@
       "weight": 0.1,
       "description": "A sheet of writing material made from animal skin.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "ink",
@@ -658,7 +864,10 @@
       "weight": 0.5,
       "description": "A bottle of black ink for writing.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "inkPen",
@@ -667,7 +876,10 @@
       "weight": 0.1,
       "description": "A quill or reed pen for writing with ink.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "robes",
@@ -676,7 +888,10 @@
       "weight": 4,
       "description": "Long, flowing robes often worn by scholars and spellcasters.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "shovel",
@@ -685,7 +900,10 @@
       "weight": 5,
       "description": "A tool for digging.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "ironPot",
@@ -694,7 +912,10 @@
       "weight": 10,
       "description": "A large pot for cooking meals.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "artisansTools",
@@ -703,7 +924,10 @@
       "weight": 5,
       "description": "Tools for a specific craft such as woodcarving, leatherworking, or smithing.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "gamingSet",
@@ -712,7 +936,10 @@
       "weight": 1,
       "description": "A set of dice, cards, or other items for playing games of chance.",
       "rarity": "common",
-      "reputationRequirement": 0
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     }
   ]
 }

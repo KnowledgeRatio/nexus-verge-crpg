@@ -2,6 +2,7 @@
   "races": [
     {
       "id": "human",
+      "campaignIds": ["core"],
       "name": "Human",
       "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.",
       "abilityScoreIncrease": {
@@ -24,6 +25,7 @@
     },
     {
       "id": "elf",
+      "campaignIds": ["core"],
       "name": "Elf",
       "description": "Elves are a magical people of otherworldly grace, living in places of ethereal beauty. They love nature and magic, art and artistry, music and poetry.",
       "abilityScoreIncrease": {
@@ -54,6 +56,7 @@
     },
     {
       "id": "dwarf",
+      "campaignIds": ["core"],
       "name": "Dwarf",
       "description": "Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human.",
       "abilityScoreIncrease": {
@@ -84,6 +87,7 @@
     },
     {
       "id": "halfling",
+      "campaignIds": ["core"],
       "name": "Halfling",
       "description": "The diminutive halflings survive in a world full of larger creatures by avoiding notice or, barring that, avoiding offense. They are inclined to be affable and get along well with others.",
       "abilityScoreIncrease": {
@@ -110,6 +114,7 @@
     },
     {
       "id": "dragonborn",
+      "campaignIds": ["core"],
       "name": "Dragonborn",
       "description": "Dragonborn look very much like dragons standing erect in humanoid form, though they lack wings or a tail. They are proud and honorable, with a strong sense of clan and heritage.",
       "abilityScoreIncrease": {

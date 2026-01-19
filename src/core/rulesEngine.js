@@ -457,12 +457,101 @@ export const RULES = {
             large: 150    // 150x150 regions = 4,800x4,800 tiles (~450 MB metadata)
         },
 
-        // Settlement generation
-        townSpacing: 5,           // Minimum regions between towns
-        villageFrequency: 0.02,   // 2% chance per region
-        dungeonFrequency: 0.10,   // 10% of regions have dungeon/ruins
+        // ====================
+        // FEATURE GENERATION
+        // ====================
+        // All frequencies/counts scale with world size automatically.
+        // Base values are calibrated for 'medium' size (100x100 regions = 10,000 regions).
+        // Campaigns can override these via campaignOverrides below.
+        //
+        // Formula: actualCount = baseCount * (worldRegions / 10000)
+        // Example: medium world (10,000 regions) with baseSettlements 150 = 150 settlements
+        //          small world (2,500 regions) = 37 settlements
+        //          large world (22,500 regions) = 337 settlements
 
-        // Noise scales for terrain generation
+        featureGeneration: {
+            // --- SETTLEMENTS ---
+            // Total settlements across the world (scales with size)
+            baseSettlements: 150,         // ~150 settlements in medium world
+
+            // Distribution ratios (must sum to 1.0)
+            settlementDistribution: {
+                village: 0.60,            // 60% villages (~90 in medium)
+                town: 0.30,               // 30% towns (~45 in medium)
+                city: 0.10                // 10% cities (~15 in medium)
+            },
+
+            // Minimum spacing between settlements (in regions)
+            settlementSpacing: {
+                village: 3,               // Villages can be closer together
+                town: 5,                  // Towns need breathing room
+                city: 10                  // Cities are far apart
+            },
+
+            // --- DUNGEONS ---
+            baseDungeons: 200,            // ~200 dungeons in medium world
+
+            // Dungeon difficulty distribution
+            dungeonDifficultyDistribution: {
+                1: 0.30,                  // 30% easy (level 1-3)
+                2: 0.30,                  // 30% medium (level 4-6)
+                3: 0.25,                  // 25% hard (level 7-9)
+                4: 0.10,                  // 10% very hard (level 10-12)
+                5: 0.05                   // 5% deadly (level 13+)
+            },
+
+            // --- SANCTUARIES (Safe Rest Locations) ---
+            baseSanctuaries: 100,         // ~100 sanctuaries in medium world
+
+            // --- POINTS OF INTEREST (POIs) ---
+            basePOIs: 300,                // ~300 POIs in medium world
+
+            // POI type distribution
+            poiDistribution: {
+                shrine: 0.20,             // 20% shrines (minor religious sites)
+                ruins: 0.25,              // 25% ruins (explorable areas)
+                cave: 0.20,               // 20% caves (potential lairs)
+                camp: 0.15,               // 15% camps (bandit/creature camps)
+                landmark: 0.20            // 20% landmarks (navigation aids)
+            },
+
+            // --- GENERATION CONSTRAINTS ---
+            // Minimum distance from world edge (in regions)
+            edgeBuffer: 2,
+
+            // Features avoid spawning on these terrains
+            excludedTerrains: ['deepWater', 'shallowWater', 'mountain', 'peaks'],
+
+            // Dungeons prefer these terrains (weighted)
+            dungeonTerrainWeights: {
+                mountain: 2.0,            // 2x likely in mountains
+                hills: 1.5,               // 1.5x likely in hills
+                forest: 1.2,              // Slightly more in forests
+                default: 1.0              // Base weight for other terrains
+            },
+
+            // Sanctuary terrain preferences
+            sanctuaryTerrainWeights: {
+                forest: 1.5,              // Groves and glades
+                grassland: 1.3,           // Open shrines
+                hills: 1.2,               // Hilltop temples
+                default: 1.0
+            }
+        },
+
+        // Campaign-specific overrides (loaded from data/campaigns.json)
+        // Example: A "wilderness survival" campaign might have:
+        //   { baseSettlements: 50, baseSanctuaries: 30, baseDungeons: 300 }
+        // Example: A "city intrigue" campaign might have:
+        //   { baseSettlements: 300, settlementDistribution: { city: 0.40 } }
+        campaignOverrides: {},
+
+        // Legacy settings (kept for backwards compatibility, prefer featureGeneration)
+        townSpacing: 5,           // Minimum regions between towns (legacy)
+        villageFrequency: 0.02,   // 2% chance per region (legacy)
+        dungeonFrequency: 0.10,   // 10% of regions have dungeon/ruins (legacy)
+
+        // Noise scales for terrain generation (deprecated - see biomeGeneration)
         biomeNoiseScale: 0.05,    // Larger scale = bigger biomes
         elevationNoiseScale: 0.08,
         moistureNoiseScale: 0.06,
@@ -490,6 +579,108 @@ export const RULES = {
             preGenerateMetadata: true,        // Generate all settlements/roads upfront
             terrainOnDemand: true,            // Generate terrain tiles on-demand (deterministic)
             metadataGenerationTimeout: 30000 // Max time to generate metadata (30s)
+        },
+
+        // ====================
+        // CONTINENT-SCALE BIOME GENERATION
+        // ====================
+        biomeGeneration: {
+            // Primary biome scale - creates 200-400 tile macro biomes (10x larger than before)
+            continentalScale: 0.005,  // Was 0.05 in biomeNoiseScale
+
+            // Secondary variation scale - adds local terrain variety within biomes
+            regionalScale: 0.02,
+
+            // Biome boundary sharpness (0.0-1.0)
+            // Higher = sharper transitions, Lower = gradual blending
+            boundarySharpness: 0.7,
+
+            // Elevation dominance - how much elevation overrides biome placement
+            elevationWeight: 0.6,  // Mountains/oceans ignore biome noise
+
+            // Temperature latitude influence (pole-to-equator gradient)
+            latitudeInfluence: 0.4  // 0.0 = pure noise, 1.0 = realistic poles
+        },
+
+        // ====================
+        // WATER BODY GENERATION
+        // ====================
+        waterGeneration: {
+            // Ocean generation (world edges only)
+            oceanEdgeDistance: 5,  // Regions from edge that are ocean
+            oceanDepthFade: 3,     // Additional regions for depth gradient
+
+            // Lake generation
+            lakes: {
+                minSize: 20,          // Minimum tiles for a lake
+                maxSize: 150,         // Maximum tiles for a lake
+                frequency: 0.15,      // Chance per suitable location
+                depthThreshold: -0.25, // Elevation below this = lake core
+                shallowThreshold: -0.15, // Edge of lake
+                requiresBasin: true   // Must be surrounded by higher elevation
+            },
+
+            // River generation
+            rivers: {
+                sourceElevation: 0.6,  // Rivers start in mountains/hills
+                flowWidth: 2,          // Tiles wide (main channel + banks)
+                branchProbability: 0.1, // Chance of river branching
+                minFlowLength: 50,     // Minimum tiles before reaching water
+                connectsLakes: true    // Rivers connect lakes to ocean
+            },
+
+            // Beach generation (FIX for beach bug)
+            beaches: {
+                requiresAdjacentDeepWater: true,  // Must be next to lake/ocean
+                minWaterBodySize: 15,  // Minimum water tiles for coastline
+                elevationRange: [0.15, 0.25],  // Elevation band for beaches
+                width: 1  // Tiles wide
+            }
+        },
+
+        // ====================
+        // URBAN SPRAWL GENERATION
+        // ====================
+        urbanSprawl: {
+            // Urban sprawl radii by settlement type (in tiles)
+            // Creates realistic urban outskirts around settlements
+            // Rings: Inner = industrial, Middle = residential, Outer = farmland
+            city: {
+                industrial: 8,    // Inner ring: warehouses, workshops (closest to settlement)
+                residential: 15,  // Middle ring: houses, shops
+                farmland: 25      // Outer ring: crops, pastures (farthest)
+            },
+            town: {
+                industrial: 5,    // Inner ring
+                residential: 10,  // Middle ring
+                farmland: 18      // Outer ring
+            },
+            village: {
+                industrial: 3,    // Inner ring
+                residential: 5,   // Middle ring
+                farmland: 10      // Outer ring
+            }
+        },
+
+        // ====================
+        // MOUNTAIN RANGE GENERATION
+        // ====================
+        mountainGeneration: {
+            // Elevation thresholds for mountain layers
+            peakElevation: 0.90,      // Impassable peaks
+            slopeElevation: 0.80,     // Difficult slopes
+            foothillElevation: 0.70,  // Moderate hills
+
+            // Ridge factor requirements (mountain ridge noise)
+            peakRidge: 0.6,    // High ridge = sharp peaks
+            slopeRidge: 0.5,   // Moderate ridge = slopes
+            foothillRidge: 0.3, // Low ridge = foothills
+
+            // Range continuity (how connected mountains are)
+            rangeContinuity: 0.7,  // 0.0-1.0 (higher = longer ranges)
+
+            // Valley width between parallel ranges
+            valleyWidth: 3  // Tiles between ranges
         }
     },
 
@@ -498,17 +689,43 @@ export const RULES = {
     // ====================
     biomes: {
         // Macro biome definitions - each biome restricts which terrain types can appear
+        // UPDATED: Biome-exclusive terrain pools for better world coherence
         terrainPools: {
-            ocean: ['ocean'],
-            coastal: ['shallowWater', 'beach', 'swamp'],
+            // Pure water biome (world edges only)
+            ocean: ['ocean', 'deepWater'],
+
+            // Ocean transition biome
+            coastal: ['beach', 'shallowWater', 'grassland'],
+
+            // Temperate forest biome (no tundra mixing)
             temperateForest: ['grassland', 'plains', 'forest', 'denseForest'],
-            coldForest: ['tundra', 'snowyPlains'],
+
+            // Boreal forest biome
+            coldForest: ['snowyPlains', 'tundra', 'forest'],
+
+            // Pure grassland biome
             grassland: ['plains', 'grassland', 'savanna'],
+
+            // Pure desert biome (EXCLUSIVE - single terrain type)
             desert: ['desert'],
-            jungle: ['jungle', 'swamp'],
-            mountain: ['hills', 'mountain'],
-            tundra: ['snowyPlains', 'tundra'],
-            swampland: ['swamp', 'grassland', 'shallowWater']
+
+            // Tropical rainforest biome (wet tropics only)
+            jungle: ['jungle', 'swamp', 'denseForest'],
+
+            // Mountain biome (added mountainPeak for impassable summits)
+            mountain: ['hills', 'mountain', 'mountainPeak'],
+
+            // Pure polar biome (EXCLUSIVE - no temperate mixing)
+            tundra: ['snowyPlains', 'tundra', 'glacier'],
+
+            // Wetlands biome
+            swampland: ['swamp', 'shallowWater', 'grassland'],
+
+            // NEW: Alpine biome (high mountain valleys)
+            alpine: ['hills', 'snowyPlains', 'tundra'],
+
+            // NEW: Badlands biome (eroded dry hills)
+            badlands: ['desert', 'hills', 'plains']
         },
 
         // Macro biome selection based on elevation, moisture, temperature
@@ -523,7 +740,9 @@ export const RULES = {
             jungle: 'jungle',
             mountain: 'mountain',
             tundra: 'tundra',
-            swampland: 'swampland'
+            swampland: 'swampland',
+            alpine: 'alpine',
+            badlands: 'badlands'
         }
     },
 
@@ -724,6 +943,68 @@ export function getEncounterCR(playerLevel, difficulty = 'normal') {
  */
 export function isASILevel(level) {
     return RULES.progression.asiLevels.includes(level);
+}
+
+/**
+ * Calculate scaled feature counts based on world size
+ * Base values are calibrated for 'medium' size (10,000 regions)
+ *
+ * @param {string} worldSize - 'small', 'medium', or 'large'
+ * @param {Object} campaignOverrides - Optional campaign-specific overrides
+ * @returns {Object} - Scaled feature generation parameters
+ */
+export function getScaledFeatureGeneration(worldSize = 'medium', campaignOverrides = {}) {
+    const sizes = RULES.worldGen.worldSizes;
+    const regionCount = sizes[worldSize] || sizes.medium;
+    const totalRegions = regionCount * regionCount;
+    const baseRegions = 10000; // Medium world baseline
+
+    const scaleFactor = totalRegions / baseRegions;
+    const fg = { ...RULES.worldGen.featureGeneration };
+
+    // Apply campaign overrides first
+    const overrides = { ...RULES.worldGen.campaignOverrides, ...campaignOverrides };
+    Object.assign(fg, overrides);
+
+    // Scale counts by world size
+    return {
+        // Scaled totals
+        settlements: Math.round(fg.baseSettlements * scaleFactor),
+        dungeons: Math.round(fg.baseDungeons * scaleFactor),
+        sanctuaries: Math.round(fg.baseSanctuaries * scaleFactor),
+        pois: Math.round(fg.basePOIs * scaleFactor),
+
+        // Breakdowns
+        settlementCounts: {
+            village: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.village),
+            town: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.town),
+            city: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.city)
+        },
+
+        poiCounts: {
+            shrine: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.shrine),
+            ruins: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.ruins),
+            cave: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.cave),
+            camp: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.camp),
+            landmark: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.landmark)
+        },
+
+        // Pass through other settings
+        settlementSpacing: fg.settlementSpacing,
+        dungeonDifficultyDistribution: fg.dungeonDifficultyDistribution,
+        dungeonTerrainWeights: fg.dungeonTerrainWeights,
+        sanctuaryTerrainWeights: fg.sanctuaryTerrainWeights,
+        excludedTerrains: fg.excludedTerrains,
+        edgeBuffer: fg.edgeBuffer,
+
+        // Metadata for debugging
+        _meta: {
+            worldSize,
+            regionCount,
+            totalRegions,
+            scaleFactor: scaleFactor.toFixed(2)
+        }
+    };
 }
 
 export default RULES;

@@ -1,10 +1,135 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-01-14
+**Last Updated:** 2026-01-19
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Skill Challenge Damage Persistence Fix
+**Latest Commit:** Campaign Filtering System Implementation
+
+---
+
+## 🆕 Recent Changes (2026-01-19 - Session 13)
+
+### Campaign Filtering System Implementation ✅
+Implemented comprehensive campaign-based content filtering system that allows different campaigns to have different content (races, classes, items, monsters, quests, etc.).
+
+**New Files Created:**
+- `data/campaigns.json` - Campaign definitions with inheritance and feature overrides
+- `src/utils/campaignFilter.js` - Campaign filtering utility functions
+- `scripts/addCampaignIds.js` - Node script to add campaignIds to data files
+
+**Modified Files:**
+- `src/ui/CharacterCreation.js` - Added campaign filtering for races, classes, backgrounds
+- `src/systems/NPCGenerator.js` - Added campaign filtering for NPC name pools
+- `src/systems/QuestGenerator.js` - Added campaign filtering for quests and monsters
+- `src/systems/LootManager.js` - Added campaign filtering for items and magic items
+- `src/systems/MerchantManager.js` - Added campaign filtering for merchant inventory
+- `src/main.js` - Pass campaign ID to all systems during initialization
+
+**Implementation Details:**
+
+**1. Campaign Configuration (data/campaigns.json)** ✅
+Defines campaigns with inheritance support:
+```json
+{
+  "campaigns": [
+    {
+      "id": "core",
+      "name": "Core Rules",
+      "isBase": true,
+      "inherits": []
+    },
+    {
+      "id": "nexus-verge",
+      "name": "Nexus Verge",
+      "inherits": ["core"],
+      "featureGeneration": { ... }
+    },
+    {
+      "id": "defeatLichKing",
+      "name": "Defeat the Lich King",
+      "inherits": ["nexus-verge"],
+      "featureGeneration": {
+        "baseDungeons": 250,
+        "baseSanctuaries": 80
+      }
+    }
+  ]
+}
+```
+
+**2. Campaign Filter Utility (src/utils/campaignFilter.js)** ✅
+Provides filtering functions:
+- `loadCampaigns()` - Load campaign data and build inheritance map
+- `getEffectiveCampaignIds(campaignId)` - Get all inherited campaign IDs
+- `isAvailableForCampaign(entry, campaignId)` - Check if entry available for campaign
+- `filterByCampaign(entries, campaignId)` - Filter array of entries by campaign
+- `getCampaignConfig(campaignId)` - Get campaign configuration
+- `getAvailableCampaigns()` - Get list of enabled campaigns
+
+**3. Data Entry Format** ✅
+All data entries (items, monsters, races, etc.) support `campaignIds` field:
+```json
+{
+  "id": "goblin",
+  "name": "Goblin",
+  "campaignIds": ["core"],
+  ...
+}
+```
+- Entries with `["core"]` appear in all campaigns (via inheritance)
+- Entries with specific campaign ID only appear in that campaign
+- Missing `campaignIds` defaults to `["core"]`
+
+**4. System Integration** ✅
+All game systems now accept campaignId and filter loaded data:
+- **CharacterCreation:** Filters races, classes, backgrounds, weapon masteries
+- **NPCGenerator:** Filters NPC name pools
+- **QuestGenerator:** Filters quest templates and monsters
+- **LootManager:** Filters items and magic items
+- **MerchantManager:** Filters merchant inventory items
+
+**5. Campaign Selection Flow** ✅
+1. Player selects campaign on New Game screen
+2. Campaign ID stored in `gameState.worldConfig.campaignId`
+3. All systems receive campaign ID during initialization
+4. Data is filtered before use throughout gameplay
+
+**Available Campaigns:**
+- **Core Rules** - Standard D&D 5e SRD content (base for all campaigns)
+- **Nexus Verge** - Default procedural world campaign
+- **Defeat the Lich King** - Undead-themed campaign with more dungeons/sanctuaries
+- **Unite the Kingdoms** - Faction-heavy campaign with more settlements
+- **Recover the Lost Artifact** - Exploration campaign with more dungeons/POIs
+
+**Template Campaigns (Disabled):**
+- **Dark Sun** - Post-apocalyptic desert world
+- **Ravenloft** - Gothic horror domains
+- **Nautical** - Seafaring adventure
+
+**Benefits:**
+- ✅ **Campaign-specific content** - Different races, monsters, items per campaign
+- ✅ **Inheritance system** - Campaigns build on each other
+- ✅ **World generation overrides** - Campaigns can customize dungeon/settlement density
+- ✅ **Extensible** - Easy to add new campaigns with unique content
+- ✅ **Backwards compatible** - Entries without campaignIds default to core
+
+**Usage Example:**
+```javascript
+import { filterByCampaign, loadCampaigns } from './utils/campaignFilter.js';
+
+// Load campaign data first
+await loadCampaigns();
+
+// Filter items for "defeatLichKing" campaign
+const filteredItems = filterByCampaign(allItems, 'defeatLichKing');
+// Returns: items with campaignIds including 'core', 'nexus-verge', or 'defeatLichKing'
+```
+
+**Next Steps:**
+- Add campaign-specific content (undead monsters for Lich King, etc.)
+- Implement campaign objectives and win conditions
+- Add campaign selection UI improvements
 
 ---
 

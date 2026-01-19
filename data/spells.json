@@ -4,9 +4,8 @@
 
     "cantrips": [
       {
-        "id": "fireB
-
-",
+        "id": "fireBolt",
+        "campaignIds": ["core"],
         "name": "Fire Bolt",
         "level": 0,
         "school": "evocation",
@@ -28,6 +27,7 @@
 
       {
         "id": "rayOfFrost",
+        "campaignIds": ["core"],
         "name": "Ray of Frost",
         "level": 0,
         "school": "evocation",
@@ -50,6 +50,7 @@
 
       {
         "id": "shockingGrasp",
+        "campaignIds": ["core"],
         "name": "Shocking Grasp",
         "level": 0,
         "school": "evocation",
@@ -73,6 +74,7 @@
 
       {
         "id": "sacredFlame",
+        "campaignIds": ["core"],
         "name": "Sacred Flame",
         "level": 0,
         "school": "evocation",
@@ -95,6 +97,7 @@
 
       {
         "id": "guidanceBolt",
+        "campaignIds": ["core"],
         "name": "Guidance",
         "level": 0,
         "school": "divination",
@@ -110,6 +113,7 @@
 
       {
         "id": "light",
+        "campaignIds": ["core"],
         "name": "Light",
         "level": 0,
         "school": "evocation",
@@ -126,6 +130,7 @@
     "level1": [
       {
         "id": "magicMissile",
+        "campaignIds": ["core"],
         "name": "Magic Missile",
         "level": 1,
         "school": "evocation",
@@ -143,6 +148,7 @@
 
       {
         "id": "burningHands",
+        "campaignIds": ["core"],
         "name": "Burning Hands",
         "level": 1,
         "school": "evocation",
@@ -161,6 +167,7 @@
 
       {
         "id": "shield",
+        "campaignIds": ["core"],
         "name": "Shield",
         "level": 1,
         "school": "abjuration",
@@ -176,6 +183,7 @@
 
       {
         "id": "cureWounds",
+        "campaignIds": ["core"],
         "name": "Cure Wounds",
         "level": 1,
         "school": "evocation",
@@ -191,6 +199,7 @@
 
       {
         "id": "bless",
+        "campaignIds": ["core"],
         "name": "Bless",
         "level": 1,
         "school": "enchantment",
@@ -208,6 +217,7 @@
 
       {
         "id": "huntersMark",
+        "campaignIds": ["core"],
         "name": "Hunter's Mark",
         "level": 1,
         "school": "divination",
@@ -225,6 +235,7 @@
 
       {
         "id": "healingWord",
+        "campaignIds": ["core"],
         "name": "Healing Word",
         "level": 1,
         "school": "evocation",
@@ -240,6 +251,7 @@
 
       {
         "id": "thunderwave",
+        "campaignIds": ["core"],
         "name": "Thunderwave",
         "level": 1,
         "school": "evocation",
@@ -261,6 +273,7 @@
     "level2": [
       {
         "id": "scorchingRay",
+        "campaignIds": ["core"],
         "name": "Scorching Ray",
         "level": 2,
         "school": "evocation",
@@ -279,6 +292,7 @@
 
       {
         "id": "mistyStep",
+        "campaignIds": ["core"],
         "name": "Misty Step",
         "level": 2,
         "school": "conjuration",
@@ -293,6 +307,7 @@
 
       {
         "id": "holdPerson",
+        "campaignIds": ["core"],
         "name": "Hold Person",
         "level": 2,
         "school": "enchantment",
@@ -310,6 +325,7 @@
 
       {
         "id": "spiritualWeapon",
+        "campaignIds": ["core"],
         "name": "Spiritual Weapon",
         "level": 2,
         "school": "evocation",

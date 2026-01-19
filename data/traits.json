@@ -23,7 +23,10 @@
       "visualFeedback": {
         "icon": "🏹",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_defense",
@@ -48,7 +51,10 @@
       "visualFeedback": {
         "icon": "🛡️",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_dueling",
@@ -75,7 +81,10 @@
       "visualFeedback": {
         "icon": "⚔️",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_great_weapon_fighting",
@@ -91,9 +100,15 @@
       "effects": [
         {
           "type": "rerollDamage",
-          "rerollOn": [1, 2],
+          "rerollOn": [
+            1,
+            2
+          ],
           "condition": {
-            "weaponProperties": ["twoHanded", "versatile"],
+            "weaponProperties": [
+              "twoHanded",
+              "versatile"
+            ],
             "wieldingTwoHanded": true
           }
         }
@@ -101,7 +116,10 @@
       "visualFeedback": {
         "icon": "🗡️",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_protection",
@@ -128,7 +146,10 @@
       "visualFeedback": {
         "icon": "🛡️",
         "message": "{characterName} intercepts the attack!"
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_two_weapon_fighting",
@@ -154,7 +175,10 @@
       "visualFeedback": {
         "icon": "⚔️⚔️",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_thrown_weapon_fighting",
@@ -172,7 +196,9 @@
           "type": "damageBonus",
           "amount": 2,
           "condition": {
-            "weaponProperties": ["thrown"],
+            "weaponProperties": [
+              "thrown"
+            ],
             "attackType": "ranged"
           }
         },
@@ -180,14 +206,19 @@
           "type": "freeObjectInteraction",
           "action": "drawWeapon",
           "condition": {
-            "weaponProperties": ["thrown"]
+            "weaponProperties": [
+              "thrown"
+            ]
           }
         }
       ],
       "visualFeedback": {
         "icon": "🎯",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_unarmed_fighting",
@@ -210,7 +241,10 @@
       "visualFeedback": {
         "icon": "👊",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_blind_fighting",
@@ -233,7 +267,10 @@
       "visualFeedback": {
         "icon": "👁️",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_interception",
@@ -261,7 +298,10 @@
       "visualFeedback": {
         "icon": "🛡️",
         "message": "{characterName} intercepts the blow!"
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "fighting_style_mariner",
@@ -305,7 +345,10 @@
       "visualFeedback": {
         "icon": "🌊",
         "message": null
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     }
   ]
 }

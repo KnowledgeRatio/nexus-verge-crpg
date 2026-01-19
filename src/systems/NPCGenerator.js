@@ -5,12 +5,22 @@
 
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { loadCampaigns, isAvailableForCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class NPCGenerator {
-    constructor(worldSeed) {
+    constructor(worldSeed, campaignId = null) {
         this.worldSeed = worldSeed;
+        this.campaignId = campaignId;
         this.nameData = null;
         this.dialogueData = null;
+    }
+
+    /**
+     * Set the campaign ID for filtering
+     * @param {string} campaignId - Campaign ID
+     */
+    setCampaignId(campaignId) {
+        this.campaignId = campaignId;
     }
 
     /**
@@ -22,19 +32,55 @@ class NPCGenerator {
         }
 
         try {
+            // Load campaign data for filtering
+            await loadCampaigns();
+
             const [nameResponse, dialogueResponse] = await Promise.all([
                 fetch('data/npcNames.json'),
                 fetch('data/dialogueTemplates.json')
             ]);
 
-            this.nameData = await nameResponse.json();
+            const rawNameData = await nameResponse.json();
             this.dialogueData = await dialogueResponse.json();
 
-            console.log('📋 NPC data loaded successfully');
+            // Filter name pools by campaign (if they have campaignIds)
+            const campaignId = this.campaignId || getDefaultCampaignId();
+            this.nameData = this.filterNameData(rawNameData, campaignId);
+
+            console.log(`📋 NPC data loaded successfully (campaign: ${campaignId})`);
         } catch (error) {
             console.error('Failed to load NPC data:', error);
             throw error;
         }
+    }
+
+    /**
+     * Filter name data by campaign
+     * @param {Object} data - Raw name data
+     * @param {string} campaignId - Campaign ID
+     * @returns {Object} Filtered name data
+     */
+    filterNameData(data, campaignId) {
+        const filtered = {};
+        for (const [key, value] of Object.entries(data)) {
+            // Skip description and version fields
+            if (key === 'description' || key === 'version') {
+                filtered[key] = value;
+                continue;
+            }
+            // Check if name pool has campaignIds and filter accordingly
+            if (value && typeof value === 'object' && value.campaignIds) {
+                if (isAvailableForCampaign(value, campaignId)) {
+                    // Include this pool (remove campaignIds from output)
+                    const { campaignIds, ...poolData } = value;
+                    filtered[key] = poolData.names || poolData;
+                }
+            } else {
+                // No campaignIds, include everything
+                filtered[key] = value;
+            }
+        }
+        return filtered;
     }
 
     /**

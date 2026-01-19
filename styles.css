@@ -4140,6 +4140,123 @@ body {
     margin-top: 10px;
 }
 
+/* ===================================
+   Worldbuilder Modal Styles
+   =================================== */
+
+.worldbuilder-dialog {
+    max-width: 500px;
+    width: 90%;
+}
+
+.worldbuilder-intro {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    border-left: 3px solid var(--accent-color);
+}
+
+.worldbuilder-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+}
+
+.worldbuilder-section h3 {
+    color: var(--text-highlight);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.worldbuilder-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.worldbuilder-row:last-child {
+    margin-bottom: 0;
+}
+
+.worldbuilder-row label {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.worldbuilder-row input[type="number"] {
+    width: 80px;
+    padding: 6px 10px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    text-align: right;
+}
+
+.worldbuilder-row input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.worldbuilder-summary {
+    padding: 15px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.worldbuilder-summary strong {
+    color: var(--text-highlight);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 15px;
+}
+
+.modal-footer .btn {
+    flex: 1;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.modal-footer .btn-primary {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+.modal-footer .btn-primary:hover {
+    background: #6bb3ff;
+}
+
+.modal-footer .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.modal-footer .btn-secondary:hover {
+    background: var(--bg-primary);
+}
+
 /* ===== Skill Check Modal ===== */
 .skill-check-modal {
     max-width: 500px;
@@ -5815,5 +5932,506 @@ body {
 
     .footer-separator {
         display: none;
+    }
+}
+
+/* ========================================
+   SKILL CHALLENGE OUTCOME MODAL
+   ======================================== */
+
+#skillOutcomeModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+#skillOutcomeModal.active {
+    display: flex;
+}
+
+.skill-outcome-content {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Outcome Header */
+.outcome-header {
+    padding: 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.outcome-header.success {
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.3), rgba(46, 125, 50, 0.1));
+    border-bottom-color: var(--success-color);
+}
+
+.outcome-header.failure {
+    background: linear-gradient(135deg, rgba(198, 40, 40, 0.3), rgba(198, 40, 40, 0.1));
+    border-bottom-color: var(--danger-color);
+}
+
+.outcome-header.critical-success {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.4), rgba(255, 193, 7, 0.1));
+    border-bottom-color: var(--text-highlight);
+}
+
+.outcome-header.critical-failure {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.4), rgba(156, 39, 176, 0.1));
+    border-bottom-color: #9C27B0;
+}
+
+#outcomeIcon {
+    font-size: 3rem;
+    margin-bottom: 8px;
+    display: block;
+    animation: iconPulse 0.5s ease-out;
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+#outcomeTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.outcome-header.success #outcomeTitle {
+    color: var(--success-color);
+}
+
+.outcome-header.failure #outcomeTitle {
+    color: var(--danger-color);
+}
+
+.outcome-header.critical-success #outcomeTitle {
+    color: var(--text-highlight);
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.outcome-header.critical-failure #outcomeTitle {
+    color: #9C27B0;
+    text-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+}
+
+/* Outcome Body */
+.outcome-body {
+    padding: 20px 24px;
+}
+
+/* Challenge Name */
+#outcomeChallengeName {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    margin-bottom: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Narrative Section */
+.outcome-narrative {
+    margin-bottom: 20px;
+}
+
+.outcome-narrative h4 {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+#outcomeNarrative {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border-left: 3px solid var(--accent-color);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+}
+
+/* Roll Details Section */
+.outcome-roll-details {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.outcome-roll-details h4 {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.roll-breakdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.roll-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+}
+
+.roll-item.full-width {
+    grid-column: span 2;
+}
+
+.roll-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.roll-value {
+    font-family: var(--font-mono);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.roll-value.dice {
+    color: var(--accent-color);
+}
+
+.roll-value.bonus {
+    color: var(--success-color);
+}
+
+.roll-value.total {
+    color: var(--text-highlight);
+    font-size: 1.2rem;
+}
+
+.roll-value.dc {
+    color: var(--warning-color);
+}
+
+.roll-value.pass {
+    color: var(--success-color);
+}
+
+.roll-value.fail {
+    color: var(--danger-color);
+}
+
+/* Stage Progress Section */
+.outcome-stage-progress {
+    margin-bottom: 20px;
+    display: none;
+}
+
+.outcome-stage-progress.active {
+    display: block;
+}
+
+.outcome-stage-progress h4 {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.stage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stage-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    border-left: 3px solid var(--border-color);
+}
+
+.stage-item.completed {
+    border-left-color: var(--success-color);
+}
+
+.stage-item.failed {
+    border-left-color: var(--danger-color);
+}
+
+.stage-item.current {
+    border-left-color: var(--accent-color);
+    background: var(--bg-tertiary);
+}
+
+.stage-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.stage-info {
+    flex: 1;
+}
+
+.stage-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.stage-skill {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.stage-result {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--bg-secondary);
+}
+
+.stage-result.pass {
+    color: var(--success-color);
+}
+
+.stage-result.fail {
+    color: var(--danger-color);
+}
+
+/* Rewards Section */
+.outcome-rewards {
+    margin-bottom: 16px;
+    display: none;
+}
+
+.outcome-rewards.active {
+    display: block;
+}
+
+.outcome-rewards h4 {
+    font-size: 0.85rem;
+    color: var(--success-color);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.rewards-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reward-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(46, 125, 50, 0.2);
+    border: 1px solid var(--success-color);
+    border-radius: 20px;
+    font-size: 0.95rem;
+}
+
+.reward-item .reward-icon {
+    font-size: 1.1rem;
+}
+
+.reward-item .reward-value {
+    font-weight: bold;
+    color: var(--success-color);
+}
+
+/* Consequences Section */
+.outcome-consequences {
+    margin-bottom: 16px;
+    display: none;
+}
+
+.outcome-consequences.active {
+    display: block;
+}
+
+.outcome-consequences h4 {
+    font-size: 0.85rem;
+    color: var(--danger-color);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.consequences-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.consequence-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(198, 40, 40, 0.15);
+    border: 1px solid rgba(198, 40, 40, 0.4);
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.consequence-item .consequence-icon {
+    font-size: 1.1rem;
+}
+
+.consequence-item .consequence-text {
+    color: var(--text-primary);
+}
+
+.consequence-item .consequence-value {
+    font-family: var(--font-mono);
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+/* Combat Warning */
+.outcome-combat-warning {
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    background: rgba(255, 152, 0, 0.2);
+    border: 1px solid var(--warning-color);
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.outcome-combat-warning.active {
+    display: flex;
+}
+
+.combat-warning-icon {
+    font-size: 1.5rem;
+}
+
+.combat-warning-text {
+    flex: 1;
+}
+
+.combat-warning-text strong {
+    display: block;
+    color: var(--warning-color);
+    margin-bottom: 4px;
+}
+
+.combat-warning-text span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Outcome Footer */
+.outcome-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+}
+
+#outcomeCloseBtn {
+    padding: 12px 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: var(--accent-color);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#outcomeCloseBtn:hover {
+    background: var(--text-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#outcomeCloseBtn.combat {
+    background: var(--warning-color);
+}
+
+#outcomeCloseBtn.combat:hover {
+    background: #FF9800;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .skill-outcome-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .outcome-header {
+        padding: 16px 20px;
+    }
+
+    #outcomeIcon {
+        font-size: 2.5rem;
+    }
+
+    #outcomeTitle {
+        font-size: 1.2rem;
+    }
+
+    .outcome-body {
+        padding: 16px 20px;
+    }
+
+    .roll-breakdown {
+        grid-template-columns: 1fr;
+    }
+
+    .roll-item.full-width {
+        grid-column: span 1;
     }
 }

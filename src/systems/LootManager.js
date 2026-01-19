@@ -12,13 +12,23 @@
  */
 
 import { SeededRandom } from '../utils/rng.js';
+import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class LootManager {
-    constructor(worldSeed) {
+    constructor(worldSeed, campaignId = null) {
         this.worldSeed = worldSeed;
+        this.campaignId = campaignId;
         this.lootTables = null;
         this.magicItems = null;
         this.allItems = null; // Cache of all items (from items.json + magicItems.json)
+    }
+
+    /**
+     * Set the campaign ID for filtering
+     * @param {string} campaignId - Campaign ID
+     */
+    setCampaignId(campaignId) {
+        this.campaignId = campaignId;
     }
 
     /**
@@ -31,6 +41,10 @@ class LootManager {
         }
 
         try {
+            // Load campaign data for filtering
+            await loadCampaigns();
+            const campaignId = this.campaignId || getDefaultCampaignId();
+
             const [lootResponse, magicResponse, itemsResponse] = await Promise.all([
                 fetch('data/lootTables.json'),
                 fetch('data/magicItems.json'),
@@ -38,22 +52,33 @@ class LootManager {
             ]);
 
             this.lootTables = await lootResponse.json();
-            this.magicItems = await magicResponse.json();
+            const rawMagicItems = await magicResponse.json();
             const itemsData = await itemsResponse.json();
+
+            // Filter magic items by campaign
+            this.magicItems = {};
+            Object.keys(rawMagicItems).forEach(category => {
+                if (Array.isArray(rawMagicItems[category])) {
+                    this.magicItems[category] = filterByCampaign(rawMagicItems[category], campaignId);
+                } else {
+                    this.magicItems[category] = rawMagicItems[category];
+                }
+            });
 
             // Build combined item lookup (items.json + magicItems.json)
             this.allItems = {};
 
-            // Add base items from items.json
+            // Add base items from items.json (filtered by campaign)
             Object.keys(itemsData).forEach(category => {
                 if (Array.isArray(itemsData[category])) {
-                    itemsData[category].forEach(item => {
+                    const filtered = filterByCampaign(itemsData[category], campaignId);
+                    filtered.forEach(item => {
                         this.allItems[item.id] = item;
                     });
                 }
             });
 
-            // Add magic items from magicItems.json
+            // Add magic items from magicItems.json (already filtered)
             Object.keys(this.magicItems).forEach(category => {
                 if (Array.isArray(this.magicItems[category])) {
                     this.magicItems[category].forEach(item => {
@@ -62,7 +87,7 @@ class LootManager {
                 }
             });
 
-            console.log(`✅ LootManager: Loaded ${Object.keys(this.allItems).length} items`);
+            console.log(`✅ LootManager: Loaded ${Object.keys(this.allItems).length} items (campaign: ${campaignId})`);
             console.log(`✅ LootManager: Loaded loot tables for ${Object.keys(this.lootTables.monsterLootTables.byCreatureType).length} creature types`);
         } catch (error) {
             console.error('❌ LootManager: Failed to load data:', error);

@@ -23,7 +23,10 @@
         "stealth": 6
       },
       "senses": "darkvision 60 ft.",
-      "languages": ["common", "goblin"],
+      "languages": [
+        "common",
+        "goblin"
+      ],
       "traits": [
         {
           "name": "Nimble Escape",
@@ -43,22 +46,48 @@
       "lootTable": {
         "dropChance": 0.5,
         "items": [
-          {"id": "dagger", "chance": 0.3},
-          {"id": "leatherArmor", "chance": 0.2},
-          {"id": "potionOfHealing", "chance": 0.1}
+          {
+            "id": "dagger",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.1
+          }
         ]
       },
       "habitats": {
-        "preferred": ["hills", "mountain", "forest", "denseForest"],
-        "occasional": ["grassland", "plains"],
-        "never": ["ocean", "deepWater", "shallowWater", "desert", "jungle"]
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "jungle"
+        ]
       },
       "spawnChanceModifier": {
         "hills": 1.5,
         "mountain": 1.3,
         "forest": 1.2,
         "denseForest": 1.2
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "wolf",
@@ -110,16 +139,35 @@
         "items": []
       },
       "habitats": {
-        "preferred": ["forest", "denseForest", "grassland", "tundra"],
-        "occasional": ["plains", "hills", "snowyPlains"],
-        "never": ["ocean", "deepWater", "shallowWater", "desert", "jungle", "swamp"]
+        "preferred": [
+          "forest",
+          "denseForest",
+          "grassland",
+          "tundra"
+        ],
+        "occasional": [
+          "plains",
+          "hills",
+          "snowyPlains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "jungle",
+          "swamp"
+        ]
       },
       "spawnChanceModifier": {
         "forest": 1.5,
         "grassland": 1.3,
         "tundra": 1.2,
         "hills": 1.1
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "skeleton",
@@ -140,10 +188,17 @@
         "wis": 8,
         "cha": 5
       },
-      "damageImmunities": ["poison"],
-      "conditionImmunities": ["exhaustion", "poisoned"],
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "exhaustion",
+        "poisoned"
+      ],
       "senses": "darkvision 60 ft.",
-      "languages": ["understands Common but can't speak"],
+      "languages": [
+        "understands Common but can't speak"
+      ],
       "traits": [],
       "actions": [
         {
@@ -169,10 +224,19 @@
       "lootTable": {
         "dropChance": 0.4,
         "items": [
-          {"id": "shortsword", "chance": 0.3},
-          {"id": "shortbow", "chance": 0.2}
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "shortbow",
+            "chance": 0.2
+          }
         ]
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "orc",
@@ -197,7 +261,10 @@
         "intimidation": 2
       },
       "senses": "darkvision 60 ft.",
-      "languages": ["common", "orc"],
+      "languages": [
+        "common",
+        "orc"
+      ],
       "traits": [
         {
           "name": "Aggressive",
@@ -217,11 +284,23 @@
       "lootTable": {
         "dropChance": 0.6,
         "items": [
-          {"id": "battleaxe", "chance": 0.4},
-          {"id": "hideArmor", "chance": 0.3},
-          {"id": "potionOfHealing", "chance": 0.2}
+          {
+            "id": "battleaxe",
+            "chance": 0.4
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
         ]
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "bandit",
@@ -243,7 +322,9 @@
         "cha": 10
       },
       "senses": "normal",
-      "languages": ["common"],
+      "languages": [
+        "common"
+      ],
       "traits": [],
       "actions": [
         {
@@ -269,22 +350,57 @@
       "lootTable": {
         "dropChance": 0.5,
         "items": [
-          {"id": "dagger", "chance": 0.3},
-          {"id": "leatherArmor", "chance": 0.3},
-          {"id": "potionOfHealing", "chance": 0.1}
+          {
+            "id": "dagger",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.1
+          }
         ]
       },
       "habitats": {
-        "preferred": ["road", "plains", "savanna", "grassland"],
-        "occasional": ["forest", "hills", "desert"],
-        "never": ["ocean", "deepWater", "shallowWater", "swamp", "tundra", "snowyPlains", "jungle"]
+        "preferred": [
+          "road",
+          "plains",
+          "savanna",
+          "grassland",
+          "residential",
+          "industrial"
+        ],
+        "occasional": [
+          "forest",
+          "hills",
+          "desert",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "swamp",
+          "tundra",
+          "snowyPlains",
+          "jungle"
+        ]
       },
       "spawnChanceModifier": {
-        "road": 2.0,
+        "road": 2,
+        "residential": 1.8,
+        "industrial": 1.6,
         "plains": 1.4,
         "savanna": 1.3,
-        "grassland": 1.2
-      }
+        "grassland": 1.2,
+        "farmland": 1.1
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "zombie",
@@ -308,10 +424,16 @@
       "savingThrows": {
         "wis": 0
       },
-      "damageImmunities": ["poison"],
-      "conditionImmunities": ["poisoned"],
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "poisoned"
+      ],
       "senses": "darkvision 60 ft.",
-      "languages": ["understands languages it knew in life but can't speak"],
+      "languages": [
+        "understands languages it knew in life but can't speak"
+      ],
       "traits": [
         {
           "name": "Undead Fortitude",
@@ -333,15 +455,32 @@
         "items": []
       },
       "habitats": {
-        "preferred": ["swamp", "forest", "denseForest"],
-        "occasional": ["grassland", "plains"],
-        "never": ["ocean", "deepWater", "shallowWater", "desert", "tundra", "snowyPlains"]
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "tundra",
+          "snowyPlains"
+        ]
       },
       "spawnChanceModifier": {
         "swamp": 1.8,
         "forest": 1.3,
         "denseForest": 1.2
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "giantRat",
@@ -387,7 +526,39 @@
       "lootTable": {
         "dropChance": 0.1,
         "items": []
-      }
+      },
+      "habitats": {
+        "preferred": [
+          "residential",
+          "industrial",
+          "town"
+        ],
+        "occasional": [
+          "farmland",
+          "grassland",
+          "forest",
+          "swamp"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains",
+          "glacier",
+          "mountainPeak"
+        ]
+      },
+      "spawnChanceModifier": {
+        "residential": 2.5,
+        "industrial": 2,
+        "town": 1.8,
+        "farmland": 1.2,
+        "swamp": 1.1
+      },
+      "campaignIds": [
+        "core"
+      ]
     },
     {
       "id": "bugbear",
@@ -413,7 +584,10 @@
         "survival": 2
       },
       "senses": "darkvision 60 ft.",
-      "languages": ["common", "goblin"],
+      "languages": [
+        "common",
+        "goblin"
+      ],
       "traits": [
         {
           "name": "Brute",
@@ -437,11 +611,23 @@
       "lootTable": {
         "dropChance": 0.7,
         "items": [
-          {"id": "chainShirt", "chance": 0.4},
-          {"id": "battleaxe", "chance": 0.3},
-          {"id": "potionOfHealing", "chance": 0.3}
+          {
+            "id": "chainShirt",
+            "chance": 0.4
+          },
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.3
+          }
         ]
-      }
+      },
+      "campaignIds": [
+        "core"
+      ]
     }
   ]
 }
