@@ -14,7 +14,7 @@
       "weaponProficiencies": ["simple", "martial"],
       "toolProficiencies": [],
       "skillChoices": {
-        "choose": 3,
+        "choose": 2,
         "from": ["acrobatics", "athletics", "endurance", "perception", "empathy", "influence", "cunning"]
       },
       "startingEquipment": {
@@ -40,10 +40,10 @@
         "1": [
           {
             "name": "Fighting Style",
-            "description": "Choose a fighting style: Archery (+2 ranged attack rolls), Defense (+1 AC in armor), Dueling (+2 damage with one-handed melee weapon), Great Weapon Fighting (reroll 1s and 2s on two-handed weapon damage), Mariner (traverse deep water, +1 AC if no heavy armor/shield), or Unarmed Fighting (1d6 unarmed strikes, 1d8 if both hands free).",
+            "description": "Choose a fighting style: Marksmanship (+2 ranged attack rolls), Defense (+1 AC in armor), Dueling (+2 damage with one-handed melee weapon), Great Weapon Fighting (reroll 1s and 2s on two-handed weapon damage), Mariner (traverse deep water, +1 AC if no heavy armor/shield), or Unarmed Fighting (1d6 unarmed strikes, 1d8 if both hands free).",
             "choices": {
               "choose": 1,
-              "from": ["archery", "defense", "dueling", "greatWeaponFighting", "mariner", "unarmedFighting"]
+              "from": ["marksmanship", "defense", "dueling", "greatWeaponFighting", "mariner", "unarmedFighting"]
             }
           },
           {
@@ -532,10 +532,10 @@
         "2": [
           {
             "name": "Fighting Style",
-            "description": "Choose Archery (+2 ranged attack rolls), Defense (+1 AC in armor), or Dueling (+2 damage with one-handed weapon).",
+            "description": "Choose Marksmanship (+2 ranged attack rolls), Defense (+1 AC in armor), or Dueling (+2 damage with one-handed weapon).",
             "choices": {
               "choose": 1,
-              "from": ["archery", "defense", "dueling"]
+              "from": ["marksmanship", "defense", "dueling"]
             }
           },
           {

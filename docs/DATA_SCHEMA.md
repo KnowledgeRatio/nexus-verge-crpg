@@ -81,7 +81,7 @@ This document defines the structure of all JSON data files used in the game.
           {
             "name": "Fighting Style",
             "description": "You adopt a particular style of fighting as your specialty.",
-            "choices": ["archery", "defense", "dueling", "greatWeaponFighting", "protection", "twoWeaponFighting"]
+            "choices": ["marksmanship", "defense", "dueling", "greatWeaponFighting", "protection", "twoWeaponFighting"]
           },
           {
             "name": "Second Wind",

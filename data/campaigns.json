@@ -9,6 +9,7 @@
       "description": "Standard D&D 5e SRD content that appears in all campaigns",
       "isBase": true,
       "inherits": [],
+      "mapSize": "medium",
       "settings": {
         "allowAllContent": true
       }

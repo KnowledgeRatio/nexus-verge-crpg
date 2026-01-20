@@ -29,7 +29,7 @@
             "count": 1,
             "description": "Choose one Fighting Style that defines your combat specialty",
             "options": [
-              "fighting_style_archery",
+              "fighting_style_marksmanship",
               "fighting_style_defense",
               "fighting_style_dueling",
               "fighting_style_great_weapon_fighting",

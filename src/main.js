@@ -325,8 +325,6 @@ class Game {
         const closeBtn = document.getElementById('closeWorldbuilderBtn');
         const resetBtn = document.getElementById('wbResetBtn');
         const applyBtn = document.getElementById('wbApplyBtn');
-        const mapSizeSelect = document.getElementById('mapSize');
-
         // Store custom overrides
         this.worldbuilderOverrides = null;
 
@@ -360,15 +358,6 @@ class Game {
         applyBtn.addEventListener('click', () => {
             this.applyWorldbuilderSettings();
             worldbuilderModal.classList.remove('active');
-        });
-
-        // Update when map size changes
-        mapSizeSelect.addEventListener('change', () => {
-            // Reset overrides when map size changes (user can re-customize)
-            this.worldbuilderOverrides = null;
-            if (worldbuilderModal.classList.contains('active')) {
-                this.updateWorldbuilderDefaults();
-            }
         });
 
         // Update when campaign changes (load campaign-specific overrides)
@@ -405,33 +394,52 @@ class Game {
             const response = await fetch('data/campaigns.json');
             const data = await response.json();
 
-            // Find the selected campaign
+            // Find the selected campaign (check inherited campaigns for mapSize)
             const allCampaigns = [...(data.campaigns || []), ...(data.templateCampaigns || [])];
             const campaign = allCampaigns.find(c => c.id === campaignId);
 
-            if (campaign && campaign.featureGeneration) {
-                // Merge campaign overrides into RULES
-                RULES.worldGen.campaignOverrides = { ...campaign.featureGeneration };
-                console.log(`📜 Loaded campaign overrides for "${campaign.name}":`, campaign.featureGeneration);
+            if (campaign) {
+                // Get mapSize (check campaign, then inherited campaigns, default to 'medium')
+                let mapSize = campaign.mapSize;
+                if (!mapSize && campaign.inherits) {
+                    for (const inheritId of campaign.inherits) {
+                        const parent = allCampaigns.find(c => c.id === inheritId);
+                        if (parent?.mapSize) {
+                            mapSize = parent.mapSize;
+                            break;
+                        }
+                    }
+                }
+                this.campaignMapSize = mapSize || 'medium';
+
+                if (campaign.featureGeneration) {
+                    // Merge campaign overrides into RULES
+                    RULES.worldGen.campaignOverrides = { ...campaign.featureGeneration };
+                    console.log(`📜 Loaded campaign overrides for "${campaign.name}":`, campaign.featureGeneration);
+                } else {
+                    RULES.worldGen.campaignOverrides = {};
+                }
 
                 // Reset user overrides so campaign settings take effect
                 this.worldbuilderOverrides = null;
             } else {
-                // No overrides for this campaign
+                // No campaign found
                 RULES.worldGen.campaignOverrides = {};
+                this.campaignMapSize = 'medium';
             }
         } catch (error) {
             console.warn('Failed to load campaign overrides:', error);
             RULES.worldGen.campaignOverrides = {};
+            this.campaignMapSize = 'medium';
         }
     }
 
     /**
-     * Update Worldbuilder modal with default values for current map size
-     * Priority: User overrides > Campaign overrides > Base defaults (scaled by map size)
+     * Update Worldbuilder modal with default values
+     * Priority: User overrides > Campaign overrides > Base defaults
      */
     updateWorldbuilderDefaults() {
-        const mapSize = document.getElementById('mapSize').value;
+        const mapSize = this.campaignMapSize || 'medium'; // From campaign config
         const fg = RULES.worldGen.featureGeneration;
         const campaignOverrides = RULES.worldGen.campaignOverrides || {};
 
@@ -545,7 +553,7 @@ class Game {
      */
     startNewGame() {
         const seed = document.getElementById('seedInput').value.trim();
-        const mapSize = document.getElementById('mapSize').value;
+        const mapSize = this.campaignMapSize || 'medium'; // From campaign config
         const difficulty = document.getElementById('difficulty').value;
         const campaign = document.getElementById('campaign').value;
 
@@ -3659,8 +3667,8 @@ class Game {
      */
     getFightingStyleDetails(styleId) {
         const styles = {
-            archery: {
-                name: 'Archery',
+            marksmanship: {
+                name: 'Marksmanship',
                 description: '+2 bonus to attack rolls with ranged weapons.'
             },
             defense: {

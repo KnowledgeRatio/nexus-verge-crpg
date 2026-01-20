@@ -29,9 +29,9 @@
     },
     {
       "_comment": "Another fighting style example",
-      "id": "fighting_style_archery",
+      "id": "fighting_style_marksmanship",
       "type": "trait",
-      "name": "Fighting Style: Archery",
+      "name": "Fighting Style: Marksmanship",
       "tier": 1,
       "calling": "dedication",
       "specialization": null,
@@ -189,7 +189,7 @@
     },
     "common_effect_types_for_traits": {
       "damageBonus": "Adds to damage rolls (Fighting Style: Dueling)",
-      "attackBonus": "Adds to attack rolls (Fighting Style: Archery)",
+      "attackBonus": "Adds to attack rolls (Fighting Style: Marksmanship)",
       "acBonus": "Adds to AC",
       "acCalculation": "Replaces AC calculation (Unarmored Defense)",
       "initiativeBonus": "Adds to initiative (Alert)",

@@ -1,9 +1,9 @@
 {
   "traits": [
     {
-      "id": "fighting_style_archery",
+      "id": "fighting_style_marksmanship",
       "type": "trait",
-      "name": "Fighting Style: Archery",
+      "name": "Fighting Style: Marksmanship",
       "tier": 1,
       "calling": "dedication",
       "specialization": null,

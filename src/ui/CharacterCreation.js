@@ -481,7 +481,7 @@ export class CharacterCreationUI {
      */
     formatFightingStyleName(styleId) {
         const styles = {
-            archery: 'Archery',
+            marksmanship: 'Marksmanship',
             defense: 'Defense',
             dueling: 'Dueling',
             greatWeaponFighting: 'Great Weapon Fighting',
@@ -563,8 +563,8 @@ export class CharacterCreationUI {
         }
 
         const fightingStyles = {
-            archery: {
-                name: 'Archery',
+            marksmanship: {
+                name: 'Marksmanship',
                 description: 'You gain a +2 bonus to attack rolls you make with ranged weapons',
                 icon: '🏹'
             },
