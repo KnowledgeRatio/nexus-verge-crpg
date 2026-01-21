@@ -1,10 +1,140 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-01-19
+**Last Updated:** 2026-01-20
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Campaign Filtering System Implementation
+**Latest Commit:** Tile Graphics Mapping & Zoom System
+
+---
+
+## 🆕 Recent Changes (2026-01-20 - Session 14)
+
+### Tile Graphics Mapping & Zoom System ✅
+Added explicit `tileImage` field to terrains.json for data-driven graphics mapping (single source of truth) and implemented a zoom system with 4 preset levels (16/24/32/48px) accessible via settings UI and +/- hotkeys.
+
+**Modified Files:**
+- `src/rendering/MapRenderer.js` - Uses tileImage from terrain data, zoom level system
+- `src/main.js` - Zoom handlers, settings UI integration, +/- hotkeys
+- `index.html` - Zoom controls in Settings modal
+- `styles.css` - Zoom button styling
+- `data/terrains.json` - Added tileImage field to all terrain types
+
+**Implementation Details:**
+
+**1. Explicit Tile Image Mapping (terrains.json)** ✅
+Changed from convention-based filename lookup (`{terrainId}.png`) to explicit mapping:
+```json
+{
+  "id": "grassland",
+  "tileImage": "grassland.png",  // Explicit filename - single source of truth
+  ...
+},
+{
+  "id": "ocean",
+  "tileImage": null,  // No pixel art available - uses ASCII
+  ...
+}
+```
+- Only loads images for terrains with non-null `tileImage` field
+- Clear visibility of which terrains have graphics
+- Easy to add new tiles by editing JSON
+
+**2. Zoom System** ✅
+Four preset zoom levels for different screen sizes and preferences:
+- **Level 1 (16×16)** - Default, most tiles visible, smallest details
+- **Level 2 (24×24)** - Balanced view, easier to see details
+- **Level 3 (32×32)** - Large tiles, good for high-DPI displays
+- **Level 4 (48×48)** - Maximum zoom, best pixel art visibility
+
+**3. Zoom Controls** ✅
+- **Settings UI:** +/- buttons in Graphics section with current level display
+- **Hotkeys:** Press `+` or `=` to zoom in, `-` to zoom out
+- **Persistence:** Zoom level saved to localStorage (`nexusVerge_zoomIndex`)
+- **Instant update:** Map re-renders immediately on zoom change
+- **Smart viewport:** Viewport dimensions recalculate automatically
+
+**4. Technical Implementation** ✅
+```javascript
+// MapRenderer zoom methods
+zoomLevels = [16, 24, 32, 48];
+zoomIn()  // Increase tile size
+zoomOut() // Decrease tile size
+setZoomIndex(index) // Set specific level
+getZoomLevel() // Current pixel size
+```
+
+**Current Tile Images (from tileImage field):**
+- `grassland.png` ✅
+- `forest.png` ✅
+- `mountain.png` ✅
+- All other terrains: `null` (ASCII fallback)
+
+**How to Add New Tiles:**
+1. Create 16x16 pixel PNG image
+2. Place in `data/graphics/` folder
+3. Edit `data/terrains.json` and set `tileImage` field:
+   ```json
+   {
+     "id": "desert",
+     "tileImage": "desert.png",  // Add filename
+     ...
+   }
+   ```
+4. Tile loads automatically on next game start
+
+**Benefits:**
+- ✅ **Single source of truth** - Graphics mapping in terrains.json
+- ✅ **Zoom flexibility** - 4 levels for different preferences
+- ✅ **Quick access** - Hotkeys for fast zoom adjustment
+- ✅ **Settings integration** - Clean UI with +/- buttons
+- ✅ **Persistence** - Settings saved per user
+
+---
+
+### Hybrid Pixel Art/ASCII Rendering System ✅
+Implemented a hybrid rendering system that uses pixel art tiles where available and falls back to ASCII characters for missing tiles. Includes a settings toggle to switch between pixel art and pure ASCII modes.
+
+**Modified Files:**
+- `src/rendering/MapRenderer.js` - Added pixel art tile loading, caching, and rendering
+- `src/main.js` - Added pixel art toggle handling in settings
+- `index.html` - Added Graphics section to Settings modal with toggle switch
+- `styles.css` - Added toggle switch styling
+
+**Implementation Details:**
+
+**1. MapRenderer Pixel Art System** ✅
+- **Explicit tile loading:** Loads images based on `tileImage` field in terrains.json
+- **Intelligent fallback:** If `tileImage` is null or image fails to load, uses ASCII character
+- **Image caching:** Loaded tiles are cached in memory for performance
+- **Failed tile tracking:** Tiles that fail to load are marked to avoid repeated attempts
+- **Fog of war support:** Pixel art tiles use opacity for explored-but-not-visible areas
+
+**2. Settings Toggle** ✅
+- **Graphics section:** Settings modal with Pixel Art toggle and Zoom controls
+- **Toggle switch:** Clean iOS-style toggle with smooth animation
+- **Instant preview:** Map re-renders immediately when toggled
+- **Persistence:** Setting saved to localStorage (`nexusVerge_usePixelArt`)
+- **Default:** Enabled (pixel art on) for new users
+
+**3. Tile Size: 16x16 Pixels** ✅
+- **Industry standard** - Compatible with most pixel art tools
+- **Scalable** - Zoom levels render at 16/24/32/48px
+- **ASCII centering** - Characters centered using `textAlign: center`
+- **Font scaling** - Font size adjusts proportionally with zoom
+
+**Technical Notes:**
+- Base tile size: 16×16 pixels (scales with zoom)
+- Images scaled to current zoom level automatically
+- PNG format recommended for transparency
+- Feature tiles (settlements, dungeons) always use ASCII for clarity
+
+**Benefits:**
+- ✅ **Visual variety** - Mix pixel art with ASCII
+- ✅ **Gradual migration** - Add tiles incrementally
+- ✅ **User choice** - Toggle in settings for ASCII purists
+- ✅ **Performance** - Tiles cached after first load
+- ✅ **Extensible** - Edit JSON to add new tiles
 
 ---
 

@@ -987,7 +987,8 @@ class Player {
 
     /**
      * Check if character can traverse special terrain types
-     * @param {string} terrainId - Terrain type ID (e.g., 'deepWater')
+     * Data-driven approach: checks terrain's marinerTraversable field from terrains.json
+     * @param {string} terrainId - Terrain type ID (e.g., 'deepWater', 'ocean')
      * @returns {boolean} - True if character can traverse this terrain
      */
     canTraverseSpecialTerrain(terrainId) {
@@ -997,8 +998,16 @@ class Player {
             return false;
         }
 
+        // Get terrain definition from data
+        const terrainDef = this.worldGenerator.terrainTypes.terrains.find(t => t.id === terrainId);
+        if (!terrainDef) {
+            console.log(`🌊 Unknown terrain type: ${terrainId}`);
+            return false;
+        }
+
         console.log('🌊 Checking terrain traversal:', {
             terrainId,
+            marinerTraversable: terrainDef.marinerTraversable,
             fightingStyle: character.fightingStyle,
             armor: character.equipment?.armor?.id,
             armorType: character.equipment?.armor?.armorType,
@@ -1006,8 +1015,9 @@ class Player {
             offHandType: character.equipment?.offHand?.type
         });
 
-        // Mariner Fighting Style: Can traverse deep water (if not wearing heavy armor or shield)
-        if (terrainId === 'deepWater' && character.fightingStyle === 'mariner') {
+        // Mariner Fighting Style: Can traverse terrain marked as marinerTraversable
+        // (if not wearing heavy armor or shield)
+        if (terrainDef.marinerTraversable && character.fightingStyle === 'mariner') {
             // Check if wearing heavy armor
             const isWearingHeavyArmor = character.equipment?.armor?.armorType === 'heavy';
             // Check if wielding a shield
@@ -1020,7 +1030,9 @@ class Player {
             });
 
             if (!isWearingHeavyArmor && !isWieldingShield) {
-                gameState.addMessage('🌊 Swimming through deep water with Mariner training!', 'success');
+                // Use custom message from terrain data, or fallback
+                const message = terrainDef.marinerMessage || `🌊 Traversing ${terrainDef.name} with Mariner training!`;
+                gameState.addMessage(`🌊 ${message}`, 'success');
                 return true;
             } else {
                 if (isWearingHeavyArmor) {

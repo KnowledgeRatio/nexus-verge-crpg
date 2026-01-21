@@ -100,15 +100,15 @@ class Game {
      * Calculate optimal viewport size based on available screen space
      */
     calculateOptimalViewport() {
-        const TILE_WIDTH = 12;
+        const TILE_WIDTH = 16;  // 16x16 pixel art tiles
         const TILE_HEIGHT = 16;
         const SIDE_PANEL_WIDTH = 400; // Widened from 300px
         const HUD_HEIGHT = 60; // Top HUD
         const CONTROLS_HEIGHT = 40; // Bottom controls
-        const MIN_WIDTH = 80; // Minimum viewport width in tiles
-        const MIN_HEIGHT = 40; // Minimum viewport height in tiles
-        const MAX_WIDTH = 150; // Maximum viewport width (prevents too wide)
-        const MAX_HEIGHT = 80; // Maximum viewport height (prevents too tall)
+        const MIN_WIDTH = 60; // Minimum viewport width in tiles (adjusted for 16x16)
+        const MIN_HEIGHT = 35; // Minimum viewport height in tiles (adjusted for 16x16)
+        const MAX_WIDTH = 120; // Maximum viewport width (prevents too wide)
+        const MAX_HEIGHT = 60; // Maximum viewport height (prevents too tall)
 
         // Get available screen space
         const availableWidth = window.innerWidth - SIDE_PANEL_WIDTH - 40; // 40px margins
@@ -148,8 +148,8 @@ class Game {
                 Math.abs(newSize.height - currentHeight) >= 5) {
 
                 this.mapRenderer.resize(
-                    newSize.width * 12,  // tileWidth
-                    newSize.height * 16  // tileHeight
+                    newSize.width * 16,  // tileWidth (16x16 tiles)
+                    newSize.height * 16  // tileHeight (16x16 tiles)
                 );
 
                 // Re-render the map
@@ -629,7 +629,7 @@ class Game {
             console.log('🎨 Initializing map renderer...');
             const viewportSize = this.calculateOptimalViewport();
             this.mapRenderer = new MapRenderer('gameCanvas', {
-                tileWidth: 12,
+                tileWidth: 16,  // 16x16 pixel art tiles
                 tileHeight: 16,
                 viewportWidth: viewportSize.width,
                 viewportHeight: viewportSize.height
@@ -1376,6 +1376,22 @@ class Game {
         document.addEventListener('keydown', (e) => {
             if (e.key === '`' && this.currentScreen === 'game' && !gameState.get('combat')) {
                 this.openSettings();
+            }
+        });
+
+        // +/= key to zoom in (when in game screen)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === '+' || e.key === '=') && this.currentScreen === 'game') {
+                this.handleZoom(1);
+                e.preventDefault();
+            }
+        });
+
+        // -/_ key to zoom out (when in game screen)
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === '-' || e.key === '_') && this.currentScreen === 'game') {
+                this.handleZoom(-1);
+                e.preventDefault();
             }
         });
 
@@ -2508,6 +2524,94 @@ class Game {
                 audioManager.play('meleeHit', 1.0);
             });
         }
+
+        // Pixel art toggle
+        const pixelArtToggle = document.getElementById('pixelArtToggle');
+        if (pixelArtToggle) {
+            pixelArtToggle.addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                if (this.mapRenderer) {
+                    this.mapRenderer.setPixelArtEnabled(enabled);
+                    // Re-render the map to show the change immediately
+                    if (this.player) {
+                        this.mapRenderer.renderWorld(
+                            gameState.get('world'),
+                            { x: this.player.x, y: this.player.y }
+                        );
+                    }
+                } else {
+                    // Store setting for when mapRenderer is initialized
+                    localStorage.setItem('nexusVerge_usePixelArt', enabled.toString());
+                }
+                console.log(`🎨 Pixel art ${enabled ? 'enabled' : 'disabled'}`);
+            });
+        }
+
+        // Zoom controls
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => this.handleZoom(1));
+        }
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => this.handleZoom(-1));
+        }
+    }
+
+    /**
+     * Handle zoom change
+     * @param {number} direction - 1 for zoom in, -1 for zoom out
+     */
+    handleZoom(direction) {
+        if (!this.mapRenderer) return;
+
+        const changed = direction > 0 ? this.mapRenderer.zoomIn() : this.mapRenderer.zoomOut();
+
+        if (changed) {
+            // Update display
+            this.updateZoomDisplay();
+
+            // Re-render the map with new zoom
+            if (this.player) {
+                this.mapRenderer.renderWorld(
+                    gameState.get('world'),
+                    { x: this.player.x, y: this.player.y }
+                );
+            }
+        }
+    }
+
+    /**
+     * Update zoom level display in settings
+     */
+    updateZoomDisplay() {
+        if (!this.mapRenderer) return;
+
+        const zoomLevels = this.mapRenderer.zoomLevels;
+        const currentIndex = this.mapRenderer.getZoomIndex();
+        const currentSize = this.mapRenderer.getZoomLevel();
+
+        // Update display elements
+        const levelDisplay = document.getElementById('zoomLevelDisplay');
+        const sizeDisplay = document.getElementById('zoomSizeDisplay');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+        if (levelDisplay) {
+            levelDisplay.textContent = `${currentIndex + 1}×`;
+        }
+        if (sizeDisplay) {
+            sizeDisplay.textContent = `${currentSize}×${currentSize}`;
+        }
+
+        // Enable/disable buttons at bounds
+        if (zoomOutBtn) {
+            zoomOutBtn.disabled = currentIndex === 0;
+        }
+        if (zoomInBtn) {
+            zoomInBtn.disabled = currentIndex === zoomLevels.length - 1;
+        }
     }
 
     /**
@@ -2530,6 +2634,21 @@ class Game {
 
         document.getElementById('musicVolumeSlider').value = musicVolume;
         document.getElementById('musicVolumeValue').textContent = `${musicVolume}%`;
+
+        // Load current pixel art setting
+        const pixelArtToggle = document.getElementById('pixelArtToggle');
+        if (pixelArtToggle) {
+            // Get setting from MapRenderer if available, otherwise from localStorage
+            if (this.mapRenderer) {
+                pixelArtToggle.checked = this.mapRenderer.isPixelArtEnabled();
+            } else {
+                const saved = localStorage.getItem('nexusVerge_usePixelArt');
+                pixelArtToggle.checked = saved === null ? true : saved === 'true';
+            }
+        }
+
+        // Load current zoom setting
+        this.updateZoomDisplay();
 
         modal.classList.add('active');
     }
@@ -4688,7 +4807,7 @@ class Game {
         if (!this.mapRenderer) {
             const viewportSize = this.calculateOptimalViewport();
             this.mapRenderer = new MapRenderer('gameCanvas', {
-                tileWidth: 12,
+                tileWidth: 16,  // 16x16 pixel art tiles
                 tileHeight: 16,
                 viewportWidth: viewportSize.width,
                 viewportHeight: viewportSize.height
