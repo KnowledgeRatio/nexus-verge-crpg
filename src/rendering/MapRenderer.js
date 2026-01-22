@@ -62,6 +62,10 @@ class MapRenderer {
         this.playerSymbol = '@';
         this.playerColor = '#ffff00'; // Yellow
 
+        this.playerAvatar = null;
+        this.playerAvatarImage = null;
+        this.playerAvatarFilename = null;
+        this.playerAvatarLoading = false;
         console.log('🎨 MapRenderer initialized', {
             canvas: `${this.canvas.width}x${this.canvas.height}px`,
             viewport: `${this.config.viewportWidth}x${this.config.viewportHeight} tiles`,
@@ -189,6 +193,63 @@ class MapRenderer {
     isPixelArtEnabled() {
         return this.usePixelArt;
     }
+
+    /**
+     * Set player avatar image
+     * @param {Object|null} avatar - Avatar object with filename
+     */
+    setPlayerAvatar(avatar) {
+        this.playerAvatar = avatar || null;
+
+        if (!avatar || !avatar.filename) {
+            this.playerAvatarImage = null;
+            this.playerAvatarFilename = null;
+            return;
+        }
+
+        if (this.playerAvatarFilename === avatar.filename && this.playerAvatarImage) {
+            return;
+        }
+
+        this.playerAvatarFilename = avatar.filename;
+        this.loadPlayerAvatar(avatar.filename);
+    }
+
+    /**
+     * Load player avatar image
+     * @param {string} filename - Avatar image filename
+     */
+    loadPlayerAvatar(filename) {
+        if (!filename) {
+            this.playerAvatarImage = null;
+            this.playerAvatarFilename = null;
+            return;
+        }
+
+        if (this.playerAvatarLoading && this.playerAvatarFilename === filename) {
+            return;
+        }
+
+        this.playerAvatarLoading = true;
+
+        const img = new Image();
+        const imagePath = `${this.pixelArtPath}${filename}`;
+
+        img.onload = () => {
+            this.playerAvatarImage = img;
+            this.playerAvatarLoading = false;
+        };
+
+        img.onerror = () => {
+            this.playerAvatarImage = null;
+            this.playerAvatarLoading = false;
+            console.warn(`⚠️ Failed to load player avatar image: ${filename}`);
+        };
+
+        img.src = imagePath;
+    }
+
+
 
     /**
      * Pre-load available tile images
@@ -437,7 +498,11 @@ class MapRenderer {
 
         if (playerScreenX >= 0 && playerScreenX < this.config.viewportWidth &&
             playerScreenY >= 0 && playerScreenY < this.config.viewportHeight) {
-            this.drawTile(playerScreenX, playerScreenY, this.playerSymbol, this.playerColor);
+            if (this.playerAvatarImage) {
+                this.drawImageTile(playerScreenX, playerScreenY, this.playerAvatarImage, 1.0);
+            } else {
+                this.drawTile(playerScreenX, playerScreenY, this.playerSymbol, this.playerColor);
+            }
         }
     }
 

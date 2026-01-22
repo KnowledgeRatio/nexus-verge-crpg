@@ -43,11 +43,26 @@
       "campaignIds": ["core"]
     },
     {
+      "id": "mountainPeak",
+      "name": "Mountain Peak",
+      "symbol": "^",
+      "color": "#7a766f",
+      "tileImage": "mountainpeak.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Jagged summits rise above the clouds, too steep to climb.",
+      "encounterModifier": 0,
+      "coverType": "full",
+      "difficultTerrain": true,
+      "traversalRequirements": ["flying"],
+      "campaignIds": ["core"]
+    },
+    {
       "id": "ocean",
       "name": "Ocean",
       "symbol": "≈",
       "color": "#0047AB",
-      "tileImage": null,
+      "tileImage": "ocean.png",
       "traversable": false,
       "movementCost": null,
       "description": "Deep ocean waters, impossible to swim across.",
@@ -64,7 +79,7 @@
       "name": "Deep Water",
       "symbol": "~",
       "color": "#1e5ba8",
-      "tileImage": null,
+      "tileImage": "deepwater.png",
       "traversable": false,
       "movementCost": null,
       "description": "Deep water blocks your path.",
@@ -96,7 +111,7 @@
       "name": "Shallow Water",
       "symbol": "≈",
       "color": "#6ab8ff",
-      "tileImage": null,
+      "tileImage": "shallowwater.png",
       "traversable": true,
       "movementCost": 2,
       "description": "Shallow water that can be waded through.",
@@ -124,10 +139,10 @@
       "name": "Road",
       "symbol": "=",
       "color": "#b8a589",
-      "tileImage": null,
+      "tileImage": "road.png",
       "traversable": true,
       "movementCost": 0.8,
-      "description": "A well-worn path connects settlements.",
+      "description": "A well-worn path that connects settlements.",
       "encounterModifier": 0.5,
       "coverType": null,
       "difficultTerrain": false,
@@ -365,3 +380,5 @@
     }
   ]
 }
+
+

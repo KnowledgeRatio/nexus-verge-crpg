@@ -321,6 +321,7 @@ class SaveManager {
         return {
             id: character.id,
             name: character.name,
+            avatar: character.avatar || null,
             race: character.race,
             class: character.class,
             background: character.background,

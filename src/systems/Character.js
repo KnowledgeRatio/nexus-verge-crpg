@@ -12,6 +12,7 @@ export class Character {
         // Core identity
         this.id = data.id || generateUUID();
         this.name = data.name;
+        this.avatar = data.avatar || null;
         this.race = data.race;           // Race object from races.json
         this.class = data.class;         // Class object from classes.json
         this.background = data.background; // Background object from backgrounds.json
@@ -1273,6 +1274,7 @@ export class Character {
         return {
             id: this.id,
             name: this.name,
+            avatar: this.avatar,
             race: this.race,
             class: this.class,
             background: this.background,

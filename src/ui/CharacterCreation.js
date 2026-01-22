@@ -17,6 +17,7 @@ export class CharacterCreationUI {
         // Character creation data
         this.characterData = {
             name: '',
+            avatar: null,
             race: null,
             class: null,
             kit: null, // New: selected kit (custom or preset)
@@ -29,6 +30,13 @@ export class CharacterCreationUI {
             skillChoices: [],
             weaponMasteries: [] // New: weapon mastery selections
         };
+
+        this.avatarOptions = [
+            { id: 'knight', name: 'Knight', filename: 'knight.png' },
+            { id: 'monk', name: 'Monk', filename: 'monk.png' }
+        ];
+        this.avatarPath = 'data/graphics/';
+
 
         // Loaded data (raw, before filtering)
         this.rawRacesData = null;
@@ -155,6 +163,9 @@ export class CharacterCreationUI {
             case 'Name':
                 this.renderNameStep(content);
                 break;
+            case 'Avatar':
+                this.renderAvatarStep(content);
+                break;
             case 'Culture':
                 this.renderRaceStep(content);
                 break;
@@ -211,7 +222,7 @@ export class CharacterCreationUI {
      * Get dynamic step list based on selected class and kit
      */
     getSteps() {
-        const baseSteps = ['Name', 'Culture', 'Calling'];
+        const baseSteps = ['Name', 'Avatar', 'Culture', 'Calling'];
 
         // Always add Kit step after Calling
         if (this.characterData.class) {
@@ -292,6 +303,40 @@ export class CharacterCreationUI {
             this.characterData.name = e.target.value;
         });
     }
+
+
+    /**
+     * Step 1.5: Avatar
+     */
+    renderAvatarStep(container) {
+        const avatars = this.avatarOptions;
+
+        container.innerHTML = `
+            <h3>Choose Your Avatar</h3>
+            <p class="step-description">Select a portrait to represent your character.</p>
+            <div class="avatar-grid">
+                ${avatars.map(avatar => `
+                    <button type="button"
+                            class="avatar-card ${this.characterData.avatar?.id === avatar.id ? 'selected' : ''}"
+                            data-avatar-id="${avatar.id}">
+                        <img src="${this.avatarPath}${avatar.filename}"
+                             alt="${avatar.name} avatar"
+                             class="avatar-image">
+                        <span class="avatar-name">${avatar.name}</span>
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        container.querySelectorAll('.avatar-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const avatarId = card.dataset.avatarId;
+                this.characterData.avatar = avatars.find(a => a.id === avatarId) || null;
+                this.renderStep();
+            });
+        });
+    }
+
 
     /**
      * Step 2: Culture
@@ -845,6 +890,15 @@ export class CharacterCreationUI {
         const masteriesDisplay = this.characterData.weaponMasteries.length > 0 ?
             `<p><strong>Weapon Masteries:</strong> ${this.characterData.weaponMasteries.map(m => this.formatMasteryName(m)).join(', ')}</p>` : '';
 
+        const avatarDisplay = this.characterData.avatar ?
+            `<div class="avatar-review">
+                <span class="avatar-review-label">Avatar:</span>
+                <img src="${this.avatarPath}${this.characterData.avatar.filename}"
+                     alt="${this.characterData.avatar.name} avatar"
+                     class="avatar-review-image">
+                <span class="avatar-review-name">${this.characterData.avatar.name}</span>
+            </div>` : '';
+
         // Build class features display
         const level1Features = this.characterData.class.features?.['1'] || [];
         const featuresDisplay = level1Features.length > 0 ?
@@ -866,6 +920,7 @@ export class CharacterCreationUI {
                 <div class="review-section">
                     <h4>Identity</h4>
                     <p><strong>Name:</strong> ${this.characterData.name}</p>
+                    ${avatarDisplay}
                     <p><strong>Culture:</strong> ${this.characterData.race.name}</p>
                     <p><strong>Calling:</strong> ${this.characterData.class.displayName || this.characterData.class.name}</p>
                     <p><strong>Class:</strong> ${classDisplayName}</p>
@@ -969,6 +1024,12 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
+            case 'Avatar':
+                if (!this.characterData.avatar) {
+                    alert('Please select an avatar.');
+                    return false;
+                }
+                break;
             case 'Culture':
                 if (!this.characterData.race) {
                     alert('Please select a culture.');
@@ -1059,6 +1120,7 @@ export class CharacterCreationUI {
 
             const character = new Character({
                 name: this.characterData.name,
+                avatar: this.characterData.avatar,
                 race: this.characterData.race,
                 class: classData,
                 background: this.characterData.background,

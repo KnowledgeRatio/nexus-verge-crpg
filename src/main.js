@@ -636,6 +636,10 @@ class Game {
             });
         }
 
+        if (this.mapRenderer) {
+            this.mapRenderer.setPlayerAvatar(character.avatar);
+        }
+
         if (!this.settlementUI) {
             console.log('🏘️ Initializing settlement UI...');
             this.settlementUI = new SettlementUI(null); // Will set manager reference after creation
@@ -703,10 +707,6 @@ class Game {
             this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
             await this.player.spawn();
         }
-
-        // Add welcome messages (only shown once at game start, not after combat)
-        gameState.addMessage(`Welcome to Nexus Verge, ${character.name}!`, 'success');
-        gameState.addMessage(`You are a Level ${character.level} ${character.race.name} ${character.class.displayName || character.class.name}.`, 'info');
 
         // Subscribe to messages
         this.setupMessageLog();
