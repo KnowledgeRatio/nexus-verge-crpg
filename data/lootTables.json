@@ -108,6 +108,151 @@
             { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 35 }
           ]
         }
+      },
+
+      "giant": {
+        "1-4": {
+          "dropChance": 0.6,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier1", "rollCount": 1, "weight": 40 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 40 },
+            { "tableName": "humanoid_armor_tier1", "rollCount": 1, "weight": 20 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.7,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier2", "rollCount": 1, "weight": 35 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 30 },
+            { "tableName": "humanoid_armor_tier2", "rollCount": 1, "weight": 20 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 15 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.75,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier3", "rollCount": 1, "weight": 30 },
+            { "tableName": "humanoid_armor_tier3", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 20 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.8,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier4", "rollCount": 1, "weight": 25 },
+            { "tableName": "humanoid_armor_tier4", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 15 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 35 }
+          ]
+        }
+      },
+
+      "monstrosity": {
+        "1-4": {
+          "dropChance": 0.35,
+          "tables": [
+            { "tableName": "beast_parts_tier1", "rollCount": 1, "weight": 60 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 40 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.45,
+          "tables": [
+            { "tableName": "beast_parts_tier2", "rollCount": 1, "weight": 50 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 30 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 20 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.55,
+          "tables": [
+            { "tableName": "beast_parts_tier3", "rollCount": 1, "weight": 40 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 25 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 35 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.65,
+          "tables": [
+            { "tableName": "beast_parts_tier4", "rollCount": 1, "weight": 30 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 25 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 45 }
+          ]
+        }
+      },
+
+      "elemental": {
+        "1-4": {
+          "dropChance": 0.3,
+          "tables": [
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 60 },
+            { "tableName": "undead_remains_tier1", "rollCount": 1, "weight": 40 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.4,
+          "tables": [
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 45 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 30 },
+            { "tableName": "undead_remains_tier2", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.5,
+          "tables": [
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 30 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 40 },
+            { "tableName": "undead_remains_tier3", "rollCount": 1, "weight": 30 }
+          ]
+        },
+        "15+": {
+          "dropChance": 0.6,
+          "tables": [
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 20 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 50 },
+            { "tableName": "undead_remains_tier4", "rollCount": 1, "weight": 30 }
+          ]
+        }
+      },
+
+      "dragon": {
+        "1-4": {
+          "dropChance": 0.8,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier1", "rollCount": 1, "weight": 25 },
+            { "tableName": "humanoid_armor_tier1", "rollCount": 1, "weight": 25 },
+            { "tableName": "consumables_tier1", "rollCount": 1, "weight": 25 },
+            { "tableName": "magic_items_tier1", "rollCount": 1, "weight": 25 }
+          ]
+        },
+        "5-9": {
+          "dropChance": 0.9,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier2", "rollCount": 1, "weight": 20 },
+            { "tableName": "humanoid_armor_tier2", "rollCount": 1, "weight": 20 },
+            { "tableName": "consumables_tier2", "rollCount": 1, "weight": 20 },
+            { "tableName": "magic_items_tier2_progressive", "rollCount": 1, "weight": 40 }
+          ]
+        },
+        "10-14": {
+          "dropChance": 0.95,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier3", "rollCount": 1, "weight": 15 },
+            { "tableName": "humanoid_armor_tier3", "rollCount": 1, "weight": 15 },
+            { "tableName": "consumables_tier3", "rollCount": 1, "weight": 15 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 55 }
+          ]
+        },
+        "15+": {
+          "dropChance": 1.0,
+          "tables": [
+            { "tableName": "humanoid_weapons_tier4", "rollCount": 1, "weight": 10 },
+            { "tableName": "humanoid_armor_tier4", "rollCount": 1, "weight": 10 },
+            { "tableName": "consumables_tier4", "rollCount": 1, "weight": 10 },
+            { "tableName": "magic_items_tier3_progressive", "rollCount": 1, "weight": 70 }
+          ]
+        }
       }
     }
   },
@@ -392,22 +537,30 @@
       "1-4": {
         "0-0.5": { "min": 5, "max": 15 },
         "1-2": { "min": 10, "max": 30 },
-        "3-5": { "min": 25, "max": 75 }
+        "3-5": { "min": 25, "max": 75 },
+        "6-8": { "min": 50, "max": 120 },
+        "9-10": { "min": 75, "max": 200 }
       },
       "5-9": {
         "0-0.5": { "min": 15, "max": 40 },
         "1-2": { "min": 25, "max": 75 },
-        "3-5": { "min": 50, "max": 150 }
+        "3-5": { "min": 50, "max": 150 },
+        "6-8": { "min": 100, "max": 300 },
+        "9-10": { "min": 200, "max": 500 }
       },
       "10-14": {
         "0-0.5": { "min": 30, "max": 100 },
         "1-2": { "min": 75, "max": 200 },
-        "3-5": { "min": 150, "max": 400 }
+        "3-5": { "min": 150, "max": 400 },
+        "6-8": { "min": 300, "max": 700 },
+        "9-10": { "min": 500, "max": 1200 }
       },
       "15+": {
         "0-0.5": { "min": 100, "max": 300 },
         "1-2": { "min": 200, "max": 600 },
-        "3-5": { "min": 500, "max": 1500 }
+        "3-5": { "min": 500, "max": 1500 },
+        "6-8": { "min": 800, "max": 2500 },
+        "9-10": { "min": 1500, "max": 5000 }
       }
     }
   }

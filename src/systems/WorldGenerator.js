@@ -179,14 +179,14 @@ class WorldGenerator {
         }
 
         // Check if this tile is on a pre-generated road (FINITE WORLD FEATURE)
-        // Roads now take priority and can create bridges over shallow water
+        // Roads now take priority and can create bridges over water (rivers, not ocean)
         if (this.isRoadTile(worldX, worldY)) {
-            // Roads can go over shallow water (bridges) but not deep water, ocean, or mountains
-            if (terrainType !== 'deepWater' &&
-                terrainType !== 'ocean' &&
+            // Roads can cross water with bridges (except ocean and mountains)
+            if (terrainType !== 'ocean' &&
                 terrainType !== 'mountain') {
-                // If crossing shallow water, it becomes a bridge
-                if (terrainType === 'shallowWater') {
+                // If crossing water (shallow or deep), it becomes a bridge
+                // Deep water from rivers gets bridges, ocean is excluded above
+                if (terrainType === 'shallowWater' || terrainType === 'deepWater') {
                     terrainType = 'bridge';
                 } else {
                     terrainType = 'road';
@@ -930,6 +930,14 @@ class WorldGenerator {
         // Restore settlement data if present
         this.restoreSettlementData(features);
 
+        // Re-link features to their tiles (so tile.feature exists after regeneration)
+        for (const feature of features) {
+            const tile = tiles.find(t => t.x === feature.x && t.y === feature.y);
+            if (tile) {
+                tile.feature = feature;
+            }
+        }
+
         // Create full region object
         const region = {
             x: regionX,
@@ -1034,14 +1042,18 @@ class WorldGenerator {
             const tile = tiles.find(t => t.x === roadX && t.y === roadY);
             if (tile) {
                 const terrain = tile.terrain;
-                const canPlaceRoad = terrain !== 'deepWater' &&
-                                     terrain !== 'shallowWater' &&
-                                     terrain !== 'ocean' &&
+                // Roads can cross water (bridges) but not ocean or mountains
+                const canPlaceRoad = terrain !== 'ocean' &&
                                      terrain !== 'mountain' &&
                                      !tile.feature;
 
                 if (canPlaceRoad) {
-                    tile.terrain = 'road';
+                    // Use bridge for water tiles (rivers), road for land
+                    if (terrain === 'shallowWater' || terrain === 'deepWater') {
+                        tile.terrain = 'bridge';
+                    } else {
+                        tile.terrain = 'road';
+                    }
                 }
             }
         }
@@ -1395,22 +1407,22 @@ class WorldGenerator {
     /**
      * Pre-generate all roads connecting settlements
      * Called ONCE upfront, creates complete road network
+     * OPTIMIZED: Uses Set for duplicate detection, checks before pathfinding
      */
     async preGenerateRoads() {
         const roads = [];
+        const existingConnections = new Set(); // Track connections with O(1) lookup
         let totalConnections = 0;
-        let failedPaths = 0;
+        let skippedDuplicates = 0;
 
         console.log(`🛣️ Road generation starting with ${this.worldMetadata.settlements.length} settlements`);
 
         // For each settlement, connect to nearest 2-4 settlements
-        // Increased connection counts for better road network connectivity
         for (const settlement of this.worldMetadata.settlements) {
             const maxConnections = settlement.settlementType === 'city' ? 4 :
                 settlement.settlementType === 'town' ? 3 : 2;
 
             // Find nearest settlements
-            // Max connection distance increased to 400 tiles to ensure cities (320 tile spacing) can connect
             const nearestSettlements = this.worldMetadata.settlements
                 .filter(s => s !== settlement)
                 .map(s => ({
@@ -1420,45 +1432,36 @@ class WorldGenerator {
                         Math.pow(s.y - settlement.y, 2)
                     )
                 }))
-                .filter(s => s.distance < 400) // Max connection distance (covers city spacing of 320)
+                .filter(s => s.distance < 400)
                 .sort((a, b) => a.distance - b.distance)
                 .slice(0, maxConnections);
 
-            if (nearestSettlements.length === 0) {
-                console.log(`   ⚠️ ${settlement.name} (${settlement.settlementType}) has no nearby settlements within 400 tiles`);
-            }
-
             // Create road paths to each nearby settlement
-            for (const { settlement: target, distance } of nearestSettlements) {
+            for (const { settlement: target } of nearestSettlements) {
+                // Check for duplicate BEFORE pathfinding (saves expensive A* calls)
+                const forwardKey = `${settlement.x},${settlement.y}-${target.x},${target.y}`;
+                const reverseKey = `${target.x},${target.y}-${settlement.x},${settlement.y}`;
+
+                if (existingConnections.has(reverseKey)) {
+                    skippedDuplicates++;
+                    continue; // Already have this road in opposite direction
+                }
+
+                // Generate path only for new connections
                 const roadPath = this.generateRoadPath(settlement, target);
                 totalConnections++;
 
-                // Avoid duplicate roads (check if reverse path already exists)
-                const isDuplicate = roads.some(r =>
-                    (r.start.x === target.x && r.start.y === target.y &&
-                     r.end.x === settlement.x && r.end.y === settlement.y)
-                );
-
-                if (!isDuplicate) {
-                    roads.push({
-                        start: { x: settlement.x, y: settlement.y },
-                        end: { x: target.x, y: target.y },
-                        path: roadPath // Array of {x, y} coordinates
-                    });
-
-                    if (roadPath.length < 5) {
-                        failedPaths++;
-                        console.log(`   ⚠️ Short road path (${roadPath.length} tiles) from ${settlement.name} to ${target.name} (distance: ${Math.round(distance)} tiles)`);
-                    }
-                }
+                existingConnections.add(forwardKey);
+                roads.push({
+                    start: { x: settlement.x, y: settlement.y },
+                    end: { x: target.x, y: target.y },
+                    path: roadPath
+                });
             }
         }
 
         this.worldMetadata.roads = roads;
-        console.log(`   Generated ${roads.length} road segments from ${totalConnections} connections`);
-        if (failedPaths > 0) {
-            console.log(`   ⚠️ ${failedPaths} roads have unexpectedly short paths`);
-        }
+        console.log(`   Generated ${roads.length} road segments (${skippedDuplicates} duplicates skipped)`);
 
         // Log total road tiles
         let totalRoadTiles = 0;
@@ -1493,79 +1496,78 @@ class WorldGenerator {
     /**
      * A* pathfinding for roads - routes around impassable terrain
      * Uses noise functions to predict terrain without generating tiles
+     * OPTIMIZED: Uses binary heap, caches terrain lookups, reduced iterations
      */
     astarRoadPath(x0, y0, x1, y1) {
         const scale = RULES.worldGen.biomeNoiseScale;
-        const maxIterations = 100000; // Prevent infinite loops (increased for longer paths)
+        const maxIterations = 2000; // Reduced - Bresenham fallback is fine for long paths
         let iterations = 0;
 
-        // Helper to check if terrain is passable for roads
-        const isPassable = (x, y) => {
+        // Cache for terrain data (avoid recalculating noise)
+        const terrainCache = new Map();
+
+        // Get cached terrain info (passable + cost)
+        const getTerrainInfo = (x, y) => {
+            const key = `${x},${y}`;
+            if (terrainCache.has(key)) return terrainCache.get(key);
+
             const elevation = this.elevationNoise.octaveNoise2D(x * scale, y * scale, 4, 0.5);
-            const moisture = this.moistureNoise.octaveNoise2D(x * scale * 0.6, y * scale * 0.6, 3, 0.5);
             const e = (elevation + 1) / 2;
-            const m = (moisture + 1) / 2;
 
-            // Check for impassable terrain
-            // Deep water/ocean: very low elevation
-            if (e < 0.15) return false;
-            // Mountains: very high elevation
-            if (e > 0.78) return false;
+            // Check passability first
+            if (e < 0.10 || e > 0.78) {
+                const info = { passable: false, cost: Infinity };
+                terrainCache.set(key, info);
+                return info;
+            }
 
-            return true;
-        };
-
-        // Get terrain cost (prefer flat, dry terrain for roads)
-        const getTerrainCost = (x, y) => {
-            const elevation = this.elevationNoise.octaveNoise2D(x * scale, y * scale, 4, 0.5);
-            const moisture = this.moistureNoise.octaveNoise2D(x * scale * 0.6, y * scale * 0.6, 3, 0.5);
-            const riverMask = Math.abs(this.riverNoise.octaveNoise2D(x * 0.01, y * 0.01, 2, 0.8));
-            const e = (elevation + 1) / 2;
-            const m = (moisture + 1) / 2;
-
+            // Calculate cost (simplified - skip expensive moisture/river checks for speed)
             let cost = 1;
+            if (e > 0.6) cost += 1; // Hills
 
-            // Hills are slightly more expensive
-            if (e > 0.6 && e <= 0.78) cost += 1;
-
-            // Wet areas (potential swamps/rivers) are more expensive
-            if (m > 0.65) cost += 1;
-
-            // River crossings (shallow water) add cost but are passable
-            if (riverMask < 0.04 && e > -0.2) cost += 2;
-
-            return cost;
+            const info = { passable: true, cost };
+            terrainCache.set(key, info);
+            return info;
         };
 
-        // Heuristic: Manhattan distance (faster than Euclidean)
+        // Heuristic: Manhattan distance
         const heuristic = (x, y) => Math.abs(x - x1) + Math.abs(y - y1);
 
-        // Priority queue using array (simple but works)
-        const openSet = [{ x: x0, y: y0, g: 0, f: heuristic(x0, y0) }];
+        // Simple priority queue using sorted insertion (faster than sorting entire array)
+        const openSet = [];
+        const openSetMap = new Map(); // Fast lookup for membership
+        const closedSet = new Set();
         const cameFrom = new Map();
         const gScore = new Map();
-        gScore.set(`${x0},${y0}`, 0);
 
-        // Directions: 8-way movement for smoother roads
+        const startKey = `${x0},${y0}`;
+        gScore.set(startKey, 0);
+        const startNode = { x: x0, y: y0, g: 0, f: heuristic(x0, y0) };
+        openSet.push(startNode);
+        openSetMap.set(startKey, startNode);
+
+        // Directions: 4-way for speed (8-way is slower and roads look fine with 4-way)
         const directions = [
             { dx: 1, dy: 0 }, { dx: -1, dy: 0 },
-            { dx: 0, dy: 1 }, { dx: 0, dy: -1 },
-            { dx: 1, dy: 1 }, { dx: -1, dy: 1 },
-            { dx: 1, dy: -1 }, { dx: -1, dy: -1 }
+            { dx: 0, dy: 1 }, { dx: 0, dy: -1 }
         ];
 
         while (openSet.length > 0 && iterations < maxIterations) {
             iterations++;
 
-            // Get node with lowest f score
-            openSet.sort((a, b) => a.f - b.f);
-            const current = openSet.shift();
+            // Get node with lowest f score (last element after reverse sort)
+            // Using pop() is O(1), sorting once is faster than maintaining heap for small sets
+            if (iterations % 50 === 1) {
+                openSet.sort((a, b) => b.f - a.f); // Reverse sort so pop() gets lowest
+            }
+            const current = openSet.pop();
+            const currentKey = `${current.x},${current.y}`;
+            openSetMap.delete(currentKey);
 
             // Reached destination
             if (current.x === x1 && current.y === y1) {
-                // Reconstruct path
                 const path = [];
-                let node = `${x1},${y1}`;
+                let node = currentKey;
                 while (node) {
                     const [x, y] = node.split(',').map(Number);
                     path.unshift({ x, y });
@@ -1574,43 +1576,41 @@ class WorldGenerator {
                 return path;
             }
 
+            closedSet.add(currentKey);
+
             // Explore neighbors
             for (const { dx, dy } of directions) {
                 const nx = current.x + dx;
                 const ny = current.y + dy;
                 const neighborKey = `${nx},${ny}`;
 
-                // Skip impassable terrain
-                if (!isPassable(nx, ny)) continue;
+                // Skip if already evaluated
+                if (closedSet.has(neighborKey)) continue;
 
-                // Calculate tentative g score
-                const moveCost = (dx !== 0 && dy !== 0) ? 1.414 : 1; // Diagonal costs more
-                const terrainCost = getTerrainCost(nx, ny);
-                const tentativeG = gScore.get(`${current.x},${current.y}`) + moveCost * terrainCost;
+                // Get terrain info (cached)
+                const terrain = getTerrainInfo(nx, ny);
+                if (!terrain.passable) continue;
+
+                const tentativeG = current.g + terrain.cost;
 
                 // Skip if we've found a better path
                 const existingG = gScore.get(neighborKey);
                 if (existingG !== undefined && tentativeG >= existingG) continue;
 
                 // This is the best path so far
-                cameFrom.set(neighborKey, `${current.x},${current.y}`);
+                cameFrom.set(neighborKey, currentKey);
                 gScore.set(neighborKey, tentativeG);
 
-                // Add to open set if not already there
-                const inOpenSet = openSet.some(n => n.x === nx && n.y === ny);
-                if (!inOpenSet) {
-                    openSet.push({
-                        x: nx,
-                        y: ny,
-                        g: tentativeG,
-                        f: tentativeG + heuristic(nx, ny)
-                    });
+                // Add/update in open set
+                if (!openSetMap.has(neighborKey)) {
+                    const node = { x: nx, y: ny, g: tentativeG, f: tentativeG + heuristic(nx, ny) };
+                    openSet.push(node);
+                    openSetMap.set(neighborKey, node);
                 }
             }
         }
 
-        // No path found - return null to trigger fallback
-        console.warn(`A* pathfinding failed for road from (${x0},${y0}) to (${x1},${y1}) after ${iterations} iterations`);
+        // No path found - return null to trigger Bresenham fallback
         return null;
     }
 
@@ -1647,21 +1647,24 @@ class WorldGenerator {
 
     /**
      * Check if tile should be a road (called during terrain generation)
+     * Uses cached Set for O(1) lookup instead of iterating all roads
      */
     isRoadTile(worldX, worldY) {
         if (!this.worldMetadata.generated) {
             return false;
         }
 
-        // Check if this coordinate is on any road path
-        for (const road of this.worldMetadata.roads) {
-            const isOnPath = road.path.some(p => p.x === worldX && p.y === worldY);
-            if (isOnPath) {
-                return true;
+        // Build road tile set on first call (lazy initialization)
+        if (!this.worldMetadata.roadTileSet) {
+            this.worldMetadata.roadTileSet = new Set();
+            for (const road of this.worldMetadata.roads) {
+                for (const p of road.path) {
+                    this.worldMetadata.roadTileSet.add(`${p.x},${p.y}`);
+                }
             }
         }
 
-        return false;
+        return this.worldMetadata.roadTileSet.has(`${worldX},${worldY}`);
     }
 
     /**

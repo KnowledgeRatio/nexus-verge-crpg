@@ -23,6 +23,9 @@ import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
 import skillChallengeManager from './systems/SkillChallengeManager.js';
+import DungeonGenerator from './systems/DungeonGenerator.js';
+import DungeonManager from './systems/DungeonManager.js';
+import DungeonUI from './ui/DungeonUI.js';
 
 class Game {
     constructor() {
@@ -47,8 +50,14 @@ class Game {
         // Merchant system
         this.merchantManager = null;
 
+        // Dungeon system
+        this.dungeonGenerator = null;
+        this.dungeonManager = null;
+        this.dungeonUI = null;
+
         // Skill challenge system
         this.skillChallengeManager = skillChallengeManager;
+        this.skillChallengeBlocking = false; // Track if a skill challenge is blocking escape
 
         // Combat systems
         this.combatManager = null;
@@ -236,6 +245,8 @@ class Game {
                 this.initGameScreen();
             } else if (screenName === 'combat' || screenName === 'combatScreen') {
                 this.initCombatScreen();
+            } else if (screenName === 'dungeon' || screenName === 'dungeonScreen') {
+                this.initDungeonScreen();
             }
         } else {
             console.error(`Screen not found: ${screenName}`);
@@ -702,10 +713,42 @@ class Game {
             this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
         }
 
+        // Initialize Dungeon System
+        if (!this.dungeonGenerator) {
+            console.log('🏰 Initializing dungeon generation system...');
+            this.dungeonGenerator = new DungeonGenerator(worldConfig.seed);
+            await this.dungeonGenerator.loadData();
+        }
+
+        if (!this.dungeonUI) {
+            console.log('🏰 Initializing dungeon UI...');
+            this.dungeonUI = new DungeonUI('dungeonCanvas', {
+                zoomIndex: this.mapRenderer?.zoomIndex || 0
+            });
+        }
+
+        // Set player avatar on dungeon UI
+        if (this.dungeonUI && character?.avatar) {
+            this.dungeonUI.setPlayerAvatar(character.avatar);
+        }
+
+        if (!this.dungeonManager) {
+            console.log('🏰 Initializing dungeon manager...');
+            this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
+        }
+
         if (!this.player) {
             console.log('👤 Initializing player...');
-            this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
+            this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
             await this.player.spawn();
+
+            // DEV MODE: Place a dungeon within 3 tiles of spawn for easy testing
+            if (gameState.get('devMode')) {
+                await this.placeDevDungeon();
+            }
+        } else {
+            // If player exists but dungeonManager was just created, update the reference
+            this.player.setDungeonManager(this.dungeonManager);
         }
 
         // Subscribe to messages
@@ -740,6 +783,9 @@ class Game {
 
         // Setup Legal Modal System
         this.setupLegalModal();
+
+        // Setup Dungeon System
+        this.setupDungeonSystem();
 
         // Setup Quick Menu System (mouse-clickable UI)
         this.setupQuickMenu();
@@ -788,6 +834,53 @@ class Game {
     }
 
     /**
+     * Initialize dungeon screen
+     */
+    async initDungeonScreen() {
+        // Prevent multiple initializations
+        if (this.dungeonScreenInitialized) {
+            // Just render, don't re-subscribe
+            if (this.dungeonUI && this.dungeonManager) {
+                await this.dungeonUI.render(this.dungeonManager);
+                this.updateDungeonUI();
+            }
+            return;
+        }
+
+        console.log('🏰 Initializing dungeon screen...');
+
+        const dungeonState = gameState.get('dungeon');
+        if (!dungeonState?.active) {
+            console.error('No active dungeon!');
+            this.showScreen('game');
+            return;
+        }
+
+        // Sync message log to dungeon message log (one-time setup)
+        const dungeonLog = document.getElementById('dungeonMessageLog');
+        if (dungeonLog && !this.dungeonLogSubscribed) {
+            this.dungeonLogSubscribed = true;
+            gameState.subscribe('ui.messageLog', (messages) => {
+                const recent = messages.slice(-10);
+                dungeonLog.innerHTML = recent.map(msg => {
+                    const className = `message message-${msg.type || 'info'}`;
+                    return `<div class="${className}">${msg.text}</div>`;
+                }).join('');
+                dungeonLog.scrollTop = dungeonLog.scrollHeight;
+            });
+        }
+
+        // Initial render
+        if (this.dungeonUI && this.dungeonManager) {
+            await this.dungeonUI.render(this.dungeonManager);
+            this.updateDungeonUI();
+        }
+
+        this.dungeonScreenInitialized = true;
+        console.log('✅ Dungeon screen initialized');
+    }
+
+    /**
      * Action selection state
      */
     selectedAction = null;
@@ -812,9 +905,14 @@ class Game {
         // Subscribe to combat state updates
         gameState.subscribe('combat', (combatState) => {
             if (!combatState || !combatState.active) {
-                // Combat ended - return to game screen
+                // Combat ended - return to appropriate screen
                 if (this.currentScreen === 'combatScreen' || this.currentScreen === 'combat') {
-                    this.showScreen('game');
+                    const dungeonState = gameState.get('dungeon');
+                    if (dungeonState?.active) {
+                        this.showScreen('dungeonScreen');
+                    } else {
+                        this.showScreen('game');
+                    }
                 }
                 return;
             }
@@ -1379,17 +1477,17 @@ class Game {
             }
         });
 
-        // +/= key to zoom in (when in game screen)
+        // +/= key to zoom in (when in game or dungeon screen)
         document.addEventListener('keydown', (e) => {
-            if ((e.key === '+' || e.key === '=') && this.currentScreen === 'game') {
+            if ((e.key === '+' || e.key === '=') && (this.currentScreen === 'game' || this.currentScreen === 'dungeonScreen')) {
                 this.handleZoom(1);
                 e.preventDefault();
             }
         });
 
-        // -/_ key to zoom out (when in game screen)
+        // -/_ key to zoom out (when in game or dungeon screen)
         document.addEventListener('keydown', (e) => {
-            if ((e.key === '-' || e.key === '_') && this.currentScreen === 'game') {
+            if ((e.key === '-' || e.key === '_') && (this.currentScreen === 'game' || this.currentScreen === 'dungeonScreen')) {
                 this.handleZoom(-1);
                 e.preventDefault();
             }
@@ -1430,6 +1528,7 @@ class Game {
             'worldMapModal',
             'characterSheetModal',
             'skillCheckModal',
+            'skillOutcomeModal',
             'settingsModal',
             'helpModal'
         ];
@@ -1438,8 +1537,18 @@ class Game {
             .map(id => document.getElementById(id))
             .filter(modal => modal && modal.classList.contains('active'));
 
-        // Close all open modals
+        // Close all open modals (but skip skill check modal if it's blocking escape)
         openModals.forEach(modal => {
+            // Don't close skill check modal if canTurnBack is false
+            if (modal.id === 'skillCheckModal' && this.skillChallengeBlocking) {
+                console.log('⚠️ Cannot escape this skill challenge - you must attempt it!');
+                gameState.addMessage('⚠️ You cannot turn back - you must attempt this challenge!', 'warning');
+                return;
+            }
+            // Don't close skill outcome modal (results screen) - let the close button handle it
+            if (modal.id === 'skillOutcomeModal') {
+                return;
+            }
             modal.classList.remove('active');
         });
     }
@@ -2292,28 +2401,45 @@ class Game {
     }
 
     /**
-     * Get color for terrain type
+     * Get color for terrain type (matches terrains.json)
      */
     getTerrainColor(terrain) {
         const colors = {
-            grassland: '#90EE90',
-            forest: '#228B22',
-            hills: '#8B4513',
-            mountains: '#808080',
-            water: '#4682B4',
-            ocean: '#000080',
-            desert: '#FFD700',
-            tundra: '#F0FFFF',
-            swamp: '#556B2F',
-            jungle: '#006400',
-            plains: '#9ACD32',
-            taiga: '#2F4F4F',
-            savanna: '#DAA520',
-            volcanic: '#8B0000',
-            wasteland: '#696969',
-            city: '#8B0000',
-            town: '#8B4513',
-            sanctuary: '#F0E68C'
+            // Core terrain types from terrains.json
+            grassland: '#7ec850',
+            forest: '#2d5016',
+            mountain: '#8b7355',
+            mountainPeak: '#7a766f',
+            hills: '#9aad72',
+            plains: '#d4c896',
+            denseForest: '#1a3a0f',
+
+            // Water types
+            ocean: '#0047AB',
+            deepWater: '#1e5ba8',
+            shallowWater: '#6ab8ff',
+            beach: '#f4e4c1',
+
+            // Other biomes
+            desert: '#edc9af',
+            swamp: '#4a6838',
+            jungle: '#2d6b22',
+            savanna: '#e8c870',
+            tundra: '#c8d8e8',
+            snowyPlains: '#f0f8ff',
+
+            // Special locations
+            sanctuary: '#f0e68c',
+            town: '#d4af37',
+            road: '#b8a589',
+            bridge: '#8b7355',
+            cave: '#3d3d3d',
+            ruins: '#7a7a7a',
+
+            // Urban terrain
+            residential: '#d2b48c',
+            farmland: '#f5deb3',
+            industrial: '#a0826d'
         };
         return colors[terrain] || '#333333';
     }
@@ -2564,20 +2690,39 @@ class Game {
      * @param {number} direction - 1 for zoom in, -1 for zoom out
      */
     handleZoom(direction) {
-        if (!this.mapRenderer) return;
+        // Check if we're in dungeon or world map
+        const dungeonState = gameState.get('dungeon');
+        const inDungeon = dungeonState?.active && (this.currentScreen === 'dungeonScreen' || this.currentScreen === 'dungeon');
 
-        const changed = direction > 0 ? this.mapRenderer.zoomIn() : this.mapRenderer.zoomOut();
+        if (inDungeon) {
+            // Handle dungeon zoom
+            if (!this.dungeonUI) return;
 
-        if (changed) {
-            // Update display
-            this.updateZoomDisplay();
+            const changed = direction > 0 ? this.dungeonUI.zoomIn() : this.dungeonUI.zoomOut();
+            if (changed) {
+                this.updateZoomDisplay();
+                // Re-render dungeon with new zoom
+                if (this.dungeonManager) {
+                    this.dungeonUI.render(this.dungeonManager);
+                }
+            }
+        } else {
+            // Handle world map zoom
+            if (!this.mapRenderer) return;
 
-            // Re-render the map with new zoom
-            if (this.player) {
-                this.mapRenderer.renderWorld(
-                    gameState.get('world'),
-                    { x: this.player.x, y: this.player.y }
-                );
+            const changed = direction > 0 ? this.mapRenderer.zoomIn() : this.mapRenderer.zoomOut();
+
+            if (changed) {
+                // Update display
+                this.updateZoomDisplay();
+
+                // Re-render the map with new zoom
+                if (this.player) {
+                    this.mapRenderer.renderWorld(
+                        gameState.get('world'),
+                        { x: this.player.x, y: this.player.y }
+                    );
+                }
             }
         }
     }
@@ -2586,11 +2731,23 @@ class Game {
      * Update zoom level display in settings
      */
     updateZoomDisplay() {
-        if (!this.mapRenderer) return;
+        // Determine zoom source based on context
+        const dungeonState = gameState.get('dungeon');
+        const inDungeon = dungeonState?.active && (this.currentScreen === 'dungeonScreen' || this.currentScreen === 'dungeon');
 
-        const zoomLevels = this.mapRenderer.zoomLevels;
-        const currentIndex = this.mapRenderer.getZoomIndex();
-        const currentSize = this.mapRenderer.getZoomLevel();
+        let zoomLevels, currentIndex, currentSize;
+
+        if (inDungeon && this.dungeonUI) {
+            zoomLevels = this.dungeonUI.zoomLevels;
+            currentIndex = this.dungeonUI.getZoomIndex();
+            currentSize = this.dungeonUI.getZoomLevel();
+        } else if (this.mapRenderer) {
+            zoomLevels = this.mapRenderer.zoomLevels;
+            currentIndex = this.mapRenderer.getZoomIndex();
+            currentSize = this.mapRenderer.getZoomLevel();
+        } else {
+            return;
+        }
 
         // Update display elements
         const levelDisplay = document.getElementById('zoomLevelDisplay');
@@ -2758,6 +2915,229 @@ class Game {
         if (modal) {
             modal.classList.remove('active');
         }
+    }
+
+    /**
+     * Setup Dungeon System - UI handlers and event listeners
+     */
+    setupDungeonSystem() {
+        // Track if we've already set up dungeon subscription
+        this.dungeonSubscriptionSetup = true;
+
+        // Subscribe to dungeon state changes - only react to active state changes
+        let wasActive = false;
+        gameState.subscribe('dungeon', (dungeonState) => {
+            const isActive = dungeonState?.active === true;
+
+            // Only switch screens when active state actually changes
+            if (isActive && !wasActive) {
+                wasActive = true;
+                if (this.currentScreen !== 'dungeonScreen' && this.currentScreen !== 'dungeon') {
+                    this.showScreen('dungeonScreen');
+                }
+            } else if (!isActive && wasActive) {
+                wasActive = false;
+                // Reset dungeon screen flag so it re-initializes for next dungeon
+                this.dungeonScreenInitialized = false;
+                if (this.currentScreen === 'dungeonScreen' || this.currentScreen === 'dungeon') {
+                    this.showScreen('game');
+                }
+            } else if (isActive && this.currentScreen === 'dungeonScreen') {
+                // Position changed, just update the UI without re-init
+                this.updateDungeonUI();
+                if (this.dungeonUI && this.dungeonManager) {
+                    this.dungeonUI.render(this.dungeonManager);
+                }
+            }
+        });
+
+        // Exit dungeon button
+        const exitBtn = document.getElementById('dungeonExitBtn');
+        if (exitBtn) {
+            exitBtn.addEventListener('click', () => {
+                if (this.dungeonManager?.isAtExit()) {
+                    this.dungeonManager.exitDungeon();
+                }
+            });
+        }
+
+        // Setup minimap canvas
+        const minimapCanvas = document.getElementById('dungeonMinimap');
+        if (minimapCanvas) {
+            // Set initial size
+            minimapCanvas.width = 270;
+            minimapCanvas.height = 200;
+        }
+
+        console.log('🏰 Dungeon system UI setup complete');
+    }
+
+    /**
+     * Trigger boss encounter combat when entering a boss room
+     * @param {string} bossId - Monster ID of the boss from dungeonType.bossPool
+     */
+    async triggerBossEncounter(bossId) {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        try {
+            const { buildBossEncounter } = await import('./systems/EncounterBuilder.js');
+
+            const playerLevel = character.level || 1;
+            const campaignId = gameState.get('worldConfig.campaignId') || 'core';
+            const dungeonState = gameState.get('dungeon');
+            const dungeonTypeId = dungeonState?.dungeonTypeId || null;
+
+            const encounter = await buildBossEncounter({
+                bossId,
+                partyLevel: playerLevel,
+                dungeonTypeId,
+                campaignId
+            });
+
+            if (!encounter.monsters || encounter.monsters.length === 0) {
+                console.warn(`⚠️ Failed to build boss encounter for "${bossId}"`);
+                return;
+            }
+
+            const bossMonster = encounter.monsters[0];
+            gameState.addMessage(`☠️ ${bossMonster.name} attacks!`, 'danger');
+
+            if (encounter.monsters.length > 1) {
+                const minionNames = encounter.monsters.slice(1).map(m => m.name).join(', ');
+                gameState.addMessage(`Accompanied by: ${minionNames}`, 'warning');
+            }
+
+            // Start combat via the same pattern as regular encounters
+            gameState.set('combat', { active: true, pending: true });
+            gameState.set('ui.pendingCombat', { enemies: encounter.monsters, isBossFight: true });
+            gameState.set('ui.currentScreen', 'combatScreen');
+        } catch (error) {
+            console.error('Failed to trigger boss encounter:', error);
+        }
+    }
+
+    /**
+     * Update Dungeon UI elements (HUD, navigation, minimap)
+     */
+    updateDungeonUI() {
+        const dungeonState = gameState.get('dungeon');
+        if (!dungeonState?.active) return;
+
+        const character = gameState.get('character');
+
+        // Update header
+        const nameEl = document.getElementById('dungeonName');
+        if (nameEl) {
+            nameEl.textContent = dungeonState.dungeonTypeName || 'Unknown Dungeon';
+        }
+
+        // Update room info
+        const roomInfoEl = document.getElementById('dungeonRoomInfo');
+        if (roomInfoEl) {
+            const explored = dungeonState.roomsExplored?.length || 0;
+            const total = dungeonState.rooms?.length || 0;
+            roomInfoEl.textContent = `Room ${(dungeonState.currentRoomIndex || 0) + 1}/${total} (${explored} explored)`;
+        }
+
+        // Update boss status
+        const bossStatusEl = document.getElementById('dungeonBossStatus');
+        if (bossStatusEl) {
+            if (dungeonState.bossDefeated) {
+                bossStatusEl.textContent = '✓ Boss Defeated';
+                bossStatusEl.style.color = 'var(--success-color)';
+            } else {
+                const currentRoom = dungeonState.rooms?.[dungeonState.currentRoomIndex];
+                if (currentRoom?.isBossRoom) {
+                    bossStatusEl.textContent = '⚠️ BOSS ROOM';
+                    bossStatusEl.style.color = 'var(--danger-color)';
+                } else {
+                    bossStatusEl.textContent = '';
+                }
+            }
+        }
+
+        // Update HUD
+        if (character) {
+            const hpEl = document.getElementById('dungeonHP');
+            if (hpEl) {
+                hpEl.textContent = `${character.currentHP}/${character.maxHP}`;
+            }
+
+            const acEl = document.getElementById('dungeonAC');
+            if (acEl) {
+                acEl.textContent = character.ac || 10;
+            }
+        }
+
+        // Update position
+        const posEl = document.getElementById('dungeonPosition');
+        if (posEl && dungeonState.playerPosition) {
+            posEl.textContent = `${dungeonState.playerPosition.x},${dungeonState.playerPosition.y}`;
+        }
+
+        // Update exit button
+        const exitBtn = document.getElementById('dungeonExitBtn');
+        if (exitBtn && this.dungeonManager) {
+            exitBtn.disabled = !this.dungeonManager.isAtExit();
+        }
+
+        // Update navigation buttons
+        this.updateDungeonNavigation();
+
+        // Update minimap
+        const minimapCanvas = document.getElementById('dungeonMinimap');
+        if (minimapCanvas && this.dungeonUI) {
+            this.dungeonUI.renderMinimap(minimapCanvas, dungeonState);
+        }
+    }
+
+    /**
+     * Update dungeon room navigation buttons
+     */
+    updateDungeonNavigation() {
+        const navContainer = document.getElementById('dungeonNavigation');
+        if (!navContainer || !this.dungeonUI) return;
+
+        const dungeonState = gameState.get('dungeon');
+        const navInfo = this.dungeonUI.getRoomNavigation(dungeonState);
+
+        navContainer.innerHTML = '';
+
+        if (navInfo.connections.length === 0) {
+            navContainer.innerHTML = '<span style="color: var(--text-secondary);">No connected rooms</span>';
+            return;
+        }
+
+        navInfo.connections.forEach(conn => {
+            const btn = document.createElement('button');
+            btn.className = 'dungeon-nav-btn';
+            if (conn.isBoss) btn.classList.add('boss-room');
+            if (conn.isEntrance) btn.classList.add('entrance');
+
+            let icon = '🚪';
+            if (conn.isBoss) icon = '☠️';
+            if (conn.isEntrance) icon = '▲';
+
+            let status = conn.explored ? '' : '(unexplored)';
+
+            btn.innerHTML = `
+                <span class="room-icon">${icon}</span>
+                <span class="room-name">${conn.name}</span>
+                <span class="room-status">${status}</span>
+            `;
+
+            btn.addEventListener('click', async () => {
+                if (this.dungeonManager) {
+                    const result = this.dungeonManager.moveToRoom(conn.index);
+                    if (result.bossFight && result.bossId) {
+                        await this.triggerBossEncounter(result.bossId);
+                    }
+                }
+            });
+
+            navContainer.appendChild(btn);
+        });
     }
 
     /**
@@ -3140,6 +3520,9 @@ class Game {
             cancelBtn.style.display = 'none';
         }
 
+        // Set blocking flag to prevent ESC from closing modal when canTurnBack is false
+        this.skillChallengeBlocking = !canTurnBack;
+
         // Show modal
         modal.classList.add('active');
 
@@ -3273,6 +3656,8 @@ class Game {
                 if (canTurnBack) {
                     cancelBtn.removeEventListener('click', handleCancel);
                 }
+                // Reset blocking flag
+                this.skillChallengeBlocking = false;
             };
 
             attemptBtn.addEventListener('click', handleAttempt);
@@ -4797,6 +5182,14 @@ class Game {
         // Reinitialize world generator
         this.worldGenerator = new WorldGenerator(seed, worldConfig);
 
+        // Restore world metadata from save (settlements, roads, features)
+        // This avoids regenerating everything on load
+        const savedMetadata = gameState.get('world.metadata');
+        if (savedMetadata && savedMetadata.generated) {
+            console.log('📂 Restoring world metadata from save...');
+            this.worldGenerator.worldMetadata = savedMetadata;
+        }
+
         // Load saved regions into WorldGenerator cache (preserves explored/visible state)
         const savedRegions = gameState.get('world.generatedRegions');
         if (savedRegions) {
@@ -4871,8 +5264,33 @@ class Game {
             this.settlementUI.settlementManager = this.settlementManager;
         }
 
+        // Initialize dungeon system
+        if (!this.dungeonGenerator) {
+            console.log('🏰 Initializing dungeon generation system...');
+            this.dungeonGenerator = new DungeonGenerator(seed);
+            await this.dungeonGenerator.loadData();
+        }
+
+        if (!this.dungeonUI) {
+            console.log('🏰 Initializing dungeon UI...');
+            this.dungeonUI = new DungeonUI('dungeonCanvas', {
+                zoomIndex: this.mapRenderer?.zoomIndex || 0
+            });
+        }
+
+        // Set player avatar on dungeon UI after load
+        const loadedCharacter = gameState.get('character');
+        if (this.dungeonUI && loadedCharacter?.avatar) {
+            this.dungeonUI.setPlayerAvatar(loadedCharacter.avatar);
+        }
+
+        if (!this.dungeonManager) {
+            console.log('🏰 Initializing dungeon manager...');
+            this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
+        }
+
         // Reinitialize player at saved position
-        this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager);
+        this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
         const savedPosition = gameState.get('world.currentLocation');
         if (savedPosition) {
             this.player.x = savedPosition.x;
@@ -4973,6 +5391,61 @@ class Game {
     // OLD takeShortRest() removed - using RestManager.shortRest()
 
     // OLD takeLongRest() removed - using RestManager.longRest()
+
+    /**
+     * DEV MODE: Place a dungeon within 3 tiles of player spawn for testing
+     */
+    async placeDevDungeon() {
+        const playerPos = gameState.get('player.position');
+        if (!playerPos) {
+            console.warn('🧪 DEV MODE: Cannot place dungeon - no player position');
+            return;
+        }
+
+        // Place dungeon 3 tiles to the right of spawn
+        const devDungeonX = playerPos.x + 3;
+        const devDungeonY = playerPos.y;
+        const devKey = `${devDungeonX},${devDungeonY}`;
+
+        // Add to world metadata features
+        const metadata = gameState.get('world.metadata') || { features: [] };
+
+        // Check if dungeon already exists at this location
+        const existingDungeon = metadata.features.find(f => f.x === devDungeonX && f.y === devDungeonY);
+        if (existingDungeon) {
+            console.log(`🧪 DEV MODE: Dungeon already exists at (${devDungeonX}, ${devDungeonY})`);
+            return;
+        }
+
+        // Create the dev dungeon feature
+        const devDungeon = {
+            id: devKey,
+            x: devDungeonX,
+            y: devDungeonY,
+            type: 'dungeon',
+            difficulty: 1,
+            explored: false
+        };
+
+        metadata.features.push(devDungeon);
+        gameState.set('world.metadata', metadata);
+
+        // Also update the worldGenerator's local worldMetadata
+        if (this.worldGenerator && this.worldGenerator.worldMetadata) {
+            this.worldGenerator.worldMetadata.features.push(devDungeon);
+        }
+
+        // Link the dungeon to the cached tile so it appears on the map
+        // The region may already be generated and cached, so we need to update the tile directly
+        const tile = await this.worldGenerator.getTile(devDungeonX, devDungeonY);
+        if (tile) {
+            tile.feature = devDungeon;
+            console.log(`🧪 DEV MODE: Linked dungeon feature to tile at (${devDungeonX}, ${devDungeonY})`);
+        }
+
+        console.log(`🧪 DEV MODE: Placed test dungeon at (${devDungeonX}, ${devDungeonY}) - 3 tiles east of spawn`);
+        gameState.addMessage('🧪 DEV MODE: Test dungeon placed 3 tiles to your right →', 'warning');
+    }
 
     /**
      * Setup message log
@@ -5107,6 +5580,15 @@ class Game {
         if (combatState && combatState.active && this.combatRenderer) {
             // Render combat
             this.combatRenderer.render(combatState);
+            return;
+        }
+
+        // Check if in dungeon
+        const dungeonState = gameState.get('dungeon');
+        if (dungeonState && dungeonState.active && this.dungeonUI && this.dungeonManager) {
+            // Render dungeon
+            await this.dungeonUI.render(this.dungeonManager);
+            this.updateDungeonUI();
             return;
         }
 

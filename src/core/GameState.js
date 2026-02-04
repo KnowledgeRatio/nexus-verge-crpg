@@ -45,6 +45,20 @@ export class GameState {
             // Combat state (null when not in combat)
             combat: null,
 
+            // Dungeon state (null when not in dungeon)
+            dungeon: {
+                active: false,
+                dungeonId: null,
+                dungeonTypeId: null,
+                dungeonTypeName: null,
+                currentRoomIndex: 0,
+                playerPosition: null,
+                worldMapPosition: null,
+                rooms: null,
+                roomsExplored: [],
+                bossDefeated: false
+            },
+
             // Rest state
             rest: {
                 shortRestsUsed: 0,
@@ -240,6 +254,20 @@ export class GameState {
             failed: []
         };
         this.data.campaignProgress = 1; // Start at campaign stage 1
+
+        // Initialize dungeon state (not in dungeon at game start)
+        this.data.dungeon = {
+            active: false,
+            dungeonId: null,
+            dungeonTypeId: null,
+            dungeonTypeName: null,
+            currentRoomIndex: 0,
+            playerPosition: null,
+            worldMapPosition: null,
+            rooms: null,
+            roomsExplored: [],
+            bossDefeated: false
+        };
 
         this.notify('game', 'initialized');
     }

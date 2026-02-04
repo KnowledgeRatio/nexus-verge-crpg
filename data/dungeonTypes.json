@@ -1,0 +1,294 @@
+{
+  "description": "Dungeon type definitions with monster pools, room preferences, and thematic settings",
+  "version": "2.0.0",
+  "dungeonTypes": [
+    {
+      "id": "banditHideout",
+      "name": "Bandit Hideout",
+      "description": "A hidden cave complex used by outlaws and thieves",
+      "terrainTheme": "cave",
+      "monsterPool": ["bandit", "wolf", "giantRat", "kobold", "scout", "gnoll"],
+      "bossPool": [
+        { "id": "spy", "minLevel": 1, "maxLevel": 4 },
+        { "id": "berserker", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["naturalCave", "storage", "barracks", "campsite"],
+      "encounterModifier": 1.3,
+      "minRooms": 3,
+      "maxRooms": 7,
+      "lootModifier": 1.0,
+      "ambientDescription": "You hear distant voices echoing off stone walls...",
+      "skillChallenges": ["trap_detect_disarm", "locked_door", "sneak_past_guards"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "undeadCrypt",
+      "name": "Undead Crypt",
+      "description": "An ancient burial site teeming with restless dead",
+      "terrainTheme": "crypt",
+      "monsterPool": ["skeleton", "zombie", "shadow", "specter"],
+      "bossPool": [
+        { "id": "ghast", "minLevel": 1, "maxLevel": 4 },
+        { "id": "wight", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["burialChamber", "sarcophagusRoom", "altarRoom", "catacombs"],
+      "encounterModifier": 1.5,
+      "minRooms": 4,
+      "maxRooms": 8,
+      "lootModifier": 1.2,
+      "ambientDescription": "A chill wind carries the scent of decay...",
+      "skillChallenges": ["trap_detect_disarm", "ancient_text", "holy_ritual"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "abandonedMine",
+      "name": "Abandoned Mine",
+      "description": "A forgotten mining complex overrun by vermin and brutes",
+      "terrainTheme": "mine",
+      "monsterPool": ["giantRat", "bandit", "kobold", "stirge", "giantSpider"],
+      "bossPool": [
+        { "id": "ogre", "minLevel": 1, "maxLevel": 4 },
+        { "id": "ettin", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["miningTunnel", "oreVein", "collapseZone", "minecart"],
+      "encounterModifier": 1.2,
+      "minRooms": 4,
+      "maxRooms": 9,
+      "lootModifier": 1.1,
+      "ambientDescription": "The creak of old timbers echoes through the darkness...",
+      "skillChallenges": ["trap_detect_disarm", "narrow_ledge", "boulder_push"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "goblinWarren",
+      "name": "Goblin Warren",
+      "description": "A maze of tunnels infested with goblins and their allies",
+      "terrainTheme": "cave",
+      "monsterPool": ["goblin", "wolf", "kobold", "giantRat"],
+      "bossPool": [
+        { "id": "bugbear", "minLevel": 1, "maxLevel": 3 },
+        { "id": "ogre", "minLevel": 4, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["nestChamber", "foodStorage", "trapRoom", "chieftainRoom"],
+      "encounterModifier": 1.4,
+      "minRooms": 5,
+      "maxRooms": 10,
+      "lootModifier": 0.9,
+      "ambientDescription": "High-pitched cackles echo through the tunnels...",
+      "skillChallenges": ["trap_detect_disarm", "sneak_past_guards", "calm_wild_beast"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "orcStronghold",
+      "name": "Orc Stronghold",
+      "description": "A fortified lair of savage orc warriors",
+      "terrainTheme": "fortress",
+      "monsterPool": ["orc", "wolf", "goblin", "gnoll"],
+      "bossPool": [
+        { "id": "berserker", "minLevel": 1, "maxLevel": 4 },
+        { "id": "veteran", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["barracks", "armory", "throneRoom", "feastHall"],
+      "encounterModifier": 1.6,
+      "minRooms": 4,
+      "maxRooms": 8,
+      "lootModifier": 1.3,
+      "ambientDescription": "War drums pound in the distance...",
+      "skillChallenges": ["locked_door", "sneak_past_guards", "bandit_negotiation"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "spiderNest",
+      "name": "Spider Nest",
+      "description": "Webs blanket every surface of this infested cavern",
+      "terrainTheme": "cave",
+      "monsterPool": ["giantRat", "giantSpider", "stirge"],
+      "bossPool": [
+        { "id": "giantSpider", "minLevel": 1, "maxLevel": 3 },
+        { "id": "ettin", "minLevel": 4, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["webChamber", "eggSac", "cocoonRoom", "huntingGround"],
+      "encounterModifier": 1.5,
+      "minRooms": 3,
+      "maxRooms": 7,
+      "lootModifier": 0.8,
+      "ambientDescription": "Sticky webs cling to everything...",
+      "skillChallenges": ["trap_detect_disarm", "narrow_ledge", "endure_harsh_environment"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "forgottenTemple",
+      "name": "Forgotten Temple",
+      "description": "An ancient temple to dark gods, guarded by undying servants",
+      "terrainTheme": "temple",
+      "monsterPool": ["skeleton", "zombie", "shadow", "specter"],
+      "bossPool": [
+        { "id": "wight", "minLevel": 1, "maxLevel": 4 },
+        { "id": "flameskull", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["altarRoom", "prayerHall", "reliquary", "cloister"],
+      "encounterModifier": 1.4,
+      "minRooms": 4,
+      "maxRooms": 8,
+      "lootModifier": 1.4,
+      "ambientDescription": "Ancient prayers whisper through the halls...",
+      "skillChallenges": ["ancient_text", "holy_ritual", "arcane_puzzle"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "dragonLair",
+      "name": "Dragon's Lair",
+      "description": "A vast cavern claimed by a fearsome dragon and its kobold servants",
+      "terrainTheme": "cave",
+      "monsterPool": ["goblin", "kobold", "giantRat"],
+      "bossPool": [
+        { "id": "kobold", "minLevel": 1, "maxLevel": 3 },
+        { "id": "youngWhiteDragon", "minLevel": 4, "maxLevel": 6 },
+        { "id": "youngGreenDragon", "minLevel": 7, "maxLevel": 8 },
+        { "id": "youngRedDragon", "minLevel": 9, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["treasureHoard", "nestingChamber", "boneYard", "scalingCliff"],
+      "encounterModifier": 1.3,
+      "minRooms": 3,
+      "maxRooms": 6,
+      "lootModifier": 2.0,
+      "ambientDescription": "The acrid smell of sulfur fills the air...",
+      "skillChallenges": ["cliff_climb", "hidden_treasure", "endure_harsh_environment"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "hauntedMansion",
+      "name": "Haunted Mansion",
+      "description": "A decrepit manor filled with restless spirits",
+      "terrainTheme": "mansion",
+      "monsterPool": ["skeleton", "zombie", "shadow", "specter"],
+      "bossPool": [
+        { "id": "specter", "minLevel": 1, "maxLevel": 3 },
+        { "id": "wraith", "minLevel": 4, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["grandHall", "library", "bedroom", "cellar"],
+      "encounterModifier": 1.3,
+      "minRooms": 5,
+      "maxRooms": 9,
+      "lootModifier": 1.2,
+      "ambientDescription": "Floorboards creak beneath unseen footsteps...",
+      "skillChallenges": ["locked_door", "ancient_text", "detect_lie"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "sunkenRuins",
+      "name": "Sunken Ruins",
+      "description": "Ancient ruins partially submerged in dark waters",
+      "terrainTheme": "ruins",
+      "monsterPool": ["skeleton", "giantRat", "ghoul", "ghast"],
+      "bossPool": [
+        { "id": "ghast", "minLevel": 1, "maxLevel": 4 },
+        { "id": "gargoyle", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["floodedChamber", "coralGrotto", "drownedTemple", "tidalPool"],
+      "encounterModifier": 1.4,
+      "minRooms": 3,
+      "maxRooms": 7,
+      "lootModifier": 1.3,
+      "ambientDescription": "Water drips endlessly from above...",
+      "skillChallenges": ["river_crossing", "endure_harsh_environment", "hidden_treasure"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "frozenCavern",
+      "name": "Frozen Cavern",
+      "description": "Ice-covered tunnels in the frozen north, home to savage beasts",
+      "terrainTheme": "ice",
+      "monsterPool": ["wolf", "direWolf", "kobold"],
+      "bossPool": [
+        { "id": "direWolf", "minLevel": 1, "maxLevel": 3 },
+        { "id": "troll", "minLevel": 4, "maxLevel": 6 },
+        { "id": "youngWhiteDragon", "minLevel": 7, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["iceGallery", "frozenPool", "glacialRift", "snowDrift"],
+      "encounterModifier": 1.3,
+      "minRooms": 3,
+      "maxRooms": 6,
+      "lootModifier": 1.0,
+      "ambientDescription": "Your breath fogs in the frigid air...",
+      "skillChallenges": ["ice_climbing", "endure_harsh_environment", "narrow_ledge"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "volcanicCave",
+      "name": "Volcanic Cave",
+      "description": "A sweltering cavern near an active volcano",
+      "terrainTheme": "volcanic",
+      "monsterPool": ["giantRat", "giantSpider", "stirge"],
+      "bossPool": [
+        { "id": "giantSpider", "minLevel": 1, "maxLevel": 3 },
+        { "id": "troll", "minLevel": 4, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["lavaFlow", "obsidianChamber", "steamVent", "ashPit"],
+      "encounterModifier": 1.4,
+      "minRooms": 3,
+      "maxRooms": 6,
+      "lootModifier": 1.1,
+      "ambientDescription": "Waves of heat shimmer in the air...",
+      "skillChallenges": ["heat_endurance", "endure_harsh_environment", "narrow_ledge"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "wizardTower",
+      "name": "Wizard's Tower",
+      "description": "An abandoned tower filled with magical dangers and arcane guardians",
+      "terrainTheme": "tower",
+      "monsterPool": ["skeleton", "shadow", "gargoyle"],
+      "bossPool": [
+        { "id": "gargoyle", "minLevel": 1, "maxLevel": 4 },
+        { "id": "flameskull", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["laboratory", "library", "observatory", "summoning"],
+      "encounterModifier": 1.2,
+      "minRooms": 4,
+      "maxRooms": 7,
+      "lootModifier": 1.5,
+      "ambientDescription": "Arcane energy crackles through the air...",
+      "skillChallenges": ["arcane_puzzle", "ancient_text", "trap_detect_disarm"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "beastDen",
+      "name": "Beast Den",
+      "description": "A natural cave claimed by dangerous predators",
+      "terrainTheme": "cave",
+      "monsterPool": ["wolf", "giantRat", "direWolf", "giantHyena", "stirge"],
+      "bossPool": [
+        { "id": "giantHyena", "minLevel": 1, "maxLevel": 3 },
+        { "id": "owlbear", "minLevel": 4, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["nestingArea", "boneYard", "wateringHole", "huntingGround"],
+      "encounterModifier": 1.5,
+      "minRooms": 2,
+      "maxRooms": 5,
+      "lootModifier": 0.7,
+      "ambientDescription": "The stench of animal musk fills the cave...",
+      "skillChallenges": ["calm_wild_beast", "track_creature", "narrow_ledge"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "thievesGuild",
+      "name": "Thieves' Guild",
+      "description": "A secret hideout for the criminal underworld",
+      "terrainTheme": "sewer",
+      "monsterPool": ["bandit", "giantRat", "scout", "spy"],
+      "bossPool": [
+        { "id": "spy", "minLevel": 1, "maxLevel": 4 },
+        { "id": "veteran", "minLevel": 5, "maxLevel": 10 }
+      ],
+      "roomPoolPreference": ["secretMeeting", "treasureVault", "trapCorridor", "escapeTunnel"],
+      "encounterModifier": 1.3,
+      "minRooms": 4,
+      "maxRooms": 8,
+      "lootModifier": 1.4,
+      "ambientDescription": "Whispered deals echo through shadowy passages...",
+      "skillChallenges": ["locked_door", "sneak_past_guards", "trap_detect_disarm"],
+      "campaignIds": ["core"]
+    }
+  ]
+}

@@ -85,6 +85,10 @@
         "forest": 1.2,
         "denseForest": 1.2
       },
+      "dungeonTypes": [
+        "goblinWarren",
+        "dragonLair"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -165,6 +169,13 @@
         "tundra": 1.2,
         "hills": 1.1
       },
+      "dungeonTypes": [
+        "banditHideout",
+        "goblinWarren",
+        "orcStronghold",
+        "beastDen",
+        "frozenCavern"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -234,6 +245,13 @@
           }
         ]
       },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins",
+        "wizardTower"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -298,6 +316,9 @@
           }
         ]
       },
+      "dungeonTypes": [
+        "orcStronghold"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -398,6 +419,11 @@
         "grassland": 1.2,
         "farmland": 1.1
       },
+      "dungeonTypes": [
+        "banditHideout",
+        "abandonedMine",
+        "thievesGuild"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -478,6 +504,11 @@
         "forest": 1.3,
         "denseForest": 1.2
       },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -556,6 +587,14 @@
         "farmland": 1.2,
         "swamp": 1.1
       },
+      "dungeonTypes": [
+        "banditHideout",
+        "abandonedMine",
+        "spiderNest",
+        "sunkenRuins",
+        "volcanicCave",
+        "thievesGuild"
+      ],
       "campaignIds": [
         "core"
       ]
@@ -625,6 +664,2578 @@
           }
         ]
       },
+      "dungeonTypes": [
+        "banditHideout",
+        "goblinWarren",
+        "orcStronghold",
+        "abandonedMine",
+        "dragonLair",
+        "beastDen",
+        "frozenCavern",
+        "thievesGuild"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "commoner",
+      "name": "Commoner",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 0,
+      "xpValue": 10,
+      "armorClass": 10,
+      "hitPoints": "1d8",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 10,
+        "con": 10,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Club",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 2,
+          "reach": 5,
+          "damage": "1d4",
+          "damageType": "bludgeoning"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "farmland",
+          "residential"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "mountain",
+          "desert",
+          "tundra",
+          "jungle"
+        ]
+      },
+      "dungeonTypes": [],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "kobold",
+      "name": "Kobold",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "lawful evil",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d6-2",
+      "speed": 30,
+      "abilities": {
+        "str": 7,
+        "dex": 15,
+        "con": 9,
+        "int": 8,
+        "wis": 7,
+        "cha": 8
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Pack Tactics",
+          "description": "The kobold has advantage on attack rolls against a creature if at least one of the kobold's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the kobold has disadvantage on attack rolls and Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Dagger",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d4+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Sling",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": {
+            "normal": 30,
+            "long": 120
+          },
+          "damage": "1d4+2",
+          "damageType": "bludgeoning"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": [
+          {
+            "id": "dagger",
+            "chance": 0.4
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills",
+          "denseForest"
+        ],
+        "occasional": [
+          "forest",
+          "desert"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "dungeonTypes": [
+        "goblinWarren",
+        "dragonLair",
+        "abandonedMine"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "stirge",
+      "name": "Stirge",
+      "size": "tiny",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 14,
+      "hitPoints": "1d4+1",
+      "speed": 10,
+      "abilities": {
+        "str": 4,
+        "dex": 16,
+        "con": 11,
+        "int": 2,
+        "wis": 8,
+        "cha": 6
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Blood Drain",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d4+3",
+          "damageType": "piercing",
+          "description": "On hit, the stirge attaches to the target and drains 1d4+3 hit points at the start of each of its turns until detached."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.05,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "hills",
+          "grassland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3
+      },
+      "dungeonTypes": [
+        "abandonedMine",
+        "spiderNest",
+        "volcanicCave"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "giantSpider",
+      "name": "Giant Spider",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 14,
+      "hitPoints": "4d10+4",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 16,
+        "con": 12,
+        "int": 2,
+        "wis": 11,
+        "cha": 4
+      },
+      "skills": {
+        "stealth": 7
+      },
+      "senses": "blindsight 10 ft., darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Spider Climb",
+          "description": "The spider can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+        },
+        {
+          "name": "Web Sense",
+          "description": "While in contact with a web, the spider knows the exact location of any other creature in contact with the same web."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d8+3",
+          "damageType": "piercing",
+          "description": "The target must make a DC 11 Constitution saving throw, taking 2d8 poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "swamp"
+        ],
+        "occasional": [
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains",
+          "grassland"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "denseForest": 1.8,
+        "swamp": 1.3
+      },
+      "dungeonTypes": [
+        "spiderNest",
+        "abandonedMine",
+        "goblinWarren"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "direWolf",
+      "name": "Dire Wolf",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 14,
+      "hitPoints": "5d10+10",
+      "speed": 50,
+      "abilities": {
+        "str": 17,
+        "dex": 15,
+        "con": 15,
+        "int": 3,
+        "wis": 12,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 3,
+        "stealth": 4
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Hearing and Smell",
+          "description": "The dire wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The dire wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "2d6+3",
+          "damageType": "piercing",
+          "description": "If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "tundra",
+          "snowyPlains"
+        ],
+        "occasional": [
+          "grassland",
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "jungle",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "tundra": 1.8,
+        "snowyPlains": 1.5
+      },
+      "dungeonTypes": [
+        "beastDen",
+        "frozenCavern",
+        "goblinWarren"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "gnoll",
+      "name": "Gnoll",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 15,
+      "hitPoints": "5d8",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 12,
+        "con": 11,
+        "int": 6,
+        "wis": 10,
+        "cha": 7
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "gnoll"
+      ],
+      "traits": [
+        {
+          "name": "Rampage",
+          "description": "When the gnoll reduces a creature to 0 hit points with a melee attack on its turn, the gnoll can take a bonus action to move up to half its speed and make a bite attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d4+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Spear",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "spear",
+            "chance": 0.4
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "savanna",
+          "desert"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "tundra",
+          "snowyPlains",
+          "swamp",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "grassland": 1.5,
+        "plains": 1.3,
+        "desert": 1.3
+      },
+      "dungeonTypes": [
+        "orcStronghold",
+        "beastDen"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 12,
+      "hitPoints": "3d8+3",
+      "speed": 40,
+      "abilities": {
+        "str": 6,
+        "dex": 14,
+        "con": 13,
+        "int": 6,
+        "wis": 10,
+        "cha": 8
+      },
+      "skills": {
+        "stealth": 4
+      },
+      "damageVulnerabilities": [
+        "radiant"
+      ],
+      "damageResistances": [
+        "acid",
+        "cold",
+        "fire",
+        "lightning",
+        "thunder",
+        "nonmagical bludgeoning",
+        "nonmagical piercing",
+        "nonmagical slashing"
+      ],
+      "damageImmunities": [
+        "necrotic",
+        "poison"
+      ],
+      "conditionImmunities": [
+        "exhaustion",
+        "frightened",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Amorphous",
+          "description": "The shadow can move through a space as narrow as 1 inch wide without squeezing."
+        },
+        {
+          "name": "Shadow Stealth",
+          "description": "While in dim light or darkness, the shadow can take the Hide action as a bonus action."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Strength Drain",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d6+2",
+          "damageType": "necrotic",
+          "description": "The target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.15,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "denseForest",
+          "swamp"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "denseForest": 1.8,
+        "swamp": 1.5
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple",
+        "sunkenRuins",
+        "wizardTower"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scout",
+      "name": "Scout",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 13,
+      "hitPoints": "3d8+3",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 14,
+        "con": 12,
+        "int": 11,
+        "wis": 13,
+        "cha": 11
+      },
+      "skills": {
+        "perception": 5,
+        "stealth": 6,
+        "athletics": 2
+      },
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Keen Hearing and Sight",
+          "description": "The scout has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+        }
+      ],
+      "multiattack": "The scout makes two melee attacks or two ranged attacks.",
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": {
+            "normal": 150,
+            "long": 600
+          },
+          "damage": "1d8+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "grassland",
+          "plains",
+          "hills"
+        ],
+        "occasional": [
+          "mountain",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "swamp",
+          "jungle",
+          "desert"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.3,
+        "grassland": 1.2
+      },
+      "dungeonTypes": [
+        "banditHideout",
+        "thievesGuild"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ghoul",
+      "name": "Ghoul",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "5d8",
+      "speed": 30,
+      "abilities": {
+        "str": 13,
+        "dex": 15,
+        "con": 10,
+        "int": 7,
+        "wis": 10,
+        "cha": 6
+      },
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "multiattack": "The ghoul makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 2,
+          "reach": 5,
+          "damage": "2d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d4+2",
+          "damageType": "slashing",
+          "description": "If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "denseForest"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "grassland",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.5,
+        "denseForest": 1.3
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "giantHyena",
+      "name": "Giant Hyena",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "6d10+6",
+      "speed": 50,
+      "abilities": {
+        "str": 16,
+        "dex": 14,
+        "con": 14,
+        "int": 2,
+        "wis": 12,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 3
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Rampage",
+          "description": "When the hyena reduces a creature to 0 hit points with a melee attack on its turn, the hyena can take a bonus action to move up to half its speed and make a bite attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "2d6+3",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.15,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "savanna",
+          "desert"
+        ],
+        "occasional": [
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "forest",
+          "tundra",
+          "snowyPlains",
+          "swamp",
+          "jungle",
+          "mountain"
+        ]
+      },
+      "spawnChanceModifier": {
+        "grassland": 1.5,
+        "savanna": 1.8,
+        "desert": 1.3
+      },
+      "dungeonTypes": [
+        "beastDen"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "specter",
+      "name": "Specter",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "5d8",
+      "speed": 0,
+      "abilities": {
+        "str": 1,
+        "dex": 14,
+        "con": 11,
+        "int": 10,
+        "wis": 10,
+        "cha": 11
+      },
+      "damageResistances": [
+        "acid",
+        "cold",
+        "fire",
+        "lightning",
+        "thunder",
+        "nonmagical bludgeoning",
+        "nonmagical piercing",
+        "nonmagical slashing"
+      ],
+      "damageImmunities": [
+        "necrotic",
+        "poison"
+      ],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained",
+        "unconscious"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "understands languages it knew in life but can't speak"
+      ],
+      "traits": [
+        {
+          "name": "Incorporeal Movement",
+          "description": "The specter can move through other creatures and objects as if they were difficult terrain. It takes 5 (1d10) force damage if it ends its turn inside an object."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the specter has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "3d6",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 10 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple",
+        "wizardTower"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "spy",
+      "name": "Spy",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "6d8+6",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 15,
+        "con": 10,
+        "int": 12,
+        "wis": 14,
+        "cha": 16
+      },
+      "skills": {
+        "deception": 5,
+        "perception": 4,
+        "stealth": 4,
+        "sleightOfHand": 4
+      },
+      "senses": "normal",
+      "languages": [
+        "common",
+        "thieves' cant"
+      ],
+      "traits": [
+        {
+          "name": "Cunning Action",
+          "description": "On each of its turns, the spy can use a bonus action to take the Dash, Disengage, or Hide action."
+        },
+        {
+          "name": "Sneak Attack",
+          "description": "Once per turn, the spy deals an extra 2d6 damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the spy that isn't incapacitated and the spy doesn't have disadvantage on the attack roll."
+        }
+      ],
+      "multiattack": "The spy makes two melee attacks.",
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Hand Crossbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": {
+            "normal": 30,
+            "long": 120
+          },
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "residential",
+          "town",
+          "road"
+        ],
+        "occasional": [
+          "forest",
+          "grassland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "jungle",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "residential": 1.8,
+        "town": 1.5,
+        "road": 1.3
+      },
+      "dungeonTypes": [
+        "thievesGuild",
+        "banditHideout"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ogre",
+      "name": "Ogre",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 11,
+      "hitPoints": "7d10+21",
+      "speed": 40,
+      "abilities": {
+        "str": 19,
+        "dex": 8,
+        "con": 16,
+        "int": 5,
+        "wis": 7,
+        "cha": 7
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "giant"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Greatclub",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 6,
+          "reach": 5,
+          "damage": "2d8+4",
+          "damageType": "bludgeoning"
+        },
+        {
+          "name": "Javelin",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 6,
+          "range": {
+            "normal": 30,
+            "long": 120
+          },
+          "damage": "2d6+4",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "potionOfHealing",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.1
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest"
+        ],
+        "occasional": [
+          "grassland",
+          "swamp"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2
+      },
+      "dungeonTypes": [
+        "goblinWarren",
+        "orcStronghold",
+        "abandonedMine",
+        "beastDen"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ghast",
+      "name": "Ghast",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "8d8",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 17,
+        "con": 10,
+        "int": 11,
+        "wis": 10,
+        "cha": 8
+      },
+      "damageResistances": [
+        "necrotic"
+      ],
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Stench",
+          "description": "Any creature that starts its turn within 5 feet of the ghast must succeed on a DC 10 Constitution saving throw or be poisoned until the start of its next turn. On a successful saving throw, the creature is immune to the ghast's Stench for 24 hours."
+        },
+        {
+          "name": "Turning Defiance",
+          "description": "The ghast and any ghouls within 30 feet of it have advantage on saving throws against effects that turn undead."
+        }
+      ],
+      "multiattack": "The ghast makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": "2d8+3",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "2d6+3",
+          "damageType": "slashing",
+          "description": "If the target is a creature other than an undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.35,
+        "items": []
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "berserker",
+      "name": "Berserker",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any chaotic",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "9d8+18",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 12,
+        "con": 17,
+        "int": 9,
+        "wis": 11,
+        "cha": 9
+      },
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Reckless",
+          "description": "At the start of its turn, the berserker can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d12+3",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.3,
+        "mountain": 1.2
+      },
+      "dungeonTypes": [
+        "orcStronghold",
+        "banditHideout"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "gargoyle",
+      "name": "Gargoyle",
+      "size": "medium",
+      "type": "elemental",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 15,
+      "hitPoints": "7d8+21",
+      "speed": 30,
+      "abilities": {
+        "str": 15,
+        "dex": 11,
+        "con": 16,
+        "int": 6,
+        "wis": 11,
+        "cha": 7
+      },
+      "damageResistances": [
+        "nonmagical bludgeoning",
+        "nonmagical piercing",
+        "nonmagical slashing"
+      ],
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "exhaustion",
+        "petrified",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "terran"
+      ],
+      "traits": [
+        {
+          "name": "False Appearance",
+          "description": "While the gargoyle remains motionless, it is indistinguishable from an inanimate statue."
+        }
+      ],
+      "multiattack": "The gargoyle makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "2d4+2",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "dungeonTypes": [
+        "wizardTower",
+        "forgottenTemple",
+        "sunkenRuins",
+        "dragonLair"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "minotaur",
+      "name": "Minotaur",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "chaotic evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "9d10+27",
+      "speed": 40,
+      "abilities": {
+        "str": 18,
+        "dex": 11,
+        "con": 16,
+        "int": 6,
+        "wis": 16,
+        "cha": 9
+      },
+      "skills": {
+        "perception": 7
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "abyssal"
+      ],
+      "traits": [
+        {
+          "name": "Charge",
+          "description": "If the minotaur moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 2d8 piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
+        },
+        {
+          "name": "Labyrinthine Recall",
+          "description": "The minotaur can perfectly recall any path it has traveled."
+        },
+        {
+          "name": "Reckless",
+          "description": "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
+        }
+      ],
+      "multiattack": "The minotaur makes two attacks: one with its greataxe and one with its gore.",
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 6,
+          "reach": 5,
+          "damage": "2d12+4",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Gore",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 6,
+          "reach": 5,
+          "damage": "2d8+4",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills"
+        ],
+        "occasional": [
+          "forest",
+          "denseForest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "dungeonTypes": [
+        "forgottenTemple",
+        "abandonedMine"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "wight",
+      "name": "Wight",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "6d8+18",
+      "speed": 30,
+      "abilities": {
+        "str": 15,
+        "dex": 14,
+        "con": 16,
+        "int": 10,
+        "wis": 13,
+        "cha": 15
+      },
+      "skills": {
+        "perception": 3,
+        "stealth": 4
+      },
+      "damageResistances": [
+        "necrotic",
+        "nonmagical bludgeoning",
+        "nonmagical piercing",
+        "nonmagical slashing"
+      ],
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "languages it knew in life"
+      ],
+      "traits": [
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the wight has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "multiattack": "The wight makes two longsword attacks or two longbow attacks. It can use its Life Drain in place of one longsword attack.",
+      "actions": [
+        {
+          "name": "Longsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d10+2",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": {
+            "normal": 150,
+            "long": 600
+          },
+          "damage": "1d8+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 13 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "longsword",
+            "chance": 0.3
+          },
+          {
+            "id": "chainShirt",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.15
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "owlbear",
+      "name": "Owlbear",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "unaligned",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 13,
+      "hitPoints": "7d10+21",
+      "speed": 40,
+      "abilities": {
+        "str": 20,
+        "dex": 12,
+        "con": 17,
+        "int": 3,
+        "wis": 12,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 3
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Sight and Smell",
+          "description": "The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell."
+        }
+      ],
+      "multiattack": "The owlbear makes two attacks: one with its beak and one with its claws.",
+      "actions": [
+        {
+          "name": "Beak",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "1d10+5",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d8+5",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.25,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.8,
+        "denseForest": 1.5
+      },
+      "dungeonTypes": [
+        "beastDen"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "veteran",
+      "name": "Veteran",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 17,
+      "hitPoints": "9d8+18",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 13,
+        "con": 14,
+        "int": 10,
+        "wis": 11,
+        "cha": 10
+      },
+      "skills": {
+        "athletics": 5,
+        "perception": 2
+      },
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "multiattack": "The veteran makes two longsword attacks. If it has a shortsword drawn, it can also make a shortsword attack.",
+      "actions": [
+        {
+          "name": "Longsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d10+3",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d6+3",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Heavy Crossbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 3,
+          "range": {
+            "normal": 100,
+            "long": 400
+          },
+          "damage": "1d10+1",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "longsword",
+            "chance": 0.3
+          },
+          {
+            "id": "chainMail",
+            "chance": 0.2
+          },
+          {
+            "id": "shield",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.15
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "road",
+          "plains",
+          "grassland",
+          "residential"
+        ],
+        "occasional": [
+          "forest",
+          "hills",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "swamp",
+          "jungle",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "road": 1.5,
+        "residential": 1.3
+      },
+      "dungeonTypes": [
+        "orcStronghold",
+        "banditHideout",
+        "thievesGuild"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "flameskull",
+      "name": "Flameskull",
+      "size": "tiny",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 13,
+      "hitPoints": "9d4+9",
+      "speed": 0,
+      "abilities": {
+        "str": 1,
+        "dex": 17,
+        "con": 12,
+        "int": 16,
+        "wis": 10,
+        "cha": 11
+      },
+      "skills": {
+        "arcana": 5,
+        "perception": 2
+      },
+      "damageResistances": [
+        "lightning",
+        "necrotic",
+        "piercing"
+      ],
+      "damageImmunities": [
+        "cold",
+        "fire",
+        "poison"
+      ],
+      "conditionImmunities": [
+        "charmed",
+        "frightened",
+        "paralyzed",
+        "poisoned",
+        "prone"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Illumination",
+          "description": "The flameskull sheds either dim light in a 15-foot radius, or bright light in a 15-foot radius and dim light for an additional 15 feet. It can switch between the options as an action."
+        },
+        {
+          "name": "Magic Resistance",
+          "description": "The flameskull has advantage on saving throws against spells and other magical effects."
+        },
+        {
+          "name": "Rejuvenation",
+          "description": "If the flameskull is destroyed, it regains all its hit points in 1 hour unless holy water is sprinkled on its remains or a dispel magic or remove curse spell is cast on them."
+        }
+      ],
+      "multiattack": "The flameskull uses Fire Ray twice.",
+      "actions": [
+        {
+          "name": "Fire Ray",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 5,
+          "range": {
+            "normal": 30,
+            "long": 30
+          },
+          "damage": "3d6",
+          "damageType": "fire"
+        },
+        {
+          "name": "Fireball",
+          "type": "special",
+          "description": "Recharge 5-6. The flameskull casts fireball. Each creature in a 20-foot-radius sphere centered on a point within 120 feet must make a DC 13 Dexterity saving throw, taking 8d6 fire damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "wizardTower",
+        "forgottenTemple"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ettin",
+      "name": "Ettin",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 12,
+      "hitPoints": "10d10+40",
+      "speed": 40,
+      "abilities": {
+        "str": 21,
+        "dex": 8,
+        "con": 17,
+        "int": 6,
+        "wis": 10,
+        "cha": 8
+      },
+      "skills": {
+        "perception": 4
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "giant",
+        "orc"
+      ],
+      "traits": [
+        {
+          "name": "Two Heads",
+          "description": "The ettin has advantage on Wisdom (Perception) checks and on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious."
+        },
+        {
+          "name": "Wakeful",
+          "description": "When one of the ettin's heads is asleep, its other head is awake."
+        }
+      ],
+      "multiattack": "The ettin makes two attacks: one with its battleaxe and one with its morningstar.",
+      "actions": [
+        {
+          "name": "Battleaxe",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d8+5",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Morningstar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d8+5",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills"
+        ],
+        "occasional": [
+          "forest",
+          "denseForest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "dungeonTypes": [
+        "abandonedMine",
+        "orcStronghold"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "troll",
+      "name": "Troll",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 15,
+      "hitPoints": "8d10+40",
+      "speed": 30,
+      "abilities": {
+        "str": 18,
+        "dex": 13,
+        "con": 20,
+        "int": 7,
+        "wis": 9,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 2
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "giant"
+      ],
+      "traits": [
+        {
+          "name": "Keen Smell",
+          "description": "The troll has advantage on Wisdom (Perception) checks that rely on smell."
+        },
+        {
+          "name": "Regeneration",
+          "description": "The troll regains 10 hit points at the start of its turn. If the troll takes acid or fire damage, this trait doesn't function at the start of the troll's next turn. The troll dies only if it starts its turn with 0 hit points and doesn't regenerate."
+        }
+      ],
+      "multiattack": "The troll makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "1d6+4",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d6+4",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest",
+          "mountain"
+        ],
+        "occasional": [
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3,
+        "mountain": 1.2
+      },
+      "dungeonTypes": [
+        "frozenCavern",
+        "volcanicCave",
+        "beastDen"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "wraith",
+      "name": "Wraith",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 13,
+      "hitPoints": "9d8+27",
+      "speed": 0,
+      "abilities": {
+        "str": 6,
+        "dex": 16,
+        "con": 16,
+        "int": 12,
+        "wis": 14,
+        "cha": 15
+      },
+      "damageResistances": [
+        "acid",
+        "cold",
+        "fire",
+        "lightning",
+        "thunder",
+        "nonmagical bludgeoning",
+        "nonmagical piercing",
+        "nonmagical slashing"
+      ],
+      "damageImmunities": [
+        "necrotic",
+        "poison"
+      ],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "languages it knew in life"
+      ],
+      "traits": [
+        {
+          "name": "Incorporeal Movement",
+          "description": "The wraith can move through other creatures and objects as if they were difficult terrain. It takes 5 (1d10) force damage if it ends its turn inside an object."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the wraith has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 6,
+          "reach": 5,
+          "damage": "4d8+3",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 14 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "hillGiant",
+      "name": "Hill Giant",
+      "size": "huge",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 13,
+      "hitPoints": "10d12+40",
+      "speed": 40,
+      "abilities": {
+        "str": 21,
+        "dex": 8,
+        "con": 19,
+        "int": 5,
+        "wis": 9,
+        "cha": 6
+      },
+      "skills": {
+        "perception": 2
+      },
+      "senses": "normal",
+      "languages": [
+        "giant"
+      ],
+      "traits": [],
+      "multiattack": "The giant makes two greatclub attacks.",
+      "actions": [
+        {
+          "name": "Greatclub",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 8,
+          "reach": 10,
+          "damage": "3d8+5",
+          "damageType": "bludgeoning"
+        },
+        {
+          "name": "Rock",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 8,
+          "range": {
+            "normal": 60,
+            "long": 240
+          },
+          "damage": "3d10+5",
+          "damageType": "bludgeoning"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "grassland"
+        ],
+        "occasional": [
+          "forest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "swamp",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.8,
+        "mountain": 1.5,
+        "grassland": 1.2
+      },
+      "dungeonTypes": [],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "youngWhiteDragon",
+      "name": "Young White Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "chaotic evil",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 17,
+      "hitPoints": "14d10+42",
+      "speed": 40,
+      "abilities": {
+        "str": 18,
+        "dex": 10,
+        "con": 18,
+        "int": 6,
+        "wis": 11,
+        "cha": 12
+      },
+      "skills": {
+        "perception": 4,
+        "stealth": 3
+      },
+      "savingThrows": {
+        "dex": 3,
+        "con": 7,
+        "wis": 3,
+        "cha": 4
+      },
+      "damageImmunities": [
+        "cold"
+      ],
+      "senses": "blindsight 10 ft., darkvision 60 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Ice Walk",
+          "description": "The dragon can move across and climb icy surfaces without needing to make an ability check. Additionally, difficult terrain composed of ice or snow doesn't cost it extra movement."
+        }
+      ],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 10,
+          "damage": "2d10+4",
+          "damageType": "piercing",
+          "description": "Plus 1d8 cold damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d6+4",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Cold Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 15 Constitution saving throw, taking 10d8 cold damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "attackBonus": 7,
+            "damage": "2d8+4",
+            "damageType": "bludgeoning"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 15 DEX saving throw or take 2d6+4 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1.0,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.5
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "dragonLair",
+        "frozenCavern"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "youngGreenDragon",
+      "name": "Young Green Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "lawful evil",
+      "challengeRating": 8,
+      "xpValue": 3900,
+      "armorClass": 18,
+      "hitPoints": "16d10+48",
+      "speed": 40,
+      "abilities": {
+        "str": 19,
+        "dex": 12,
+        "con": 17,
+        "int": 16,
+        "wis": 13,
+        "cha": 15
+      },
+      "skills": {
+        "deception": 5,
+        "perception": 7,
+        "stealth": 4
+      },
+      "savingThrows": {
+        "dex": 4,
+        "con": 6,
+        "wis": 4,
+        "cha": 5
+      },
+      "damageImmunities": [
+        "poison"
+      ],
+      "conditionImmunities": [
+        "poisoned"
+      ],
+      "senses": "blindsight 30 ft., darkvision 120 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Amphibious",
+          "description": "The dragon can breathe air and water."
+        }
+      ],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 10,
+          "damage": "2d10+4",
+          "damageType": "piercing",
+          "description": "Plus 2d6 poison damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 7,
+          "reach": 5,
+          "damage": "2d6+4",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Poison Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales poisonous gas in a 30-foot cone. Each creature in that area must make a DC 14 Constitution saving throw, taking 12d6 poison damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "attackBonus": 7,
+            "damage": "2d8+4",
+            "damageType": "bludgeoning"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 15 DEX saving throw or take 2d6+4 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1.0,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.6
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "dragonLair"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "youngRedDragon",
+      "name": "Young Red Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "chaotic evil",
+      "challengeRating": 10,
+      "xpValue": 5900,
+      "armorClass": 18,
+      "hitPoints": "17d10+68",
+      "speed": 40,
+      "abilities": {
+        "str": 23,
+        "dex": 10,
+        "con": 21,
+        "int": 14,
+        "wis": 11,
+        "cha": 19
+      },
+      "skills": {
+        "perception": 8,
+        "stealth": 4
+      },
+      "savingThrows": {
+        "dex": 4,
+        "con": 9,
+        "wis": 4,
+        "cha": 8
+      },
+      "damageImmunities": [
+        "fire"
+      ],
+      "senses": "blindsight 30 ft., darkvision 120 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 10,
+          "reach": 10,
+          "damage": "2d10+6",
+          "damageType": "piercing",
+          "description": "Plus 1d6 fire damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 10,
+          "reach": 5,
+          "damage": "2d6+6",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Fire Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 16d6 fire damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "attackBonus": 10,
+            "damage": "2d8+6",
+            "damageType": "bludgeoning"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 17 DEX saving throw or take 2d6+6 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1.0,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.7
+          }
+        ]
+      },
+      "dungeonTypes": [
+        "dragonLair"
+      ],
       "campaignIds": [
         "core"
       ]

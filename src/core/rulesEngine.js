@@ -113,13 +113,14 @@ export const RULES = {
                 15: +6,
                 20: +8
             },
-            // Enemy types change with level
+            // Enemy types available at each level bracket (cumulative with lower brackets)
+            // All IDs must exist in data/monsters.json
             enemyTypesByLevel: {
-                1: ['bandit', 'giantRat', 'goblin', 'wolf'],
-                3: ['goblin', 'orc', 'bugbear', 'skeleton', 'zombie', 'wolf'],
-                5: ['orc', 'skeleton', 'zombie'],
-                7: ['bugbear', 'ogre', 'ghoul'],
-                10: ['veteran', 'werewolf', 'wraith']
+                1: ['commoner', 'bandit', 'kobold', 'giantRat', 'goblin', 'stirge'],
+                3: ['goblin', 'wolf', 'skeleton', 'zombie', 'gnoll', 'shadow', 'scout', 'giantSpider', 'direWolf'],
+                5: ['orc', 'bugbear', 'ghoul', 'giantHyena', 'specter', 'spy', 'ogre', 'ghast', 'berserker', 'gargoyle'],
+                7: ['minotaur', 'wight', 'owlbear', 'veteran', 'flameskull', 'ettin'],
+                10: ['troll', 'wraith', 'hillGiant', 'youngWhiteDragon']
             }
         }
     },
@@ -173,17 +174,101 @@ export const RULES = {
         treasureFrequency: 0.10,    // 10% hidden caches
 
         // CR scaling method
-        crScaling: 'levelBased', // "levelBased", "static", "randomRange"
+        crScaling: 'xpBudget', // "xpBudget" (D&D 5e proper), "levelBased" (legacy), "static", "randomRange"
 
-        // CR offset from player level (min, max)
-        crRangeOffset: [-1, 2], // Enemy CR = playerLevel + random(-1 to 2)
+        // Legacy CR offset (kept for backward compat, prefer xpBudget)
+        crRangeOffset: [-1, 2],
 
         // Encounter size (number of enemies)
         encounterSize: {
             min: 1,
-            max: 3, // For Phase 1, limited to 3
+            max: 3,
             scaleWithLevel: true
-        }
+        },
+
+        // ===================================
+        // D&D 5e XP BUDGET ENCOUNTER BUILDING
+        // ===================================
+
+        // XP thresholds per character level (DMG p.82)
+        // Budget = threshold[level][difficulty] × partySize
+        encounterXPThresholds: {
+            1:  { easy: 25,   medium: 50,   hard: 75,    deadly: 100   },
+            2:  { easy: 50,   medium: 100,  hard: 150,   deadly: 200   },
+            3:  { easy: 75,   medium: 150,  hard: 225,   deadly: 400   },
+            4:  { easy: 125,  medium: 250,  hard: 375,   deadly: 500   },
+            5:  { easy: 250,  medium: 500,  hard: 750,   deadly: 1100  },
+            6:  { easy: 300,  medium: 600,  hard: 900,   deadly: 1400  },
+            7:  { easy: 350,  medium: 750,  hard: 1100,  deadly: 1700  },
+            8:  { easy: 450,  medium: 900,  hard: 1400,  deadly: 2100  },
+            9:  { easy: 550,  medium: 1100, hard: 1600,  deadly: 2400  },
+            10: { easy: 600,  medium: 1200, hard: 1900,  deadly: 2800  }
+        },
+
+        // XP value by Challenge Rating (DMG p.274)
+        xpByCR: {
+            0: 10, 0.125: 25, 0.25: 50, 0.5: 100,
+            1: 200, 2: 450, 3: 700, 4: 1100, 5: 1800,
+            6: 2300, 7: 2900, 8: 3900, 9: 5000, 10: 5900
+        },
+
+        // Encounter multipliers by monster count (DMG p.82)
+        // Adjusted XP = sum(monsterXP) × multiplier
+        encounterMultipliers: [
+            { minCount: 1, multiplier: 1 },
+            { minCount: 2, multiplier: 1.5 },
+            { minCount: 3, multiplier: 2 },
+            { minCount: 7, multiplier: 2.5 },
+            { minCount: 11, multiplier: 3 },
+            { minCount: 15, multiplier: 4 }
+        ],
+
+        // Difficulty distribution for random overworld encounters
+        overworldDifficultyWeights: {
+            easy: 0.25,
+            medium: 0.50,
+            hard: 0.20,
+            deadly: 0.05
+        },
+
+        // Difficulty distribution for dungeon room encounters
+        dungeonDifficultyWeights: {
+            easy: 0.25,
+            medium: 0.30,
+            hard: 0.30,
+            deadly: 0.15
+        },
+
+        // Game difficulty modifiers applied to XP budget
+        gameDifficultyBudgetMultiplier: {
+            easy: 0.8,
+            normal: 1.0,
+            hard: 1.3
+        },
+
+        // Proficiency bonus by CR (for monster save DCs etc.)
+        proficiencyByCR: {
+            0: 2, 0.125: 2, 0.25: 2, 0.5: 2, 1: 2, 2: 2, 3: 2, 4: 2,
+            5: 3, 6: 3, 7: 3, 8: 3, 9: 4, 10: 4
+        },
+
+        // ===================================
+        // BOSS ENCOUNTER CONFIGURATION
+        // ===================================
+        bossBuffs: {
+            hpMultiplier: 1.5,       // 150% of max possible HP
+            acBonus: 2,
+            attackBonus: 2,
+            xpMultiplier: 2,
+            goldMultiplier: 3,
+            guaranteedLoot: true,
+            extraLootRolls: 2,
+            minions: { min: 1, max: 2 }  // Boss rooms spawn 1-2 adds
+        },
+
+        // Boss name prefixes and suffixes
+        bossNamePrefixes: ["Ancient", "Savage", "Dire", "Shadow", "Cursed", "Elder", "Dread"],
+        bossNameSuffixes: ["Warlord", "Champion", "Alpha", "Overlord", "Matriarch", "Tyrant"]
     },
 
     // ====================
@@ -200,7 +285,12 @@ export const RULES = {
             2: 0.65,
             3: 0.7,
             4: 0.75,
-            5: 0.8
+            5: 0.8,
+            6: 0.85,
+            7: 0.85,
+            8: 0.9,
+            9: 0.9,
+            10: 0.95
         },
 
         // Item rarity chances (should sum to ~1.0)
@@ -996,6 +1086,7 @@ export function getScaledFeatureGeneration(worldSize = 'medium', campaignOverrid
         sanctuaryTerrainWeights: fg.sanctuaryTerrainWeights,
         excludedTerrains: fg.excludedTerrains,
         edgeBuffer: fg.edgeBuffer,
+        poiDistribution: fg.poiDistribution,
 
         // Metadata for debugging
         _meta: {

@@ -112,6 +112,74 @@
 
         </div>
 
+        <!-- Dungeon Screen -->
+        <div id="dungeonScreen" class="screen">
+            <div class="dungeon-container">
+                <!-- Dungeon Header -->
+                <div class="dungeon-header">
+                    <h2 id="dungeonName">Dungeon</h2>
+                    <div class="dungeon-info">
+                        <span id="dungeonRoomInfo">Room 1/5</span>
+                        <span id="dungeonBossStatus"></span>
+                    </div>
+                </div>
+
+                <div class="dungeon-content">
+                    <!-- Dungeon Room View -->
+                    <div class="dungeon-room-container">
+                        <canvas id="dungeonCanvas"></canvas>
+                    </div>
+
+                    <!-- Dungeon Sidebar -->
+                    <div class="dungeon-sidebar">
+                        <!-- Minimap -->
+                        <div class="dungeon-section">
+                            <h3>🗺️ Dungeon Map</h3>
+                            <canvas id="dungeonMinimap"></canvas>
+                        </div>
+
+                        <!-- Room Navigation -->
+                        <div class="dungeon-section">
+                            <h3>🚪 Connections</h3>
+                            <div id="dungeonNavigation" class="dungeon-navigation"></div>
+                        </div>
+
+                        <!-- Dungeon Actions -->
+                        <div class="dungeon-section">
+                            <h3>⚔️ Actions</h3>
+                            <div class="dungeon-actions">
+                                <button id="dungeonExitBtn" class="action-btn" disabled>
+                                    🌤️ Exit Dungeon
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Message Log -->
+                        <div class="dungeon-section flex-grow">
+                            <h3>📜 Log</h3>
+                            <div id="dungeonMessageLog" class="message-log"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dungeon HUD (bottom) -->
+                <div class="dungeon-hud">
+                    <div class="hud-item">
+                        <span class="hud-label">HP</span>
+                        <span id="dungeonHP">--/--</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">AC</span>
+                        <span id="dungeonAC">--</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Position</span>
+                        <span id="dungeonPosition">--,--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Combat Screen -->
         <div id="combatScreen" class="screen">
             <div class="combat-container">
@@ -548,12 +616,14 @@
                 </div>
                 <div class="world-map-footer">
                     <div class="map-legend">
-                        <div class="legend-item"><span class="legend-color" style="background: #90EE90;"></span> Grassland</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #228B22;"></span> Forest</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #8B4513;"></span> Hills</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #808080;"></span> Mountains</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #4682B4;"></span> Water</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #FFD700;"></span> Desert</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #7ec850;"></span> Grassland</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #2d5016;"></span> Forest</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #9aad72;"></span> Hills</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #8b7355;"></span> Mountains</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #6ab8ff;"></span> Shallow Water</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #1e5ba8;"></span> Deep Water</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #0047AB;"></span> Ocean</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #edc9af;"></span> Desert</div>
                         <div class="legend-item"><span class="legend-color" style="background: #8B0000;"></span> Settlements</div>
                         <div class="legend-item"><span class="legend-color" style="background: #FF0000;"></span> You</div>
                     </div>

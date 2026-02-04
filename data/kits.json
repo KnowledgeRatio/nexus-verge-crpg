@@ -22,7 +22,7 @@
           "cha": 13
         },
         "background": "soldier",
-        "skills": ["empathy", "perception", "endurance"],
+        "skills": ["empathy", "perception"],
         "weaponMasteries": ["sap", "topple", "vex"]
       }
     }

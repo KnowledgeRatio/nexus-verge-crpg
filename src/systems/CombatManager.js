@@ -5,7 +5,7 @@
 
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
-import { rollDice, rollD20 } from '../utils/dice.js';
+import { rollDice, rollD20, roll } from '../utils/dice.js';
 import { SeededRandom } from '../utils/rng.js';
 import audioManager from './AudioManager.js';
 
@@ -164,6 +164,11 @@ class CombatManager {
             }
         });
 
+        // Reset legendary actions at the start of the boss's own turn
+        if (combatant.legendaryActionsMax > 0) {
+            combatant.legendaryActionsRemaining = combatant.legendaryActionsMax;
+        }
+
         gameState.addMessage(
             `📍 ${combatant.name}'s turn (HP: ${combatant.hp}/${combatant.maxHP})`,
             combatant.team === 'player' ? 'success' : 'warning'
@@ -182,13 +187,13 @@ class CombatManager {
     }
 
     /**
-     * Execute enemy AI turn - Simple: pick random target and attack
+     * Execute enemy AI turn — uses monster actions if available, falls back to generic attack
      */
     async executeEnemyAI(combatant) {
         console.log(`⚔️ AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is acting...`, 'info');
 
-        // Pick random living player target (for now just the player)
+        // Pick random living player target
         const targets = [this.playerCombatant].filter(c => c.hp > 0);
 
         if (targets.length === 0) {
@@ -199,14 +204,240 @@ class CombatManager {
 
         const target = targets[Math.floor(Math.random() * targets.length)];
 
-        // For now, always attack (can add ability/spell logic later)
-        await this.attack(combatant, target);
+        // Check if this monster has stat-block actions from monsters.json
+        const monsterActions = combatant.character.monsterActions;
+        if (monsterActions && monsterActions.length > 0) {
+            await this.executeMonsterActions(combatant, target, monsterActions);
+        } else {
+            // Fallback: generic attack for enemies without action data
+            await this.attack(combatant, target);
+        }
 
-        // End turn after a delay
+        // End turn after a delay (only if combat is still active)
         setTimeout(() => {
+            if (!this.active) return;
             console.log('Enemy turn ending');
             this.endTurn();
         }, 1000);
+    }
+
+    /**
+     * Execute monster stat-block actions, handling multiattack
+     */
+    async executeMonsterActions(combatant, target, actions) {
+        const multiattack = combatant.character.multiattack;
+        let attackCount = 1;
+
+        // Parse multiattack description to determine number of attacks
+        if (multiattack) {
+            const match = multiattack.match(/\b(two|three|four|2|3|4)\b/i);
+            if (match) {
+                const word = match[1].toLowerCase();
+                const wordMap = { 'two': 2, 'three': 3, 'four': 4 };
+                attackCount = wordMap[word] || parseInt(word) || 2;
+            } else {
+                attackCount = 2; // Default multiattack = 2 attacks
+            }
+            gameState.addMessage(`⚔️ ${combatant.name} uses Multiattack!`, 'warning');
+        }
+
+        // Filter to attack-type actions (have attackBonus and damage)
+        const attackActions = actions.filter(a => a.attackBonus !== undefined && a.damage);
+        // Save-based actions (breath weapons, etc.)
+        const specialActions = actions.filter(a => !a.attackBonus && a.damage);
+
+        // Use special action (like breath weapon) occasionally if available
+        if (specialActions.length > 0 && Math.random() < 0.3) {
+            const special = specialActions[Math.floor(Math.random() * specialActions.length)];
+            await this.executeSpecialMonsterAction(combatant, target, special);
+            return;
+        }
+
+        if (attackActions.length === 0) {
+            // No usable attack actions, fall back to generic
+            await this.attack(combatant, target);
+            return;
+        }
+
+        // Execute each attack in the multiattack sequence
+        for (let i = 0; i < attackCount; i++) {
+            if (target.hp <= 0) break; // Stop if target dies
+
+            // Pick action — cycle through available attacks for variety
+            const action = attackActions[i % attackActions.length];
+            await this.executeMonsterAttack(combatant, target, action);
+
+            // Small delay between multiattack hits
+            if (i < attackCount - 1) {
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+        }
+    }
+
+    /**
+     * Execute a single monster attack action using stat-block data
+     */
+    async executeMonsterAttack(combatant, target, action) {
+        const actionName = action.name || 'Attack';
+        gameState.addMessage(`${combatant.name} uses ${actionName}!`, 'warning');
+
+        // Attack roll: d20 + action.attackBonus
+        const attackBonus = (action.attackBonus || 0) + (combatant.character.bossAttackBonus || 0);
+
+        // Check advantage/disadvantage
+        let hasAdvantage = false;
+        let hasDisadvantage = false;
+        if (target.hasCondition && target.hasCondition('prone')) hasAdvantage = true;
+        if (combatant.hasCondition && combatant.hasCondition('sapped')) hasDisadvantage = true;
+
+        let d20Result;
+        if (hasAdvantage && !hasDisadvantage) {
+            const roll1 = rollD20();
+            const roll2 = rollD20();
+            d20Result = roll1.natural >= roll2.natural ? roll1 : roll2;
+            gameState.addMessage(`🎲 Advantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
+        } else if (hasDisadvantage && !hasAdvantage) {
+            const roll1 = rollD20();
+            const roll2 = rollD20();
+            d20Result = roll1.natural <= roll2.natural ? roll1 : roll2;
+            gameState.addMessage(`🎲 Disadvantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
+        } else {
+            d20Result = rollD20();
+        }
+
+        const isCritical = d20Result.natural === 20;
+        const isCriticalMiss = d20Result.natural === 1;
+        const attackTotal = d20Result.natural + attackBonus;
+
+        gameState.addMessage(`🎲 ${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
+
+        if (isCriticalMiss) {
+            gameState.addMessage(`❌ Critical miss!`, 'info');
+            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
+            if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            return;
+        }
+
+        if (isCritical || attackTotal >= target.ac) {
+            // Hit! Parse and roll damage from action.damage string (e.g. "2d8+4")
+            const damageStr = action.damage;
+            let damageRoll = 0;
+
+            try {
+                damageRoll = roll(damageStr);
+                if (isCritical) {
+                    // Critical: roll damage dice again (not the modifier)
+                    const diceMatch = damageStr.match(/^(\d+)d(\d+)/);
+                    if (diceMatch) {
+                        const extraDice = rollDice(parseInt(diceMatch[1]), parseInt(diceMatch[2]));
+                        damageRoll += extraDice;
+                    }
+                }
+            } catch (e) {
+                // Fallback: parse manually
+                const parts = damageStr.match(/(\d+)d(\d+)([+-]\d+)?/);
+                if (parts) {
+                    const numDice = parseInt(parts[1]);
+                    const dieSize = parseInt(parts[2]);
+                    const mod = parts[3] ? parseInt(parts[3]) : 0;
+                    damageRoll = rollDice(numDice, dieSize) + mod;
+                    if (isCritical) damageRoll += rollDice(numDice, dieSize);
+                } else {
+                    damageRoll = rollDice(1, 8); // Last resort fallback
+                }
+            }
+
+            const damageTotal = Math.max(1, damageRoll);
+            const damageType = action.damageType || 'bludgeoning';
+
+            let damageMsg = isCritical ? '⭐ Critical hit! ' : '💥 Hit! ';
+            damageMsg += `${actionName}: ${damageTotal} ${damageType} damage`;
+            gameState.addMessage(damageMsg, 'error');
+
+            if (window.game) {
+                window.game.showFloatingCombatText(target.id, `-${damageTotal}`, isCritical ? 'critical' : 'damage');
+            }
+
+            audioManager.playCombatSound({ weaponType: 'melee', hit: true, critical: isCritical });
+            target.takeDamage(damageTotal);
+            this.updateGameState();
+
+            // Check if target is defeated
+            if (target.hp <= 0) {
+                gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
+                setTimeout(() => { audioManager.play('death'); }, 1000);
+                this.handleDefeat(target);
+            }
+
+            // Clear sapped condition after attacking
+            if (combatant.hasCondition && combatant.hasCondition('sapped')) {
+                combatant.removeCondition('sapped', true);
+            }
+        } else {
+            gameState.addMessage(`❌ ${combatant.name} misses!`, 'info');
+            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
+            if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+        }
+    }
+
+    /**
+     * Execute a special monster action (save-based, like breath weapons)
+     */
+    async executeSpecialMonsterAction(combatant, target, action) {
+        const actionName = action.name || 'Special Attack';
+        gameState.addMessage(`🔥 ${combatant.name} uses ${actionName}!`, 'warning');
+
+        // Parse save DC from description or use default
+        let saveDC = 13;
+        let saveAbility = 'dex';
+        if (action.description) {
+            const dcMatch = action.description.match(/DC\s*(\d+)\s*(STR|DEX|CON|INT|WIS|CHA)/i);
+            if (dcMatch) {
+                saveDC = parseInt(dcMatch[1]);
+                saveAbility = dcMatch[2].toLowerCase();
+            }
+        }
+
+        // Target makes saving throw
+        const saveMod = target.character.abilityModifiers?.[saveAbility] || 0;
+        const saveRoll = rollD20();
+        const saveTotal = saveRoll.natural + saveMod;
+        const saved = saveTotal >= saveDC;
+
+        gameState.addMessage(`🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod} = ${saveTotal} vs DC ${saveDC}`, 'info');
+
+        // Roll damage
+        let damageRoll = 0;
+        try {
+            damageRoll = roll(action.damage);
+        } catch (e) {
+            damageRoll = rollDice(3, 6); // Fallback
+        }
+
+        // Half damage on save
+        const damageTotal = saved ? Math.floor(damageRoll / 2) : damageRoll;
+        const damageType = action.damageType || 'fire';
+
+        if (saved) {
+            gameState.addMessage(`🛡️ ${target.name} saves! Takes ${damageTotal} ${damageType} damage (half).`, 'warning');
+        } else {
+            gameState.addMessage(`💥 ${target.name} fails! Takes ${damageTotal} ${damageType} damage!`, 'error');
+        }
+
+        if (window.game) {
+            window.game.showFloatingCombatText(target.id, `-${damageTotal}`, saved ? 'damage' : 'critical');
+        }
+
+        audioManager.playCombatSound({ weaponType: 'ranged', hit: true, critical: !saved });
+        target.takeDamage(damageTotal);
+        this.updateGameState();
+
+        // Check if target is defeated
+        if (target.hp <= 0) {
+            gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
+            setTimeout(() => { audioManager.play('death'); }, 1000);
+            this.handleDefeat(target);
+        }
     }
 
     /**
@@ -878,10 +1109,15 @@ class CombatManager {
     /**
      * End current turn
      */
-    endTurn() {
+    async endTurn() {
         const combatant = this.getCurrentCombatant();
         if (combatant) {
             combatant.endTurn();
+        }
+
+        // Legendary action: After a non-boss combatant's turn, a boss can use a legendary action
+        if (combatant && this.active) {
+            await this.processLegendaryActions(combatant);
         }
 
         // Get alive combatants
@@ -916,6 +1152,59 @@ class CombatManager {
         // Start next turn (only if combat still active)
         if (this.active) {
             this.startTurn();
+        }
+    }
+
+    /**
+     * Process legendary actions — boss uses one after each non-boss combatant's turn
+     */
+    async processLegendaryActions(justActedCombatant) {
+        // Find alive boss combatants with legendary actions remaining
+        const bosses = this.combatants.filter(c =>
+            c.hp > 0 &&
+            c.legendaryActionsRemaining > 0 &&
+            c.legendaryActionsList.length > 0 &&
+            c.id !== justActedCombatant.id // Boss doesn't use legendary action on its own turn
+        );
+
+        for (const boss of bosses) {
+            // Pick a legendary action the boss can afford
+            const affordableActions = boss.legendaryActionsList.filter(a =>
+                (a.cost || 1) <= boss.legendaryActionsRemaining
+            );
+
+            if (affordableActions.length === 0) continue;
+
+            // AI: prefer attack-type actions
+            const attackActions = affordableActions.filter(a => a.attackBonus !== undefined);
+            const chosen = attackActions.length > 0
+                ? attackActions[Math.floor(Math.random() * attackActions.length)]
+                : affordableActions[Math.floor(Math.random() * affordableActions.length)];
+
+            const cost = chosen.cost || 1;
+            boss.legendaryActionsRemaining -= cost;
+
+            gameState.addMessage(`🐉 ${boss.name} uses Legendary Action: ${chosen.name}! (${boss.legendaryActionsRemaining} remaining)`, 'danger');
+
+            // Find target (the player, or the combatant that just acted if enemy)
+            const target = this.playerCombatant.hp > 0 ? this.playerCombatant : null;
+            if (!target) continue;
+
+            if (chosen.attackBonus !== undefined && chosen.damage) {
+                // Attack-type legendary action
+                await this.executeMonsterAttack(boss, target, chosen);
+            } else if (chosen.description) {
+                // Save-based legendary action (e.g., Wing Attack)
+                const special = {
+                    name: chosen.name,
+                    damage: chosen.damage || '2d6+4',
+                    damageType: chosen.damageType || 'bludgeoning',
+                    description: chosen.description
+                };
+                await this.executeSpecialMonsterAction(boss, target, special);
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 600));
         }
     }
 
@@ -1032,6 +1321,12 @@ class CombatManager {
                 });
             }
 
+            // Check if this was a boss fight victory
+            const wasBossFight = this.enemyCombatants.some(e => e.character?.isBoss);
+            if (wasBossFight && window.game?.dungeonManager) {
+                window.game.dungeonManager.markBossDefeated();
+            }
+
             // Update character state
             gameState.set('character', character);
 
@@ -1061,10 +1356,15 @@ class CombatManager {
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'fled');
 
-            // Return to exploration after delay
+            // Return to appropriate screen after delay (dungeon if in dungeon, otherwise world map)
             gameState.set('combat', null);
             setTimeout(() => {
-                gameState.set('ui.currentScreen', 'game');
+                const dungeonState = gameState.get('dungeon');
+                if (dungeonState?.active) {
+                    gameState.set('ui.currentScreen', 'dungeonScreen');
+                } else {
+                    gameState.set('ui.currentScreen', 'game');
+                }
             }, 2000);
         }
     }
@@ -1142,9 +1442,14 @@ class CombatManager {
                             gameState.addMessage(msg, 'success');
                         });
 
-                        // Return to exploration
+                        // Return to appropriate screen (dungeon if in dungeon, otherwise world map)
                         setTimeout(() => {
-                            gameState.set('ui.currentScreen', 'game');
+                            const dungeonState = gameState.get('dungeon');
+                            if (dungeonState?.active) {
+                                gameState.set('ui.currentScreen', 'dungeonScreen');
+                            } else {
+                                gameState.set('ui.currentScreen', 'game');
+                            }
                         }, 100);
                     });
                 }
@@ -1182,8 +1487,12 @@ class CombatManager {
         let totalXP = 0;
         this.enemyCombatants.forEach(enemy => {
             // XP based on enemy CR
-            const cr = enemy.character.cr || 0.25;
-            const xp = this.getXPByCR(cr);
+            const cr = enemy.character.cr || enemy.character.challengeRating || 0.25;
+            let xp = this.getXPByCR(cr);
+            // Boss monsters give multiplied XP
+            if (enemy.character.isBoss) {
+                xp = Math.floor(xp * (RULES.encounters.bossBuffs?.xpMultiplier || 2));
+            }
             totalXP += xp;
         });
         return totalXP;
@@ -1193,9 +1502,10 @@ class CombatManager {
      * Get XP by CR (Challenge Rating)
      */
     getXPByCR(cr) {
-        const xpTable = {
+        const xpTable = RULES.encounters.xpByCR || {
             0: 10, 0.125: 25, 0.25: 50, 0.5: 100,
-            1: 200, 2: 450, 3: 700, 4: 1100, 5: 1800
+            1: 200, 2: 450, 3: 700, 4: 1100, 5: 1800,
+            6: 2300, 7: 2900, 8: 3900, 9: 5000, 10: 5900
         };
         return xpTable[cr] || 100;
     }
@@ -1396,6 +1706,18 @@ class Combatant {
             vexed: null,            // DEPRECATED: Use conditions system. Has advantage on next attack vs specific target (Vex mastery)
             prone: false            // DEPRECATED: Use conditions system. Knocked prone (Topple mastery)
         };
+
+        // Legendary actions (boss monsters only)
+        const legendary = character.legendaryActions;
+        if (legendary && legendary.count) {
+            this.legendaryActionsMax = legendary.count;
+            this.legendaryActionsRemaining = legendary.count;
+            this.legendaryActionsList = legendary.actions || [];
+        } else {
+            this.legendaryActionsMax = 0;
+            this.legendaryActionsRemaining = 0;
+            this.legendaryActionsList = [];
+        }
     }
 
     /**

@@ -9,10 +9,11 @@ import { rollDice } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
 
 class Player {
-    constructor(worldGenerator, mapRenderer, settlementManager = null) {
+    constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
         this.worldGenerator = worldGenerator;
         this.mapRenderer = mapRenderer;
         this.settlementManager = settlementManager;
+        this.dungeonManager = dungeonManager;
 
         // Player position (world coordinates)
         this.x = 0;
@@ -23,6 +24,10 @@ class Player {
         this.moveDelay = 150; // ms between moves
         this.lastMoveTime = 0;
         this.shownCombatMovementWarning = false;
+
+        // Settlement/dungeon notification tracking (prevent spam)
+        this.shownSettlementNotification = null; // Track which settlement we notified about
+        this.shownDungeonNotification = null; // Track which dungeon we notified about
 
         // Terrain tracking for description messages
         this.lastTerrainType = null;
@@ -81,7 +86,7 @@ class Player {
         // Action keys
         switch (key) {
             case 'e':
-                this.enterSettlement();
+                this.handleInteraction();
                 break;
             case 'i':
                 this.openInventory();
@@ -163,6 +168,50 @@ class Player {
      * Move player
      */
     async move(dx, dy) {
+        // If inside dungeon, delegate movement to DungeonManager
+        if (this.dungeonManager?.isInDungeon()) {
+            const result = this.dungeonManager.movePlayer(dx, dy);
+
+            if (!result.success) {
+                if (result.reason === 'wall') {
+                    // Silent - walls don't need messages
+                } else if (result.reason === 'out_of_bounds') {
+                    // Silent - out of bounds
+                }
+                return false;
+            }
+
+            // Check for special tiles
+            if (result.isDoor) {
+                const dungeonState = gameState.get('dungeon');
+                const currentRoom = dungeonState.rooms[dungeonState.currentRoomIndex];
+                const targetRoom = dungeonState.rooms[result.connectsTo];
+                gameState.addMessage(`🚪 A door leads to ${targetRoom?.name || 'another room'}. Press E to enter.`, 'info');
+            }
+
+            if (result.isExit) {
+                gameState.addMessage('🌤️ Stairs lead back to the surface. Press E to exit dungeon.', 'info');
+            }
+
+            if (result.isTrap) {
+                // Trigger trap skill challenge
+                await this.triggerDungeonTrapChallenge();
+            }
+
+            if (result.isInteractable) {
+                gameState.addMessage(`💡 You see a ${result.featureType}. Press E to interact.`, 'info');
+            }
+
+            // Check for dungeon skill challenges (room-based, separate from traps)
+            await this.checkForDungeonSkillChallenge();
+
+            // Check for dungeon encounters
+            await this.checkForDungeonEncounter();
+
+            return true;
+        }
+
+        // World map movement
         const newX = this.x + dx;
         const newY = this.y + dy;
 
@@ -280,19 +329,109 @@ class Player {
     }
 
     /**
-     * Check if player is at a settlement and auto-enter
+     * Check if player is at a settlement or dungeon and show notification
+     * No longer auto-enters - player must press E to enter
      */
     async checkForSettlement() {
-        if (!this.settlementManager) {
+        // Check for settlement
+        if (this.settlementManager) {
+            const settlement = this.settlementManager.getSettlementAtPlayerPosition();
+            if (settlement) {
+                // Only show notification once per settlement (don't spam every move)
+                if (this.shownSettlementNotification !== settlement.name) {
+                    gameState.addMessage(`🏘️ You arrive at ${settlement.name}. Press E to enter.`, 'info');
+                    this.shownSettlementNotification = settlement.name;
+                }
+            } else {
+                // Clear notification tracking when leaving settlement
+                this.shownSettlementNotification = null;
+            }
+        }
+
+        // Check for dungeon
+        if (this.dungeonManager) {
+            const dungeonFeature = await this.dungeonManager.getDungeonAtPlayerPosition();
+            if (dungeonFeature) {
+                // Only show notification once per dungeon (don't spam every move)
+                const dungeonKey = `${dungeonFeature.x}_${dungeonFeature.y}`;
+                if (this.shownDungeonNotification !== dungeonKey) {
+                    const dungeonName = dungeonFeature.dungeonType?.name || 'a dungeon';
+                    gameState.addMessage(`⚔️ You discover the entrance to ${dungeonName}. Press E to enter.`, 'warning');
+                    this.shownDungeonNotification = dungeonKey;
+                }
+            } else {
+                // Clear notification tracking when leaving dungeon entrance
+                this.shownDungeonNotification = null;
+            }
+        }
+    }
+
+    /**
+     * Unified E key interaction handler
+     * Handles dungeons, settlements, and dungeon exits based on current context
+     */
+    async handleInteraction() {
+        // Don't allow interaction during combat
+        if (gameState.get('combat')?.active) {
+            gameState.addMessage('⚔️ Cannot interact during combat!', 'error');
             return;
         }
 
-        const settlement = this.settlementManager.getSettlementAtPlayerPosition();
-        if (settlement) {
-            // Auto-enter settlement when landing on it
-            gameState.addMessage(`🏘️ Entering ${settlement.name}...`, 'info');
-            await this.enterSettlement();
+        // Check if player is inside a dungeon
+        if (this.dungeonManager?.isInDungeon()) {
+            // Check if at exit tile
+            if (this.dungeonManager.isAtExit()) {
+                this.dungeonManager.exitDungeon();
+                // Sync Player.x/y with restored world position
+                const restoredPos = gameState.get('player.position');
+                if (restoredPos) {
+                    this.x = restoredPos.x;
+                    this.y = restoredPos.y;
+                }
+                return;
+            }
+
+            // Check if at door tile (room transition)
+            if (this.dungeonManager.isAtDoor()) {
+                const destination = this.dungeonManager.getDoorDestination();
+                if (destination !== null) {
+                    const result = this.dungeonManager.moveToRoom(destination);
+                    if (result.bossFight && result.bossId && window.game?.triggerBossEncounter) {
+                        await window.game.triggerBossEncounter(result.bossId);
+                    }
+                }
+                return;
+            }
+
+            // No interactable at current position in dungeon
+            gameState.addMessage('Nothing to interact with here.', 'info');
+            return;
         }
+
+        // On world map - check for dungeon entrance first
+        if (this.dungeonManager) {
+            const dungeonFeature = await this.dungeonManager.getDungeonAtPlayerPosition();
+            if (dungeonFeature) {
+                const success = await this.dungeonManager.enterDungeon();
+                if (success) {
+                    // Notify game to switch to dungeon view
+                    gameState.set('ui.currentScreen', 'dungeonScreen');
+                }
+                return;
+            }
+        }
+
+        // Check for settlement
+        if (this.settlementManager) {
+            const settlement = this.settlementManager.getSettlementAtPlayerPosition();
+            if (settlement) {
+                await this.enterSettlement();
+                return;
+            }
+        }
+
+        // Nothing to interact with
+        gameState.addMessage('There is nothing to interact with here.', 'info');
     }
 
     /**
@@ -311,6 +450,13 @@ class Player {
         }
 
         await this.settlementManager.enterSettlement();
+    }
+
+    /**
+     * Set dungeon manager reference (called from main.js after initialization)
+     */
+    setDungeonManager(dungeonManager) {
+        this.dungeonManager = dungeonManager;
     }
 
     /**
@@ -677,11 +823,6 @@ class Player {
      * Check for random encounters
      */
     checkForEncounters(tile, terrainDef) {
-        // Skip encounters in dev mode
-        if (gameState.get('devMode')) {
-            return;
-        }
-
         const encounterChance = terrainDef.encounterModifier || 0.1;
 
         // Reduce base encounter rate to ~1% (previously 4%), still scaled by terrain modifier
@@ -692,227 +833,41 @@ class Player {
     }
 
     /**
-     * Trigger a combat encounter
+     * Trigger a combat encounter using the XP-budget EncounterBuilder
      * @param {Object} terrainDef - Terrain definition
      * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
     async triggerCombatEncounter(terrainDef, enemyTypes = null) {
-        // Generate enemies based on player level
         const playerLevel = gameState.get('character.level') || 1;
+        const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
+        const campaignId = gameState.get('worldConfig.campaignId') || 'core';
+        const terrainId = terrainDef?.id || 'grassland';
 
-        // Import rules engine to get encounter size
-        const { RULES } = await import('../core/rulesEngine.js');
-        const { min, max } = RULES.encounters.encounterSize;
+        const { buildEncounter } = await import('./EncounterBuilder.js');
 
-        // Calculate number of enemies (scaled by level if enabled)
-        let numEnemies = Math.floor(Math.random() * (max - min + 1)) + min;
+        const encounter = await buildEncounter({
+            partySize: 1,
+            partyLevel: playerLevel,
+            gameDifficulty: difficulty,
+            terrain: terrainId,
+            monsterPool: enemyTypes,
+            campaignId,
+            context: 'overworld'
+        });
 
-        // Scale with level if configured
-        if (RULES.encounters.encounterSize.scaleWithLevel) {
-            // At level 1-2: 1-2 enemies
-            // At level 3-4: 1-3 enemies
-            // At level 5+: full range
-            if (playerLevel <= 2) {
-                numEnemies = Math.min(numEnemies, 2);
-            } else if (playerLevel <= 4) {
-                // Already within 1-3 range
-            }
+        if (!encounter.monsters || encounter.monsters.length === 0) {
+            console.warn('⚠️ EncounterBuilder returned no monsters, skipping encounter');
+            return;
         }
 
-        const enemies = [];
-        for (let i = 0; i < numEnemies; i++) {
-            const enemy = await this.generateEnemy(playerLevel, terrainDef, enemyTypes);
-            enemies.push(enemy);
-        }
+        console.log(`⚔️ Encounter: ${encounter.monsters.map(m => m.name).join(', ')} (${encounter.difficultyRating}, ${encounter.totalXP} XP)`);
 
         // Set combat state IMMEDIATELY to block further movement
         gameState.set('combat', { active: true, pending: true });
 
         // Trigger combat event
-        gameState.set('ui.pendingCombat', { enemies });
+        gameState.set('ui.pendingCombat', { enemies: encounter.monsters });
         gameState.set('ui.currentScreen', 'combatScreen');
-    }
-
-    /**
-     * Generate an enemy for encounter
-     * @param {number} playerLevel - Player character level
-     * @param {Object} terrainDef - Terrain definition
-     * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
-     */
-    async generateEnemy(playerLevel, terrainDef, enemyTypes = null) {
-        // Load monster data
-        const response = await fetch('data/monsters.json');
-        const monsterData = await response.json();
-
-        // Import dice rolling function and rules engine
-        const { roll } = await import('../utils/dice.js');
-        const { getEncounterCR, RULES } = await import('../core/rulesEngine.js');
-
-        // Get difficulty setting
-        const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
-
-        // Use rules engine to calculate target CR
-        const targetCR = getEncounterCR(playerLevel, difficulty);
-
-        // If specific enemy types are provided (from skill challenge), filter by those first
-        if (enemyTypes && Array.isArray(enemyTypes) && enemyTypes.length > 0) {
-            console.log(`🎯 Filtering enemies by challenge-specific types:`, enemyTypes);
-
-            // Filter monsters by ID matching the enemyTypes array
-            let specificMonsters = monsterData.monsters.filter(m =>
-                enemyTypes.includes(m.id)
-            );
-
-            // If we found matching monsters, pick one randomly
-            if (specificMonsters.length > 0) {
-                const monster = specificMonsters[Math.floor(Math.random() * specificMonsters.length)];
-                console.log(`✅ Selected challenge-specific enemy: ${monster.name} (${monster.id})`);
-
-                // Roll HP and create enemy character with proper structure
-                const hp = roll(monster.hitPoints);
-                return {
-                    name: monster.name,
-                    race: { name: monster.type },
-                    class: { name: 'Monster' },
-                    level: playerLevel,
-                    cr: monster.challengeRating,
-                    maxHP: hp,
-                    currentHP: hp,
-                    ac: monster.armorClass,
-                    speed: monster.speed || 30,
-                    abilities: monster.abilities,
-                    abilityModifiers: {
-                        str: Math.floor((monster.abilities.str - 10) / 2),
-                        dex: Math.floor((monster.abilities.dex - 10) / 2),
-                        con: Math.floor((monster.abilities.con - 10) / 2),
-                        int: Math.floor((monster.abilities.int - 10) / 2),
-                        wis: Math.floor((monster.abilities.wis - 10) / 2),
-                        cha: Math.floor((monster.abilities.cha - 10) / 2)
-                    },
-                    proficiencyBonus: 2,
-                    skills: monster.skills || {},
-                    equipment: {
-                        mainHand: null,
-                        offHand: null,
-                        armor: null
-                    },
-                    isNPC: true
-                };
-            } else {
-                console.warn(`⚠️ No monsters found matching enemyTypes:`, enemyTypes, '- falling back to terrain-based selection');
-            }
-        }
-
-        // Get appropriate monster types for level (if defined)
-        const levelBrackets = Object.entries(RULES.difficulty.scalingByLevel.enemyTypesByLevel)
-            .map(([level, types]) => ({ level: parseInt(level), types }))
-            .sort((a, b) => b.level - a.level); // Sort descending
-
-        let allowedTypes = null;
-        for (const { level, types } of levelBrackets) {
-            if (playerLevel >= level) {
-                allowedTypes = types;
-                break;
-            }
-        }
-
-        // Get current terrain ID for habitat filtering
-        const terrainId = terrainDef?.id || 'grassland';
-
-        // Filter by appropriate CR (within ±1 of target), optionally by type, and by habitat
-        let appropriateMonsters = monsterData.monsters.filter(m => {
-            const cr = m.challengeRating || 0.25;
-            const crMatch = cr >= targetCR - 1 && cr <= targetCR + 1;
-
-            // If level-based types are defined, also filter by type
-            if (allowedTypes && allowedTypes.length > 0) {
-                const typeMatch = allowedTypes.some(type =>
-                    m.type.toLowerCase().includes(type.toLowerCase()) ||
-                    m.name.toLowerCase().includes(type.toLowerCase())
-                );
-                if (!crMatch || !typeMatch) {
-                    return false;
-                }
-            } else if (!crMatch) {
-                return false;
-            }
-
-            // Habitat filtering (backward-compatible - only if monster has habitats defined)
-            if (m.habitats) {
-                const { preferred, occasional, never } = m.habitats;
-
-                // Never spawn in forbidden terrains
-                if (never && never.includes(terrainId)) {
-                    return false;
-                }
-
-                // Apply spawn chance modifier (preferred > occasional > neutral)
-                const spawnWeight = m.spawnChanceModifier?.[terrainId] ?? 1.0;
-
-                // Random check weighted by habitat preference
-                return Math.random() < spawnWeight;
-            }
-
-            // Legacy monsters without habitats spawn everywhere
-            return true;
-        });
-
-        // Fallback: If no monsters match, widen CR range but keep type restrictions
-        if (appropriateMonsters.length === 0) {
-            appropriateMonsters = monsterData.monsters.filter(m => {
-                const cr = m.challengeRating || 0.25;
-                const crMatch = cr >= targetCR - 2 && cr <= targetCR + 2;
-
-                // Still enforce type restrictions if they exist
-                if (allowedTypes && allowedTypes.length > 0) {
-                    const typeMatch = allowedTypes.some(type =>
-                        m.type.toLowerCase().includes(type.toLowerCase()) ||
-                        m.name.toLowerCase().includes(type.toLowerCase())
-                    );
-                    return crMatch && typeMatch;
-                }
-
-                return crMatch;
-            });
-        }
-
-        // Final fallback: Get any low-CR monster
-        const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)]
-            || monsterData.monsters.reduce((lowest, m) =>
-                (m.challengeRating || 0.25) < (lowest.challengeRating || 0.25) ? m : lowest
-            );
-
-        // Roll HP from dice notation
-        const hp = roll(monster.hitPoints);
-
-        // Create enemy character from monster data
-        return {
-            name: monster.name,
-            race: { name: monster.type },
-            class: { name: 'Monster' },
-            level: playerLevel,
-            cr: monster.challengeRating,
-            maxHP: hp,
-            currentHP: hp,
-            ac: monster.armorClass,
-            speed: monster.speed || 30,
-            abilities: monster.abilities,
-            abilityModifiers: {
-                str: Math.floor((monster.abilities.str - 10) / 2),
-                dex: Math.floor((monster.abilities.dex - 10) / 2),
-                con: Math.floor((monster.abilities.con - 10) / 2),
-                int: Math.floor((monster.abilities.int - 10) / 2),
-                wis: Math.floor((monster.abilities.wis - 10) / 2),
-                cha: Math.floor((monster.abilities.cha - 10) / 2)
-            },
-            proficiencyBonus: 2,
-            skills: monster.skills || {},
-            equipment: {
-                mainHand: null,
-                offHand: null,
-                armor: null
-            }
-        };
     }
 
     /**
@@ -1095,6 +1050,308 @@ class Player {
         // Fallback if game instance not available
         console.warn('Game instance not available for skill check prompt');
         return { attempted: false, success: false };
+    }
+
+    /**
+     * Trigger a trap skill challenge when player steps on a trap tile in dungeon
+     */
+    async triggerDungeonTrapChallenge() {
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+            // No skill challenge system - fall back to flat damage
+            gameState.addMessage('⚠️ You triggered a trap!', 'danger');
+            const character = gameState.get('character');
+            const damage = rollDice(6, 2); // 2d6 trap damage fallback
+            character.currentHP = Math.max(0, character.currentHP - damage);
+            gameState.set('character', character);
+            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+            return;
+        }
+
+        // Use the trap_detect_disarm challenge
+        const challenge = window.skillChallengeManager.challenges.challenges['trap_detect_disarm'];
+        if (!challenge) {
+            // Fallback if challenge template missing
+            gameState.addMessage('⚠️ You triggered a trap!', 'danger');
+            const character = gameState.get('character');
+            const damage = rollDice(6, 2);
+            character.currentHP = Math.max(0, character.currentHP - damage);
+            gameState.set('character', character);
+            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+            return;
+        }
+
+        window.skillChallengeManager.recordChallengeAttempt('trap_detect_disarm');
+
+        // Run sequential trap challenge (detect then disarm)
+        await this.handleSequentialSkillChallenge(challenge);
+
+        // Mark trap as detected after the challenge (so it doesn't trigger again)
+        const dungeonState = gameState.get('dungeon');
+        if (dungeonState?.active) {
+            const pos = dungeonState.playerPosition;
+            const room = this.dungeonManager.getCurrentRoom();
+            if (room?.tiles?.[pos.y]?.[pos.x]) {
+                room.tiles[pos.y][pos.x].trapDetected = true;
+                room.tiles[pos.y][pos.x].isTrap = false; // Don't trigger again
+                gameState.set('dungeon', dungeonState);
+            }
+        }
+    }
+
+    /**
+     * Check for room-based skill challenges during dungeon exploration
+     * Triggered on movement based on room's skillChallengeChance
+     */
+    async checkForDungeonSkillChallenge() {
+        if (!this.dungeonManager?.isInDungeon()) return;
+        if (gameState.get('combat')?.active) return;
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) return;
+
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Get current room data
+        const currentRoom = this.dungeonManager.getCurrentRoom();
+        if (!currentRoom) return;
+
+        // Check room's skill challenge chance
+        const challengeChance = currentRoom.skillChallengeChance || 0;
+        if (challengeChance <= 0 || Math.random() > challengeChance * 0.1) {
+            // Scale down the per-step chance (room chance is per-room, not per-tile)
+            return;
+        }
+
+        // Map dungeon room features and themes to challenge IDs
+        const dungeonChallengePool = [
+            'trap_detect_disarm',
+            'locked_door',
+            'hidden_treasure',
+            'arcane_puzzle',
+            'ancient_text',
+            'sneak_past_guards',
+            'narrow_ledge',
+            'holy_ritual'
+        ];
+
+        // Filter by room features for thematic relevance
+        const features = currentRoom.features || [];
+        const roomCategory = currentRoom.category || 'exploration';
+        let relevantChallenges = [];
+
+        // Feature-based challenge selection
+        if (features.some(f => f.includes('trap') || f.includes('pressure') || f.includes('mechanism'))) {
+            relevantChallenges.push('trap_detect_disarm');
+        }
+        if (features.some(f => f.includes('door') || f.includes('lock') || f.includes('vault') || f.includes('sealed'))) {
+            relevantChallenges.push('locked_door');
+        }
+        if (features.some(f => f.includes('treasure') || f.includes('chest') || f.includes('hidden') || f.includes('secret'))) {
+            relevantChallenges.push('hidden_treasure');
+        }
+        if (features.some(f => f.includes('rune') || f.includes('magic') || f.includes('crystal') || f.includes('arcane'))) {
+            relevantChallenges.push('arcane_puzzle');
+        }
+        if (features.some(f => f.includes('text') || f.includes('book') || f.includes('carved') || f.includes('inscription'))) {
+            relevantChallenges.push('ancient_text');
+        }
+        if (features.some(f => f.includes('guard') || f.includes('patrol') || f.includes('shadow'))) {
+            relevantChallenges.push('sneak_past_guards');
+        }
+        if (features.some(f => f.includes('narrow') || f.includes('bridge') || f.includes('ledge') || f.includes('precarious'))) {
+            relevantChallenges.push('narrow_ledge');
+        }
+        if (features.some(f => f.includes('altar') || f.includes('religious') || f.includes('holy') || f.includes('ritual'))) {
+            relevantChallenges.push('holy_ritual');
+        }
+
+        // If no feature-specific match, fall back to room category defaults
+        if (relevantChallenges.length === 0) {
+            if (roomCategory === 'puzzle') {
+                relevantChallenges = ['arcane_puzzle', 'locked_door', 'hidden_treasure'];
+            } else if (roomCategory === 'treasure') {
+                relevantChallenges = ['trap_detect_disarm', 'hidden_treasure'];
+            } else if (roomCategory === 'combat') {
+                relevantChallenges = ['sneak_past_guards', 'trap_detect_disarm'];
+            } else {
+                // Generic exploration challenges
+                relevantChallenges = ['hidden_treasure', 'narrow_ledge', 'ancient_text'];
+            }
+        }
+
+        // Pick a random challenge from relevant pool
+        const challengeId = relevantChallenges[Math.floor(Math.random() * relevantChallenges.length)];
+        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+
+        if (!challenge) return;
+
+        // Check cooldown via SkillChallengeManager
+        const context = { terrain: true, terrainType: 'dungeon' };
+        if (!window.skillChallengeManager.shouldTriggerChallenge(challengeId, context)) {
+            return;
+        }
+
+        // Record attempt
+        window.skillChallengeManager.recordChallengeAttempt(challengeId);
+
+        // Calculate level-adjusted DC
+        const baseDC = challenge.type === 'single' ? challenge.baseDC : (challenge.stages?.[0]?.baseDC || 12);
+        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
+
+        // Handle by challenge type
+        if (challenge.type === 'single') {
+            await this.handleSingleSkillChallenge(challenge, adjustedDC);
+        } else if (challenge.type === 'sequential') {
+            await this.handleSequentialSkillChallenge(challenge);
+        } else if (challenge.type === 'choice') {
+            await this.handleChoiceSkillChallenge(challenge, adjustedDC);
+        }
+    }
+
+    /**
+     * Check for random encounters while in dungeon
+     * Uses dungeon-specific encounter modifier and monster pool
+     */
+    async checkForDungeonEncounter() {
+        if (!this.dungeonManager?.isInDungeon()) {
+            return;
+        }
+
+        // Get encounter modifier from dungeon
+        const encounterModifier = this.dungeonManager.getEncounterModifier();
+
+        // Base dungeon encounter rate is higher than wilderness (5% base * modifier)
+        if (Math.random() < 0.05 * encounterModifier) {
+            await this.triggerDungeonEncounter();
+        }
+    }
+
+    /**
+     * Trigger combat encounter within dungeon using dungeon's monster pool
+     */
+    async triggerDungeonEncounter() {
+        const playerLevel = gameState.get('character.level') || 1;
+        const dungeonState = gameState.get('dungeon');
+
+        // Import rules engine
+        const { RULES } = await import('../core/rulesEngine.js');
+        const { min, max } = RULES.encounters.encounterSize;
+
+        // Calculate number of enemies
+        let numEnemies = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        // Scale with level
+        if (playerLevel <= 2) {
+            numEnemies = Math.min(numEnemies, 2);
+        }
+
+        // Get dungeon monster pool
+        const monsterPool = this.dungeonManager.getDungeonMonsterPool();
+
+        const enemies = [];
+        for (let i = 0; i < numEnemies; i++) {
+            const enemy = await this.generateDungeonEnemy(playerLevel, monsterPool);
+            if (enemy) {
+                enemies.push(enemy);
+            }
+        }
+
+        if (enemies.length === 0) {
+            console.warn('⚠️ Failed to generate dungeon enemies');
+            return;
+        }
+
+        // Set combat state IMMEDIATELY to block further movement
+        gameState.set('combat', { active: true, pending: true });
+
+        // Trigger combat event
+        gameState.set('ui.pendingCombat', { enemies });
+        gameState.set('ui.currentScreen', 'combatScreen');
+    }
+
+    /**
+     * Generate enemy from dungeon's monster pool
+     * @param {number} playerLevel - Player character level
+     * @param {Array<string>} monsterPool - Array of monster IDs valid for this dungeon
+     */
+    async generateDungeonEnemy(playerLevel, monsterPool) {
+        // Load monster data
+        const response = await fetch('data/monsters.json');
+        const monsterData = await response.json();
+
+        const { roll } = await import('../utils/dice.js');
+        const { getEncounterCR, RULES } = await import('../core/rulesEngine.js');
+
+        const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
+        const targetCR = getEncounterCR(playerLevel, difficulty);
+
+        // Filter monsters by dungeon pool
+        let dungeonMonsters = monsterData.monsters.filter(m =>
+            monsterPool.includes(m.id)
+        );
+
+        // If no monsters match pool, fallback to any monster
+        if (dungeonMonsters.length === 0) {
+            console.warn('⚠️ No monsters in dungeon pool, using fallback');
+            dungeonMonsters = monsterData.monsters;
+        }
+
+        // Filter by CR
+        let appropriateMonsters = dungeonMonsters.filter(m => {
+            const cr = m.challengeRating || m.cr || 0.25;
+            return cr >= targetCR - 1 && cr <= targetCR + 1;
+        });
+
+        // Fallback to wider CR range
+        if (appropriateMonsters.length === 0) {
+            appropriateMonsters = dungeonMonsters.filter(m => {
+                const cr = m.challengeRating || m.cr || 0.25;
+                return cr >= targetCR - 2 && cr <= targetCR + 2;
+            });
+        }
+
+        // Final fallback: any from pool
+        if (appropriateMonsters.length === 0) {
+            appropriateMonsters = dungeonMonsters;
+        }
+
+        // Pick random monster
+        const monster = appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)];
+
+        if (!monster) {
+            return null;
+        }
+
+        // Roll HP and create enemy
+        const hp = roll(monster.hitPoints);
+
+        return {
+            name: monster.name,
+            race: { name: monster.type },
+            class: { name: 'Monster' },
+            level: playerLevel,
+            cr: monster.challengeRating || monster.cr,
+            maxHP: hp,
+            currentHP: hp,
+            ac: monster.armorClass,
+            speed: monster.speed || 30,
+            abilities: monster.abilities,
+            abilityModifiers: {
+                str: Math.floor((monster.abilities.str - 10) / 2),
+                dex: Math.floor((monster.abilities.dex - 10) / 2),
+                con: Math.floor((monster.abilities.con - 10) / 2),
+                int: Math.floor((monster.abilities.int - 10) / 2),
+                wis: Math.floor((monster.abilities.wis - 10) / 2),
+                cha: Math.floor((monster.abilities.cha - 10) / 2)
+            },
+            proficiencyBonus: 2,
+            skills: monster.skills || {},
+            equipment: {
+                mainHand: null,
+                offHand: null,
+                armor: null
+            },
+            isNPC: true
+        };
     }
 
     /**

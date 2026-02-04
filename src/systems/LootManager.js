@@ -12,6 +12,7 @@
  */
 
 import { SeededRandom } from '../utils/rng.js';
+import { RULES } from '../core/rulesEngine.js';
 import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class LootManager {
@@ -109,14 +110,26 @@ class LootManager {
         };
 
         // Get monster type and CR
-        const monsterType = monster.type || 'humanoid'; // Default to humanoid if not specified
+        const monsterType = monster.type || monster.race?.name || 'humanoid';
         const monsterCR = monster.challengeRating || monster.cr || 0;
+        const isBoss = monster.isBoss || false;
+
+        // Boss loot: guaranteed drops with multiplied gold and extra rolls
+        const bossBuffs = isBoss ? (RULES?.encounters?.bossBuffs || {
+            goldMultiplier: 3,
+            guaranteedLoot: true,
+            extraLootRolls: 2
+        }) : null;
 
         // Get level tier for player
         const levelTier = this.getLevelTier(playerLevel);
 
         // Get loot table for this monster type and level tier
-        const lootTable = this.lootTables.monsterLootTables.byCreatureType[monsterType];
+        let lootTable = this.lootTables.monsterLootTables.byCreatureType[monsterType];
+        // Fallback to humanoid if creature type not found
+        if (!lootTable || !lootTable[levelTier]) {
+            lootTable = this.lootTables.monsterLootTables.byCreatureType['humanoid'];
+        }
         if (!lootTable || !lootTable[levelTier]) {
             console.warn(`⚠️ LootManager: No loot table for ${monsterType} at level tier ${levelTier}`);
             return loot;
@@ -124,23 +137,26 @@ class LootManager {
 
         const tierTable = lootTable[levelTier];
 
-        // Roll for drop (dropChance check)
-        const shouldDrop = rng.next() < tierTable.dropChance;
+        // Roll for drop (bosses always drop, otherwise check dropChance)
+        const shouldDrop = isBoss || rng.next() < tierTable.dropChance;
         if (!shouldDrop) {
             return loot; // No loot
         }
 
-        // Roll on each table
-        for (const tableEntry of tierTable.tables) {
-            // Weighted table selection (roll to see if this table is selected)
+        // Determine number of loot rolls (bosses get extra)
+        const extraRolls = isBoss ? (bossBuffs.extraLootRolls || 2) : 0;
+        const totalRolls = 1 + extraRolls;
+
+        for (let rollNum = 0; rollNum < totalRolls; rollNum++) {
+            // Weighted table selection
             const totalWeight = tierTable.tables.reduce((sum, t) => sum + t.weight, 0);
-            const roll = rng.nextInt(1, totalWeight);
+            const tableRoll = rng.nextInt(1, totalWeight);
 
             let currentWeight = 0;
             let selectedTable = null;
             for (const t of tierTable.tables) {
                 currentWeight += t.weight;
-                if (roll <= currentWeight) {
+                if (tableRoll <= currentWeight) {
                     selectedTable = t;
                     break;
                 }
@@ -153,8 +169,11 @@ class LootManager {
             }
         }
 
-        // Roll gold
+        // Roll gold (bosses get multiplied gold)
         loot.gold = this.rollGold(monsterCR, playerLevel, rng);
+        if (isBoss) {
+            loot.gold = Math.floor(loot.gold * (bossBuffs.goldMultiplier || 3));
+        }
 
         return loot;
     }
@@ -297,16 +316,14 @@ class LootManager {
     /**
      * Map CR to CR bracket string
      * @param {number} cr - Challenge rating
-     * @returns {string} CR bracket ("0-0.5", "1-2", "3-5")
+     * @returns {string} CR bracket
      */
     getCRBracket(cr) {
-        if (cr <= 0.5) {
-            return '0-0.5';
-        }
-        if (cr <= 2) {
-            return '1-2';
-        }
-        return '3-5';
+        if (cr <= 0.5) return '0-0.5';
+        if (cr <= 2) return '1-2';
+        if (cr <= 5) return '3-5';
+        if (cr <= 8) return '6-8';
+        return '9-10';
     }
 
     /**
