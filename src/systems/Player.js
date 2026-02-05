@@ -1053,43 +1053,115 @@ class Player {
     }
 
     /**
-     * Trigger a trap skill challenge when player steps on a trap tile in dungeon
+     * Trigger a trap using PASSIVE PERCEPTION when player steps on a trap tile.
+     *
+     * Flow:
+     * 1. Calculate passive perception (10 + perception skill bonus)
+     * 2. Compare against trap DC (from tile data or default 13)
+     * 3. If DETECTED: Show modal offering disarm attempt (Sleight of Hand check)
+     * 4. If NOT DETECTED: Immediately take damage, then show result
+     *
+     * The player does NOT get a modal asking "do you want to roll perception?"
+     * Detection happens automatically via passive perception.
      */
     async triggerDungeonTrapChallenge() {
-        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
-            // No skill challenge system - fall back to flat damage
-            gameState.addMessage('⚠️ You triggered a trap!', 'danger');
-            const character = gameState.get('character');
-            const damage = rollDice(6, 2); // 2d6 trap damage fallback
-            character.currentHP = Math.max(0, character.currentHP - damage);
-            gameState.set('character', character);
-            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
-            return;
-        }
+        const character = gameState.get('character');
+        if (!character) return;
 
-        // Use the trap_detect_disarm challenge
-        const challenge = window.skillChallengeManager.challenges.challenges['trap_detect_disarm'];
-        if (!challenge) {
-            // Fallback if challenge template missing
-            gameState.addMessage('⚠️ You triggered a trap!', 'danger');
-            const character = gameState.get('character');
-            const damage = rollDice(6, 2);
-            character.currentHP = Math.max(0, character.currentHP - damage);
-            gameState.set('character', character);
-            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
-            return;
-        }
-
-        window.skillChallengeManager.recordChallengeAttempt('trap_detect_disarm');
-
-        // Run sequential trap challenge (detect then disarm)
-        await this.handleSequentialSkillChallenge(challenge);
-
-        // Mark trap as detected after the challenge (so it doesn't trigger again)
+        // Get trap tile data for DC and damage
         const dungeonState = gameState.get('dungeon');
+        let trapDC = 13; // Default trap detection DC
+        let trapDamageDice = '2d6'; // Default trap damage
+        let trapTile = null;
+
         if (dungeonState?.active) {
             const pos = dungeonState.playerPosition;
-            const room = this.dungeonManager.getCurrentRoom();
+            const room = this.dungeonManager?.getCurrentRoom();
+            trapTile = room?.tiles?.[pos.y]?.[pos.x];
+            if (trapTile) {
+                trapDC = trapTile.trapDC || trapDC;
+                trapDamageDice = trapTile.trapDamage || trapDamageDice;
+            }
+        }
+
+        // Calculate passive perception: 10 + perception skill bonus
+        const perceptionBonus = character.skills?.perception?.bonus || 0;
+        const passivePerception = 10 + perceptionBonus;
+
+        const detected = passivePerception >= trapDC;
+
+        if (detected) {
+            // TRAP DETECTED - Show disarm modal
+            gameState.addMessage(`👁️ Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
+
+            // Offer disarm attempt via skill challenge modal
+            if (window.skillChallengeManager?.challenges) {
+                const challenge = window.skillChallengeManager.challenges.challenges['trap_detect_disarm'];
+                if (challenge && challenge.stages?.length >= 2) {
+                    // Skip stage 1 (detect) - already detected via passive perception
+                    // Go directly to stage 2 (disarm)
+                    const disarmStage = challenge.stages[1]; // sleightOfHand disarm stage
+                    const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(
+                        disarmStage.baseDC || 14,
+                        character.level
+                    );
+
+                    const config = {
+                        title: '🪤 Trap Detected!',
+                        description: `You spot a hidden trap mechanism ahead. You can attempt to disarm it.`,
+                        skill: disarmStage.skill || 'sleightOfHand',
+                        dc: adjustedDC
+                    };
+
+                    const result = await window.game.promptSkillCheck(config, challenge, disarmStage);
+
+                    if (result.attempted && result.success) {
+                        gameState.addMessage('✅ You carefully disarm the trap!', 'success');
+                    } else if (result.attempted && !result.success) {
+                        // Failed disarm - take reduced damage (you knew it was there)
+                        const { roll: rollFn } = await import('../utils/dice.js');
+                        const damage = rollFn(trapDamageDice);
+                        const reducedDamage = Math.max(1, Math.floor(damage / 2));
+                        character.currentHP = Math.max(0, character.currentHP - reducedDamage);
+                        gameState.set('character', character);
+                        if (window.game) window.game.updateHUD(character);
+                        gameState.addMessage(`💥 The trap triggers during disarm! You take ${reducedDamage} damage (reduced).`, 'danger');
+                    } else {
+                        // Player chose not to attempt - carefully step around
+                        gameState.addMessage('🚶 You carefully avoid the trap.', 'info');
+                    }
+                } else {
+                    // No challenge template - just allow avoiding
+                    gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
+                }
+            } else {
+                gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
+            }
+        } else {
+            // TRAP NOT DETECTED - Immediate damage, no choice
+            const { roll: rollFn } = await import('../utils/dice.js');
+            const damage = rollFn(trapDamageDice);
+            character.currentHP = Math.max(0, character.currentHP - damage);
+            gameState.set('character', character);
+            if (window.game) window.game.updateHUD(character);
+
+            gameState.addMessage(`⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
+            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+
+            // Show floating combat text if available
+            if (window.game?.showFloatingCombatText) {
+                // Use player's combatant card if in view, otherwise skip
+                const playerCard = document.querySelector('.combatant-card[data-combatant-id="player"]');
+                if (playerCard) {
+                    window.game.showFloatingCombatText('player', `-${damage}`, 'damage');
+                }
+            }
+        }
+
+        // Mark trap as dealt with (detected or triggered)
+        if (dungeonState?.active && trapTile) {
+            const pos = dungeonState.playerPosition;
+            const room = this.dungeonManager?.getCurrentRoom();
             if (room?.tiles?.[pos.y]?.[pos.x]) {
                 room.tiles[pos.y][pos.x].trapDetected = true;
                 room.tiles[pos.y][pos.x].isTrap = false; // Don't trigger again
@@ -1101,6 +1173,7 @@ class Player {
     /**
      * Check for room-based skill challenges during dungeon exploration
      * Triggered on movement based on room's skillChallengeChance
+     * The room chance IS the per-step trigger rate (e.g., 0.2 = 20% per step)
      */
     async checkForDungeonSkillChallenge() {
         if (!this.dungeonManager?.isInDungeon()) return;
@@ -1114,24 +1187,12 @@ class Player {
         const currentRoom = this.dungeonManager.getCurrentRoom();
         if (!currentRoom) return;
 
-        // Check room's skill challenge chance
+        // Room's skillChallengeChance is the direct per-step trigger rate
+        // Exploration rooms: 0.1-0.25, Puzzle rooms: 0.75-0.9, Treasure rooms: 0.25-0.5
         const challengeChance = currentRoom.skillChallengeChance || 0;
-        if (challengeChance <= 0 || Math.random() > challengeChance * 0.1) {
-            // Scale down the per-step chance (room chance is per-room, not per-tile)
+        if (challengeChance <= 0 || Math.random() > challengeChance) {
             return;
         }
-
-        // Map dungeon room features and themes to challenge IDs
-        const dungeonChallengePool = [
-            'trap_detect_disarm',
-            'locked_door',
-            'hidden_treasure',
-            'arcane_puzzle',
-            'ancient_text',
-            'sneak_past_guards',
-            'narrow_ledge',
-            'holy_ritual'
-        ];
 
         // Filter by room features for thematic relevance
         const features = currentRoom.features || [];
@@ -1184,13 +1245,13 @@ class Player {
 
         if (!challenge) return;
 
-        // Check cooldown via SkillChallengeManager
-        const context = { terrain: true, terrainType: 'dungeon' };
-        if (!window.skillChallengeManager.shouldTriggerChallenge(challengeId, context)) {
+        // Only check cooldown (not another random frequency check) for dungeon challenges
+        // The room's skillChallengeChance already controls the trigger rate
+        if (!window.skillChallengeManager.canAttemptChallenge(challengeId)) {
             return;
         }
 
-        // Record attempt
+        // Record attempt for cooldown tracking
         window.skillChallengeManager.recordChallengeAttempt(challengeId);
 
         // Calculate level-adjusted DC
@@ -1219,8 +1280,8 @@ class Player {
         // Get encounter modifier from dungeon
         const encounterModifier = this.dungeonManager.getEncounterModifier();
 
-        // Base dungeon encounter rate is higher than wilderness (5% base * modifier)
-        if (Math.random() < 0.05 * encounterModifier) {
+        // Base dungeon encounter rate - 12% base * room encounter modifier
+        if (Math.random() < 0.12 * encounterModifier) {
             await this.triggerDungeonEncounter();
         }
     }

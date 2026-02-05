@@ -148,6 +148,14 @@ export class Character {
 
         // Ability uses tracking (for abilities with limited uses)
         this.abilityUses = data.abilityUses || {};
+
+        // Level-up state (pending changes until player confirms)
+        this.pendingLevelUp = data.pendingLevelUp || null;
+        this.levelUpSelections = data.levelUpSelections || null;
+
+        // Selected abilities/traits (from level-up choices)
+        this.selectedAbilities = data.selectedAbilities || [];
+        this.selectedTraits = data.selectedTraits || [];
     }
 
     /**
@@ -667,45 +675,48 @@ export class Character {
     /**
      * Level up character
      */
+    /**
+     * Level up - Calculate what WOULD change (but don't apply yet!)
+     * Changes are stored in pendingLevelUp and applied when player confirms
+     *
+     * ⚠️ CRITICAL: This method does NOT modify character stats!
+     * Stats only change when applyLevelUpSelections() is called.
+     */
     levelUp(newLevel) {
         const oldLevel = this.level;
-        this.level = newLevel;
 
-        // Increase max HP
+        // Calculate what WOULD change (but don't apply yet!)
         const hpGain = rollHitPoints(this.class.hitDie, this.abilityModifiers.con, true);
-        this.maxHP += hpGain;
-        this.currentHP += hpGain;
+        const oldProfBonus = this.proficiencyBonus;
+        const newProfBonus = getRulesProfBonus(newLevel);
+        const profBonusChanged = newProfBonus !== oldProfBonus;
 
-        // Update proficiency bonus
-        this.proficiencyBonus = getRulesProfBonus(this.level);
+        // Get new features for this level
+        const newFeatures = this.class.features?.[newLevel] || [];
 
-        // Update hit dice
-        this.hitDice.max = this.level;
-        this.hitDice.current = Math.min(this.hitDice.current + 1, this.level);
-
-        // Update spell slots if spellcaster
-        if (this.spellcasting) {
-            this.spellcasting.spellSlots = this.getSpellSlots();
-        }
-
-        // Get new class features
-        this.features = this.getClassFeatures();
-
-        // Check for ASI
-        if (isASILevel(this.level)) {
-            // Mark that ASI is available (will be selected by player)
-            this.asiAvailable = true;
-        }
-
-        // Update all calculated values
-        this.updateCalculatedStats();
-
-        return {
-            oldLevel,
-            newLevel,
-            hpGain,
-            newFeatures: this.class.features?.[newLevel] || []
+        // Store PENDING changes (don't modify character stats yet!)
+        this.pendingLevelUp = {
+            newLevel: newLevel,
+            oldLevel: oldLevel,
+            hpGain: hpGain,
+            oldHP: this.maxHP,
+            newHP: this.maxHP + hpGain,
+            oldProfBonus: oldProfBonus,
+            newProfBonus: newProfBonus,
+            profBonusChanged: profBonusChanged,
+            newFeatures: newFeatures
         };
+
+        // Reset selections
+        this.levelUpSelections = {
+            asiChoice: null,
+            abilities: [],
+            spells: [],
+            traits: [],
+            specialization: null
+        };
+
+        return this.pendingLevelUp;
     }
 
     /**
@@ -721,6 +732,92 @@ export class Character {
         this.abilityModifiers = this.calculateAbilityModifiers();
         this.updateCalculatedStats();
         this.asiAvailable = false;
+    }
+
+    /**
+     * Apply level-up selections (ONLY called when player confirms level-up modal)
+     * This is where stats actually change!
+     *
+     * @param {object} selections - Player's choices (asiChoice, abilities, spells, traits, specialization)
+     */
+    applyLevelUpSelections(selections) {
+        if (!this.pendingLevelUp) {
+            console.error('No pending level-up to apply!');
+            return;
+        }
+
+        console.log(`📈 Applying level-up to level ${this.pendingLevelUp.newLevel}`);
+
+        // NOW apply the stat changes that were calculated earlier
+        this.level = this.pendingLevelUp.newLevel;
+        this.maxHP = this.pendingLevelUp.newHP;
+        this.currentHP += this.pendingLevelUp.hpGain; // Heal by HP gain amount
+
+        // Update proficiency bonus if changed
+        if (this.pendingLevelUp.profBonusChanged) {
+            this.proficiencyBonus = this.pendingLevelUp.newProfBonus;
+        }
+
+        // Increment hit dice max (matches new level)
+        this.hitDice.max = this.level;
+        if (this.hitDice.current < this.level) {
+            this.hitDice.current = this.level;
+        }
+
+        // Update spell slots if spellcaster
+        if (this.spellcasting) {
+            this.spellcasting.spellSlots = this.getSpellSlots();
+        }
+
+        // Get new class features for this level
+        this.features = this.getClassFeatures();
+
+        // Apply ASI (single ability increase)
+        if (selections.asiChoice) {
+            const ability = selections.asiChoice;
+            this.baseAbilities[ability] = Math.min(20, this.baseAbilities[ability] + 1);
+            this.abilities = this.calculateAbilities();
+            this.abilityModifiers = this.calculateAbilityModifiers();
+            console.log(`  +1 ${ability.toUpperCase()} (${this.baseAbilities[ability] - 1} → ${this.baseAbilities[ability]})`);
+        }
+
+        // Add selected abilities
+        if (selections.abilities && selections.abilities.length > 0) {
+            if (!this.selectedAbilities) this.selectedAbilities = [];
+            this.selectedAbilities.push(...selections.abilities);
+            console.log(`  Added ${selections.abilities.length} abilities`);
+        }
+
+        // Add selected spells
+        if (selections.spells && selections.spells.length > 0) {
+            if (!this.spellcasting.knownSpells) {
+                this.spellcasting.knownSpells = [];
+            }
+            this.spellcasting.knownSpells.push(...selections.spells);
+            console.log(`  Learned ${selections.spells.length} spells`);
+        }
+
+        // Add selected traits
+        if (selections.traits && selections.traits.length > 0) {
+            if (!this.selectedTraits) this.selectedTraits = [];
+            this.selectedTraits.push(...selections.traits);
+            console.log(`  Added ${selections.traits.length} traits`);
+        }
+
+        // Set specialization
+        if (selections.specialization) {
+            this.specialization = selections.specialization;
+            console.log(`  Specialization: ${selections.specialization}`);
+        }
+
+        // Update all calculated stats
+        this.updateCalculatedStats();
+
+        // Clear pending state (level-up complete!)
+        this.pendingLevelUp = null;
+        this.levelUpSelections = null;
+
+        console.log(`✅ Level-up complete! Now level ${this.level}`);
     }
 
     /**

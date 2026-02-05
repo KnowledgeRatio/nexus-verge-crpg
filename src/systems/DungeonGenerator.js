@@ -101,6 +101,9 @@ export class DungeonGenerator {
             room.playerSpawn = this.findPlayerSpawnInRoom(room);
         }
 
+        // 6.5. Procedural trap placement based on room category and dungeon difficulty
+        this.placeProceduralTraps(rng, rooms, dungeonType, playerLevel);
+
         // 7. Store generated data
         dungeonFeature.rooms = rooms;
         dungeonFeature.currentRoomIndex = 0;
@@ -928,6 +931,106 @@ export class DungeonGenerator {
             // Check if monster's dungeonTypes includes this dungeon type
             return monster.dungeonTypes && monster.dungeonTypes.includes(dungeonType.id);
         });
+    }
+
+    /**
+     * Procedurally place trap tiles in dungeon rooms.
+     * Traps are placed on floor tiles based on room category and dungeon difficulty.
+     * Each trap gets a detection DC that scales with player level.
+     *
+     * Trap density by room category:
+     *  - entrance/boss: 0 traps (safe zones)
+     *  - corridor: 1-2 traps (high density for narrow spaces)
+     *  - exploration: 0-2 traps
+     *  - combat: 0-1 traps
+     *  - puzzle: 1-2 traps (puzzles often have traps)
+     *  - treasure: 1-3 traps (guarding treasure)
+     */
+    placeProceduralTraps(rng, rooms, dungeonType, playerLevel) {
+        const trapTerrain = this.terrainMap['dungeonTrap'] || { id: 'dungeonTrap', symbol: '!', color: '#ff4500' };
+
+        // Base trap DC scales with dungeon difficulty / player level
+        const baseTrapDC = 10 + Math.floor(playerLevel * 0.5);
+
+        // Trap count ranges by room category
+        const trapRanges = {
+            entrance: { min: 0, max: 0 },
+            boss: { min: 0, max: 0 },
+            corridor: { min: 1, max: 2 },
+            exploration: { min: 0, max: 2 },
+            combat: { min: 0, max: 1 },
+            puzzle: { min: 1, max: 2 },
+            treasure: { min: 1, max: 3 }
+        };
+
+        let totalTrapsPlaced = 0;
+
+        for (const room of rooms) {
+            const category = room.category || 'exploration';
+            const range = trapRanges[category] || { min: 0, max: 1 };
+
+            // Determine trap count for this room
+            const trapCount = rng.nextInt(range.min, range.max);
+            if (trapCount <= 0) continue;
+
+            const tiles = room.tiles;
+            if (!tiles) continue;
+
+            const width = room.width || tiles[0]?.length || 8;
+            const height = room.height || tiles.length || 8;
+
+            // Find valid floor positions (not walls, exits, doors, spawns, or existing features)
+            const validPositions = [];
+            for (let y = 2; y < height - 2; y++) {
+                for (let x = 2; x < width - 2; x++) {
+                    const tile = tiles[y]?.[x];
+                    if (tile && !tile.isWall && !tile.isExit && !tile.isDoor && !tile.isInteractable && !tile.isTrap) {
+                        // Don't place on player spawn point
+                        if (room.playerSpawn && room.playerSpawn.x === x && room.playerSpawn.y === y) continue;
+                        validPositions.push({ x, y });
+                    }
+                }
+            }
+
+            if (validPositions.length === 0) continue;
+
+            // Place traps
+            const trapsToPlace = Math.min(trapCount, validPositions.length);
+            for (let i = 0; i < trapsToPlace; i++) {
+                const posIdx = rng.nextInt(0, validPositions.length - 1);
+                const pos = validPositions.splice(posIdx, 1)[0];
+
+                // Vary the DC slightly per trap
+                const trapDC = baseTrapDC + rng.nextInt(-2, 3);
+
+                tiles[pos.y][pos.x] = {
+                    terrain: trapTerrain,
+                    isTrap: true,
+                    featureType: 'trap',
+                    isWall: false,
+                    trapDetected: false,
+                    trapDC: Math.max(8, Math.min(20, trapDC)),
+                    trapDamage: this.getTrapDamage(playerLevel, rng)
+                };
+
+                totalTrapsPlaced++;
+            }
+        }
+
+        if (totalTrapsPlaced > 0) {
+            console.log(`🪤 Placed ${totalTrapsPlaced} traps across dungeon rooms`);
+        }
+    }
+
+    /**
+     * Get trap damage dice based on player level
+     */
+    getTrapDamage(playerLevel, rng) {
+        if (playerLevel <= 2) return '1d6';
+        if (playerLevel <= 4) return '2d6';
+        if (playerLevel <= 6) return '2d8';
+        if (playerLevel <= 8) return '3d6';
+        return '3d8';
     }
 }
 

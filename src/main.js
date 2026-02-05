@@ -23,6 +23,7 @@ import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
 import skillChallengeManager from './systems/SkillChallengeManager.js';
+import LevelUpManager from './systems/LevelUpManager.js';
 import DungeonGenerator from './systems/DungeonGenerator.js';
 import DungeonManager from './systems/DungeonManager.js';
 import DungeonUI from './ui/DungeonUI.js';
@@ -677,6 +678,14 @@ class Game {
             await this.questManager.initialize();
         }
 
+        if (!this.levelUpManager) {
+            console.log('⭐ Initializing level-up manager...');
+            this.levelUpManager = new LevelUpManager();
+            await this.levelUpManager.initialize();
+            // Make globally accessible for UI
+            window.levelUpManager = this.levelUpManager;
+        }
+
         if (!this.lootManager) {
             console.log('💰 Initializing loot manager...');
             this.lootManager = new LootManager(seed, campaignId);
@@ -765,6 +774,9 @@ class Game {
 
         // Setup Quest System
         this.setupQuestSystem();
+
+        // Setup Level-Up System
+        this.setupLevelUpSystem();
 
         // Setup World Map System
         this.setupWorldMap();
@@ -1309,6 +1321,19 @@ class Game {
         // Update dev mode indicator
         this.updateDevModeIndicator(gameState.get('devMode'));
 
+        // Update XP progress bar
+        this.updateXPProgress(character);
+
+        // Show/hide level-up button
+        const levelUpBtn = document.getElementById('levelUpBtn');
+        if (levelUpBtn) {
+            if (character.pendingLevelUp) {
+                levelUpBtn.style.display = 'block';
+            } else {
+                levelUpBtn.style.display = 'none';
+            }
+        }
+
         // Subscribe to character changes (entire object)
         // This fires when character is replaced via gameState.set('character', newChar)
         gameState.subscribe('character', (updatedChar) => {
@@ -1342,6 +1367,38 @@ class Game {
 
         const location = this.getCurrentLocationString();
         locationDisplay.textContent = location;
+    }
+
+    /**
+     * Update XP progress bar in HUD
+     */
+    updateXPProgress(character) {
+        const xpDisplay = document.getElementById('xpDisplay');
+        const xpProgressBar = document.getElementById('xpProgressBar');
+
+        if (!xpDisplay || !xpProgressBar) return;
+
+        const currentXP = character.xp;
+        const currentLevel = character.level;
+        const nextLevel = currentLevel + 1;
+
+        // Get XP required for current and next level from rules engine
+        const xpForNextLevel = RULES.progression.xpTable[nextLevel];
+        const xpForCurrentLevel = RULES.progression.xpTable[currentLevel] || 0;
+
+        if (!xpForNextLevel) {
+            // Max level reached
+            xpDisplay.textContent = 'MAX LEVEL';
+            xpProgressBar.style.width = '100%';
+            return;
+        }
+
+        const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+        const xpProgress = currentXP - xpForCurrentLevel;
+        const progressPercent = Math.min(100, Math.max(0, (xpProgress / xpNeeded) * 100));
+
+        xpDisplay.textContent = `XP: ${xpProgress}/${xpNeeded}`;
+        xpProgressBar.style.width = `${progressPercent}%`;
     }
 
     /**
@@ -2185,6 +2242,76 @@ class Game {
 
         // End turn after using ability (bonus action consumed)
         this.combatManager.endTurn();
+    }
+
+    /**
+     * Setup level-up system UI and event handlers
+     */
+    setupLevelUpSystem() {
+        const modal = document.getElementById('levelUpModal');
+        const closeBtn = document.getElementById('closeLevelUpBtn');
+        const confirmBtn = document.getElementById('confirmLevelUpBtn');
+        const levelUpBtn = document.getElementById('levelUpBtn');
+
+        if (!modal || !closeBtn || !confirmBtn || !levelUpBtn) {
+            console.warn('Level-up modal elements not found');
+            return;
+        }
+
+        // Open modal when Level-Up button is clicked
+        levelUpBtn.addEventListener('click', () => {
+            const character = gameState.get('character');
+            if (character && character.pendingLevelUp) {
+                this.levelUpManager.openLevelUpModal(character);
+            }
+        });
+
+        // Close modal
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Backdrop click to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Confirm button - apply level-up selections
+        confirmBtn.addEventListener('click', () => {
+            this.levelUpManager.confirmLevelUp();
+        });
+
+        // Ability score button clicks
+        const abilityBtns = document.querySelectorAll('.ability-score-btn');
+        abilityBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove selected from all buttons
+                abilityBtns.forEach(b => b.classList.remove('selected'));
+                // Add selected to clicked button
+                btn.classList.add('selected');
+                // Store selection
+                this.levelUpManager.selectASI(btn.dataset.ability);
+            });
+        });
+
+        // Choice item clicks (delegated event handling)
+        modal.addEventListener('click', (e) => {
+            const choiceItem = e.target.closest('.choice-item');
+            if (choiceItem) {
+                this.levelUpManager.toggleChoiceSelection(choiceItem);
+            }
+        });
+
+        console.log('⭐ Level-up system initialized');
     }
 
     /**

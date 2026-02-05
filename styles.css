@@ -6887,3 +6887,328 @@ body {
         grid-column: span 1;
     }
 }
+
+/* ============================================
+   Level-Up Modal & XP Progress Styles
+   ============================================ */
+
+/* Level-Up Modal */
+.level-up-modal .modal-dialog {
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.level-summary {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.level-message {
+    font-size: 1.2rem;
+    color: var(--text-highlight);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.stat-changes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-change {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.stat-label {
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    color: var(--text-primary);
+}
+
+.hp-gain {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.level-up-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.level-up-section h3 {
+    color: var(--text-highlight);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.required-badge {
+    color: var(--warning-color);
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+/* Ability Score Grid */
+.ability-score-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.ability-score-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-primary);
+}
+
+.ability-score-btn:hover {
+    border-color: var(--accent-color);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+}
+
+.ability-score-btn.selected {
+    border-color: var(--success-color);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.ability-name {
+    font-family: var(--font-mono);
+    font-weight: bold;
+    color: var(--text-highlight);
+    font-size: 0.9rem;
+}
+
+.ability-value {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin: 5px 0;
+}
+
+.ability-increase {
+    font-size: 0.8rem;
+    color: var(--success-color);
+}
+
+/* Choice Lists */
+.choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.choice-item {
+    padding: 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.choice-item:hover {
+    border-color: var(--accent-color);
+    background: var(--bg-primary);
+}
+
+.choice-item.selected {
+    border-color: var(--success-color);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.choice-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.choice-checkbox,
+.choice-radio {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.choice-name {
+    font-weight: bold;
+    color: var(--text-highlight);
+}
+
+.spell-level {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+.choice-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-left: 30px;
+    line-height: 1.4;
+}
+
+.features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.feature-item {
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.feature-name {
+    font-weight: bold;
+    color: var(--text-highlight);
+    margin-bottom: 5px;
+}
+
+.feature-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Footer */
+.level-up-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    background: var(--bg-tertiary);
+}
+
+.confirm-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.confirm-btn:hover:not(:disabled) {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--text-secondary);
+}
+
+.footer-hint {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* XP Progress Bar (HUD) */
+.xp-display {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.xp-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.xp-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+    transition: width 0.5s ease;
+}
+
+/* Level-Up Button (HUD) */
+.level-up-button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    animation: pulse-glow 2s infinite;
+    transition: all 0.2s;
+}
+
+.level-up-button:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px 5px rgba(76, 175, 80, 0.4);
+    }
+}
+
+/* Responsive adjustments for level-up modal */
+@media (max-width: 768px) {
+    .level-up-modal .modal-dialog {
+        max-width: 95%;
+        max-height: 90vh;
+    }
+
+    .ability-score-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .level-up-section {
+        padding: 10px;
+    }
+
+    .choice-item {
+        padding: 10px;
+    }
+
+    .choice-description {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+}

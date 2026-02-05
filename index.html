@@ -87,6 +87,13 @@
                 <div class="hud-right">
                     <span id="hpDisplay">HP: 12/12</span>
                     <span id="acDisplay">AC: 16</span>
+                    <span id="xpDisplay" class="xp-display">XP: 0/300</span>
+                    <div class="xp-progress-bar">
+                        <div id="xpProgressBar" class="xp-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <button id="levelUpBtn" class="level-up-button" style="display: none;">
+                        ⭐ Level Up Available!
+                    </button>
                 </div>
             </div>
 
@@ -1229,6 +1236,112 @@ npm run legal:verify</code></pre>
                             </ul>
                         </div>
                     </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level-Up Modal -->
+        <div id="levelUpModal" class="modal level-up-modal">
+            <div class="modal-dialog level-up-dialog">
+                <div class="modal-header">
+                    <h2>⭐ Level Up!</h2>
+                    <button class="close-btn" id="closeLevelUpBtn">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Level Summary -->
+                    <div class="level-summary">
+                        <p class="level-message">Congratulations! You are now level <span id="newLevel">2</span>!</p>
+                        <div class="stat-changes">
+                            <div class="stat-change">
+                                <span class="stat-label">HP:</span>
+                                <span class="stat-value"><span id="oldHP">12</span> → <span id="newHP">19</span> <span class="hp-gain">(+<span id="hpGain">7</span>)</span></span>
+                            </div>
+                            <div class="stat-change" id="profBonusChange" style="display: none;">
+                                <span class="stat-label">Proficiency Bonus:</span>
+                                <span class="stat-value"><span id="oldProfBonus">+2</span> → <span id="newProfBonus">+3</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Features (Auto-Granted) -->
+                    <div id="newFeaturesSection" class="level-up-section" style="display: none;">
+                        <h3>New Class Features</h3>
+                        <div id="newFeaturesList" class="features-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <!-- ASI Selection (Required) -->
+                    <div id="asiSection" class="level-up-section">
+                        <h3>Choose Ability Score to Increase <span class="required-badge">Required</span></h3>
+                        <div class="ability-score-grid">
+                            <button class="ability-score-btn" data-ability="str">
+                                <div class="ability-name">STR</div>
+                                <div class="ability-value" id="strValue">16</div>
+                                <div class="ability-increase">+1 → 17</div>
+                            </button>
+                            <button class="ability-score-btn" data-ability="dex">
+                                <div class="ability-name">DEX</div>
+                                <div class="ability-value" id="dexValue">14</div>
+                                <div class="ability-increase">+1 → 15</div>
+                            </button>
+                            <button class="ability-score-btn" data-ability="con">
+                                <div class="ability-name">CON</div>
+                                <div class="ability-value" id="conValue">15</div>
+                                <div class="ability-increase">+1 → 16</div>
+                            </button>
+                            <button class="ability-score-btn" data-ability="int">
+                                <div class="ability-name">INT</div>
+                                <div class="ability-value" id="intValue">10</div>
+                                <div class="ability-increase">+1 → 11</div>
+                            </button>
+                            <button class="ability-score-btn" data-ability="wis">
+                                <div class="ability-name">WIS</div>
+                                <div class="ability-value" id="wisValue">13</div>
+                                <div class="ability-increase">+1 → 14</div>
+                            </button>
+                            <button class="ability-score-btn" data-ability="cha">
+                                <div class="ability-name">CHA</div>
+                                <div class="ability-value" id="chaValue">8</div>
+                                <div class="ability-increase">+1 → 9</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Choice Sections -->
+                    <div id="abilityChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Choose Abilities (<span id="abilityChoiceCount">1</span>)</h3>
+                        <div id="abilityChoiceList" class="choice-list">
+                            <!-- Dynamically populated with checkboxes -->
+                        </div>
+                    </div>
+
+                    <div id="spellChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Choose Spells (<span id="spellChoiceCount">2</span>) <span class="required-badge">Required</span></h3>
+                        <div id="spellChoiceList" class="choice-list">
+                            <!-- Dynamically populated with checkboxes -->
+                        </div>
+                    </div>
+
+                    <div id="traitChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Choose Traits (<span id="traitChoiceCount">1</span>)</h3>
+                        <div id="traitChoiceList" class="choice-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div id="specializationSection" class="level-up-section" style="display: none;">
+                        <h3>Choose Specialization <span class="required-badge">Required</span></h3>
+                        <div id="specializationList" class="choice-list">
+                            <!-- Dynamically populated with radio buttons -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-up-footer">
+                    <button id="confirmLevelUpBtn" class="confirm-btn" disabled>Confirm Level Up</button>
+                    <p class="footer-hint" id="levelUpHint">Select an ability score to increase</p>
                 </div>
             </div>
         </div>
