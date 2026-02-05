@@ -22,7 +22,7 @@
           "11": { "damage": "3d10" },
           "17": { "damage": "4d10" }
         },
-        "callings": ["scholar", "instinct"]
+        "callings": ["scholar"]
       },
 
       {
@@ -69,7 +69,7 @@
           "11": { "damage": "3d8" },
           "17": { "damage": "4d8" }
         },
-        "callings": ["scholar", "instinct"]
+        "callings": ["scholar"]
       },
 
       {
@@ -92,7 +92,7 @@
           "11": { "damage": "3d8" },
           "17": { "damage": "4d8" }
         },
-        "callings": ["pact"]
+        "callings": []
       },
 
       {
@@ -108,7 +108,7 @@
         "concentration": true,
         "description": "Touch a creature. Once before the spell ends, it can roll 1d4 and add the result to one ability check of its choice.",
         "effect": "+1d4_ability_check",
-        "callings": ["pact", "bond"]
+        "callings": []
       },
 
       {
@@ -123,7 +123,7 @@
         "duration": "1hour",
         "description": "Touch an object no larger than 10 feet. It sheds bright light in a 20-foot radius and dim light for another 20 feet. Lasts 1 hour.",
         "effect": "light_20ft",
-        "callings": ["scholar", "pact", "bond"]
+        "callings": ["scholar"]
       }
     ],
 
@@ -162,7 +162,7 @@
         "savingThrow": "dex",
         "areaOfEffect": "15ft_cone",
         "upcastScaling": "+1d6 per level",
-        "callings": ["scholar", "instinct"]
+        "callings": ["scholar"]
       },
 
       {
@@ -178,7 +178,7 @@
         "duration": "1_round",
         "description": "When hit by an attack or Magic Missile, gain +5 AC until the start of your next turn, potentially causing the attack to miss.",
         "effect": "+5_ac_until_next_turn",
-        "callings": ["scholar", "instinct"]
+        "callings": ["scholar"]
       },
 
       {
@@ -194,7 +194,7 @@
         "description": "Touch a creature to restore 1d8 + spellcasting modifier hit points.",
         "healing": "1d8 + mod",
         "upcastScaling": "+1d8 per level",
-        "callings": ["pact", "bond"]
+        "callings": []
       },
 
       {
@@ -212,7 +212,7 @@
         "effect": "+1d4_attacks_and_saves",
         "targets": 3,
         "upcastScaling": "+1 target per level",
-        "callings": ["pact", "oath"]
+        "callings": []
       },
 
       {
@@ -230,7 +230,7 @@
         "damage": "+1d6",
         "damageType": "weapon",
         "upcastScaling": "longer duration at higher levels",
-        "callings": ["bond", "wanderlust"]
+        "callings": ["wanderlust"]
       },
 
       {
@@ -246,7 +246,7 @@
         "description": "A creature you can see within range regains 1d4 + spellcasting modifier hit points.",
         "healing": "1d4 + mod",
         "upcastScaling": "+1d4 per level",
-        "callings": ["pact", "bond", "wanderlust"]
+        "callings": ["wanderlust"]
       },
 
       {
@@ -266,7 +266,7 @@
         "areaOfEffect": "15ft_cube",
         "effect": "push_10ft",
         "upcastScaling": "+1d8 per level",
-        "callings": ["scholar", "instinct", "wanderlust"]
+        "callings": ["scholar", "wanderlust"]
       }
     ],
 
@@ -287,7 +287,7 @@
         "attackType": "rangedSpellAttack",
         "rays": 3,
         "upcastScaling": "+1 ray per level",
-        "callings": ["scholar", "instinct"]
+        "callings": ["scholar"]
       },
 
       {
@@ -302,7 +302,7 @@
         "duration": "instantaneous",
         "description": "Teleport up to 30 feet to an unoccupied space you can see.",
         "effect": "teleport_30ft",
-        "callings": ["scholar", "wanderlust", "instinct"]
+        "callings": ["scholar", "wanderlust"]
       },
 
       {
@@ -320,7 +320,7 @@
         "savingThrow": "wis",
         "effect": "paralyzed",
         "upcastScaling": "+1 target per level",
-        "callings": ["scholar", "pact", "wanderlust"]
+        "callings": ["scholar", "wanderlust"]
       },
 
       {
@@ -338,7 +338,7 @@
         "damageType": "force",
         "attackType": "meleeSpellAttack",
         "upcastScaling": "+1d8 per 2 levels",
-        "callings": ["pact", "oath"]
+        "callings": []
       }
     ]
   },
@@ -352,34 +352,10 @@
       "level2": ["scorchingRay", "mistyStep", "holdPerson"]
     },
 
-    "pact": {
-      "cantrips": ["sacredFlame", "guidance", "light"],
-      "level1": ["cureWounds", "bless", "healingWord"],
-      "level2": ["holdPerson", "spiritualWeapon"]
-    },
-
     "wanderlust": {
       "cantrips": [],
       "level1": ["huntersMark", "healingWord", "thunderwave"],
       "level2": ["mistyStep", "holdPerson"]
-    },
-
-    "bond": {
-      "cantrips": ["guidance", "light"],
-      "level1": ["cureWounds", "huntersMark", "healingWord"],
-      "level2": []
-    },
-
-    "oath": {
-      "cantrips": [],
-      "level1": ["bless"],
-      "level2": ["spiritualWeapon"]
-    },
-
-    "instinct": {
-      "cantrips": ["fireBolt", "shockingGrasp"],
-      "level1": ["burningHands", "shield", "thunderwave"],
-      "level2": ["scorchingRay", "mistyStep"]
     },
 
     "dedication": {

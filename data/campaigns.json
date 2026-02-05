@@ -99,7 +99,6 @@
       },
       "restrictions": {
         "excludeRaces": ["dragonborn"],
-        "excludeClasses": ["pact"],
         "excludeSpellSchools": ["conjuration"],
         "metalItemsRare": true
       },

@@ -35,43 +35,11 @@
       "isCustom": true
     }
   ],
-  "pact": [
-    {
-      "id": "custom",
-      "name": "Custom",
-      "description": "Create your own unique Pact character with full control over all choices.",
-      "isCustom": true
-    }
-  ],
   "wanderlust": [
     {
       "id": "custom",
       "name": "Custom",
       "description": "Create your own unique Wanderlust character with full control over all choices.",
-      "isCustom": true
-    }
-  ],
-  "bond": [
-    {
-      "id": "custom",
-      "name": "Custom",
-      "description": "Create your own unique Bond character with full control over all choices.",
-      "isCustom": true
-    }
-  ],
-  "oath": [
-    {
-      "id": "custom",
-      "name": "Custom",
-      "description": "Create your own unique Oath character with full control over all choices.",
-      "isCustom": true
-    }
-  ],
-  "instinct": [
-    {
-      "id": "custom",
-      "name": "Custom",
-      "description": "Create your own unique Instinct character with full control over all choices.",
       "isCustom": true
     }
   ]
