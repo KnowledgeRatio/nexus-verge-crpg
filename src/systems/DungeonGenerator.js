@@ -75,23 +75,34 @@ export class DungeonGenerator {
         dungeonFeature.dungeonType = dungeonType;
         dungeonFeature.dungeonTypeId = dungeonType.id;
 
-        // 2. Determine room count (min 3: entrance + 1 middle + boss)
-        const minRooms = Math.max(3, dungeonType.minRooms || 3);
-        const maxRooms = Math.min(10, dungeonType.maxRooms || 7);
+        // 2. Determine room count from dungeon type data (no artificial cap)
+        const minRooms = Math.max(3, dungeonType.minRooms || 5);
+        const maxRooms = Math.max(minRooms, dungeonType.maxRooms || 12);
         const roomCount = rng.nextInt(minRooms, maxRooms);
 
-        // 3. Select rooms from pool
+        // 3. Select rooms from pool (boss room placed separately after depth calculation)
         const rooms = this.selectRooms(rng, dungeonType, roomCount);
 
         // 4. Generate connections (spanning tree + extras)
         this.generateConnections(rng, rooms);
 
-        // 5. Mark entrance and exits
+        // 5. Mark entrance and place boss at maximum depth from entrance
         rooms[0].isEntrance = true;
         rooms[0].hasExit = true; // Primary exit at entrance
 
-        // Boss room is always last
-        const bossRoom = rooms[rooms.length - 1];
+        // Find the room at maximum graph depth from the entrance using BFS
+        const deepestIndex = this.findDeepestRoom(rooms, 0);
+        const bossTemplateIndex = rooms.length - 1; // Boss template was added last by selectRooms
+
+        // Swap the boss room template to the deepest position so the boss-themed
+        // room visuals appear at the end of the longest path, not adjacent to entrance
+        if (deepestIndex !== bossTemplateIndex && deepestIndex !== 0) {
+            this.swapRoomTemplates(rooms[deepestIndex], rooms[bossTemplateIndex]);
+        }
+
+        // Mark the deepest room as the boss room
+        const bossRoom = rooms[deepestIndex !== 0 ? deepestIndex : bossTemplateIndex];
+        bossRoom.isBossRoom = true;
         bossRoom.hasExit = true; // Secondary exit at boss room
         bossRoom.boss = this.selectBoss(rng, dungeonType, playerLevel);
 
@@ -106,25 +117,40 @@ export class DungeonGenerator {
 
         // 7. Store generated data
         dungeonFeature.rooms = rooms;
+        dungeonFeature.roomCount = rooms.length;
         dungeonFeature.currentRoomIndex = 0;
         dungeonFeature.generated = true;
         dungeonFeature.ambientDescription = dungeonType.ambientDescription;
+
+        console.log(`🏰 Generated ${dungeonType.name}: ${rooms.length} rooms (boss at depth ${this.getRoomDepth(rooms, 0, deepestIndex !== 0 ? deepestIndex : bossTemplateIndex)})`);
 
         return dungeonFeature;
     }
 
     /**
-     * Select a random dungeon type
+     * Select a random dungeon type, weighted by sizeWeight (larger dungeons are rarer)
      */
     selectDungeonType(rng) {
         if (this.dungeonTypes.length === 0) return null;
-        return rng.choice(this.dungeonTypes);
+
+        // Build weighted selection using sizeWeight (default 1.0)
+        const totalWeight = this.dungeonTypes.reduce((sum, dt) => sum + (dt.sizeWeight || 1.0), 0);
+        let roll = rng.next() * totalWeight;
+
+        for (const dt of this.dungeonTypes) {
+            roll -= (dt.sizeWeight || 1.0);
+            if (roll <= 0) return dt;
+        }
+
+        // Fallback
+        return this.dungeonTypes[this.dungeonTypes.length - 1];
     }
 
     /**
      * Select rooms for the dungeon
      * - Exactly 1 entrance (first)
-     * - Exactly 1 boss room (last)
+     * - Fill with middle rooms (exploration/combat/puzzle/treasure/corridor)
+     * - Boss room template is reserved and swapped to deepest position after connections
      * - No duplicate room templates
      */
     selectRooms(rng, dungeonType, count) {
@@ -141,11 +167,10 @@ export class DungeonGenerator {
             usedRoomIds.add(entranceRoom.id);
         }
 
-        // RULE: Exactly 1 boss room (required, always last)
-        const bossRoom = this.getRandomRoom(rng, 'boss', theme, usedRoomIds);
-        if (bossRoom) {
-            usedRoomIds.add(bossRoom.id);
-            bossRoom.connections = [];
+        // Reserve boss room template (will be placed at deepest position later)
+        const bossRoomTemplate = this.getRandomRoom(rng, 'boss', theme, usedRoomIds);
+        if (bossRoomTemplate) {
+            usedRoomIds.add(bossRoomTemplate.id);
         }
 
         // Fill middle rooms (exploration/combat/puzzle/treasure/corridor)
@@ -163,10 +188,11 @@ export class DungeonGenerator {
             }
         }
 
-        // Add boss room at end
-        if (bossRoom) {
-            bossRoom.roomIndex = rooms.length;
-            rooms.push(bossRoom);
+        // Add boss room template at end (will be swapped to deepest position in generateDungeon)
+        if (bossRoomTemplate) {
+            bossRoomTemplate.roomIndex = rooms.length;
+            bossRoomTemplate.connections = [];
+            rooms.push(bossRoomTemplate);
         }
 
         return rooms;
@@ -209,7 +235,9 @@ export class DungeonGenerator {
     }
 
     /**
-     * Generate room connections using spanning tree + random extras
+     * Generate room connections using spanning tree + random extras.
+     * For larger dungeons, favors a more linear/branching structure to create depth,
+     * ensuring the boss room ends up far from the entrance.
      */
     generateConnections(rng, rooms) {
         if (rooms.length <= 1) return;
@@ -220,6 +248,8 @@ export class DungeonGenerator {
         }
 
         // Create spanning tree (ensures all rooms reachable)
+        // For larger dungeons, prefer connecting to the most recently added room
+        // to create longer chains rather than star topologies
         const connected = [0];
         const unconnected = [];
         for (let i = 1; i < rooms.length; i++) {
@@ -229,9 +259,22 @@ export class DungeonGenerator {
         // Shuffle unconnected for randomness
         this.shuffleArray(rng, unconnected);
 
+        // For dungeons with 10+ rooms, bias connections toward recent nodes (linear paths)
+        // For smaller dungeons, use random connections (more interconnected)
+        const isLargeDungeon = rooms.length >= 10;
+
         while (unconnected.length > 0) {
             const toIdx = unconnected.shift();
-            const fromIdx = rng.choice(connected);
+
+            // Pick source room: large dungeons prefer recent nodes for depth
+            let fromIdx;
+            if (isLargeDungeon && rng.next() < 0.75) {
+                // 75% chance: connect to one of the last 3 connected rooms (creates chains)
+                const recentCount = Math.min(3, connected.length);
+                fromIdx = connected[connected.length - 1 - rng.nextInt(0, recentCount - 1)];
+            } else {
+                fromIdx = rng.choice(connected);
+            }
 
             // Check connection limits
             const fromRoom = rooms[fromIdx];
@@ -266,7 +309,9 @@ export class DungeonGenerator {
             }
         }
 
-        // Add some extra connections (20% chance per room pair that aren't already connected)
+        // Add some extra connections for alternate paths
+        // Fewer shortcuts in large dungeons to maintain depth
+        const shortcutChance = isLargeDungeon ? 0.08 : 0.2;
         for (let i = 0; i < rooms.length; i++) {
             for (let j = i + 2; j < rooms.length; j++) {
                 const roomI = rooms[i];
@@ -279,7 +324,7 @@ export class DungeonGenerator {
                 const maxI = roomI.maxConnections || 4;
                 const maxJ = roomJ.maxConnections || 4;
 
-                if (rng.next() < 0.2 &&
+                if (rng.next() < shortcutChance &&
                     roomI.connections.length < maxI &&
                     roomJ.connections.length < maxJ) {
                     roomI.connections.push(j);
@@ -287,6 +332,82 @@ export class DungeonGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Find the room at maximum graph depth from a starting room using BFS.
+     * Returns the index of the deepest room.
+     */
+    findDeepestRoom(rooms, startIndex) {
+        const visited = new Set();
+        const queue = [{ index: startIndex, depth: 0 }];
+        visited.add(startIndex);
+
+        let deepestIndex = startIndex;
+        let maxDepth = 0;
+
+        while (queue.length > 0) {
+            const { index, depth } = queue.shift();
+
+            if (depth > maxDepth) {
+                maxDepth = depth;
+                deepestIndex = index;
+            }
+
+            const room = rooms[index];
+            for (const connIdx of (room.connections || [])) {
+                if (!visited.has(connIdx)) {
+                    visited.add(connIdx);
+                    queue.push({ index: connIdx, depth: depth + 1 });
+                }
+            }
+        }
+
+        return deepestIndex;
+    }
+
+    /**
+     * Swap the visual/template properties of two rooms while preserving
+     * their graph positions (connections, roomIndex).
+     * Used to place the boss room template at the deepest position.
+     */
+    swapRoomTemplates(roomA, roomB) {
+        const templateProps = [
+            'id', 'name', 'category', 'description', 'width', 'height',
+            'shape', 'features', 'compatibleThemes', 'maxConnections',
+            'encounterChance', 'skillChallengeChance'
+        ];
+
+        for (const prop of templateProps) {
+            const temp = roomA[prop];
+            roomA[prop] = roomB[prop];
+            roomB[prop] = temp;
+        }
+    }
+
+    /**
+     * Get the BFS depth of a specific room from a start room.
+     * Used for logging/debugging.
+     */
+    getRoomDepth(rooms, startIndex, targetIndex) {
+        const visited = new Set();
+        const queue = [{ index: startIndex, depth: 0 }];
+        visited.add(startIndex);
+
+        while (queue.length > 0) {
+            const { index, depth } = queue.shift();
+            if (index === targetIndex) return depth;
+
+            const room = rooms[index];
+            for (const connIdx of (room.connections || [])) {
+                if (!visited.has(connIdx)) {
+                    visited.add(connIdx);
+                    queue.push({ index: connIdx, depth: depth + 1 });
+                }
+            }
+        }
+
+        return -1; // Unreachable
     }
 
     /**
