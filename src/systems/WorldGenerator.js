@@ -1296,17 +1296,11 @@ class WorldGenerator {
         // Place dungeons first (most important)
         const dungeonRNG = new SeededRandom(`${this.worldSeed}_dungeons`);
 
-        for (const { rx, ry } of validRegions) {
-            if (dungeonsPlaced >= featureConfig.dungeons) break;
-
+        // Helper to place a dungeon at a region
+        const placeDungeon = (rx, ry) => {
             const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_dungeon`);
-
-            // Apply terrain weight preferences (dungeons favor mountains/hills)
-            // Use simple random check since we don't have terrain data at metadata time
-            if (dungeonRNG.next() > 0.5) continue; // ~50% of valid regions checked
-
             const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) continue;
+            if (!pos) return false;
 
             // Determine difficulty based on distribution
             const diffRoll = regionRNG.next();
@@ -1329,7 +1323,32 @@ class WorldGenerator {
                 explored: false
             });
             dungeonsPlaced++;
+            return true;
+        };
+
+        // First pass: spread dungeons across regions (skip some for distribution)
+        const skippedRegions = [];
+        for (const { rx, ry } of validRegions) {
+            if (dungeonsPlaced >= featureConfig.dungeons) break;
+
+            // Skip ~40% of regions for spread - but track skipped ones for second pass
+            if (dungeonRNG.next() > 0.6) {
+                skippedRegions.push({ rx, ry });
+                continue;
+            }
+
+            placeDungeon(rx, ry);
         }
+
+        // Second pass: fill remaining target from skipped regions
+        if (dungeonsPlaced < featureConfig.dungeons) {
+            for (const { rx, ry } of skippedRegions) {
+                if (dungeonsPlaced >= featureConfig.dungeons) break;
+                placeDungeon(rx, ry);
+            }
+        }
+
+        console.log(`   Dungeons placed: ${dungeonsPlaced}/${featureConfig.dungeons}`);
 
         // Place sanctuaries
         const sanctuaryRNG = new SeededRandom(`${this.worldSeed}_sanctuaries`);
