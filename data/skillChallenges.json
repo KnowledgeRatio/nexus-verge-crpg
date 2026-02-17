@@ -146,14 +146,16 @@
     "locked_door": {
       "id": "locked_door",
       "name": "Locked Door",
-      "description": "A locked door bars your way",
+      "description": "A locked door bars your way. Choose how to get through - but choose wisely, failure means this door stays shut forever.",
       "type": "choice",
+      "doorChallenge": true,
+      "canTurnBack": true,
       "balance": {
         "skillValue": "medium",
         "rewardMultiplier": 1,
-        "triggerFrequency": 0.2,
-        "cooldown": 300000,
-        "riskLevel": "low"
+        "triggerFrequency": 0.6,
+        "cooldown": 0,
+        "riskLevel": "medium"
       },
       "options": [
         {

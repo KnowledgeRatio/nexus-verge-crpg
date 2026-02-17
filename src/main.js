@@ -710,6 +710,18 @@ class Game {
             window.skillChallengeManager = this.skillChallengeManager;
         }
 
+        // Load skills data for display names
+        if (!this.skillsData) {
+            try {
+                const skillsResponse = await fetch('data/skills.json');
+                const skillsJson = await skillsResponse.json();
+                this.skillsData = skillsJson.skills || [];
+            } catch (e) {
+                console.warn('Could not load skills.json for display names:', e);
+                this.skillsData = [];
+            }
+        }
+
         if (!this.settlementManager) {
             console.log('🏘️ Initializing settlement system...');
             this.settlementManager = new SettlementManager(
@@ -851,6 +863,10 @@ class Game {
     async initDungeonScreen() {
         // Prevent multiple initializations
         if (this.dungeonScreenInitialized) {
+            // Sync zoom level from overworld
+            if (this.dungeonUI && this.mapRenderer) {
+                this.dungeonUI.zoomIndex = this.mapRenderer.zoomIndex || 0;
+            }
             // Just render, don't re-subscribe
             if (this.dungeonUI && this.dungeonManager) {
                 await this.dungeonUI.render(this.dungeonManager);
@@ -880,6 +896,11 @@ class Game {
                 }).join('');
                 dungeonLog.scrollTop = dungeonLog.scrollHeight;
             });
+        }
+
+        // Sync zoom level from overworld map renderer
+        if (this.dungeonUI && this.mapRenderer) {
+            this.dungeonUI.zoomIndex = this.mapRenderer.zoomIndex || 0;
         }
 
         // Initial render
@@ -3657,6 +3678,10 @@ class Game {
         return new Promise((resolve) => {
             const attemptBtn = document.getElementById('attemptSkillCheck');
 
+            // Dynamic button text: "Attempt [Skill Name]"
+            const skillDisplayName = this.formatSkillName(skillId);
+            attemptBtn.textContent = `Attempt ${skillDisplayName}`;
+
             const handleAttempt = async () => {
                 cleanup();
 
@@ -3791,6 +3816,141 @@ class Game {
             if (canTurnBack) {
                 cancelBtn.addEventListener('click', handleCancel);
             }
+        });
+    }
+
+    /**
+     * Format a skill ID into a display name
+     * @param {string} skillId - camelCase skill ID (e.g., "sleightOfHand")
+     * @returns {string} Formatted name (e.g., "Sleight of Hand")
+     */
+    formatSkillName(skillId) {
+        // Check loaded skills data first
+        if (this.skillsData) {
+            const skill = this.skillsData.find(s => s.id === skillId);
+            if (skill) return skill.name;
+        }
+        // Fallback: convert camelCase to Title Case
+        return skillId
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim();
+    }
+
+    /**
+     * Prompt player to choose from multiple skill options for a choice-based challenge
+     * Shows all options with their DCs, bonuses, and success chances
+     * @param {Object} challenge - Choice challenge template with options array
+     * @returns {Promise<Object>} - { attempted, success, optionChosen, rollResult, consequences }
+     */
+    async promptChoiceSkillChallenge(challenge) {
+        const modal = document.getElementById('choiceChallengeModal');
+        const character = gameState.get('character');
+
+        // Set title and description
+        document.getElementById('choiceChallengeTitle').textContent = challenge.name || 'Choose Your Approach';
+        document.getElementById('choiceChallengeDescription').textContent = challenge.description || '';
+
+        // Build option cards
+        const optionsContainer = document.getElementById('choiceChallengeOptions');
+        optionsContainer.innerHTML = '';
+
+        const optionElements = challenge.options.map((option, index) => {
+            const adjustedDC = window.skillChallengeManager
+                ? window.skillChallengeManager.calculateAdjustedDC(option.baseDC, character.level)
+                : option.baseDC;
+            const skillBonus = character.getSkillBonus(option.skill);
+            const successChance = Math.max(0, Math.min(100, ((21 - adjustedDC + skillBonus) * 5)));
+
+            const card = document.createElement('div');
+            card.className = 'choice-option-card';
+            card.dataset.optionIndex = index;
+
+            // Determine chance color class
+            let chanceClass = '';
+            if (successChance >= 60) chanceClass = 'high';
+            else if (successChance <= 30) chanceClass = 'low';
+
+            card.innerHTML = `
+                <div class="choice-option-header">
+                    <span class="choice-option-skill">${this.formatSkillName(option.skill)}</span>
+                    <span class="choice-option-dc">DC ${adjustedDC}</span>
+                </div>
+                <div class="choice-option-description">${option.description}</div>
+                <div class="choice-option-stats">
+                    <span class="choice-option-bonus">Bonus: ${skillBonus >= 0 ? '+' : ''}${skillBonus}</span>
+                    <span class="choice-option-chance ${chanceClass}">Chance: ${successChance}%</span>
+                </div>
+            `;
+
+            optionsContainer.appendChild(card);
+            return { card, option, adjustedDC, index };
+        });
+
+        // Show modal
+        modal.classList.add('active');
+
+        // Wait for player choice
+        return new Promise((resolve) => {
+            const cancelBtn = document.getElementById('cancelChoiceChallenge');
+            const canTurnBack = challenge.canTurnBack !== false;
+
+            if (canTurnBack) {
+                cancelBtn.style.display = 'inline-block';
+            } else {
+                cancelBtn.style.display = 'none';
+            }
+
+            const handleOptionClick = async (optionData) => {
+                cleanup();
+
+                // Now show the standard skill check prompt for the chosen option
+                const config = {
+                    title: challenge.name,
+                    description: `${challenge.description}\n\n${optionData.option.description}`,
+                    skill: optionData.option.skill,
+                    dc: optionData.adjustedDC
+                };
+
+                // Pass option as stage so onSuccess/onFailure outcomes are found
+                const result = await this.promptSkillCheck(config, challenge, optionData.option);
+
+                resolve({
+                    attempted: result.attempted,
+                    success: result.success,
+                    optionChosen: optionData.option,
+                    rollResult: result.rollResult,
+                    consequences: result.consequences,
+                    enemyTypes: result.enemyTypes
+                });
+            };
+
+            const handleCancel = () => {
+                cleanup();
+                resolve({ attempted: false, success: false, optionChosen: null, rollResult: null, consequences: null });
+            };
+
+            // Attach click handlers to option cards
+            const cardClickHandlers = optionElements.map(optionData => {
+                const handler = () => handleOptionClick(optionData);
+                optionData.card.addEventListener('click', handler);
+                return { card: optionData.card, handler };
+            });
+
+            const cancelHandler = () => handleCancel();
+            if (canTurnBack) {
+                cancelBtn.addEventListener('click', cancelHandler);
+            }
+
+            const cleanup = () => {
+                modal.classList.remove('active');
+                cardClickHandlers.forEach(({ card, handler }) => {
+                    card.removeEventListener('click', handler);
+                });
+                if (canTurnBack) {
+                    cancelBtn.removeEventListener('click', cancelHandler);
+                }
+            };
         });
     }
 

@@ -4801,6 +4801,113 @@ body {
     max-width: 200px;
 }
 
+/* ===== Choice Skill Challenge Modal ===== */
+.choice-challenge-modal {
+    max-width: 600px;
+    padding: 30px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.choice-challenge-modal h2 {
+    color: var(--text-highlight);
+    font-family: var(--font-mono);
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.choice-challenge-description {
+    font-style: italic;
+    color: #ccc;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.choice-challenge-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.choice-option-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    padding: 15px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+
+.choice-option-card:hover {
+    border-color: var(--text-highlight);
+    background: rgba(255, 215, 0, 0.05);
+    transform: translateX(4px);
+}
+
+.choice-option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.choice-option-skill {
+    font-family: var(--font-mono);
+    font-weight: bold;
+    color: var(--text-highlight);
+    font-size: 1.1rem;
+}
+
+.choice-option-dc {
+    font-family: var(--font-mono);
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.choice-option-description {
+    color: #bbb;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.choice-option-stats {
+    display: flex;
+    gap: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.choice-option-bonus {
+    color: var(--accent-color);
+}
+
+.choice-option-chance {
+    color: var(--warning-color);
+}
+
+.choice-option-chance.high {
+    color: var(--success-color);
+}
+
+.choice-option-chance.low {
+    color: var(--danger-color);
+}
+
+.choice-challenge-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.choice-challenge-actions .btn {
+    max-width: 200px;
+}
+
 /* ===== Inventory System ===== */
 .inventory-empty {
     padding: 40px 20px;

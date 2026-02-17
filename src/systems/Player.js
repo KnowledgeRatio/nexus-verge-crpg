@@ -393,6 +393,41 @@ class Player {
 
             // Check if at door tile (room transition)
             if (this.dungeonManager.isAtDoor()) {
+                const doorTile = this.dungeonManager.getCurrentDoorTile();
+
+                // Check if door is permanently locked from a failed challenge
+                if (doorTile?.locked) {
+                    gameState.addMessage('🔒 This door is locked. You cannot open it.', 'warning');
+                    return;
+                }
+
+                // Check for locked door skill challenge trigger
+                const lockedDoorChallenge = window.skillChallengeManager?.challenges?.challenges?.['locked_door'];
+                if (lockedDoorChallenge?.doorChallenge && !doorTile?.challengeCompleted) {
+                    const triggerChance = lockedDoorChallenge.balance?.triggerFrequency || 0.6;
+                    if (Math.random() < triggerChance) {
+                        // Show choice skill challenge modal
+                        const challengeResult = await window.game.promptChoiceSkillChallenge(lockedDoorChallenge);
+
+                        if (!challengeResult.attempted) {
+                            // Player backed out - don't enter but don't lock
+                            return;
+                        }
+
+                        // Mark this door's challenge as completed (won't trigger again)
+                        this.dungeonManager.markDoorChallengeCompleted();
+
+                        if (!challengeResult.success) {
+                            // FAILED - permanently lock this door
+                            this.dungeonManager.markDoorLocked();
+                            gameState.addMessage('🔒 The door remains locked. You cannot open it.', 'danger');
+                            return;
+                        }
+                        // SUCCESS - fall through to normal door passage
+                    }
+                }
+
+                // Normal door passage
                 const destination = this.dungeonManager.getDoorDestination();
                 if (destination !== null) {
                     const result = this.dungeonManager.moveToRoom(destination);
@@ -484,7 +519,7 @@ class Player {
         const terrainChallengeMap = {
             'mountain': ['cliff_climb', 'boulder_push'],
             'hills': ['cliff_climb'],
-            'dungeon': ['trap_detect_disarm', 'locked_door', 'hidden_treasure'],
+            'dungeon': ['trap_detect_disarm', 'hidden_treasure'],
             'ruins': ['trap_detect_disarm', 'ancient_text', 'arcane_puzzle'],
             'forest': ['track_creature', 'calm_wild_beast'],
             'denseForest': ['sneak_past_guards', 'track_creature'],
@@ -748,20 +783,8 @@ class Player {
      * @param {number} baseAdjustedDC - Base level-adjusted DC
      */
     async handleChoiceSkillChallenge(challenge, baseAdjustedDC) {
-        // For now, randomly pick one option (future: add UI for player choice)
-        const option = challenge.options[Math.floor(Math.random() * challenge.options.length)];
-
-        const character = gameState.get('character');
-        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(option.baseDC || baseAdjustedDC, character.level);
-
-        const config = {
-            title: challenge.name,
-            description: `${challenge.description}\n\n${option.description}`,
-            skill: option.skill,
-            dc: adjustedDC
-        };
-
-        const result = await window.game.promptSkillCheck(config, challenge, null);
+        // Show choice UI - player picks which skill to use
+        const result = await window.game.promptChoiceSkillChallenge(challenge);
 
         if (!result.attempted) {
             gameState.addMessage('You decide to find another way.', 'info');
@@ -1203,8 +1226,10 @@ class Player {
         if (features.some(f => f.includes('trap') || f.includes('pressure') || f.includes('mechanism'))) {
             relevantChallenges.push('trap_detect_disarm');
         }
-        if (features.some(f => f.includes('door') || f.includes('lock') || f.includes('vault') || f.includes('sealed'))) {
-            relevantChallenges.push('locked_door');
+        // locked_door now triggers specifically on door tiles via E key interaction
+        // Vault/sealed features use arcane_puzzle instead
+        if (features.some(f => f.includes('vault') || f.includes('sealed'))) {
+            relevantChallenges.push('arcane_puzzle');
         }
         if (features.some(f => f.includes('treasure') || f.includes('chest') || f.includes('hidden') || f.includes('secret'))) {
             relevantChallenges.push('hidden_treasure');
@@ -1228,7 +1253,7 @@ class Player {
         // If no feature-specific match, fall back to room category defaults
         if (relevantChallenges.length === 0) {
             if (roomCategory === 'puzzle') {
-                relevantChallenges = ['arcane_puzzle', 'locked_door', 'hidden_treasure'];
+                relevantChallenges = ['arcane_puzzle', 'hidden_treasure'];
             } else if (roomCategory === 'treasure') {
                 relevantChallenges = ['trap_detect_disarm', 'hidden_treasure'];
             } else if (roomCategory === 'combat') {

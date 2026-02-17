@@ -775,7 +775,7 @@
         <!-- Skill Check Modal -->
         <div id="skillCheckModal" class="modal">
             <div class="modal-content skill-check-modal">
-                <h2 id="skillCheckTitle">Attempt Crossing?</h2>
+                <h2 id="skillCheckTitle">Skill Challenge</h2>
                 <div class="skill-check-description" id="skillCheckDescription"></div>
 
                 <div class="skill-check-stats">
@@ -803,8 +803,22 @@
                 </div>
 
                 <div class="skill-check-actions">
-                    <button id="attemptSkillCheck" class="btn btn-danger">Attempt Crossing</button>
+                    <button id="attemptSkillCheck" class="btn btn-danger">Attempt</button>
                     <button id="cancelSkillCheck" class="btn btn-secondary">Turn Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Choice Skill Challenge Modal -->
+        <div id="choiceChallengeModal" class="modal">
+            <div class="modal-content choice-challenge-modal">
+                <h2 id="choiceChallengeTitle">Choose Your Approach</h2>
+                <div class="choice-challenge-description" id="choiceChallengeDescription"></div>
+                <div class="choice-challenge-options" id="choiceChallengeOptions">
+                    <!-- Options rendered dynamically -->
+                </div>
+                <div class="choice-challenge-actions">
+                    <button id="cancelChoiceChallenge" class="btn btn-secondary">Turn Back</button>
                 </div>
             </div>
         </div>

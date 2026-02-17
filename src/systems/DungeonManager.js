@@ -353,6 +353,52 @@ export class DungeonManager {
     }
 
     /**
+     * Get the current door tile (if player is standing on one)
+     * @returns {Object|null} The door tile object or null
+     */
+    getCurrentDoorTile() {
+        const dungeonState = gameState.get('dungeon');
+        if (!dungeonState?.active) return null;
+
+        const tile = this.getTileInCurrentRoom(
+            dungeonState.playerPosition.x,
+            dungeonState.playerPosition.y
+        );
+
+        return (tile?.isDoor) ? tile : null;
+    }
+
+    /**
+     * Mark the current door tile as permanently locked (failed skill challenge)
+     */
+    markDoorLocked() {
+        const dungeonState = gameState.get('dungeon');
+        if (!dungeonState?.active) return;
+
+        const pos = dungeonState.playerPosition;
+        const room = this.getCurrentRoom();
+        if (room?.tiles?.[pos.y]?.[pos.x]?.isDoor) {
+            room.tiles[pos.y][pos.x].locked = true;
+            gameState.set('dungeon', dungeonState);
+        }
+    }
+
+    /**
+     * Mark the current door's skill challenge as completed (won't trigger again)
+     */
+    markDoorChallengeCompleted() {
+        const dungeonState = gameState.get('dungeon');
+        if (!dungeonState?.active) return;
+
+        const pos = dungeonState.playerPosition;
+        const room = this.getCurrentRoom();
+        if (room?.tiles?.[pos.y]?.[pos.x]?.isDoor) {
+            room.tiles[pos.y][pos.x].challengeCompleted = true;
+            gameState.set('dungeon', dungeonState);
+        }
+    }
+
+    /**
      * Mark boss as defeated
      */
     markBossDefeated() {
