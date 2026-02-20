@@ -219,12 +219,16 @@ class SettlementUI {
     `;
 
         buildingNPCs.forEach(npc => {
-            const questBadge = npc.offersQuest ? '<span class="quest-badge">!</span>' : '';
+            const relationManager = window.game?.relationManager;
+            const relation = relationManager ? relationManager.getRelation(npc) : null;
+            const canOfferQuest = relationManager ? relationManager.canOfferQuest(npc) : true;
+            const questBadge = (npc.offersQuest && canOfferQuest) ? '<span class="quest-badge">!</span>' : '';
+            const relationBadge = relation ? `<span class="relation-badge" style="color:${relation.color}" title="Relation: ${relation.effectiveScore}">${relation.tierLabel}</span>` : '';
             html += `
         <div class="npc-card" data-npc-id="${npc.id}">
           <div class="npc-header">
             <h4>${npc.name}${questBadge}</h4>
-            <span class="npc-role">${this.formatRole(npc.role)}</span>
+            <span class="npc-role">${this.formatRole(npc.role)} ${relationBadge}</span>
           </div>
           <p class="npc-personality">${npc.personality}</p>
           <button class="btn-primary talk-btn" data-npc-id="${npc.id}">Talk</button>
@@ -295,6 +299,13 @@ class SettlementUI {
             return;
         }
 
+        // Get relation info
+        const relationManager = window.game?.relationManager;
+        const relation = relationManager ? relationManager.getRelation(npc) : null;
+        const canSpeak = relationManager ? relationManager.canSpeak(npc) : true;
+        const canTrade = relationManager ? relationManager.canTrade(npc) : true;
+        const canOfferQuest = relationManager ? relationManager.canOfferQuest(npc) : true;
+
         // Update modal content
         const nameEl = document.getElementById('npcDialogueName');
         const roleEl = document.getElementById('npcDialogueRole');
@@ -305,20 +316,53 @@ class SettlementUI {
             nameEl.textContent = npc.name;
         }
         if (roleEl) {
-            roleEl.textContent = this.formatRole(npc.role);
-        }
-        if (textEl) {
-            textEl.textContent = npc.dialogue.greeting;
+            let roleText = this.formatRole(npc.role);
+            if (relation) {
+                roleText += ` — <span style="color:${relation.color}">${relation.tierLabel}</span>`;
+            }
+            roleEl.innerHTML = roleText;
         }
 
+        // Select greeting based on relation tone (use DialogueManager if available)
+        if (textEl) {
+            if (!canSpeak) {
+                textEl.textContent = "..."; // Hostile NPCs refuse to speak
+            } else {
+                const dm = window.game?.dialogueManager;
+                const tone = relation?.tone || 'neutral';
+                textEl.textContent = dm ? dm.getGreeting(npc, tone) : npc.dialogue.greeting;
+            }
+        }
+
+        // Run passive Empathy check for intel (silent, once per NPC)
+        this._checkPassiveIntel(npc, relation);
+
         // Debug logging for NPC quest status
-        console.log(`💬 Showing dialogue for ${npc.name} (${npc.role})`);
-        console.log(`   - offersQuest: ${npc.offersQuest}`);
+        console.log(`💬 Showing dialogue for ${npc.name} (${npc.role}) [${relation?.tierLabel || 'unknown'}]`);
+        console.log(`   - offersQuest: ${npc.offersQuest}, canOfferQuest: ${canOfferQuest}`);
         console.log('   - questIds:', npc.questIds);
-        console.log(`   - questIds.length: ${npc.questIds?.length || 0}`);
+        console.log(`   - relation: ${relation?.score || 0} (effective: ${relation?.effectiveScore || 0})`);
+        console.log(`   - hasIntel: ${npc.hasIntel}, intelStatus: ${npc.intelStatus}`);
 
         // Build dialogue options
         let optionsHTML = '';
+
+        // If hostile, only show goodbye
+        if (!canSpeak) {
+            optionsHTML += `
+        <button class="dialogue-option" data-action="goodbye">
+          👋 Leave
+        </button>
+      `;
+            if (optionsEl) optionsEl.innerHTML = optionsHTML;
+            modal.querySelectorAll('.dialogue-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.handleDialogueOption(e.target.dataset.action, npc);
+                });
+            });
+            modal.style.display = 'flex';
+            return;
+        }
 
         // Flavor dialogue option
         if (npc.dialogue.flavorDialogue && npc.dialogue.flavorDialogue.length > 0) {
@@ -329,20 +373,20 @@ class SettlementUI {
       `;
         }
 
-        // Quest option (if NPC offers quest)
-        if (npc.offersQuest && npc.questIds && npc.questIds.length > 0) {
+        // Quest option (gated by relation tier)
+        if (npc.offersQuest && npc.questIds && npc.questIds.length > 0 && canOfferQuest) {
             console.log('   ✅ Adding "Ask about work" button');
             optionsHTML += `
         <button class="dialogue-option quest-option" data-action="quest">
           ❗ Ask about work
         </button>
       `;
-        } else if (npc.offersQuest) {
-            console.log('   ⚠️ NPC offers quests but has no questIds assigned yet');
+        } else if (npc.offersQuest && npc.questIds && npc.questIds.length > 0 && !canOfferQuest) {
+            console.log('   ⛔ NPC has quests but relation too low to offer');
         }
 
-        // Trade option (for merchants/blacksmiths)
-        if (npc.role === 'merchant' || npc.role === 'blacksmith') {
+        // Trade option (gated by relation tier)
+        if ((npc.role === 'merchant' || npc.role === 'blacksmith') && canTrade) {
             optionsHTML += `
         <button class="dialogue-option" data-action="trade">
           💰 Trade
@@ -369,6 +413,21 @@ class SettlementUI {
           </button>
         `;
             }
+        }
+
+        // Intel option (only if passive Empathy check passed or already revealed)
+        if (npc.intelStatus === 'available') {
+            optionsHTML += `
+        <button class="dialogue-option intel-option" data-action="intel">
+          🗺️ Ask about local dangers
+        </button>
+      `;
+        } else if (npc.intelStatus === 'revealed') {
+            optionsHTML += `
+        <button class="dialogue-option intel-option" data-action="intel-recall">
+          🗺️ Tell me again about the area
+        </button>
+      `;
         }
 
         // Goodbye option
@@ -406,13 +465,22 @@ class SettlementUI {
         }
 
         switch (action) {
-            case 'flavor':
-                // Show random flavor dialogue
-                const flavorLine = npc.dialogue.flavorDialogue[
-                    Math.floor(Math.random() * npc.dialogue.flavorDialogue.length)
-                ];
-                textEl.textContent = flavorLine;
+            case 'flavor': {
+                // Show flavor dialogue (use DialogueManager if available for richer variety)
+                const dm = window.game?.dialogueManager;
+                const relationManager = window.game?.relationManager;
+                const tone = relationManager ? relationManager.getDialogueTone(npc) : 'neutral';
+                if (dm) {
+                    const lines = dm.getFlavorLines(npc, tone, 1);
+                    textEl.textContent = lines[0] || npc.dialogue.flavorDialogue?.[0] || 'Hmm.';
+                } else {
+                    const flavorLine = npc.dialogue.flavorDialogue[
+                        Math.floor(Math.random() * npc.dialogue.flavorDialogue.length)
+                    ];
+                    textEl.textContent = flavorLine;
+                }
                 break;
+            }
 
             case 'quest':
                 // Show available quests from this NPC
@@ -438,6 +506,14 @@ class SettlementUI {
                 this.showSkillChallengeOptions(npc, textEl, optionsEl);
                 break;
 
+            case 'intel':
+                this._handleIntelCheck(npc, textEl, optionsEl);
+                break;
+
+            case 'intel-recall':
+                this._showIntelLines(npc, textEl);
+                break;
+
             case 'goodbye':
                 textEl.textContent = npc.dialogue.goodbye;
                 setTimeout(() => {
@@ -445,6 +521,138 @@ class SettlementUI {
                 }, 1000);
                 break;
         }
+    }
+
+    /**
+     * Run passive Empathy check silently when opening dialogue with an intel NPC
+     * Only runs once per NPC — result is permanent
+     * @param {Object} npc - NPC object
+     * @param {Object|null} relation - Relation info from RelationManager
+     */
+    _checkPassiveIntel(npc, relation) {
+        // Only check NPCs that have intel and haven't been checked yet
+        if (!npc.hasIntel || npc.intelStatus !== null) return;
+
+        const config = window.game?.relationManager?.config?.intel;
+        if (!config) return;
+
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Passive Empathy = 10 + empathy modifier
+        const empathyMod = character.skillBonuses?.empathy ?? character.abilityModifiers?.wis ?? 0;
+        const passiveEmpathy = 10 + empathyMod;
+
+        // DC modified by relation tier
+        const tierId = relation?.tier?.id || 'neutral';
+        const tierMod = config.dcModifierByTier[tierId] ?? 0;
+        const dc = config.passiveEmpathyBaseDC + tierMod;
+
+        if (passiveEmpathy >= dc) {
+            npc.intelStatus = 'available';
+            console.log(`🔍 Passive Empathy passed for ${npc.name} (${passiveEmpathy} >= DC ${dc}) — intel available`);
+        } else {
+            npc.intelStatus = 'locked';
+            console.log(`🔍 Passive Empathy failed for ${npc.name} (${passiveEmpathy} < DC ${dc}) — intel locked permanently`);
+        }
+    }
+
+    /**
+     * Handle active Influence check when player asks for intel
+     * @param {Object} npc - NPC object
+     * @param {HTMLElement} textEl - Dialogue text element
+     * @param {HTMLElement} optionsEl - Dialogue options element
+     */
+    _handleIntelCheck(npc, textEl, optionsEl) {
+        const config = window.game?.relationManager?.config?.intel;
+        const relationManager = window.game?.relationManager;
+        if (!config || !relationManager) return;
+
+        const character = gameState.get('character');
+        if (!character) return;
+
+        const relation = relationManager.getRelation(npc);
+        const tierId = relation?.tier?.id || 'neutral';
+        const tierMod = config.dcModifierByTier[tierId] ?? 0;
+        const dc = config.activeInfluenceBaseDC + tierMod;
+
+        // Roll d20 + Influence skill bonus
+        const influenceMod = character.skillBonuses?.influence ?? character.abilityModifiers?.cha ?? 0;
+        const roll = Math.floor(Math.random() * 20) + 1;
+        const total = roll + influenceMod;
+        const passed = total >= dc;
+
+        // Show roll result in message log
+        const { addMessage } = gameState;
+        gameState.addMessage(
+            `🎲 Influence check: rolled ${roll} + ${influenceMod} = ${total} vs DC ${dc} — ${passed ? 'SUCCESS' : 'FAILED'}`,
+            passed ? 'success' : 'warning'
+        );
+
+        if (passed) {
+            npc.intelStatus = 'revealed';
+
+            // Relation bonus for passing
+            if (config.relationChangeOnActivePass) {
+                relationManager.modifyRelation(npc, config.relationChangeOnActivePass);
+            }
+
+            // Show the intel
+            this._showIntelLines(npc, textEl);
+        } else {
+            npc.intelStatus = 'locked';
+
+            // Relation penalty for failing
+            if (config.relationChangeOnActiveFail) {
+                relationManager.modifyRelation(npc, config.relationChangeOnActiveFail);
+            }
+
+            // Show failure response from data
+            const dm = window.game?.dialogueManager;
+            const failLines = dm?.dialogueData?.intelDialogue?.fail || ["I can't help you with that."];
+            textEl.textContent = failLines[Math.floor(Math.random() * failLines.length)];
+
+            // Remove the intel button and replace with locked state
+            if (optionsEl) {
+                const intelBtn = optionsEl.querySelector('[data-action="intel"]');
+                if (intelBtn) intelBtn.remove();
+            }
+
+            const lockedMsgs = dm?.dialogueData?.intelDialogue?.lockedMessage || ["{npcName} won't share information with you."];
+            const lockedMsg = lockedMsgs[Math.floor(Math.random() * lockedMsgs.length)].replace(/{npcName}/g, npc.name);
+            gameState.addMessage(lockedMsg, 'warning');
+        }
+    }
+
+    /**
+     * Display dynamic intel lines from DialogueManager
+     * @param {Object} npc - NPC object
+     * @param {HTMLElement} textEl - Dialogue text element
+     */
+    _showIntelLines(npc, textEl) {
+        const dm = window.game?.dialogueManager;
+        const intelDlg = dm?.dialogueData?.intelDialogue;
+
+        if (!dm) {
+            const fallback = intelDlg?.fallbackIntro || ["I've heard a few things about the area..."];
+            textEl.textContent = fallback[Math.floor(Math.random() * fallback.length)];
+            return;
+        }
+
+        const dynamicLines = dm.getDynamicLines(npc);
+        if (dynamicLines.length === 0) {
+            const noIntel = intelDlg?.noIntel || ["Things have been quiet around here."];
+            textEl.textContent = noIntel[Math.floor(Math.random() * noIntel.length)];
+            return;
+        }
+
+        // Pick a random intro line, then show all intel lines
+        const intros = intelDlg?.successIntro || ["Here's what I know."];
+        const intro = intros[Math.floor(Math.random() * intros.length)];
+        textEl.innerHTML = `<p style="margin: 4px 0;">${intro}</p>` +
+            dynamicLines.map(line =>
+                `<p style="margin: 4px 0;">• ${line}</p>`
+            ).join('');
     }
 
     /**
@@ -910,8 +1118,8 @@ class SettlementUI {
         items.forEach((item, index) => {
             const isSelected = this.selectedItem?.id === item.id;
             const price = this.tradeMode === 'buy'
-                ? this.merchantManager.calculateBuyPrice(item, character)
-                : this.merchantManager.calculateSellPrice(item, character);
+                ? this.merchantManager.calculateBuyPrice(item, character, this.currentMerchant)
+                : this.merchantManager.calculateSellPrice(item, character, this.currentMerchant);
 
             const stockText = this.tradeMode === 'buy' && item.stock !== undefined
                 ? `Stock: ${item.stock}`
@@ -1052,13 +1260,19 @@ class SettlementUI {
             }
         }
 
-        // Update CHA hint
+        // Update pricing hint (relation tier + Influence skill)
         const chaHintEl = document.getElementById('chaHint');
         if (chaHintEl) {
-            const chaModifier = character.getAbilityModifier(character.abilities.cha);
-            const chaPercent = Math.abs(chaModifier);
-            const direction = this.tradeMode === 'buy' ? 'discount' : 'bonus';
-            chaHintEl.innerHTML = `Your Charisma gives you a <span class="cha-bonus">${chaPercent}% ${direction}</span> on prices`;
+            const relationManager = window.game?.relationManager;
+            if (relationManager && this.currentMerchant) {
+                const summary = relationManager.getPricingSummary(this.currentMerchant, character);
+                chaHintEl.innerHTML = `<span style="color:${relationManager.getRelation(this.currentMerchant).color}">${summary.tierLabel}</span>: ${summary.tierEffect} | Influence: <span class="cha-bonus">${summary.influenceEffect}</span>`;
+            } else {
+                const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+                const influencePercent = Math.abs(influenceBonus);
+                const direction = this.tradeMode === 'buy' ? 'discount' : 'bonus';
+                chaHintEl.innerHTML = `Your Influence gives you a <span class="cha-bonus">${influencePercent}% ${direction}</span> on prices`;
+            }
         }
     }
 
@@ -1133,9 +1347,9 @@ class SettlementUI {
         try {
             let result;
             if (this.tradeMode === 'buy') {
-                result = this.merchantManager.buyItem(this.selectedItem, character, this.tradeQuantity);
+                result = this.merchantManager.buyItem(this.selectedItem, character, this.tradeQuantity, this.currentMerchant);
             } else {
-                result = this.merchantManager.sellItem(this.selectedItem, character, this.tradeQuantity);
+                result = this.merchantManager.sellItem(this.selectedItem, character, this.tradeQuantity, this.currentMerchant);
             }
 
             if (result.success) {

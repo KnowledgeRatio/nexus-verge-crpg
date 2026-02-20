@@ -3,6 +3,7 @@
  * Handles rendering of the game world using HTML5 Canvas
  * Supports hybrid ASCII/pixel art tile rendering
  */
+import { RULES } from '../core/rulesEngine.js';
 
 class MapRenderer {
     constructor(canvasId, config = {}) {
@@ -12,6 +13,8 @@ class MapRenderer {
         }
 
         this.ctx = this.canvas.getContext('2d');
+        // Disable image smoothing for crisp pixel art at all zoom levels
+        this.ctx.imageSmoothingEnabled = false;
 
         // Configuration
         this.config = {
@@ -42,8 +45,8 @@ class MapRenderer {
         this.failedTiles = new Set(); // Tiles that failed to load (404s)
         this.pixelArtPath = 'data/graphics/';
 
-        // Zoom system - available tile size presets
-        this.zoomLevels = [16, 24, 32, 48];
+        // Zoom system - from centralized config
+        this.zoomLevels = RULES.zoom.levels;
         this.currentZoomIndex = this.loadZoomSetting();
 
         // Apply saved zoom level to config (overrides defaults)
@@ -99,16 +102,18 @@ class MapRenderer {
      * Load zoom setting from localStorage
      */
     loadZoomSetting() {
-        const saved = localStorage.getItem('nexusVerge_zoomIndex');
-        // Default to 1 (24px / 2×) if not set
-        return saved === null ? 1 : parseInt(saved, 10);
+        const saved = localStorage.getItem(RULES.zoom.storageKey);
+        if (saved === null) return RULES.zoom.defaultIndex;
+        const index = parseInt(saved, 10);
+        // Clamp to valid range in case zoom levels changed
+        return Math.max(0, Math.min(index, this.zoomLevels.length - 1));
     }
 
     /**
      * Save zoom setting to localStorage
      */
     saveZoomSetting(index) {
-        localStorage.setItem('nexusVerge_zoomIndex', index.toString());
+        localStorage.setItem(RULES.zoom.storageKey, index.toString());
     }
 
     /**
@@ -736,6 +741,8 @@ class MapRenderer {
     resize(width, height) {
         this.canvas.width = width;
         this.canvas.height = height;
+        // Canvas resize resets context state - re-disable smoothing
+        this.ctx.imageSmoothingEnabled = false;
 
         this.config.viewportWidth = Math.floor(width / this.config.tileWidth);
         this.config.viewportHeight = Math.floor(height / this.config.tileHeight);

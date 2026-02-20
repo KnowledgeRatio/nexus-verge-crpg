@@ -3623,7 +3623,28 @@ All 18 D&D 5e skills
     - Faction-based quest chains
     - Faction relationships and conflicts
 
-15. **Polish & Testing**
+15. **NPC Relations System** - **DESIGNED** (see `docs/plans/2026-02-19-npc-relations-design.md`)
+    - Relation score (-100 to +100) per NPC with tier system
+    - Relations gate quests, affect pricing, drive dialogue tone
+    - Merchant pricing: tier multiplier + Influence skill (replaces raw CHA)
+    - Dungeon enrichment (names, themes, creatures at generation time)
+    - Dynamic dialogue (static pools + world-aware templates)
+    - Campaign-configurable starting relation
+
+16. **Alignment System** - **ROADMAP**
+    - D&D 5e alignment (9 alignments: Lawful Good → Chaotic Evil)
+    - Character creation choice during character wizard
+    - NPC alignment generated procedurally (influences personality/dialogue)
+    - Alignment shifts based on player actions (quest choices, dialogue, combat decisions)
+    - Connected to faction relationships and NPC relations
+    - Alignment-gated dialogue options and quest paths
+
+17. **Town/City Reputation** - **ROADMAP**
+    - Settlement-wide reputation (aggregate of NPC relations + quests + faction)
+    - Gates settlement-level features (restricted areas, leadership quests)
+    - Can trigger settlement-wide events (welcome feast, bounty on player)
+
+18. **Polish & Testing**
     - Bug fixes and edge cases
     - Balance tuning (XP, loot, difficulty)
     - Performance optimization

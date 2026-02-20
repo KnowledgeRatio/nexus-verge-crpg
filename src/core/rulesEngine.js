@@ -928,6 +928,20 @@ export const RULES = {
         // Victory conditions
         victoryXP: 0, // Bonus XP on campaign completion
         victoryReputation: 50 // Bonus reputation with relevant faction
+    },
+
+    // ====================
+    // DISPLAY / ZOOM
+    // ====================
+    zoom: {
+        // Available tile sizes in pixels (must be sorted ascending)
+        levels: [12, 24, 48, 96, 192],
+        // Default index into levels array (48px = 1×)
+        defaultIndex: 2,
+        // Base size for multiplier display (this size = 1×)
+        baseSize: 48,
+        // localStorage key for persisting user preference
+        storageKey: 'nexusVerge_zoomIndex'
     }
 };
 

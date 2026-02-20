@@ -104,6 +104,9 @@ class QuestManager {
         gameState.addMessage(`Quest Abandoned: ${quest.name}`, 'error');
         console.log(`Quest abandoned: ${quest.name}`);
 
+        // Apply relation penalty to quest giver NPC
+        this._applyRelationChange(quest, 'questAbandoned');
+
         return true;
     }
 
@@ -163,6 +166,10 @@ class QuestManager {
 
         console.log(`Quest completed: ${quest.name}`, rewardSummary);
 
+        // Apply relation bonus to quest giver NPC and settlement
+        this._applyRelationChange(quest, 'questCompleteForNPC');
+        this._applySettlementRelationBonus(quest);
+
         // Check for campaign progression
         if (quest.type === 'campaign' && quest.nextStage) {
             this.advanceCampaign(quest.nextStage);
@@ -201,6 +208,9 @@ class QuestManager {
 
         gameState.set('quests', quests);
         gameState.addMessage(`Quest Failed: ${quest.name}`, 'error');
+
+        // Apply relation penalty to quest giver NPC
+        this._applyRelationChange(quest, 'questFailed');
     }
 
     /**
@@ -707,6 +717,81 @@ class QuestManager {
     renderQuestLog() {
     // This will be implemented in main.js with proper UI rendering
         console.log('Quest log render requested (UI not yet implemented)');
+    }
+
+    /**
+     * Apply a relation change to the quest giver NPC
+     * Finds the NPC in the world and applies the modifier
+     * @param {Object} quest - Quest object with questGiver info
+     * @param {string} modifierKey - Relation modifier key from relations.json
+     */
+    _applyRelationChange(quest, modifierKey) {
+        const relationManager = window.game?.relationManager;
+        if (!relationManager) return;
+
+        const npcId = quest.questGiver?.npcId;
+        if (!npcId) return;
+
+        const npc = this._findNPCById(npcId);
+        if (npc) {
+            const result = relationManager.modifyRelation(npc, modifierKey);
+            if (result) {
+                const sign = result.points >= 0 ? '+' : '';
+                gameState.addMessage(`${sign}${result.points} relation with ${npc.name} [${result.tier.label}]`, result.points >= 0 ? 'success' : 'warning');
+            }
+        }
+    }
+
+    /**
+     * Apply settlement-wide relation bonus when a quest is completed
+     * All NPCs in the settlement get a small bonus (except the quest giver who gets the direct bonus)
+     * @param {Object} quest - Completed quest
+     */
+    _applySettlementRelationBonus(quest) {
+        const relationManager = window.game?.relationManager;
+        if (!relationManager) return;
+
+        const npcId = quest.questGiver?.npcId;
+        const settlementId = quest.questGiver?.settlementId
+            || (quest.questGiver?.npcId ? quest.questGiver.npcId.split('_').slice(1, 3).join('_') : null);
+
+        if (settlementId) {
+            relationManager.modifySettlementRelations(settlementId, npcId);
+        }
+    }
+
+    /**
+     * Find an NPC by ID across all settlements in the world
+     * @param {string} npcId - NPC ID
+     * @returns {Object|null} NPC object or null
+     */
+    _findNPCById(npcId) {
+        const world = gameState.get('world');
+        if (!world?.generatedRegions) return null;
+
+        for (const regionKey of Object.keys(world.generatedRegions)) {
+            const region = world.generatedRegions[regionKey];
+            if (!region?.features) continue;
+
+            for (const feature of region.features) {
+                if (feature.type !== 'settlement' || !feature.npcs) continue;
+
+                const npc = feature.npcs.find(n => n.id === npcId);
+                if (npc) return npc;
+            }
+        }
+
+        // Also check persistent settlement data
+        if (world.settlements) {
+            for (const settlementData of Object.values(world.settlements)) {
+                if (settlementData.npcs) {
+                    const npc = settlementData.npcs.find(n => n.id === npcId);
+                    if (npc) return npc;
+                }
+            }
+        }
+
+        return null;
     }
 }
 

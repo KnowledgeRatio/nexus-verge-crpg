@@ -9,19 +9,22 @@
  */
 
 import { gameState } from '../core/GameState.js';
+import { RULES } from '../core/rulesEngine.js';
 
 export class DungeonUI {
     constructor(canvasId, options = {}) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+        // Disable image smoothing for crisp pixel art at all zoom levels
+        this.ctx.imageSmoothingEnabled = false;
 
         // Tile rendering options
         this.tileWidth = options.tileWidth || 16;
         this.tileHeight = options.tileHeight || 16;
 
-        // Zoom levels (same as world map)
-        this.zoomLevels = [16, 24, 32, 48];
-        this.zoomIndex = options.zoomIndex || 0;
+        // Zoom levels from centralized config
+        this.zoomLevels = RULES.zoom.levels;
+        this.zoomIndex = options.zoomIndex ?? RULES.zoom.defaultIndex;
 
         // Player avatar support
         this.playerAvatarImage = null;
@@ -167,6 +170,8 @@ export class DungeonUI {
         // Resize canvas to fit room
         this.canvas.width = roomWidth * tileSize;
         this.canvas.height = roomHeight * tileSize;
+        // Canvas resize resets context state - re-disable smoothing
+        this.ctx.imageSmoothingEnabled = false;
 
         // Clear canvas
         this.ctx.fillStyle = '#000000';

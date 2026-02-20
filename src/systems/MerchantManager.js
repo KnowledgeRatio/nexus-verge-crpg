@@ -1,6 +1,6 @@
 /**
  * Merchant Manager System
- * Handles trading logic, inventory generation, and CHA-modified pricing
+ * Handles trading logic, inventory generation, and relation/Influence-modified pricing
  */
 
 import { SeededRandom } from '../utils/rng.js';
@@ -113,37 +113,47 @@ class MerchantManager {
 
     /**
    * Calculate buy price (player buying from merchant)
+   * Delegates to RelationManager if available, falls back to Influence-only pricing
    * @param {Object} item - Item data
-   * @param {Object} character - Character with CHA ability
+   * @param {Object} character - Player character
+   * @param {Object} [npc] - Merchant NPC (for relation-based pricing)
    * @returns {number} Modified price
    */
-    calculateBuyPrice(item, character) {
+    calculateBuyPrice(item, character, npc) {
+        // Use RelationManager if available and NPC provided
+        const relationManager = window.game?.relationManager;
+        if (relationManager && npc) {
+            return relationManager.calculateBuyPrice(item, npc, character);
+        }
+
+        // Fallback: Influence skill modifier only (no relation tier)
         const basePrice = item.value || 0;
-        const chaMod = Math.floor((character.abilities.cha - 10) / 2);
-        const chaEffect = chaMod * RULES.merchant.chaModifierPercent;
-
-        // Player pays less with high CHA
-        const finalPrice = Math.max(1, Math.round(basePrice * (1.0 - chaEffect)));
-
-        return finalPrice;
+        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceEffect = influenceBonus * 0.01;
+        return Math.max(1, Math.round(basePrice * (1.0 - influenceEffect)));
     }
 
     /**
    * Calculate sell price (player selling to merchant)
+   * Delegates to RelationManager if available, falls back to Influence-only pricing
    * @param {Object} item - Item data
-   * @param {Object} character - Character with CHA ability
+   * @param {Object} character - Player character
+   * @param {Object} [npc] - Merchant NPC (for relation-based pricing)
    * @returns {number} Modified price
    */
-    calculateSellPrice(item, character) {
+    calculateSellPrice(item, character, npc) {
+        // Use RelationManager if available and NPC provided
+        const relationManager = window.game?.relationManager;
+        if (relationManager && npc) {
+            return relationManager.calculateSellPrice(item, npc, character);
+        }
+
+        // Fallback: Influence skill modifier only (no relation tier)
         const basePrice = item.value || 0;
-        const chaMod = Math.floor((character.abilities.cha - 10) / 2);
-        const chaEffect = chaMod * RULES.merchant.chaModifierPercent;
-
-        // Player gets more with high CHA (base 50% of value)
-        const baseSellPrice = basePrice * RULES.merchant.baseSellMultiplier;
-        const finalPrice = Math.max(1, Math.round(baseSellPrice * (1.0 + chaEffect)));
-
-        return finalPrice;
+        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceEffect = influenceBonus * 0.01;
+        const baseSellPrice = basePrice * 0.5;
+        return Math.max(1, Math.round(baseSellPrice * (1.0 + influenceEffect)));
     }
 
     /**
@@ -151,10 +161,11 @@ class MerchantManager {
    * @param {Object} item - Item to buy
    * @param {Object} character - Player character
    * @param {number} quantity - Quantity to buy
+   * @param {Object} [npc] - Merchant NPC
    * @returns {Object} Result {success, message, cost}
    */
-    buyItem(item, character, quantity = 1) {
-        const unitPrice = this.calculateBuyPrice(item, character);
+    buyItem(item, character, quantity = 1, npc) {
+        const unitPrice = this.calculateBuyPrice(item, character, npc);
         const totalCost = unitPrice * quantity;
 
         // Check if player has enough gold
@@ -172,6 +183,12 @@ class MerchantManager {
         // Add item to inventory
         character.addItem(item, quantity);
 
+        // Apply relation bonus for successful trade
+        const relationManager = window.game?.relationManager;
+        if (relationManager && npc) {
+            relationManager.modifyRelation(npc, 'successfulTrade');
+        }
+
         return {
             success: true,
             message: `Purchased ${quantity}x ${item.name} for ${totalCost} gp`,
@@ -184,10 +201,11 @@ class MerchantManager {
    * @param {Object} item - Item to sell
    * @param {Object} character - Player character
    * @param {number} quantity - Quantity to sell
+   * @param {Object} [npc] - Merchant NPC
    * @returns {Object} Result {success, message, earnings}
    */
-    sellItem(item, character, quantity = 1) {
-        const unitPrice = this.calculateSellPrice(item, character);
+    sellItem(item, character, quantity = 1, npc) {
+        const unitPrice = this.calculateSellPrice(item, character, npc);
         const totalEarnings = unitPrice * quantity;
 
         // Remove item from inventory
@@ -204,6 +222,12 @@ class MerchantManager {
         // Add gold
         character.addGold(totalEarnings);
 
+        // Apply relation bonus for successful trade
+        const relationManager = window.game?.relationManager;
+        if (relationManager && npc) {
+            relationManager.modifyRelation(npc, 'successfulTrade');
+        }
+
         return {
             success: true,
             message: `Sold ${quantity}x ${item.name} for ${totalEarnings} gp`,
@@ -212,25 +236,26 @@ class MerchantManager {
     }
 
     /**
-   * Get price display string with CHA modifier
+   * Get price display string with modifiers
    * @param {Object} item - Item data
    * @param {Object} character - Character
    * @param {string} type - 'buy' or 'sell'
+   * @param {Object} [npc] - Merchant NPC
    * @returns {string} Formatted price string
    */
-    getPriceDisplay(item, character, type = 'buy') {
+    getPriceDisplay(item, character, type = 'buy', npc) {
         const price = type === 'buy'
-            ? this.calculateBuyPrice(item, character)
-            : this.calculateSellPrice(item, character);
+            ? this.calculateBuyPrice(item, character, npc)
+            : this.calculateSellPrice(item, character, npc);
 
         const basePrice = type === 'buy'
             ? item.value
-            : Math.round(item.value * RULES.merchant.baseSellMultiplier);
+            : Math.round(item.value * 0.5);
 
         if (price !== basePrice) {
-            const discount = basePrice - price;
-            const sign = discount > 0 ? '-' : '+';
-            return `${price} gp (${sign}${Math.abs(discount)} CHA)`;
+            const diff = basePrice - price;
+            const sign = diff > 0 ? '-' : '+';
+            return `${price} gp (${sign}${Math.abs(diff)})`;
         }
 
         return `${price} gp`;

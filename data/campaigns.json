@@ -29,7 +29,9 @@
         "biomeScale": "continental",
         "settlementDensity": "normal"
       },
-      "featureGeneration": {}
+      "featureGeneration": {
+        "startingRelation": 0
+      }
     },
     {
       "id": "defeatLichKing",
@@ -40,7 +42,8 @@
       "objective": "Locate the Lich King's phylactery and destroy it before his undead army consumes the realm.",
       "featureGeneration": {
         "baseDungeons": 250,
-        "baseSanctuaries": 80
+        "baseSanctuaries": 80,
+        "startingRelation": -5
       }
     },
     {
@@ -57,7 +60,8 @@
           "town": 0.35,
           "city": 0.15
         },
-        "baseDungeons": 150
+        "baseDungeons": 150,
+        "startingRelation": 10
       }
     },
     {

@@ -103,6 +103,9 @@ class NPCGenerator {
         npcs.push(...this.generateBlacksmithNPCs(settlement, settlementType, rng));
         npcs.push(...this.generateGreatHallNPCs(settlement, settlementType, rng));
 
+        // Assign intel flags (limited per settlement, role-weighted)
+        this.assignIntelFlags(npcs, rng);
+
         console.log(`👥 Generated ${npcs.length} NPCs for ${settlement.name} (${settlementType})`);
         return npcs;
     }
@@ -270,8 +273,49 @@ class NPCGenerator {
             shopName,
             dialogue,
             questIds: [], // Will be populated by QuestGenerator
-            givenQuestIds: [] // Quests already given to player
+            givenQuestIds: [], // Quests already given to player
+            hasIntel: false, // Set by assignIntelFlags after all NPCs generated
+            intelStatus: null, // null → "available" (passed passive) → "revealed" (passed active) or "locked" (failed)
+            relations: {
+                score: window.game?.relationManager?.startingScore ?? 0,
+                history: []
+            }
         };
+    }
+
+    /**
+     * Assign intel flags to a limited number of NPCs per settlement
+     * Uses role-weighted probabilities from relations.json config, capped per settlement
+     * @param {Array} npcs - All NPCs in the settlement
+     * @param {Object} rng - Seeded RNG
+     */
+    assignIntelFlags(npcs, rng) {
+        const intelConfig = window.game?.relationManager?.config?.intel;
+        if (!intelConfig) return;
+
+        const maxIntel = intelConfig.maxIntelNPCsPerSettlement || 3;
+        const chanceByRole = intelConfig.intelChanceByRole || {};
+
+        // Build weighted candidates: each NPC rolls against their role chance
+        const candidates = [];
+        for (const npc of npcs) {
+            const chance = chanceByRole[npc.role] || 0.1;
+            if (rng.next() < chance) {
+                candidates.push(npc);
+            }
+        }
+
+        // Shuffle and cap to max
+        const shuffled = [...candidates].sort(() => rng.next() - 0.5);
+        const selected = shuffled.slice(0, maxIntel);
+
+        for (const npc of selected) {
+            npc.hasIntel = true;
+        }
+
+        if (selected.length > 0) {
+            console.log(`🔍 Assigned intel to ${selected.length} NPCs: ${selected.map(n => n.name).join(', ')}`);
+        }
     }
 
     /**

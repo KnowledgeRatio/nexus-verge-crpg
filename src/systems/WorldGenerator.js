@@ -89,8 +89,9 @@ class WorldGenerator {
             return cached;
         }
 
-        // Ensure terrain data is loaded
+        // Ensure terrain and dungeon data is loaded
         await this.loadTerrainData();
+        await this.loadDungeonData();
 
         // Create region-specific RNG
         const regionSeedString = `${this.worldSeed}_${regionX}_${regionY}`;
@@ -501,6 +502,13 @@ class WorldGenerator {
                 return fRegionX === regionX && fRegionY === regionY;
             });
 
+            // Enrich any dungeons that don't have theme/name yet
+            for (const feature of featuresInRegion) {
+                if (feature.type === 'dungeon' && !feature.theme) {
+                    this.enrichDungeonFeature(feature, tiles, rng);
+                }
+            }
+
             // Merge and return (NPCs already generated if settlement visited)
             return [...settlementsInRegion, ...featuresInRegion];
         }
@@ -588,13 +596,15 @@ class WorldGenerator {
 
             if (mountainTiles.length > 0) {
                 const location = rng.choice(mountainTiles);
-                features.push({
+                const dungeon = {
                     type: 'dungeon',
                     x: location.x,
                     y: location.y,
                     difficulty: rng.nextInt(1, 5),
                     explored: false
-                });
+                };
+                this.enrichDungeonFeature(dungeon, tiles, rng);
+                features.push(dungeon);
             }
         }
 
@@ -655,6 +665,100 @@ class WorldGenerator {
         const type = rng.choice(types);
 
         return `${prefix} ${type}`;
+    }
+
+    /**
+     * Load dungeon theme data from data/dungeons.json
+     */
+    async loadDungeonData() {
+        if (this.dungeonData) return;
+        try {
+            const response = await fetch(`data/dungeons.json?v=${Date.now()}`);
+            this.dungeonData = await response.json();
+        } catch (e) {
+            console.warn('⚠️ Could not load dungeons.json:', e);
+            this.dungeonData = null;
+        }
+    }
+
+    /**
+     * Enrich a dungeon feature with theme, name, and creature data
+     * Based on terrain at dungeon location and difficulty
+     * All data driven from data/dungeons.json
+     * @param {Object} dungeon - Dungeon feature object (mutated in place)
+     * @param {Array} tiles - Region tile array
+     * @param {Object} rng - Seeded RNG
+     */
+    enrichDungeonFeature(dungeon, tiles, rng) {
+        if (!this.dungeonData) {
+            // Sync fallback — data not loaded yet, assign minimal defaults
+            dungeon.name = 'Unknown Dungeon';
+            dungeon.theme = 'tomb';
+            dungeon.creatureType = 'undead';
+            dungeon.dominantCreatures = ['skeleton'];
+            return;
+        }
+
+        // Find terrain at dungeon position
+        const tile = tiles.find(t => t.x === dungeon.x && t.y === dungeon.y);
+        const terrain = tile?.terrain || 'grassland';
+
+        // Get theme weights for this terrain (or defaults)
+        const weights = this.dungeonData.terrainThemeWeights[terrain]
+            || this.dungeonData.defaultThemeWeights;
+
+        // Weighted random theme selection
+        const themeId = this._weightedChoice(weights, rng);
+        const theme = this.dungeonData.themes.find(t => t.id === themeId);
+
+        if (!theme) {
+            dungeon.name = 'Unknown Dungeon';
+            dungeon.theme = themeId;
+            dungeon.creatureType = 'unknown';
+            dungeon.dominantCreatures = [];
+            return;
+        }
+
+        // Select creatures based on difficulty
+        // Find the highest difficulty tier that doesn't exceed dungeon difficulty
+        const diffKeys = Object.keys(theme.creatures)
+            .map(Number)
+            .sort((a, b) => a - b);
+        let creatureTier = diffKeys[0];
+        for (const key of diffKeys) {
+            if (key <= dungeon.difficulty) {
+                creatureTier = key;
+            }
+        }
+        const creaturePool = theme.creatures[String(creatureTier)] || theme.creatures[String(diffKeys[0])];
+
+        // Generate dungeon name from templates
+        const pattern = rng.choice(theme.namePatterns);
+        const name = pattern
+            .replace('{adjective}', rng.choice(theme.adjectives))
+            .replace('{noun}', rng.choice(theme.nouns))
+            .replace('{concept}', rng.choice(theme.concepts));
+
+        // Assign to dungeon
+        dungeon.name = name;
+        dungeon.theme = themeId;
+        dungeon.creatureType = theme.creatureType;
+        dungeon.dominantCreatures = [...creaturePool];
+    }
+
+    /**
+     * Weighted random choice from an object of { key: weight }
+     */
+    _weightedChoice(weights, rng) {
+        const entries = Object.entries(weights);
+        const totalWeight = entries.reduce((sum, [, w]) => sum + w, 0);
+        let roll = rng.next() * totalWeight;
+
+        for (const [key, weight] of entries) {
+            roll -= weight;
+            if (roll <= 0) return key;
+        }
+        return entries[entries.length - 1][0]; // Fallback to last
     }
 
     /**

@@ -22,6 +22,8 @@ import QuestManager from './systems/QuestManager.js';
 import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
+import RelationManager from './systems/RelationManager.js';
+import DialogueManager from './systems/DialogueManager.js';
 import skillChallengeManager from './systems/SkillChallengeManager.js';
 import LevelUpManager from './systems/LevelUpManager.js';
 import DungeonGenerator from './systems/DungeonGenerator.js';
@@ -50,6 +52,10 @@ class Game {
 
         // Merchant system
         this.merchantManager = null;
+
+        // Relation and Dialogue systems
+        this.relationManager = null;
+        this.dialogueManager = null;
 
         // Dungeon system
         this.dungeonGenerator = null;
@@ -660,6 +666,24 @@ class Game {
         // Get campaign ID for filtering
         const campaignId = worldConfig?.campaignId || 'nexus-verge';
 
+        // Initialize RelationManager before NPCs (NPCs reference startingScore)
+        if (!this.relationManager) {
+            console.log('📊 Initializing relation manager...');
+            this.relationManager = new RelationManager();
+            await this.relationManager.init(campaignId);
+            window.game = window.game || {};
+            window.game.relationManager = this.relationManager;
+        }
+
+        // Initialize DialogueManager
+        if (!this.dialogueManager) {
+            console.log('💬 Initializing dialogue manager...');
+            this.dialogueManager = new DialogueManager();
+            await this.dialogueManager.init();
+            window.game = window.game || {};
+            window.game.dialogueManager = this.dialogueManager;
+        }
+
         if (!this.npcGenerator) {
             console.log('👥 Initializing NPC generator...');
             this.npcGenerator = new NPCGenerator(seed, campaignId);
@@ -744,7 +768,7 @@ class Game {
         if (!this.dungeonUI) {
             console.log('🏰 Initializing dungeon UI...');
             this.dungeonUI = new DungeonUI('dungeonCanvas', {
-                zoomIndex: this.mapRenderer?.zoomIndex || 0
+                zoomIndex: this.mapRenderer?.getZoomIndex()
             });
         }
 
@@ -865,7 +889,7 @@ class Game {
         if (this.dungeonScreenInitialized) {
             // Sync zoom level from overworld
             if (this.dungeonUI && this.mapRenderer) {
-                this.dungeonUI.zoomIndex = this.mapRenderer.zoomIndex || 0;
+                this.dungeonUI.zoomIndex = this.mapRenderer.getZoomIndex();
             }
             // Just render, don't re-subscribe
             if (this.dungeonUI && this.dungeonManager) {
@@ -900,7 +924,7 @@ class Game {
 
         // Sync zoom level from overworld map renderer
         if (this.dungeonUI && this.mapRenderer) {
-            this.dungeonUI.zoomIndex = this.mapRenderer.zoomIndex || 0;
+            this.dungeonUI.zoomIndex = this.mapRenderer.getZoomIndex();
         }
 
         // Initial render
@@ -2904,7 +2928,10 @@ class Game {
         const zoomOutBtn = document.getElementById('zoomOutBtn');
 
         if (levelDisplay) {
-            levelDisplay.textContent = `${currentIndex + 1}×`;
+            // Show zoom multiplier relative to baseline (1×)
+            const multiplier = currentSize / RULES.zoom.baseSize;
+            const label = multiplier < 1 ? `${parseFloat(multiplier.toFixed(2))}×` : `${multiplier}×`;
+            levelDisplay.textContent = label;
         }
         if (sizeDisplay) {
             sizeDisplay.textContent = `${currentSize}×${currentSize}`;
@@ -5502,6 +5529,24 @@ class Game {
         // Get campaign ID for filtering
         const campaignId = worldConfig?.campaignId || 'nexus-verge';
 
+        // Initialize RelationManager before NPCs
+        if (!this.relationManager) {
+            console.log('📊 Initializing relation manager...');
+            this.relationManager = new RelationManager();
+            await this.relationManager.init(campaignId);
+            window.game = window.game || {};
+            window.game.relationManager = this.relationManager;
+        }
+
+        // Initialize DialogueManager
+        if (!this.dialogueManager) {
+            console.log('💬 Initializing dialogue manager...');
+            this.dialogueManager = new DialogueManager();
+            await this.dialogueManager.init();
+            window.game = window.game || {};
+            window.game.dialogueManager = this.dialogueManager;
+        }
+
         // Initialize NPC generator
         if (!this.npcGenerator) {
             console.log('👥 Initializing NPC generator...');
@@ -5561,7 +5606,7 @@ class Game {
         if (!this.dungeonUI) {
             console.log('🏰 Initializing dungeon UI...');
             this.dungeonUI = new DungeonUI('dungeonCanvas', {
-                zoomIndex: this.mapRenderer?.zoomIndex || 0
+                zoomIndex: this.mapRenderer?.getZoomIndex()
             });
         }
 

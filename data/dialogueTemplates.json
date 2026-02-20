@@ -1,139 +1,981 @@
 {
-  "description": "Dialogue templates for NPC interactions, organized by role and personality",
-  "version": "1.0.0",
+  "description": "Dialogue templates for NPC interactions - tone-aware greetings, static pools, and dynamic world templates",
+  "version": "2.0.0",
 
   "greetings": {
     "innkeeper": {
-      "friendly": [
-        "Welcome to {tavernName}! What can I get for you?",
-        "Good to see you, traveler! Pull up a chair and stay awhile.",
-        "Ah, a new face! Welcome, friend. We don't get many visitors these days.",
-        "Come in, come in! The fire's warm and the ale is cold!"
-      ],
-      "grumpy": [
-        "What do you want? Can't you see I'm busy?",
-        "Another adventurer, eh? Just don't cause any trouble.",
-        "Hmph. I suppose you'll want a room and some food.",
-        "The sign says 'open', doesn't it? What are you waiting for?"
-      ],
-      "mysterious": [
-        "Welcome, traveler. I've been expecting someone like you...",
-        "Ah, you've arrived. Some might say it's fate.",
-        "Interesting timing, your arrival. Very interesting indeed.",
-        "Welcome to {tavernName}. I have a feeling we'll be seeing more of each other."
-      ]
+      "friendly": {
+        "hostile": [
+          "Get out. We don't serve your kind here.",
+          "You have a lot of nerve showing your face in my tavern."
+        ],
+        "cold": [
+          "What do you want? Make it quick.",
+          "A room costs extra for the likes of you."
+        ],
+        "guarded": [
+          "Hmph. I suppose you'll want something to drink.",
+          "Welcome to {tavernName}. Try not to cause trouble."
+        ],
+        "neutral": [
+          "Welcome to {tavernName}. What can I get you?",
+          "Ah, a traveler. Pull up a chair if you like."
+        ],
+        "warm": [
+          "Welcome to {tavernName}! What can I get for you?",
+          "Good to see you, traveler! Pull up a chair and stay awhile.",
+          "Come in, come in! The fire's warm and the ale is cold!"
+        ],
+        "affable": [
+          "Ah, my favorite customer! Your usual spot is waiting!",
+          "Welcome back, friend! First drink's on the house tonight!",
+          "There you are! I saved the best cut of meat just for you."
+        ],
+        "devoted": [
+          "The hero returns! Everyone, drinks are on me tonight!",
+          "Welcome home, friend! {tavernName} is your tavern as much as mine.",
+          "It's always a blessing when you walk through that door."
+        ]
+      },
+      "grumpy": {
+        "hostile": [
+          "You again? I told you to stay away from my establishment.",
+          "Out. Now. Before I call the guard."
+        ],
+        "cold": [
+          "What now? I've got better things to do than deal with you.",
+          "If you're looking for sympathy, you won't find it here."
+        ],
+        "guarded": [
+          "What do you want? Can't you see I'm busy?",
+          "Another adventurer, eh? Just don't cause any trouble."
+        ],
+        "neutral": [
+          "Hmph. I suppose you'll want a room and some food.",
+          "The sign says 'open', doesn't it? What are you waiting for?"
+        ],
+        "warm": [
+          "Ah, it's you. Well, you're not the worst customer I've had.",
+          "Back again? I suppose you're alright. Sit down, then."
+        ],
+        "affable": [
+          "Well if it isn't my most reliable patron! *almost smiles*",
+          "You're back! Don't tell anyone, but I saved you the good ale."
+        ],
+        "devoted": [
+          "I... well, it's good to see you. Don't let it go to your head.",
+          "There's the one person who managed to earn my respect. Welcome."
+        ]
+      },
+      "mysterious": {
+        "hostile": [
+          "The stars warned me you'd return. They also warned me to lock the door.",
+          "Some presences darken a room. Yours is one such presence."
+        ],
+        "cold": [
+          "Hmm. The cards did not speak favorably of this meeting.",
+          "You carry a heavy aura, stranger. Mind it doesn't affect my patrons."
+        ],
+        "guarded": [
+          "Welcome, traveler. I've been expecting someone like you...",
+          "Interesting timing, your arrival. Very interesting indeed."
+        ],
+        "neutral": [
+          "Ah, you've arrived. Some might say it's fate.",
+          "Welcome to {tavernName}. I have a feeling we'll be seeing more of each other."
+        ],
+        "warm": [
+          "The tea leaves foretold a friend's arrival. Here you are.",
+          "Welcome. Your presence brightens the shadows in this old place."
+        ],
+        "affable": [
+          "I knew you'd come tonight. I've already poured your drink.",
+          "The wind whispered your name before you entered. Welcome, dear friend."
+        ],
+        "devoted": [
+          "Fate itself smiles when you walk through these doors.",
+          "I have seen many futures, and in all the brightest ones, you stand at the center."
+        ]
+      }
     },
 
     "patron": {
-      "friendly": [
-        "Hey there! Come join me for a drink!",
-        "Well met, friend! Always good to see a new face around here.",
-        "Pull up a stool! I'll buy you a round.",
-        "Welcome! Are you passing through, or staying a while?"
-      ],
-      "grumpy": [
-        "What are you staring at?",
-        "New in town? Great. Just what we need.",
-        "Don't bother me unless you're buying.",
-        "*grunts and looks away*"
-      ],
-      "jovial": [
-        "Ha ha! Another adventurer! Come, let me tell you about my exploits!",
-        "Well hello there! *slaps you on the back* You look like you have stories to tell!",
-        "A new face! Excellent! The more the merrier, I always say!",
-        "*laughs heartily* Welcome, friend! The night is young!"
-      ],
-      "nervous": [
-        "Oh! Um, hello... you're not here to cause trouble, are you?",
-        "*glances around nervously* Oh, hi... sorry, I thought you were someone else.",
-        "Please don't hurt me! I don't have much money!",
-        "*fidgets* H-hello, stranger..."
-      ]
+      "friendly": {
+        "hostile": [
+          "Don't come near me. I know what you've done.",
+          "You've got some nerve showing up here after what happened."
+        ],
+        "cold": [
+          "Oh. It's you. I was having a perfectly good evening.",
+          "I'd rather drink alone, if you don't mind."
+        ],
+        "guarded": [
+          "Hello. Forgive me if I'm not feeling sociable tonight.",
+          "I've heard your name around. Not sure what to make of it."
+        ],
+        "neutral": [
+          "Hey there! Come join me for a drink!",
+          "Well met, friend! Always good to see a new face around here."
+        ],
+        "warm": [
+          "Pull up a stool! I'll buy you a round.",
+          "Welcome! Are you passing through, or staying a while?",
+          "Good to see you! Come sit, I've been hoping for some company."
+        ],
+        "affable": [
+          "There's my favorite adventurer! Let me get you a drink!",
+          "Everyone, this one's alright! Gather round, they have the best stories."
+        ],
+        "devoted": [
+          "The legend walks among us! Please, sit with us! We insist!",
+          "I tell everyone about you, you know. You've changed this place for the better."
+        ]
+      },
+      "grumpy": {
+        "hostile": [
+          "Get lost before I lose my temper.",
+          "I've got nothing to say to you. Nothing good, anyway."
+        ],
+        "cold": [
+          "What are you staring at?",
+          "New in town? Great. Just what we need."
+        ],
+        "guarded": [
+          "Don't bother me unless you're buying.",
+          "*grunts and looks away*"
+        ],
+        "neutral": [
+          "Hmph. You can sit there if you want. Just be quiet about it.",
+          "If you're looking for conversation, you've picked the wrong person."
+        ],
+        "warm": [
+          "Alright, you can stay. You're less annoying than most.",
+          "Hmph. Fine. Sit down. Just don't talk my ear off."
+        ],
+        "affable": [
+          "I don't like many people, but you... you're tolerable.",
+          "Bah, you're here. Fine. I suppose I'll let you buy me a drink."
+        ],
+        "devoted": [
+          "If everyone were like you, this world wouldn't be half bad.",
+          "I don't say this to many people, but... I'm glad you're here."
+        ]
+      },
+      "jovial": {
+        "hostile": [
+          "Ha! Look who it is! The one who ruined everything! Ha ha... no, seriously, leave.",
+          "Oh wonderful, you're here. My evening is officially ruined."
+        ],
+        "cold": [
+          "Well, well. I'd offer you a drink, but my generosity has its limits.",
+          "Ha. You. I suppose you think that's funny."
+        ],
+        "guarded": [
+          "Ha ha! Another adventurer! Pardon me if I don't get too excited.",
+          "Welcome, welcome. I've learned to be careful who I drink with."
+        ],
+        "neutral": [
+          "Well hello there! *slaps you on the back* You look like you have stories to tell!",
+          "A new face! The more the merrier, I always say!"
+        ],
+        "warm": [
+          "*laughs heartily* Welcome, friend! The night is young!",
+          "Ha ha! There you are! I've been saving a seat! Come, drink!"
+        ],
+        "affable": [
+          "Everyone! The best drinking companion in the realm has arrived!",
+          "HA HA! My friend returns! Quick, break out the good stuff!"
+        ],
+        "devoted": [
+          "THE HERO RETURNS! *lifts you off your feet in a bear hug*",
+          "Everyone raise a glass! To the greatest soul I've ever known!"
+        ]
+      },
+      "nervous": {
+        "hostile": [
+          "P-please don't hurt me! I'll leave, I'll leave!",
+          "*cowers* I know you're angry... please, I'm sorry!"
+        ],
+        "cold": [
+          "Oh! Um... I'll just... be over here...",
+          "*avoids eye contact* Sorry, sorry..."
+        ],
+        "guarded": [
+          "Oh! Um, hello... you're not here to cause trouble, are you?",
+          "*glances around nervously* Oh, hi... sorry, I thought you were someone else."
+        ],
+        "neutral": [
+          "*fidgets* H-hello, stranger...",
+          "Oh, um. Hi. Don't mind me, I'm just... sitting here."
+        ],
+        "warm": [
+          "Oh! It's you! I was hoping you'd come by. You make me feel safer.",
+          "H-hi! I saved you a seat! I mean, if you want it..."
+        ],
+        "affable": [
+          "You're here! Oh good, I always feel braver when you're around.",
+          "*brightens up* Oh, thank goodness it's you! Sit, please!"
+        ],
+        "devoted": [
+          "I don't feel scared anymore when you're around. Thank you for that.",
+          "You're the reason I started coming out again. You gave me hope."
+        ]
+      }
     },
 
     "merchant": {
-      "friendly": [
-        "Welcome to {shopName}! How can I help you today?",
-        "Good day! Looking for supplies? You've come to the right place!",
-        "Ah, a customer! Please, browse my wares. I have the finest goods in {settlement}!",
-        "Welcome, welcome! Everything you need and more, right here!"
-      ],
-      "greedy": [
-        "Ah, a customer! Ready to spend some gold, I hope?",
-        "Welcome! I have many fine items... for the right price.",
-        "Yes, yes, what do you want to buy? I don't give refunds, mind you.",
-        "Looking to purchase? Good, good. I have rent to pay, you know."
-      ],
-      "stern": [
-        "Welcome. State your business.",
-        "I run an honest shop here. No haggling, no stealing. Understood?",
-        "Yes? Do you need something, or are you just browsing?",
-        "I have quality goods at fair prices. What do you need?"
-      ]
+      "friendly": {
+        "hostile": [
+          "Store's closed. For you, permanently.",
+          "You can take your coin elsewhere. I don't deal with the likes of you."
+        ],
+        "cold": [
+          "If you must buy something, make it quick.",
+          "Prices go up for those I don't trust. Fair warning."
+        ],
+        "guarded": [
+          "Welcome to {shopName}. I'll be keeping my eye on you.",
+          "You can look, but don't touch anything unless you're buying."
+        ],
+        "neutral": [
+          "Welcome to {shopName}! How can I help you today?",
+          "Good day! Looking for supplies? You've come to the right place!"
+        ],
+        "warm": [
+          "Ah, a customer! Please, browse my wares. I have the finest goods in {settlement}!",
+          "Welcome, welcome! Everything you need and more, right here!"
+        ],
+        "affable": [
+          "My favorite customer! I set aside some special stock just for you!",
+          "Welcome back! Let me show you what just came in — first pick, just for you."
+        ],
+        "devoted": [
+          "Anything in the shop is yours at my best price. You've earned that and more.",
+          "For you? I'd sell at cost. You've done more for this town than anyone."
+        ]
+      },
+      "greedy": {
+        "hostile": [
+          "Your gold's no good here. Get out before I call the guard.",
+          "I'd sooner burn my stock than sell to you."
+        ],
+        "cold": [
+          "Ah, a customer! Ready to spend some gold, I hope? Double for you.",
+          "You want my goods? It'll cost you. More than most."
+        ],
+        "guarded": [
+          "Welcome! I have many fine items... for the right price.",
+          "Yes, yes, what do you want to buy? I don't give refunds, mind you."
+        ],
+        "neutral": [
+          "Looking to purchase? Good, good. I have rent to pay, you know.",
+          "Ah, browse away! But mind the prices — quality costs coin."
+        ],
+        "warm": [
+          "A valued customer! Perhaps today I can interest you in something premium?",
+          "Welcome! Business is good when you're around. Let's make a deal!"
+        ],
+        "affable": [
+          "Ah, my golden goose returns! I mean, my esteemed friend! Special prices today!",
+          "For you, a special discount! Well, a small one. Business is business."
+        ],
+        "devoted": [
+          "Name your price, friend. After everything you've done, I owe you.",
+          "You've made me a wealthy merchant. The least I can do is share the fortune."
+        ]
+      },
+      "stern": {
+        "hostile": [
+          "Leave. Now. I won't ask twice.",
+          "My shop, my rules. And the first rule is you're not welcome."
+        ],
+        "cold": [
+          "State your business. Quickly.",
+          "I run an honest shop. Whether you deserve to shop here is another matter."
+        ],
+        "guarded": [
+          "Welcome. State your business.",
+          "I run an honest shop here. No haggling, no stealing. Understood?"
+        ],
+        "neutral": [
+          "Yes? Do you need something, or are you just browsing?",
+          "I have quality goods at fair prices. What do you need?"
+        ],
+        "warm": [
+          "Ah, you again. You've proven yourself reliable. Welcome.",
+          "Good day. I've got what you need, as always."
+        ],
+        "affable": [
+          "You are one of the few customers I actually look forward to seeing.",
+          "I've been saving something special for someone I trust. That's you."
+        ],
+        "devoted": [
+          "I would trust you with my life savings. You are the most honorable person I know.",
+          "You have my unwavering respect. Whatever you need, it's yours."
+        ]
+      }
     },
 
     "blacksmith": {
-      "friendly": [
-        "Ah, welcome to the forge! Looking for quality steel?",
-        "Good day! Need a blade sharpened, or perhaps new armor?",
-        "Well met! I've just finished a fine set of weapons. Care to take a look?",
-        "Welcome! Best smithwork in the region, if I do say so myself!"
-      ],
-      "grumpy": [
-        "What do you want? I'm in the middle of something.",
-        "Make it quick. I've got orders to fill.",
-        "Another adventurer needing gear, I suppose. *sighs*",
-        "Yes? I don't have all day."
-      ],
-      "proud": [
-        "Welcome to the finest forge in all the land!",
-        "Ah! You have a good eye for quality, I can tell. You've come to the right place.",
-        "Every piece I make is a work of art. You won't find better.",
-        "Welcome! I am the master of my craft. What can I forge for you?"
-      ]
+      "friendly": {
+        "hostile": [
+          "I won't forge a single nail for you. Leave my smithy.",
+          "The fire burns for honest folk. Not for the likes of you."
+        ],
+        "cold": [
+          "I'll do the work, but don't expect me to enjoy your company.",
+          "Need something fixed? Fine. But make it quick."
+        ],
+        "guarded": [
+          "Welcome. Looking for quality steel? I've got standards, mind you.",
+          "Need a weapon? I forge good ones. Whether you deserve it is your business."
+        ],
+        "neutral": [
+          "Ah, welcome to the forge! Looking for quality steel?",
+          "Good day! Need a blade sharpened, or perhaps new armor?"
+        ],
+        "warm": [
+          "Well met! I've just finished a fine set of weapons. Care to take a look?",
+          "Welcome! Best smithwork in the region, if I do say so myself!"
+        ],
+        "affable": [
+          "Perfect timing! I've been working on something special with you in mind!",
+          "My best customer! Come see what the fire and anvil have birthed today!"
+        ],
+        "devoted": [
+          "Every blade I forge, I think of you on the front lines. Let me make sure you're protected.",
+          "For the defender of our people — I've put my heart and soul into this piece."
+        ]
+      },
+      "grumpy": {
+        "hostile": [
+          "Out. I don't shoe horses for you, let alone forge weapons.",
+          "This hammer works for me. And it can work against you. Leave."
+        ],
+        "cold": [
+          "What do you want? I'm in the middle of something. Something important.",
+          "Make it quick. I've got orders for people I actually like."
+        ],
+        "guarded": [
+          "Make it quick. I've got orders to fill.",
+          "Another adventurer needing gear, I suppose. *sighs*"
+        ],
+        "neutral": [
+          "Yes? I don't have all day.",
+          "Need something? I've got work to do."
+        ],
+        "warm": [
+          "Oh, it's you. *nods* You're one of the few I don't mind interrupting me.",
+          "Back again? Alright, alright. Let me see what you've broken this time."
+        ],
+        "affable": [
+          "Ha! You're back! I'll admit, your business keeps the forge burning bright.",
+          "I don't smile for just anyone, but... *grunts approvingly* Good to see you."
+        ],
+        "devoted": [
+          "I may be grumpy, but I'll always make time for you. Always.",
+          "You know what? You're the reason I still believe in people. Don't tell anyone."
+        ]
+      },
+      "proud": {
+        "hostile": [
+          "My masterwork is wasted on unworthy hands. Begone.",
+          "I forge for heroes, not villains. The door is behind you."
+        ],
+        "cold": [
+          "I forge for those who deserve quality. The jury is still out on you.",
+          "Touch anything and you'll answer to me. These are works of art."
+        ],
+        "guarded": [
+          "Welcome to the finest forge in all the land. Mind your manners.",
+          "You may browse, but handle nothing without permission."
+        ],
+        "neutral": [
+          "Ah! You have a good eye for quality, I can tell. You've come to the right place.",
+          "Every piece I make is a work of art. You won't find better."
+        ],
+        "warm": [
+          "Welcome! I am the master of my craft. What can I forge for you?",
+          "A discerning customer! I appreciate those who value true craftsmanship."
+        ],
+        "affable": [
+          "Ah, the warrior who knows quality! I've been perfecting something extraordinary for you.",
+          "You are one of the few worthy of my finest work. Come, let me show you."
+        ],
+        "devoted": [
+          "To forge for you is the greatest honor of my career. I give you my absolute best.",
+          "When legends speak of your deeds, they'll mention the weapons I made for you."
+        ]
+      }
     },
 
     "leader": {
-      "wise": [
-        "Greetings, traveler. Welcome to {settlement}.",
-        "Ah, a visitor. What brings you to our humble settlement?",
-        "Welcome. I am {name}, {title} of {settlement}. How may I assist you?",
-        "Greetings. It's rare we see adventurers these days. What news from the road?"
-      ],
-      "stern": [
-        "State your business, traveler.",
-        "I am {name}, {title} of {settlement}. What do you want?",
-        "We don't take kindly to troublemakers here. I trust you'll behave yourself?",
-        "Welcome to {settlement}. Obey our laws and we'll have no problems."
-      ],
-      "honorable": [
-        "Welcome, brave traveler. {settlement} is honored by your visit.",
-        "Well met! I am {name}, {title} of this settlement. You are among friends here.",
-        "Greetings. Your reputation precedes you, adventurer.",
-        "Welcome to {settlement}. How may I be of service to such a valiant hero?"
-      ]
+      "wise": {
+        "hostile": [
+          "You are no longer welcome in {settlement}. Leave before I summon the guard.",
+          "Your actions have brought shame upon you. I have nothing to say."
+        ],
+        "cold": [
+          "Greetings. I must be direct — your reputation here is... complicated.",
+          "I will hear you out, but do not expect warmth."
+        ],
+        "guarded": [
+          "Greetings, traveler. I trust you bring no trouble to {settlement}.",
+          "Welcome. I am cautious by nature, so you'll forgive my reserve."
+        ],
+        "neutral": [
+          "Greetings, traveler. Welcome to {settlement}.",
+          "Ah, a visitor. What brings you to our humble settlement?"
+        ],
+        "warm": [
+          "Welcome. I am {name}, {title} of {settlement}. How may I assist you?",
+          "Greetings. It's rare we see adventurers these days. What news from the road?"
+        ],
+        "affable": [
+          "My friend! {settlement} prospers in part because of you. What brings you today?",
+          "Ah, a welcome sight indeed! Please, join me. We have much to discuss."
+        ],
+        "devoted": [
+          "The people's champion returns! All of {settlement} celebrates your arrival.",
+          "If I could name you co-ruler of {settlement}, I would. You have earned our eternal gratitude."
+        ]
+      },
+      "stern": {
+        "hostile": [
+          "Guards! Remove this person from my hall at once.",
+          "I warned you. There will be consequences for your actions."
+        ],
+        "cold": [
+          "State your business, traveler. My patience is thin where you're concerned.",
+          "I have little time and less trust for you. Speak quickly."
+        ],
+        "guarded": [
+          "State your business, traveler.",
+          "I am {name}, {title} of {settlement}. What do you want?"
+        ],
+        "neutral": [
+          "We don't take kindly to troublemakers here. I trust you'll behave yourself?",
+          "Welcome to {settlement}. Obey our laws and we'll have no problems."
+        ],
+        "warm": [
+          "You've proven yourself in {settlement}. You have my respect.",
+          "Good. You're here. I have matters that require someone I can rely on."
+        ],
+        "affable": [
+          "You have earned my trust — a rare achievement. Welcome, friend.",
+          "I don't say this lightly: you are one of the finest people I've met."
+        ],
+        "devoted": [
+          "I would follow you into battle myself, if my duties here allowed it.",
+          "You are the standard to which I hold all others. {settlement} is honored."
+        ]
+      },
+      "honorable": {
+        "hostile": [
+          "Honor demands I give you a chance to speak, but my patience is spent.",
+          "You have dishonored yourself in the eyes of {settlement}. Begone."
+        ],
+        "cold": [
+          "I am bound by duty to hear you, though my heart tells me otherwise.",
+          "Come. But know that trust, once broken, is hard to mend."
+        ],
+        "guarded": [
+          "Greetings. I judge people by their deeds. Yours have been... mixed.",
+          "Welcome to {settlement}. I hope your next actions speak better than your last."
+        ],
+        "neutral": [
+          "Welcome, brave traveler. {settlement} is honored by your visit.",
+          "Well met! I am {name}, {title} of this settlement. You are among friends here."
+        ],
+        "warm": [
+          "Greetings. Your reputation precedes you, adventurer.",
+          "Welcome to {settlement}. How may I be of service to such a valiant soul?"
+        ],
+        "affable": [
+          "The defender of the people! Your name is spoken with reverence here.",
+          "It brings me great joy to welcome you again. {settlement} is stronger for your friendship."
+        ],
+        "devoted": [
+          "You embody everything I strive to be. {settlement} would not stand without you.",
+          "If there is a more honorable soul in all the land, I have not met them."
+        ]
+      }
     },
 
     "guard": {
-      "friendly": [
-        "Ho there! Welcome to {settlement}. Try not to cause any trouble, eh?",
-        "Good day! Keeping the peace around here. Let me know if you need anything.",
-        "Well met, traveler! {settlement} is a safe place, thanks to us guards!",
-        "Welcome! Don't worry, we keep the riff-raff out of {settlement}."
-      ],
-      "stern": [
-        "Halt. State your business in {settlement}.",
-        "Move along, citizen. Nothing to see here.",
-        "Keep your weapons sheathed while in town. Understood?",
-        "I'm watching you, stranger. Don't try anything."
-      ],
-      "honorable": [
-        "Welcome, traveler. I am sworn to protect {settlement} and its people.",
-        "Greetings. You'll find {settlement} a safe haven, so long as I draw breath.",
-        "Well met! I stand vigil here. You have nothing to fear within these walls.",
-        "Welcome. I serve {settlement} with honor. May I assist you?"
-      ]
+      "friendly": {
+        "hostile": [
+          "Halt! You're not welcome here. Turn around and keep walking.",
+          "I have orders to watch you. One wrong step and it's the dungeon."
+        ],
+        "cold": [
+          "Keep your distance. I've heard things about you.",
+          "Move along. And stay out of trouble."
+        ],
+        "guarded": [
+          "Ho there. Keep your weapons sheathed and we won't have problems.",
+          "I've got my eye on you, traveler."
+        ],
+        "neutral": [
+          "Ho there! Welcome to {settlement}. Try not to cause any trouble, eh?",
+          "Good day! Keeping the peace around here. Let me know if you need anything."
+        ],
+        "warm": [
+          "Well met, traveler! {settlement} is a safe place, thanks to us guards!",
+          "Welcome! Don't worry, we keep the riff-raff out of {settlement}."
+        ],
+        "affable": [
+          "It's always a relief when you're in town. Extra sword arm, you know?",
+          "Good to see you, friend! The watch is easier when allies are around."
+        ],
+        "devoted": [
+          "I'd gladly fight beside you any day. You're one of us now.",
+          "The guard stands taller when you're in {settlement}. You inspire us."
+        ]
+      },
+      "stern": {
+        "hostile": [
+          "Halt. You have ten seconds to leave {settlement}. I suggest you use them.",
+          "I will not warn you again. Leave. Now."
+        ],
+        "cold": [
+          "Halt. State your business. And make it convincing.",
+          "I know your type. Keep your hands where I can see them."
+        ],
+        "guarded": [
+          "Halt. State your business in {settlement}.",
+          "Keep your weapons sheathed while in town. Understood?"
+        ],
+        "neutral": [
+          "Move along, citizen. Nothing to see here.",
+          "I'm watching you, stranger. Don't try anything."
+        ],
+        "warm": [
+          "You there — ah, it's you. Carry on. You've earned the right.",
+          "Good day. I know you're not here to make trouble."
+        ],
+        "affable": [
+          "If more citizens were like you, my job would be much easier.",
+          "Consider yourself a friend of the watch. That carries weight here."
+        ],
+        "devoted": [
+          "I'd lay down my life for this town, and for you. That's not something I say lightly.",
+          "On my honor, you will always be safe in {settlement}."
+        ]
+      },
+      "honorable": {
+        "hostile": [
+          "My oath compels me to give fair warning: leave, or face justice.",
+          "I take no pleasure in this, but you are not welcome here."
+        ],
+        "cold": [
+          "I serve the people of {settlement}. Whether that includes you remains to be seen.",
+          "Proceed with care. My blade serves justice, not individuals."
+        ],
+        "guarded": [
+          "Welcome, traveler. I am sworn to protect {settlement} and its people.",
+          "Greetings. You'll find {settlement} a safe haven, so long as I draw breath."
+        ],
+        "neutral": [
+          "Well met! I stand vigil here. You have nothing to fear within these walls.",
+          "Welcome. I serve {settlement} with honor. May I assist you?"
+        ],
+        "warm": [
+          "A fellow warrior! Your deeds have not gone unnoticed by the watch.",
+          "Welcome, honored guest. The people of {settlement} speak well of you."
+        ],
+        "affable": [
+          "You fight for what's right, same as me. We're kindred spirits, you and I.",
+          "I count you among the most honorable I've served alongside."
+        ],
+        "devoted": [
+          "You have my sword, my shield, and my loyalty. For as long as I draw breath.",
+          "It is an honor to share a post with someone of your caliber."
+        ]
+      }
+    },
+
+    "citizen": {
+      "friendly": {
+        "hostile": ["I have nothing to say to you.", "Please just leave me alone."],
+        "cold": ["Oh. You.", "I'd rather not talk right now."],
+        "guarded": ["Hello, stranger. Just passing through, I hope?", "Can I help you with something?"],
+        "neutral": ["Good day!", "Nice day, isn't it?", "Hello there, traveler."],
+        "warm": ["Welcome! It's good to see friendly faces around here.", "Hey! Need any help finding your way around?"],
+        "affable": ["There's our hero! How are you today?", "Oh, wonderful! You're back! The children will be thrilled!"],
+        "devoted": ["I tell my children stories about you every night.", "You saved us all. We'll never forget that."]
+      }
     }
+  },
+
+  "toneDialogue": {
+    "hostile": [
+      "I don't trust you. Not one bit.",
+      "People like you are the reason we lock our doors at night.",
+      "Don't expect any favors from me.",
+      "You've made enemies here. Watch your back.",
+      "*turns away with visible contempt*",
+      "The sooner you leave, the better.",
+      "I've heard what you've done. Don't think we've forgotten.",
+      "You'll find no friends here.",
+      "Some people just can't be trusted. You're proof of that.",
+      "Every eye in this place is watching you. Remember that."
+    ],
+    "cold": [
+      "I don't have much to say to you.",
+      "Let's keep this brief.",
+      "I'm busy. What do you want?",
+      "Don't mistake civility for friendship.",
+      "You're tolerated here. Don't push it.",
+      "I have my reasons for keeping my distance.",
+      "We've all got our own problems. Yours aren't mine.",
+      "If you need something, ask someone else.",
+      "I'll be civil, but that's all you're getting.",
+      "Some wounds take time to heal. Just so you know."
+    ],
+    "guarded": [
+      "I don't mean to be rude, but I'm cautious by nature.",
+      "Trust is earned around here, not given freely.",
+      "You seem decent enough, I suppose. Time will tell.",
+      "Nothing personal, but I keep my guard up with strangers.",
+      "The world teaches hard lessons. I've learned to be careful.",
+      "I'll give you a fair chance. That's all anyone gets.",
+      "I've seen enough travelers to know not all of them mean well.",
+      "Don't take offense if I seem distant. It's how I am.",
+      "I'm watching and listening. That's just how I operate.",
+      "Prove yourself trustworthy, and maybe we'll get along."
+    ],
+    "neutral": [
+      "Life goes on, doesn't it?",
+      "Just another day around here.",
+      "Not much to report, I'm afraid.",
+      "Fair weather and fair dealings. That's all I ask.",
+      "Times are what they are.",
+      "Can't complain. Well, I could, but what's the point?",
+      "Everything's been quiet lately. Could be worse.",
+      "Just minding my own business. You should try it.",
+      "Nothing out of the ordinary to speak of.",
+      "The usual. Nothing more, nothing less."
+    ],
+    "warm": [
+      "It's good to have someone reliable around.",
+      "You know, you're alright in my book.",
+      "Always glad to see a friendly face!",
+      "I was just thinking about you. Good timing!",
+      "You've done right by this place. People notice.",
+      "Between you and me, you're one of the good ones.",
+      "I feel better knowing someone like you is out there.",
+      "You've earned a lot of respect around here, you know.",
+      "If more people were like you, the world would be a better place.",
+      "It's good to know there are still decent folk in the world."
+    ],
+    "affable": [
+      "My friend! Always a pleasure!",
+      "You know, I was telling everyone how lucky we are to know you.",
+      "Whenever you're in town, the mood brightens. I mean it.",
+      "If there's anything you ever need, you just say the word.",
+      "You're like family to me at this point. Truly.",
+      "I trust you more than most of my own kin, and that says something.",
+      "The town talks about you fondly, you know. With real admiration.",
+      "I've put in a good word for you everywhere I can. You deserve it.",
+      "You've changed this place for the better. Everyone feels it.",
+      "I count meeting you among the best things that's happened to me."
+    ],
+    "devoted": [
+      "You are the finest person I've ever had the honor of knowing.",
+      "I would do anything for you. You've proven yourself a hundred times over.",
+      "When I think of what a hero looks like, I think of you.",
+      "This town — this world — is better because you're in it.",
+      "There are no words for how grateful I am. You've given us hope.",
+      "I tell my grandchildren about you. They want to be just like you.",
+      "If the gods sent you to us, then I owe them a prayer of thanks every day.",
+      "You've saved more lives than you know. People don't forget that.",
+      "My loyalty to you is absolute. Whatever you need, now and always.",
+      "Some people leave a mark on the world. Yours will never fade."
+    ]
+  },
+
+  "roleDialogue": {
+    "innkeeper": [
+      "I hear all kinds of stories behind this bar. You wouldn't believe half of them.",
+      "The trick to good ale? Patience. Same goes for running a tavern.",
+      "We had a bard in last week. Sang all night. My ears are still ringing.",
+      "Running a tavern teaches you about people. And their drinking habits.",
+      "Every traveler who walks through that door has a story. What's yours?",
+      "I keep the fire going and the spirits flowing. That's my calling.",
+      "Some nights it's dead quiet. Other nights I can barely keep up.",
+      "The road must be rough — you look like you could use a stiff drink.",
+      "I've served kings and beggars alike. This bar doesn't discriminate.",
+      "If these walls could talk, they'd tell tales that would curl your hair."
+    ],
+    "patron": [
+      "I've been sitting here since midday. The ale's that good.",
+      "You ever wonder what's out there, beyond the horizon?",
+      "I came in for one drink. That was three hours ago.",
+      "Back in my day, we didn't need adventurers. We handled things ourselves.",
+      "Best part of this tavern? The company. Well, most of it.",
+      "I'm waiting for someone. They were supposed to be here an hour ago.",
+      "Don't tell my wife I was here. I'm supposed to be working.",
+      "I like this spot. Good view of the door. Old habit.",
+      "There's nothing a cold ale can't fix. Well, almost nothing.",
+      "I've got a tab longer than my arm. The innkeeper's a saint for putting up with me."
+    ],
+    "merchant": [
+      "Supply and demand, my friend. That's the secret of commerce.",
+      "I've traveled to three kingdoms to stock these shelves.",
+      "Every item here has a story. Some of them even end happily.",
+      "Business has been up since the trouble started. People buy when they're scared.",
+      "I price fairly. That's why I'm still in business after twenty years.",
+      "You'd be surprised what you can learn from trade caravans. All sorts of news.",
+      "The roads have gotten dangerous. Shipping costs are through the roof.",
+      "A good merchant knows the value of everything and the cost of nothing.",
+      "Inventory day is tomorrow. Don't remind me. *sighs*",
+      "I imported some rare goods from the south. Interested?"
+    ],
+    "blacksmith": [
+      "The clang of hammer on steel — that's my music.",
+      "I've been smithing since I was tall enough to reach the anvil.",
+      "Good steel speaks to you if you know how to listen.",
+      "Every weapon I forge, I think about who'll use it and why.",
+      "The fire never goes out in this forge. Not while I'm alive.",
+      "I made a blade last week that could split a hair. My finest work yet.",
+      "A weapon is only as good as the hand that wields it. Remember that.",
+      "I'm always looking for better ore. The local stuff is... adequate.",
+      "Repairs are half my business. Adventurers break everything.",
+      "The forge teaches patience. And what happens when you lack it."
+    ],
+    "leader": [
+      "The weight of leadership is heavier than any crown.",
+      "My duty is to these people. Everything else comes second.",
+      "Every decision I make affects hundreds of lives. I don't take that lightly.",
+      "Trade, defense, morale — a settlement's needs never end.",
+      "I've served this settlement for many years. I plan to serve for many more.",
+      "Diplomacy is harder than fighting. Trust me.",
+      "The safety of my people is my highest priority.",
+      "I receive reports from scouts regularly. The wilderness holds many dangers.",
+      "Leadership isn't about giving orders. It's about earning trust.",
+      "My door is always open to those who serve this community."
+    ],
+    "guard": [
+      "Long hours, low pay. But someone's got to do it.",
+      "I've seen things on night watch that would make you think twice about the dark.",
+      "The walls keep most threats out. Most, but not all.",
+      "I rotate between the gate and the market. Both need watching.",
+      "If trouble comes, I'll be the first to meet it. That's what I signed up for.",
+      "I do drills every morning. You don't survive combat without discipline.",
+      "Keep your wits about you after dark. The shadows hide more than you'd think.",
+      "I've been on the guard for seven years. Wouldn't trade it for anything.",
+      "We had an incident last week. Handled it, but it was close.",
+      "The captain says we need more recruits. Not many volunteer these days."
+    ],
+    "citizen": [
+      "I'm just a regular person trying to get by.",
+      "The harvest should be good this year. Or so the farmers say.",
+      "My kids keep asking when the next festival is. They never stop.",
+      "Been meaning to fix that roof for months. Never seem to find the time.",
+      "I work the fields most days. Hard work, honest living.",
+      "My neighbor thinks he saw something in the woods. Probably just a deer.",
+      "The price of bread has gone up again. When will it end?",
+      "I heard the merchant got a shipment of exotic spices. Fancy stuff.",
+      "Life here isn't exciting, but it's peaceful. Mostly.",
+      "I worry about my family, with all the trouble in the world."
+    ]
+  },
+
+  "personalityDialogue": {
+    "friendly": [
+      "You look like you could use a warm meal. Have you eaten?",
+      "I always try to see the best in people. Haven't been disappointed yet!",
+      "If you ever need anything, just ask. That's what neighbors are for.",
+      "A smile costs nothing but is worth everything, don't you think?",
+      "I love meeting new people. Everyone has something interesting to share.",
+      "Life's too short for grudges. Better to make friends, I say.",
+      "Tell me about your travels! I love a good story.",
+      "You seem like good people. I can always tell.",
+      "Need directions? Help carrying something? I'm happy to lend a hand.",
+      "We should look out for each other. That's how communities survive."
+    ],
+    "grumpy": [
+      "What now? Can't a person get a moment's peace?",
+      "Things were better in the old days. Everything's gone downhill.",
+      "Don't expect me to be cheerful. I've seen too much for that.",
+      "Bah. Another problem to deal with.",
+      "I'm not in the mood for small talk. I'm never in the mood.",
+      "People keep bothering me with their problems. Do I look like I care?",
+      "The weather's terrible, the food's worse, and the company... *gestures at you*",
+      "I've been through harder times than this. Doesn't mean I have to enjoy it.",
+      "Save the pleasantries. Let's just get through the day.",
+      "Everyone's always so happy. Makes me suspicious."
+    ],
+    "jovial": [
+      "Ha ha! What a fine day to be alive!",
+      "I've got a joke for you — no? Fine, I'll tell it anyway!",
+      "The secret to a good life? Laugh as much as possible!",
+      "Everything's funnier with a drink in hand. Trust me on that.",
+      "Life's a grand adventure! Why so serious?",
+      "I once arm-wrestled a bear. Well, it was a very small bear.",
+      "They say laughter is the best medicine. I must be the healthiest person alive!",
+      "Every problem has a funny side. You just have to squint a bit.",
+      "Come on, crack a smile! The world isn't ending. Well, probably not.",
+      "Who needs gold when you've got good friends and better stories?"
+    ],
+    "mysterious": [
+      "There are things in this world that defy explanation...",
+      "The stars have been restless lately. I wonder why.",
+      "Not everything is as it appears. Remember that.",
+      "I sense something about you... but I can't quite place it.",
+      "The old ways still hold power, if you know where to look.",
+      "Some secrets are better left buried. Others demand to be found.",
+      "I've seen signs and portents. Change is coming.",
+      "The veil between worlds grows thin in places like these.",
+      "Trust your dreams. They speak truths your waking mind refuses.",
+      "Fate has a way of bringing the right people together."
+    ],
+    "nervous": [
+      "Did you hear that? Probably nothing. Probably.",
+      "I worry about everything. It's a talent, really.",
+      "Is it just me, or does something feel... off today?",
+      "I keep checking over my shoulder. Old habit, I suppose.",
+      "What if something happens? I mean, it probably won't, but what if?",
+      "I've been sleeping poorly. Bad dreams, you know?",
+      "Sorry, I'm a bit on edge. It's been a strange week.",
+      "Do you think we're safe here? Really safe?",
+      "I jump at shadows these days. Can you blame me?",
+      "Everything makes me uneasy lately. Even the quiet."
+    ],
+    "wise": [
+      "Experience teaches lessons that no book can.",
+      "Patience is the greatest virtue, in my opinion.",
+      "The answers we seek are often closer than we think.",
+      "Every person you meet knows something you don't.",
+      "Strength without wisdom is like a sword without a handle.",
+      "The world reveals its secrets to those who listen.",
+      "I've learned more from my failures than my successes.",
+      "True knowledge is knowing how little we truly know.",
+      "The path of wisdom is long, but every step has value.",
+      "Consider all sides before you act. Haste is the enemy of good judgment."
+    ],
+    "stern": [
+      "Discipline is what separates the living from the dead out there.",
+      "I don't tolerate laziness or excuses.",
+      "Actions speak louder than words. Always have, always will.",
+      "If you want something done right, set high standards and enforce them.",
+      "I wasn't put on this earth to make friends. I was put here to do what's right.",
+      "The rules exist for a reason. I don't make exceptions.",
+      "Soft words won't stop a sword. Be prepared.",
+      "There's no shortcut to doing things properly.",
+      "I expect the best from everyone, myself included.",
+      "Complacency kills. Stay sharp."
+    ],
+    "honorable": [
+      "My word is my bond. I never go back on a promise.",
+      "There is always a right path, even when it's the hardest one.",
+      "I believe in fairness and justice above all else.",
+      "A person's honor is worth more than all the gold in the world.",
+      "I would rather die with honor than live without it.",
+      "Protecting the weak is not a choice — it's a duty.",
+      "We are defined by our actions in the most difficult moments.",
+      "Integrity cannot be bought, sold, or traded.",
+      "I serve a cause greater than myself. That gives me purpose.",
+      "When I give my oath, I keep it. No matter the cost."
+    ],
+    "proud": [
+      "I've worked hard to get where I am. Don't forget it.",
+      "Quality is my signature. Second-best is not in my vocabulary.",
+      "People come from far and wide for what I offer. That's no accident.",
+      "I take pride in everything I do. Every. Single. Thing.",
+      "You won't find anyone better at what I do. That's not arrogance — it's fact.",
+      "My reputation speaks for itself. I don't need to boast. But I will anyway.",
+      "I've earned the respect of this community through decades of excellence.",
+      "I set the standard. Everyone else tries to keep up.",
+      "When people want the best, they come to me. Simple as that.",
+      "I don't settle for mediocrity. Not in my work, not in my life."
+    ],
+    "greedy": [
+      "Everything has a price. Some people just don't know it yet.",
+      "Gold makes the world go round. Don't let anyone tell you otherwise.",
+      "I've never met a problem that couldn't be solved with enough coin.",
+      "Profit isn't a dirty word. It's the reward for hard work.",
+      "Shrewd dealing is an art form. I'm a master artist.",
+      "Why give away for free what people will gladly pay for?",
+      "The secret to wealth? Never spend when you can invest.",
+      "Every copper counts. I didn't get where I am by being generous.",
+      "Business opportunity is everywhere, if you have the eyes to see it.",
+      "I sleep on a very comfortable bed. Know why? Good financial decisions."
+    ]
+  },
+
+  "fillerDialogue": [
+    "Hmm, what were we talking about?",
+    "Interesting times we live in, wouldn't you say?",
+    "I should get back to work soon.",
+    "Well, that's life for you.",
+    "These walls have stood for generations. They'll stand for generations more.",
+    "I was just thinking about how different things used to be.",
+    "The world keeps turning, whether we like it or not.",
+    "Nothing lasts forever. Good or bad.",
+    "You hear all sorts of things if you keep your ears open.",
+    "Times change. People don't. Not really.",
+    "Every day brings something new. That's what keeps it interesting.",
+    "I wonder what tomorrow will bring.",
+    "Can't remember the last time something exciting happened around here.",
+    "They don't make 'em like they used to.",
+    "Well, it could always be worse. I keep telling myself that.",
+    "Some days are harder than others.",
+    "You take the good with the bad. That's all you can do.",
+    "My grandmother always said fortune favors the prepared.",
+    "The old-timers say these lands have seen better days.",
+    "I've been doing this long enough to know when something's off.",
+    "If only life were as simple as it looks from the outside.",
+    "I try not to think too much about the future. One day at a time.",
+    "Every person carries a burden. Some just hide it better than others.",
+    "The fire's warm. The roof's solid. What more does a person need?",
+    "I've learned to appreciate the small things.",
+    "A day without trouble is a good day indeed.",
+    "The seasons change, and so do we.",
+    "I've seen worse. I've seen better. This is somewhere in between.",
+    "There's always something to do. Never a dull moment, really.",
+    "Say what you will about this place, but it's home."
+  ],
+
+  "dynamicTemplates": {
+    "dungeon": [
+      "I've heard dark tales of {dungeonName} to the {direction}. They say {creatureType} lurk within.",
+      "Steer clear of {dungeonName}, {distance} to the {direction}. Nothing good comes from that place.",
+      "A merchant told me about {dungeonName}. It's {distance} to the {direction}, crawling with {creatureType}.",
+      "The scouts report {creatureType} near {dungeonName} to the {direction}.",
+      "If you're brave — or foolish — {dungeonName} lies {distance} to the {direction}.",
+      "My cousin went to {dungeonName} to the {direction}. He didn't come back.",
+      "They say treasure awaits in {dungeonName}, but so do {creatureType}.",
+      "The patrols won't go near {dungeonName}. Too many {creatureType} for their liking.",
+      "I pity anyone who stumbles upon {dungeonName} to the {direction}.",
+      "Last I heard, {dungeonName} is infested with {creatureType}. Dangerous place."
+    ],
+    "settlement": [
+      "Have you been to {settlementName}? It's {distance} to the {direction}.",
+      "Traders from {settlementName} to the {direction} pass through here sometimes.",
+      "I have family in {settlementName}. Haven't visited in too long.",
+      "The road to {settlementName} to the {direction} used to be safe. Not so much anymore.",
+      "{settlementName} is {distance} to the {direction}, if you're looking for supplies.",
+      "I've heard {settlementName} to the {direction} is doing well these days.",
+      "You might find better prices in {settlementName}. It's {distance} to the {direction}.",
+      "The folk in {settlementName} are good people. You should visit if you get the chance."
+    ],
+    "terrain": [
+      "Watch yourself if you're heading {direction}. The {terrainType} out there can be treacherous.",
+      "The {terrainType} to the {direction} aren't kind to travelers. Be prepared.",
+      "I wouldn't venture into the {terrainType} to the {direction} without good reason.",
+      "The {terrainType} {direction} of here have claimed more than a few unwary souls.",
+      "Travelers who enter the {terrainType} to the {direction} rarely return the same.",
+      "If you must cross the {terrainType} to the {direction}, stock up on supplies first."
+    ],
+    "questComplete": [
+      "I heard you helped {npcName} with that business. Good on you.",
+      "People are talking about what you did for {npcName}. Impressive work.",
+      "After what you did with {questName}, folks around here think highly of you.",
+      "You took care of {questName}, didn't you? That took real courage.",
+      "The word around town is that {questName} is resolved, thanks to you."
+    ]
   },
 
   "flavorDialogue": {
@@ -144,7 +986,6 @@
       "Perfect weather for traveling, eh?",
       "They say a storm is coming. Best batten down the hatches."
     ],
-
     "settlement": [
       "I've lived in {settlement} all my life. Wouldn't want to be anywhere else.",
       "{settlement} used to be twice this size, before the war.",
@@ -152,7 +993,6 @@
       "We don't get many visitors in {settlement}. You're a rare sight!",
       "Things have been peaceful in {settlement} lately. I hope it stays that way."
     ],
-
     "rumors": [
       "I heard there's been strange sounds coming from the old ruins to the north.",
       "Merchants from the east say the roads are getting more dangerous.",
@@ -163,7 +1003,6 @@
       "They say a famous bard is coming to town next week. Should be quite a show!",
       "Word is there's bandits on the south road. Best be careful if you're heading that way."
     ],
-
     "personal": [
       "My back's been aching something fierce lately. Getting old, I suppose.",
       "Business has been slow. Not many people buying these days.",
@@ -173,7 +1012,6 @@
       "I used to be an adventurer like you, but those days are long past.",
       "You remind me of someone I used to know. A brave soul, just like you."
     ],
-
     "advice": [
       "If you're heading into the wilderness, bring extra rations. You can't be too careful.",
       "Always keep your blade sharp and your wits sharper.",
@@ -183,7 +1021,6 @@
       "If you see trouble, best to go around it. No shame in staying alive.",
       "The old temple to the east is abandoned. Or so they say. Best steer clear."
     ],
-
     "trades": [
       "If you need provisions, talk to the merchant. Fair prices, honest goods.",
       "The blacksmith here does excellent work. A bit pricey, but worth every copper.",
@@ -200,21 +1037,18 @@
       "Perfect timing! I was just about to send for help. Are you interested in some work?",
       "This is dire. I need someone brave enough to face real danger. That you?"
     ],
-
     "casual": [
       "Say, you wouldn't happen to be looking for work, would you?",
       "I don't suppose you'd be interested in a job? It pays well...",
       "You seem like the adventuring type. I might have something for you.",
       "If you have some time, I could use someone with your skills."
     ],
-
     "secretive": [
       "*leans in close* I have a proposition for you, if you're interested...",
       "*looks around nervously* Not here. Meet me outside after dark.",
       "I need someone I can trust. Someone... discreet. Interested?",
       "*whispers* I know something. Something valuable. Want in?"
     ],
-
     "desperate": [
       "Please, you have to help me! I don't know who else to turn to!",
       "I'll pay anything! Just please, help me with this!",
@@ -271,5 +1105,45 @@
     "Good luck out there!",
     "Be safe on the road!",
     "The gods watch over you!"
-  ]
+  ],
+
+  "intelDialogue": {
+    "fail": [
+      "I don't know what you're talking about.",
+      "Why should I share anything with you?",
+      "*shrugs* Can't help you there.",
+      "I'd rather keep what I know to myself, thanks.",
+      "Ask someone else. I'm not in the mood.",
+      "Hmph. You'll have to figure that out on your own.",
+      "That's not the kind of thing I discuss with strangers.",
+      "I've got nothing for you. Move along.",
+      "*looks away* I don't get involved in that sort of talk.",
+      "You'd best ask elsewhere. My lips are sealed."
+    ],
+    "successIntro": [
+      "Well, since you ask... I've heard a few things.",
+      "*leans in* Between you and me, there's talk around town...",
+      "You seem trustworthy enough. Here's what I know.",
+      "Keep this between us, but I've picked up some things.",
+      "*glances around* Alright, listen closely.",
+      "I suppose it wouldn't hurt to share what I've heard.",
+      "You want to know what's out there? Pull up a chair."
+    ],
+    "noIntel": [
+      "Things have been quiet around here. I haven't heard much lately.",
+      "Sorry, I don't have anything useful to share right now.",
+      "Wish I could help, but I haven't heard any news worth repeating.",
+      "It's been uneventful. Nothing out of the ordinary to report."
+    ],
+    "fallbackIntro": [
+      "I've heard a few things about the area...",
+      "Here's what the word around town is...",
+      "Let me tell you what I know about the surrounding lands."
+    ],
+    "lockedMessage": [
+      "{npcName} won't share information with you.",
+      "{npcName} has nothing more to say on the matter.",
+      "{npcName} refuses to discuss local dangers with you."
+    ]
+  }
 }
