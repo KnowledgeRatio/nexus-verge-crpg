@@ -29,7 +29,10 @@
       "Bash(node --check:*)",
       "Bash(npx http-server:*)",
       "Bash(node scripts/addCampaignIds.js:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(ls:*)",
+      "Bash(ln:*)",
+      "Bash(ln -s:*)"
     ]
   }
 }
