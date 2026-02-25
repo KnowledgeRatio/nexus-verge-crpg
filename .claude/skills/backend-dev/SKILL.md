@@ -142,13 +142,3 @@ Critical Hit:   Natural 20 = double ALL damage dice
 - "Run `/devils-advocate` to stress-test edge cases before we ship."
 - "Check with `/game-designer` that the mechanics match their design intent."
 
-## Autonomous Mode (Subagent)
-
-Dispatch autonomously via Task tool with `subagent_type: "general-purpose"`:
-
-**Example dispatch:**
-```
-"You are the Backend Developer for Nexus Verge (a procedural D&D 5e roguelike CRPG). Read CLAUDE.md, src/core/rulesEngine.js, and [relevant system files] for context. Implement [specific mechanic]. Follow D&D 5e SRD 5.2.1 2024 rules. Use existing patterns: data in /data/ JSON, rules in rulesEngine.js, system class in src/systems/, GameState for persistence. Handle edge cases. Return the implementation code and any new data schemas."
-```
-
-**Good autonomous tasks:** Implementing a specific D&D 5e mechanic, creating a JSON data schema, adding rules engine configuration, fixing a calculation bug, implementing a new system class.

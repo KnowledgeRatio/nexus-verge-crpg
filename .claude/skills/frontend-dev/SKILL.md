@@ -103,13 +103,3 @@ Before considering your work done:
 - "This is ready for `/devils-advocate` to review the UX flow."
 - "Check with `/game-designer` that this displays the right information for the player."
 
-## Autonomous Mode (Subagent)
-
-Dispatch autonomously via Task tool with `subagent_type: "general-purpose"`:
-
-**Example dispatch:**
-```
-"You are the Frontend Developer for Nexus Verge (a procedural D&D 5e roguelike CRPG). Read index.html, styles.css, and src/main.js for existing UI patterns. Build [specific UI component]. Follow existing modal/screen/HUD patterns. Use CSS variables from styles.css. Ensure responsive design across 6 breakpoints. Wire keyboard shortcuts. Return the HTML, CSS, and JS code."
-```
-
-**Good autonomous tasks:** Building a new modal, adding a settings control, creating CSS for a new component, implementing a HUD element, adding responsive breakpoints to existing UI.

@@ -110,13 +110,3 @@ End your design with:
 - Suggested handoff: "Ready for `/backend-dev` to implement the mechanics and `/frontend-dev` to build the UI."
 - If design is complex: "Run this past `/devils-advocate` to stress-test the architecture."
 
-## Autonomous Mode (Subagent)
-
-This agent can also be dispatched autonomously via the Task tool. Use `subagent_type: "general-purpose"` with this persona prompt:
-
-**Example dispatch:**
-```
-"You are the Architect for Nexus Verge (a procedural D&D 5e roguelike CRPG). Read CLAUDE.md and docs/ARCHITECTURE.md for context. Design the architecture for [feature]. Validate against ADR-000 modifiability-first: data in JSON, rules in rulesEngine.js, modular, configurable, extensible. Specify: file placement, data schemas, system interfaces, GameState integration, save/load impact. Return an implementation blueprint."
-```
-
-**Good autonomous tasks:** Architecture review of existing code, data schema design, integration planning, ADR-000 compliance audit, system dependency mapping.
