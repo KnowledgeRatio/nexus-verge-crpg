@@ -7319,3 +7319,413 @@ body {
         margin-top: 5px;
     }
 }
+
+/* ============================================================
+   Roger AI Assistant
+   ============================================================ */
+
+/* Overlay backdrop */
+.roger-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9000;
+    align-items: center;
+    justify-content: center;
+}
+
+.roger-overlay.active {
+    display: flex;
+}
+
+/* Panel container */
+.roger-panel {
+    max-width: 640px;
+    width: 90vw;
+    max-height: 80vh;
+    background: #1a1a2e;
+    border: 1px solid #c9a84c;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--font-mono, monospace);
+}
+
+/* Header */
+.roger-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+}
+
+.roger-title {
+    color: #c9a84c;
+    font-size: 1.1rem;
+    font-family: var(--font-mono, monospace);
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.roger-close-btn {
+    background: none;
+    border: none;
+    color: #c9a84c;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: color 0.15s;
+}
+
+.roger-close-btn:hover {
+    color: #ffd700;
+}
+
+/* Body */
+.roger-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    min-height: 0;
+}
+
+/* ---- View management ---- */
+.roger-auth-view,
+.roger-agent-view,
+.roger-chat-view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.roger-auth-view.active,
+.roger-agent-view.active,
+.roger-chat-view.active {
+    display: flex;
+}
+
+/* ---- Auth view ---- */
+.roger-auth-checking {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.roger-auth-signin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.roger-auth-prompt {
+    color: var(--text-secondary, #b0b0b0);
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.roger-sign-in-btn {
+    background: #c9a84c;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.roger-sign-in-btn:hover {
+    background: #ffd700;
+    transform: translateY(-1px);
+}
+
+/* Thinking / spinner animation */
+.roger-thinking {
+    color: var(--text-secondary, #b0b0b0);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.roger-dots {
+    display: inline-block;
+    animation: rogerDotsAnim 1.4s infinite;
+    letter-spacing: 2px;
+}
+
+@keyframes rogerDotsAnim {
+    0%   { opacity: 1; }
+    33%  { opacity: 0.4; }
+    66%  { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* ---- Agent view ---- */
+.roger-agent-heading {
+    color: #c9a84c;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    font-family: var(--font-mono, monospace);
+}
+
+.roger-agent-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.roger-agent-card {
+    background: #16213e;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.roger-agent-card:hover {
+    border-color: #c9a84c;
+    background: #1e2b50;
+}
+
+.roger-agent-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.roger-agent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.roger-agent-card-name {
+    color: #c9a84c;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.roger-agent-card-desc {
+    color: var(--text-secondary, #b0b0b0);
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.roger-user-info {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 12px;
+    flex-shrink: 0;
+}
+
+/* ---- Chat view ---- */
+.roger-subheader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+}
+
+.roger-back-btn {
+    background: none;
+    border: none;
+    color: #c9a84c;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 0;
+    transition: color 0.15s;
+}
+
+.roger-back-btn:hover {
+    color: #ffd700;
+}
+
+.roger-agent-name {
+    color: var(--text-primary, #e0e0e0);
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+/* Message list */
+.roger-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-right: 8px;
+    min-height: 0;
+}
+
+.roger-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.roger-messages::-webkit-scrollbar-track {
+    background: #0d1117;
+}
+
+.roger-messages::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+/* Individual message bubbles */
+.roger-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.roger-msg.user {
+    align-self: flex-end;
+    background: #2a3a5c;
+    color: #e0e0e0;
+    border-radius: 12px 12px 2px 12px;
+    max-width: 80%;
+}
+
+.roger-msg.assistant {
+    align-self: flex-start;
+    background: #1e2d1e;
+    color: #e0e0e0;
+    border-left: 3px solid #c9a84c;
+    border-radius: 2px 12px 12px 12px;
+}
+
+/* Thinking indicator inside message list */
+.roger-msg.thinking {
+    align-self: flex-start;
+    background: #1a2a1a;
+    border-left: 3px solid #555;
+    border-radius: 2px 12px 12px 12px;
+    color: #888;
+    font-style: italic;
+}
+
+/* Composer row */
+.roger-composer {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#rogerInput {
+    flex: 1;
+    background: #0d1117;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.88rem;
+    resize: none;
+    transition: border-color 0.15s;
+    line-height: 1.4;
+}
+
+#rogerInput:focus {
+    outline: none;
+    border-color: #c9a84c;
+}
+
+#rogerInput::placeholder {
+    color: #555;
+}
+
+#rogerSendBtn {
+    background: #c9a84c;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.88rem;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: flex-end;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+}
+
+#rogerSendBtn:hover:not(:disabled) {
+    background: #ffd700;
+}
+
+#rogerSendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .roger-panel {
+        width: 98vw;
+        max-height: 92vh;
+        border-radius: 6px;
+    }
+
+    .roger-body {
+        padding: 14px;
+    }
+
+    .roger-header {
+        padding: 12px 16px;
+    }
+
+    .roger-msg {
+        font-size: 0.85rem;
+    }
+
+    #rogerSendBtn {
+        padding: 8px 12px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+    .roger-panel {
+        max-width: 560px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+    .roger-panel {
+        max-width: 600px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .roger-panel {
+        max-width: 640px;
+    }
+}

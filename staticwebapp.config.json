@@ -1,4 +1,15 @@
 {
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/REPLACE_WITH_YOUR_TENANT_ID/v2.0",
+          "clientIdSettingName": "ROGER_ENTRA_CLIENT_ID",
+          "clientSecretSettingName": "ROGER_ENTRA_CLIENT_SECRET"
+        }
+      }
+    }
+  },
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/data/*", "/src/*", "/assets/*", "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico}"]
@@ -15,6 +26,10 @@
       "headers": {
         "Cache-Control": "public, max-age=3600"
       }
+    },
+    {
+      "route": "/api/roger*",
+      "allowedRoles": ["authenticated"]
     }
   ],
   "mimeTypes": {
@@ -23,12 +38,15 @@
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://login.microsoftonline.com;"
   },
   "responseOverrides": {
     "404": {
       "rewrite": "/index.html",
       "statusCode": 200
+    },
+    "401": {
+      "statusCode": 401
     }
   }
 }

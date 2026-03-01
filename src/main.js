@@ -90,6 +90,9 @@ class Game {
         // Bind main menu buttons
         this.bindMainMenuButtons();
 
+        // Setup Roger AI Assistant (main menu feature - wires modal event listeners)
+        this.setupRoger();
+
         // Subscribe to screen changes
         gameState.subscribe('ui.currentScreen', (screen) => {
             this.showScreen(screen);
@@ -294,6 +297,14 @@ class Game {
         if (helpBtn) {
             helpBtn.addEventListener('click', () => {
                 this.showHelpScreen();
+            });
+        }
+
+        // Talk to Roger
+        const talkToRogerBtn = document.getElementById('talkToRogerBtn');
+        if (talkToRogerBtn) {
+            talkToRogerBtn.addEventListener('click', () => {
+                this.openRoger();
             });
         }
     }
@@ -6090,6 +6101,222 @@ class Game {
         }
 
         console.log(`⚔️ Combat stats recalculated - AC: ${character.ac}, Main Hand Attack: +${character.mainHandAttackBonus}, Off Hand Attack: +${character.offHandAttackBonus}`);
+    }
+
+    // =========================================================================
+    // Roger AI Assistant
+    // =========================================================================
+
+    /**
+     * Open the Roger modal. Checks auth state first, then shows agent picker.
+     */
+    async openRoger() {
+        const modal = document.getElementById('rogerModal');
+        if (!modal) return;
+        modal.classList.add('active');
+
+        // Reset to auth view while we check
+        this._rogerShowView('auth');
+        document.getElementById('rogerAuthChecking').style.display = 'block';
+        document.getElementById('rogerAuthSignIn').style.display = 'none';
+
+        try {
+            const resp = await fetch('/.auth/me');
+            const data = await resp.json();
+            const userDetails = data.clientPrincipal?.userDetails;
+
+            if (userDetails) {
+                // Authenticated — show agent picker
+                await this._rogerLoadAgents();
+            } else {
+                // Not authenticated — show sign-in prompt
+                document.getElementById('rogerAuthChecking').style.display = 'none';
+                document.getElementById('rogerAuthSignIn').style.display = 'flex';
+            }
+        } catch (err) {
+            document.getElementById('rogerAuthChecking').style.display = 'none';
+            document.getElementById('rogerAuthSignIn').style.display = 'flex';
+        }
+    }
+
+    /** Load available agents from the API and show the agent picker */
+    async _rogerLoadAgents() {
+        this._rogerShowView('agent');
+        const listEl = document.getElementById('rogerAgentList');
+        listEl.innerHTML = '<p style="color:#888">Loading agents...</p>';
+
+        try {
+            const resp = await fetch('/api/roger-agents');
+            if (resp.status === 401) {
+                this._rogerShowView('auth');
+                document.getElementById('rogerAuthChecking').style.display = 'none';
+                document.getElementById('rogerAuthSignIn').style.display = 'flex';
+                return;
+            }
+            const data = await resp.json();
+
+            // Update user display name
+            if (data.user?.name) {
+                document.getElementById('rogerUserName').textContent = data.user.name;
+            }
+
+            // Render agent cards
+            listEl.innerHTML = '';
+            (data.agents || []).forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'roger-agent-card';
+                card.innerHTML = `
+                    <div class="roger-agent-icon">${agent.icon || '🤖'}</div>
+                    <div class="roger-agent-info">
+                        <div class="roger-agent-name">${agent.name}</div>
+                        <div class="roger-agent-desc">${agent.description}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    this._rogerOpenChat(agent);
+                });
+                listEl.appendChild(card);
+            });
+
+            if (!data.agents?.length) {
+                listEl.innerHTML = '<p style="color:#888">No agents available.</p>';
+            }
+        } catch (err) {
+            listEl.innerHTML = '<p style="color:#c44">Failed to load agents.</p>';
+        }
+    }
+
+    /** Switch to the chat view for a specific agent */
+    _rogerOpenChat(agent) {
+        this._rogerCurrentAgent = agent;
+        this._rogerThreadId = null; // Fresh thread for each session
+
+        document.getElementById('rogerAgentName').textContent = agent.name;
+        document.getElementById('rogerMessages').innerHTML = '';
+
+        // Welcome message
+        this._rogerAppendMessage(
+            'assistant',
+            `Hello! I'm ${agent.name}. How can I help you today?`
+        );
+
+        this._rogerShowView('chat');
+    }
+
+    /** Send a message to the current agent */
+    async _rogerSendMessage() {
+        const input = document.getElementById('rogerInput');
+        const sendBtn = document.getElementById('rogerSendBtn');
+        const message = input.value.trim();
+        if (!message || !this._rogerCurrentAgent) return;
+
+        input.value = '';
+        sendBtn.disabled = true;
+
+        this._rogerAppendMessage('user', message);
+
+        // Show thinking indicator
+        const thinkingId = `roger-thinking-${Date.now()}`;
+        this._rogerAppendMessage('assistant', '...', thinkingId, 'roger-thinking');
+
+        try {
+            const resp = await fetch('/api/roger-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    agentId: this._rogerCurrentAgent.id,
+                    message,
+                    threadId: this._rogerThreadId || undefined
+                })
+            });
+
+            // Remove thinking indicator
+            document.getElementById(thinkingId)?.remove();
+
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                this._rogerAppendMessage('assistant', `⚠️ Error: ${err.error || resp.statusText}`);
+            } else {
+                const data = await resp.json();
+                this._rogerThreadId = data.threadId;
+                this._rogerAppendMessage('assistant', data.reply);
+            }
+        } catch (err) {
+            document.getElementById(thinkingId)?.remove();
+            this._rogerAppendMessage('assistant', '⚠️ Network error. Please try again.');
+        }
+
+        sendBtn.disabled = false;
+        input.focus();
+    }
+
+    /** Append a message bubble to the chat */
+    _rogerAppendMessage(role, text, id = null, extraClass = '') {
+        const container = document.getElementById('rogerMessages');
+        const msg = document.createElement('div');
+        msg.className = `roger-msg ${role}${extraClass ? ' ' + extraClass : ''}`;
+        if (id) msg.id = id;
+        // Preserve line breaks from agent responses
+        msg.textContent = text;
+        container.appendChild(msg);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    /** Switch which view is active inside the Roger modal */
+    _rogerShowView(view) {
+        ['rogerAuthView', 'rogerAgentView', 'rogerChatView'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        });
+        const viewMap = { auth: 'rogerAuthView', agent: 'rogerAgentView', chat: 'rogerChatView' };
+        const el = document.getElementById(viewMap[view]);
+        if (el) el.classList.add('active');
+    }
+
+    /** Close Roger modal and clean up */
+    closeRoger() {
+        const modal = document.getElementById('rogerModal');
+        if (modal) modal.classList.remove('active');
+        this._rogerCurrentAgent = null;
+        this._rogerThreadId = null;
+    }
+
+    /** Wire up Roger modal event listeners. Call once during init. */
+    setupRoger() {
+        const modal = document.getElementById('rogerModal');
+        if (!modal) return;
+
+        // Close button
+        document.getElementById('rogerCloseBtn')?.addEventListener('click', () => this.closeRoger());
+
+        // Click outside to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.closeRoger();
+        });
+
+        // Sign-in button
+        document.getElementById('rogerSignInBtn')?.addEventListener('click', () => {
+            const returnUrl = encodeURIComponent(window.location.pathname + window.location.hash);
+            window.location.href = `/.auth/login/aad?post_login_redirect_uri=${returnUrl}`;
+        });
+
+        // Back button (chat → agent picker)
+        document.getElementById('rogerBackBtn')?.addEventListener('click', () => {
+            this._rogerLoadAgents();
+        });
+
+        // Send button
+        document.getElementById('rogerSendBtn')?.addEventListener('click', () => {
+            this._rogerSendMessage();
+        });
+
+        // Enter key in textarea (Shift+Enter = newline, Enter = send)
+        document.getElementById('rogerInput')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this._rogerSendMessage();
+            }
+        });
     }
 }
 

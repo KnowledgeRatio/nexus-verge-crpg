@@ -18,6 +18,7 @@
                     <button id="loadGameBtn" class="menu-btn">Load Game</button>
                     <button id="helpBtn" class="menu-btn">Help</button>
                     <button id="devModeBtn" class="menu-btn secondary" style="margin-top: 20px;">Dev Mode: OFF</button>
+                    <button id="talkToRogerBtn" class="menu-btn secondary" style="margin-top: 8px;">Talk to Roger</button>
                 </div>
             </div>
         </div>
@@ -1356,6 +1357,57 @@ npm run legal:verify</code></pre>
                 <div class="level-up-footer">
                     <button id="confirmLevelUpBtn" class="confirm-btn" disabled>Confirm Level Up</button>
                     <p class="footer-hint" id="levelUpHint">Select an ability score to increase</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roger AI Assistant Modal -->
+        <div id="rogerModal" class="roger-overlay">
+            <div class="roger-panel">
+                <!-- Header -->
+                <div class="roger-header">
+                    <span class="roger-title">Roger AI Assistant</span>
+                    <button id="rogerCloseBtn" class="roger-close-btn" aria-label="Close Roger">&#x2715;</button>
+                </div>
+
+                <!-- Body -->
+                <div class="roger-body">
+
+                    <!-- Auth View: shown while checking auth or when signed out -->
+                    <div id="rogerAuthView" class="roger-auth-view active">
+                        <div id="rogerAuthChecking" class="roger-auth-checking">
+                            <div class="roger-thinking">Checking authentication<span class="roger-dots">...</span></div>
+                        </div>
+                        <div id="rogerAuthSignIn" class="roger-auth-signin" style="display: none;">
+                            <p class="roger-auth-prompt">Sign in to chat with Roger, your AI game companion.</p>
+                            <button id="rogerSignInBtn" class="roger-sign-in-btn">Sign in with Microsoft</button>
+                        </div>
+                    </div>
+
+                    <!-- Agent View: shown after auth, before selecting an agent -->
+                    <div id="rogerAgentView" class="roger-agent-view">
+                        <h3 class="roger-agent-heading">Choose an Agent</h3>
+                        <div id="rogerAgentList" class="roger-agent-list">
+                            <!-- Populated by JS -->
+                        </div>
+                        <p class="roger-user-info">Signed in as: <span id="rogerUserName"></span></p>
+                    </div>
+
+                    <!-- Chat View: shown when an agent is selected -->
+                    <div id="rogerChatView" class="roger-chat-view">
+                        <div class="roger-subheader">
+                            <button id="rogerBackBtn" class="roger-back-btn">&#x2190; Back</button>
+                            <span id="rogerAgentName" class="roger-agent-name"></span>
+                        </div>
+                        <div id="rogerMessages" class="roger-messages" aria-live="polite">
+                            <!-- Messages populated by JS -->
+                        </div>
+                        <div class="roger-composer">
+                            <textarea id="rogerInput" placeholder="Ask Roger..." rows="2" aria-label="Message input"></textarea>
+                            <button id="rogerSendBtn" aria-label="Send message">Send</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

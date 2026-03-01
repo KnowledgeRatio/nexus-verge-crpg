@@ -33,7 +33,8 @@
       "Bash(ls:*)",
       "Bash(ln:*)",
       "Bash(ln -s:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "mcp__claude_ai_MS_Learn__microsoft_docs_search"
     ]
   }
 }
