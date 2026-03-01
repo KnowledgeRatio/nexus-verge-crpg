@@ -268,10 +268,21 @@ class Game {
      * Bind main menu button handlers
      */
     bindMainMenuButtons() {
-        // Dev Mode Toggle
+        // Dev Mode Toggle (requires Entra authentication)
         const devModeBtn = document.getElementById('devModeBtn');
         if (devModeBtn) {
-            devModeBtn.addEventListener('click', () => {
+            devModeBtn.addEventListener('click', async () => {
+                try {
+                    const resp = await fetch('/.auth/me');
+                    const data = await resp.json();
+                    if (!data.clientPrincipal?.userDetails) {
+                        window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.pathname + window.location.hash)}`;
+                        return;
+                    }
+                } catch {
+                    window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.pathname + window.location.hash)}`;
+                    return;
+                }
                 const isDevMode = gameState.toggleDevMode();
                 devModeBtn.textContent = `Dev Mode: ${isDevMode ? 'ON' : 'OFF'}`;
                 devModeBtn.classList.toggle('primary', isDevMode);
