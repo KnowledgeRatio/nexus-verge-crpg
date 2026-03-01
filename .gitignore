@@ -160,6 +160,12 @@ lib-cov/
 .env.production.local
 .env*.local
 
+# Azure Functions local settings (contains secrets)
+local.settings.json
+
+# Azure Static Web Apps config (contains tenant ID)
+staticwebapp.config.json
+
 # Config files with secrets
 config.local.js
 secrets.json

@@ -1,0 +1,17 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "ROGER_PROJECT_ENDPOINT": "https://your-name.services.ai.azure.com/api/projects/your-project",
+    "ROGER_AGENT_NAME": "Roger",
+    "ROGER_ENTRA_CLIENT_ID": "your-entra-client-id-here",
+    "ROGER_ENTRA_CLIENT_SECRET": "your-entra-client-secret-here"
+  },
+  "Comment": "ROGER_AGENT_VERSION is optional - omit to use latest agent version",
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*",
+    "CORSCredentials": false
+  }
+}

@@ -268,21 +268,28 @@ class Game {
      * Bind main menu button handlers
      */
     bindMainMenuButtons() {
-        // Dev Mode Toggle (requires Entra authentication)
+        // Dev Mode Toggle (requires Entra authentication on SWA, local dev bypasses auth)
         const devModeBtn = document.getElementById('devModeBtn');
         if (devModeBtn) {
             devModeBtn.addEventListener('click', async () => {
-                try {
-                    const resp = await fetch('/.auth/me');
-                    const data = await resp.json();
-                    if (!data.clientPrincipal?.userDetails) {
+                // Skip auth check if running locally
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+                if (!isLocal) {
+                    // Production: require Azure Entra authentication
+                    try {
+                        const resp = await fetch('/.auth/me');
+                        const data = await resp.json();
+                        if (!data.clientPrincipal?.userDetails) {
+                            window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.pathname + window.location.hash)}`;
+                            return;
+                        }
+                    } catch {
                         window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.pathname + window.location.hash)}`;
                         return;
                     }
-                } catch {
-                    window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.pathname + window.location.hash)}`;
-                    return;
                 }
+
                 const isDevMode = gameState.toggleDevMode();
                 devModeBtn.textContent = `Dev Mode: ${isDevMode ? 'ON' : 'OFF'}`;
                 devModeBtn.classList.toggle('primary', isDevMode);
@@ -6897,6 +6904,14 @@ class Game {
                 document.getElementById('rogerAuthSignIn').style.display = 'flex';
                 return;
             }
+
+            if (!resp.ok) {
+                const errorText = await resp.text();
+                console.error('Roger agents API error:', resp.status, errorText);
+                listEl.innerHTML = `<p style="color:#c44">Failed to load agents (HTTP ${resp.status}). Check console for details.</p>`;
+                return;
+            }
+
             const data = await resp.json();
 
             // Update user display name
@@ -6926,14 +6941,15 @@ class Game {
                 listEl.innerHTML = '<p style="color:#888">No agents available.</p>';
             }
         } catch (err) {
-            listEl.innerHTML = '<p style="color:#c44">Failed to load agents.</p>';
+            console.error('Roger agents error:', err);
+            listEl.innerHTML = `<p style="color:#c44">Failed to load agents: ${err.message}</p>`;
         }
     }
 
     /** Switch to the chat view for a specific agent */
     _rogerOpenChat(agent) {
         this._rogerCurrentAgent = agent;
-        this._rogerThreadId = null; // Fresh thread for each session
+        this._rogerConversationId = null; // Fresh conversation for each session
 
         document.getElementById('rogerAgentName').textContent = agent.name;
         document.getElementById('rogerMessages').innerHTML = '';
@@ -6970,7 +6986,7 @@ class Game {
                 body: JSON.stringify({
                     agentId: this._rogerCurrentAgent.id,
                     message,
-                    threadId: this._rogerThreadId || undefined
+                    conversationId: this._rogerConversationId || undefined
                 })
             });
 
@@ -6982,7 +6998,7 @@ class Game {
                 this._rogerAppendMessage('assistant', `⚠️ Error: ${err.error || resp.statusText}`);
             } else {
                 const data = await resp.json();
-                this._rogerThreadId = data.threadId;
+                this._rogerConversationId = data.conversationId;
                 this._rogerAppendMessage('assistant', data.reply);
             }
         } catch (err) {
@@ -7022,7 +7038,7 @@ class Game {
         const modal = document.getElementById('rogerModal');
         if (modal) modal.classList.remove('active');
         this._rogerCurrentAgent = null;
-        this._rogerThreadId = null;
+        this._rogerConversationId = null;
     }
 
     /** Wire up Roger modal event listeners. Call once during init. */
