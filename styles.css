@@ -7514,7 +7514,6 @@ body {
     }
 }
 
-<<<<<<< Updated upstream
 /* ============================================================
    Roger AI Assistant
    ============================================================ */
@@ -7526,7 +7525,14 @@ body {
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     z-index: 9000;
-=======
+    align-items: center;
+    justify-content: center;
+}
+
+.roger-overlay.active {
+    display: flex;
+}
+
 /* ===================================
    SOCIAL CHALLENGE MODAL
    Multi-turn skill challenge conversations with NPCs
@@ -7542,13 +7548,11 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
     z-index: 1003; /* Above other modals */
->>>>>>> Stashed changes
     align-items: center;
     justify-content: center;
 }
 
-<<<<<<< Updated upstream
-.roger-overlay.active {
+.social-challenge-modal.active {
     display: flex;
 }
 
@@ -7896,10 +7900,6 @@ body {
 }
 
 #rogerSendBtn:disabled {
-=======
-.social-challenge-modal.active {
-    display: flex;
-}
 
 .social-challenge-container {
     background: var(--bg-secondary);
@@ -8075,12 +8075,10 @@ body {
 }
 
 .dialogue-choice.disabled {
->>>>>>> Stashed changes
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-<<<<<<< Updated upstream
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
     .roger-panel {
@@ -8121,7 +8119,9 @@ body {
 @media (min-width: 1400px) {
     .roger-panel {
         max-width: 640px;
-=======
+    }
+}
+
 .choice-text {
     color: var(--text-primary);
     font-size: 1rem;
@@ -8187,6 +8187,5 @@ body {
 
     .dialogue-choices {
         max-height: 250px;
->>>>>>> Stashed changes
     }
 }
