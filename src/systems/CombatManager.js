@@ -305,9 +305,15 @@ class CombatManager {
             d20Result = rollD20();
         }
 
-        const isCritical = d20Result.natural === 20;
+        let isCritical = d20Result.natural === 20;
         const isCriticalMiss = d20Result.natural === 1;
         const attackTotal = d20Result.natural + attackBonus;
+
+        // Forgecraft: Adaptive mod on target negates critical hits
+        if (isCritical && this.hasForgecraftMod(target, 'adaptive')) {
+            isCritical = false;
+            gameState.addMessage(`🛡️ ${target.name}'s adaptive armor absorbs the critical strike!`, 'info');
+        }
 
         gameState.addMessage(`🎲 ${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
 
@@ -401,10 +407,33 @@ class CombatManager {
         // Target makes saving throw
         const saveMod = target.character.abilityModifiers?.[saveAbility] || 0;
         const saveRoll = rollD20();
-        const saveTotal = saveRoll.natural + saveMod;
+        let saveTotal = saveRoll.natural + saveMod;
+
+        // Forgecraft: Deflecting mod — use reaction to add shield AC to saving throw
+        let deflectBonus = 0;
+        const targetMods = target.character?.equipmentMods;
+        if (targetMods) {
+            const hasDeflecting = Object.values(targetMods).some(m => m.modId === 'deflecting');
+            if (hasDeflecting && target.actions?.reaction > 0) {
+                const shield = target.character.equipment?.offHand;
+                if (shield?.type === 'shield' && shield?.armorClassBonus) {
+                    deflectBonus = shield.armorClassBonus;
+                    target.actions.reaction -= 1;
+                    saveTotal += deflectBonus;
+                    gameState.addMessage(
+                        `🛡️ Deflecting! ${target.name} uses reaction to add +${deflectBonus} (shield) to saving throw!`,
+                        'success'
+                    );
+                }
+            }
+        }
+
         const saved = saveTotal >= saveDC;
 
-        gameState.addMessage(`🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod} = ${saveTotal} vs DC ${saveDC}`, 'info');
+        let saveMsg = `🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod}`;
+        if (deflectBonus > 0) saveMsg += ` + ${deflectBonus} (deflecting)`;
+        saveMsg += ` = ${saveTotal} vs DC ${saveDC}`;
+        gameState.addMessage(saveMsg, 'info');
 
         // Roll damage
         let damageRoll = 0;
@@ -576,8 +605,20 @@ class CombatManager {
 
         const attackTotal = attackRoll + attackBonus + proficiency;
 
-        const isCritical = RULES.combat.criticalHitRange.includes(attackRoll);
+        // Forgecraft: Keen mod expands crit range to 19-20
+        let critRange = [...RULES.combat.criticalHitRange];
+        if (this.hasForgecraftModOnSlot(attacker, weaponSlot, 'keen') && !critRange.includes(19)) {
+            critRange.push(19);
+        }
+
+        let isCritical = critRange.includes(attackRoll);
         const isCriticalMiss = RULES.combat.criticalMissRange.includes(attackRoll);
+
+        // Forgecraft: Adaptive mod on defender negates critical hits
+        if (isCritical && this.hasForgecraftMod(defender, 'adaptive')) {
+            isCritical = false;
+            gameState.addMessage(`🛡️ ${defender.name}'s adaptive armor absorbs the critical strike!`, 'info');
+        }
 
         // Build attack roll message
         let attackMsg = `Attack roll: ${attackRoll}`;
@@ -641,7 +682,13 @@ class CombatManager {
                 gameState.addMessage('⚔️ Off-hand attack: No ability modifier to damage', 'info');
             }
 
-            const damageTotal = damageRoll + damageBonus;
+            // Forgecraft: Tempered mod adds +1 damage
+            let forgecraftDamageBonus = 0;
+            if (this.hasForgecraftModOnSlot(attacker, weaponSlot, 'tempered')) {
+                forgecraftDamageBonus = 1;
+            }
+
+            const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus;
 
             // Build detailed damage message
             let damageMsg = '💥 Hit! ';
@@ -651,12 +698,18 @@ class CombatManager {
                 if (damageBonus !== 0) {
                     damageMsg += ` + ${damageBonus} (ability)`;
                 }
+                if (forgecraftDamageBonus > 0) {
+                    damageMsg += ` + ${forgecraftDamageBonus} (tempered)`;
+                }
                 damageMsg += ` = ${damageTotal}`;
             } else {
                 // Normal hit: show single die roll
                 damageMsg += `Damage: ${firstRoll}`;
                 if (damageBonus !== 0) {
                     damageMsg += ` + ${damageBonus} (ability)`;
+                }
+                if (forgecraftDamageBonus > 0) {
+                    damageMsg += ` + ${forgecraftDamageBonus} (tempered)`;
                 }
                 damageMsg += ` = ${damageTotal}`;
             }
@@ -1545,6 +1598,22 @@ class CombatManager {
     }
 
     /**
+     * Check if a combatant has a specific Forgecraft mod on any equipment slot
+     */
+    hasForgecraftMod(combatant, modId) {
+        const mods = combatant.character?.equipmentMods;
+        if (!mods) return false;
+        return Object.values(mods).some(m => m.modId === modId);
+    }
+
+    /**
+     * Check if a combatant has a Forgecraft mod on a specific weapon slot
+     */
+    hasForgecraftModOnSlot(combatant, slot, modId) {
+        return combatant.character?.equipmentMods?.[slot]?.modId === modId;
+    }
+
+    /**
      * Get adjacent enemy for Cleave mastery
      * @param {Combatant} defender - The enemy that was just hit
      * @returns {Combatant|null} - The adjacent enemy (next in enemy list)
@@ -1668,7 +1737,7 @@ class Combatant {
         this.name = character.name;
 
         // Combat stats
-        this.hp = character.currentHP || character.maxHP;
+        this.hp = character.currentHP != null ? character.currentHP : character.maxHP;
         this.maxHP = character.maxHP;
         this.ac = character.ac;
         this.initiative = 0;
@@ -1875,15 +1944,36 @@ class Combatant {
         const abilityMod = this.character.abilityModifiers[ability];
         const isProficient = this.character.savingThrows[ability].proficient;
         const profBonus = isProficient ? this.character.proficiencyBonus : 0;
-        const total = roll + abilityMod + profBonus;
+        let total = roll + abilityMod + profBonus;
+
+        // Forgecraft: Deflecting mod — use reaction to add shield AC to saving throw
+        let deflectingBonus = 0;
+        const mods = this.character?.equipmentMods;
+        if (mods) {
+            const hasDeflecting = Object.values(mods).some(m => m.modId === 'deflecting');
+            if (hasDeflecting && this.actions?.reaction > 0) {
+                const shield = this.character.equipment?.offHand;
+                if (shield?.type === 'shield' && shield?.armorClassBonus) {
+                    deflectingBonus = shield.armorClassBonus;
+                    this.actions.reaction -= 1;
+                    total += deflectingBonus;
+                    gameState.addMessage(
+                        `🛡️ Deflecting! ${this.name} uses reaction to add +${deflectingBonus} (shield) to saving throw!`,
+                        'success'
+                    );
+                }
+            }
+        }
 
         // Message
         const abilityName = ability.toUpperCase();
         const profText = isProficient ? ' (proficient)' : '';
-        gameState.addMessage(
-            `${abilityName} save${profText}: ${roll} + ${abilityMod + profBonus} = ${total} vs DC ${dc}`,
-            'info'
-        );
+        let saveMsg = `${abilityName} save${profText}: ${roll} + ${abilityMod + profBonus}`;
+        if (deflectingBonus > 0) {
+            saveMsg += ` + ${deflectingBonus} (deflecting)`;
+        }
+        saveMsg += ` = ${total} vs DC ${dc}`;
+        gameState.addMessage(saveMsg, 'info');
 
         const success = total >= dc;
 

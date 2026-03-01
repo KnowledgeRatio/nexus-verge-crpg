@@ -411,6 +411,13 @@ export const RULES = {
     },
 
     // ====================
+    // ABILITIES
+    // ====================
+    abilities: {
+        enabled: true,
+        effectDispatcher: { enabled: true }
+    },
+
     // SKILLS
     // ====================
     skills: {

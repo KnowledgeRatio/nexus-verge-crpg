@@ -1,10 +1,123 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-01-20
+**Last Updated:** 2026-02-28
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Tile Graphics Mapping & Zoom System
+**Latest Commit:** Social Challenge System Architecture
+
+---
+
+## 🆕 Recent Changes (2026-02-28 - Session 15)
+
+### Social Challenge System - Multi-Turn NPC Conversations ✅
+Implemented complete social challenge system for quest-driven multi-turn skill challenges with NPCs (e.g., "Negotiate with Bandits"). **Architecturally separated from environmental skill challenges** (traps, cliffs, locked doors).
+
+**New Files Created:**
+- `src/systems/SkillChallengeManager.js` - Multi-turn conversation state machine
+- `data/skillChallenges/bandit-negotiation.json` - Bandit negotiation conversation tree
+
+**Modified Files:**
+- `index.html` - Added `socialChallengeModal` (distinct from existing skill check modals)
+- `styles.css` - Comprehensive styles for tension meter, conversation history, dialogue choices (~240 lines)
+- `src/main.js` - Event listeners, rendering methods, SkillChallengeManager initialization
+
+**Architecture Decision (per /architect subagent):**
+- **Environmental Challenges** (terrain-based, one-shot): Use existing `skillCheckModal` + `choiceChallengeModal`
+- **Social Challenges** (quest/NPC-driven, multi-turn): Use new `socialChallengeModal` + `SkillChallengeManager`
+
+**Key Features:**
+1. **Passive Skill Checks** - Empathy auto-reveals information (e.g., motivation, weakening resolve)
+2. **Active Skill Checks** - Influence/Deception with d20 rolls, success/failure paths
+3. **Tension Tracking** - 0-100 meter, combat triggers at threshold (default 80)
+4. **Conversation History** - Scrollable log of NPC/player exchanges + skill roll results
+5. **Branching Paths** - 20+ nodes with conditional choices, visited node tracking
+6. **Quest Integration** - Completes `encounter` or `skill_choice` quest objectives on resolution
+7. **Combat Fallback** - Triggers combat on failure or high tension
+
+**Technical Implementation:**
+
+**SkillChallengeManager API:**
+```javascript
+// Load challenge trees from data/skillChallenges/*.json
+await skillChallengeManager.loadChallenges();
+
+// Start multi-turn conversation
+skillChallengeManager.startChallenge('bandit_negotiation', {
+    questId: 'negotiate-bandits-001',
+    npcName: 'Scarred Bandit Leader',
+    settlement: 'Greenhollow',
+    motivation: 'desperate' // or 'wronged', 'opportunists'
+});
+
+// Player selects dialogue choice (triggered by UI button click)
+skillChallengeManager.selectChoice(choiceIndex);
+
+// Events dispatched to main.js for UI rendering:
+// - 'challengeUpdate' → renderSocialChallenge()
+// - 'challengeClose' → closeSocialChallengeModal()
+// - 'challengeCombat' → triggerCombatFromChallenge()
+```
+
+**Modal Structure (socialChallengeModal):**
+```html
+<div id="socialChallengeModal">
+  <div class="social-challenge-header">
+    <!-- NPC name, role, tension meter -->
+  </div>
+  <div class="conversation-history">
+    <!-- Scrollable log: NPC lines, player choices, skill rolls -->
+  </div>
+  <div class="current-dialogue">
+    <!-- Current NPC dialogue text -->
+  </div>
+  <div class="dialogue-choices">
+    <!-- Player choices with skill check/tension indicators -->
+  </div>
+</div>
+```
+
+**Conversation Tree Data Schema:**
+```json
+{
+  "id": "bandit_negotiation",
+  "name": "Negotiate with Bandits",
+  "initialNode": "opening",
+  "initialTension": 50,
+  "tensionThreshold": 80,
+  "nodes": {
+    "opening": {
+      "speaker": "bandit_leader",
+      "text": "{openingLine}",
+      "passiveChecks": [{
+        "skill": "empathy",
+        "dc": 13,
+        "reveal": "desperate_motivation",
+        "unlockChoices": ["sympathize"]
+      }],
+      "choices": [{
+        "id": "peaceful_approach",
+        "text": "I'm here to talk, not fight.",
+        "tensionChange": -5,
+        "nextNode": "assess_situation"
+      }]
+    }
+  }
+}
+```
+
+**Benefits:**
+- ✅ **Modular Architecture** - Social challenges separate from environmental challenges (no modal/code confusion)
+- ✅ **Data-Driven** - Conversation trees in JSON, easy to add new social encounters
+- ✅ **Reusable** - SkillChallengeManager works for any multi-turn NPC skill challenge
+- ✅ **Quest-Integrated** - Auto-completes quest objectives on peaceful resolution
+- ✅ **D&D 5e Compliant** - Passive checks (10 + modifier), active checks (d20 + modifier vs DC)
+- ✅ **Visual Feedback** - Tension meter, conversation history, skill check badges on choices
+
+**Next Steps:**
+- Add bandit camp encounter detection in Player.js (quest trigger)
+- Test full quest flow: accept quest → find camp → negotiate → complete
+- Add more social challenge trees (persuade guard, calm beast, broker peace)
 
 ---
 

@@ -6,7 +6,7 @@
 import { gameState } from './core/GameState.js';
 import { RULES } from './core/rulesEngine.js';
 import { generateSeedString } from './utils/rng.js';
-import { rollDice } from './utils/dice.js';
+
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
 import SettlementUI from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
@@ -24,10 +24,11 @@ import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
 import RelationManager from './systems/RelationManager.js';
 import DialogueManager from './systems/DialogueManager.js';
-import skillChallengeManager from './systems/SkillChallengeManager.js';
+import SkillChallengeManager from './systems/SkillChallengeManager.js';
 import LevelUpManager from './systems/LevelUpManager.js';
 import DungeonGenerator from './systems/DungeonGenerator.js';
 import DungeonManager from './systems/DungeonManager.js';
+import { execute as dispatchEffects, executeOption as dispatchOption, isDeferred as checkDeferred, buildContext as buildEffectContext, buildOutOfCombatContext } from './systems/EffectDispatcher.js';
 import DungeonUI from './ui/DungeonUI.js';
 
 class Game {
@@ -63,7 +64,7 @@ class Game {
         this.dungeonUI = null;
 
         // Skill challenge system
-        this.skillChallengeManager = skillChallengeManager;
+        this.skillChallengeManager = null;
         this.skillChallengeBlocking = false; // Track if a skill challenge is blocking escape
 
         // Combat systems
@@ -677,6 +678,16 @@ class Game {
         // Get campaign ID for filtering
         const campaignId = worldConfig?.campaignId || 'nexus-verge';
 
+        // Pre-load abilities data for character sheet rendering
+        if (!this.abilitiesData) {
+            try {
+                const response = await fetch('data/abilities.json');
+                this.abilitiesData = await response.json();
+            } catch (error) {
+                console.warn('Failed to pre-load abilities data:', error);
+            }
+        }
+
         // Initialize RelationManager before NPCs (NPCs reference startingScore)
         if (!this.relationManager) {
             console.log('📊 Initializing relation manager...');
@@ -735,6 +746,14 @@ class Game {
             await this.merchantManager.loadData();
             // Pass merchant manager to settlement UI
             this.settlementUI.merchantManager = this.merchantManager;
+        }
+
+        if (!this.skillChallengeManager) {
+            console.log('💬 Initializing skill challenge manager...');
+            this.skillChallengeManager = new SkillChallengeManager();
+            await this.skillChallengeManager.loadChallenges();
+            // Make globally accessible for UI and quest integration
+            window.skillChallengeManager = this.skillChallengeManager;
         }
 
         if (!this.skillChallengeManager.challenges) {
@@ -821,6 +840,9 @@ class Game {
 
         // Setup Quest System
         this.setupQuestSystem();
+
+        // Setup Social Challenge System (Multi-turn NPC conversations)
+        this.setupSocialChallengeSystem();
 
         // Setup Level-Up System
         this.setupLevelUpSystem();
@@ -973,6 +995,10 @@ class Game {
         // Subscribe to combat state updates
         gameState.subscribe('combat', (combatState) => {
             if (!combatState || !combatState.active) {
+                // Clear pending ability actions on combat end
+                this._pendingAction = null;
+                this.selectedAction = null;
+
                 // Combat ended - return to appropriate screen
                 if (this.currentScreen === 'combatScreen' || this.currentScreen === 'combat') {
                     const dungeonState = gameState.get('dungeon');
@@ -1171,8 +1197,7 @@ class Game {
                         ${!hasAction ? 'disabled' : ''}>
                     🛡️ Dodge
                 </button>
-                <button class="action-btn" onclick="window.game.selectAction('ability')"
-                        ${!hasAction ? 'disabled' : ''}>
+                <button class="action-btn" onclick="window.game.selectAction('ability')">
                     ✨ Ability
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('spell')"
@@ -1197,6 +1222,7 @@ class Game {
         this.selectedAction = actionType;
 
         if (actionType === 'flee') {
+            this._pendingAction = null;
             this.combatManager.flee(this.combatManager.playerCombatant);
             this.selectedAction = null;
             return;
@@ -1264,38 +1290,43 @@ class Game {
             case 'attackOffHand':
                 this.combatManager.attack(attacker, target, 'offHand');
                 break;
-            case 'steadyNerveAttack':
-                // This is a bonus action attack from Steady Nerve
-                // Check if bonus action is still available
-                if (!attacker.hasAction('bonusAction')) {
-                    gameState.addMessage('❌ No bonus action available!', 'error');
+            case 'abilityWeaponAttack': {
+                // Generic deferred weapon attack from any ability (e.g. Steady Nerve Attack option)
+                const pending = this._pendingAction;
+                if (!pending) {
+                    gameState.addMessage('❌ No pending ability attack!', 'error');
                     this.selectedAction = null;
                     return;
                 }
 
-                // Make the attack (using mainHand weapon, but as a bonus action)
+                const requiredAction = pending.actionType === 'bonusAction' ? 'bonusAction' : 'action';
+                if (!attacker.hasAction(requiredAction)) {
+                    gameState.addMessage(`❌ No ${requiredAction} available!`, 'error');
+                    this.selectedAction = null;
+                    this._pendingAction = null;
+                    return;
+                }
+
+                // Execute the attack
                 this.combatManager.attack(attacker, target, 'mainHand', { consumeAction: false });
 
-                // Consume bonus action instead of action
-                attacker.consumeAction('bonusAction');
+                // Consume the appropriate action type
+                attacker.consumeAction(requiredAction);
 
-                // Track Steady Nerve usage
+                // Track ability usage
                 if (!character.abilityUses) {
                     character.abilityUses = {};
                 }
-                character.abilityUses['steadyNerve'] = (character.abilityUses['steadyNerve'] || 0) + 1;
+                character.abilityUses[pending.abilityId] = (character.abilityUses[pending.abilityId] || 0) + 1;
                 gameState.set('character', character);
 
-                // Update combat state to reflect bonus action consumption
-                gameState.set('combat', {
-                    active: true,
-                    round: this.combatManager.round,
-                    currentTurn: this.combatManager.getCurrentCombatant()?.id,
-                    combatants: this.combatManager.combatants.map(c => c.toJSON())
-                });
+                // Sync combat state
+                this.syncCombatState();
 
-                gameState.addMessage('💪 Steady Nerve attack complete! (Bonus Action used)', 'success');
+                gameState.addMessage(`💪 ${pending.abilityName || 'Ability'} attack complete!`, 'success');
+                this._pendingAction = null;
                 break;
+            }
             case 'ability':
                 // This should not be called anymore - abilities go through modal
                 gameState.addMessage('Use the Ability button to select an ability', 'error');
@@ -1306,6 +1337,19 @@ class Game {
         }
 
         this.selectedAction = null;
+    }
+
+    /**
+     * Sync combat state to gameState (extracted repeated pattern)
+     */
+    syncCombatState() {
+        if (!this.combatManager) return;
+        gameState.set('combat', {
+            active: true,
+            round: this.combatManager.round,
+            currentTurn: this.combatManager.getCurrentCombatant()?.id,
+            combatants: this.combatManager.combatants.map(c => c.toJSON())
+        });
     }
 
     /**
@@ -1412,6 +1456,40 @@ class Game {
         gameState.subscribe('world.currentLocation', () => {
             this.updateLocationDisplay();
         });
+    }
+
+    /**
+     * Check if character has died (0 HP) outside of combat and show game over
+     * Call after any non-combat damage source (skill challenges, traps, environmental)
+     */
+    checkDeath(character) {
+        if (character.currentHP > 0) return false;
+
+        // Already in combat — CombatManager handles defeat
+        const combatState = gameState.get('combat');
+        if (combatState?.active) return false;
+
+        gameState.addMessage('💀 You have perished...', 'error');
+
+        // Show game over modal (reuse same pattern as CombatManager)
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
+
+        if (modalOverlay && modalContent) {
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 30px;">You have succumbed to your injuries.</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Your adventure ends here.</p>
+                    <button class="menu-btn" onclick="location.reload()" style="margin: 0 auto;">
+                        Return to Main Menu
+                    </button>
+                </div>
+            `;
+            modalOverlay.classList.add('active');
+        }
+
+        return true;
     }
 
     /**
@@ -1772,6 +1850,184 @@ class Game {
     }
 
     /**
+     * Setup Social Challenge System
+     * Handles multi-turn NPC conversation skill challenges (separate from environmental challenges)
+     */
+    setupSocialChallengeSystem() {
+        // Listen for challenge updates from SkillChallengeManager
+        window.addEventListener('challengeUpdate', (e) => {
+            this.renderSocialChallenge(e.detail);
+        });
+
+        // Listen for challenge close
+        window.addEventListener('challengeClose', () => {
+            this.closeSocialChallengeModal();
+        });
+
+        // Listen for combat trigger from failed negotiations
+        window.addEventListener('challengeCombat', async (e) => {
+            // Close challenge modal first
+            this.closeSocialChallengeModal();
+
+            // Start combat with specified enemies
+            const { enemyTypes, context, angered } = e.detail;
+
+            if (angered) {
+                gameState.addMessage('⚔️ You angered them! They attack with fury!', 'danger');
+            }
+
+            // Trigger combat encounter
+            await this.player.triggerCombatFromChallenge(enemyTypes);
+        });
+
+        console.log('💬 Social challenge system initialized');
+    }
+
+    /**
+     * Render social challenge UI (called by challengeUpdate event)
+     * @param {Object} detail - Challenge state from SkillChallengeManager
+     */
+    renderSocialChallenge(detail) {
+        const modal = document.getElementById('socialChallengeModal');
+        if (!modal) return;
+
+        // Show modal
+        modal.classList.add('active');
+
+        // Render NPC name
+        const npcName = document.getElementById('socialChallengeNPC');
+        if (npcName) {
+            npcName.textContent = detail.context.npcName || 'Unknown';
+        }
+
+        // Render NPC role/motivation
+        const npcRole = document.getElementById('socialChallengeRole');
+        if (npcRole && detail.context.motivation) {
+            const motivationLabels = {
+                'desperate': 'Desperate',
+                'wronged': 'Wronged',
+                'opportunists': 'Professional'
+            };
+            npcRole.textContent = motivationLabels[detail.context.motivation] || 'Hostile';
+        }
+
+        // Update tension meter
+        const tensionPercent = (detail.tension / detail.tensionThreshold) * 100;
+        const tensionBar = document.getElementById('tensionBar');
+        const tensionValue = document.getElementById('tensionValue');
+
+        if (tensionBar) {
+            tensionBar.style.width = `${Math.min(100, tensionPercent)}%`;
+        }
+        if (tensionValue) {
+            tensionValue.textContent = `${Math.floor(detail.tension)}/${detail.tensionThreshold}`;
+        }
+
+        // Render conversation history
+        this.renderConversationHistory(detail.history);
+
+        // Render current NPC dialogue
+        const currentDialogue = document.getElementById('currentDialogueText');
+        if (currentDialogue && detail.node?.text) {
+            currentDialogue.textContent = detail.node.text;
+        }
+
+        // Render available choices
+        this.renderSocialChoices(detail.choices);
+    }
+
+    /**
+     * Render conversation history log
+     * @param {Array} history - Array of {speaker, text, timestamp} objects
+     */
+    renderConversationHistory(history) {
+        const container = document.getElementById('conversationHistory');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        history.forEach(entry => {
+            const entryDiv = document.createElement('div');
+            entryDiv.className = `history-entry ${entry.speaker}`;
+            entryDiv.textContent = entry.text;
+            container.appendChild(entryDiv);
+        });
+
+        // Auto-scroll to bottom
+        container.scrollTop = container.scrollHeight;
+    }
+
+    /**
+     * Render dialogue choices with skill check indicators
+     * @param {Array} choices - Available dialogue choices
+     */
+    renderSocialChoices(choices) {
+        const container = document.getElementById('socialChallengeChoices');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (!choices || choices.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No choices available.</p>';
+            return;
+        }
+
+        choices.forEach((choice, index) => {
+            const choiceBtn = document.createElement('button');
+            choiceBtn.className = 'dialogue-choice';
+
+            // Choice text
+            const textSpan = document.createElement('span');
+            textSpan.className = 'choice-text';
+            textSpan.textContent = choice.text;
+            choiceBtn.appendChild(textSpan);
+
+            // Skill check indicator (if applicable)
+            if (choice.skillCheck) {
+                const skillDiv = document.createElement('div');
+                skillDiv.className = 'choice-skill-check';
+
+                const skillBadge = document.createElement('span');
+                skillBadge.className = 'skill-check-badge';
+                skillBadge.textContent = `${choice.skillCheck.skill.toUpperCase()} DC ${choice.skillCheck.dc}`;
+
+                skillDiv.appendChild(skillBadge);
+                skillDiv.appendChild(document.createTextNode(' Required'));
+                choiceBtn.appendChild(skillDiv);
+            }
+
+            // Tension indicator (if applicable)
+            if (choice.tensionChange) {
+                const tensionSpan = document.createElement('span');
+                tensionSpan.className = `choice-tension-indicator ${choice.tensionChange > 0 ? 'increase' : 'decrease'}`;
+                tensionSpan.textContent = choice.tensionChange > 0
+                    ? `⚠️ Increases tension (+${choice.tensionChange})`
+                    : `😌 Eases tension (${choice.tensionChange})`;
+                choiceBtn.appendChild(tensionSpan);
+            }
+
+            // Click handler
+            choiceBtn.addEventListener('click', () => {
+                if (window.skillChallengeManager) {
+                    window.skillChallengeManager.selectChoice(index);
+                }
+            });
+
+            container.appendChild(choiceBtn);
+        });
+    }
+
+    /**
+     * Close social challenge modal
+     */
+    closeSocialChallengeModal() {
+        const modal = document.getElementById('socialChallengeModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
      * Open quest log modal
      */
     openQuestLog() {
@@ -2083,13 +2339,28 @@ class Game {
      * Check if character can use an ability
      */
     canUseAbility(ability, character) {
+        // Filter out passive/out-of-combat abilities from combat modal
+        if (ability.actionType === 'passive') return false;
+
         // Check resource availability
         if (ability.resourceType === 'shortRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerShortRest || 1;
-            return used < max;
+            if (used >= max) return false;
+        } else if (ability.resourceType === 'longRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerLongRest || 1;
+            if (used >= max) return false;
         }
-        // Add more resource type checks as needed
+
+        // Check action economy — does combatant have the required action type?
+        const combatant = this.combatManager?.playerCombatant;
+        if (combatant && ability.actionType !== 'free') {
+            const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
+            const required = actionMap[ability.actionType];
+            if (required && !combatant.hasAction(required)) return false;
+        }
+
         return true;
     }
 
@@ -2100,8 +2371,11 @@ class Game {
         if (ability.resourceType === 'shortRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerShortRest || 1;
-            const remaining = max - used;
-            return `${remaining}/${max} uses`;
+            return `${max - used}/${max} per SR`;
+        } else if (ability.resourceType === 'longRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerLongRest || 1;
+            return `${max - used}/${max} per LR`;
         }
         return 'Available';
     }
@@ -2132,49 +2406,71 @@ class Game {
     }
 
     /**
-     * Use an ability
+     * Use an ability — dispatches effects generically via EffectDispatcher
      */
     async useAbility(ability, character) {
         console.log('Using ability:', ability.name);
 
-        // Initialize abilityUses if not exists
-        if (!character.abilityUses) {
-            character.abilityUses = {};
-        }
+        if (!character.abilityUses) character.abilityUses = {};
 
-        // Handle Steady Nerve ability with choices
-        if (ability.id === 'steadyNerve' && ability.effects.choice) {
-            this.showSteadyNerveChoices(ability, character);
+        // Choice-based abilities: show generic choice modal
+        if (ability.effects?.choice) {
+            this.showAbilityChoices(ability, character);
             return;
         }
 
-        // For other abilities, implement their effects
-        gameState.addMessage(`${ability.name} used! (Effect not yet implemented)`, 'info');
+        const combatant = this.combatManager?.playerCombatant;
+        if (!combatant) return;
 
-        // Track usage
-        if (ability.resourceType === 'shortRest') {
-            character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
-            gameState.set('character', character);
+        // Check action availability (don't consume yet — wait for results)
+        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+            const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
+            const required = actionMap[ability.actionType];
+            if (required && !combatant.hasAction(required)) {
+                gameState.addMessage(`❌ No ${ability.actionType} available!`, 'error');
+                return;
+            }
         }
 
-        // End turn if it consumed an action
-        if (ability.actionType === 'action' || ability.actionType === 'bonusAction') {
-            this.combatManager.endTurn();
+        // Dispatch effects via EffectDispatcher
+        const context = buildEffectContext(character, combatant, this.combatManager);
+        const results = await dispatchEffects(ability, ability.effects, context);
+
+        // Deferred effect (e.g. weapon_attack needs target selection)
+        if (checkDeferred(results)) {
+            this._pendingAction = {
+                abilityId: ability.id,
+                abilityName: ability.name,
+                actionType: ability.actionType
+            };
+            this.selectedAction = 'abilityWeaponAttack';
+            return; // Don't consume action or track usage yet
         }
+
+        // Consume action after successful dispatch
+        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+            const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
+            const required = actionMap[ability.actionType];
+            if (required) combatant.consumeAction(required);
+        }
+
+        // Track usage and sync state
+        this.trackAbilityUsage(ability, character);
+        this.syncCombatState();
     }
 
     /**
-     * Show Steady Nerve ability choices modal
+     * Show generic ability choices modal (for choice-based abilities like Steady Nerve)
      */
-    showSteadyNerveChoices(ability, character) {
+    showAbilityChoices(ability, character) {
         const options = ability.effects.options.filter(opt => opt.implemented !== false);
 
         const modalHTML = `
-            <div id="steadyNerveModal" class="modal active">
+            <div id="abilityChoiceModal" class="modal active">
                 <div class="modal-content ability-modal">
                     <div class="modal-header">
                         <h2>${ability.name}</h2>
-                        <button id="closeSteadyNerveBtn" class="close-btn">&times;</button>
+                        <button id="closeAbilityChoiceBtn" class="close-btn">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>${ability.description}</p>
@@ -2192,29 +2488,26 @@ class Game {
         `;
 
         // Remove existing modal
-        const existingModal = document.getElementById('steadyNerveModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
+        const existingModal = document.getElementById('abilityChoiceModal');
+        if (existingModal) existingModal.remove();
 
-        // Add modal
         document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-        const modal = document.getElementById('steadyNerveModal');
-        const closeBtn = document.getElementById('closeSteadyNerveBtn');
+        const modal = document.getElementById('abilityChoiceModal');
+        const closeBtn = document.getElementById('closeAbilityChoiceBtn');
 
         closeBtn.addEventListener('click', () => modal.remove());
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
 
-        // Choice button clicks
+        // Choice button clicks — dispatch via EffectDispatcher
         document.querySelectorAll('.ability-choice-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const optionId = btn.dataset.optionId;
                 const option = options.find(o => o.id === optionId);
                 if (option) {
-                    this.executeSteadyNerveOption(option, ability, character);
+                    this.executeAbilityChoice(option, ability, character);
                     modal.remove();
                 }
             });
@@ -2222,82 +2515,238 @@ class Game {
     }
 
     /**
-     * Execute a Steady Nerve option
+     * Execute a chosen option from a choice-based ability via EffectDispatcher
      */
-    executeSteadyNerveOption(option, ability, character) {
-        const combatant = this.combatManager.playerCombatant;
+    async executeAbilityChoice(option, ability, character) {
+        const combatant = this.combatManager?.playerCombatant;
+        if (!combatant) return;
 
-        // Check if bonus action is available
-        if (!combatant.hasAction('bonusAction')) {
-            gameState.addMessage('❌ No bonus action available!', 'error');
+        // Check action economy
+        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+            const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
+            const required = actionMap[ability.actionType];
+            if (required && !combatant.hasAction(required)) {
+                gameState.addMessage(`❌ No ${ability.actionType} available!`, 'error');
+                return;
+            }
+        }
+
+        // Dispatch option effects via EffectDispatcher (zero conditionals!)
+        const context = buildEffectContext(character, combatant, this.combatManager);
+        const results = await dispatchOption(option, ability, context);
+
+        // Deferred effect (e.g. weapon_attack needs target selection)
+        if (checkDeferred(results)) {
+            this._pendingAction = {
+                abilityId: ability.id,
+                abilityName: ability.name,
+                actionType: ability.actionType
+            };
+            this.selectedAction = 'abilityWeaponAttack';
+            return; // Don't consume action or track usage yet
+        }
+
+        // Consume action
+        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+            const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
+            const required = actionMap[ability.actionType];
+            if (required) combatant.consumeAction(required);
+        }
+
+        // Track usage and sync state
+        this.trackAbilityUsage(ability, character);
+        this.syncCombatState();
+    }
+
+    /**
+     * Track ability usage and persist to character state
+     */
+    trackAbilityUsage(ability, character) {
+        if (!character.abilityUses) character.abilityUses = {};
+        character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
+        gameState.set('character', character);
+    }
+
+    /**
+     * Render abilities on character sheet with "Use" buttons for out-of-combat abilities
+     */
+    renderCharSheetAbilities(character) {
+        if (!this.abilitiesData) return '<p class="empty-state">Loading abilities...</p>';
+
+        const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
+        const available = callingAbilities.filter(a => character.level >= a.levelRequired);
+
+        if (available.length === 0) {
+            return '<p class="empty-state">No abilities unlocked yet</p>';
+        }
+
+        const inCombat = !!gameState.get('combat')?.active;
+
+        return available.map(ability => {
+            const usesText = this.getAbilityUsesText(ability, character);
+            const canUseOOC = ability.usableOutOfCombat && !inCombat && this.canUseAbilityOutOfCombat(ability, character);
+
+            return `
+                <div class="ability-item">
+                    <div class="ability-item-header">
+                        <strong>${ability.name}</strong>
+                        <span class="ability-uses-badge">${usesText}</span>
+                    </div>
+                    <p class="ability-item-desc">${ability.description}</p>
+                    <div class="ability-item-footer">
+                        <span class="ability-action-type">${this.formatActionType(ability.actionType)}</span>
+                        ${ability.usableOutOfCombat && !inCombat ? `
+                            <button class="ability-use-btn" data-ability-id="${ability.id}" ${!canUseOOC ? 'disabled' : ''}>
+                                Use
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Check if an ability can be used outside combat (has charges, HP not full for heals, etc.)
+     */
+    canUseAbilityOutOfCombat(ability, character) {
+        if (!ability.usableOutOfCombat) return false;
+
+        // Check resource availability
+        if (ability.resourceType === 'shortRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerShortRest || 1;
+            if (used >= max) return false;
+        } else if (ability.resourceType === 'longRest') {
+            const used = character.abilityUses?.[ability.id] || 0;
+            const max = ability.usesPerLongRest || 1;
+            if (used >= max) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Use an ability outside of combat via EffectDispatcher
+     */
+    async useAbilityOutOfCombat(abilityId) {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Load abilities data if needed
+        if (!this.abilitiesData) {
+            try {
+                const response = await fetch('data/abilities.json');
+                this.abilitiesData = await response.json();
+            } catch (error) {
+                console.error('Failed to load abilities data:', error);
+                return;
+            }
+        }
+
+        const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
+        const ability = callingAbilities.find(a => a.id === abilityId);
+        if (!ability || !ability.usableOutOfCombat) return;
+
+        if (!this.canUseAbilityOutOfCombat(ability, character)) {
+            gameState.addMessage(`❌ ${ability.name} has no uses remaining`, 'error');
             return;
         }
 
-        switch (option.id) {
-            case 'heal':
-                // Heal: 1d8 + level + CON modifier
-                const healAmount = rollDice(1, 8) + character.level + character.abilityModifiers.con;
-                const oldHP = combatant.hp;
-                combatant.hp = Math.min(combatant.maxHP, combatant.hp + healAmount);
-                const actualHealing = combatant.hp - oldHP;
+        if (!character.abilityUses) character.abilityUses = {};
 
-                gameState.addMessage(`💚 Steady Nerve (Heal): ${character.name} heals for ${actualHealing} HP!`, 'success');
-
-                // Update combat state to reflect HP change
-                gameState.set('combat', {
-                    active: true,
-                    round: this.combatManager.round,
-                    currentTurn: this.combatManager.getCurrentCombatant()?.id,
-                    combatants: this.combatManager.combatants.map(c => c.toJSON())
-                });
-
-                // Consume bonus action
-                combatant.consumeAction('bonusAction');
-                break;
-
-            case 'attack':
-                // Make weapon attack - need to select target
-                gameState.addMessage(`⚔️ Steady Nerve (Attack): Select a target to attack`, 'info');
-                this.selectedAction = 'steadyNerveAttack'; // Special flag to track this is a bonus action attack
-                // Don't consume bonus action yet - wait until attack is executed
-                return; // Early return - don't track usage or end turn yet
-                break;
-
-            case 'dodge':
-                // Apply Dodge condition
-                combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
-                    isBuff: true,
-                    curable: false,
-                    icon: '🛡️'
-                });
-                gameState.addMessage(`🛡️ Steady Nerve (Dodge): ${character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
-
-                // Consume bonus action
-                combatant.consumeAction('bonusAction');
-                break;
-
-            default:
-                gameState.addMessage(`${option.name} not yet implemented`, 'warning');
-                return;
+        // Choice-based abilities: show choices filtered to out-of-combat options
+        if (ability.effects?.choice) {
+            this.showOutOfCombatAbilityChoices(ability, character);
+            return;
         }
 
-        // Track usage
-        if (!character.abilityUses) {
-            character.abilityUses = {};
-        }
-        character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
-        gameState.set('character', character);
+        // Direct effect dispatch
+        const context = buildOutOfCombatContext(character);
+        await dispatchEffects(ability, ability.effects, context);
 
-        // Update combat state
-        gameState.set('combat', {
-            active: true,
-            round: this.combatManager.round,
-            currentTurn: this.combatManager.getCurrentCombatant()?.id,
-            combatants: this.combatManager.combatants.map(c => c.toJSON())
+        // Track usage, persist, update UI
+        this.trackAbilityUsage(ability, character);
+        this.updateHUD(character);
+        this.renderCharacterSheet();
+    }
+
+    /**
+     * Show choices for a choice-based ability, filtered to out-of-combat options only
+     */
+    showOutOfCombatAbilityChoices(ability, character) {
+        const options = ability.effects.options.filter(opt =>
+            opt.usableOutOfCombat !== false && opt.implemented !== false
+        );
+
+        if (options.length === 0) {
+            gameState.addMessage(`❌ ${ability.name} has no options usable outside combat`, 'error');
+            return;
+        }
+
+        // If only one option, use it directly
+        if (options.length === 1) {
+            this.executeOutOfCombatChoice(options[0], ability, character);
+            return;
+        }
+
+        const modalHTML = `
+            <div id="abilityChoiceModal" class="modal active">
+                <div class="modal-content ability-modal">
+                    <div class="modal-header">
+                        <h2>${ability.name}</h2>
+                        <button id="closeAbilityChoiceBtn" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>${ability.description}</p>
+                        <div class="ability-choices">
+                            ${options.map(option => `
+                                <button class="ability-choice-btn" data-option-id="${option.id}">
+                                    <strong>${option.name}</strong>
+                                    <p>${option.description}</p>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const existingModal = document.getElementById('abilityChoiceModal');
+        if (existingModal) existingModal.remove();
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        const modal = document.getElementById('abilityChoiceModal');
+        const closeBtn = document.getElementById('closeAbilityChoiceBtn');
+
+        closeBtn.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
         });
 
-        // End turn after using ability (bonus action consumed)
-        this.combatManager.endTurn();
+        document.querySelectorAll('.ability-choice-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const optionId = btn.dataset.optionId;
+                const option = options.find(o => o.id === optionId);
+                if (option) {
+                    this.executeOutOfCombatChoice(option, ability, character);
+                    modal.remove();
+                }
+            });
+        });
+    }
+
+    /**
+     * Execute a choice option outside combat
+     */
+    async executeOutOfCombatChoice(option, ability, character) {
+        const context = buildOutOfCombatContext(character);
+        await dispatchOption(option, ability, context);
+
+        this.trackAbilityUsage(ability, character);
+        this.updateHUD(character);
+        this.renderCharacterSheet();
     }
 
     /**
@@ -3531,6 +3980,9 @@ class Game {
                     gameState.addMessage(msg, success ? 'success' : 'warning');
                 });
 
+                // Check for death from skill challenge damage
+                if (this.checkDeath(character)) return;
+
                 // Handle combat initiation
                 if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
                     consequences.initiateCombat = true;
@@ -3791,6 +4243,9 @@ class Game {
                         consequences.messages.forEach(msg => {
                             gameState.addMessage(msg, success ? 'success' : 'warning');
                         });
+
+                        // Check for death from skill challenge damage
+                        if (this.checkDeath(character)) return;
 
                         // Handle combat initiation
                         if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
@@ -4356,6 +4811,14 @@ class Game {
             </div>
             ` : ''}
 
+            <!-- Abilities (with Use buttons for out-of-combat) -->
+            <div class="char-section full-width" id="charSheetAbilities">
+                <h3>Abilities</h3>
+                <div class="abilities-list" id="charSheetAbilitiesList">
+                    ${this.renderCharSheetAbilities(character)}
+                </div>
+            </div>
+
             <!-- Class Features -->
             <div class="char-section full-width">
                 <h3>Class Features</h3>
@@ -4392,6 +4855,15 @@ class Game {
             </div>
             ` : ''}
         `;
+
+        // Wire up out-of-combat ability "Use" buttons
+        content.querySelectorAll('.ability-use-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const abilityId = btn.dataset.abilityId;
+                this.useAbilityOutOfCombat(abilityId);
+            });
+        });
     }
 
     /**
@@ -5853,6 +6325,15 @@ class Game {
             const { type, result } = event.detail;
             // Update HUD after successful rest
             this.updateHUD(gameState.get('character'));
+
+            // After long rest, offer Forgecraft if character has the practice
+            if (type === 'long' && result.success) {
+                const character = gameState.get('character');
+                if (character?.practices?.includes('forgecraft')) {
+                    // Small delay to let rest messages display first
+                    setTimeout(() => this.openForgecraftModal(), 500);
+                }
+            }
         });
 
         // Close modal when clicking outside
@@ -5865,7 +6346,232 @@ class Game {
             });
         }
 
+        // Setup Forgecraft modal
+        this.setupForgecraftModal();
+
         console.log('✅ Rest system UI initialized');
+    }
+
+    // ========== FORGECRAFT SYSTEM ==========
+
+    setupForgecraftModal() {
+        const modal = document.getElementById('forgecraftModal');
+        const closeBtn = document.getElementById('closeForgecraftBtn');
+        const doneBtn = document.getElementById('forgecraftDoneBtn');
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeForgecraftModal());
+        }
+        if (doneBtn) {
+            doneBtn.addEventListener('click', () => this.closeForgecraftModal());
+        }
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) this.closeForgecraftModal();
+            });
+        }
+    }
+
+    async openForgecraftModal() {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        // Load practices data if not cached
+        if (!this.practicesData) {
+            try {
+                const response = await fetch('data/practices.json');
+                this.practicesData = await response.json();
+            } catch (e) {
+                console.error('Failed to load practices data:', e);
+                return;
+            }
+        }
+
+        const forgecraft = this.practicesData.practices.find(p => p.id === 'forgecraft');
+        if (!forgecraft) return;
+
+        this.forgecraftData = forgecraft;
+        this.forgecraftSelectedSlot = null;
+
+        // Calculate max modified items based on level
+        const maxModEntries = Object.entries(forgecraft.modifications.maxModifiedItems);
+        let maxMods = 0;
+        for (const [lvl, count] of maxModEntries) {
+            if (character.level >= parseInt(lvl)) maxMods = count;
+        }
+        this.forgecraftMaxMods = maxMods;
+
+        // Count current mods
+        const currentModCount = Object.keys(character.equipmentMods || {}).length;
+
+        // Update mod count display
+        const countEl = document.getElementById('forgecraftModCount');
+        if (countEl) countEl.textContent = `Modified: ${currentModCount}/${maxMods}`;
+
+        // Render equipment slots
+        this.renderForgecraftSlots(character);
+
+        // Show modal
+        const modal = document.getElementById('forgecraftModal');
+        if (modal) modal.classList.add('active');
+
+        gameState.addMessage('🔨 Forgecraft: You may modify your equipment during this rest.', 'info');
+    }
+
+    closeForgecraftModal() {
+        const modal = document.getElementById('forgecraftModal');
+        if (modal) modal.classList.remove('active');
+
+        // Recalculate combat stats after mods may have changed
+        const character = gameState.get('character');
+        if (character) {
+            this.recalculateCombatStats(character);
+            gameState.set('character', character);
+            this.updateHUD(character);
+        }
+    }
+
+    renderForgecraftSlots(character) {
+        const slotsEl = document.getElementById('forgecraftSlots');
+        if (!slotsEl) return;
+
+        const slots = [
+            { id: 'mainHand', label: 'Main Hand', category: 'weapon' },
+            { id: 'offHand', label: 'Off-Hand', category: null }, // determined by item type
+            { id: 'armor', label: 'Armor', category: 'armor' }
+        ];
+
+        slotsEl.innerHTML = slots.map(slot => {
+            const item = character.equipment?.[slot.id];
+            if (!item) {
+                return `<div class="forgecraft-slot empty">
+                    <div>
+                        <div class="forgecraft-slot-name">${slot.label}</div>
+                        <div class="forgecraft-slot-item">— Empty —</div>
+                    </div>
+                </div>`;
+            }
+
+            const currentMod = character.equipmentMods?.[slot.id];
+            const modName = currentMod ? this.getForgecraftModName(currentMod.modId) : null;
+
+            return `<div class="forgecraft-slot ${this.forgecraftSelectedSlot === slot.id ? 'selected' : ''}"
+                         data-slot="${slot.id}" onclick="window.game.selectForgecraftSlot('${slot.id}')">
+                <div>
+                    <div class="forgecraft-slot-name">${slot.label}</div>
+                    <div class="forgecraft-slot-item">${item.name || item.id}</div>
+                    ${modName ? `<div class="forgecraft-slot-mod">✨ ${modName}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    selectForgecraftSlot(slotId) {
+        this.forgecraftSelectedSlot = slotId;
+        const character = gameState.get('character');
+
+        // Re-render slots to show selection
+        this.renderForgecraftSlots(character);
+
+        // Show available mods for this slot
+        this.renderForgecraftMods(character, slotId);
+    }
+
+    renderForgecraftMods(character, slotId) {
+        const modsSection = document.getElementById('forgecraftMods');
+        const modsList = document.getElementById('forgecraftModsList');
+        const modsTitle = document.getElementById('forgecraftModsTitle');
+        if (!modsSection || !modsList) return;
+
+        const item = character.equipment?.[slotId];
+        if (!item) {
+            modsSection.style.display = 'none';
+            return;
+        }
+
+        // Determine item category for mod filtering
+        let category;
+        if (item.type === 'shield') {
+            category = 'shield';
+        } else if (item.type === 'armor' || item.armorType) {
+            category = 'armor';
+        } else if (item.type === 'weapon' || item.weaponType) {
+            category = 'weapon';
+        } else {
+            modsSection.style.display = 'none';
+            return;
+        }
+
+        const mods = this.forgecraftData.modifications[category] || [];
+        const currentMod = character.equipmentMods?.[slotId];
+        const currentModCount = Object.keys(character.equipmentMods || {}).length;
+
+        modsTitle.textContent = `Modifications for ${item.name || item.id}`;
+        modsSection.style.display = 'block';
+
+        // Add "Remove Mod" option if slot has a mod
+        let removeHtml = '';
+        if (currentMod) {
+            removeHtml = `<div class="forgecraft-mod-card" onclick="window.game.applyForgecraftMod('${slotId}', null)"
+                               style="border-color: var(--error-color);">
+                <div class="forgecraft-mod-name" style="color: var(--error-color);">✖ Remove Modification</div>
+                <div class="forgecraft-mod-desc">Remove the current modification from this item.</div>
+            </div>`;
+        }
+
+        modsList.innerHTML = removeHtml + mods.map(mod => {
+            const isActive = currentMod?.modId === mod.id;
+            const isLocked = character.level < mod.levelRequired;
+            // Can't add if at max mods and this slot doesn't already have one
+            const atMaxMods = !currentMod && currentModCount >= this.forgecraftMaxMods;
+
+            return `<div class="forgecraft-mod-card ${isActive ? 'active' : ''} ${isLocked || atMaxMods ? 'locked' : ''}"
+                         ${!isLocked && !atMaxMods ? `onclick="window.game.applyForgecraftMod('${slotId}', '${mod.id}')"` : ''}>
+                <div class="forgecraft-mod-name">${mod.name} ${isActive ? '✨' : ''}</div>
+                <div class="forgecraft-mod-desc">${mod.description}</div>
+                ${isLocked ? `<div class="forgecraft-mod-level">🔒 Requires level ${mod.levelRequired}</div>` : ''}
+                ${atMaxMods && !isActive ? `<div class="forgecraft-mod-level">⚠️ Max modified items reached (${this.forgecraftMaxMods})</div>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    applyForgecraftMod(slotId, modId) {
+        const character = gameState.get('character');
+        if (!character) return;
+
+        if (!character.equipmentMods) character.equipmentMods = {};
+
+        if (modId === null) {
+            // Remove mod
+            const oldMod = character.equipmentMods[slotId];
+            delete character.equipmentMods[slotId];
+            gameState.addMessage(`🔨 Removed ${this.getForgecraftModName(oldMod?.modId)} modification.`, 'info');
+        } else {
+            // Apply mod
+            character.equipmentMods[slotId] = { modId: modId, practiceId: 'forgecraft' };
+            gameState.addMessage(`🔨 Applied ${this.getForgecraftModName(modId)} to ${character.equipment[slotId]?.name || slotId}!`, 'success');
+        }
+
+        gameState.set('character', character);
+
+        // Update UI
+        const currentModCount = Object.keys(character.equipmentMods).length;
+        const countEl = document.getElementById('forgecraftModCount');
+        if (countEl) countEl.textContent = `Modified: ${currentModCount}/${this.forgecraftMaxMods}`;
+
+        this.renderForgecraftSlots(character);
+        this.renderForgecraftMods(character, slotId);
+    }
+
+    getForgecraftModName(modId) {
+        if (!modId || !this.forgecraftData) return 'Unknown';
+        const allMods = [
+            ...(this.forgecraftData.modifications.armor || []),
+            ...(this.forgecraftData.modifications.shield || []),
+            ...(this.forgecraftData.modifications.weapon || []),
+        ];
+        const mod = allMods.find(m => m.id === modId);
+        return mod ? mod.name : modId;
     }
 
     /**
@@ -6098,6 +6804,33 @@ class Game {
             character.offHandAttackBonus = this.calculateAttackBonusForWeapon(character, character.equipment.offHand);
         } else {
             character.offHandAttackBonus = 0;
+        }
+
+        // Apply Forgecraft modifications
+        const mods = character.equipmentMods || {};
+        for (const [slotId, modData] of Object.entries(mods)) {
+            if (!modData?.modId) continue;
+            switch (modData.modId) {
+                case 'reinforced': // +1 AC (armor)
+                    character.ac += 1;
+                    break;
+                case 'optimised': // +1 AC (shield)
+                    character.ac += 1;
+                    break;
+                case 'tailored': // +1 max DEX for AC — recalculate with bonus
+                    if (character.equipment.armor?.maxDexBonus !== null && character.equipment.armor?.maxDexBonus !== undefined) {
+                        const extraDex = Math.min(character.abilityModifiers.dex, character.equipment.armor.maxDexBonus + 1)
+                                       - Math.min(character.abilityModifiers.dex, character.equipment.armor.maxDexBonus);
+                        character.ac += extraDex;
+                    }
+                    break;
+                case 'balanced': // +1 attack rolls (weapon)
+                    if (slotId === 'mainHand') character.mainHandAttackBonus += 1;
+                    if (slotId === 'offHand') character.offHandAttackBonus += 1;
+                    break;
+                // tempered (+1 damage), keen (crit 19-20), adaptive (crit immunity),
+                // deflecting (reaction save) are handled in CombatManager during combat
+            }
         }
 
         console.log(`⚔️ Combat stats recalculated - AC: ${character.ac}, Main Hand Attack: +${character.mainHandAttackBonus}, Off Hand Attack: +${character.offHandAttackBonus}`);

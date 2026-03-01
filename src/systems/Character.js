@@ -153,9 +153,11 @@ export class Character {
         this.pendingLevelUp = data.pendingLevelUp || null;
         this.levelUpSelections = data.levelUpSelections || null;
 
-        // Selected abilities/traits (from level-up choices)
+        // Selected abilities/traits/practices (from level-up choices)
         this.selectedAbilities = data.selectedAbilities || [];
         this.selectedTraits = data.selectedTraits || [];
+        this.practices = data.practices || [];
+        this.equipmentMods = data.equipmentMods || {};
     }
 
     /**
@@ -804,6 +806,13 @@ export class Character {
             console.log(`  Added ${selections.traits.length} traits`);
         }
 
+        // Add selected practices
+        if (selections.practices && selections.practices.length > 0) {
+            if (!this.practices) this.practices = [];
+            this.practices.push(...selections.practices);
+            console.log(`  Learned ${selections.practices.length} practice(s): ${selections.practices.join(', ')}`);
+        }
+
         // Set specialization
         if (selections.specialization) {
             this.specialization = selections.specialization;
@@ -1398,6 +1407,8 @@ export class Character {
             shortRestsUsed: this.shortRestsUsed,
             lastLongRest: this.lastLongRest,
             abilityUses: this.abilityUses,
+            practices: this.practices,
+            equipmentMods: this.equipmentMods,
             isNPC: this.isNPC,
             isHostile: this.isHostile,
             faction: this.faction

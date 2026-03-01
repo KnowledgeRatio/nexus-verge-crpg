@@ -12,7 +12,20 @@
       },
       "2": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "newFeatures": [
+          {
+            "name": "Action Surge",
+            "description": "On your turn, you can take one additional action. Once per short rest. (Free action — does not cost an action to activate.)"
+          }
+        ],
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": true,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "3": {
         "abilityScoreIncrease": 1,
@@ -21,8 +34,8 @@
             "type": "specialization",
             "count": 1,
             "required": true,
-            "label": "Martial Archetype",
-            "options": ["champion", "battleMaster", "eldritchKnight"]
+            "label": "Choose Specialization",
+            "options": ["exemplar", "oath"]
           }
         ]
       },

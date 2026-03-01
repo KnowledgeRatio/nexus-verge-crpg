@@ -1,0 +1,125 @@
+{
+  "description": "Practices are utility disciplines that provide non-combat and combat-adjacent capabilities. Each practice follows the '-craft' naming convention. Practices are chosen at specific levels during character progression. All callings have access to the shared practice pool unless marked with 'callings' restriction.",
+  "practices": [
+    {
+      "id": "forgecraft",
+      "name": "Forgecraft",
+      "campaignIds": ["core"],
+      "description": "The art of enhancing arms and armour through expert modification. During a long rest, you can apply modifications to your equipment, improving their properties beyond their base capabilities.",
+      "callings": null,
+      "modifications": {
+        "description": "Apply one modification per item during a long rest. Modifications persist until swapped at your next long rest. You can maintain 1 modified item at level 2, and 2 modified items at level 6.",
+        "maxModifiedItems": {
+          "2": 1,
+          "6": 2
+        },
+        "maxModsPerItem": 1,
+        "applyDuring": "longRest",
+        "armor": [
+          {
+            "id": "tailored",
+            "name": "Tailored",
+            "levelRequired": 2,
+            "description": "Expertly fitted to the wearer. The maximum DEX modifier that contributes to AC increases by 1.",
+            "effect": {
+              "type": "modifyArmor",
+              "property": "maxDexBonus",
+              "bonus": 1
+            },
+            "implementation": "armor.maxDexBonus += 1 (medium armor goes from +2 to +3, heavy from +0 to +1)"
+          },
+          {
+            "id": "adaptive",
+            "name": "Adaptive",
+            "levelRequired": 2,
+            "description": "Layered and angled to deflect devastating blows. Critical hits against you count as normal hits for damage calculation.",
+            "effect": {
+              "type": "modifyDefense",
+              "property": "critImmunity",
+              "value": true
+            },
+            "implementation": "onCritReceived: doubleDice = false, calculate normal damage instead"
+          },
+          {
+            "id": "reinforced",
+            "name": "Reinforced",
+            "levelRequired": 6,
+            "description": "Structurally strengthened at key stress points. Grants +1 to AC.",
+            "effect": {
+              "type": "modifyArmor",
+              "property": "acBonus",
+              "bonus": 1
+            },
+            "implementation": "ac += 1"
+          }
+        ],
+        "shield": [
+          {
+            "id": "optimised",
+            "name": "Optimised",
+            "levelRequired": 2,
+            "description": "Lighter, harder, and tuned to its wielder. Grants an additional +1 AC.",
+            "effect": {
+              "type": "modifyShield",
+              "property": "acBonus",
+              "bonus": 1
+            },
+            "implementation": "shield.acBonus += 1 (total shield AC becomes +3)"
+          },
+          {
+            "id": "deflecting",
+            "name": "Deflecting",
+            "levelRequired": 2,
+            "description": "Shaped to redirect incoming energy. Once per short rest, use your reaction to add your shield's AC bonus to a saving throw.",
+            "effect": {
+              "type": "modifyShield",
+              "property": "savingThrowReaction",
+              "uses": 1,
+              "recharge": "shortRest"
+            },
+            "implementation": "onFailedSave (reaction): saveBonus += shield.acBonus; 1/SR"
+          }
+        ],
+        "weapon": [
+          {
+            "id": "keen",
+            "name": "Keen",
+            "levelRequired": 2,
+            "description": "Honed to a razor edge that finds the gaps. Critical hit range expands to 19-20.",
+            "effect": {
+              "type": "modifyWeapon",
+              "property": "critRange",
+              "value": [19, 20]
+            },
+            "implementation": "weapon.critRange = [19, 20] instead of [20]"
+          },
+          {
+            "id": "tempered",
+            "name": "Tempered",
+            "levelRequired": 2,
+            "description": "Strengthened through expert heat treatment. Grants +1 to damage rolls.",
+            "effect": {
+              "type": "modifyWeapon",
+              "property": "damageBonus",
+              "bonus": 1
+            },
+            "implementation": "weapon.damageBonus += 1"
+          },
+          {
+            "id": "balanced",
+            "name": "Balanced",
+            "levelRequired": 6,
+            "description": "Perfectly weighted for precision. Grants +1 to attack rolls.",
+            "effect": {
+              "type": "modifyWeapon",
+              "property": "attackBonus",
+              "bonus": 1
+            },
+            "implementation": "weapon.attackBonus += 1"
+          }
+        ],
+        "artifact": []
+      }
+    }
+  ]
+}

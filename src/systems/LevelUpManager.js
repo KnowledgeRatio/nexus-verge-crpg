@@ -18,6 +18,7 @@ export default class LevelUpManager {
     this.abilitiesData = null;
     this.spellsData = null;
     this.traitsData = null;
+    this.practicesData = null;
 
     // Current level-up state
     this.currentSelections = {
@@ -25,6 +26,7 @@ export default class LevelUpManager {
       abilities: [],
       spells: [],
       traits: [],
+      practices: [],
       specialization: null
     };
 
@@ -53,6 +55,15 @@ export default class LevelUpManager {
       const traitsResponse = await fetch('data/traits.json');
       this.traitsData = await traitsResponse.json();
 
+      // Load practices data
+      try {
+        const practicesResponse = await fetch('data/practices.json');
+        this.practicesData = await practicesResponse.json();
+      } catch (e) {
+        console.warn('No practices.json found, skipping:', e);
+        this.practicesData = { practices: [] };
+      }
+
       // Get modal reference
       this.modal = document.getElementById('levelUpModal');
 
@@ -60,6 +71,16 @@ export default class LevelUpManager {
     } catch (error) {
       console.error('Failed to initialize LevelUpManager:', error);
     }
+  }
+
+  /**
+   * Get auto-granted features from progression data for display
+   */
+  getProgressionNewFeatures(classId, level) {
+    if (!this.progressionData) return [];
+    const classProgression = this.progressionData.progressionByClass[classId];
+    if (!classProgression || !classProgression[level]) return [];
+    return classProgression[level].newFeatures || [];
   }
 
   /**
@@ -214,6 +235,7 @@ export default class LevelUpManager {
       abilities: [],
       spells: [],
       traits: [],
+      practices: [],
       specialization: null
     };
 
@@ -256,8 +278,11 @@ export default class LevelUpManager {
       profBonusChange.style.display = 'none';
     }
 
-    // Render new features if any
-    this.renderNewFeatures(pending.newFeatures);
+    // Merge new features from class data AND progression data
+    const classFeatures = pending.newFeatures || [];
+    const progressionFeatures = this.getProgressionNewFeatures(character.class.id, pending.newLevel);
+    const allNewFeatures = [...classFeatures, ...progressionFeatures];
+    this.renderNewFeatures(allNewFeatures);
 
     // Render ASI selection
     this.renderASISelection(character);
@@ -307,7 +332,33 @@ export default class LevelUpManager {
   }
 
   /**
-   * Render dynamic choice sections (abilities, spells, traits, specializations)
+   * Get practices available for a character (filtered by campaign and calling restrictions)
+   * @param {string} classId - The calling/class ID
+   * @param {object} filter - Optional filters
+   * @returns {Array} Filtered practices
+   */
+  getFilteredPractices(classId, filter = {}) {
+    if (!this.practicesData) return [];
+
+    let practices = this.practicesData.practices || [];
+
+    // Filter by campaign
+    const campaignId = gameState.get('worldConfig')?.campaignId || 'nexus-verge';
+    practices = filterByCampaign(practices, campaignId);
+
+    // Filter by calling restriction (null = available to all)
+    practices = practices.filter(p => !p.callings || p.callings.includes(classId));
+
+    // Exclude already-known practices
+    const character = gameState.get('character');
+    const knownPractices = character?.practices || [];
+    practices = practices.filter(p => !knownPractices.includes(p.id));
+
+    return practices;
+  }
+
+  /**
+   * Render dynamic choice sections (abilities, spells, traits, practices, specializations)
    * @param {object} character - The character object
    */
   renderChoiceSections(character) {
@@ -321,6 +372,9 @@ export default class LevelUpManager {
           break;
         case 'trait':
           this.renderTraitChoice(character, choice);
+          break;
+        case 'practice':
+          this.renderPracticeChoice(character, choice);
           break;
         case 'specialization':
           this.renderSpecializationChoice(character, choice);
@@ -337,6 +391,9 @@ export default class LevelUpManager {
     }
     if (this.availableChoices.length === 0 || !this.availableChoices.some(c => c.type === 'trait')) {
       document.getElementById('traitChoiceSection').style.display = 'none';
+    }
+    if (this.availableChoices.length === 0 || !this.availableChoices.some(c => c.type === 'practice')) {
+      document.getElementById('practiceChoiceSection').style.display = 'none';
     }
     if (this.availableChoices.length === 0 || !this.availableChoices.some(c => c.type === 'specialization')) {
       document.getElementById('specializationSection').style.display = 'none';
@@ -417,6 +474,30 @@ export default class LevelUpManager {
   }
 
   /**
+   * Render practice choice section
+   */
+  renderPracticeChoice(character, choice) {
+    const section = document.getElementById('practiceChoiceSection');
+    const list = document.getElementById('practiceChoiceList');
+    const countSpan = document.getElementById('practiceChoiceCount');
+
+    section.style.display = 'block';
+    countSpan.textContent = `Choose ${choice.count}${choice.required ? ' - Required' : ''}`;
+
+    const practices = this.getFilteredPractices(character.class.id);
+
+    list.innerHTML = practices.map(practice => `
+      <div class="choice-item practice-choice" data-choice-type="practice" data-choice-id="${practice.id}">
+        <div class="choice-item-header">
+          <input type="${choice.count === 1 ? 'radio' : 'checkbox'}" name="practice" class="choice-${choice.count === 1 ? 'radio' : 'checkbox'}">
+          <span class="choice-name">${practice.name}</span>
+        </div>
+        <div class="choice-description">${practice.description}</div>
+      </div>
+    `).join('');
+  }
+
+  /**
    * Render specialization choice section
    */
   renderSpecializationChoice(character, choice) {
@@ -453,13 +534,14 @@ export default class LevelUpManager {
   getSpecializationDescription(id) {
     // TODO: Load from specializations.json when implemented
     const descriptions = {
+      exemplar: 'Tactical weapon master. Spends Resolve on combat maneuvers for precision, control, and defense.',
+      oath: 'Divine warrior. Spends Resolve on smite (burst damage) or healing. Every smite point is healing you don\'t have.',
       champion: 'Master of physical combat and critical strikes',
       battleMaster: 'Tactical fighter with combat maneuvers',
       eldritchKnight: 'Warrior who blends magic with martial prowess',
       evocation: 'Master of destructive spells',
       abjuration: 'Specialist in protective magic',
       enchantment: 'Weaver of mind-affecting spells',
-      // ... add more as needed
     };
     return descriptions[id] || 'A powerful specialization path';
   }
@@ -599,6 +681,7 @@ export default class LevelUpManager {
       abilities: [],
       spells: [],
       traits: [],
+      practices: [],
       specialization: null
     };
   }

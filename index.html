@@ -257,6 +257,38 @@
             </div>
         </div>
 
+        <!-- Forgecraft Modal -->
+        <div id="forgecraftModal" class="modal">
+            <div class="modal-dialog forgecraft-dialog">
+                <div class="modal-header">
+                    <h2>🔨 Forgecraft</h2>
+                    <button class="close-btn" id="closeForgecraftBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="forgecraft-intro">Apply modifications to your equipment. One mod per item. Select an equipment slot, then choose a modification.</p>
+                    <div class="forgecraft-info">
+                        <span id="forgecraftModCount">Modified: 0/1</span>
+                    </div>
+
+                    <!-- Equipment Slot Selection -->
+                    <div class="forgecraft-slots" id="forgecraftSlots">
+                        <!-- Dynamically populated -->
+                    </div>
+
+                    <!-- Available Mods for Selected Slot -->
+                    <div id="forgecraftMods" class="forgecraft-mods" style="display: none;">
+                        <h3 id="forgecraftModsTitle">Available Modifications</h3>
+                        <div id="forgecraftModsList" class="forgecraft-mods-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="forgecraftDoneBtn" class="confirm-btn">Done</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Load Game Screen -->
         <div id="loadGameScreen" class="screen">
             <div class="menu-container">
@@ -385,6 +417,41 @@
 
                 <div id="npcDialogueOptions" class="dialogue-options">
                     <!-- Dialogue options will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Challenge Modal (Multi-turn skill challenges with NPCs) -->
+        <div id="socialChallengeModal" class="modal social-challenge-modal">
+            <div class="social-challenge-container">
+                <!-- Header: NPC name and tension meter -->
+                <div class="social-challenge-header">
+                    <div class="challenge-npc-info">
+                        <h2 id="socialChallengeNPC">Bandit Leader</h2>
+                        <span id="socialChallengeRole" class="npc-role-tag">Hostile</span>
+                    </div>
+                    <div class="tension-meter-container">
+                        <label>Tension</label>
+                        <div class="tension-meter">
+                            <div class="tension-bar" id="tensionBar"></div>
+                        </div>
+                        <span id="tensionValue" class="tension-value">50/100</span>
+                    </div>
+                </div>
+
+                <!-- Conversation History: Scrollable log of all exchanges -->
+                <div class="conversation-history" id="conversationHistory">
+                    <!-- Rendered dynamically: NPC lines, player choices, skill roll results -->
+                </div>
+
+                <!-- Current NPC Dialogue -->
+                <div class="current-dialogue" id="currentDialogue">
+                    <p id="currentDialogueText">NPC dialogue will appear here...</p>
+                </div>
+
+                <!-- Available Choices: Player's dialogue options -->
+                <div class="dialogue-choices" id="socialChallengeChoices">
+                    <!-- Rendered dynamically: buttons for each choice with skill check indicators -->
                 </div>
             </div>
         </div>
@@ -1342,6 +1409,13 @@ npm run legal:verify</code></pre>
                     <div id="traitChoiceSection" class="level-up-section" style="display: none;">
                         <h3>Choose Traits (<span id="traitChoiceCount">1</span>)</h3>
                         <div id="traitChoiceList" class="choice-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div id="practiceChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Choose Practice (<span id="practiceChoiceCount">1</span>) <span class="required-badge">Required</span></h3>
+                        <div id="practiceChoiceList" class="choice-list">
                             <!-- Dynamically populated -->
                         </div>
                     </div>

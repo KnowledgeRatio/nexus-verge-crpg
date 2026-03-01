@@ -32,6 +32,9 @@ class Player {
         // Terrain tracking for description messages
         this.lastTerrainType = null;
 
+        // Quest encounter tracking
+        this.nearBanditCamp = false; // Track if player is near bandit camp
+
         // Bind input handlers
         this.bindInput();
 
@@ -325,6 +328,9 @@ class Player {
         // Check for settlements
         this.checkForSettlement();
 
+        // Check for quest-based encounters (bandit camps, etc.)
+        await this.checkForQuestEncounters();
+
         return true;
     }
 
@@ -367,8 +373,85 @@ class Player {
     }
 
     /**
+     * Check if player has discovered quest-based encounter locations (bandit camps, etc.)
+     * Shows notification when nearby, E key triggers interaction
+     */
+    async checkForQuestEncounters() {
+        // Don't check during combat
+        if (gameState.get('combat')?.active) {
+            return;
+        }
+
+        // Get active quests
+        const quests = gameState.get('quests');
+        if (!quests || !quests.active || quests.active.length === 0) {
+            this.nearBanditCamp = false;
+            return;
+        }
+
+        // Check for "Negotiate with Bandits" quest
+        const banditQuest = quests.active.find(q =>
+            q.id?.includes('negotiate_bandits') ||
+            (q.objectives && q.objectives.some(obj =>
+                obj.type === 'encounter' && obj.encounter === 'bandit_camp'
+            ))
+        );
+
+        if (!banditQuest) {
+            this.nearBanditCamp = false;
+            return;
+        }
+
+        // Find the encounter objective
+        const encounterObj = banditQuest.objectives?.find(obj =>
+            obj.type === 'encounter' && obj.encounter === 'bandit_camp'
+        );
+
+        if (!encounterObj || encounterObj.completed) {
+            this.nearBanditCamp = false;
+            return;
+        }
+
+        // Generate bandit camp location if not set (near quest giver's settlement)
+        if (!banditQuest.banditCampLocation) {
+            // Get quest giver's location (settlement location)
+            const questGiverLoc = banditQuest.questGiver?.location || { x: 0, y: 0 };
+
+            // Place bandit camp 20-40 tiles away from settlement in random direction
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 20 + Math.random() * 20; // 20-40 tiles
+            const campX = Math.round(questGiverLoc.x + Math.cos(angle) * distance);
+            const campY = Math.round(questGiverLoc.y + Math.sin(angle) * distance);
+
+            banditQuest.banditCampLocation = { x: campX, y: campY };
+            gameState.set('quests', quests);
+
+            console.log(`🏕️ Bandit camp generated at (${campX}, ${campY}), ${distance.toFixed(1)} tiles from settlement`);
+        }
+
+        // Check if player is near bandit camp (within 3 tiles)
+        const { x: campX, y: campY } = banditQuest.banditCampLocation;
+        const distance = Math.sqrt(
+            Math.pow(this.x - campX, 2) +
+            Math.pow(this.y - campY, 2)
+        );
+
+        if (distance <= 3) {
+            // Player is near bandit camp
+            if (!this.nearBanditCamp) {
+                // First time entering area - show notification
+                gameState.addMessage('🏕️ You spot a bandit camp in the distance. Press E to approach.', 'warning');
+                this.nearBanditCamp = true;
+            }
+        } else {
+            // Player left the area
+            this.nearBanditCamp = false;
+        }
+    }
+
+    /**
      * Unified E key interaction handler
-     * Handles dungeons, settlements, and dungeon exits based on current context
+     * Handles dungeons, settlements, dungeon exits, and quest encounters based on current context
      */
     async handleInteraction() {
         // Don't allow interaction during combat
@@ -456,6 +539,12 @@ class Player {
             }
         }
 
+        // Check for quest-based encounters (bandit camp)
+        if (this.nearBanditCamp) {
+            await this.approachBanditCamp();
+            return;
+        }
+
         // Check for settlement
         if (this.settlementManager) {
             const settlement = this.settlementManager.getSettlementAtPlayerPosition();
@@ -467,6 +556,59 @@ class Player {
 
         // Nothing to interact with
         gameState.addMessage('There is nothing to interact with here.', 'info');
+    }
+
+    /**
+     * Handle approaching bandit camp for "Negotiate with Bandits" quest
+     * Triggers the social challenge conversation
+     */
+    async approachBanditCamp() {
+        // Get active quests
+        const quests = gameState.get('quests');
+        const banditQuest = quests.active.find(q =>
+            q.id?.includes('negotiate_bandits') ||
+            (q.objectives && q.objectives.some(obj =>
+                obj.type === 'encounter' && obj.encounter === 'bandit_camp'
+            ))
+        );
+
+        if (!banditQuest) {
+            gameState.addMessage('The bandit camp is empty.', 'info');
+            return;
+        }
+
+        // Get encounter objective
+        const encounterObj = banditQuest.objectives?.find(obj =>
+            obj.type === 'encounter' && obj.encounter === 'bandit_camp'
+        );
+
+        if (encounterObj?.completed) {
+            gameState.addMessage('The bandits have already left this camp.', 'info');
+            return;
+        }
+
+        // Mark encounter as triggered
+        if (encounterObj) {
+            encounterObj.triggered = true;
+            gameState.set('quests', quests);
+        }
+
+        // Start social challenge
+        if (window.skillChallengeManager) {
+            gameState.addMessage('🏕️ You approach the bandit camp. A grizzled leader steps forward...', 'warning');
+
+            // Trigger bandit negotiation social challenge
+            const context = {
+                questId: banditQuest.id,
+                settlement: banditQuest.questGiver?.settlement || 'the settlement',
+                npcName: 'Bandit Leader',
+                npcRole: 'Hostile'
+            };
+
+            await window.skillChallengeManager.startChallenge('bandit_negotiation', context);
+        } else {
+            gameState.addMessage('⚠️ Social challenge system not available.', 'error');
+        }
     }
 
     /**

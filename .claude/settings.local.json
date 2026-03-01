@@ -34,7 +34,11 @@
       "Bash(ln:*)",
       "Bash(ln -s:*)",
       "Bash(done)",
+<<<<<<< Updated upstream
       "mcp__claude_ai_MS_Learn__microsoft_docs_search"
+=======
+      "Bash(c:/Users/josh_/git/nexus-verge-crpg-5e/styles.css:*)"
+>>>>>>> Stashed changes
     ]
   }
 }
