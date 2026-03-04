@@ -19,6 +19,7 @@
  */
 
 const { DefaultAzureCredential } = require("@azure/identity");
+const { AzureKeyCredential } = require("@azure/core-auth");
 const { AIProjectClient } = require("@azure/ai-projects");
 
 module.exports = async function (context, req) {
@@ -65,9 +66,11 @@ module.exports = async function (context, req) {
         }
 
         // --- Create AI Project client ---
-        // Use DefaultAzureCredential for managed identity in Azure
-        // Falls back to environment variables, Azure CLI, etc. for local dev
-        const credential = new DefaultAzureCredential();
+        // Use API key if provided (Free tier), otherwise use managed identity (Standard tier)
+        const apiKey = process.env.ROGER_API_KEY;
+        const credential = apiKey
+            ? new AzureKeyCredential(apiKey)
+            : new DefaultAzureCredential();
         const projectClient = new AIProjectClient(projectEndpoint, credential);
 
         // Get OpenAI client for conversations
