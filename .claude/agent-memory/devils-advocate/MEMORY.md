@@ -42,6 +42,12 @@
 - Systems independently toggleable
 - Adding new abilities/spells should require 0 JS changes
 
+### 6. Flee Mechanic Implementation Traps (2026-03-04)
+- `combatant.initiative` is the ROLLED VALUE (1-24), NOT the modifier. Flee bonus must use `abilityModifiers.dex + proficiencyBonus` separately.
+- Melee vs ranged classification needs an explicit utility function `isRangedCombatant()` — monsters with natural attacks (wolf, rat) have no weapon slot, default to melee.
+- L1 Scholar (6-8 HP) vs 3 melee enemies: expected opp attack damage 11-14 = near-certain death. Add `RULES.flee.oppAttackMinHP: 1` (cannot kill during flee attempt) or the flee button becomes a suicide button for squishy callings.
+- Ranged-only encounters: zero opp attack cost = dominant "always flee" strategy for squishy callings at 50-65% success rate with no downside on failure. Accept or add ranged harassment rule.
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`
@@ -49,3 +55,4 @@
 - Combat action dispatch: `src/main.js` lines ~1240-1290
 - Resource redesign plan: `docs/plans/2026-02-25-resource-system-redesign.md`
 - EffectDispatcher design + review: `.claude/agent-memory/devils-advocate/patterns.md`
+- Current flee method: `src/systems/CombatManager.js` lines 1061-1090 (full rewrite needed)

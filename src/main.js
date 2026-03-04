@@ -1144,6 +1144,43 @@ class Game {
     }
 
     /**
+     * Build tooltip text for the Flee button.
+     * Returns a string describing the current DC and how many enemies will
+     * make opportunity attacks before the flee check resolves.
+     */
+    getFleeTooltip() {
+        if (!this.combatManager) return 'Flee combat';
+
+        const combatants = this.combatManager.combatants;
+
+        // Living non-player combatants that have engaged (made a melee attack)
+        const engagedEnemies = combatants.filter(c =>
+            c.team !== 'player' &&
+            c.currentHP > 0 &&
+            c.hasEngaged === true
+        );
+        const engagedCount = engagedEnemies.length;
+
+        // Enemies that will make opp attacks: engaged + melee (not ranged)
+        const oppAttackers = engagedEnemies.filter(c => {
+            const weapon = c.character?.equipment?.mainHand;
+            if (weapon) return weapon.weaponType !== 'ranged';
+            // Fall back to monster attackType
+            const attackType = c.character?.attackType;
+            return attackType !== 'ranged';
+        });
+
+        const dc = 10 + 2 * Math.max(0, engagedCount - 1);
+
+        if (engagedCount === 0) {
+            return `DC ${dc} \u2014 no enemies engaged yet`;
+        }
+        const oppCount = oppAttackers.length;
+        const attackWord = oppCount === 1 ? 'enemy' : 'enemies';
+        return `DC ${dc} \u2014 ${oppCount} ${attackWord} will attack before this resolves`;
+    }
+
+    /**
      * Render combat actions
      */
     renderCombatActions(combatState) {
@@ -1185,6 +1222,27 @@ class Game {
         const character = gameState.get('character');
         const hasOffHandWeapon = character?.equipment?.offHand?.type === 'weapon';
 
+        // --- Flee button state ---
+        // Blocking conditions prevent flee entirely
+        const blockingConditions = ['restrained', 'grappled', 'stunned', 'paralyzed', 'unconscious'];
+        const blockingCondition = blockingConditions.find(c => currentCombatant.hasCondition && currentCombatant.hasCondition(c));
+        const fleeBlocked = !!blockingCondition || !hasAction;
+        let fleeTooltip;
+        if (blockingCondition) {
+            fleeTooltip = `Cannot flee while ${blockingCondition}`;
+        } else {
+            fleeTooltip = this.getFleeTooltip();
+        }
+
+        // --- Cunning Action Flee (Wanderlust level 2+) ---
+        const isWanderlust = character?.class?.id === 'wanderlust';
+        const characterLevel = character?.level || 1;
+        const showCunningFlee = isWanderlust && characterLevel >= 2;
+        const cunningFleeBlocked = !!blockingCondition || !hasBonusAction;
+        const cunningFleeTooltip = blockingCondition
+            ? `Cannot flee while ${blockingCondition}`
+            : `Bonus Action \u2014 ${this.getFleeTooltip()}`;
+
         actionsEl.innerHTML = `
             <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 15px;">
                 <div style="text-align: center;">
@@ -1222,9 +1280,18 @@ class Game {
                         ${!hasAction ? 'disabled' : ''}>
                     🔮 Spell
                 </button>
-                <button class="action-btn" onclick="window.game.selectAction('flee')">
+                <button class="action-btn" onclick="window.game.selectAction('flee')"
+                        ${fleeBlocked ? 'disabled' : ''}
+                        title="${fleeTooltip}">
                     🏃 Flee
                 </button>
+                ${showCunningFlee ? `
+                    <button class="action-btn" onclick="window.game.selectAction('cunningFlee')"
+                            ${cunningFleeBlocked ? 'disabled' : ''}
+                            title="${cunningFleeTooltip}">
+                        🏃 Flee (Cunning)
+                    </button>
+                ` : ''}
             </div>
             <button class="menu-btn" style="width: 100%; margin-top: 15px;"
                     onclick="window.game.combatManager.endTurn()">
@@ -1241,7 +1308,14 @@ class Game {
 
         if (actionType === 'flee') {
             this._pendingAction = null;
-            this.combatManager.flee(this.combatManager.playerCombatant);
+            this.combatManager.flee(this.combatManager.playerCombatant, { actionCost: 'action' });
+            this.selectedAction = null;
+            return;
+        }
+
+        if (actionType === 'cunningFlee') {
+            this._pendingAction = null;
+            this.combatManager.flee(this.combatManager.playerCombatant, { actionCost: 'bonusAction' });
             this.selectedAction = null;
             return;
         }

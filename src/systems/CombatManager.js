@@ -512,6 +512,11 @@ class CombatManager {
             return;
         }
 
+        // Mark attacker as engaged when making a melee attack (for flee opportunity attacks)
+        if (!isRanged) {
+            attacker.hasEngaged = true;
+        }
+
         const handLabel = isOffHandAttack ? ' (off-hand)' : '';
         gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
 
@@ -1059,34 +1064,211 @@ class CombatManager {
     }
 
     /**
-     * Attempt to flee from combat
-     * D&D 5e SRD 5.2.1 2024: d20 + initiative modifier vs DC 30
+     * Determine if a combatant is primarily ranged (no opportunity attack on flee).
+     * Check equipped weapon first, then fall back to monster attackType field.
+     * A 'both' attackType returns false (has melee capability — can make opp attack).
+     * @param {Object} combatant - Combatant instance
+     * @returns {boolean} true if ranged-only
      */
-    flee(combatant) {
-        if (!combatant.actions.action) {
-            gameState.addMessage(`${combatant.name} has no action available!`, 'error');
+    isRangedCombatant(combatant) {
+        // Check equipped weapon first (weapon-wielding monsters and players)
+        const mainHand = combatant.character?.equipment?.mainHand;
+        if (mainHand?.weaponType) {
+            return mainHand.weaponType === 'ranged';
+        }
+        // Fall back to monster attackType field
+        const attackType = combatant.character?.attackType;
+        if (attackType) {
+            return attackType === 'ranged'; // 'both' returns false (has melee capability)
+        }
+        return false; // default to melee
+    }
+
+    /**
+     * Check if a Wanderlust combatant can use Cunning Action for a bonus-action flee.
+     * @param {Object} combatant - Combatant instance
+     * @returns {boolean}
+     */
+    isCunningActionFlee(combatant) {
+        const ca = RULES.flee.cunningAction;
+        if (!ca) return false;
+        const callingId = combatant.character?.class?.id;
+        if (callingId !== ca.callingId) return false;
+        if ((combatant.character?.level ?? 1) < ca.levelRequired) return false;
+        return combatant.hasAction('bonusAction');
+    }
+
+    /**
+     * Resolve opportunity attacks from engaged melee enemies when a combatant flees.
+     * Attacks resolve before the flee check (plan design).
+     * @param {Object} combatant - The fleeing combatant
+     */
+    resolveFleeOpportunityAttacks(combatant) {
+        const oppAttackers = this.combatants.filter(c =>
+            c.id !== combatant.id &&
+            c.character.currentHP > 0 &&
+            c.hp > 0 &&
+            c.hasEngaged &&
+            !this.isRangedCombatant(c)
+        );
+
+        if (oppAttackers.length === 0) {
+            gameState.addMessage('No engaged melee enemies — no opportunity attacks.', 'info');
             return;
         }
 
-        const fleeRollObj = rollD20();
-        const fleeRoll = fleeRollObj.result;
-        const fleeTotal = fleeRoll + combatant.initiative;
-        const fleeDC = 30;
-
+        const count = oppAttackers.length;
         gameState.addMessage(
-            `${combatant.name} attempts to flee! (${fleeRoll} + ${combatant.initiative} = ${fleeTotal} vs DC ${fleeDC})`,
+            `⚔️ ${count} ${count === 1 ? 'enemy makes an' : 'enemies make'} opportunity attack${count > 1 ? 's' : ''}!`,
             'warning'
         );
 
-        if (fleeTotal >= fleeDC) {
-            gameState.addMessage(`${combatant.name} successfully escapes!`, 'success');
-            this.endCombat('fled');
+        for (const attacker of oppAttackers) {
+            // Stop if the fleeing combatant is already downed
+            const target = this.combatants.find(c => c.id === combatant.id);
+            if (!target || target.hp <= 0) break;
+            // Opportunity attack doesn't consume the attacker's action
+            this.attack(attacker, target, 'mainHand', { consumeAction: false, isOpportunityAttack: true });
+        }
+    }
+
+    /**
+     * Attempt to flee from combat
+     * New design: d20 + max(DEX, WIS) + proficiency vs DC (10 + 2 * engaged_enemies - 1)
+     * Opportunity attacks from engaged melee enemies resolve before the flee check.
+     */
+    flee(combatant) {
+        // --- Action availability check ---
+        const isCunningFlee = this.isCunningActionFlee(combatant);
+        if (isCunningFlee) {
+            if (!combatant.hasAction('bonusAction')) {
+                gameState.addMessage(`${combatant.name} has no bonus action remaining!`, 'warning');
+                return;
+            }
         } else {
-            gameState.addMessage(`${combatant.name} fails to escape!`, 'error');
+            if (!combatant.hasAction('action')) {
+                gameState.addMessage(`${combatant.name} has no action remaining!`, 'warning');
+                return;
+            }
         }
 
-        combatant.consumeAction('action');
-        this.updateGameState();
+        // --- Per-encounter unfleeable override ---
+        const combatState = gameState.get('combat');
+        if (combatState?.unfleeable) {
+            const msg = combatState.fleeDescription || 'There is no escape from this fight!';
+            gameState.addMessage(`⚔️ ${msg}`, 'error');
+            return;
+        }
+
+        // --- Blocking conditions ---
+        const fleeRules = RULES.flee;
+        for (const condition of fleeRules.blockingConditions) {
+            if (combatant.hasCondition && combatant.hasCondition(condition)) {
+                gameState.addMessage(`${combatant.name} cannot flee while ${condition}!`, 'error');
+                return;
+            }
+        }
+
+        // --- Consume action ---
+        if (isCunningFlee) {
+            combatant.consumeAction('bonusAction');
+            gameState.addMessage(`🏃 ${combatant.name} uses Cunning Action to attempt to flee!`, 'info');
+        } else {
+            combatant.consumeAction('action');
+            gameState.addMessage(`🏃 ${combatant.name} attempts to flee!`, 'info');
+        }
+
+        // --- Opportunity attacks from engaged melee enemies (resolve BEFORE flee check) ---
+        if (fleeRules.opportunityAttacks.enabled) {
+            this.resolveFleeOpportunityAttacks(combatant);
+        }
+
+        // --- Check if combatant survived opportunity attacks ---
+        const updatedCombatant = this.combatants.find(c => c.id === combatant.id);
+        if (!updatedCombatant || updatedCombatant.hp <= 0) {
+            gameState.addMessage(`💀 ${combatant.name} was cut down while fleeing!`, 'error');
+            this.endCombat('defeat');
+            return;
+        }
+
+        // --- Calculate flee DC ---
+        // Only engaged enemies count toward DC
+        const engagedEnemies = this.combatants.filter(c =>
+            c.id !== combatant.id && c.hp > 0 && c.hasEngaged
+        );
+        const engagedCount = engagedEnemies.length;
+
+        let dc = fleeRules.baseDC + fleeRules.dcPerExtraEnemy * Math.max(0, engagedCount - 1);
+
+        // Situational modifiers
+        if (combatState?.isBoss) dc += fleeRules.bossDCBonus;
+        if (combatState?.isAmbush && (combatState?.round || 1) <= fleeRules.ambushRoundLimit) {
+            dc += fleeRules.ambushDCBonus;
+        }
+        if (typeof combatState?.fleeModifier === 'number') dc += combatState.fleeModifier;
+
+        dc = Math.min(dc, fleeRules.dcCapMax);
+
+        // --- Flee roll modifier: max(DEX, WIS) + proficiency ---
+        // IMPORTANT: use abilityModifiers directly — NOT combatant.initiative (that is d20 + DEX already rolled)
+        const dexMod = combatant.character.abilityModifiers?.dex ?? 0;
+        const wisMod = combatant.character.abilityModifiers?.wis ?? 0;
+        const statMod = Math.max(dexMod, wisMod);
+        const profBonus = fleeRules.addProficiency ? (combatant.character.proficiencyBonus ?? 2) : 0;
+        const totalMod = statMod + profBonus;
+
+        // --- Advantage / Disadvantage from conditions ---
+        let hasAdvantage = false;
+        let hasDisadvantage = false;
+        if (combatant.hasCondition) {
+            for (const cond of fleeRules.advantageConditions) {
+                if (combatant.hasCondition(cond)) hasAdvantage = true;
+            }
+            for (const cond of fleeRules.disadvantageConditions) {
+                if (combatant.hasCondition(cond)) hasDisadvantage = true;
+            }
+        }
+        // Advantage and disadvantage cancel per 5e RAW
+        if (hasAdvantage && hasDisadvantage) {
+            hasAdvantage = false;
+            hasDisadvantage = false;
+        }
+
+        // --- Roll ---
+        let fleeRoll;
+        let fleeRollDisplay;
+        if (hasAdvantage) {
+            const r1 = rollD20().result;
+            const r2 = rollD20().result;
+            fleeRoll = Math.max(r1, r2);
+            fleeRollDisplay = fleeRoll;
+            gameState.addMessage(`🎲 Flee check (advantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
+        } else if (hasDisadvantage) {
+            const r1 = rollD20().result;
+            const r2 = rollD20().result;
+            fleeRoll = Math.min(r1, r2);
+            fleeRollDisplay = fleeRoll;
+            gameState.addMessage(`🎲 Flee check (disadvantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
+        } else {
+            const rollObj = rollD20();
+            fleeRoll = rollObj.result;
+            fleeRollDisplay = fleeRoll;
+        }
+
+        const fleeTotal = fleeRoll + totalMod;
+
+        gameState.addMessage(
+            `🏃 Flee check: ${fleeRollDisplay} + ${totalMod} (max DEX/WIS + prof) = ${fleeTotal} vs DC ${dc} (${engagedCount} engaged ${engagedCount === 1 ? 'enemy' : 'enemies'})`,
+            'info'
+        );
+
+        if (fleeTotal >= dc) {
+            gameState.addMessage(`✅ ${combatant.name} escapes!`, 'success');
+            this.endCombat('fled');
+        } else {
+            gameState.addMessage(`❌ ${combatant.name} failed to escape!`, 'warning');
+            this.updateGameState();
+        }
     }
 
     /**
@@ -1775,6 +1957,10 @@ class Combatant {
             vexed: null,            // DEPRECATED: Use conditions system. Has advantage on next attack vs specific target (Vex mastery)
             prone: false            // DEPRECATED: Use conditions system. Knocked prone (Topple mastery)
         };
+
+        // Engagement tracking for flee mechanic
+        // Set to true the first time this combatant makes a melee attack
+        this.hasEngaged = false;
 
         // Legendary actions (boss monsters only)
         const legendary = character.legendaryActions;

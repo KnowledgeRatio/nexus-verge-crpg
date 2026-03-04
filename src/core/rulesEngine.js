@@ -922,6 +922,38 @@ export const RULES = {
     },
 
     // ====================
+    // FLEE MECHANIC
+    // ====================
+    flee: {
+        enabled: true,
+        baseDC: 10,
+        dcPerExtraEnemy: 2,
+        dcCapMax: 25,
+        bossDCBonus: 5,
+        ambushDCBonus: 3,
+        ambushRoundLimit: 1,
+        modifier: ['dex', 'wis'],          // take max of these two modifiers
+        addProficiency: true,
+        actionCost: 'action',
+        opportunityAttacks: {
+            enabled: true,
+            requiresEngaged: true,          // only engaged enemies attack
+            requiresMelee: true,            // only melee-type enemies attack
+            resolveBeforeCheck: true
+        },
+        blockingConditions: ['restrained', 'grappled', 'stunned', 'paralyzed', 'unconscious'],
+        disadvantageConditions: ['prone'],
+        advantageConditions: ['frightened'],
+        cunningAction: {
+            callingId: 'wanderlust',
+            levelRequired: 2,
+            actionCost: 'bonusAction'
+            // No advantage — bonus action cost is the only differentiator
+        },
+        rangedHarassmentAttacks: false      // dormant — enable if ranged flee becomes dominant
+    },
+
+    // ====================
     // CAMPAIGN
     // ====================
     campaign: {
