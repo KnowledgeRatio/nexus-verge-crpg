@@ -575,7 +575,10 @@ class Game {
         const cityRatio = (parseInt(document.getElementById('wbCityRatio').value) || 10) / 100;
 
         // Store as overrides (these will be passed to WorldGenerator)
+        // preScaled: true tells getScaledFeatureGeneration() not to multiply by scaleFactor
+        // again - the worldbuilder shows and stores final counts already scaled for world size.
         this.worldbuilderOverrides = {
+            preScaled: true,
             baseSettlements: settlements,
             baseDungeons: dungeons,
             baseSanctuaries: sanctuaries,

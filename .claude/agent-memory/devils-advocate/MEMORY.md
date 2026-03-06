@@ -48,6 +48,19 @@
 - L1 Scholar (6-8 HP) vs 3 melee enemies: expected opp attack damage 11-14 = near-certain death. Add `RULES.flee.oppAttackMinHP: 1` (cannot kill during flee attempt) or the flee button becomes a suicide button for squishy callings.
 - Ranged-only encounters: zero opp attack cost = dominant "always flee" strategy for squishy callings at 50-65% success rate with no downside on failure. Accept or add ranged harassment rule.
 
+### 7. Scope Creep in World Generation (2026-03-04)
+- 5 specialists proposed rain shadow, flow rivers, 16 new terrains, climate map, transition biomes
+- Actual bugs: inland beaches, double-scaling in getScaledFeatureGeneration(), no terrain validation for features
+- rulesEngine.js lines 684-700 define biomeGeneration config (continentalScale, latitudeInfluence) that generateTile() NEVER USES
+- Fix beaches at source (selectTerrain) not via cross-chunk post-processing -- consistency trap
+- Pattern: always wire up existing config before adding new systems
+
+### 8. Dead Config Anti-Pattern (2026-03-04)
+- `RULES.worldGen.biomeGeneration` has continentalScale, latitudeInfluence, elevationWeight, boundarySharpness
+- None of these are read by generateTile() or selectMacroBiome() -- they use hardcoded values
+- biomeNoise channel exists (line 29) at hardcoded 0.02 scale instead of configured 0.005
+- Always grep for config usage before adding new config
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`
@@ -56,3 +69,7 @@
 - Resource redesign plan: `docs/plans/2026-02-25-resource-system-redesign.md`
 - EffectDispatcher design + review: `.claude/agent-memory/devils-advocate/patterns.md`
 - Current flee method: `src/systems/CombatManager.js` lines 1061-1090 (full rewrite needed)
+- World gen tile selection: `src/systems/WorldGenerator.js` lines 150-412
+- World gen metadata: `src/systems/WorldGenerator.js` lines 1175-1274
+- Unused biome config: `src/core/rulesEngine.js` lines 684-700
+- Biome terrain pools: referenced via `RULES.biomes.terrainPools` in selectTerrain()

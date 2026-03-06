@@ -192,6 +192,20 @@
       "campaignIds": ["core"]
     },
     {
+      "id": "desertHills",
+      "name": "Desert Hills",
+      "symbol": "n",
+      "color": "#c4a068",
+      "tileImage": null,
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Eroded sandstone ridges bake under the sun.",
+      "encounterModifier": 0.7,
+      "coverType": "half",
+      "difficultTerrain": true,
+      "campaignIds": ["core"]
+    },
+    {
       "id": "swamp",
       "name": "Swamp",
       "symbol": "m",
@@ -208,7 +222,7 @@
     {
       "id": "desert",
       "name": "Desert",
-      "symbol": "~",
+      "symbol": ":",
       "color": "#edc9af",
       "tileImage": "desert.png",
       "traversable": true,
@@ -328,7 +342,7 @@
       "traversable": true,
       "movementCost": 1,
       "description": "Golden grasslands dotted with acacia trees.",
-      "encounterModifier": 1.1,
+      "encounterModifier": 1.4,
       "coverType": null,
       "difficultTerrain": false,
       "campaignIds": ["core"]
@@ -606,6 +620,20 @@
       "coverType": null,
       "difficultTerrain": true,
       "isDungeonTerrain": true,
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "snowForest",
+      "name": "Snow Forest",
+      "symbol": "♣",
+      "color": "#4a6741",
+      "tileImage": null,
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Dense conifer forest draped in snow. Wind whispers through dark boughs.",
+      "encounterModifier": 1.0,
+      "coverType": "threeQuarters",
+      "difficultTerrain": true,
       "campaignIds": ["core"]
     }
   ]

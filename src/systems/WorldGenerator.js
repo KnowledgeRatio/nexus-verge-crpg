@@ -149,15 +149,31 @@ class WorldGenerator {
      */
     generateTile(worldX, worldY, rng) {
         const scale = RULES.worldGen.biomeNoiseScale;
+        const bg = RULES.worldGen.biomeGeneration;
 
-        // Get noise values
+        // --- Raw noise values ---
         const elevation = this.elevationNoise.octaveNoise2D(worldX * scale, worldY * scale, 4, 0.5);
-        const moisture = this.moistureNoise.octaveNoise2D(worldX * scale * 0.6, worldY * scale * 0.6, 3, 0.5);
-        const temperature = this.temperatureNoise.octaveNoise2D(worldX * scale * 0.8, worldY * scale * 0.8, 3, 0.5);
+        const rawMoisture = this.moistureNoise.octaveNoise2D(worldX * scale * 0.6, worldY * scale * 0.6, 3, 0.5);
+        const rawTemperature = this.temperatureNoise.octaveNoise2D(worldX * scale * 0.8, worldY * scale * 0.8, 3, 0.5);
         const riverMask = Math.abs(this.riverNoise.octaveNoise2D(worldX * 0.01, worldY * 0.01, 2, 0.8));
 
-        // Coarse biome noise for macro-scale biome regions (larger, smoother)
-        const biomeNoise = this.biomeNoise.octaveNoise2D(worldX * 0.02, worldY * 0.02, 2, 0.5);
+        // --- Latitude-based temperature (wires bg.latitudeInfluence = 0.6) ---
+        // Cosine curve: +1.0 at equator (normalizedY = 0.5), -1.0 at poles (0 or 1)
+        const worldHeight = this.worldBounds.size * RULES.worldGen.regionSize;
+        const worldMinY = this.worldBounds.minY * RULES.worldGen.regionSize;
+        const normalizedY = (worldY - worldMinY) / worldHeight;
+        const latitudeTemp = Math.cos((normalizedY - 0.5) * Math.PI * 2);
+        const temperature = rawTemperature * (1 - bg.latitudeInfluence) + latitudeTemp * bg.latitudeInfluence;
+
+        // --- Elevation-based moisture reduction (wires bg.elevationWeight = 0.6) ---
+        // High elevation = drier: mountains produce less forest, more barren terrain
+        const normElevation = (elevation + 1) / 2;
+        const moisturePenalty = normElevation > 0.6 ? (normElevation - 0.6) * bg.elevationWeight : 0;
+        const moisture = rawMoisture - moisturePenalty;
+
+        // --- Continental-scale biome noise (wires bg.continentalScale = 0.005 vs old hardcoded 0.02) ---
+        // Lower frequency = larger, more coherent biome regions (~4x bigger zones)
+        const biomeNoise = this.biomeNoise.octaveNoise2D(worldX * bg.continentalScale, worldY * bg.continentalScale, 2, 0.5);
 
         // Select terrain based on two-layer system: macro biome → micro terrain
         let terrainType = this.selectTerrain(elevation, moisture, temperature, biomeNoise);
@@ -233,25 +249,29 @@ class WorldGenerator {
             return 'mountain';
         }
 
+        // Alpine: high cold sub-mountain zone (between grassland and mountain)
+        if (e > 0.55 && t < 0.40) {
+            return 'alpine';
+        }
+
         // SMOOTHED TEMPERATURE ZONES - wider thresholds prevent harsh adjacency
         // Very cold regions (temperature < 0.25)
         if (t < 0.25) {
             if (m > 0.5) {
-                return 'swampland';
-            } // Cold swamps
+                return 'coldForest'; // Boreal bog / taiga wetland, not tropical swamp
+            }
             return 'tundra';
         }
 
         // Cold-to-temperate transition zone (0.25-0.35)
         if (t < 0.35) {
-            // Mix of cold forest and grassland based on moisture
             if (m > 0.6) {
-                return 'swampland';
+                return 'coldForest'; // Cold wet = boreal forest, not swampland
             }
             if (m > 0.4) {
-                return 'temperateForest';
-            } // Cold forests
-            return 'grassland'; // Cool grasslands
+                return 'coldForest'; // Taiga
+            }
+            return 'grassland'; // Cool dry grasslands
         }
 
         // Very hot regions (temperature > 0.75)
@@ -267,17 +287,20 @@ class WorldGenerator {
 
         // Hot-to-temperate transition zone (0.65-0.75)
         if (t > 0.65) {
-            // Mix of warm grassland and light forests
             if (m < 0.25) {
-                return 'grassland';
-            } // Warm dry grasslands (approaching desert)
+                return 'badlands'; // Warm very-dry = eroded badlands, not plain grassland
+            }
             if (m > 0.7) {
-                return 'temperateForest';
-            } // Warm wet forests (approaching jungle)
+                return 'temperateForest'; // Warm wet forests (approaching jungle)
+            }
             return 'grassland'; // Savanna-like temperate grasslands
         }
 
         // Temperate core zone (0.35-0.65) - use moisture + biome noise for variation
+        // Badlands: warm-temperate with very low moisture
+        if (m < 0.2) {
+            return 'badlands';
+        }
         if (m > 0.6) {
             // Wet temperate
             if (b > 0.6) {
@@ -321,16 +344,10 @@ class WorldGenerator {
         }
 
         // Coastal biome - varies by elevation
-        // Beach only appears at true coastlines (narrow elevation band)
-        // Water appears at lower elevations (< 0.15)
+        // Beach retired: non-orientation-safe tile. Coastline = shallowWater → grassland/plains.
         if (macroBiome === 'coastal') {
-            if (e < 0.15) {
+            if (e < 0.20) {
                 return 'shallowWater';
-            }
-            // Beach: narrow band between water and land (0.15-0.22)
-            // This prevents beach from appearing in middle of lakes
-            if (e < 0.22) {
-                return 'beach';
             }
             // Higher coastal elevations based on moisture
             if (m > 0.6) {
@@ -342,10 +359,16 @@ class WorldGenerator {
             return 'plains'; // Transition to inland terrain
         }
 
-        // Mountain biome - varies by elevation
+        // Mountain biome - varies by elevation and surrounding climate
         if (macroBiome === 'mountain') {
             if (e > 0.85) {
                 return 'mountain';
+            }
+            // Desert context: hot + dry = sandstone ridges, not green hills
+            const t = (temperature + 1) / 2;
+            const mVal = (moisture + 1) / 2;
+            if (t > 0.65 && mVal < 0.35) {
+                return 'desertHills';
             }
             return 'hills';
         }
@@ -405,6 +428,39 @@ class WorldGenerator {
                 return 'swamp';
             }
             return 'grassland';
+        }
+
+        // Cold Forest biome (taiga / boreal) - conifer forest on snow
+        if (macroBiome === 'coldForest') {
+            if (m > 0.5) {
+                return 'snowForest'; // Dense boreal with snow cover
+            }
+            if (m > 0.3) {
+                return 'tundra'; // Open boreal
+            }
+            return 'snowyPlains'; // Cold dry flats
+        }
+
+        // Alpine biome (high cold valleys below mountain peaks)
+        if (macroBiome === 'alpine') {
+            if (e > 0.70) {
+                return 'mountain'; // Peaks bleeding in
+            }
+            if (m > 0.4) {
+                return 'tundra'; // Cold wet high valleys
+            }
+            return 'snowyPlains'; // Cold dry high ground
+        }
+
+        // Badlands biome (warm very-dry eroded terrain)
+        if (macroBiome === 'badlands') {
+            if (e > 0.55) {
+                return 'desertHills'; // Eroded ridges dominate at elevation
+            }
+            if (m < 0.15) {
+                return 'desert'; // Driest pockets become outright desert
+            }
+            return 'plains'; // Sparse scrubland / cracked earth
         }
 
         // Fallback: Return first terrain in pool

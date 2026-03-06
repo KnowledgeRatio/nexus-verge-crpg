@@ -683,6 +683,7 @@ export const RULES = {
         // ====================
         biomeGeneration: {
             // Primary biome scale - creates 200-400 tile macro biomes (10x larger than before)
+            // Now WIRED into generateTile() biomeNoise sampling
             continentalScale: 0.005,  // Was 0.05 in biomeNoiseScale
 
             // Secondary variation scale - adds local terrain variety within biomes
@@ -692,11 +693,14 @@ export const RULES = {
             // Higher = sharper transitions, Lower = gradual blending
             boundarySharpness: 0.7,
 
-            // Elevation dominance - how much elevation overrides biome placement
-            elevationWeight: 0.6,  // Mountains/oceans ignore biome noise
+            // Elevation dominance - how much elevation reduces moisture (mountains = drier)
+            // Now WIRED into generateTile() moisture calculation
+            elevationWeight: 0.6,  // Applied above normalizedElevation 0.6 threshold
 
             // Temperature latitude influence (pole-to-equator gradient)
-            latitudeInfluence: 0.4  // 0.0 = pure noise, 1.0 = realistic poles
+            // Now WIRED into generateTile() temperature calculation
+            // Increased from 0.4 to 0.6 for more pronounced climate bands
+            latitudeInfluence: 0.6  // 0.0 = pure noise, 1.0 = realistic poles
         },
 
         // ====================
@@ -791,14 +795,14 @@ export const RULES = {
             // Pure water biome (world edges only)
             ocean: ['ocean', 'deepWater'],
 
-            // Ocean transition biome
-            coastal: ['beach', 'shallowWater', 'grassland'],
+            // Ocean transition biome (beach retired - not orientation-safe)
+            coastal: ['shallowWater', 'grassland', 'plains'],
 
             // Temperate forest biome (no tundra mixing)
             temperateForest: ['grassland', 'plains', 'forest', 'denseForest'],
 
-            // Boreal forest biome
-            coldForest: ['snowyPlains', 'tundra', 'forest'],
+            // Boreal forest biome (taiga/conifer on snow)
+            coldForest: ['snowForest', 'tundra', 'snowyPlains'],
 
             // Pure grassland biome
             grassland: ['plains', 'grassland', 'savanna'],
@@ -809,20 +813,20 @@ export const RULES = {
             // Tropical rainforest biome (wet tropics only)
             jungle: ['jungle', 'swamp', 'denseForest'],
 
-            // Mountain biome (added mountainPeak for impassable summits)
-            mountain: ['hills', 'mountain', 'mountainPeak'],
+            // Mountain biome (added mountainPeak for impassable summits, desertHills for hot/dry context)
+            mountain: ['hills', 'desertHills', 'mountain', 'mountainPeak'],
 
             // Pure polar biome (EXCLUSIVE - no temperate mixing)
-            tundra: ['snowyPlains', 'tundra', 'glacier'],
+            tundra: ['snowyPlains', 'tundra'],
 
             // Wetlands biome
             swampland: ['swamp', 'shallowWater', 'grassland'],
 
-            // NEW: Alpine biome (high mountain valleys)
-            alpine: ['hills', 'snowyPlains', 'tundra'],
+            // Alpine biome (high cold mountain valleys - below peaks, above treeline)
+            alpine: ['snowyPlains', 'tundra', 'mountain'],
 
-            // NEW: Badlands biome (eroded dry hills)
-            badlands: ['desert', 'hills', 'plains']
+            // Badlands biome (warm very-dry eroded terrain - cracked earth and ridges)
+            badlands: ['desertHills', 'plains', 'desert']
         },
 
         // Macro biome selection based on elevation, moisture, temperature
@@ -974,11 +978,11 @@ export const RULES = {
     // ====================
     zoom: {
         // Available tile sizes in pixels (must be sorted ascending)
-        levels: [12, 24, 48, 96, 192],
-        // Default index into levels array (48px = 1×)
-        defaultIndex: 2,
+        levels: [10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 40, 48],
+        // Default index into levels array (16px = 1×, matches startup tile size)
+        defaultIndex: 3,
         // Base size for multiplier display (this size = 1×)
-        baseSize: 48,
+        baseSize: 16,
         // localStorage key for persisting user preference
         storageKey: 'nexusVerge_zoomIndex'
     }
@@ -1109,27 +1113,31 @@ export function getScaledFeatureGeneration(worldSize = 'medium', campaignOverrid
     const overrides = { ...RULES.worldGen.campaignOverrides, ...campaignOverrides };
     Object.assign(fg, overrides);
 
+    // Worldbuilder overrides are already scaled to final counts (preScaled: true).
+    // Campaign JSON overrides are base counts and must be scaled by world size.
+    const sf = fg.preScaled ? 1 : scaleFactor;
+
     // Scale counts by world size
     return {
         // Scaled totals
-        settlements: Math.round(fg.baseSettlements * scaleFactor),
-        dungeons: Math.round(fg.baseDungeons * scaleFactor),
-        sanctuaries: Math.round(fg.baseSanctuaries * scaleFactor),
-        pois: Math.round(fg.basePOIs * scaleFactor),
+        settlements: Math.round(fg.baseSettlements * sf),
+        dungeons: Math.round(fg.baseDungeons * sf),
+        sanctuaries: Math.round(fg.baseSanctuaries * sf),
+        pois: Math.round(fg.basePOIs * sf),
 
         // Breakdowns
         settlementCounts: {
-            village: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.village),
-            town: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.town),
-            city: Math.round(fg.baseSettlements * scaleFactor * fg.settlementDistribution.city)
+            village: Math.round(fg.baseSettlements * sf * fg.settlementDistribution.village),
+            town: Math.round(fg.baseSettlements * sf * fg.settlementDistribution.town),
+            city: Math.round(fg.baseSettlements * sf * fg.settlementDistribution.city)
         },
 
         poiCounts: {
-            shrine: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.shrine),
-            ruins: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.ruins),
-            cave: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.cave),
-            camp: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.camp),
-            landmark: Math.round(fg.basePOIs * scaleFactor * fg.poiDistribution.landmark)
+            shrine: Math.round(fg.basePOIs * sf * fg.poiDistribution.shrine),
+            ruins: Math.round(fg.basePOIs * sf * fg.poiDistribution.ruins),
+            cave: Math.round(fg.basePOIs * sf * fg.poiDistribution.cave),
+            camp: Math.round(fg.basePOIs * sf * fg.poiDistribution.camp),
+            landmark: Math.round(fg.basePOIs * sf * fg.poiDistribution.landmark)
         },
 
         // Pass through other settings

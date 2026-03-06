@@ -281,14 +281,59 @@ class CombatManager {
         const actionName = action.name || 'Attack';
         gameState.addMessage(`${combatant.name} uses ${actionName}!`, 'warning');
 
+        // PUSH MASTERY RESTRICTION: Cannot make melee attacks while pushed
+        const isMeleeAction = action.type === 'meleeWeaponAttack' || action.type === 'melee';
+        if (combatant.hasCondition && combatant.hasCondition('pushed') && isMeleeAction) {
+            console.log(`⚠️ ${combatant.name} is pushed and cannot make melee attacks!`);
+            gameState.addMessage(`💨 ${combatant.name} is pushed away! Cannot make melee attacks!`, 'error');
+            return;
+        }
+
+        // Mark monster as engaged only when making a melee attack (for flee DC calculation)
+        if (isMeleeAction) {
+            combatant.hasEngaged = true;
+        }
+
         // Attack roll: d20 + action.attackBonus
         const attackBonus = (action.attackBonus || 0) + (combatant.character.bossAttackBonus || 0);
 
         // Check advantage/disadvantage
         let hasAdvantage = false;
         let hasDisadvantage = false;
-        if (target.hasCondition && target.hasCondition('prone')) hasAdvantage = true;
-        if (combatant.hasCondition && combatant.hasCondition('sapped')) hasDisadvantage = true;
+
+        // Prone: Attacker has advantage vs prone target (melee only)
+        if (target.hasCondition && target.hasCondition('prone') && isMeleeAction) {
+            hasAdvantage = true;
+        } else if (target.hasCondition && target.hasCondition('prone') && !isMeleeAction) {
+            // Ranged has disadvantage vs prone targets (D&D 5e rule)
+            hasDisadvantage = true;
+        }
+
+        // Sapped: Monster has disadvantage on its attack
+        if (combatant.hasCondition && combatant.hasCondition('sapped')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (Sapped)! 💫`, 'warning');
+        }
+
+        // Dodging: Defender is dodging - attacker has disadvantage
+        if (target.hasCondition && target.hasCondition('dodging')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (${target.name} is dodging)! 🛡️`, 'warning');
+        }
+
+        // Attacker prone: Monster has disadvantage on its own attacks while prone
+        if (combatant.hasCondition && combatant.hasCondition('prone')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (prone)! 🔻`, 'warning');
+        }
+
+        // Vexed: Monster has advantage vs the vexed target (one-time use, then cleared)
+        const vexCondition = combatant.getCondition ? combatant.getCondition('vexed') : null;
+        if (vexCondition && vexCondition.value === target.id) {
+            hasAdvantage = true;
+            combatant.removeCondition('vexed', true);
+            gameState.addMessage(`⚔️ ${combatant.name} has advantage (Vex)! ⚡`, 'success');
+        }
 
         let d20Result;
         if (hasAdvantage && !hasDisadvantage) {
@@ -321,6 +366,10 @@ class CombatManager {
             gameState.addMessage(`❌ Critical miss!`, 'info');
             audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
             if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            // Clear sapped condition after attacking (even on a critical miss)
+            if (combatant.hasCondition && combatant.hasCondition('sapped')) {
+                combatant.removeCondition('sapped', true);
+            }
             return;
         }
 
@@ -383,6 +432,10 @@ class CombatManager {
             gameState.addMessage(`❌ ${combatant.name} misses!`, 'info');
             audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
             if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            // Clear sapped condition after attacking (even on a miss)
+            if (combatant.hasCondition && combatant.hasCondition('sapped')) {
+                combatant.removeCondition('sapped', true);
+            }
         }
     }
 
