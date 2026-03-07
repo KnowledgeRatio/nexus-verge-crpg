@@ -7,6 +7,7 @@ import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
 import { rollDice } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
+import { RULES } from '../core/rulesEngine.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -21,7 +22,8 @@ class Player {
 
         // Input state
         this.keys = new Set();
-        this.moveDelay = 150; // ms between moves
+        this.moveDelay = 150; // fallback only — dynamic delay set per tile in move()
+        this.currentMoveDelay = 150; // updated each tile based on terrain movementCost
         this.lastMoveTime = 0;
         this.shownCombatMovementWarning = false;
 
@@ -136,7 +138,7 @@ class Player {
         }
 
         const now = Date.now();
-        if (now - this.lastMoveTime < this.moveDelay) {
+        if (now - this.lastMoveTime < this.currentMoveDelay) {
             return; // Too soon
         }
 
@@ -234,6 +236,11 @@ class Player {
             console.warn(`Unknown terrain type: ${tile.terrain}`);
             return false;
         }
+
+        // Update move delay based on new tile terrain cost
+        const movementCost = terrainDef?.movementCost || 1.0;
+        const multiplier = Math.min(movementCost, RULES.movement.maxMoveDelayMultiplier);
+        this.currentMoveDelay = RULES.movement.baseMoveDelay * multiplier;
 
         // Check if terrain is normally traversable
         if (!terrainDef.traversable) {
@@ -465,6 +472,10 @@ class Player {
             // Check if at exit tile
             if (this.dungeonManager.isAtExit()) {
                 this.dungeonManager.exitDungeon();
+                // Reset encounter accumulator when exiting dungeon
+                const playerStateExit = gameState.get('player') || {};
+                playerStateExit.encounterAccumulator = 0;
+                gameState.set('player', playerStateExit);
                 // Sync Player.x/y with restored world position
                 const restoredPos = gameState.get('player.position');
                 if (restoredPos) {
@@ -532,6 +543,10 @@ class Player {
             if (dungeonFeature) {
                 const success = await this.dungeonManager.enterDungeon();
                 if (success) {
+                    // Reset encounter accumulator when entering dungeon
+                    const playerStateEnter = gameState.get('player') || {};
+                    playerStateEnter.encounterAccumulator = 0;
+                    gameState.set('player', playerStateEnter);
                     // Notify game to switch to dungeon view
                     gameState.set('ui.currentScreen', 'dungeonScreen');
                 }
@@ -657,21 +672,8 @@ class Player {
             return;
         }
 
-        // Map terrain types to challenge IDs
-        const terrainChallengeMap = {
-            'mountain': ['cliff_climb', 'boulder_push'],
-            'hills': ['cliff_climb'],
-            'dungeon': ['trap_detect_disarm', 'hidden_treasure'],
-            'ruins': ['trap_detect_disarm', 'ancient_text', 'arcane_puzzle'],
-            'forest': ['track_creature', 'calm_wild_beast'],
-            'denseForest': ['sneak_past_guards', 'track_creature'],
-            'swamp': ['endure_harsh_environment'],
-            'desert': ['endure_harsh_environment'],
-            'tundra': ['endure_harsh_environment'],
-            'jungle': ['track_creature', 'endure_harsh_environment']
-        };
-
-        const possibleChallenges = terrainChallengeMap[tile.terrain];
+        // Get challenge candidates from data-driven index (replaces hardcoded terrainChallengeMap)
+        const possibleChallenges = window.skillChallengeManager?.getCandidatesForTerrain(tile.terrain) || [];
         if (!possibleChallenges || possibleChallenges.length === 0) {
             return;
         }
@@ -985,15 +987,31 @@ class Player {
     }
 
     /**
-     * Check for random encounters
+     * Check for random encounters using a step accumulator.
+     * Fires a probability check only after enough movement cost has accumulated,
+     * keeping encounter frequency consistent regardless of terrain speed.
      */
     checkForEncounters(tile, terrainDef) {
-        const encounterChance = terrainDef.encounterModifier || 0.1;
+        // Skip encounter checks in safe zones
+        if (!terrainDef || terrainDef.encounterModifier === 0) return;
 
-        // Reduce base encounter rate to ~1% (previously 4%), still scaled by terrain modifier
-        if (Math.random() < encounterChance * 0.01) {
-            // Don't add message here - it will be added by CombatManager when combat starts
-            this.triggerCombatEncounter(terrainDef);
+        // Step accumulator: fire a check only after enough movement cost has accumulated
+        const playerState = gameState.get('player') || { encounterAccumulator: 0 };
+        const accumulated = (playerState.encounterAccumulator || 0) + (terrainDef.movementCost || 1.0);
+
+        if (accumulated >= RULES.movement.encounterAccumulatorThreshold) {
+            // Reset accumulator and run probability check
+            playerState.encounterAccumulator = 0;
+            gameState.set('player', playerState);
+
+            const probability = terrainDef.encounterModifier * RULES.movement.baseEncounterProbability;
+            if (Math.random() < probability) {
+                this.triggerCombatEncounter(terrainDef);
+            }
+        } else {
+            // Accumulate movement cost without checking
+            playerState.encounterAccumulator = accumulated;
+            gameState.set('player', playerState);
         }
     }
 

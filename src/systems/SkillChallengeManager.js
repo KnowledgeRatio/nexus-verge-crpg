@@ -11,12 +11,44 @@ import { rollD20 } from '../utils/dice.js';
 
 class SkillChallengeManager {
     constructor() {
-        this.challenges = new Map(); // Loaded skill challenge trees
+        // Social challenge trees (loaded from data/skillChallenges/<id>.json)
+        // Used by startChallenge() — keyed by challenge id string
+        this.challenges = new Map();
+
+        // Terrain challenge data (loaded from data/skillChallenges.json)
+        // Shape: { balancing: {...}, challenges: { [id]: challengeDef } }
+        // Used by shouldTriggerChallenge(), canAttemptChallenge(), buildTerrainIndex()
+        // TODO (backend-dev): populate this via a loadTerrainChallenges() call during init
+        this.terrainChallengesData = null;
+
+        // Per-terrain lookup built by buildTerrainIndex() after terrainChallengesData loads
+        this.terrainChallengeIndex = {};
+
+        // Cooldown timestamps: { [challengeId]: timestampMs }
+        this.lastAttemptTimes = {};
+
         this.currentChallenge = null; // Active challenge state
         this.challengeHistory = []; // Track all exchanges
         this.tension = 0; // 0-100 tension meter
         this.revealedInfo = new Set(); // Information discovered via skill checks
         this.challengeActive = false;
+    }
+
+    /**
+     * Load terrain challenge flat index from data/skillChallenges.json
+     * Populates this.terrainChallengesData and builds the terrain index.
+     */
+    async loadTerrainChallenges() {
+        try {
+            const response = await fetch(`data/skillChallenges.json?v=${Date.now()}`);
+            if (!response.ok) throw new Error(`Failed to load skillChallenges.json: ${response.status}`);
+            this.terrainChallengesData = await response.json();
+            this.buildTerrainIndex();
+            console.log(`✅ Loaded ${Object.keys(this.terrainChallengesData.challenges || {}).length} terrain challenges`);
+        } catch (error) {
+            console.error('❌ Failed to load terrain challenges:', error);
+            this.terrainChallengesData = { challenges: {}, balancing: { triggerFrequencyModifiers: { terrain_base: 0.1 } } };
+        }
     }
 
     /**
@@ -581,6 +613,112 @@ class SkillChallengeManager {
 
         const event = new CustomEvent('challengeClose');
         window.dispatchEvent(event);
+    }
+
+    // =========================================================================
+    // TERRAIN CHALLENGE INDEX
+    // Called once after challenges JSON is loaded. Builds a per-terrain lookup
+    // so Player.js can query which challenges are valid for the current tile
+    // without maintaining its own hardcoded map.
+    // =========================================================================
+
+    /**
+     * Build the terrain → challenge index from loaded challenge data.
+     * Must be called after loadChallenges() completes.
+     * Challenges with no terrainModifiers field are placed in the 'universal' pool
+     * and treated as if all modifiers are 1.0.
+     */
+    buildTerrainIndex() {
+        this.terrainChallengeIndex = {};
+        if (!this.terrainChallengesData?.challenges) return;
+
+        for (const [id, challenge] of Object.entries(this.terrainChallengesData.challenges)) {
+            const modifiers = challenge.terrainModifiers || {};
+
+            if (Object.keys(modifiers).length === 0) {
+                // No terrainModifiers = universal pool, triggers anywhere at modifier 1.0
+                if (!this.terrainChallengeIndex['__universal__']) {
+                    this.terrainChallengeIndex['__universal__'] = [];
+                }
+                this.terrainChallengeIndex['__universal__'].push(id);
+            } else {
+                for (const [terrain, modifier] of Object.entries(modifiers)) {
+                    if (modifier > 0) {
+                        if (!this.terrainChallengeIndex[terrain]) {
+                            this.terrainChallengeIndex[terrain] = [];
+                        }
+                        if (!this.terrainChallengeIndex[terrain].includes(id)) {
+                            this.terrainChallengeIndex[terrain].push(id);
+                        }
+                    }
+                }
+            }
+        }
+        console.log(`✅ Built terrain index for ${Object.keys(this.terrainChallengeIndex).length} terrain types`);
+    }
+
+    /**
+     * Return candidate challenge IDs for a given terrain type.
+     * Called by Player.js to replace the hardcoded terrainChallengeMap.
+     * @param {string} terrainType - Terrain ID from tile.terrain
+     * @returns {string[]} Array of challenge IDs that can trigger here
+     */
+    getCandidatesForTerrain(terrainType) {
+        const terrainSpecific = this.terrainChallengeIndex[terrainType] || [];
+        const universal = this.terrainChallengeIndex['__universal__'] || [];
+        return [...terrainSpecific, ...universal];
+    }
+
+    // =========================================================================
+    // COOLDOWN / FREQUENCY GATE
+    // Called by Player.js checkForTerrainSkillChallenge() before each trigger.
+    // These three methods replace the silent undefined-call errors that currently
+    // prevent all terrain challenges from firing.
+    // =========================================================================
+
+    /**
+     * Check whether a challenge should fire for a given terrain context.
+     * Applies cooldown gate first, then rolls against effective trigger frequency.
+     * @param {string} challengeId - Challenge ID
+     * @param {Object} context - { terrainType: string, ... }
+     * @returns {boolean}
+     */
+    shouldTriggerChallenge(challengeId, context) {
+        if (!this.terrainChallengesData) return false;
+        const challenge = this.terrainChallengesData.challenges?.[challengeId];
+        if (!challenge) return false;
+
+        if (!this.canAttemptChallenge(challengeId)) return false;
+
+        const terrainMod = challenge.terrainModifiers?.[context.terrainType] ?? 1.0;
+        const globalMod = this.terrainChallengesData.balancing?.triggerFrequencyModifiers?.terrain_base ?? 0.1;
+        const chance = (challenge.balance?.triggerFrequency ?? 0.15) * terrainMod * globalMod;
+
+        return Math.random() < chance;
+    }
+
+    /**
+     * Check if enough time has passed since the last attempt of this challenge.
+     * @param {string} challengeId
+     * @returns {boolean} true if challenge can be attempted (not on cooldown)
+     */
+    canAttemptChallenge(challengeId) {
+        if (!this.terrainChallengesData) return false;
+        const challenge = this.terrainChallengesData.challenges?.[challengeId];
+        if (!challenge) return false;
+
+        const lastAttempt = this.lastAttemptTimes?.[challengeId] || 0;
+        const cooldown = challenge.balance?.cooldown || 0;
+        return (Date.now() - lastAttempt) >= cooldown;
+    }
+
+    /**
+     * Record that a challenge was attempted (starts the cooldown timer).
+     * @param {string} challengeId
+     */
+    recordChallengeAttempt(challengeId) {
+        if (!this.lastAttemptTimes) this.lastAttemptTimes = {};
+        this.lastAttemptTimes[challengeId] = Date.now();
     }
 }
 

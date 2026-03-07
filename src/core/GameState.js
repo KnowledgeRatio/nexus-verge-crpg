@@ -74,6 +74,11 @@ export class GameState {
                 messageLog: []
             },
 
+            // Player traversal state
+            player: {
+                encounterAccumulator: 0
+            },
+
             // Flags for quest/story tracking
             flags: {},
 
@@ -267,6 +272,11 @@ export class GameState {
             rooms: null,
             roomsExplored: [],
             bossDefeated: false
+        };
+
+        // Initialize player traversal state
+        this.data.player = {
+            encounterAccumulator: 0
         };
 
         this.notify('game', 'initialized');
@@ -483,6 +493,9 @@ export class GameState {
             },
             factions: {},
             combat: null,
+            player: {
+                encounterAccumulator: 0
+            },
             rest: {
                 shortRestsUsed: 0,
                 lastLongRest: null

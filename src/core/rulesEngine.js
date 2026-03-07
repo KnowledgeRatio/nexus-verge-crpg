@@ -116,10 +116,10 @@ export const RULES = {
             // Enemy types available at each level bracket (cumulative with lower brackets)
             // All IDs must exist in data/monsters.json
             enemyTypesByLevel: {
-                1: ['commoner', 'bandit', 'kobold', 'giantRat', 'goblin', 'stirge'],
+                1: ['commoner', 'bandit', 'kobold', 'giantRat', 'goblin', 'stirge', 'goblinArcher', 'banditCrossbowman'],
                 3: ['goblin', 'wolf', 'skeleton', 'zombie', 'gnoll', 'shadow', 'scout', 'giantSpider', 'direWolf'],
-                5: ['orc', 'bugbear', 'ghoul', 'giantHyena', 'specter', 'spy', 'ogre', 'ghast', 'berserker', 'gargoyle'],
-                7: ['minotaur', 'wight', 'owlbear', 'veteran', 'flameskull', 'ettin'],
+                5: ['orc', 'bugbear', 'ghoul', 'giantHyena', 'specter', 'spy', 'ogre', 'ghast', 'berserker', 'gargoyle', 'manticore'],
+                7: ['minotaur', 'wight', 'owlbear', 'veteran', 'flameskull', 'ettin', 'mage', 'medusa'],
                 10: ['troll', 'wraith', 'hillGiant', 'youngWhiteDragon']
             }
         }
@@ -971,6 +971,23 @@ export const RULES = {
         // Victory conditions
         victoryXP: 0, // Bonus XP on campaign completion
         victoryReputation: 50 // Bonus reputation with relevant faction
+    },
+
+    // ====================
+    // MOVEMENT & ENCOUNTERS
+    // ====================
+    movement: {
+        // Base move delay in ms for standard (movementCost 1.0) terrain
+        baseMoveDelay: 150,
+        // Cap on delay multiplier — prevents extreme frustration in swamp/jungle
+        maxMoveDelayMultiplier: 2.0,
+
+        // Step accumulator threshold — encounter check fires once this much
+        // movement cost has been accumulated (not every tile)
+        encounterAccumulatorThreshold: 10,
+        // Per-check probability base — multiplied by terrain encounterModifier
+        // Net rate per tile = encounterModifier × movementCost × baseEncounterProbability / threshold
+        baseEncounterProbability: 0.10
     },
 
     // ====================

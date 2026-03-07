@@ -3275,6 +3275,365 @@
       "campaignIds": [
         "core"
       ]
+    },
+    {
+      "id": "goblinArcher",
+      "name": "Goblin Archer",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 15,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 10,
+        "int": 10,
+        "wis": 8,
+        "cha": 8
+      },
+      "skills": {
+        "stealth": 6
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": ["common", "goblin"],
+      "traits": [
+        {
+          "name": "Nimble Escape",
+          "description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Shortbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 4,
+          "range": { "normal": 80, "long": 320 },
+          "damage": "1d6+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": "1d6+2",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          { "id": "shortbow", "chance": 0.3 },
+          { "id": "dagger", "chance": 0.2 },
+          { "id": "potionOfHealing", "chance": 0.1 }
+        ]
+      },
+      "habitats": {
+        "preferred": ["hills", "mountain", "forest", "denseForest"],
+        "occasional": ["grassland", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "desert", "jungle"]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2,
+        "denseForest": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": ["goblinWarren", "dragonLair"],
+      "description": "A goblin trained in ranged combat, preferring to pepper enemies with arrows from a safe distance.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "banditCrossbowman",
+      "name": "Bandit Crossbowman",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any non-lawful alignment",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d8+2",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 12,
+        "con": 12,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "skills": {},
+      "senses": "passive Perception 10",
+      "languages": ["common"],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Light Crossbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 3,
+          "range": { "normal": 80, "long": 320 },
+          "damage": "1d8+1",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": "1d6+1",
+          "damageType": "slashing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          { "id": "lightCrossbow", "chance": 0.25 },
+          { "id": "leatherArmor", "chance": 0.15 }
+        ]
+      },
+      "habitats": {
+        "preferred": ["forest", "denseForest", "hills"],
+        "occasional": ["grassland", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "desert", "tundra", "swamp"]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.4,
+        "hills": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": ["banditHideout"],
+      "description": "A bandit who specializes in crossbow ambushes, keeping their distance while allies engage in melee.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "manticore",
+      "name": "Manticore",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "lawful evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "8d10+24",
+      "speed": 30,
+      "abilities": {
+        "str": 17,
+        "dex": 16,
+        "con": 17,
+        "int": 7,
+        "wis": 11,
+        "cha": 8
+      },
+      "skills": {},
+      "senses": "darkvision 60 ft.",
+      "languages": ["common"],
+      "traits": [
+        {
+          "name": "Tail Spike Regrowth",
+          "description": "The manticore has twenty-four tail spikes. Used spikes regrow when the manticore finishes a long rest."
+        }
+      ],
+      "multiattack": "The manticore makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Tail Spike",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 5,
+          "range": { "normal": 100, "long": 200 },
+          "damage": "2d8+3",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d6+3",
+          "damageType": "slashing"
+        },
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d8+3",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          { "id": "potionOfHealing", "chance": 0.3 }
+        ]
+      },
+      "habitats": {
+        "preferred": ["mountain", "hills", "grassland"],
+        "occasional": ["forest", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "swamp"]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.6,
+        "hills": 1.3,
+        "grassland": 1.1
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": ["beastDen"],
+      "description": "A fearsome winged creature with the body of a lion and a tail bristling with iron spikes it can hurl at prey.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "mage",
+      "name": "Mage",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any alignment",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 12,
+      "hitPoints": "9d8",
+      "speed": 30,
+      "abilities": {
+        "str": 9,
+        "dex": 14,
+        "con": 11,
+        "int": 17,
+        "wis": 12,
+        "cha": 11
+      },
+      "savingThrows": {
+        "int": 6,
+        "wis": 4
+      },
+      "skills": {
+        "arcana": 6,
+        "history": 4
+      },
+      "senses": "passive Perception 11",
+      "languages": ["common"],
+      "traits": [],
+      "multiattack": "The mage casts Fire Bolt twice.",
+      "actions": [
+        {
+          "name": "Fire Bolt",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 6,
+          "range": { "normal": 120, "long": 120 },
+          "damage": "2d10",
+          "damageType": "fire",
+          "description": "Ranged spell attack."
+        },
+        {
+          "name": "Dagger",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "1d4+2",
+          "damageType": "piercing"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          { "id": "potionOfGreaterHealing", "chance": 0.35 }
+        ]
+      },
+      "habitats": {
+        "preferred": ["forest", "denseForest", "mountain"],
+        "occasional": ["hills", "grassland", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater"]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.3,
+        "mountain": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": ["wizardTower", "forgottenTemple"],
+      "description": "A powerful spellcaster who blasts enemies from range with devastating magical attacks.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "medusa",
+      "name": "Medusa",
+      "size": "medium",
+      "type": "monstrosity",
+      "alignment": "lawful evil",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 15,
+      "hitPoints": "17d8+51",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 15,
+        "con": 16,
+        "int": 12,
+        "wis": 13,
+        "cha": 15
+      },
+      "skills": {
+        "deception": 5,
+        "insight": 4,
+        "perception": 4,
+        "stealth": 5
+      },
+      "senses": "darkvision 60 ft.",
+      "languages": ["common"],
+      "traits": [
+        {
+          "name": "Petrifying Gaze",
+          "description": "When a creature that can see the medusa's eyes starts its turn within 30 ft. of the medusa, the medusa can force it to make a DC 14 CON saving throw if the medusa isn't incapacitated and can see the creature. On a failure, the creature is restrained until the start of its next turn, and risks being petrified permanently if it fails again while restrained."
+        }
+      ],
+      "multiattack": "The medusa makes either three melee attacks — one with its snake hair and two with its shortsword — or two ranged attacks with its longbow.",
+      "actions": [
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "attackBonus": 5,
+          "range": { "normal": 150, "long": 600 },
+          "damage": "1d8+2",
+          "damageType": "piercing"
+        },
+        {
+          "name": "Snake Hair",
+          "type": "meleeWeaponAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": "4d4+2",
+          "damageType": "piercing",
+          "description": "Plus 14 (4d6) poison damage on a failed DC 14 CON saving throw."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.8,
+        "items": [
+          { "id": "potionOfGreaterHealing", "chance": 0.4 }
+        ]
+      },
+      "habitats": {
+        "preferred": ["mountain", "hills", "denseForest"],
+        "occasional": ["forest", "plains"],
+        "never": ["ocean", "deepWater", "shallowWater", "tundra", "snowyPlains"]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.2,
+        "denseForest": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": ["forgottenTemple", "sunkenRuins"],
+      "description": "A cursed creature whose gaze can turn living beings to stone. Attacks from range with her longbow while her petrifying gaze affects nearby foes.",
+      "campaignIds": ["core"]
     }
   ]
 }

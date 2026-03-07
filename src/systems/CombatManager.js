@@ -259,12 +259,24 @@ class CombatManager {
             return;
         }
 
+        // Build ordered action list: preferRanged monsters lead with ranged attacks
+        let orderedActions = attackActions;
+        if (combatant.character?.preferRanged) {
+            const rangedActions = attackActions.filter(a => a.type === 'rangedWeaponAttack');
+            const meleeActions = attackActions.filter(a => a.type !== 'rangedWeaponAttack');
+            if (rangedActions.length > 0) {
+                // Ranged actions first; fall back to melee if ranged pool exhausted
+                orderedActions = [...rangedActions, ...meleeActions];
+                console.log(`🏹 ${combatant.name} prefers ranged — leading with ${rangedActions[0].name}`);
+            }
+        }
+
         // Execute each attack in the multiattack sequence
         for (let i = 0; i < attackCount; i++) {
             if (target.hp <= 0) break; // Stop if target dies
 
             // Pick action — cycle through available attacks for variety
-            const action = attackActions[i % attackActions.length];
+            const action = orderedActions[i % orderedActions.length];
             await this.executeMonsterAttack(combatant, target, action);
 
             // Small delay between multiattack hits

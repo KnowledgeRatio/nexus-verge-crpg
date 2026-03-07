@@ -9,7 +9,7 @@
       "traversable": true,
       "movementCost": 1,
       "description": "Open fields of grass sway gently in the breeze.",
-      "encounterModifier": 1.0,
+      "encounterModifier": 0.80,
       "coverType": null,
       "difficultTerrain": false,
       "campaignIds": ["core"]
@@ -23,7 +23,7 @@
       "traversable": true,
       "movementCost": 1.5,
       "description": "Dense trees provide shade and cover.",
-      "encounterModifier": 1.3,
+      "encounterModifier": 1.00,
       "coverType": "half",
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -37,7 +37,7 @@
       "traversable": true,
       "movementCost": 2,
       "description": "Rocky peaks reach toward the sky.",
-      "encounterModifier": 0.7,
+      "encounterModifier": 0.60,
       "coverType": "threeQuarters",
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -115,7 +115,7 @@
       "traversable": true,
       "movementCost": 2,
       "description": "Shallow water that can be waded through.",
-      "encounterModifier": 0.5,
+      "encounterModifier": 0.30,
       "coverType": null,
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -129,7 +129,7 @@
       "traversable": true,
       "movementCost": 1.2,
       "description": "Sandy coastline where land meets sea.",
-      "encounterModifier": 0.4,
+      "encounterModifier": 0.33,
       "coverType": null,
       "difficultTerrain": false,
       "campaignIds": ["core"]
@@ -143,7 +143,7 @@
       "traversable": true,
       "movementCost": 0.8,
       "description": "A well-worn path that connects settlements.",
-      "encounterModifier": 0.5,
+      "encounterModifier": 0.38,
       "coverType": null,
       "difficultTerrain": false,
       "campaignIds": ["core"]
@@ -157,7 +157,7 @@
       "traversable": true,
       "movementCost": 0.8,
       "description": "A sturdy bridge spans the water.",
-      "encounterModifier": 0.5,
+      "encounterModifier": 0.38,
       "coverType": null,
       "difficultTerrain": false,
       "campaignIds": ["core"]
@@ -186,7 +186,7 @@
       "traversable": true,
       "movementCost": 1.5,
       "description": "Rolling hills provide vantage points.",
-      "encounterModifier": 0.8,
+      "encounterModifier": 0.67,
       "coverType": "half",
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -200,7 +200,7 @@
       "traversable": true,
       "movementCost": 1.5,
       "description": "Eroded sandstone ridges bake under the sun.",
-      "encounterModifier": 0.7,
+      "encounterModifier": 0.47,
       "coverType": "half",
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -214,7 +214,7 @@
       "traversable": true,
       "movementCost": 2.5,
       "description": "A murky wetland filled with thick vegetation.",
-      "encounterModifier": 1.2,
+      "encounterModifier": 0.80,
       "coverType": "half",
       "difficultTerrain": true,
       "campaignIds": ["core"]
@@ -228,7 +228,7 @@
       "traversable": true,
       "movementCost": 1.5,
       "description": "Endless sands stretch in all directions.",
-      "encounterModifier": 0.6,
+      "encounterModifier": 0.53,
       "coverType": null,
       "difficultTerrain": true,
       "campaignIds": ["core"]

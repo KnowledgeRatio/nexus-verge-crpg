@@ -24,8 +24,15 @@
 ## monsters.json attackType field
 All monsters now have `attackType`: `"melee"`, `"ranged"`, or `"both"`.
 - `"ranged"` only: flameskull (Fire Ray)
-- `"both"`: skeleton, bandit, kobold, scout, spy, ogre, wight, veteran, hill giant, all dragons
+- `"both"`: skeleton, bandit, kobold, scout, spy, ogre, wight, veteran, hill giant, all dragons, goblinArcher, banditCrossbowman, manticore, mage, medusa
 - Everything else: `"melee"`
+
+## monsters.json preferRanged field (added 2026-03-07)
+- `"preferRanged": true` on monster data makes the AI lead with rangedWeaponAttack actions.
+- Implemented in `executeMonsterActions()` in CombatManager.js — builds `orderedActions` with ranged first, melee as fallback.
+- The field is read from `combatant.character?.preferRanged` (character is the raw monster data object).
+- monsters.json schema: `armorClass` (not `ac`), `hitPoints` as dice string (e.g. `"2d6"`), range as `{ "normal": N, "long": N }`, action type `"rangedWeaponAttack"` or `"meleeWeaponAttack"`.
+- Level gating lives ONLY in `rulesEngine.js` `enemyTypesByLevel` — monsters.json has NO level field.
 
 ## Files & Locations
 - Rules engine: `src/core/rulesEngine.js` — all tunable values go here

@@ -772,7 +772,10 @@ class Game {
         if (!this.skillChallengeManager) {
             console.log('💬 Initializing skill challenge manager...');
             this.skillChallengeManager = new SkillChallengeManager();
-            await this.skillChallengeManager.loadChallenges();
+            await Promise.all([
+                this.skillChallengeManager.loadChallenges(),
+                this.skillChallengeManager.loadTerrainChallenges()
+            ]);
             // Make globally accessible for UI and quest integration
             window.skillChallengeManager = this.skillChallengeManager;
         }

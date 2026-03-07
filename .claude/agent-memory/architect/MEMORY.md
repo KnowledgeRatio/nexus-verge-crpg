@@ -23,7 +23,24 @@
 - **RULES.worldGen.waterGeneration.beaches.requiresAdjacentDeepWater** exists but is NEVER enforced
 - **selectMacroBiome()** at line 214, selectTerrain() at line 301, generateTile() at line 150
 
+## SkillChallengeManager Dual Data Source (2026-03-07)
+- `this.challenges` = Map, stores social challenge trees from `data/skillChallenges/*.json`
+- `this.terrainChallengesData` = flat JSON from `data/skillChallenges.json`, shape: `{ balancing, challenges: { [id]: def } }`
+- These are TWO DIFFERENT properties. Plan docs that write `this.challenges.challenges[id]` are WRONG -- must be `this.terrainChallengesData.challenges[id]`
+- Backend-dev must add `loadTerrainChallenges()` to populate `terrainChallengesData`, then call `buildTerrainIndex()`
+- `lastAttemptTimes` must NOT be serialized to save/load (wall-clock timestamps are meaningless across sessions)
+- `encounterAccumulator` MUST persist (add to `gameState.player` object in `initNewGame()`)
+
+## RULES.movement Config Block (2026-03-07)
+Added to rulesEngine.js between `flee` and `zoom`:
+- `baseMoveDelay: 150` (ms)
+- `maxMoveDelayMultiplier: 2.0`
+- `encounterAccumulatorThreshold: 10`
+- `baseEncounterProbability: 0.10`
+Net rate per tile formula: `encounterModifier × movementCost × baseEncounterProbability / threshold`
+
 ## Red Flags to Watch
 - Any new `if (ability.id === '...')` branches in main.js -- should use EffectDispatcher instead
 - Hardcoded ability names/descriptions in JS instead of reading from abilities.json
 - CSS class names referencing specific abilities (e.g., `steadyNerveModal`) instead of generic names
+- `terrainChallengeMap` hardcoded in Player.js (lines 661-672) -- must be replaced with `skillChallengeManager.getCandidatesForTerrain()`

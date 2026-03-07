@@ -53,6 +53,7 @@
         "riskLevel": "medium",
         "lootChanceMultiplier": 0.8
       },
+      "terrainModifiers": { "dungeon": 2.0, "mountain": 0.0, "grassland": 0.0, "plains": 0.0, "road": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "stages": [
         {
           "id": "detect",
@@ -157,6 +158,7 @@
         "cooldown": 0,
         "riskLevel": "medium"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "options": [
         {
           "skill": "sleightOfHand",
@@ -237,6 +239,7 @@
         "cooldown": 600000,
         "riskLevel": "high"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "options": [
         {
           "skill": "influence",
@@ -336,6 +339,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": { "mountain": 3.0, "hills": 2.0, "denseForest": 0.5, "grassland": 0.0, "plains": 0.0, "road": 0.0, "swamp": 0.0, "desert": 0.0, "beach": 0.0, "savanna": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "stages": [
         {
           "id": "assess",
@@ -397,6 +401,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "denseForest": 2.0, "forest": 1.5, "dungeon": 2.0, "road": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "stages": [
         {
           "id": "investigation",
@@ -464,6 +469,7 @@
         "cooldown": 600000,
         "riskLevel": "high"
       },
+      "terrainModifiers": { "jungle": 2.5, "forest": 2.0, "swamp": 1.5, "grassland": 1.5, "road": 0.0, "dungeon": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "onSuccess": {
         "message": "You connect with the animal. It calms down and leaves peacefully.",
         "xp": 80,
@@ -508,6 +514,7 @@
         "riskLevel": "high",
         "lootChanceMultiplier": 0.3
       },
+      "terrainModifiers": { "denseForest": 2.0, "forest": 1.5, "sanctuary": 0.0, "beach": 0.0, "swamp": 0.0, "desert": 0.0 },
       "options": [
         {
           "skill": "acrobatics",
@@ -631,6 +638,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "dungeon": 2.0, "grassland": 0.0, "plains": 0.0, "forest": 0.0, "swamp": 0.0, "desert": 0.0, "mountain": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0, "hills": 0.0, "tundra": 0.0, "jungle": 0.0 },
       "options": [
         {
           "skill": "arcana",
@@ -705,6 +713,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "dungeon": 2.0, "grassland": 0.0, "plains": 0.0, "forest": 0.0, "swamp": 0.0, "desert": 0.0, "mountain": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0, "hills": 0.0, "tundra": 0.0, "jungle": 0.0 },
       "onSuccess": {
         "message": "You translate the ancient text and gain valuable information!",
         "xp": 125,
@@ -747,6 +756,7 @@
         "cooldown": 600000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "options": [
         {
           "skill": "academia",
@@ -798,6 +808,7 @@
         "cooldown": 600000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "jungle": 2.5, "forest": 2.0, "grassland": 1.5, "hills": 1.5, "road": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0 },
       "stages": [
         {
           "id": "find_tracks",
@@ -865,6 +876,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "onSuccess": {
         "message": "You sense the NPC is being deceptive!",
         "xp": 75,
@@ -909,6 +921,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "onSuccess": {
         "message": "Your clever distraction works perfectly, creating an opening!",
         "xp": 125,
@@ -948,6 +961,7 @@
         "cooldown": 600000,
         "riskLevel": "low"
       },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "onSuccess": {
         "message": "You successfully perform the ritual. The area is blessed!",
         "xp": 150,
@@ -988,6 +1002,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": { "mountain": 3.0, "hills": 1.5, "denseForest": 1.5, "grassland": 0.0, "plains": 0.0, "road": 0.0, "swamp": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "onSuccess": {
         "message": "You nimbly cross the narrow ledge!",
         "xp": 75,
@@ -1026,6 +1041,7 @@
         "cooldown": 600000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": { "swamp": 3.0, "jungle": 3.0, "desert": 2.5, "tundra": 2.0, "snowyPlains": 2.0, "road": 0.0, "grassland": 0.0, "plains": 0.0, "sanctuary": 0.0, "farmland": 0.0, "beach": 0.0 },
       "onSuccess": {
         "message": "You push through the harsh conditions!",
         "xp": 125,
@@ -1064,6 +1080,7 @@
         "riskLevel": "low",
         "lootChanceMultiplier": 1.5
       },
+      "terrainModifiers": {},
       "onSuccess": {
         "message": "With a mighty heave, you roll the boulder aside, revealing a hidden cache!",
         "xp": 120,
@@ -1108,6 +1125,7 @@
         "cooldown": 300000,
         "riskLevel": "high"
       },
+      "terrainModifiers": {},
       "stages": [
         {
           "id": "find_route",
@@ -1167,6 +1185,7 @@
         "cooldown": 600000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": {},
       "onSuccess": {
         "message": "You endure the extreme heat and press onward!",
         "xp": 125,
@@ -1201,6 +1220,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": {},
       "options": [
         {
           "skill": "cunning",
@@ -1274,6 +1294,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
+      "terrainModifiers": {},
       "onSuccess": {
         "message": "You find a path through the dense vegetation!",
         "xp": 75,
@@ -1308,6 +1329,7 @@
         "cooldown": 600000,
         "riskLevel": "deadly"
       },
+      "terrainModifiers": {},
       "stages": [
         {
           "id": "assess_peak",
@@ -1366,6 +1388,7 @@
         "cooldown": 300000,
         "riskLevel": "high"
       },
+      "terrainModifiers": {},
       "onSuccess": {
         "message": "You carefully ascend the icy wall!",
         "xp": 125,
@@ -1400,6 +1423,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
+      "terrainModifiers": {},
       "options": [
         {
           "skill": "athletics",
@@ -1464,6 +1488,7 @@
       "name": "Guard Patrol",
       "description": "City guards approach, demanding to know your business.",
       "type": "choice",
+      "terrainModifiers": {},
       "choices": [
         {
           "text": "Show credentials and explain peacefully",
@@ -1526,6 +1551,7 @@
       "name": "Market Haggling",
       "description": "A merchant offers goods at inflated prices. You could negotiate for a better deal.",
       "type": "single",
+      "terrainModifiers": {},
       "skill": "influence",
       "dc": 13,
       "onSuccess": {
@@ -1553,6 +1579,7 @@
       "name": "Pickpocket Encounter",
       "description": "You notice a pickpocket attempting to steal from a nearby merchant.",
       "type": "choice",
+      "terrainModifiers": {},
       "choices": [
         {
           "text": "Catch the thief and demand they return the goods",
@@ -1608,6 +1635,7 @@
       "name": "Warehouse Infiltration",
       "description": "You notice suspicious activity in a warehouse. Investigate?",
       "type": "sequential",
+      "terrainModifiers": {},
       "stages": [
         {
           "skill": "cunning",
@@ -1657,6 +1685,7 @@
       "name": "Crop Field Crossing",
       "description": "You need to cross farmland. The farmer watches suspiciously.",
       "type": "choice",
+      "terrainModifiers": {},
       "choices": [
         {
           "text": "Ask permission to cross carefully",
@@ -1711,6 +1740,7 @@
       "name": "Forge Fire",
       "description": "A forge fire has gotten out of control! Help extinguish it?",
       "type": "sequential",
+      "terrainModifiers": {},
       "stages": [
         {
           "skill": "endurance",
