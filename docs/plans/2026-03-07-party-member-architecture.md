@@ -260,7 +260,7 @@
     },
     "rescue": {
       "id": "rescue",
-      "encounterChance": 0.20,
+      "encounterChance": 0.06,
       "levelOffset": -1,
       "requiresPostCombatDialogue": true
     },
@@ -276,7 +276,6 @@
       "departureSensitivity": "high"
     }
   },
-  "lastStandLevelCap": 2,
   "partySynergies": {
     "vanguard": {
       "id": "vanguard",
@@ -320,8 +319,10 @@ party: {
     maxSize: 4,
     maxCompanions: 3,
 
-    // Enemy HP scaling per additional companion: 1 companion = x1.25, 2 = x1.5, 3 = x1.75
-    encounterScalingMultiplier: 1.25,
+    // Effective party size for XP budget = 1 + (companionCount * this factor)
+    // Prevents double-scaling: XP budget already selects harder enemies; no HP multiplier needed
+    // e.g. 3 companions → effectivePartySize 2.8 not 4.0
+    companionActionEconomyFactor: 0.6,
 
     // Cap companion skill challenge contributions at the player's proficiency bonus
     skillContributionCap: "proficiencyBonus",
@@ -335,9 +336,6 @@ party: {
     relationshipMax: 100,
     hostileThreshold: -51,
 
-    lastStandEnabled: true,
-    lastStandMaxLevel: 2,
-
     synergies: {
         enabled: true,
         vanguard:       { enabled: true, minDedication: 3, attackBonus: 1 },
@@ -346,8 +344,8 @@ party: {
         trueParty:      { enabled: true, requireAllCallings: true, skillChallengeBonus: 1 }
     },
 
-    defaultReactionMode: 'always',   // 'always' | 'ask' | 'never'
-    rescueEncounterChance: 0.20,
+    defaultReactionMode: 'ask',      // 'always' | 'ask' | 'never' — ask matches BG3 behaviour
+    rescueEncounterChance: 0.06,     // tertiary source; ~6% per non-boss dungeon encounter
     settlementCandidateRange: [1, 3]
 }
 ```
@@ -400,10 +398,9 @@ character.companionMeta = {
     source: string,
     relationship: number,              // -100 to +100
     devotedPassiveUsedThisRest: false,
-    reactionMode: 'always' | 'ask' | 'never',
+    reactionMode: 'always' | 'ask' | 'never',  // default: 'ask'
     dialogueNodeIndex: 0,
     isDowned: false,
-    lastStandUsedThisRest: false,
     ultimatumPending: false,
     factionId: null
 }
@@ -474,6 +471,15 @@ getFullParty() {
 
 getPartySize() {
     return 1 + (this.data.party?.companions?.filter(c => !c.companionMeta?.isDowned).length || 0);
+}
+
+// For encounter scaling — applies companionActionEconomyFactor to avoid double-scaling
+getEffectivePartySize() {
+    const companionCount = this.data.party?.companions?.filter(
+        c => !c.companionMeta?.isDowned
+    ).length || 0;
+    const factor = RULES.party?.companionActionEconomyFactor ?? 0.6;
+    return 1 + (companionCount * factor);
 }
 
 updateCompanionRelationship(companionId, value) {
@@ -566,32 +572,74 @@ combatant.isDowned = true;
 combatant.hp = 0;
 this.turnOrder = this.turnOrder.filter(c => c.id !== combatant.id);
 gameState.addMessage(`${combatant.name} is downed!`, 'error');
-// CompanionManager.handlePostCombat() processes stabilization after combat ends
+// Write back to companionMeta so handlePostCombat sees the downed state
+companion.companionMeta.isDowned = true;
 ```
 
----
+### In-Combat Revival
 
-## 6. `EncounterBuilder.js` — HP Scaling
-
-After monster list is finalized in `buildEncounter()`:
+A Downed companion can be brought back to 1 HP by any healing effect (spell, potion) targeting them. This uses the same healing resolution path as player healing — no special case needed. When healing lands on a Downed companion:
 
 ```javascript
-if (RULES.party?.enabled && partySize > 1) {
-    const companionCount = partySize - 1;
-    const scalingMultiplier = 1 + (companionCount * (RULES.party.encounterScalingMultiplier - 1));
-    // 1 companion: x1.25, 2: x1.5, 3: x1.75
-    monsters.forEach(monster => {
-        monster.hp = Math.floor(monster.hp * scalingMultiplier);
-        monster.maxHP = monster.hp;
+// In the heal resolution path, after setting hp:
+if (combatant.isDowned && newHP > 0) {
+    combatant.isDowned = false;
+    combatant.companionMeta.isDowned = false;
+    // Re-insert into turn order at next initiative slot
+    this._reinsertIntoTurnOrder(combatant);
+    gameState.addMessage(`${combatant.name} is back up!`, 'success');
+}
+```
+
+### Post-Combat Stabilisation
+
+`CompanionManager.handlePostCombat(combatResult)` subscribes to `'combat.ended'`:
+
+```javascript
+// outcome: 'victory' | 'tpk' | 'retreat'
+const downed = companions.filter(c => c.companionMeta.isDowned);
+if (combatResult.outcome === 'victory') {
+    // Auto-stabilise: free, no resource cost
+    downed.forEach(c => { c.companionMeta.isDowned = false; c.currentHP = 1; });
+} else {
+    // TPK or retreat: permanent death
+    downed.forEach(c => {
+        this.dismissCompanion(c.id, 'death');
+        // Fire companionDownedUnstabilized on all survivors
     });
 }
 ```
 
-**`Player.js` call site** — replace hardcoded `partySize: 1` with:
+---
+
+## 6. `EncounterBuilder.js` — Encounter Scaling
+
+The XP budget system already multiplies by `partySize`. No HP layer is added on top (that would double-scale). The only change is ensuring `partySize` passed to `buildEncounter()` uses the effective party size formula to account for companion action economy:
+
+**`Player.js` call site** — replace hardcoded `partySize: 1`:
 
 ```javascript
-partySize: gameState.getPartySize?.() ?? 1,
+// Before:
+partySize: 1
+
+// After:
+partySize: gameState.getEffectivePartySize?.() ?? 1,
 ```
+
+**New `GameState.getEffectivePartySize()` method:**
+
+```javascript
+getEffectivePartySize() {
+    const companionCount = this.data.party?.companions?.filter(
+        c => !c.companionMeta?.isDowned
+    ).length || 0;
+    const factor = RULES.party?.companionActionEconomyFactor ?? 0.6;
+    return 1 + (companionCount * factor);
+    // Solo: 1.0 | 1 companion: 1.6 | 2: 2.2 | 3: 2.8
+}
+```
+
+This passes a non-integer to `buildEncounter()`. Ensure the XP budget calculation handles floats (multiply then floor). No other changes to `EncounterBuilder.js` are required.
 
 ---
 
@@ -758,10 +806,9 @@ main.js (UI glue)
     "source": "settlement",
     "relationship": 15,
     "devotedPassiveUsedThisRest": false,
-    "reactionMode": "always",
+    "reactionMode": "ask",
     "dialogueNodeIndex": 1,
     "isDowned": false,
-    "lastStandUsedThisRest": false,
     "ultimatumPending": false,
     "factionId": null
   }

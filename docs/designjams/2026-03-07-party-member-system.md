@@ -43,21 +43,22 @@ When the player takes a long rest at a tavern, the settlement may have companion
 - Each candidate has a Calling, a brief bio, and a recruitment condition
 - Recruitment conditions create choices: some candidates join free, some want gold, some want you to complete a task first
 
-**B. Combat Rescue Events (Secondary Source)**
-
-Procedural encounters can include an NPC fighting alongside the player's target. If the player leaves that NPC alive and speaks to them post-combat, a recruitment offer triggers.
-
-- Chance to appear: 20% of non-boss encounters in dungeon zones
-- These companions always join at the player's current level minus 1
-- Creates a minor narrative hook without requiring authored content
-
-**C. Quest Completion Rewards (Tertiary Source, Authored)**
+**B. Quest Completion Rewards (Secondary Source, Authored)**
 
 Specific quest lines can unlock named companions with authored personality. These are the highest-relationship-ceiling companions.
 
 - "Named" companions have authored dialogue trees
-- "Generic" companions (A, B above) use the dialogue template system
+- "Generic" companions (A, B, C below) use the dialogue template system
 - Design target: 2-3 named companions per campaign, unlimited generic
+
+**C. Combat Rescue Events (Tertiary Source)**
+
+Procedural encounters in dungeon zones can include an NPC fighting alongside the player's target. If the player leaves that NPC alive and speaks to them post-combat, a recruitment offer triggers.
+
+- Chance to appear: **6% of non-boss encounters in dungeon zones only**
+- These companions always join at the player's current level minus 1
+- Creates a minor narrative hook without requiring authored content
+- Intentionally rare — a surprise, not an expectation
 
 **D. Dungeon Events (Roguelike Surprise)**
 
@@ -89,16 +90,15 @@ Available anytime outside combat.
 
 **B. Death — The Roguelike Decision**
 
-| Option | Roguelike Fit | D&D Fit | Verdict |
-|--------|--------------|---------|---------|
-| Permanent death (no recovery) | High | Low | Too punishing for first implementation |
-| Death with revival cost (gold + long rest) | Medium | Medium | Good starting point |
-| Unconscious only, auto-revives after combat | Low | High | Too safe, removes tension |
-| Death + relationship cost to remaining party | High | Medium | Best roguelike variant |
+**Death mechanic:** Companions drop to 0 HP and are **Downed** (removed from turn order, out of combat). Three outcomes:
 
-**Recommended:** Companions drop to 0 HP and are "Downed" (unconscious, out of combat). After combat, the player can choose to stabilize them (free, automatic). At next long rest, they return to 1 HP. However: if a companion is Downed and the combat ends in a TPK or forced retreat before they are stabilized, they die permanently.
+1. **In-combat revival:** The player can spend a healing resource (spell, potion) on a Downed companion to bring them back to 1 HP immediately. They re-enter the turn order at their next initiative slot. Costs action + resource — a real trade-off.
+2. **Victory auto-stabilise:** If combat ends in victory, all Downed companions auto-stabilise to 1 HP for free. They return to full HP at next long rest.
+3. **TPK or retreat = permanent death:** Any companion who is Downed when combat ends in a TPK or forced retreat dies permanently. Fires `companionDownedUnstabilized` relationship event on all survivors.
 
-**Balance note at level 1:** At level 1-2, companions have a free "Last Stand" — they return from 0 HP to 1 HP once per long rest without player intervention. This disappears at level 3.
+No death saving throws for companions. This is a principled roguelike deviation — death saves on NPCs slow combat without meaningful player input.
+
+**Future specialisation hook:** A Medic-type ability (bonus action Medicine check, no spell slot) can stabilise a Downed companion to 1 HP. The architecture supports this as an extension with no data changes.
 
 **C. Relationship-Driven Departure**
 
@@ -291,7 +291,7 @@ Each companion has the full standard action economy:
 
 Dedication companions have access to Steady Nerve, Action Surge, Extra Attack — these must be available to player-controlled companions.
 
-**Reaction handling:** Reactions should auto-trigger based on a per-companion setting: "Auto-use reactions: Always / Ask / Never." Default to "Always" for simplicity. "Ask" pauses combat and prompts.
+**Reaction handling:** Reactions are governed by a per-companion setting: "Auto-use reactions: Always / Ask / Never." Default is **"Ask"** — combat pauses and prompts the player when a reaction trigger fires, matching Baldur's Gate 3 behaviour. "Always" auto-resolves silently. "Never" disables automatic reactions. This is a per-companion setting stored in `companionMeta.reactionMode`, with the global default in `RULES.party.defaultReactionMode`.
 
 ### UI Requirements
 
@@ -302,17 +302,19 @@ Dedication companions have access to Steady Nerve, Action Surge, Extra Attack �
 
 ### Encounter Scaling
 
-With a full party of 4, encounter HP must scale or fights will be trivially easy.
+The existing XP budget system in `EncounterBuilder.js` already scales by `partySize` — this is the correct 5e mechanism. Do not add a separate HP multiplier layer. The XP budget multiplication naturally selects higher-CR or more numerous enemies for larger parties.
 
-**Recommendation:** Add `RULES.party.encounterScalingMultiplier` in `rulesEngine.js`.
-
-Starting point: Enemy HP x 1.25 per additional companion above 1. Tune upward based on playtesting.
+**Action economy discount:** Companions contribute action economy that the raw XP budget does not fully account for. Pass an effective party size rather than raw party size to prevent overscaling:
 
 ```
-1 companion: x1.25 enemy HP
-2 companions: x1.5 enemy HP
-3 companions (full party): x1.75 enemy HP
+effectivePartySize = 1 + (companionCount × 0.6)
+// Solo:          1.0
+// 1 companion:   1.6
+// 2 companions:  2.2
+// 3 companions:  2.8  (not 4.0)
 ```
+
+The `0.6` factor is a starting point for playtesting. It lives in `RULES.party.companionActionEconomyFactor` as a single tunable value. Adding a straight HP multiplier on top of XP-budget scaling creates double-scaling and overtuned encounters, particularly at level 1.
 
 ---
 
@@ -371,8 +373,8 @@ These live in `rulesEngine.js` and are toggleable.
 
 ### Level 1
 
-- Single companion doubles player action economy. Enemy HP scaling must be tuned immediately.
-- Companion has 8-10 HP (Dedication d10). Will go down in 2 hits. "Last Stand" mechanic at level 1-2 prevents feel-bad moments.
+- Single companion doubles player action economy. Encounter XP budget scales via `effectivePartySize` formula.
+- Companion has 8-10 HP (Dedication d10). Will go down in 2 hits. In-combat revival via healing resource is the recovery path.
 - Skill challenges: +2 companion proficiency shifts DC 10-12 checks from ~60% to ~70% success. Correct.
 
 ### Level 5 (Extra Attack breakpoint)
@@ -406,8 +408,8 @@ These live in `rulesEngine.js` and are toggleable.
     "friendly":   { "range": [21, 60],    "label": "Trusted" },
     "devoted":    { "range": [61, 100],   "label": "Devoted" }
   },
-  "acquisitionSources": ["settlement", "rescue", "quest", "dungeon"],
-  "lastStandLevelCap": 2
+  "acquisitionSources": ["settlement", "quest", "rescue", "dungeon"],
+  "rescueEncounterChance": 0.06
 }
 ```
 
@@ -417,9 +419,16 @@ These live in `rulesEngine.js` and are toggleable.
 RULES.party = {
   maxSize: 4,
   maxCompanions: 3,
-  skillContributionCap: "proficiencyBonus",  // capped at player's proficiency bonus
+  skillContributionCap: "proficiencyBonus",
   companionTypes: { standard: 2, wanderlust: 3 },
-  encounterScalingMultiplier: 1.25,           // per additional companion above 1
+  // Effective party size = 1 + (companionCount * this factor). Feeds XP budget only.
+  companionActionEconomyFactor: 0.6,
+  defaultReactionMode: 'ask',
+  rescueEncounterChance: 0.06,
+  settlementCandidateRange: [1, 3],
+  relationshipMin: -100,
+  relationshipMax: 100,
+  hostileThreshold: -51,
   synergies: {
     enabled: true,
     vanguard:       { minDedication: 3, attackBonus: 1 },
