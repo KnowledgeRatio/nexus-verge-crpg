@@ -51,6 +51,18 @@
 - Screens: `#mainMenu`, `#newGameScreen`, `#loadGameScreen`, `#characterCreationScreen`, `#gameScreen`.
 - Modals/overlays: appended just before the `<footer id="appFooter">` near the bottom of `#app`.
 - Script: single `<script type="module" src="src/main.js">` at end of `<body>`.
+- As of party system: `#partyHealthBar` lives between the `#hud` and the `.game-container` div inside `#gameScreen`.
+- Line counts (post-party Phase 5): `index.html` ~1508, `styles.css` ~8420, `src/main.js` ~7430.
+
+## Party System UI Patterns (Phase 5)
+- Party health bar: `#partyHealthBar` with class `party-health-bar hidden`. JS removes `hidden` when party size > 1. Uses `gameState.getFullParty()`.
+- Companion turn panel: `renderCompanionActions(companionId, combatState)` replaces the action panel when `combatState.isCompanionTurn === true`. Restored by `renderCombatActions()` on next player turn.
+- Combat team filtering: allies panel (`#playerCombatants`) now renders `team === 'player' || team === 'companion'`. Enemy panel unchanged.
+- `handleTargetClick()` checks `this.selectedAction === 'companionAttack'` before the player-turn guard, allowing companion-controlled attacks.
+- `selectCompanionAction(actionType, companionId)` sets `this._pendingCompanionId` for the target-click handler to consume.
+- Fallen companions: `buildFallenCompanionsHTML()` on the Game class reads `gameState.get('fallenCompanions')`. Called from both `showVictoryModal` and `showGameOver` in CombatManager via `window.game.buildFallenCompanionsHTML?.()`.
+- CompanionManager is initialized in `initGameScreen()` before player spawn. `checkUltimata()` called after successful long rest in `setupRestSystem()`.
+- Flee warning: class `flee-warning` added to the Flee button when downed companions exist. Animated pulsing orange glow via `@keyframes fleeWarnPulse`.
 
 ## Pitfalls to Avoid
 - Never add `overflow: hidden` to a flex child that needs to scroll — use `min-height: 0` on it instead so it can shrink and activate the scrollbar.

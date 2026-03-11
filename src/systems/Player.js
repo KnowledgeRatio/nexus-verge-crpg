@@ -22,9 +22,10 @@ class Player {
 
         // Input state
         this.keys = new Set();
-        this.moveDelay = 150; // fallback only — dynamic delay set per tile in move()
-        this.currentMoveDelay = 150; // updated each tile based on terrain movementCost
+        this.moveDelay = 200; // fallback only — dynamic delay set per tile in move()
+        this.currentMoveDelay = 200; // updated each tile based on terrain movementCost
         this.lastMoveTime = 0;
+        this.isMoving = false; // guard against concurrent async moves
         this.shownCombatMovementWarning = false;
 
         // Settlement/dungeon notification tracking (prevent spam)
@@ -142,6 +143,9 @@ class Player {
             return; // Too soon
         }
 
+        // Guard against concurrent async moves (prevents "flying" on keydown repeat)
+        if (this.isMoving) return;
+
         let dx = 0, dy = 0;
 
         switch (key) {
@@ -164,8 +168,13 @@ class Player {
         }
 
         if (dx !== 0 || dy !== 0) {
-            await this.move(dx, dy);
-            this.lastMoveTime = now;
+            this.isMoving = true;
+            this.lastMoveTime = now; // Set before await to block concurrent keydown events
+            try {
+                await this.move(dx, dy);
+            } finally {
+                this.isMoving = false;
+            }
         }
     }
 
@@ -1029,7 +1038,7 @@ class Player {
         const { buildEncounter } = await import('./EncounterBuilder.js');
 
         const encounter = await buildEncounter({
-            partySize: 1,
+            partySize: Math.floor(gameState.getEffectivePartySize?.() ?? 1),
             partyLevel: playerLevel,
             gameDifficulty: difficulty,
             terrain: terrainId,

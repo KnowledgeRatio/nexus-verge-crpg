@@ -8189,3 +8189,273 @@ body {
         max-height: 250px;
     }
 }
+
+/* ---- Ammo count display (combatant card, player only) ---- */
+.ammo-count {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #f4a261;
+    margin-top: 4px;
+    user-select: none;
+}
+
+.ammo-count.ammo-low {
+    color: #e63946;
+    font-weight: bold;
+}
+
+/* ---- Cover indicator (combat action panel) ---- */
+.cover-indicator {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+.half-cover {
+    background: rgba(144, 238, 144, 0.2);
+    border: 1px solid #90ee90;
+    color: #90ee90;
+}
+.three-quarter-cover {
+    background: rgba(255, 165, 0, 0.2);
+    border: 1px solid #ffa500;
+    color: #ffa500;
+}
+
+/* ============================================================
+   PARTY SYSTEM UI — Phase 5
+   Party health bar, companion action panel, fallen companions
+   ============================================================ */
+
+/* --- Party Health Bar --- */
+.party-health-bar {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+}
+
+.party-health-bar.hidden {
+    display: none;
+}
+
+/* Each member card in the party bar */
+.party-member-card {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 5px 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    min-width: 110px;
+    max-width: 130px;
+    flex-shrink: 0;
+}
+
+/* Player card gets gold border */
+.party-member-card.is-player {
+    border-color: var(--text-highlight);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.25);
+}
+
+/* Companion card gets cyan border */
+.party-member-card.is-companion {
+    border-color: #5bc8d4;
+}
+
+/* Downed state */
+.party-member-card.is-downed {
+    border-color: var(--danger-color);
+    opacity: 0.7;
+}
+
+.party-member-name {
+    font-size: 0.72rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.party-member-hp-text {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+}
+
+/* Compact HP bar inside the party card */
+.party-member-hp-bar {
+    height: 5px;
+    background: var(--bg-primary);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.party-member-hp-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* HP fill colours: green > yellow > red by percentage */
+.party-member-hp-fill.hp-high  { background: var(--success-color); }
+.party-member-hp-fill.hp-mid   { background: var(--warning-color); }
+.party-member-hp-fill.hp-low   { background: var(--danger-color); }
+
+/* Downed badge */
+.party-member-downed {
+    font-size: 0.68rem;
+    color: var(--danger-color);
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+/* --- Companion turn banner (in combatActions area) --- */
+.companion-turn-banner {
+    text-align: center;
+    padding: 10px 8px;
+    background: rgba(91, 200, 212, 0.12);
+    border: 1px solid #5bc8d4;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+    color: #5bc8d4;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* --- Turn order team indicators --- */
+.turn-entry-player    { color: var(--text-highlight); }
+.turn-entry-companion { color: #5bc8d4; }
+.turn-entry-enemy     { color: var(--danger-color); }
+
+/* --- Flee warning state --- */
+.flee-warning {
+    border-color: var(--warning-color) !important;
+    box-shadow: 0 0 8px rgba(255, 170, 68, 0.45);
+    animation: fleeWarnPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes fleeWarnPulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(255, 170, 68, 0.35); }
+    50%       { box-shadow: 0 0 14px rgba(255, 170, 68, 0.7); }
+}
+
+/* --- Downed combatant card (in combat screen) --- */
+.combatant-card.downed {
+    border-color: var(--danger-color);
+    opacity: 0.6;
+}
+
+.combatant-card.downed .combatant-name::after {
+    content: ' (DOWNED)';
+    color: var(--danger-color);
+    font-size: 0.75rem;
+    font-weight: normal;
+}
+
+/* --- Those We Lost section (victory / game-over modal) --- */
+.fallen-companions-section {
+    margin-top: 24px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid #555;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.fallen-companions-section h3 {
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.fallen-companion-entry {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #888;
+    font-style: italic;
+    padding: 4px 0;
+    border-bottom: 1px solid #333;
+    line-height: 1.5;
+}
+
+.fallen-companion-entry:last-child {
+    border-bottom: none;
+}
+
+/* --- Responsive: party health bar across all 6 breakpoints --- */
+
+/* Mobile (<768px): vertical stack, full-width cards */
+@media (max-width: 767px) {
+    .party-health-bar {
+        flex-direction: column;
+        gap: 6px;
+        padding: 6px 8px;
+    }
+    .party-member-card {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+    }
+}
+
+/* Laptop (768–1200px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .party-member-card {
+        min-width: 100px;
+        max-width: 120px;
+    }
+}
+
+/* Desktop (1200–1400px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .party-member-card {
+        min-width: 110px;
+        max-width: 130px;
+    }
+}
+
+/* Large (1400–1600px) */
+@media (min-width: 1400px) and (max-width: 1599px) {
+    .party-member-card {
+        min-width: 120px;
+        max-width: 145px;
+    }
+    .party-member-name  { font-size: 0.75rem; }
+    .party-member-hp-text { font-size: 0.7rem; }
+}
+
+/* HD (1600–1920px) */
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .party-member-card {
+        min-width: 130px;
+        max-width: 155px;
+    }
+    .party-member-name  { font-size: 0.78rem; }
+    .party-member-hp-text { font-size: 0.72rem; }
+}
+
+/* Ultra (1920px+) */
+@media (min-width: 1920px) {
+    .party-member-card {
+        min-width: 140px;
+        max-width: 170px;
+    }
+    .party-member-name  { font-size: 0.82rem; }
+    .party-member-hp-text { font-size: 0.76rem; }
+}
+/* ============================================================
+   END PARTY SYSTEM UI
+   ============================================================ */

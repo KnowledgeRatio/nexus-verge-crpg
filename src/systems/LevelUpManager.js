@@ -643,21 +643,39 @@ export default class LevelUpManager {
   }
 
   /**
-   * Confirm level-up and apply all selections to character
+   * Confirm level-up and apply all selections to character.
+   * When called without arguments, operates on the player character (existing behavior).
+   * When called with a companion Character object, persists changes to party.companions instead.
+   *
+   * @param {Object|null} [targetCharacter=null] - Companion character object, or null for player
    */
-  confirmLevelUp() {
-    const character = gameState.get('character');
+  confirmLevelUp(targetCharacter = null) {
+    const character = targetCharacter || gameState.get('character');
 
     if (!character.pendingLevelUp) {
       console.error('No pending level-up to confirm');
       return;
     }
 
-    // Apply selections to character
+    // Apply selections to character (existing logic, unchanged)
     character.applyLevelUpSelections(this.currentSelections);
 
-    // Save character back to gameState
-    gameState.set('character', character);
+    // Persist to correct location
+    if (targetCharacter) {
+      // Companion level-up: write back to party.companions array
+      const companions = gameState.get('party')?.companions || [];
+      const idx = companions.findIndex(c => c.id === character.id);
+      if (idx >= 0) {
+        companions[idx] = character;
+        gameState.set('party.companions', companions);
+        console.log(`✅ Companion ${character.name} leveled up to ${character.level}`);
+      } else {
+        console.warn(`⚠️ LevelUpManager: companion id ${character.id} not found in party.companions`);
+      }
+    } else {
+      // Player level-up: existing behavior
+      gameState.set('character', character);
+    }
 
     // Show success message
     gameState.addMessage(`🎉 Level ${character.level}! You are now stronger!`, 'success');
@@ -665,9 +683,9 @@ export default class LevelUpManager {
     // Close modal
     this.closeModal();
 
-    // Update HUD
-    if (window.game && window.game.updateHUD) {
-      window.game.updateHUD(character);
+    // Only update HUD for player level-ups (companions don't appear in player HUD)
+    if (!targetCharacter && window.game && window.game.updateHUD) {
+      window.game.updateHUD(gameState.get('character'));
     }
   }
 

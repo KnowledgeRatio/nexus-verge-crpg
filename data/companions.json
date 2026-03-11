@@ -1,0 +1,307 @@
+{
+  "version": "1.0",
+  "campaignIds": ["core"],
+
+  "companionTypes": {
+    "standard": {
+      "skillContributions": 2,
+      "callings": ["dedication", "scholar"],
+      "description": "Standard companion with 2 skill proficiencies"
+    },
+    "wanderlust": {
+      "skillContributions": 3,
+      "callings": ["wanderlust"],
+      "description": "Wanderlust companion with 3 skill proficiencies"
+    }
+  },
+
+  "motivationArchetypes": {
+    "duty": {
+      "id": "duty",
+      "label": "Duty",
+      "description": "Cares about protecting innocents and keeping promises",
+      "relationshipEvents": {
+        "saveCivilian":                { "delta": 10,  "activeInCode": false },
+        "acceptHighRiskQuest":         { "delta": 3,   "activeInCode": false },
+        "shareLootFairly":             { "delta": 5,   "activeInCode": false },
+        "exploreOptionalRuin":         { "delta": 0,   "activeInCode": false },
+        "letCompanionDecide":          { "delta": 0,   "activeInCode": false },
+        "winHardFight":                { "delta": 5,   "activeInCode": true },
+        "abandonCivilian":             { "delta": -15, "activeInCode": false },
+        "fleeCowardly":                { "delta": -5,  "activeInCode": true },
+        "takeAllLoot":                 { "delta": 0,   "activeInCode": false },
+        "skipDungeonExploration":      { "delta": 0,   "activeInCode": false },
+        "overridePreference":          { "delta": -5,  "activeInCode": false },
+        "companionDowned":             { "delta": -10, "activeInCode": true }
+      },
+      "reactionLines": {
+        "fleeCowardly":    "{name} looks troubled as you retreat.",
+        "winHardFight":    "{name} nods with quiet satisfaction.",
+        "companionDowned": "{name}'s jaw tightens as they watch you fall."
+      },
+      "devotedPassive": {
+        "id": "duty_devoted",
+        "name": "Shield of Duty",
+        "description": "Once per long rest, companion uses their Reaction to impose Disadvantage on an attack targeting the player.",
+        "trigger": "onAttackTargetingPlayer",
+        "usesPerLongRest": 1
+      }
+    },
+
+    "wealth": {
+      "id": "wealth",
+      "label": "Wealth",
+      "description": "Cares about gold, rewards, and not dying for nothing",
+      "relationshipEvents": {
+        "saveCivilian":                { "delta": 0,   "activeInCode": false },
+        "acceptHighRiskQuest":         { "delta": -5,  "activeInCode": false },
+        "shareLootFairly":             { "delta": 15,  "activeInCode": false },
+        "exploreOptionalRuin":         { "delta": -3,  "activeInCode": false },
+        "letCompanionDecide":          { "delta": 0,   "activeInCode": false },
+        "winHardFight":                { "delta": 3,   "activeInCode": true },
+        "abandonCivilian":             { "delta": 0,   "activeInCode": false },
+        "fleeCowardly":                { "delta": 8,   "activeInCode": true },
+        "takeAllLoot":                 { "delta": -20, "activeInCode": true },
+        "skipDungeonExploration":      { "delta": 5,   "activeInCode": false },
+        "overridePreference":          { "delta": -5,  "activeInCode": false },
+        "companionDowned":             { "delta": -10, "activeInCode": true }
+      },
+      "reactionLines": {
+        "fleeCowardly":    "{name} exhales with relief — that was not worth dying for.",
+        "winHardFight":    "{name} eyes the loot with interest.",
+        "companionDowned": "{name} mutters something about poor risk management."
+      },
+      "devotedPassive": {
+        "id": "wealth_devoted",
+        "name": "Lucky Haul",
+        "description": "Companion's loot rolls have +1 tier bonus (uncommon to rare). Shared with player.",
+        "trigger": "onLootRoll",
+        "tierUpgrade": 1
+      }
+    },
+
+    "glory": {
+      "id": "glory",
+      "label": "Glory",
+      "description": "Cares about facing worthy opponents and being recognized",
+      "relationshipEvents": {
+        "saveCivilian":                { "delta": 2,   "activeInCode": false },
+        "acceptHighRiskQuest":         { "delta": 10,  "activeInCode": false },
+        "shareLootFairly":             { "delta": 0,   "activeInCode": false },
+        "exploreOptionalRuin":         { "delta": 2,   "activeInCode": false },
+        "letCompanionDecide":          { "delta": 2,   "activeInCode": false },
+        "winHardFight":                { "delta": 12,  "activeInCode": true },
+        "abandonCivilian":             { "delta": -3,  "activeInCode": false },
+        "fleeCowardly":                { "delta": -15, "activeInCode": true },
+        "takeAllLoot":                 { "delta": 0,   "activeInCode": false },
+        "skipDungeonExploration":      { "delta": -2,  "activeInCode": false },
+        "overridePreference":          { "delta": -5,  "activeInCode": false },
+        "companionDowned":             { "delta": -10, "activeInCode": true }
+      },
+      "reactionLines": {
+        "fleeCowardly":    "{name} grits their teeth as you retreat.",
+        "winHardFight":    "{name} grins — now that was a fight worth having.",
+        "companionDowned": "{name} shouts your name as you go down."
+      },
+      "devotedPassive": {
+        "id": "glory_devoted",
+        "name": "First Blood",
+        "description": "Companion deals +2 damage on their first attack of any combat.",
+        "trigger": "onFirstAttackOfCombat",
+        "damageBonus": 2
+      }
+    },
+
+    "knowledge": {
+      "id": "knowledge",
+      "label": "Knowledge",
+      "description": "Cares about discovery, ruins, and lore",
+      "relationshipEvents": {
+        "saveCivilian":                { "delta": 0,   "activeInCode": false },
+        "acceptHighRiskQuest":         { "delta": 5,   "activeInCode": false },
+        "shareLootFairly":             { "delta": 0,   "activeInCode": false },
+        "exploreOptionalRuin":         { "delta": 15,  "activeInCode": false },
+        "letCompanionDecide":          { "delta": 0,   "activeInCode": false },
+        "winHardFight":                { "delta": 0,   "activeInCode": true },
+        "abandonCivilian":             { "delta": 0,   "activeInCode": false },
+        "fleeCowardly":                { "delta": 0,   "activeInCode": true },
+        "takeAllLoot":                 { "delta": 0,   "activeInCode": false },
+        "skipDungeonExploration":      { "delta": -15, "activeInCode": false },
+        "overridePreference":          { "delta": -5,  "activeInCode": false },
+        "companionDowned":             { "delta": -10, "activeInCode": true }
+      },
+      "reactionLines": {
+        "fleeCowardly":    "{name} looks back at the unexplored corridor as you leave.",
+        "winHardFight":    "{name} catalogues the encounter methodically.",
+        "companionDowned": "{name} calls out for you with alarm."
+      },
+      "devotedPassive": {
+        "id": "knowledge_devoted",
+        "name": "Scholar's Foresight",
+        "description": "Companion grants +1 to all Investigation and Academia skill checks for the next dungeon.",
+        "trigger": "onDungeonEntry",
+        "effect": {
+          "skillBonus": 1,
+          "skills": ["investigation", "academia"],
+          "scope": "nextDungeon"
+        }
+      }
+    },
+
+    "freedom": {
+      "id": "freedom",
+      "label": "Freedom",
+      "description": "Cares about autonomy and resents being ordered around",
+      "relationshipEvents": {
+        "saveCivilian":                { "delta": 3,   "activeInCode": false },
+        "acceptHighRiskQuest":         { "delta": 2,   "activeInCode": false },
+        "shareLootFairly":             { "delta": 8,   "activeInCode": false },
+        "exploreOptionalRuin":         { "delta": 5,   "activeInCode": false },
+        "letCompanionDecide":          { "delta": 12,  "activeInCode": false },
+        "winHardFight":                { "delta": 0,   "activeInCode": true },
+        "abandonCivilian":             { "delta": 0,   "activeInCode": false },
+        "fleeCowardly":                { "delta": 0,   "activeInCode": true },
+        "takeAllLoot":                 { "delta": -5,  "activeInCode": false },
+        "skipDungeonExploration":      { "delta": 0,   "activeInCode": false },
+        "overridePreference":          { "delta": -15, "activeInCode": false },
+        "companionDowned":             { "delta": -10, "activeInCode": true }
+      },
+      "reactionLines": {
+        "fleeCowardly":    "{name} is the first one already heading for the exit.",
+        "winHardFight":    "{name} rolls their shoulders — no strings on them.",
+        "companionDowned": "{name} curses and pushes toward you."
+      },
+      "devotedPassive": {
+        "id": "freedom_devoted",
+        "name": "Free Action",
+        "description": "Companion can take the Help action as a free action once per combat.",
+        "trigger": "onCompanionHelpAction",
+        "freeActionPerCombat": 1
+      }
+    }
+  },
+
+  "relationshipTiers": {
+    "hostile":    { "min": -100, "max": -51, "label": "Distant",  "tier": "hostile" },
+    "unfriendly": { "min": -50,  "max": -21, "label": "Wary",     "tier": "unfriendly" },
+    "neutral":    { "min": -20,  "max": 20,  "label": "Cordial",  "tier": "neutral" },
+    "friendly":   { "min": 21,   "max": 60,  "label": "Trusted",  "tier": "friendly" },
+    "devoted":    { "min": 61,   "max": 100, "label": "Devoted",  "tier": "devoted" }
+  },
+
+  "combatRelationshipEvents": {
+    "playerSavesCompanionFromKillRange":  { "delta": 3 },
+    "companionDownedByPlayerOrder":       { "delta": -8 },
+    "companionIgnoredWhileAttacked":      { "delta": -5 },
+    "companionLandsKillingBlow":          { "delta": 5 }
+  },
+
+  "restActivities": {
+    "trainTogether": {
+      "id": "trainTogether",
+      "label": "Train Together",
+      "description": "Dedicated training with the companion.",
+      "relationshipDelta": 8,
+      "usesPerLongRest": 1,
+      "motivationAffinity": []
+    },
+    "shareADrink": {
+      "id": "shareADrink",
+      "label": "Share a Drink",
+      "description": "Casual conversation and camaraderie.",
+      "relationshipDelta": 5,
+      "usesPerLongRest": 1,
+      "advancesDialogue": true,
+      "motivationAffinity": []
+    },
+    "spar": {
+      "id": "spar",
+      "label": "Spar (Friendly)",
+      "description": "Player makes one attack roll vs companion AC (no damage). Success: +8, failure: +4.",
+      "relationshipDeltaSuccess": 8,
+      "relationshipDeltaFailure": 4,
+      "usesPerLongRest": 1,
+      "motivationAffinity": ["glory", "duty"]
+    },
+    "planTheRoute": {
+      "id": "planTheRoute",
+      "label": "Plan the Route",
+      "description": "Strategic planning. Reveals one hidden room on next dungeon map.",
+      "relationshipDelta": 5,
+      "usesPerLongRest": 1,
+      "revealHiddenRoom": true,
+      "motivationAffinity": ["knowledge", "duty"]
+    },
+    "splitTheSpoils": {
+      "id": "splitTheSpoils",
+      "label": "Split the Spoils",
+      "description": "Offer gold to the companion. +1 relationship per 5 gold, up to +10.",
+      "relationshipDeltaPerGold": 0.2,
+      "maxRelationshipDelta": 10,
+      "requiresTier": "friendly",
+      "usesPerLongRest": 1,
+      "motivationAffinity": ["wealth"]
+    }
+  },
+
+  "acquisitionSources": {
+    "settlement": {
+      "id": "settlement",
+      "candidateRange": [1, 3],
+      "seededToSettlement": true,
+      "candidatesPersist": false
+    },
+    "rescue": {
+      "id": "rescue",
+      "encounterChance": 0.06,
+      "levelOffset": -1,
+      "requiresPostCombatDialogue": true
+    },
+    "quest": {
+      "id": "quest",
+      "named": true,
+      "hasAuthoredDialogue": true
+    },
+    "dungeon": {
+      "id": "dungeon",
+      "requiresFreeing": true,
+      "startingRelationship": 0,
+      "departureSensitivity": "high"
+    }
+  },
+
+  "partySynergies": {
+    "vanguard": {
+      "id": "vanguard",
+      "description": "3+ Dedication party members gain +1 to attack rolls.",
+      "requiredCallings": { "dedication": 3 },
+      "effect": { "attackBonus": 1, "appliesTo": "dedication" }
+    },
+    "arcaneAssembly": {
+      "id": "arcaneAssembly",
+      "description": "2+ Scholar party members: Arcane Recovery recovers 1 additional mana.",
+      "requiredCallings": { "scholar": 2 },
+      "effect": { "arcaneRecoveryBonus": 1, "appliesTo": "scholar" }
+    },
+    "bandOfRogues": {
+      "id": "bandOfRogues",
+      "description": "3+ Wanderlust party members: Bardic Inspiration dice upgrade one step.",
+      "requiredCallings": { "wanderlust": 3 },
+      "effect": { "inspirationDieUpgrade": true, "appliesTo": "wanderlust" }
+    },
+    "trueParty": {
+      "id": "trueParty",
+      "description": "One of each Calling in party: all skill challenges gain +1 flat bonus.",
+      "requireAllCallings": true,
+      "effect": { "skillChallengeBonus": 1, "appliesTo": "all" }
+    }
+  },
+
+  "outcomeMap": {
+    "victory":      "stabilize",
+    "fled":         "permanent_death",
+    "tpk":          "permanent_death"
+  },
+
+  "namedCompanions": []
+}

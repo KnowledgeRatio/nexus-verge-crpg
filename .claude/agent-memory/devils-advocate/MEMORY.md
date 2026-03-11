@@ -61,6 +61,13 @@
 - biomeNoise channel exists (line 29) at hardcoded 0.02 scale instead of configured 0.005
 - Always grep for config usage before adding new config
 
+### 9. Party System Design Traps (2026-03-09)
+- BG3 direct-control model creates pacing death in a roguelike — 4-turn rounds vs. procedural encounters. Semi-autonomous stances (Aggressive/Defensive/Support) with single override prompt is the correct model.
+- Relationship event system: 12 event types × 5 motivations = 60 deltas, but 10 of 12 event triggers don't exist in the codebase yet. Only "companion downed" and "win fight" have existing hooks. Gate rest behind authored content milestones.
+- `fled` vs. `retreat` outcome ambiguity in handlePostCombat — if `fled` triggers companion permanent death, fleeing with a downed companion is a silent trap. Must be defined in RULES before implementation.
+- 0.6 action economy factor was not derived from a balance model. Level 1 companion may over-scale XP budget vs. actual effective contribution.
+- Without mid-event companion reaction lines (brief dialogue), the hidden motivation system teaches players nothing before the Hostile departure triggers. Feedback loop is broken.
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`

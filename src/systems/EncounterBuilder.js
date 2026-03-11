@@ -373,9 +373,10 @@ async function buildMinionGroup(allMonsters, options) {
     const { dungeonTypeId, partyLevel, partySize = 1, campaignId, rng } = options;
     const bossConfig = RULES.encounters.bossBuffs.minions;
 
-    // Scale minion count by party size
+    // Scale minion count by party size.
+    // partySize may be a floored float (effective party size) — use <= thresholds.
     let minMinionCount, maxMinionCount;
-    if (partySize === 1) {
+    if (partySize <= 1) {
         // Solo: 0-1 minions (50% chance of no minions)
         minMinionCount = 0;
         maxMinionCount = 1;

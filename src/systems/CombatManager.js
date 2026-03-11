@@ -20,6 +20,11 @@ class CombatManager {
         // Combat state
         this.playerCombatant = null;
         this.enemyCombatants = [];
+        this.companionCombatants = [];
+
+        // Cover type for current encounter ('half', 'threeQuarters', or null)
+        // Read from terrain at player's position when combat starts. Full cover → threeQuarters in active combat.
+        this.coverType = null;
 
         // Weapon mastery data (lazy-loaded from JSON)
         this.weaponMasteryAssignments = this.getFallbackWeaponMasteryAssignments();
@@ -33,8 +38,9 @@ class CombatManager {
      * Start combat encounter
      * @param {Object} player - Player character
      * @param {Array} enemies - Array of enemy characters
+     * @param {Array} companions - Array of companion characters (defaults to empty for backward compatibility)
      */
-    async startCombat(player, enemies) {
+    async startCombat(player, enemies, companions = []) {
         // Ensure weapon mastery data is loaded before applying effects
         await this.loadWeaponMasteryData();
         console.log('⚔️ Starting combat encounter!');
@@ -43,10 +49,26 @@ class CombatManager {
         this.round = 1;
         this.combatants = [];
         this.turnOrder = [];
+        this.companionCombatants = [];
 
         // Create player combatant
         this.playerCombatant = new Combatant(player, 'player');
         this.combatants.push(this.playerCombatant);
+
+        // Create companion combatants (skip downed companions)
+        this.companionCombatants = companions
+            .filter(c => !c.companionMeta?.isDowned)
+            .map((companion, index) => {
+                const combatant = new Combatant(companion, 'companion', `companion_${index}`);
+                combatant.sourceCharacter = companion; // CRITICAL: back-reference for isDowned writeback
+                this.combatants.push(combatant);
+                return combatant;
+            });
+
+        if (this.companionCombatants.length > 0) {
+            const names = this.companionCombatants.map(c => c.name).join(', ');
+            console.log(`👥 ${this.companionCombatants.length} companion(s) joining combat: ${names}`);
+        }
 
         // Create enemy combatants
         this.enemyCombatants = enemies.map((enemy, index) => {
@@ -58,12 +80,37 @@ class CombatManager {
         // Roll initiative
         this.rollInitiative();
 
+        // Read terrain cover at the player's position and store on manager
+        this.coverType = null;
+        try {
+            const playerPos = gameState.get('player.position') || gameState.get('character.position');
+            if (playerPos && window.game?.worldGenerator) {
+                const tile = window.game.worldGenerator.getCachedTile(playerPos.x, playerPos.y);
+                if (tile) {
+                    const terrainDef = window.game.worldGenerator.terrainTypes?.terrains?.find(t => t.id === tile.terrain);
+                    const rawCover = terrainDef?.coverType ?? null;
+                    // Full cover is treated as threeQuarters in active combat (can't fight from impassable cover)
+                    this.coverType = rawCover === 'full' ? 'threeQuarters' : rawCover;
+                }
+            }
+        } catch (e) {
+            console.warn('⚠️ Could not read terrain cover type:', e.message);
+        }
+
+        // Apply cover AC bonus to all combatants
+        if (this.coverType === 'threeQuarters') {
+            this.combatants.forEach(c => { c.ac += 2; });
+        }
+
         // Update game state
         gameState.set('combat', {
             active: true,
             round: this.round,
             currentTurn: this.getCurrentCombatant()?.id,
-            combatants: this.combatants.map(c => c.toJSON())
+            combatants: this.combatants.map(c => c.toJSON()),
+            coverType: this.coverType,
+            isCompanionTurn: false,
+            activeCompanionId: null
         });
 
         // Add combat start messages
@@ -71,6 +118,13 @@ class CombatManager {
         gameState.addMessage(`⚔️ You encounter: ${enemyNames}!`, 'warning');
         gameState.addMessage(`⚔️ Combat begins! Round ${this.round}`, 'warning');
         gameState.addMessage(`Turn order: ${this.turnOrder.map(c => c.name).join(' → ')}`, 'info');
+
+        // Announce cover effects
+        if (this.coverType === 'threeQuarters') {
+            gameState.addMessage(`🏰 Heavy cover! All combatants gain +2 AC. Ranged attacks have disadvantage.`, 'info');
+        } else if (this.coverType === 'half') {
+            gameState.addMessage(`🌿 Half cover! Ranged attacks have disadvantage for all combatants.`, 'info');
+        }
 
         // Start first turn
         this.startTurn();
@@ -177,10 +231,16 @@ class CombatManager {
         // Update game state
         this.updateGameState();
 
-        // If it's an enemy turn, execute AI
+        // If it's an enemy turn, execute AI; companions wait for player input
         if (combatant.team === 'enemy') {
             console.log('🤖 Enemy turn - executing AI in 500ms');
             setTimeout(() => this.executeEnemyAI(combatant), 500);
+        } else if (combatant.team === 'companion') {
+            console.log(`👥 Companion turn (${combatant.name}) - waiting for player input`);
+            gameState.set('combat.isCompanionTurn', true);
+            gameState.set('combat.activeCompanionId', combatant.id);
+            gameState.addMessage(`${combatant.name}'s turn — you control them.`, 'info');
+            // UI handles panel switch via 'combat.activeCompanionId' subscription
         } else {
             console.log('👤 Player turn - waiting for input');
         }
@@ -193,8 +253,9 @@ class CombatManager {
         console.log(`⚔️ AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is acting...`, 'info');
 
-        // Pick random living player target
-        const targets = [this.playerCombatant].filter(c => c.hp > 0);
+        // Pick random living friendly target (player + companions)
+        const targets = [this.playerCombatant, ...(this.companionCombatants || [])]
+            .filter(c => c.hp > 0 && !c.isDowned);
 
         if (targets.length === 0) {
             console.log('⚠️ No valid targets, ending turn');
@@ -570,6 +631,20 @@ class CombatManager {
         const isRanged = weapon?.weaponType === 'ranged';
         const isFinesse = weapon?.properties?.includes('finesse');
 
+        // AMMO CHECK: ranged attacks require ammunition
+        if (isRanged && weapon) {
+            // Initialize ammoCount from ammoCapacity if not yet set on the equipped weapon object
+            if (weapon.ammoCount === undefined) {
+                // TODO: use getItemDefinition() when available; fall back to ammoCapacity field or default 20
+                weapon.ammoCount = weapon.ammoCapacity ?? 20;
+            }
+
+            if (weapon.ammoCount <= 0) {
+                gameState.addMessage(`❌ ${attacker.name} has no ammunition! Use a Quiver of Arrows from inventory or visit a merchant.`, 'error');
+                return;
+            }
+        }
+
         // PUSH MASTERY RESTRICTION: Cannot make melee attacks while pushed
         if (attacker.hasCondition('pushed') && !isRanged) {
             console.log(`⚠️ ${attacker.name} is pushed and cannot make melee attacks!`);
@@ -656,6 +731,22 @@ class CombatManager {
         if (defender.masteryEffects.prone && !isRanged) {
             hasAdvantage = true;
             gameState.addMessage(`⚔️ ${attacker.name} has advantage (target prone)! [LEGACY]`, 'success');
+        }
+
+        // HARRIED: ranged attacker has disadvantage when harried by a melee hit this turn
+        if (isRanged && attacker.hasCondition('harried')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`🎯 ${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
+        }
+
+        // COVER: ranged attacks have disadvantage in half or threeQuarters cover terrain
+        if (isRanged && this.coverType) {
+            const cover = this.coverType;
+            if (cover === 'half' || cover === 'threeQuarters') {
+                hasDisadvantage = true;
+                const coverLabel = cover === 'half' ? 'half' : 'heavy';
+                gameState.addMessage(`🌿 ${attacker.name} has disadvantage (${coverLabel} cover)!`, 'warning');
+            }
         }
 
         // Attack roll: d20 + ability mod + proficiency + ranged bonus
@@ -816,6 +907,27 @@ class CombatManager {
                 }, 1000);
 
                 this.handleDefeat(defender);
+            }
+
+            // HARRIED CONDITION: a melee hit makes the target's ranged attacks harder
+            // appliedBy = defender.id so the condition clears at the START OF THE DEFENDER'S OWN TURN
+            // (the untilStartOfTurn cleanup loop fires when combatant.id === condition.appliedBy)
+            const defenderHasRanged = defender.character?.attackType === 'ranged' || defender.character?.attackType === 'both'
+                || defender.character?.actions?.some(a => a.type === 'rangedWeaponAttack')
+                || defender.character?.equipment?.mainHand?.weaponType === 'ranged';
+            if (!isRanged && !isCriticalMiss && defenderHasRanged) {
+                const harriedAdded = defender.addCondition('harried', 'untilStartOfTurn', defender.id, {
+                    value: null,
+                    isBuff: false,
+                    curable: false,
+                    icon: '🎯'
+                });
+                if (harriedAdded) {
+                    gameState.addMessage(`⚔️ ${defender.name} is harried! Ranged attacks have disadvantage! 🎯`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'HARRIED! 🎯', 'condition');
+                    }
+                }
             }
 
             // WEAPON MASTERY: Cleave
@@ -1122,6 +1234,25 @@ class CombatManager {
             }
         }
 
+        // AMMO DECREMENT: spend one arrow/bolt after the attack resolves (hit or miss)
+        if (isRanged && weapon && weapon.ammoCount !== undefined) {
+            weapon.ammoCount = Math.max(0, weapon.ammoCount - 1);
+            // Persist the change to GameState if this is the player character
+            if (attacker.id === 'player') {
+                const playerChar = gameState.get('character');
+                if (playerChar) {
+                    playerChar.equipment[weaponSlot] = weapon;
+                    gameState.set('character', playerChar);
+                }
+            }
+            if (weapon.ammoCount <= 3 && weapon.ammoCount > 0) {
+                gameState.addMessage(`⚠️ Low ammo: ${weapon.ammoCount} shot(s) remaining.`, 'warning');
+            } else if (weapon.ammoCount === 0) {
+                gameState.addMessage(`❌ Out of ammunition! Use a Quiver of Arrows from inventory to reload.`, 'error');
+            }
+            console.log(`🪶 Ammo: ${attacker.name} fired ${weapon.name}. ${weapon.ammoCount} remaining.`);
+        }
+
         if (shouldConsumeAction) {
             attacker.consumeAction(actionType);
         }
@@ -1397,6 +1528,21 @@ class CombatManager {
         // Check for combat end
         if (combatant.team === 'player') {
             this.endCombat('defeat');
+        } else if (combatant.team === 'companion') {
+            // Companions go "downed" rather than dying outright (CompanionManager handles post-combat fate)
+            combatant.isDowned = true;
+            if (combatant.sourceCharacter) {
+                combatant.sourceCharacter.companionMeta.isDowned = true;
+            }
+            // Remove from turn order so they don't get future turns
+            this.turnOrder = this.turnOrder.filter(c => c.id !== combatant.id);
+            gameState.addMessage(`💔 ${combatant.name} is downed!`, 'error');
+            if (window.game?.showFloatingCombatText) {
+                window.game.showFloatingCombatText(combatant.id, 'DOWNED!', 'condition');
+            }
+            console.log(`👥 Companion ${combatant.name} downed. sourceCharacter.companionMeta.isDowned = true`);
+            // Update game state so UI reflects the downed status
+            this.updateGameState();
         } else {
             // Check if all enemies defeated
             const aliveEnemies = this.enemyCombatants.filter(e => e.hp > 0);
@@ -1414,6 +1560,10 @@ class CombatManager {
         if (combatant) {
             combatant.endTurn();
         }
+
+        // Clear companion turn flags when any turn ends
+        gameState.set('combat.isCompanionTurn', false);
+        gameState.set('combat.activeCompanionId', null);
 
         // Legendary action: After a non-boss combatant's turn, a boss can use a legendary action
         if (combatant && this.active) {
@@ -1519,6 +1669,12 @@ class CombatManager {
             window.game.player.shownCombatMovementWarning = false;
         }
 
+        // Remove cover AC bonus if threeQuarters cover was active
+        if (this.coverType === 'threeQuarters') {
+            this.combatants.forEach(c => { c.ac -= 2; });
+        }
+        this.coverType = null;
+
         // Clean up all combat-only conditions and mastery effects
         this.combatants.forEach(combatant => {
             // Clean up conditions with 'combat' or 'untilStartOfTurn'/'untilEndOfTurn' duration
@@ -1549,6 +1705,10 @@ class CombatManager {
             combatant.masteryEffects.vexed = null;
             combatant.masteryEffects.prone = false;
         });
+
+        // Clear companion turn flags regardless of outcome
+        gameState.set('combat.isCompanionTurn', false);
+        gameState.set('combat.activeCompanionId', null);
 
         if (result === 'victory') {
             const character = gameState.get('character');
@@ -1633,6 +1793,11 @@ class CombatManager {
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'victory');
 
+            // Emit combat.ended event so CompanionManager can handle post-combat logic
+            // (auto-stabilize downed companions, fire relationship events, etc.)
+            gameState.notify('combat.ended', { outcome: 'victory' });
+            console.log('⚔️ combat.ended emitted: victory');
+
             // Show victory modal
             this.showVictoryModal(xpGained, character.xp, leveledUp, totalGold, allLootItems, lootMessages);
 
@@ -1645,6 +1810,10 @@ class CombatManager {
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'defeat');
 
+            // Emit combat.ended event (tpk — permanent death for downed companions)
+            gameState.notify('combat.ended', { outcome: 'tpk' });
+            console.log('⚔️ combat.ended emitted: tpk');
+
             // Show game over screen
             gameState.set('combat', null);
             setTimeout(() => {
@@ -1655,6 +1824,10 @@ class CombatManager {
 
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'fled');
+
+            // Emit combat.ended event (fled — permanent death for downed companions per Decision 3)
+            gameState.notify('combat.ended', { outcome: 'fled' });
+            console.log('⚔️ combat.ended emitted: fled');
 
             // Return to appropriate screen after delay (dungeon if in dungeon, otherwise world map)
             gameState.set('combat', null);
@@ -1697,6 +1870,9 @@ class CombatManager {
                 lootSummary += '</div>';
             }
 
+            // Build "Those We Lost" section (populated by party system UI helper)
+            const fallenSection = window.game?.buildFallenCompanionsHTML?.() || '';
+
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
                     <h2 style="color: var(--success-color); font-size: 3rem; margin-bottom: 20px;">🎉 VICTORY! 🎉</h2>
@@ -1713,6 +1889,8 @@ class CombatManager {
                     </div>
 
                     ${lootSummary}
+
+                    ${fallenSection}
 
                     <button class="menu-btn" id="victoryContinueBtn" style="margin: 30px auto 0;">
                         Continue
@@ -1766,12 +1944,16 @@ class CombatManager {
         const modalContent = document.getElementById('modalContent');
 
         if (modalOverlay && modalContent) {
+            // Build "Those We Lost" section (includes downed companions who died in this combat)
+            const fallenSection = window.game?.buildFallenCompanionsHTML?.() || '';
+
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
                     <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
                     <p style="font-size: 1.2rem; margin-bottom: 30px;">You have been defeated in combat.</p>
-                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Your adventure ends here.</p>
-                    <button class="menu-btn" onclick="location.reload()" style="margin: 0 auto;">
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Your adventure ends here.</p>
+                    ${fallenSection}
+                    <button class="menu-btn" onclick="location.reload()" style="margin: 30px auto 0;">
                         Return to Main Menu
                     </button>
                 </div>
@@ -1956,6 +2138,79 @@ class CombatManager {
     }
 
     /**
+     * Improvised Strike — PHB RAW: any held object used as improvised weapon deals 1d4 bludgeoning.
+     * Attack roll uses STR modifier only (no proficiency bonus, no weapon mastery).
+     * @param {Object} attacker - Attacking combatant (must be on player team)
+     * @param {Object} defender - Defending combatant
+     */
+    async improvisedStrike(attacker, defender) {
+        if (!attacker.hasAction('action')) {
+            gameState.addMessage(`${attacker.name} has no action available!`, 'error');
+            return;
+        }
+
+        const strMod = attacker.character.abilityModifiers?.str ?? 0;
+
+        gameState.addMessage(`${attacker.name} makes an improvised strike against ${defender.name}!`, 'warning');
+
+        // Attack roll: d20 + STR mod only (no proficiency bonus)
+        const attackRollObj = rollD20();
+        const attackTotal = attackRollObj.result + strMod;
+
+        let attackMsg = `🎲 Improvised strike: Rolled ${attackRollObj.result}`;
+        if (strMod !== 0) attackMsg += ` + ${strMod} (STR)`;
+        attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
+        gameState.addMessage(attackMsg, 'info');
+
+        if (attackRollObj.result === 1) {
+            // Critical miss
+            gameState.addMessage(`💥 Critical miss!`, 'error');
+            if (window.game?.showFloatingCombatText) {
+                window.game.showFloatingCombatText(defender.id, 'CRITICAL MISS!', 'miss');
+            }
+            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
+        } else if (attackTotal >= defender.ac || attackRollObj.result === 20) {
+            // Hit (natural 20 always hits)
+            const isCritical = attackRollObj.result === 20;
+            let dmg = rollDice(1, 4);
+            if (isCritical) {
+                dmg += rollDice(1, 4); // Double dice on crit
+                gameState.addMessage(`⭐ Critical hit!`, 'success');
+            }
+            const damage = Math.max(1, dmg);
+
+            gameState.addMessage(
+                `✊ Hit! Improvised strike deals ${damage} bludgeoning damage.`,
+                attacker.team === 'player' ? 'success' : 'error'
+            );
+
+            if (window.game?.showFloatingCombatText) {
+                window.game.showFloatingCombatText(defender.id, `-${damage}`, isCritical ? 'critical' : 'damage');
+            }
+
+            audioManager.playCombatSound({ weaponType: 'melee', hit: true, critical: isCritical });
+            defender.takeDamage(damage);
+
+            if (defender.hp <= 0) {
+                gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+                setTimeout(() => { audioManager.play('death'); }, 1000);
+                this.handleDefeat(defender);
+            }
+        } else {
+            // Miss
+            gameState.addMessage(`💨 Miss! Improvised strike misses ${defender.name}.`, 'info');
+            if (window.game?.showFloatingCombatText) {
+                window.game.showFloatingCombatText(defender.id, 'MISS', 'miss');
+            }
+            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
+        }
+
+        // Consume action
+        attacker.consumeAction('action');
+        this.updateGameState();
+    }
+
+    /**
      * Update game state with current combat data
      */
     updateGameState() {
@@ -1963,11 +2218,19 @@ class CombatManager {
             return;
         }
 
+        // Determine current companion turn state
+        const currentCombatant = this.getCurrentCombatant();
+        const isCompanionTurn = currentCombatant?.team === 'companion';
+        const activeCompanionId = isCompanionTurn ? currentCombatant.id : null;
+
         gameState.set('combat', {
             active: true,
             round: this.round,
-            currentTurn: this.getCurrentCombatant()?.id,
-            combatants: this.combatants.map(c => c.toJSON())
+            currentTurn: currentCombatant?.id,
+            combatants: this.combatants.map(c => c.toJSON()),
+            coverType: this.coverType,
+            isCompanionTurn,
+            activeCompanionId
         });
     }
 }
@@ -2026,6 +2289,14 @@ class Combatant {
         // Engagement tracking for flee mechanic
         // Set to true the first time this combatant makes a melee attack
         this.hasEngaged = false;
+
+        // Downed tracking for companions (goes to 0 HP but not permanently dead until post-combat)
+        // Only meaningful for team === 'companion'; enemies and player use the normal defeat flow.
+        this.isDowned = false;
+
+        // Back-reference to the original companion Character object (set by startCombat for companions)
+        // Used to write isDowned state back after combat resolves
+        this.sourceCharacter = null;
 
         // Legendary actions (boss monsters only)
         const legendary = character.legendaryActions;
@@ -2296,9 +2567,33 @@ class Combatant {
 
     /**
      * Heal
+     * If a downed companion receives healing that brings them above 0 HP, they are revived.
+     * @param {number} amount - Amount to heal
+     * @param {CombatManager} combatManager - Reference to manager (needed for turn order re-insertion)
      */
-    heal(amount) {
-        this.hp = Math.min(this.maxHP, this.hp + amount);
+    heal(amount, combatManager = null) {
+        const newHP = Math.min(this.maxHP, this.hp + amount);
+
+        // Revive downed companion when healing brings them above 0
+        if (this.isDowned && newHP > 0 && this.team === 'companion') {
+            this.isDowned = false;
+            if (this.sourceCharacter) {
+                this.sourceCharacter.companionMeta.isDowned = false;
+            }
+            this.hp = newHP;
+
+            // Re-insert into turn order after the current combatant
+            if (combatManager) {
+                const currentIdx = combatManager.turnOrder.indexOf(combatManager.getCurrentCombatant());
+                const insertAt = currentIdx >= 0 ? currentIdx + 1 : combatManager.turnOrder.length;
+                combatManager.turnOrder.splice(insertAt, 0, this);
+            }
+
+            gameState.addMessage(`💚 ${this.name} is back in the fight!`, 'success');
+            console.log(`👥 Companion ${this.name} revived from downed state.`);
+        } else {
+            this.hp = newHP;
+        }
 
         if (this.team === 'player') {
             gameState.set('character.currentHP', this.hp);

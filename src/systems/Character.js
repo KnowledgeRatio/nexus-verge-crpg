@@ -536,6 +536,9 @@ export class Character {
     autoEquipItem(item) {
         if (item.type === 'weapon') {
             if (!this.equipment.mainHand) {
+                if (item.weaponType === 'ranged' && item.ammoCount === undefined) {
+                    item.ammoCount = item.ammoCapacity ?? 20;
+                }
                 this.equipment.mainHand = item;
             } else {
                 this.inventory.push(item);
@@ -948,6 +951,18 @@ export class Character {
 
         // Recover all class features
         // TODO: Implement class feature recovery
+
+        // FORGECRAFT PRACTICE: refill ammunition during long rest
+        // Characters with the forgecraft practice can craft arrows/bolts during a long rest
+        if (this.practices?.includes('forgecraft') && this.equipment?.mainHand) {
+            const rangedWeapon = this.equipment.mainHand;
+            if (rangedWeapon.weaponType === 'ranged' &&
+                (rangedWeapon.ammoCapacity !== undefined || rangedWeapon.ammoCount !== undefined)) {
+                const capacity = rangedWeapon.ammoCapacity ?? 20;
+                rangedWeapon.ammoCount = capacity;
+                console.log(`🪶 Forgecraft: ${this.name} crafts arrows during long rest. Ammo refilled to ${capacity}.`);
+            }
+        }
 
         this.lastLongRest = Date.now();
 

@@ -4,6 +4,7 @@
  */
 
 import { getNestedProperty, setNestedProperty } from '../utils/helpers.js';
+import { RULES } from './rulesEngine.js';
 
 export class GameState {
     constructor() {
@@ -279,6 +280,19 @@ export class GameState {
             encounterAccumulator: 0
         };
 
+        // Initialize party state
+        this.data.party = {
+            companions: [],       // Array of Character instances with companionMeta attached
+            candidates: [],       // Transient — NOT persisted to save
+            activeSynergies: {    // Computed on read by CompanionManager, stored here for UI subscriptions
+                vanguard: false,
+                arcaneAssembly: false,
+                bandOfRogues: false,
+                trueParty: false
+            }
+        };
+        this.data.fallenCompanions = [];  // Persisted — displayed on game over/victory screen
+
         this.notify('game', 'initialized');
     }
 
@@ -389,6 +403,53 @@ export class GameState {
     }
 
     /**
+     * Returns [player, ...living companions] as one array.
+     * Safe to call before party is initialized (returns [player]).
+     * @returns {Array} Full party member list
+     */
+    getFullParty() {
+        const player = this.data.character;
+        const companions = this.data.party?.companions || [];
+        return [player, ...companions];
+    }
+
+    /**
+     * Returns total living party members (player + non-downed companions).
+     * @returns {number}
+     */
+    getPartySize() {
+        const companions = this.data.party?.companions || [];
+        return 1 + companions.filter(c => !c.companionMeta?.isDowned).length;
+    }
+
+    /**
+     * Effective party size for XP budget scaling only.
+     * Companions count as a fraction (companionActionEconomyFactor) to avoid double-scaling.
+     * @returns {number}
+     */
+    getEffectivePartySize() {
+        const companions = this.data.party?.companions || [];
+        const companionCount = companions.filter(c => !c.companionMeta?.isDowned).length;
+        const factor = RULES.party?.companionActionEconomyFactor ?? 0.75;
+        return 1 + (companionCount * factor);
+    }
+
+    /**
+     * Update a companion's relationship score and notify observers.
+     * @param {string} companionId
+     * @param {number} value - New relationship score
+     */
+    updateCompanionRelationship(companionId, value) {
+        const companions = this.data.party?.companions;
+        if (!companions) return;
+        const idx = companions.findIndex(c => c.id === companionId);
+        if (idx >= 0) {
+            companions[idx].companionMeta.relationship = value;
+            this.notify('party.companions', companions);
+        }
+    }
+
+    /**
      * Set flag
      */
     setFlag(flagName, value = true) {
@@ -435,17 +496,29 @@ export class GameState {
             npcs: Array.from(this.data.world.npcs.entries())
         };
 
+        // Serialize companions — Character instances with companionMeta attached.
+        // candidates and activeSynergies are intentionally NOT persisted.
+        const party = {
+            companions: (this.data.party?.companions || []).map(c => ({
+                characterData: c.toJSON ? c.toJSON() : c,
+                companionMeta: { ...c.companionMeta, devotedPassiveUsedThisRest: false }  // reset transient flag
+            }))
+            // candidates intentionally omitted
+        };
+
         return {
             ...this.data,
             world,
-            character: this.data.character?.toJSON() || null
+            character: this.data.character?.toJSON() || null,
+            party,
+            fallenCompanions: [...(this.data.fallenCompanions || [])]
         };
     }
 
     /**
      * Load state from saved data
      */
-    fromJSON(savedData) {
+    async fromJSON(savedData) {
         // Restore basic data
         this.data = {
             ...savedData,
@@ -456,11 +529,41 @@ export class GameState {
             }
         };
 
-        // Restore character if exists
-        if (savedData.character) {
-            const Character = require('../systems/Character.js').default;
+        // Restore character if exists (dynamic import — GameState must not create a circular dep at module load)
+        let Character = null;
+        if (savedData.character || savedData.party?.companions?.length) {
+            const mod = await import('../systems/Character.js');
+            Character = mod.default;
+        }
+
+        if (savedData.character && Character) {
             this.data.character = Character.fromJSON(savedData.character);
         }
+
+        // Restore party companions
+        if (savedData.party?.companions?.length && Character) {
+            this.data.party = {
+                companions: savedData.party.companions.map(entry => {
+                    const character = Character.fromJSON(entry.characterData);
+                    character.companionMeta = {
+                        ...entry.companionMeta,
+                        devotedPassiveUsedThisRest: false   // always reset on load
+                    };
+                    return character;
+                }),
+                candidates: [],    // never persisted, always starts empty
+                activeSynergies: { vanguard: false, arcaneAssembly: false, bandOfRogues: false, trueParty: false }
+            };
+        } else {
+            // Old save or solo run — initialize empty party
+            this.data.party = {
+                companions: [],
+                candidates: [],
+                activeSynergies: { vanguard: false, arcaneAssembly: false, bandOfRogues: false, trueParty: false }
+            };
+        }
+
+        this.data.fallenCompanions = savedData.fallenCompanions || [];
 
         // Notify all observers of full state reload
         this.notify('*', this.data);

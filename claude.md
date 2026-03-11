@@ -1,10 +1,203 @@
 # Claude Development Guide
 # Nexus Verge - Procedural D&D 5e Roguelike CRPG
 
-**Last Updated:** 2026-02-28
+**Last Updated:** 2026-03-09
 **Current Branch:** `main-beta-quests`
 **Project Phase:** Phase 3 - Combat & Abilities (IN PROGRESS)
-**Latest Commit:** Social Challenge System Architecture
+**Latest Commit:** Ranged enemies + terrain encounter tuning
+
+---
+
+## 🆕 Recent Changes (2026-03-09 - Session 19)
+
+### Party Member System — Design Review & Decisions Locked ✅ (Planning Only)
+**Amendments doc:** `docs/plans/2026-03-09-party-system-amendments.md`
+**Status:** All decisions locked. No code implemented yet. Ready for implementation.
+
+Three-way review (game designer + architect + devils advocate) of the party system design. All changes approved.
+
+**Locked Decisions:**
+
+**Decision 1 — Combat Control:** Full BG3-style direct control. Player manually controls each party member on their turn.
+- **Initiative:** Every combatant (player, each companion, each enemy) rolls individual d20 + DEX. Single unified turn queue, fully interleaved — no team grouping. Companions are added to the existing initiative system with `team: 'companion'`.
+
+**Decision 2 — Relationship Events:** Ship only 4 event triggers that have existing code hooks: `companionDowned`, `winHardFight`, `fleeCowardly`, `takeAllLoot`. Other 8 events (`saveCivilian`, `abandonCivilian`, etc.) are roadmap items — phantom triggers not yet wired.
+
+**Decision 3 — Retreat Outcome:** `fled` = permanent companion death for downed companions (same as `tpk`). Flee button tooltip must show downed companion warning before confirming.
+
+**Design Value Changes:**
+- `companionActionEconomyFactor`: 0.6 → **0.75**
+- `splitTheSpoils` max delta: 15 → **10**, requires Trusted tier
+- Knowledge devoted passive: "reveal boss type" → "+1 Investigation/Academia in next dungeon"
+- Freedom companion: `overridePreference` event does NOT fire during active combat turns
+- Companion level-up: batch modal; only L3 specialization requires player choice; L4 ASI auto-picks primary stat
+- Fallen companions record added to save file; displayed on game over/victory screen
+- Companion reaction lines (20-25 strings) for high-delta events (≥ ±8)
+
+**Architecture Fixes (pre-implementation):**
+- `CombatManager.endCombat()` must emit `combat.ended` event (currently missing)
+- Combatant needs `sourceCharacter` back-reference for isDowned writeback
+- Floor `getEffectivePartySize()` float before `buildMinionGroup` (integer equality bug)
+- `activeSynergies` computed on read, not persisted
+- `devotedPassiveUsedThisRest` excluded from save/load (transient)
+
+---
+
+## 🆕 Recent Changes (2026-03-07 - Session 18)
+
+### Ranged Combat Balance — Phase 1 + Terrain Movement ✅
+**Design doc:** `docs/plans/2026-03-07-ranged-combat-balance.md`
+
+**Phase 1 — Ranged Enemy Roster Expansion (IMPLEMENTED)**
+
+Added 5 new ranged enemies to `data/monsters.json` with `preferRanged: true` flag:
+| Enemy | CR | Bracket |
+|---|---|---|
+| Goblin Archer | 0.25 | Levels 1–3 |
+| Bandit Crossbowman | 0.125 | Levels 1–3 |
+| Manticore | 3 | Levels 5–7 |
+| Mage | 6 | Levels 7–10 |
+| Medusa | 6 | Levels 7–10 |
+
+`preferRanged: true` flag added — AI wiring into CombatManager enemy turn logic is **pending**.
+
+**Terrain Movement (IMPLEMENTED)**
+
+Added `RULES.movement` config block to `rulesEngine.js`:
+```javascript
+movement: {
+    baseMoveDelay: 150,           // ms per tile on standard terrain
+    maxMoveDelayMultiplier: 2.0,  // cap (prevents 375ms swamp frustration)
+    encounterAccumulatorThreshold: 10,
+    baseEncounterProbability: 0.10
+}
+```
+
+- **Variable move delay**: `Player.js` dynamically sets `currentMoveDelay = RULES.movement.baseMoveDelay * movementCost` (capped). Forest = 225ms, Mountain = 300ms, Road = 120ms.
+- **Step accumulator**: Per-tile encounter check replaced with accumulator. Fires when `accumulator >= threshold` then resets. Net rate per tile = `encounterModifier × movementCost × 0.01`.
+- **encounterAccumulator persistence**: Added to `gameState` in `initNewGame()` — survives save/load.
+- **encounterModifier recalibration**: All terrain `encounterModifier` values in `terrains.json` recalibrated for the new multiplicative formula (e.g., Forest: 1.3 → 1.0, Swamp: 1.2 → 0.80).
+
+**Terrain Skill Challenges (PARTIAL)**
+
+- Added `terrainModifiers` to all existing challenges in `data/skillChallenges.json` (cliff_climb on mountain = 3×, flat on road = 0×, etc.).
+- SkillChallengeManager method stubs added (`shouldTriggerChallenge`, `canAttemptChallenge`, `recordChallengeAttempt`, `buildTerrainIndex`, `getCandidatesForTerrain`) — **full logic implementation pending**.
+- Hardcoded `terrainChallengeMap` in `Player.js` **not yet replaced** with dynamic index.
+
+**Pending (Design approved, not implemented):**
+- Phase 2: Ammunition system (`ammoCapacity` in items.json, `ammoCount` runtime tracking, Quiver item, Forgecraft gate)
+- Phase 3: Harried condition (ranged disadvantage after being hit in melee)
+- Phase 4: Cover terrain combat effects + improvised strike action
+- `preferRanged` AI wiring in CombatManager
+
+---
+
+## 🆕 Recent Changes (2026-03-07 - Session 18b)
+
+### Party Member System — Design & Architecture ✅ (Planning Only)
+**Design doc:** `docs/designjams/2026-03-07-party-member-system.md`
+**Architecture doc:** `docs/plans/2026-03-07-party-member-architecture.md`
+**Status:** Merged via PR #9. Design and architecture complete. **No code implemented yet.**
+
+**Design Summary:**
+- Max party of 4 (player + 3 companions). Hard cap.
+- Companions acquired via: settlement taverns (primary), quest rewards (authored), combat rescue (6% dungeon encounters, tertiary), dungeon rescue events.
+- Permanent death by default (roguelike). No Last Stand mechanic.
+- Relationship system: score -100 to +100, driven by 5 motivation archetypes (duty, wealth, freedom, knowledge, protection). Tier thresholds: Hostile/Wary/Neutral/Friendly/Devoted.
+- Skill proficiency stacking: companion proficiency adds ON TOP of player's proficiency bonus for skill challenges (principled 5e deviation).
+- Devoted tier unlocks unique passive (e.g., "Shield of Duty" — reaction to impose disadvantage on attack targeting player).
+- Reactions: prompt player to approve/deny each time (not auto-fire).
+
+**Implementation Plan (from architecture doc):**
+| Phase | What | Files |
+|---|---|---|
+| 1 | Data & rules | `data/companions.json` (new), `RULES.party` block in rulesEngine.js |
+| 2 | Core system | `src/systems/CompanionManager.js` (new) |
+| 3 | State | GameState extensions (party state, `getFullParty()`, `getPartySize()`) |
+| 4 | System hooks | CombatManager, SkillChallengeManager, LevelUpManager, Player.js |
+| 5 | UI | Party health bars, action panel, turn order tracker |
+
+**Key breaking change to audit:** `LevelUpManager.confirmLevelUp()` must accept explicit character argument (currently hardcoded to player).
+
+---
+
+## 🆕 Recent Changes (2026-03-05 - Session 17)
+
+### Biome & Terrain Generation Fixes ✅
+**Design doc:** `docs/plans/2026-03-05-biome-terrain-fixes.md`
+
+Three targeted fixes to world generation — no full rewrite.
+
+**Fix 1 — Double-Scaling Bug (FIXED)**
+Worldbuilder settings were being scaled twice. Added `preScaled: true` flag to worldbuilder overrides in `main.js`; `getScaledFeatureGeneration()` in `WorldGenerator.js` now skips re-scaling for pre-scaled values.
+
+**Fix 2 — Inland Beaches (FIXED)**
+Beaches no longer appear inland. `selectTerrain()` now samples 4 cardinal neighbors' raw elevation before assigning `beach`; if no neighbor is at ocean-level elevation, demotes to grassland/plains.
+
+**Fix 3 — Climate Coherence (FIXED)**
+Wired the previously unused `RULES.worldGen.biomeGeneration` config into `WorldGenerator`:
+- **Latitude-based temperature**: `latitudeInfluence: 0.6` blends temperature noise with a latitude gradient (cos curve: warm equator, cold poles). Creates polar→temperate→tropical climate bands.
+- **Elevation-based moisture**: `elevationWeight: 0.6` reduces moisture at high elevation — mountains are drier, less forested.
+- **Continental biome scale**: `continentalScale: 0.005` creates larger, more coherent biome regions (~4× larger than before).
+
+**New terrain types added:**
+- `desertHills` — hot/dry mountainous context
+- `snowForest` — cold forested terrain
+
+**Combat fixes in same commit:**
+- Melee attacks blocked when attacker has `pushed` condition
+- `hasEngaged = true` set on melee attacks (required for flee system)
+- Advantage/disadvantage rules tightened: prone attacker has disadvantage, sapped condition cleared after the sapped combatant attacks, dodging properly grants advantage to all attackers
+
+---
+
+## 🆕 Recent Changes (2026-03-04 - Session 16)
+
+### Flee Mechanic Redesign ✅
+**Design doc:** `docs/plans/2026-03-04-flee-mechanic-redesign.md`
+
+Replaced the old `d20 + combatant.initiative vs DC 30` (double-random, hardcoded) with a principled system.
+
+**New Flee Formula:**
+```
+d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC
+```
+WIS allows Scholar to flee via tactical read, not just speed.
+
+**DC Formula:**
+```
+DC = 10 + 2 × (engaged_enemies - 1) + situational modifiers
+```
+Boss encounter: +5. Ambush (round 1): +3. DC cap: 25.
+
+**Engagement System:**
+- `hasEngaged: false` added to each Combatant on creation.
+- Set to `true` when a combatant makes their first melee attack.
+- Only engaged enemies: (a) count toward flee DC, (b) make opportunity attacks.
+- Round-1 flee before anyone attacks = DC 10, zero opp attacks. Clean escape.
+
+**Opportunity Attacks:**
+- Resolve **before** the flee check — can kill you at 1 HP.
+- Only engaged melee enemies attack (not ranged enemies, not unengaged enemies).
+
+**Action Economy:**
+- Standard flee costs an Action.
+- **Wanderlust Cunning Action** (level 2+): flee as a Bonus Action — same check, but action is free for an attack.
+
+**Condition Interactions:**
+| Condition | Effect |
+|---|---|
+| Restrained, Grappled, Stunned, Paralyzed, Unconscious | Blocks flee entirely |
+| Prone | Disadvantage on flee check |
+| Frightened | Advantage on flee check |
+
+**Per-Encounter Overrides:** `unfleeable`, `fleeModifier`, `fleeDescription` fields on combat data.
+
+**RULES.flee config block** added to `rulesEngine.js` (fully data-driven).
+
+**`attackType` field** added to all monsters in `monsters.json` (`"melee"` / `"ranged"` / `"both"`).
+
+**UI changes:** Flee button disabled when no Action available, tooltip shows DC and number of opp attacks, Cunning Flee button for Wanderlust L2+, blocking condition messages.
 
 ---
 

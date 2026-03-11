@@ -30,6 +30,7 @@ import DungeonGenerator from './systems/DungeonGenerator.js';
 import DungeonManager from './systems/DungeonManager.js';
 import { execute as dispatchEffects, executeOption as dispatchOption, isDeferred as checkDeferred, buildContext as buildEffectContext, buildOutOfCombatContext } from './systems/EffectDispatcher.js';
 import DungeonUI from './ui/DungeonUI.js';
+import CompanionManager from './systems/CompanionManager.js';
 
 class Game {
     constructor() {
@@ -62,6 +63,9 @@ class Game {
         this.dungeonGenerator = null;
         this.dungeonManager = null;
         this.dungeonUI = null;
+
+        // Companion system
+        this.companionManager = null;
 
         // Skill challenge system
         this.skillChallengeManager = null;
@@ -836,6 +840,15 @@ class Game {
             this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
         }
 
+        // Initialize CompanionManager
+        if (!this.companionManager) {
+            console.log('👥 Initializing companion manager...');
+            this.companionManager = new CompanionManager();
+            await this.companionManager.initialize(seed);
+            window.game = window.game || {};
+            window.game.companionManager = this.companionManager;
+        }
+
         if (!this.player) {
             console.log('👤 Initializing player...');
             this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
@@ -895,6 +908,9 @@ class Game {
         // Setup Quick Menu System (mouse-clickable UI)
         this.setupQuickMenu();
 
+        // Setup Party System UI (health bar, companion subscriptions)
+        this.setupPartySystem();
+
         // Note: Settlement UI event listeners are initialized in SettlementUI constructor
 
         // Start playtime tracking
@@ -925,9 +941,10 @@ class Game {
             return;
         }
 
-        // Start combat
+        // Start combat — pass living companions so they join the initiative queue
         const player = gameState.get('character');
-        await this.combatManager.startCombat(player, pendingCombat.enemies);
+        const companions = gameState.get('party')?.companions || [];
+        await this.combatManager.startCombat(player, pendingCombat.enemies, companions);
 
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
@@ -1084,23 +1101,60 @@ class Game {
 
         const currentTurn = combatState.currentTurn;
 
-        // Render player combatants (clickable for self-targeting)
-        const playerCombatants = combatState.combatants.filter(c => c.team === 'player');
+        // Render allied combatants: player + companions (clickable for self-targeting)
+        const playerCombatants = combatState.combatants.filter(c => c.team === 'player' || c.team === 'companion');
         playerDiv.innerHTML = playerCombatants.map(c => {
             const conditionsDisplay = c.conditions && c.conditions.length > 0
                 ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
                 : '';
+
+            // Ammo display for ranged weapons (player card only)
+            let ammoDisplay = '';
+            const mainHand = c.character?.equipment?.mainHand;
+            if (mainHand?.weaponType === 'ranged') {
+                const ammoCount = mainHand.ammoCount;
+                const ammoCapacity = mainHand.ammoCapacity ?? 20;
+                if (ammoCount == null) {
+                    ammoDisplay = `<div class="ammo-count">🏹 &mdash;</div>`;
+                } else {
+                    const ammoClass = ammoCount <= 3 ? 'ammo-count ammo-low' : 'ammo-count';
+                    ammoDisplay = `<div class="${ammoClass}">🏹 ${ammoCount} / ${ammoCapacity}</div>`;
+                }
+            }
+
+            // Companion / downed state extras
+            const isCompanion = c.team === 'companion';
+            const isDowned = c.isDowned === true;
+            const companionBadge = isCompanion
+                ? `<div style="font-size:0.7rem;color:#5bc8d4;margin-top:2px;">Companion</div>`
+                : '';
+            const downedBadge = isDowned
+                ? `<div style="color:var(--danger-color);font-weight:bold;font-size:0.8rem;text-align:center;padding:2px 0;">DOWNED</div>`
+                : '';
+
+            const cardClasses = [
+                'combatant-card',
+                c.id === currentTurn ? 'current-turn' : '',
+                c.hp <= 0 && !isDowned ? 'dead' : '',
+                isDowned ? 'downed' : '',
+                isCompanion ? 'companion-card' : ''
+            ].filter(Boolean).join(' ');
+
             return `
-                <div class="combatant-card ${c.id === currentTurn ? 'current-turn' : ''} ${c.hp <= 0 ? 'dead' : ''}"
+                <div class="${cardClasses}"
                      data-combatant-id="${c.id}"
                      onclick="window.game.handleTargetClick('${c.id}')">
                     <div class="combatant-name">${c.name}</div>
+                    ${companionBadge}
+                    ${isDowned ? downedBadge : `
                     <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
                     <div class="hp-bar">
-                        <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                        <div class="hp-fill" style="width: ${Math.max(0,(c.hp/c.maxHP)*100)}%"></div>
                     </div>
                     <div class="combatant-ac">AC: ${c.ac}</div>
+                    ${ammoDisplay}
                     ${conditionsDisplay}
+                    `}
                 </div>
             `;
         }).join('');
@@ -1128,7 +1182,7 @@ class Game {
     }
 
     /**
-     * Render turn order
+     * Render turn order — three teams: player (gold), companion (cyan), enemy (red)
      */
     renderTurnOrder(combatState) {
         const turnOrderEl = document.getElementById('turnOrder');
@@ -1139,12 +1193,37 @@ class Game {
 
         turnOrderEl.innerHTML = turnOrder.map(c => {
             const isCurrent = c.id === currentCombatant?.id;
-            const isDead = c.hp <= 0;
-            const style = isCurrent ? 'background: var(--accent-color); color: var(--bg-primary); font-weight: bold; padding: 8px; border-radius: 4px;' :
-                         isDead ? 'opacity: 0.5; text-decoration: line-through;' : 'padding: 8px;';
-            const team = c.team === 'player' ? '🛡️' : '⚔️';
-            return `<div style="${style} margin-bottom: 6px; font-family: var(--font-mono); font-size: 0.9rem;">
-                ${team} ${c.name} (HP: ${c.hp}/${c.maxHP})
+            const isDead = c.hp <= 0 && !c.isDowned;
+            const isDowned = c.isDowned === true;
+
+            // Team icon and class
+            let teamIcon, teamColorClass;
+            if (c.team === 'player') {
+                teamIcon = '🛡️';
+                teamColorClass = 'turn-entry-player';
+            } else if (c.team === 'companion') {
+                teamIcon = '⚔️';
+                teamColorClass = 'turn-entry-companion';
+            } else {
+                teamIcon = '💀';
+                teamColorClass = 'turn-entry-enemy';
+            }
+
+            const baseStyle = 'margin-bottom: 6px; font-family: var(--font-mono); font-size: 0.9rem; border-radius: 4px; padding: 6px 8px; display: flex; align-items: center; gap: 6px;';
+            let extraStyle = '';
+            if (isCurrent) {
+                extraStyle = 'background: rgba(74,158,255,0.18); border: 1px solid var(--accent-color); font-weight: bold;';
+            } else if (isDead) {
+                extraStyle = 'opacity: 0.35; text-decoration: line-through;';
+            } else if (isDowned) {
+                extraStyle = 'opacity: 0.55; font-style: italic;';
+            }
+
+            const downedLabel = isDowned ? ' <span style="color:var(--danger-color);font-size:0.75rem;">(downed)</span>' : '';
+            const initiative = c.initiative != null ? `<span style="color:var(--text-secondary);font-size:0.75rem;margin-left:auto;">${c.initiative}</span>` : '';
+
+            return `<div style="${baseStyle}${extraStyle}" class="${teamColorClass}">
+                ${teamIcon} ${c.name}${downedLabel} (${c.hp}/${c.maxHP})${initiative}
             </div>`;
         }).join('');
     }
@@ -1196,6 +1275,12 @@ class Game {
         const currentCombatant = this.combatManager.getCurrentCombatant();
 
         if (!currentCombatant || currentCombatant.team !== 'player') {
+            // Companion turn — delegate to companion action panel
+            if (currentCombatant?.team === 'companion') {
+                this.renderCompanionActions(currentCombatant.id, combatState);
+                return;
+            }
+
             // Enemy turn - show their action economy
             const enemyActions = currentCombatant?.actions || { action: 0, bonusAction: 0, reaction: 0 };
             actionsEl.innerHTML = `
@@ -1240,6 +1325,15 @@ class Game {
             fleeTooltip = this.getFleeTooltip();
         }
 
+        // --- Downed companion flee warning ---
+        const companions = gameState.get('party')?.companions || [];
+        const downedCompanions = companions.filter(c => c.companionMeta?.isDowned);
+        const fleeHasDownedWarning = downedCompanions.length > 0;
+        if (fleeHasDownedWarning) {
+            const names = downedCompanions.map(c => c.name).join(', ');
+            fleeTooltip += ` — WARNING: ${names} ${downedCompanions.length === 1 ? 'is' : 'are'} downed and will be lost`;
+        }
+
         // --- Cunning Action Flee (Wanderlust level 2+) ---
         const isWanderlust = character?.class?.id === 'wanderlust';
         const characterLevel = character?.level || 1;
@@ -1249,7 +1343,16 @@ class Game {
             ? `Cannot flee while ${blockingCondition}`
             : `Bonus Action \u2014 ${this.getFleeTooltip()}`;
 
+        // Cover indicator (shown when combat terrain has cover effects)
+        const combatCoverType = combatState?.coverType;
+        const coverDisplay = combatCoverType === 'half'
+            ? '<div class="cover-indicator half-cover">🌿 Half Cover — ranged disadvantage</div>'
+            : combatCoverType === 'threeQuarters'
+            ? '<div class="cover-indicator three-quarter-cover">🏰 Heavy Cover — ranged disadvantage, +2 AC</div>'
+            : '';
+
         actionsEl.innerHTML = `
+            ${coverDisplay}
             <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 15px;">
                 <div style="text-align: center;">
                     <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Actions</div>
@@ -1275,6 +1378,11 @@ class Game {
                         ⚔️ Attack (Off-Hand)
                     </button>
                 ` : ''}
+                <button class="action-btn" onclick="window.game.selectAction('improvisedStrike')"
+                        title="Improvised strike with your equipped item. 1d4 bludgeoning, STR only, no proficiency."
+                        ${!hasAction ? 'disabled' : ''}>
+                    ✊ Strike
+                </button>
                 <button class="action-btn" onclick="window.game.selectAction('dodge')"
                         ${!hasAction ? 'disabled' : ''}>
                     🛡️ Dodge
@@ -1286,7 +1394,7 @@ class Game {
                         ${!hasAction ? 'disabled' : ''}>
                     🔮 Spell
                 </button>
-                <button class="action-btn" onclick="window.game.selectAction('flee')"
+                <button class="action-btn ${fleeHasDownedWarning ? 'flee-warning' : ''}" onclick="window.game.selectAction('flee')"
                         ${fleeBlocked ? 'disabled' : ''}
                         title="${fleeTooltip}">
                     🏃 Flee
@@ -1332,6 +1440,13 @@ class Game {
             return;
         }
 
+        if (actionType === 'improvisedStrike') {
+            // Needs target — set pending action then prompt for target click
+            this.selectedAction = 'improvisedStrike';
+            gameState.addMessage('Select a target for your improvised strike.', 'info');
+            return;
+        }
+
         if (actionType === 'ability') {
             // Show ability selection modal instead of asking for target
             this.showAbilitySelection();
@@ -1355,7 +1470,24 @@ class Game {
         }
 
         const currentCombatant = this.combatManager.getCurrentCombatant();
-        if (!currentCombatant || currentCombatant.team !== 'player') {
+
+        // Handle companion attack — companion turn is also player-controlled
+        if (this.selectedAction === 'companionAttack' && this._pendingCompanionId) {
+            const companionCombatant = this.combatManager.combatants.find(
+                c => c.id === this._pendingCompanionId && c.team === 'companion'
+            );
+            const targetCombatant = this.combatManager.enemyCombatants.find(e => e.id === targetId);
+            if (companionCombatant && targetCombatant && targetCombatant.hp > 0) {
+                this.combatManager.attack(companionCombatant, targetCombatant, 'mainHand');
+            } else {
+                gameState.addMessage('Invalid target for companion attack!', 'error');
+            }
+            this.selectedAction = null;
+            this._pendingCompanionId = null;
+            return;
+        }
+
+        if (!currentCombatant || (currentCombatant.team !== 'player' && currentCombatant.team !== 'companion')) {
             gameState.addMessage("It's not your turn!", 'error');
             return;
         }
@@ -1387,6 +1519,9 @@ class Game {
                 break;
             case 'attackOffHand':
                 this.combatManager.attack(attacker, target, 'offHand');
+                break;
+            case 'improvisedStrike':
+                this.combatManager.improvisedStrike(attacker, target);
                 break;
             case 'abilityWeaponAttack': {
                 // Generic deferred weapon attack from any ability (e.g. Steady Nerve Attack option)
@@ -1442,11 +1577,16 @@ class Game {
      */
     syncCombatState() {
         if (!this.combatManager) return;
+        const current = this.combatManager.getCurrentCombatant();
+        const isCompanionTurn = current?.team === 'companion';
         gameState.set('combat', {
             active: true,
             round: this.combatManager.round,
-            currentTurn: this.combatManager.getCurrentCombatant()?.id,
-            combatants: this.combatManager.combatants.map(c => c.toJSON())
+            currentTurn: current?.id,
+            combatants: this.combatManager.combatants.map(c => c.toJSON()),
+            coverType: this.combatManager.coverType,
+            isCompanionTurn,
+            activeCompanionId: isCompanionTurn ? current.id : null
         });
     }
 
@@ -1554,7 +1694,189 @@ class Game {
         gameState.subscribe('world.currentLocation', () => {
             this.updateLocationDisplay();
         });
+
+        // Keep party health bar in sync with HUD updates
+        this.updatePartyHealthBar?.();
     }
+
+    // ===========================================================
+    // PARTY SYSTEM UI — Phase 5
+    // ===========================================================
+
+    /**
+     * Setup party system — subscribe to party state changes and wire
+     * the companion action panel into combat state subscription.
+     */
+    setupPartySystem() {
+        // React to companions list changes (join, downed, dismissed)
+        gameState.subscribe('party.companions', () => {
+            this.updatePartyHealthBar();
+        });
+
+        // React to character HP changes so bar stays in sync during combat
+        gameState.subscribe('character', () => {
+            this.updatePartyHealthBar();
+        });
+
+        // Subscribe to companion turn signalling
+        gameState.subscribe('combat', (combatState) => {
+            if (!combatState || !combatState.active) return;
+            if (combatState.isCompanionTurn && combatState.activeCompanionId) {
+                // renderCombatScreen already runs via the main combat subscription;
+                // this is the specific hook for the action panel switch.
+                this.renderCompanionActions(combatState.activeCompanionId, combatState);
+            }
+        });
+
+        // Initial render (for loaded saves that already have companions)
+        this.updatePartyHealthBar();
+    }
+
+    /**
+     * Render the compact party health bar below the main HUD.
+     * Shows player + all companions.  Hidden when solo (party size <= 1).
+     */
+    updatePartyHealthBar() {
+        const bar = document.getElementById('partyHealthBar');
+        if (!bar) return;
+
+        const party = gameState.getFullParty ? gameState.getFullParty() : [];
+        // Filter out null (can happen before character is set)
+        const living = party.filter(Boolean);
+
+        // Hide when solo
+        if (living.length <= 1) {
+            bar.classList.add('hidden');
+            return;
+        }
+        bar.classList.remove('hidden');
+
+        bar.innerHTML = living.map((member, index) => {
+            const isPlayer = index === 0;
+            const meta = member.companionMeta;
+            const isDowned = meta?.isDowned === true;
+
+            const currentHP = member.currentHP ?? member.hp ?? 0;
+            const maxHP = member.maxHP ?? 1;
+            const hpPct = Math.max(0, Math.min(100, Math.round((currentHP / maxHP) * 100)));
+
+            let fillClass = 'hp-high';
+            if (hpPct <= 25) fillClass = 'hp-low';
+            else if (hpPct <= 50) fillClass = 'hp-mid';
+
+            // Truncate name to 10 chars for compactness
+            const displayName = (member.name || 'Unknown').slice(0, 10);
+            const cardClass = [
+                'party-member-card',
+                isPlayer ? 'is-player' : 'is-companion',
+                isDowned ? 'is-downed' : ''
+            ].filter(Boolean).join(' ');
+
+            if (isDowned) {
+                return `
+                    <div class="${cardClass}" title="${member.name} — DOWNED">
+                        <div class="party-member-name">${displayName}</div>
+                        <div class="party-member-downed">DOWNED</div>
+                    </div>`;
+            }
+
+            return `
+                <div class="${cardClass}" title="${member.name} — HP: ${currentHP}/${maxHP}">
+                    <div class="party-member-name">${displayName}</div>
+                    <div class="party-member-hp-bar">
+                        <div class="party-member-hp-fill ${fillClass}" style="width:${hpPct}%"></div>
+                    </div>
+                    <div class="party-member-hp-text">${currentHP}/${maxHP}</div>
+                </div>`;
+        }).join('');
+    }
+
+    /**
+     * Render the action panel for a companion's turn.
+     * Mirrors the player action panel structure but sources from the companion combatant.
+     * @param {string} companionId - ID of the companion combatant
+     * @param {object} combatState - current combat state snapshot
+     */
+    renderCompanionActions(companionId, combatState) {
+        const actionsEl = document.getElementById('combatActions');
+        if (!actionsEl || !this.combatManager) return;
+
+        const companionCombatant = this.combatManager.combatants.find(
+            c => c.id === companionId && c.team === 'companion'
+        );
+        if (!companionCombatant) return;
+
+        const hasAction = companionCombatant.hasAction('action');
+        const hasBonusAction = companionCombatant.hasAction('bonusAction');
+        const companionName = companionCombatant.name;
+
+        actionsEl.innerHTML = `
+            <div class="companion-turn-banner">
+                Your companion <strong>${companionName}</strong> acts now
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 15px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Actions</div>
+                    <div style="font-size: 18px; font-weight: bold; color: ${hasAction ? '#5bc8d4' : 'var(--text-muted)'};">${companionCombatant.actions.action}</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 3px;">Bonus</div>
+                    <div style="font-size: 18px; font-weight: bold; color: ${hasBonusAction ? 'var(--secondary)' : 'var(--text-muted)'};">${companionCombatant.actions.bonusAction}</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="window.game.selectCompanionAction('attack', '${companionId}')"
+                        ${!hasAction ? 'disabled' : ''}>
+                    ⚔️ Attack
+                </button>
+            </div>
+            <button class="menu-btn" style="width: 100%; margin-top: 15px;"
+                    onclick="window.game.combatManager.endTurn()">
+                End Turn
+            </button>
+        `;
+
+        // Announce companion turn so player knows whose panel is shown
+        gameState.addMessage(`Choose an action for ${companionName}.`, 'info');
+    }
+
+    /**
+     * Handle a companion action selected from the companion action panel.
+     * @param {string} actionType - 'attack'
+     * @param {string} companionId - combatant ID of the companion
+     */
+    selectCompanionAction(actionType, companionId) {
+        if (actionType === 'attack') {
+            this.selectedAction = 'companionAttack';
+            this._pendingCompanionId = companionId;
+            gameState.addMessage('Select a target for the companion\'s attack.', 'info');
+        }
+    }
+
+    /**
+     * Build the "Those We Lost" HTML section for victory/game-over modals.
+     * Returns an empty string when no companions have fallen.
+     */
+    buildFallenCompanionsHTML() {
+        const fallen = gameState.get('fallenCompanions') || [];
+        if (fallen.length === 0) return '';
+
+        const entries = fallen.map(c => {
+            const callingName = c.callingName || c.class?.displayName || c.class?.name || 'Unknown';
+            const motivation = c.motivationId ? ` — ${c.motivationId}` : '';
+            return `<div class="fallen-companion-entry">${c.name}, Level ${c.level} ${callingName}${motivation}</div>`;
+        }).join('');
+
+        return `
+            <div class="fallen-companions-section">
+                <h3>Those We Lost</h3>
+                ${entries}
+            </div>`;
+    }
+
+    // ===========================================================
+    // END PARTY SYSTEM UI
+    // ===========================================================
 
     /**
      * Check if character has died (0 HP) outside of combat and show game over
@@ -1574,12 +1896,14 @@ class Game {
         const modalContent = document.getElementById('modalContent');
 
         if (modalOverlay && modalContent) {
+            const fallenSection = this.buildFallenCompanionsHTML?.() || '';
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
                     <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
                     <p style="font-size: 1.2rem; margin-bottom: 30px;">You have succumbed to your injuries.</p>
-                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Your adventure ends here.</p>
-                    <button class="menu-btn" onclick="location.reload()" style="margin: 0 auto;">
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Your adventure ends here.</p>
+                    ${fallenSection}
+                    <button class="menu-btn" onclick="location.reload()" style="margin: 30px auto 0;">
                         Return to Main Menu
                     </button>
                 </div>
@@ -5678,6 +6002,15 @@ class Game {
             }
         }
 
+        // VALIDATION: Cannot use off-hand while wielding a two-handed weapon
+        if (slot === 'offHand') {
+            const mainHandItem = character.equipment.mainHand;
+            if (mainHandItem?.twoHanded) {
+                gameState.addMessage(`❌ Cannot use an off-hand item while wielding ${mainHandItem.name} — it requires both hands.`, 'error');
+                return;
+            }
+        }
+
         // Check proficiency and strength requirements
         if (item.type === 'weapon') {
             if (!this.isCharacterProficientWithWeapon(character, item)) {
@@ -5706,6 +6039,14 @@ class Game {
             }
         }
 
+        // If equipping a two-handed weapon, force-clear the off-hand first
+        if (slot === 'mainHand' && item.twoHanded && character.equipment.offHand) {
+            const offHandItem = character.equipment.offHand;
+            character.inventory.push(offHandItem);
+            character.equipment.offHand = null;
+            gameState.addMessage(`${offHandItem.name} moved to inventory — ${item.name} requires both hands.`, 'info');
+        }
+
         // Unequip current item in slot (move to inventory)
         if (character.equipment[slot]) {
             const currentItem = character.equipment[slot];
@@ -5719,6 +6060,9 @@ class Game {
             character.inventory.splice(index, 1);
         }
 
+        if (item.weaponType === 'ranged' && item.ammoCount === undefined) {
+            item.ammoCount = item.ammoCapacity ?? 20;
+        }
         character.equipment[slot] = item;
         gameState.addMessage(`Equipped ${item.name}.`, 'success');
 
@@ -5814,6 +6158,47 @@ class Game {
 
             // Update HUD
             this.updateHUD(character);
+
+        // Handle ammo reload (quiverOfArrows → bows, boltCase → crossbows)
+        } else if (item.effect === 'refillAmmo') {
+            const weapon = character?.equipment?.mainHand;
+            if (!weapon || weapon.weaponType !== 'ranged') {
+                gameState.addMessage('No ranged weapon equipped to refill.', 'error');
+                return;
+            }
+            // Enforce ammo type match (arrows for bows, bolts for crossbows)
+            if (item.ammoType && weapon.ammunition && item.ammoType !== weapon.ammunition) {
+                const itemLabel = item.ammoType === 'arrow' ? 'arrows' : 'bolts';
+                const weaponLabel = weapon.ammunition === 'arrow' ? 'arrows' : 'bolts';
+                gameState.addMessage(`❌ ${weapon.name} uses ${weaponLabel}, not ${itemLabel}.`, 'error');
+                return;
+            }
+            const capacity = weapon.ammoCapacity ?? 20;
+            const currentAmmo = weapon.ammoCount ?? 0;
+            const refillAmount = Math.min(item.charges ?? 20, capacity - currentAmmo);
+            if (refillAmount <= 0) {
+                gameState.addMessage(`${weapon.name} is already full.`, 'warning');
+                return;
+            }
+            weapon.ammoCount = currentAmmo + refillAmount;
+            character.equipment.mainHand = weapon;
+
+            // Remove item from inventory
+            const inventory = character.inventory || [];
+            const idx = inventory.findIndex(i => i.id === item.id);
+            if (idx !== -1) inventory.splice(idx, 1);
+            character.inventory = inventory;
+
+            const icon = item.ammoType === 'bolt' ? '🏹' : '🏹';
+            gameState.set('character', character);
+            gameState.addMessage(`${icon} Reloaded: ${weapon.name} now has ${weapon.ammoCount}/${capacity} ammo.`, 'success');
+
+            // Re-render inventory
+            this.renderInventory();
+
+            // Update HUD
+            this.updateHUD(character);
+
         } else {
             gameState.addMessage(`${item.name} cannot be used yet.`, 'info');
         }
@@ -6430,6 +6815,11 @@ class Game {
                 if (character?.practices?.includes('forgecraft')) {
                     // Small delay to let rest messages display first
                     setTimeout(() => this.openForgecraftModal(), 500);
+                }
+
+                // Check companion ultimata after long rest
+                if (this.companionManager?.checkUltimata) {
+                    this.companionManager.checkUltimata();
                 }
             }
         });

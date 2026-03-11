@@ -978,9 +978,9 @@ export const RULES = {
     // ====================
     movement: {
         // Base move delay in ms for standard (movementCost 1.0) terrain
-        baseMoveDelay: 150,
-        // Cap on delay multiplier — prevents extreme frustration in swamp/jungle
-        maxMoveDelayMultiplier: 2.0,
+        baseMoveDelay: 200,
+        // Cap on delay multiplier — swamp/jungle at 2.5x = 500ms, jungle capped at 3.0x = 600ms
+        maxMoveDelayMultiplier: 3.0,
 
         // Step accumulator threshold — encounter check fires once this much
         // movement cost has been accumulated (not every tile)
@@ -1002,6 +1002,56 @@ export const RULES = {
         baseSize: 16,
         // localStorage key for persisting user preference
         storageKey: 'nexusVerge_zoomIndex'
+    },
+
+    // ====================
+    // PARTY SYSTEM
+    // ====================
+    party: {
+        enabled: true,
+
+        maxSize: 4,
+        maxCompanions: 3,
+
+        // Effective party size for XP budget = 1 + (companionCount * this factor)
+        // 0.75 accounts for companion being ~85% player power at level 1
+        // Solo: 1.0 | 1 companion: 1.75 | 2: 2.5 | 3: 3.25
+        companionActionEconomyFactor: 0.75,
+
+        // Cap companion skill challenge contributions at the player's proficiency bonus
+        skillContributionCap: "proficiencyBonus",
+
+        companionTypeSkillCounts: {
+            standard:   2,
+            wanderlust: 3
+        },
+
+        relationshipMin: -100,
+        relationshipMax: 100,
+        hostileThreshold: -51,
+
+        // Post-combat outcome mapping for downed companion state
+        outcomeMap: {
+            victory:         'stabilize',       // Downed companions auto-stabilise to 1 HP, free
+            fled:            'permanent_death',  // Same as tpk for downed companions
+            tpk:             'permanent_death'
+        },
+
+        synergies: {
+            enabled: true,
+            vanguard:       { enabled: true, minDedication: 3, attackBonus: 1 },
+            arcaneAssembly: { enabled: true, minScholar: 2,    arcaneRecoveryBonus: 1 },
+            bandOfRogues:   { enabled: true, minWanderlust: 3, inspirationDieUpgrade: true },
+            trueParty:      { enabled: true, requireAllCallings: true, skillChallengeBonus: 1 }
+        },
+
+        defaultReactionMode: 'ask',          // 'always' | 'ask' | 'never' — ask matches BG3 behaviour
+        rescueEncounterChance: 0.06,         // tertiary source; ~6% per non-boss dungeon encounter
+        settlementCandidateRange: [1, 3],
+
+        // Split the Spoils requires Friendly/Trusted tier
+        splitTheSpoilsRequiredTier: 'friendly',
+        splitTheSpoilsMax: 10
     }
 };
 

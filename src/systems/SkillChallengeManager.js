@@ -8,6 +8,7 @@
 
 import { gameState } from '../core/GameState.js';
 import { rollD20 } from '../utils/dice.js';
+import { RULES } from '../core/rulesEngine.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -120,8 +121,9 @@ class SkillChallengeManager {
 
         const character = gameState.get('character');
 
+        const companions = this._getActiveCompanions();
         node.passiveChecks.forEach(check => {
-            const skillMod = this.getSkillModifier(character, check.skill);
+            const skillMod = this.getSkillModifier(character, check.skill, companions);
             const passiveScore = 10 + skillMod; // Passive = 10 + modifier
 
             if (passiveScore >= check.dc) {
@@ -153,7 +155,8 @@ class SkillChallengeManager {
      */
     processActiveCheck(check) {
         const character = gameState.get('character');
-        const skillMod = this.getSkillModifier(character, check.skill);
+        const companions = this._getActiveCompanions();
+        const skillMod = this.getSkillModifier(character, check.skill, companions);
         const roll = rollD20();
         const total = roll + skillMod;
         const success = total >= check.dc;
@@ -465,19 +468,61 @@ class SkillChallengeManager {
     }
 
     /**
-     * Get skill modifier for character
-     * @param {Object} character - Character object
+     * Get skill modifier for character, optionally including companion contributions.
+     * Backward compatible: existing calls without `companions` arg return identical results.
+     * @param {Object} character - Character object (plain object from GameState)
      * @param {string} skillId - Skill ID
-     * @returns {number} Skill modifier
+     * @param {Array} [companions=[]] - Active companion character objects with companionMeta
+     * @returns {number} Total skill modifier
      */
-    getSkillModifier(character, skillId) {
+    getSkillModifier(character, skillId, companions = []) {
+        // --- Player base calculation (unchanged) ---
         const skillData = character.skills.find(s => s.id === skillId);
         if (!skillData) return 0;
 
         const abilityMod = character.abilityModifiers[skillData.ability];
         const profBonus = character.skillProficiencies.includes(skillId) ? character.proficiencyBonus : 0;
+        const playerBase = abilityMod + profBonus;
 
-        return abilityMod + profBonus;
+        // --- Party disabled or no companions: return unchanged ---
+        if (!RULES.party?.enabled || companions.length === 0) return playerBase;
+
+        // --- Companion contribution (capped at player's proficiency bonus) ---
+        const cap = character.proficiencyBonus;
+        let companionContribution = 0;
+
+        for (const companion of companions) {
+            const meta = companion.companionMeta;
+            if (!meta || !meta.skillAssignments.includes(skillId)) continue;
+            if (meta.isDowned) continue;
+            companionContribution = Math.min(cap, companionContribution + companion.proficiencyBonus);
+            if (companionContribution >= cap) break;
+        }
+
+        // --- trueParty synergy bonus ---
+        const synergyBonus = this._getSynergyBonus();
+
+        console.log(`🎯 Skill [${skillId}]: player ${playerBase} + companions ${companionContribution} + synergy ${synergyBonus}`);
+        return playerBase + companionContribution + synergyBonus;
+    }
+
+    /**
+     * Get active (non-downed) companions from GameState.
+     * @returns {Array} Companion character objects
+     */
+    _getActiveCompanions() {
+        return (gameState.get('party')?.companions || []).filter(
+            c => !c.companionMeta?.isDowned
+        );
+    }
+
+    /**
+     * Get the trueParty synergy flat skill bonus (0 or 1).
+     * @returns {number}
+     */
+    _getSynergyBonus() {
+        const synergies = gameState.get('party.activeSynergies');
+        return synergies?.trueParty ? 1 : 0;
     }
 
     /**

@@ -158,6 +158,7 @@
         "long": 320
       },
       "ammunition": "arrow",
+      "ammoCapacity": 20,
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
@@ -188,6 +189,71 @@
         "long": 320
       },
       "ammunition": "bolt",
+      "ammoCapacity": 15,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "handCrossbow",
+      "name": "Hand Crossbow",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": [
+        "ammunition",
+        "light",
+        "loading"
+      ],
+      "weight": 3,
+      "description": "A small crossbow that can be used one-handed.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
+      "ammunition": "bolt",
+      "ammoCapacity": 15,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "heavyCrossbow",
+      "name": "Heavy Crossbow",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1d10",
+      "damageType": "piercing",
+      "properties": [
+        "ammunition",
+        "heavy",
+        "loading",
+        "twoHanded"
+      ],
+      "weight": 18,
+      "description": "A powerful crossbow that fires heavy bolts.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "range": {
+        "normal": 100,
+        "long": 400
+      },
+      "ammunition": "bolt",
+      "ammoCapacity": 10,
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
@@ -317,6 +383,7 @@
         "long": 600
       },
       "ammunition": "arrow",
+      "ammoCapacity": 20,
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
@@ -554,6 +621,42 @@
   ],
   "consumables": [
     {
+      "id": "quiverOfArrows",
+      "name": "Quiver of Arrows",
+      "type": "consumable",
+      "subtype": "ammo",
+      "ammoType": "arrow",
+      "description": "A quiver containing 20 arrows. Use from inventory to reload an equipped bow.",
+      "charges": 20,
+      "effect": "refillAmmo",
+      "weight": 1,
+      "value": 5,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "boltCase",
+      "name": "Case of Bolts",
+      "type": "consumable",
+      "subtype": "ammo",
+      "ammoType": "bolt",
+      "description": "A hard leather case containing 15 crossbow bolts. Use from inventory to reload an equipped crossbow.",
+      "charges": 15,
+      "effect": "refillAmmo",
+      "weight": 1.5,
+      "value": 3,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "potionOfHealing",
       "name": "Potion of Healing",
       "type": "consumable",
@@ -584,26 +687,7 @@
       ]
     }
   ],
-  "ammunition": [
-    {
-      "id": "arrow",
-      "name": "Arrow",
-      "type": "ammunition",
-      "weight": 0.05,
-      "description": "Ammunition for bows.",
-      "rarity": "common",
-      "reputationRequirement": 0
-    },
-    {
-      "id": "bolt",
-      "name": "Crossbow Bolt",
-      "type": "ammunition",
-      "weight": 0.075,
-      "description": "Ammunition for crossbows.",
-      "rarity": "common",
-      "reputationRequirement": 0
-    }
-  ],
+  "ammunition": [],
   "gear": [
     {
       "id": "dungeoneersPack",
@@ -719,18 +803,6 @@
       "type": "gear",
       "weight": 3,
       "description": "A leather pouch containing bandages, salves, and splints. Has 10 uses.",
-      "rarity": "common",
-      "reputationRequirement": 0,
-      "campaignIds": [
-        "core"
-      ]
-    },
-    {
-      "id": "quiver",
-      "name": "Quiver",
-      "type": "gear",
-      "weight": 1,
-      "description": "A container for holding arrows or crossbow bolts.",
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
