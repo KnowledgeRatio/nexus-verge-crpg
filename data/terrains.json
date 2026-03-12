@@ -24,7 +24,7 @@
       "movementCost": 1.5,
       "description": "Dense trees provide shade and cover.",
       "encounterModifier": 1.00,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -38,7 +38,7 @@
       "movementCost": 2,
       "description": "Rocky peaks reach toward the sky.",
       "encounterModifier": 0.60,
-      "coverType": "threeQuarters",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -52,7 +52,7 @@
       "movementCost": null,
       "description": "Jagged summits rise above the clouds, too steep to climb.",
       "encounterModifier": 0,
-      "coverType": "full",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "traversalRequirements": ["flying"],
       "campaignIds": ["core"]
@@ -187,7 +187,7 @@
       "movementCost": 1.5,
       "description": "Rolling hills provide vantage points.",
       "encounterModifier": 0.67,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -201,7 +201,7 @@
       "movementCost": 1.5,
       "description": "Eroded sandstone ridges bake under the sun.",
       "encounterModifier": 0.47,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -215,7 +215,7 @@
       "movementCost": 2.5,
       "description": "A murky wetland filled with thick vegetation.",
       "encounterModifier": 0.80,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -243,7 +243,7 @@
       "movementCost": 1,
       "description": "A dark opening leading underground.",
       "encounterModifier": 1.5,
-      "coverType": "full",
+      "coverType": "substantial",
       "difficultTerrain": false,
       "isDungeon": true,
       "campaignIds": ["core"]
@@ -258,7 +258,7 @@
       "movementCost": 1.5,
       "description": "Ancient structures crumbling with age.",
       "encounterModifier": 1.4,
-      "coverType": "threeQuarters",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "isDungeon": true,
       "campaignIds": ["core"]
@@ -287,7 +287,7 @@
       "movementCost": 2,
       "description": "Thick forest with towering trees and dense undergrowth.",
       "encounterModifier": 1.5,
-      "coverType": "threeQuarters",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -329,7 +329,7 @@
       "movementCost": 2.5,
       "description": "Dense tropical jungle teeming with life.",
       "encounterModifier": 1.8,
-      "coverType": "threeQuarters",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     },
@@ -357,7 +357,7 @@
       "movementCost": 1,
       "description": "Houses and shops line the streets of the settlement outskirts.",
       "encounterModifier": 0.3,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": false,
       "isUrban": true,
       "campaignIds": ["core"]
@@ -387,7 +387,7 @@
       "movementCost": 1,
       "description": "Warehouses, workshops, and forges bustle with activity.",
       "encounterModifier": 0.5,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": false,
       "isUrban": true,
       "campaignIds": ["core"]
@@ -417,7 +417,7 @@
       "movementCost": null,
       "description": "Solid stone wall blocks your path.",
       "encounterModifier": 0,
-      "coverType": "full",
+      "coverType": "substantial",
       "difficultTerrain": false,
       "isDungeonTerrain": true,
       "campaignIds": ["core"]
@@ -494,7 +494,7 @@
       "movementCost": 2,
       "description": "Broken stones and debris litter the floor.",
       "encounterModifier": 1.0,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "isDungeonTerrain": true,
       "campaignIds": ["core"]
@@ -509,7 +509,7 @@
       "movementCost": 1,
       "description": "An ancient altar stands here, dark stains marking its surface.",
       "encounterModifier": 1.5,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": false,
       "isDungeonTerrain": true,
       "isInteractable": true,
@@ -557,7 +557,7 @@
       "movementCost": 2,
       "description": "Thick webs cling to everything here.",
       "encounterModifier": 1.4,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": true,
       "isDungeonTerrain": true,
       "campaignIds": ["core"]
@@ -602,7 +602,7 @@
       "movementCost": 1,
       "description": "Giant glowing mushrooms illuminate the cavern.",
       "encounterModifier": 1.2,
-      "coverType": "half",
+      "coverType": "partial",
       "difficultTerrain": false,
       "isDungeonTerrain": true,
       "campaignIds": ["core"]
@@ -632,7 +632,7 @@
       "movementCost": 1.5,
       "description": "Dense conifer forest draped in snow. Wind whispers through dark boughs.",
       "encounterModifier": 1.0,
-      "coverType": "threeQuarters",
+      "coverType": "substantial",
       "difficultTerrain": true,
       "campaignIds": ["core"]
     }

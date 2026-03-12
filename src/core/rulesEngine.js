@@ -57,11 +57,10 @@ export const RULES = {
         deathSaveFailureThreshold: 3,
         instantDeathThreshold: 'maxHP', // or specific number
 
-        // Cover bonuses
+        // Cover bonuses — applied to defender AC vs ranged attacks only (asymmetric)
         coverBonuses: {
-            half: 2,         // +2 AC and DEX saves
-            threeQuarters: 5, // +5 AC and DEX saves
-            full: Infinity    // Can't be targeted directly
+            partial: 2,      // +2 AC vs ranged (was: half cover)
+            substantial: 3   // +3 AC vs ranged (was: three-quarters / full cover)
         },
 
         // Initiative

@@ -22,8 +22,8 @@ class CombatManager {
         this.enemyCombatants = [];
         this.companionCombatants = [];
 
-        // Cover type for current encounter ('half', 'threeQuarters', or null)
-        // Read from terrain at player's position when combat starts. Full cover → threeQuarters in active combat.
+        // Cover type for current encounter ('partial', 'substantial', or null)
+        // Read from terrain at player's position when combat starts. Asymmetric: protects defender (player) vs ranged only.
         this.coverType = null;
 
         // Weapon mastery data (lazy-loaded from JSON)
@@ -89,18 +89,16 @@ class CombatManager {
                 if (tile) {
                     const terrainDef = window.game.worldGenerator.terrainTypes?.terrains?.find(t => t.id === tile.terrain);
                     const rawCover = terrainDef?.coverType ?? null;
-                    // Full cover is treated as threeQuarters in active combat (can't fight from impassable cover)
-                    this.coverType = rawCover === 'full' ? 'threeQuarters' : rawCover;
+                    // 'substantial' covers all strong cover (three-quarters + any full cover edge cases)
+                    this.coverType = rawCover;
                 }
             }
         } catch (e) {
             console.warn('⚠️ Could not read terrain cover type:', e.message);
         }
 
-        // Apply cover AC bonus to all combatants
-        if (this.coverType === 'threeQuarters') {
-            this.combatants.forEach(c => { c.ac += 2; });
-        }
+        // Cover is handled via attack disadvantage during ranged attacks (see attack() line ~743)
+        // — no flat AC mutation applied here.
 
         // Update game state
         gameState.set('combat', {
@@ -120,10 +118,10 @@ class CombatManager {
         gameState.addMessage(`Turn order: ${this.turnOrder.map(c => c.name).join(' → ')}`, 'info');
 
         // Announce cover effects
-        if (this.coverType === 'threeQuarters') {
-            gameState.addMessage(`🏰 Heavy cover! All combatants gain +2 AC. Ranged attacks have disadvantage.`, 'info');
-        } else if (this.coverType === 'half') {
-            gameState.addMessage(`🌿 Half cover! Ranged attacks have disadvantage for all combatants.`, 'info');
+        if (this.coverType === 'substantial') {
+            gameState.addMessage(`🏰 Substantial cover! Enemy ranged attacks suffer +3 effective AC penalty.`, 'info');
+        } else if (this.coverType === 'partial') {
+            gameState.addMessage(`🌿 Partial cover! Enemy ranged attacks suffer +2 effective AC penalty.`, 'info');
         }
 
         // Start first turn
@@ -739,15 +737,11 @@ class CombatManager {
             gameState.addMessage(`🎯 ${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
         }
 
-        // COVER: ranged attacks have disadvantage in half or threeQuarters cover terrain
-        if (isRanged && this.coverType) {
-            const cover = this.coverType;
-            if (cover === 'half' || cover === 'threeQuarters') {
-                hasDisadvantage = true;
-                const coverLabel = cover === 'half' ? 'half' : 'heavy';
-                gameState.addMessage(`🌿 ${attacker.name} has disadvantage (${coverLabel} cover)!`, 'warning');
-            }
-        }
+        // COVER: asymmetric — only protects the player (defender) from enemy ranged attacks.
+        // Adds a flat AC bonus for this attack only; no permanent mutation to combatant.ac.
+        const coverACBonus = (isRanged && this.coverType && defender.team === 'player')
+            ? (RULES.combat.coverBonuses[this.coverType] || 0)
+            : 0;
 
         // Attack roll: d20 + ability mod + proficiency + ranged bonus
         const attackRollObj = rollD20();
@@ -765,6 +759,7 @@ class CombatManager {
         }
 
         const attackTotal = attackRoll + attackBonus + proficiency;
+        const effectiveAC = defender.ac + coverACBonus;
 
         // Forgecraft: Keen mod expands crit range to 19-20
         let critRange = [...RULES.combat.criticalHitRange];
@@ -789,7 +784,7 @@ class CombatManager {
         if (proficiency !== 0) {
             attackMsg += ` + ${proficiency} (prof)`;
         }
-        attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
+        attackMsg += ` = ${attackTotal} vs AC ${effectiveAC}${coverACBonus > 0 ? ` (+${coverACBonus} cover)` : ''}`;
 
         gameState.addMessage(attackMsg, 'info');
 
@@ -815,7 +810,7 @@ class CombatManager {
             return;
         }
 
-        if (isCritical || attackTotal >= defender.ac) {
+        if (isCritical || attackTotal >= effectiveAC) {
             // Hit! Roll damage
             let damageDice = 8; // Default d8
             if (weapon?.damage?.dice) {
@@ -1669,10 +1664,6 @@ class CombatManager {
             window.game.player.shownCombatMovementWarning = false;
         }
 
-        // Remove cover AC bonus if threeQuarters cover was active
-        if (this.coverType === 'threeQuarters') {
-            this.combatants.forEach(c => { c.ac -= 2; });
-        }
         this.coverType = null;
 
         // Clean up all combat-only conditions and mastery effects

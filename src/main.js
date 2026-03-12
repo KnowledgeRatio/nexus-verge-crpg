@@ -1345,10 +1345,10 @@ class Game {
 
         // Cover indicator (shown when combat terrain has cover effects)
         const combatCoverType = combatState?.coverType;
-        const coverDisplay = combatCoverType === 'half'
-            ? '<div class="cover-indicator half-cover">🌿 Half Cover — ranged disadvantage</div>'
-            : combatCoverType === 'threeQuarters'
-            ? '<div class="cover-indicator three-quarter-cover">🏰 Heavy Cover — ranged disadvantage, +2 AC</div>'
+        const coverDisplay = combatCoverType === 'partial'
+            ? '<div class="cover-indicator partial-cover">🌿 Partial Cover — +2 AC vs enemy ranged</div>'
+            : combatCoverType === 'substantial'
+            ? '<div class="cover-indicator substantial-cover">🏰 Substantial Cover — +3 AC vs enemy ranged</div>'
             : '';
 
         actionsEl.innerHTML = `
