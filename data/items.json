@@ -52,6 +52,27 @@
       ]
     },
     {
+      "id": "morningstar",
+      "name": "Morningstar",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "piercing",
+      "properties": [],
+      "weight": 4,
+      "description": "A spiked club that deals piercing damage.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "quarterstaff",
       "name": "Quarterstaff",
       "type": "weapon",
@@ -70,6 +91,33 @@
         "offHand"
       ],
       "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "sling",
+      "name": "Sling",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "ranged",
+      "damage": "1d4",
+      "damageType": "bludgeoning",
+      "properties": [
+        "ammunition"
+      ],
+      "weight": 0,
+      "description": "A simple ranged weapon that hurls stones or lead bullets.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
@@ -136,6 +184,31 @@
       ]
     },
     {
+      "id": "scimitar",
+      "name": "Scimitar",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "slashing",
+      "properties": [
+        "finesse",
+        "light"
+      ],
+      "weight": 3,
+      "description": "A curved blade favored by desert warriors and rogues.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "shortbow",
       "name": "Shortbow",
       "type": "weapon",
@@ -159,6 +232,34 @@
       },
       "ammunition": "arrow",
       "ammoCapacity": 20,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "javelin",
+      "name": "Javelin",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": [
+        "thrown"
+      ],
+      "weight": 2,
+      "description": "A light spear designed to be thrown or used in melee.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
       "rarity": "common",
       "reputationRequirement": 0,
       "campaignIds": [
@@ -311,6 +412,53 @@
       ]
     },
     {
+      "id": "greataxe",
+      "name": "Greataxe",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d12",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "twoHanded"
+      ],
+      "weight": 7,
+      "description": "A massive axe with a single large blade, requiring two hands to wield.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "greatclub",
+      "name": "Greatclub",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "bludgeoning",
+      "properties": [
+        "twoHanded"
+      ],
+      "weight": 10,
+      "description": "A large, heavy club that requires two hands to swing effectively.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "greatsword",
       "name": "Greatsword",
       "type": "weapon",
@@ -348,6 +496,30 @@
       "versatileDamage": "1d10",
       "weight": 4,
       "description": "A heavy axe used in battle.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "club",
+      "name": "Club",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "bludgeoning",
+      "properties": [
+        "light"
+      ],
+      "weight": 2,
+      "description": "A simple bludgeoning weapon, often a heavy piece of wood.",
       "equipSlots": [
         "mainHand",
         "offHand"
