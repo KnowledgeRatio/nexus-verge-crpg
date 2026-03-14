@@ -16,7 +16,8 @@ export class GameState {
             worldConfig: {
                 mapSize: 'medium',
                 difficulty: 'normal',
-                campaignId: null
+                campaignId: null,
+                useAverageMonsterHP: false
             },
 
             // Character
@@ -579,7 +580,8 @@ export class GameState {
             worldConfig: {
                 mapSize: 'medium',
                 difficulty: 'normal',
-                campaignId: null
+                campaignId: null,
+                useAverageMonsterHP: false
             },
             character: null,
             world: {
@@ -656,7 +658,14 @@ export class GameState {
             ]);
 
             this.data.weaponMasteries = weaponMasteriesData;
-            this.data.items = items.items;
+            this.data.items = [
+                ...(items.weapons || []),
+                ...(items.armor || []),
+                ...(items.shields || []),
+                ...(items.consumables || []),
+                ...(items.ammunition || []),
+                ...(items.gear || [])
+            ];
             this.data.spells = spells.spells;
 
             console.log('[DEBUG loadStaticData] weaponMasteries hardcoded:', this.data.weaponMasteries);

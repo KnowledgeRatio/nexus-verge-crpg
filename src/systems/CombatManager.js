@@ -23,8 +23,13 @@ class CombatManager {
         this.companionCombatants = [];
 
         // Cover type for current encounter ('partial', 'substantial', or null)
-        // Read from terrain at player's position when combat starts. Asymmetric: protects defender (player) vs ranged only.
+        // Read from terrain at player's position when combat starts.
         this.coverType = null;
+
+        // Which side won the initiative contest for cover ('player' | 'enemy' | null).
+        // Winner gets full coverBonus; loser gets Math.ceil(bonus * loserMultiplier).
+        // Null when coverType is null (no cover terrain).
+        this.coverWinner = null;
 
         // Weapon mastery data (lazy-loaded from JSON)
         this.weaponMasteryAssignments = this.getFallbackWeaponMasteryAssignments();
@@ -97,8 +102,24 @@ class CombatManager {
             console.warn('⚠️ Could not read terrain cover type:', e.message);
         }
 
-        // Cover is handled via attack disadvantage during ranged attacks (see attack() line ~743)
-        // — no flat AC mutation applied here.
+        // Determine cover winner via initiative contest (if cover terrain and mode enabled).
+        // Player side = 'player' + 'companion' combatants. Enemy side = 'enemy' combatants.
+        // Winner gets full cover bonus; loser gets Math.ceil(bonus * loserMultiplier).
+        this.coverWinner = null;
+        if (this.coverType && RULES.combat.coverInitiativeMode?.enabled) {
+            const playerSideInits = this.combatants
+                .filter(c => c.team === 'player' || c.team === 'companion')
+                .map(c => c.initiative);
+            const enemySideInits = this.combatants
+                .filter(c => c.team === 'enemy')
+                .map(c => c.initiative);
+            const playerBest = playerSideInits.length ? Math.max(...playerSideInits) : -Infinity;
+            const enemyBest = enemySideInits.length ? Math.max(...enemySideInits) : -Infinity;
+            // Ties go to player (benefit of the doubt)
+            this.coverWinner = playerBest >= enemyBest ? 'player' : 'enemy';
+        }
+
+        // Cover is handled per-attack in attack() — no flat AC mutation here.
 
         // Update game state
         gameState.set('combat', {
@@ -107,6 +128,7 @@ class CombatManager {
             currentTurn: this.getCurrentCombatant()?.id,
             combatants: this.combatants.map(c => c.toJSON()),
             coverType: this.coverType,
+            coverWinner: this.coverWinner,
             isCompanionTurn: false,
             activeCompanionId: null
         });
@@ -117,11 +139,23 @@ class CombatManager {
         gameState.addMessage(`⚔️ Combat begins! Round ${this.round}`, 'warning');
         gameState.addMessage(`Turn order: ${this.turnOrder.map(c => c.name).join(' → ')}`, 'info');
 
-        // Announce cover effects
-        if (this.coverType === 'substantial') {
-            gameState.addMessage(`🏰 Substantial cover! Enemy ranged attacks suffer +3 effective AC penalty.`, 'info');
-        } else if (this.coverType === 'partial') {
-            gameState.addMessage(`🌿 Partial cover! Enemy ranged attacks suffer +2 effective AC penalty.`, 'info');
+        // Announce cover contest result
+        if (this.coverType && RULES.combat.coverInitiativeMode?.enabled) {
+            const bonuses = RULES.combat.coverBonuses;
+            const loserMult = RULES.combat.coverInitiativeMode.loserMultiplier;
+            const fullBonus = bonuses[this.coverType] || 0;
+            const reducedBonus = Math.ceil(fullBonus * loserMult);
+            const coverLabel = this.coverType === 'substantial' ? '🏰 Substantial' : '🌿 Partial';
+            if (this.coverWinner === 'player') {
+                gameState.addMessage(`${coverLabel} cover — your side claimed position! +${fullBonus} AC vs ranged. Enemies: +${reducedBonus} AC vs your ranged.`, 'success');
+            } else {
+                gameState.addMessage(`${coverLabel} cover — enemies claimed position! +${fullBonus} AC vs your ranged. Your side: +${reducedBonus} AC vs enemy ranged.`, 'warning');
+            }
+        } else if (this.coverType) {
+            // Fallback: initiative mode disabled — original asymmetric behaviour
+            const bonus = RULES.combat.coverBonuses[this.coverType] || 0;
+            const coverLabel = this.coverType === 'substantial' ? '🏰 Substantial cover' : '🌿 Partial cover';
+            gameState.addMessage(`${coverLabel}! Enemy ranged attacks suffer +${bonus} effective AC penalty.`, 'info');
         }
 
         // Start first turn
@@ -300,10 +334,13 @@ class CombatManager {
             gameState.addMessage(`⚔️ ${combatant.name} uses Multiattack!`, 'warning');
         }
 
-        // Filter to attack-type actions (have attackBonus and damage)
-        const attackActions = actions.filter(a => a.attackBonus !== undefined && a.damage);
-        // Save-based actions (breath weapons, etc.)
-        const specialActions = actions.filter(a => !a.attackBonus && a.damage);
+        // Filter to attack-type actions (melee/ranged weapon attacks with a weapon or damage dice)
+        const attackActions = actions.filter(a =>
+            (a.type === 'meleeWeaponAttack' || a.type === 'rangedWeaponAttack') &&
+            (a.weaponId || a.damage)
+        );
+        // Save-based actions (breath weapons, etc.) — type 'special' with damage in description
+        const specialActions = actions.filter(a => a.type === 'special' && a.description);
 
         // Use special action (like breath weapon) occasionally if available
         if (specialActions.length > 0 && Math.random() < 0.3) {
@@ -346,6 +383,79 @@ class CombatManager {
     }
 
     /**
+     * Look up a weapon from the loaded items data by ID.
+     * @param {string} weaponId
+     * @returns {object|null} weapon item or null if not found
+     */
+    getWeaponById(weaponId) {
+        const items = gameState.data?.items;
+        if (!items || !weaponId) return null;
+        return items.find(i => i.id === weaponId) || null;
+    }
+
+    /**
+     * Calculate attack bonus for a monster action.
+     * Replaces the old hardcoded action.attackBonus.
+     *
+     * @param {Combatant} combatant - the attacking monster combatant
+     * @param {object} action - the action being executed
+     * @returns {{ attackBonus: number, damageBonus: number, damageDice: string, damageType: string }}
+     */
+    calculateMonsterAttackStats(combatant, action) {
+        const mods = combatant.character.abilityModifiers;
+        const proficiency = combatant.character.proficiencyBonus || 2;
+        let abilityMod;
+        let damageDice;
+        let damageType;
+
+        if (action.weaponId) {
+            const weapon = this.getWeaponById(action.weaponId);
+            if (weapon) {
+                const props = weapon.properties || [];
+                const isFinesse = props.includes('finesse');
+                const isThrown = props.includes('thrown');
+                const isRanged = weapon.weaponType === 'ranged';
+
+                if (isFinesse) {
+                    abilityMod = Math.max(mods.str, mods.dex);
+                } else if (isRanged && !isThrown) {
+                    abilityMod = mods.dex;
+                } else {
+                    abilityMod = mods.str;
+                }
+
+                damageDice = weapon.damage;
+                damageType = weapon.damageType;
+            } else {
+                console.warn(`[CombatManager] weaponId "${action.weaponId}" not found in items data`);
+                abilityMod = mods.str;
+                damageDice = '1d4';
+                damageType = 'bludgeoning';
+            }
+        } else {
+            const isRangedAction = action.type === 'rangedWeaponAttack';
+            if (action.finesse) {
+                abilityMod = Math.max(mods.str, mods.dex);
+            } else if (isRangedAction && !action.thrown) {
+                abilityMod = mods.dex;
+            } else {
+                abilityMod = mods.str;
+            }
+
+            const diceMatch = (action.damage || '1d4').match(/^(\d+d\d+)/);
+            damageDice = diceMatch ? diceMatch[1] : (action.damage || '1d4');
+            damageType = action.damageType || 'bludgeoning';
+        }
+
+        return {
+            attackBonus: abilityMod + proficiency,
+            damageBonus: abilityMod,
+            damageDice,
+            damageType
+        };
+    }
+
+    /**
      * Execute a single monster attack action using stat-block data
      */
     async executeMonsterAttack(combatant, target, action) {
@@ -365,8 +475,9 @@ class CombatManager {
             combatant.hasEngaged = true;
         }
 
-        // Attack roll: d20 + action.attackBonus
-        const attackBonus = (action.attackBonus || 0) + (combatant.character.bossAttackBonus || 0);
+        // Attack roll: derive bonus from monster stats + proficiency
+        const attackStats = this.calculateMonsterAttackStats(combatant, action);
+        const attackBonus = attackStats.attackBonus + (combatant.character.bossAttackBonus || 0);
 
         // Check advantage/disadvantage
         let hasAdvantage = false;
@@ -445,36 +556,36 @@ class CombatManager {
         }
 
         if (isCritical || attackTotal >= target.ac) {
-            // Hit! Parse and roll damage from action.damage string (e.g. "2d8+4")
-            const damageStr = action.damage;
+            // Hit! Roll damage using stats derived from weapon data or action fallback
+            const damageDice = attackStats.damageDice;
+            const damageBonus = attackStats.damageBonus;
+            const damageType = attackStats.damageType;
             let damageRoll = 0;
 
             try {
-                damageRoll = roll(damageStr);
-                if (isCritical) {
-                    // Critical: roll damage dice again (not the modifier)
-                    const diceMatch = damageStr.match(/^(\d+)d(\d+)/);
-                    if (diceMatch) {
-                        const extraDice = rollDice(parseInt(diceMatch[1]), parseInt(diceMatch[2]));
-                        damageRoll += extraDice;
+                // Roll the base dice then add the ability modifier bonus
+                const diceMatch = damageDice.match(/^(\d+)d(\d+)/);
+                if (diceMatch) {
+                    const numDice = parseInt(diceMatch[1]);
+                    const dieSize = parseInt(diceMatch[2]);
+                    damageRoll = rollDice(numDice, dieSize) + damageBonus;
+                    if (isCritical) {
+                        // Critical: roll damage dice again (not the modifier)
+                        damageRoll += rollDice(numDice, dieSize);
                     }
+                } else {
+                    damageRoll = rollDice(1, 4) + damageBonus; // Last resort fallback
                 }
             } catch (e) {
-                // Fallback: parse manually
-                const parts = damageStr.match(/(\d+)d(\d+)([+-]\d+)?/);
-                if (parts) {
-                    const numDice = parseInt(parts[1]);
-                    const dieSize = parseInt(parts[2]);
-                    const mod = parts[3] ? parseInt(parts[3]) : 0;
-                    damageRoll = rollDice(numDice, dieSize) + mod;
-                    if (isCritical) damageRoll += rollDice(numDice, dieSize);
-                } else {
-                    damageRoll = rollDice(1, 8); // Last resort fallback
+                // Fallback: parse with roll() utility if available
+                try {
+                    damageRoll = roll(damageDice) + damageBonus;
+                } catch (e2) {
+                    damageRoll = rollDice(1, 8) + damageBonus;
                 }
             }
 
             const damageTotal = Math.max(1, damageRoll);
-            const damageType = action.damageType || 'bludgeoning';
 
             let damageMsg = isCritical ? '⭐ Critical hit! ' : '💥 Hit! ';
             damageMsg += `${actionName}: ${damageTotal} ${damageType} damage`;
@@ -737,11 +848,31 @@ class CombatManager {
             gameState.addMessage(`🎯 ${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
         }
 
-        // COVER: asymmetric — only protects the player (defender) from enemy ranged attacks.
-        // Adds a flat AC bonus for this attack only; no permanent mutation to combatant.ac.
-        const coverACBonus = (isRanged && this.coverType && defender.team === 'player')
-            ? (RULES.combat.coverBonuses[this.coverType] || 0)
-            : 0;
+        // COVER: symmetric, initiative-contested. Both sides can benefit.
+        // Winner gets full bonus; loser gets Math.ceil(bonus * loserMultiplier).
+        // Applies to ranged attacks only; no permanent AC mutation.
+        let coverACBonus = 0;
+        if (isRanged && this.coverType) {
+            const baseBonus = RULES.combat.coverBonuses[this.coverType] || 0;
+            const defenderIsPlayerSide = defender.team === 'player' || defender.team === 'companion';
+            const defenderIsEnemySide = defender.team === 'enemy';
+            const modeEnabled = RULES.combat.coverInitiativeMode?.enabled;
+            if (modeEnabled && this.coverWinner) {
+                const loserMult = RULES.combat.coverInitiativeMode.loserMultiplier;
+                if (defenderIsPlayerSide) {
+                    coverACBonus = this.coverWinner === 'player'
+                        ? baseBonus
+                        : Math.ceil(baseBonus * loserMult);
+                } else if (defenderIsEnemySide) {
+                    coverACBonus = this.coverWinner === 'enemy'
+                        ? baseBonus
+                        : Math.ceil(baseBonus * loserMult);
+                }
+            } else if (defenderIsPlayerSide) {
+                // Fallback: initiative mode disabled — original player-only behaviour
+                coverACBonus = baseBonus;
+            }
+        }
 
         // Attack roll: d20 + ability mod + proficiency + ranged bonus
         const attackRollObj = rollD20();
@@ -1665,6 +1796,7 @@ class CombatManager {
         }
 
         this.coverType = null;
+        this.coverWinner = null;
 
         // Clean up all combat-only conditions and mastery effects
         this.combatants.forEach(combatant => {
@@ -2220,6 +2352,7 @@ class CombatManager {
             currentTurn: currentCombatant?.id,
             combatants: this.combatants.map(c => c.toJSON()),
             coverType: this.coverType,
+            coverWinner: this.coverWinner,
             isCompanionTurn,
             activeCompanionId
         });

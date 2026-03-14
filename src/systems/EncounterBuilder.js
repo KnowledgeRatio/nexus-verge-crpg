@@ -17,6 +17,42 @@ import { filterByCampaign } from '../utils/campaignFilter.js';
 let cachedMonsterData = null;
 
 /**
+ * Calculate monster spawn HP from hit dice formula.
+ * Applies difficulty multiplier and respects useAverageMonsterHP toggle.
+ * @param {string} hitDiceFormula - e.g. "2d8+6"
+ * @param {Object} worldConfig - from gameState.get('worldConfig')
+ * @returns {number} Final HP (minimum 1)
+ */
+function calculateMonsterHP(hitDiceFormula, worldConfig = {}) {
+    const difficulty = worldConfig.difficulty || 'normal';
+    const useAverage = worldConfig.useAverageMonsterHP === true;
+    const multiplier = RULES.monsterHP.difficultyMultipliers[difficulty] ?? 1.0;
+
+    const match = hitDiceFormula.match(/^(\d+)d(\d+)([+-]\d+)?$/);
+    if (!match) {
+        const staticHP = parseInt(hitDiceFormula) || 1;
+        return Math.max(1, Math.floor(staticHP * multiplier));
+    }
+
+    const numDice = parseInt(match[1]);
+    const dieSize = parseInt(match[2]);
+    const flatBonus = match[3] ? parseInt(match[3]) : 0;
+
+    let hp;
+    if (useAverage || !RULES.monsterHP.roll) {
+        hp = Math.floor(numDice * (dieSize / 2 + 0.5)) + flatBonus;
+    } else {
+        let rolled = 0;
+        for (let i = 0; i < numDice; i++) {
+            rolled += Math.floor(Math.random() * dieSize) + 1;
+        }
+        hp = rolled + flatBonus;
+    }
+
+    return Math.max(1, Math.floor(hp * multiplier));
+}
+
+/**
  * Load and cache monster data from JSON
  * @returns {Promise<Array>} Array of monster objects
  */
@@ -85,17 +121,17 @@ function rollDifficulty(weights, rng) {
  * @returns {Object} Enemy character object for CombatManager
  */
 function createEnemyFromMonster(monster, options = {}) {
-    const { isBoss = false } = options;
+    const { isBoss = false, worldConfig = {} } = options;
     const bossBuffs = RULES.encounters.bossBuffs;
 
-    // Roll HP from hit dice
+    // Calculate HP from hit dice
     let hp;
     if (isBoss) {
         // Boss: use max possible HP from hit dice, then multiply
         hp = rollMaxHP(monster.hitPoints);
         hp = Math.floor(hp * bossBuffs.hpMultiplier);
     } else {
-        hp = roll(monster.hitPoints);
+        hp = calculateMonsterHP(monster.hitPoints, worldConfig);
     }
 
     // Ensure minimum 1 HP
@@ -221,7 +257,8 @@ export async function buildEncounter(options = {}) {
         monsterPool = null,
         campaignId = 'core',
         context = 'overworld',
-        rng = null
+        rng = null,
+        worldConfig = {}
     } = options;
 
     const rand = rng || Math.random.bind(Math);
@@ -331,7 +368,7 @@ export async function buildEncounter(options = {}) {
     const finalMultiplier = getEncounterMultiplier(selectedMonsters.length);
     const adjustedXP = Math.floor(totalRawXP * finalMultiplier);
 
-    const monsters = selectedMonsters.map(m => createEnemyFromMonster(m, { isBoss }));
+    const monsters = selectedMonsters.map(m => createEnemyFromMonster(m, { isBoss, worldConfig }));
 
     // For boss encounters, add minions
     if (isBoss && dungeonTypeId) {

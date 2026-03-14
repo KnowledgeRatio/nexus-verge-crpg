@@ -101,6 +101,9 @@ All monsters now have `attackType`: `"melee"`, `"ranged"`, or `"both"`.
 - `Player.js` encounter call: `partySize: Math.floor(gameState.getEffectivePartySize?.() ?? 1)` — uses optional chaining so solo play returns 1 when party system not yet initialized.
 - `EncounterBuilder.buildMinionGroup` partySize check changed from `=== 1` to `<= 1` (safe for floored floats).
 
+## User Preferences
+- Do NOT run git commits. User manages all commits through GitHub.
+
 ## Files & Locations
 - Rules engine: `src/core/rulesEngine.js` — all tunable values go here
 - Combat system: `src/systems/CombatManager.js` — Combatant class at bottom of file (~line 1730+)

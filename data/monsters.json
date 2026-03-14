@@ -37,10 +37,8 @@
         {
           "name": "Scimitar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "slashing"
+          "weaponId": "scimitar",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -133,9 +131,8 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "2d4+2",
+          "damage": "2d4",
           "damageType": "piercing"
         }
       ],
@@ -217,21 +214,17 @@
         {
           "name": "Shortsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          "weaponId": "shortsword",
+          "reach": 5
         },
         {
           "name": "Shortbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
+          "weaponId": "shortbow",
           "range": {
             "normal": 80,
             "long": 320
-          },
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -296,10 +289,8 @@
         {
           "name": "Greataxe",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
-          "reach": 5,
-          "damage": "1d12+3",
-          "damageType": "slashing"
+          "weaponId": "greataxe",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -355,21 +346,17 @@
         {
           "name": "Scimitar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 3,
-          "reach": 5,
-          "damage": "1d6+1",
-          "damageType": "slashing"
+          "weaponId": "scimitar",
+          "reach": 5
         },
         {
           "name": "Light Crossbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 3,
+          "weaponId": "lightCrossbow",
           "range": {
             "normal": 80,
             "long": 320
-          },
-          "damage": "1d8+1",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -475,9 +462,8 @@
         {
           "name": "Slam",
           "type": "meleeWeaponAttack",
-          "attackBonus": 3,
           "reach": 5,
-          "damage": "1d6+1",
+          "damage": "1d6",
           "damageType": "bludgeoning"
         }
       ],
@@ -554,9 +540,8 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "1d4+2",
+          "damage": "1d4",
           "damageType": "piercing"
         }
       ],
@@ -648,10 +633,8 @@
         {
           "name": "Morningstar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "2d8+2",
-          "damageType": "piercing"
+          "weaponId": "morningstar",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -714,10 +697,8 @@
         {
           "name": "Club",
           "type": "meleeWeaponAttack",
-          "attackBonus": 2,
-          "reach": 5,
-          "damage": "1d4",
-          "damageType": "bludgeoning"
+          "weaponId": "club",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -788,21 +769,17 @@
         {
           "name": "Dagger",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d4+2",
-          "damageType": "piercing"
+          "weaponId": "dagger",
+          "reach": 5
         },
         {
           "name": "Sling",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
+          "weaponId": "sling",
           "range": {
             "normal": 30,
             "long": 120
-          },
-          "damage": "1d4+2",
-          "damageType": "bludgeoning"
+          }
         }
       ],
       "lootTable": {
@@ -872,9 +849,8 @@
         {
           "name": "Blood Drain",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "1d4+3",
+          "damage": "1d4",
           "damageType": "piercing",
           "description": "On hit, the stirge attaches to the target and drains 1d4+3 hit points at the start of each of its turns until detached."
         }
@@ -953,9 +929,8 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "1d8+3",
+          "damage": "1d8",
           "damageType": "piercing",
           "description": "The target must make a DC 11 Constitution saving throw, taking 2d8 poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way."
         }
@@ -1037,9 +1012,8 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "2d6+3",
+          "damage": "2d6",
           "damageType": "piercing",
           "description": "If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
         }
@@ -1116,18 +1090,15 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "1d4+2",
+          "damage": "1d4",
           "damageType": "piercing"
         },
         {
           "name": "Spear",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          "weaponId": "spear",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -1242,13 +1213,13 @@
         {
           "name": "Strength Drain",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "2d6+2",
+          "damage": "2d6",
           "damageType": "necrotic",
           "description": "The target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.15,
         "items": []
@@ -1325,21 +1296,17 @@
         {
           "name": "Shortsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          "weaponId": "shortsword",
+          "reach": 5
         },
         {
           "name": "Longbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
+          "weaponId": "longbow",
           "range": {
             "normal": 150,
             "long": 600
-          },
-          "damage": "1d8+2",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -1424,21 +1391,21 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 2,
           "reach": 5,
-          "damage": "2d6+2",
+          "damage": "2d6",
           "damageType": "piercing"
         },
         {
           "name": "Claws",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "2d4+2",
+          "damage": "2d4",
           "damageType": "slashing",
+          "finesse": true,
           "description": "If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.3,
         "items": []
@@ -1509,9 +1476,8 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "2d6+3",
+          "damage": "2d6",
           "damageType": "piercing"
         }
       ],
@@ -1615,13 +1581,13 @@
         {
           "name": "Life Drain",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
           "damage": "3d6",
           "damageType": "necrotic",
           "description": "The target must succeed on a DC 10 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.1,
         "items": []
@@ -1682,21 +1648,17 @@
         {
           "name": "Shortsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          "weaponId": "shortsword",
+          "reach": 5
         },
         {
           "name": "Hand Crossbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
+          "weaponId": "handCrossbow",
           "range": {
             "normal": 30,
             "long": 120
-          },
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -1778,21 +1740,17 @@
         {
           "name": "Greatclub",
           "type": "meleeWeaponAttack",
-          "attackBonus": 6,
-          "reach": 5,
-          "damage": "2d8+4",
-          "damageType": "bludgeoning"
+          "weaponId": "greatclub",
+          "reach": 5
         },
         {
           "name": "Javelin",
           "type": "rangedWeaponAttack",
-          "attackBonus": 6,
+          "weaponId": "javelin",
           "range": {
             "normal": 30,
             "long": 120
-          },
-          "damage": "2d6+4",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -1890,21 +1848,21 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 3,
           "reach": 5,
-          "damage": "2d8+3",
+          "damage": "2d8",
           "damageType": "piercing"
         },
         {
           "name": "Claws",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "2d6+3",
+          "damage": "2d6",
           "damageType": "slashing",
+          "finesse": true,
           "description": "If the target is a creature other than an undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.35,
         "items": []
@@ -1953,10 +1911,8 @@
         {
           "name": "Greataxe",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
-          "reach": 5,
-          "damage": "1d12+3",
-          "damageType": "slashing"
+          "weaponId": "greataxe",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -2053,20 +2009,19 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "2d6+2",
+          "damage": "2d6",
           "damageType": "piercing"
         },
         {
           "name": "Claws",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "2d4+2",
+          "damage": "2d4",
           "damageType": "slashing"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.2,
         "items": []
@@ -2127,20 +2082,18 @@
         {
           "name": "Greataxe",
           "type": "meleeWeaponAttack",
-          "attackBonus": 6,
-          "reach": 5,
-          "damage": "2d12+4",
-          "damageType": "slashing"
+          "weaponId": "greataxe",
+          "reach": 5
         },
         {
           "name": "Gore",
           "type": "meleeWeaponAttack",
-          "attackBonus": 6,
           "reach": 5,
-          "damage": "2d8+4",
+          "damage": "2d8",
           "damageType": "piercing"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.6,
         "items": [
@@ -2236,32 +2189,28 @@
         {
           "name": "Longsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d10+2",
-          "damageType": "slashing"
+          "weaponId": "longsword",
+          "reach": 5
         },
         {
           "name": "Longbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
+          "weaponId": "longbow",
           "range": {
             "normal": 150,
             "long": 600
-          },
-          "damage": "1d8+2",
-          "damageType": "piercing"
+          }
         },
         {
           "name": "Life Drain",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
           "reach": 5,
-          "damage": "1d6+2",
+          "damage": "1d6",
           "damageType": "necrotic",
           "description": "The target must succeed on a DC 13 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.5,
         "items": [
@@ -2324,20 +2273,19 @@
         {
           "name": "Beak",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "1d10+5",
+          "damage": "1d10",
           "damageType": "piercing"
         },
         {
           "name": "Claws",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "2d8+5",
+          "damage": "2d8",
           "damageType": "slashing"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.25,
         "items": []
@@ -2406,29 +2354,23 @@
         {
           "name": "Longsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
-          "reach": 5,
-          "damage": "1d10+3",
-          "damageType": "slashing"
+          "weaponId": "longsword",
+          "reach": 5
         },
         {
           "name": "Shortsword",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
-          "reach": 5,
-          "damage": "1d6+3",
-          "damageType": "piercing"
+          "weaponId": "shortsword",
+          "reach": 5
         },
         {
           "name": "Heavy Crossbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 3,
+          "weaponId": "heavyCrossbow",
           "range": {
             "normal": 100,
             "long": 400
-          },
-          "damage": "1d10+1",
-          "damageType": "piercing"
+          }
         }
       ],
       "lootTable": {
@@ -2549,7 +2491,6 @@
         {
           "name": "Fire Ray",
           "type": "rangedWeaponAttack",
-          "attackBonus": 5,
           "range": {
             "normal": 30,
             "long": 30
@@ -2563,6 +2504,7 @@
           "description": "Recharge 5-6. The flameskull casts fireball. Each creature in a 20-foot-radius sphere centered on a point within 120 feet must make a DC 13 Dexterity saving throw, taking 8d6 fire damage on a failed save, or half as much damage on a successful one."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.4,
         "items": [
@@ -2623,20 +2565,17 @@
         {
           "name": "Battleaxe",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
-          "reach": 5,
-          "damage": "2d8+5",
-          "damageType": "slashing"
+          "weaponId": "battleaxe",
+          "reach": 5
         },
         {
           "name": "Morningstar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
-          "reach": 5,
-          "damage": "2d8+5",
-          "damageType": "piercing"
+          "weaponId": "morningstar",
+          "reach": 5
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.6,
         "items": [
@@ -2721,20 +2660,19 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "1d6+4",
+          "damage": "1d6",
           "damageType": "piercing"
         },
         {
           "name": "Claw",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "2d6+4",
+          "damage": "2d6",
           "damageType": "slashing"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.5,
         "items": [
@@ -2839,13 +2777,13 @@
         {
           "name": "Life Drain",
           "type": "meleeWeaponAttack",
-          "attackBonus": 6,
           "reach": 5,
-          "damage": "4d8+3",
+          "damage": "4d8",
           "damageType": "necrotic",
           "description": "The target must succeed on a DC 14 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.3,
         "items": [
@@ -2897,23 +2835,22 @@
         {
           "name": "Greatclub",
           "type": "meleeWeaponAttack",
-          "attackBonus": 8,
           "reach": 10,
-          "damage": "3d8+5",
+          "damage": "3d8",
           "damageType": "bludgeoning"
         },
         {
           "name": "Rock",
           "type": "rangedWeaponAttack",
-          "attackBonus": 8,
           "range": {
             "normal": 60,
             "long": 240
           },
-          "damage": "3d10+5",
+          "damage": "3d10",
           "damageType": "bludgeoning"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.7,
         "items": [
@@ -3000,18 +2937,16 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 10,
-          "damage": "2d10+4",
+          "damage": "2d10",
           "damageType": "piercing",
           "description": "Plus 1d8 cold damage."
         },
         {
           "name": "Claw",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "2d6+4",
+          "damage": "2d6",
           "damageType": "slashing"
         },
         {
@@ -3020,6 +2955,7 @@
           "description": "Recharge 5-6. The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 15 Constitution saving throw, taking 10d8 cold damage on a failed save, or half as much damage on a successful one."
         }
       ],
+      "abilities": [],
       "legendaryActions": {
         "count": 3,
         "actions": [
@@ -3032,8 +2968,7 @@
             "name": "Tail Attack",
             "cost": 1,
             "type": "meleeWeaponAttack",
-            "attackBonus": 7,
-            "damage": "2d8+4",
+            "damage": "2d8",
             "damageType": "bludgeoning"
           },
           {
@@ -3113,18 +3048,16 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 10,
-          "damage": "2d10+4",
+          "damage": "2d10",
           "damageType": "piercing",
           "description": "Plus 2d6 poison damage."
         },
         {
           "name": "Claw",
           "type": "meleeWeaponAttack",
-          "attackBonus": 7,
           "reach": 5,
-          "damage": "2d6+4",
+          "damage": "2d6",
           "damageType": "slashing"
         },
         {
@@ -3133,6 +3066,7 @@
           "description": "Recharge 5-6. The dragon exhales poisonous gas in a 30-foot cone. Each creature in that area must make a DC 14 Constitution saving throw, taking 12d6 poison damage on a failed save, or half as much damage on a successful one."
         }
       ],
+      "abilities": [],
       "legendaryActions": {
         "count": 3,
         "actions": [
@@ -3145,8 +3079,7 @@
             "name": "Tail Attack",
             "cost": 1,
             "type": "meleeWeaponAttack",
-            "attackBonus": 7,
-            "damage": "2d8+4",
+            "damage": "2d8",
             "damageType": "bludgeoning"
           },
           {
@@ -3216,18 +3149,16 @@
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 10,
           "reach": 10,
-          "damage": "2d10+6",
+          "damage": "2d10",
           "damageType": "piercing",
           "description": "Plus 1d6 fire damage."
         },
         {
           "name": "Claw",
           "type": "meleeWeaponAttack",
-          "attackBonus": 10,
           "reach": 5,
-          "damage": "2d6+6",
+          "damage": "2d6",
           "damageType": "slashing"
         },
         {
@@ -3236,6 +3167,7 @@
           "description": "Recharge 5-6. The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 16d6 fire damage on a failed save, or half as much damage on a successful one."
         }
       ],
+      "abilities": [],
       "legendaryActions": {
         "count": 3,
         "actions": [
@@ -3248,8 +3180,7 @@
             "name": "Tail Attack",
             "cost": 1,
             "type": "meleeWeaponAttack",
-            "attackBonus": 10,
-            "damage": "2d8+6",
+            "damage": "2d8",
             "damageType": "bludgeoning"
           },
           {
@@ -3310,18 +3241,14 @@
         {
           "name": "Shortbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 4,
-          "range": { "normal": 80, "long": 320 },
-          "damage": "1d6+2",
-          "damageType": "piercing"
+          "weaponId": "shortbow",
+          "range": { "normal": 80, "long": 320 }
         },
         {
           "name": "Scimitar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 4,
-          "reach": 5,
-          "damage": "1d6+2",
-          "damageType": "slashing"
+          "weaponId": "scimitar",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -3376,18 +3303,14 @@
         {
           "name": "Light Crossbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 3,
-          "range": { "normal": 80, "long": 320 },
-          "damage": "1d8+1",
-          "damageType": "piercing"
+          "weaponId": "lightCrossbow",
+          "range": { "normal": 80, "long": 320 }
         },
         {
           "name": "Scimitar",
           "type": "meleeWeaponAttack",
-          "attackBonus": 3,
-          "reach": 5,
-          "damage": "1d6+1",
-          "damageType": "slashing"
+          "weaponId": "scimitar",
+          "reach": 5
         }
       ],
       "lootTable": {
@@ -3445,28 +3368,26 @@
         {
           "name": "Tail Spike",
           "type": "rangedWeaponAttack",
-          "attackBonus": 5,
           "range": { "normal": 100, "long": 200 },
-          "damage": "2d8+3",
+          "damage": "2d8",
           "damageType": "piercing"
         },
         {
           "name": "Claw",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "1d6+3",
+          "damage": "1d6",
           "damageType": "slashing"
         },
         {
           "name": "Bite",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "1d8+3",
+          "damage": "1d8",
           "damageType": "piercing"
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.6,
         "items": [
@@ -3524,7 +3445,6 @@
         {
           "name": "Fire Bolt",
           "type": "rangedWeaponAttack",
-          "attackBonus": 6,
           "range": { "normal": 120, "long": 120 },
           "damage": "2d10",
           "damageType": "fire",
@@ -3533,12 +3453,11 @@
         {
           "name": "Dagger",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
-          "reach": 5,
-          "damage": "1d4+2",
-          "damageType": "piercing"
+          "weaponId": "dagger",
+          "reach": 5
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.7,
         "items": [
@@ -3598,21 +3517,19 @@
         {
           "name": "Longbow",
           "type": "rangedWeaponAttack",
-          "attackBonus": 5,
-          "range": { "normal": 150, "long": 600 },
-          "damage": "1d8+2",
-          "damageType": "piercing"
+          "weaponId": "longbow",
+          "range": { "normal": 150, "long": 600 }
         },
         {
           "name": "Snake Hair",
           "type": "meleeWeaponAttack",
-          "attackBonus": 5,
           "reach": 5,
-          "damage": "4d4+2",
+          "damage": "4d4",
           "damageType": "piercing",
           "description": "Plus 14 (4d6) poison damage on a failed DC 14 CON saving throw."
         }
       ],
+      "abilities": [],
       "lootTable": {
         "dropChance": 0.8,
         "items": [

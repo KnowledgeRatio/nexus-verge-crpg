@@ -57,10 +57,26 @@ export const RULES = {
         deathSaveFailureThreshold: 3,
         instantDeathThreshold: 'maxHP', // or specific number
 
-        // Cover bonuses — applied to defender AC vs ranged attacks only (asymmetric)
+        // Cover bonuses — applied to defender AC vs ranged attacks only
         coverBonuses: {
             partial: 2,      // +2 AC vs ranged (was: half cover)
             substantial: 3   // +3 AC vs ranged (was: three-quarters / full cover)
+        },
+
+        // Cover initiative mode — cover is contested: initiative winner gets full bonus,
+        // loser gets a reduced bonus (Math.ceil * loserMultiplier). Both sides symmetric.
+        // partial: winner +2 / loser +1. substantial: winner +3 / loser +2.
+        coverInitiativeMode: {
+            enabled: true,
+            loserMultiplier: 0.5  // Loser gets ceil(bonus * 0.5) — stays meaningful but not full
+        },
+
+        // Monster proficiency bonus by Challenge Rating
+        monsterProficiencyByCR: {
+            0: 2, 0.125: 2, 0.25: 2, 0.5: 2,
+            1: 2, 2: 2, 3: 2, 4: 2,
+            5: 3, 6: 3, 7: 3, 8: 3,
+            9: 4, 10: 4
         },
 
         // Initiative
@@ -74,6 +90,21 @@ export const RULES = {
         // Grid combat
         gridSize: 5, // feet per square
         diagonalMovementCost: 1 // 1 (simple) or 1.5 (alternating 5/10)
+    },
+
+    // ====================
+    // MONSTER HP
+    // ====================
+    monsterHP: {
+        // true = roll hit dice on spawn (roguelike variety)
+        // false = use statistical average (predictable, tournament mode)
+        roll: true,
+        difficultyMultipliers: {
+            easy:   0.75,
+            normal: 1.0,
+            hard:   1.25,
+            deadly: 1.5
+        }
     },
 
     // ====================

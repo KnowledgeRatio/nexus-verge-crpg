@@ -1044,7 +1044,8 @@ class Player {
             terrain: terrainId,
             monsterPool: enemyTypes,
             campaignId,
-            context: 'overworld'
+            context: 'overworld',
+            worldConfig: gameState.get('worldConfig') || {}
         });
 
         if (!encounter.monsters || encounter.monsters.length === 0) {
@@ -1524,6 +1525,46 @@ class Player {
     }
 
     /**
+     * Calculate monster spawn HP from hit dice formula.
+     * Uses roll or average based on worldConfig + difficulty multiplier.
+     * @param {string} hitDiceFormula - e.g. "2d8+6" or "3d6-2"
+     * @returns {number} Final HP (minimum 1)
+     */
+    calculateMonsterHP(hitDiceFormula) {
+        const worldConfig = gameState.get('worldConfig') || {};
+        const difficulty = worldConfig.difficulty || 'normal';
+        const useAverage = worldConfig.useAverageMonsterHP === true;
+        const multiplier = RULES.monsterHP.difficultyMultipliers[difficulty] ?? 1.0;
+
+        // Parse formula: e.g. "2d8+6", "3d6", "2d6-2", "1d4+1"
+        const match = hitDiceFormula.match(/^(\d+)d(\d+)([+-]\d+)?$/);
+        if (!match) {
+            // Fallback: treat as static number
+            const staticHP = parseInt(hitDiceFormula) || 1;
+            return Math.max(1, Math.floor(staticHP * multiplier));
+        }
+
+        const numDice = parseInt(match[1]);
+        const dieSize = parseInt(match[2]);
+        const flatBonus = match[3] ? parseInt(match[3]) : 0;
+
+        let hp;
+        if (useAverage || !RULES.monsterHP.roll) {
+            // Average: floor(numDice × (dieSize/2 + 0.5)) + flatBonus
+            hp = Math.floor(numDice * (dieSize / 2 + 0.5)) + flatBonus;
+        } else {
+            // Roll each die individually
+            let rolled = 0;
+            for (let i = 0; i < numDice; i++) {
+                rolled += Math.floor(Math.random() * dieSize) + 1;
+            }
+            hp = rolled + flatBonus;
+        }
+
+        return Math.max(1, Math.floor(hp * multiplier));
+    }
+
+    /**
      * Generate enemy from dungeon's monster pool
      * @param {number} playerLevel - Player character level
      * @param {Array<string>} monsterPool - Array of monster IDs valid for this dungeon
@@ -1577,7 +1618,7 @@ class Player {
         }
 
         // Roll HP and create enemy
-        const hp = roll(monster.hitPoints);
+        const hp = this.calculateMonsterHP(monster.hitPoints);
 
         return {
             name: monster.name,
@@ -1598,7 +1639,7 @@ class Player {
                 wis: Math.floor((monster.abilities.wis - 10) / 2),
                 cha: Math.floor((monster.abilities.cha - 10) / 2)
             },
-            proficiencyBonus: 2,
+            proficiencyBonus: RULES.combat.monsterProficiencyByCR[monster.challengeRating] ?? 2,
             skills: monster.skills || {},
             equipment: {
                 mainHand: null,
