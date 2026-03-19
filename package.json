@@ -2,7 +2,7 @@
   "name": "nexus-verge-crpg-5e",
   "version": "1.0.0",
   "type": "module",
-  "description": "A procedurally generated, top-down roguelike CRPG that faithfully implements D&D 5e 2024 rules. Explore infinite worlds with shareable seeds, engage in turn-based tactical combat, and experience deep character progression with unique class fusion system.",
+  "description": "A procedurally generated 5e-based roguelike CRPG. Uses content from the D&D 5e SRD (CC BY 4.0) with original mechanics. Explore infinite worlds with shareable seeds and turn-based tactical combat.",
   "main": "test.js",
   "directories": {
     "doc": "docs"
@@ -20,7 +20,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@cyclonedx/cyclonedx-npm": "^4.1.2",
     "eslint": "^9.39.2"

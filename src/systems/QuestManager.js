@@ -727,10 +727,14 @@ class QuestManager {
      */
     _applyRelationChange(quest, modifierKey) {
         const relationManager = window.game?.relationManager;
-        if (!relationManager) return;
+        if (!relationManager) {
+            return;
+        }
 
         const npcId = quest.questGiver?.npcId;
-        if (!npcId) return;
+        if (!npcId) {
+            return;
+        }
 
         const npc = this._findNPCById(npcId);
         if (npc) {
@@ -749,7 +753,9 @@ class QuestManager {
      */
     _applySettlementRelationBonus(quest) {
         const relationManager = window.game?.relationManager;
-        if (!relationManager) return;
+        if (!relationManager) {
+            return;
+        }
 
         const npcId = quest.questGiver?.npcId;
         const settlementId = quest.questGiver?.settlementId
@@ -767,17 +773,25 @@ class QuestManager {
      */
     _findNPCById(npcId) {
         const world = gameState.get('world');
-        if (!world?.generatedRegions) return null;
+        if (!world?.generatedRegions) {
+            return null;
+        }
 
         for (const regionKey of Object.keys(world.generatedRegions)) {
             const region = world.generatedRegions[regionKey];
-            if (!region?.features) continue;
+            if (!region?.features) {
+                continue;
+            }
 
             for (const feature of region.features) {
-                if (feature.type !== 'settlement' || !feature.npcs) continue;
+                if (feature.type !== 'settlement' || !feature.npcs) {
+                    continue;
+                }
 
                 const npc = feature.npcs.find(n => n.id === npcId);
-                if (npc) return npc;
+                if (npc) {
+                    return npc;
+                }
             }
         }
 
@@ -786,7 +800,9 @@ class QuestManager {
             for (const settlementData of Object.values(world.settlements)) {
                 if (settlementData.npcs) {
                     const npc = settlementData.npcs.find(n => n.id === npcId);
-                    if (npc) return npc;
+                    if (npc) {
+                        return npc;
+                    }
                 }
             }
         }

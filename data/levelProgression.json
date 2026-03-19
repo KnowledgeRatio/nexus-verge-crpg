@@ -36,6 +36,13 @@
             "required": true,
             "label": "Choose Specialization",
             "options": ["exemplar", "oath"]
+          },
+          {
+            "type": "maneuver",
+            "count": 3,
+            "required": true,
+            "label": "Choose Combat Maneuvers",
+            "requiresSpecialization": "exemplar"
           }
         ]
       },

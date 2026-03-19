@@ -60,7 +60,7 @@ export default class CompanionManager {
             throw new Error(`CompanionManager: Failed to load companions.json (${response.status})`);
         }
         this.companionData = await response.json();
-        this.rng = new SeededRandom(String(seed) + '_companions');
+        this.rng = new SeededRandom(`${String(seed)  }_companions`);
 
         // Subscribe to combat.ended so handlePostCombat fires automatically.
         // CombatManager fires: gameState.notify('combat.ended', { outcome })
@@ -80,7 +80,9 @@ export default class CompanionManager {
      */
     addCompanion(companion) {
         const party = gameState.get('party');
-        if (!party) return false;
+        if (!party) {
+            return false;
+        }
 
         if (party.companions.length >= this.config.maxCompanions) {
             console.warn(`👥 Cannot recruit — party at cap (${this.config.maxCompanions} companions)`);
@@ -114,7 +116,9 @@ export default class CompanionManager {
      */
     dismissCompanion(companionId, reason) {
         const party = gameState.get('party');
-        if (!party) return;
+        if (!party) {
+            return;
+        }
 
         const idx = party.companions.findIndex(c => c.id === companionId);
         if (idx < 0) {
@@ -345,7 +349,9 @@ export default class CompanionManager {
 
         const companions = gameState.get('party.companions') || [];
         const companion = companions.find(c => c.id === companionId);
-        if (!companion || !companion.companionMeta) return null;
+        if (!companion || !companion.companionMeta) {
+            return null;
+        }
 
         const motivationId = companion.companionMeta.motivationId;
         const archetype = this.companionData?.motivationArchetypes?.[motivationId];
@@ -400,7 +406,9 @@ export default class CompanionManager {
     getRelationshipTier(companionId) {
         const companions = gameState.get('party.companions') || [];
         const companion = companions.find(c => c.id === companionId);
-        if (!companion || !companion.companionMeta) return 'neutral';
+        if (!companion || !companion.companionMeta) {
+            return 'neutral';
+        }
         return this._getTierForValue(companion.companionMeta.relationship);
     }
 
@@ -429,7 +437,9 @@ export default class CompanionManager {
 
         for (const companion of companions) {
             const meta = companion.companionMeta;
-            if (!meta) continue;
+            if (!meta) {
+                continue;
+            }
 
             const rel = meta.relationship;
             if (rel <= threshold) {
@@ -473,10 +483,18 @@ export default class CompanionManager {
             }
         }
         // Fallback: derive from TIER_ORDER extremes
-        if (value < -50) return 'hostile';
-        if (value < -20) return 'unfriendly';
-        if (value <= 20) return 'neutral';
-        if (value <= 60) return 'friendly';
+        if (value < -50) {
+            return 'hostile';
+        }
+        if (value < -20) {
+            return 'unfriendly';
+        }
+        if (value <= 20) {
+            return 'neutral';
+        }
+        if (value <= 60) {
+            return 'friendly';
+        }
         return 'devoted';
     }
 
@@ -668,7 +686,9 @@ export default class CompanionManager {
         const needsChoice = [];
 
         for (const companion of companions) {
-            if (companion.level >= newLevel) continue;
+            if (companion.level >= newLevel) {
+                continue;
+            }
 
             // Level 3: Specialization choice required — queue for modal
             if (newLevel === 3) {
@@ -738,7 +758,9 @@ export default class CompanionManager {
      * @private
      */
     _silentLevelUp(companion, newLevel) {
-        if (companion.level >= newLevel) return;
+        if (companion.level >= newLevel) {
+            return;
+        }
 
         companion.level = newLevel;
         companion.proficiencyBonus = RULES.core.proficiencyBonusByLevel[newLevel] || 2;
@@ -789,7 +811,9 @@ export default class CompanionManager {
      * @param {{ outcome: 'victory'|'fled'|'tpk' }} combatResult
      */
     handlePostCombat(combatResult) {
-        if (!combatResult) return;
+        if (!combatResult) {
+            return;
+        }
 
         const outcome = combatResult.outcome || combatResult; // Handle both object and string
         const companions = gameState.get('party.companions') || [];
@@ -798,7 +822,9 @@ export default class CompanionManager {
 
         const downedCompanions = companions.filter(c => c.companionMeta?.isDowned);
 
-        if (downedCompanions.length === 0) return;
+        if (downedCompanions.length === 0) {
+            return;
+        }
 
         console.log(`👥 Post-combat [${outcome}]: ${downedCompanions.length} downed companion(s), resolution: ${resolution}`);
 
@@ -848,7 +874,7 @@ export default class CompanionManager {
      * @returns {Promise<Character[]>} Array of companion candidates (NOT yet in party)
      */
     async generateSettlementCandidates(settlementId, playerLevel, count) {
-        const settlementRng = new SeededRandom(String(gameState.get('seed')) + '_' + settlementId + '_candidates');
+        const settlementRng = new SeededRandom(`${String(gameState.get('seed'))  }_${  settlementId  }_candidates`);
         const [minCount, maxCount] = this.config.settlementCandidateRange || [1, 3];
         const candidateCount = count ?? settlementRng.nextInt(minCount, maxCount);
 

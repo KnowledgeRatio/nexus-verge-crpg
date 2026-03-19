@@ -117,6 +117,12 @@ export class Character {
         // Weapon Masteries
         this.weaponMasteries = data.weaponMasteries || [];
 
+        // Specialization (chosen at level 3 for most callings)
+        this.specialization = data.specialization || null;
+
+        // Known Combat Maneuvers (Exemplar specialization)
+        this.knownManeuvers = data.knownManeuvers || [];
+
         // Status conditions
         this.conditions = data.conditions || [];
         this.effects = data.effects || [];
@@ -148,6 +154,12 @@ export class Character {
 
         // Ability uses tracking (for abilities with limited uses)
         this.abilityUses = data.abilityUses || {};
+
+        // Calling resource: Resolve (Dedication only, unlocks at L3 with spec choice)
+        this.maxResolvePoints = data.maxResolvePoints ?? this.calculateMaxResolve();
+        this.resolvePoints = data.resolvePoints !== undefined
+            ? Math.min(data.resolvePoints, this.maxResolvePoints)
+            : this.maxResolvePoints;
 
         // Level-up state (pending changes until player confirms)
         this.pendingLevelUp = data.pendingLevelUp || null;
@@ -240,6 +252,18 @@ export class Character {
         // Other bonuses (magic items, spells, etc.)
         ac += this.armorBonus;
 
+        // Fighting Style: Defense (+1 AC while wearing armor)
+        if (this.fightingStyle === 'defense' && this.equipment.armor) {
+            ac += 1;
+        }
+
+        // Fighting Style: Mariner (+1 AC when not in heavy armor and no shield)
+        if (this.fightingStyle === 'mariner' &&
+            this.equipment.armor?.armorType !== 'heavy' &&
+            this.equipment.offHand?.type !== 'shield') {
+            ac += 1;
+        }
+
         return ac;
     }
 
@@ -248,6 +272,29 @@ export class Character {
      */
     calculateSpeed() {
         return this.race?.speed || 30;
+    }
+
+    /**
+     * Maneuver die size for Exemplar — scales with level (D&D 5e Battle Master pattern)
+     * L3-6: d6, L7-9: d8, L10: d10
+     */
+    getManeuverDie() {
+        if (this.level >= 10) {
+            return 10;
+        }
+        if (this.level >= 7) {
+            return 8;
+        }
+        return 6;
+    }
+
+    /**
+     * Maneuver save DC = 8 + proficiency + max(STR, DEX)
+     */
+    getManeuverSaveDC() {
+        const strMod = this.abilityModifiers.str || 0;
+        const dexMod = this.abilityModifiers.dex || 0;
+        return 8 + this.proficiencyBonus + Math.max(strMod, dexMod);
     }
 
     /**
@@ -788,7 +835,9 @@ export class Character {
 
         // Add selected abilities
         if (selections.abilities && selections.abilities.length > 0) {
-            if (!this.selectedAbilities) this.selectedAbilities = [];
+            if (!this.selectedAbilities) {
+                this.selectedAbilities = [];
+            }
             this.selectedAbilities.push(...selections.abilities);
             console.log(`  Added ${selections.abilities.length} abilities`);
         }
@@ -804,14 +853,18 @@ export class Character {
 
         // Add selected traits
         if (selections.traits && selections.traits.length > 0) {
-            if (!this.selectedTraits) this.selectedTraits = [];
+            if (!this.selectedTraits) {
+                this.selectedTraits = [];
+            }
             this.selectedTraits.push(...selections.traits);
             console.log(`  Added ${selections.traits.length} traits`);
         }
 
         // Add selected practices
         if (selections.practices && selections.practices.length > 0) {
-            if (!this.practices) this.practices = [];
+            if (!this.practices) {
+                this.practices = [];
+            }
             this.practices.push(...selections.practices);
             console.log(`  Learned ${selections.practices.length} practice(s): ${selections.practices.join(', ')}`);
         }
@@ -820,6 +873,15 @@ export class Character {
         if (selections.specialization) {
             this.specialization = selections.specialization;
             console.log(`  Specialization: ${selections.specialization}`);
+        }
+
+        // Store known maneuvers (Exemplar)
+        if (selections.maneuvers && selections.maneuvers.length > 0) {
+            if (!this.knownManeuvers) {
+                this.knownManeuvers = [];
+            }
+            this.knownManeuvers.push(...selections.maneuvers);
+            console.log(`  Learned ${selections.maneuvers.length} maneuver(s): ${selections.maneuvers.join(', ')}`);
         }
 
         // Update all calculated stats
@@ -839,6 +901,16 @@ export class Character {
         this.ac = this.calculateAC();
         this.speed = this.calculateSpeed();
         this.initiative = this.abilityModifiers.dex;
+
+        // Recalculate Resolve pool (CON mod or level may have changed)
+        const newMax = this.calculateMaxResolve();
+        if (newMax !== this.maxResolvePoints) {
+            const wasAtMax = this.resolvePoints === this.maxResolvePoints;
+            this.maxResolvePoints = newMax;
+            if (wasAtMax) {
+                this.resolvePoints = newMax;
+            } // Stay at max on level-up
+        }
         this.updateSkillBonuses();
 
         // Update saving throws
@@ -920,12 +992,47 @@ export class Character {
             this.abilityUses = {};
         }
 
+        // Restore Resolve on short rest (Dedication)
+        this.resolvePoints = this.maxResolvePoints;
+
         return {
             success: true,
             healing: healing,
             hitDiceRolled: diceToRoll,
             shortRestsRemaining: 2 - this.shortRestsUsed
         };
+    }
+
+    /**
+     * Calculate maximum Resolve points (Dedication only, L3+)
+     * Formula: CON modifier + level (min 1)
+     */
+    calculateMaxResolve() {
+        if (this.class?.id !== 'dedication') {
+            return 0;
+        }
+        if (this.level < 3) {
+            return 0;
+        }
+        return Math.max(1, this.abilityModifiers.con + this.level);
+    }
+
+    /**
+     * Spend Resolve points. Returns false if insufficient.
+     */
+    spendResolve(amount) {
+        if (this.resolvePoints < amount) {
+            return false;
+        }
+        this.resolvePoints -= amount;
+        return true;
+    }
+
+    /**
+     * Restore Resolve to maximum.
+     */
+    restoreResolve() {
+        this.resolvePoints = this.maxResolvePoints;
     }
 
     /**
@@ -1416,12 +1523,16 @@ export class Character {
             gold: this.gold,
             spellcasting: this.spellcasting,
             weaponMasteries: this.weaponMasteries,
+            specialization: this.specialization,
+            knownManeuvers: this.knownManeuvers,
             conditions: this.conditions,
             effects: this.effects,
             position: this.position,
             shortRestsUsed: this.shortRestsUsed,
             lastLongRest: this.lastLongRest,
             abilityUses: this.abilityUses,
+            resolvePoints: this.resolvePoints,
+            maxResolvePoints: this.maxResolvePoints,
             practices: this.practices,
             equipmentMods: this.equipmentMods,
             isNPC: this.isNPC,

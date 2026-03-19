@@ -291,7 +291,9 @@ class NPCGenerator {
      */
     assignIntelFlags(npcs, rng) {
         const intelConfig = window.game?.relationManager?.config?.intel;
-        if (!intelConfig) return;
+        if (!intelConfig) {
+            return;
+        }
 
         const maxIntel = intelConfig.maxIntelNPCsPerSettlement || 3;
         const chanceByRole = intelConfig.intelChanceByRole || {};

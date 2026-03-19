@@ -40,10 +40,14 @@ export class DungeonManager {
      */
     async getDungeonAtPlayerPosition() {
         const playerPos = gameState.get('player.position');
-        if (!playerPos) return null;
+        if (!playerPos) {
+            return null;
+        }
 
         const tile = await this.worldGenerator.getTile(playerPos.x, playerPos.y);
-        if (!tile) return null;
+        if (!tile) {
+            return null;
+        }
 
         // Check if tile has a dungeon feature
         // Features from worldMetadata have type: 'dungeon', not isDungeon
@@ -157,7 +161,9 @@ export class DungeonManager {
      */
     getCurrentRoom() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active || !dungeonState.rooms) return null;
+        if (!dungeonState?.active || !dungeonState.rooms) {
+            return null;
+        }
 
         const roomIndex = dungeonState.currentRoomIndex || 0;
         return dungeonState.rooms[roomIndex] || null;
@@ -168,7 +174,9 @@ export class DungeonManager {
      */
     getTileInCurrentRoom(x, y) {
         const room = this.getCurrentRoom();
-        if (!room || !room.tiles) return null;
+        if (!room || !room.tiles) {
+            return null;
+        }
 
         if (y >= 0 && y < room.tiles.length && x >= 0 && x < room.tiles[y].length) {
             return room.tiles[y][x];
@@ -182,7 +190,9 @@ export class DungeonManager {
      */
     movePlayer(dx, dy) {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return { success: false, reason: 'not_in_dungeon' };
+        if (!dungeonState?.active) {
+            return { success: false, reason: 'not_in_dungeon' };
+        }
 
         const currentPos = dungeonState.playerPosition;
         const newX = currentPos.x + dx;
@@ -190,7 +200,9 @@ export class DungeonManager {
 
         // Get tile at new position
         const tile = this.getTileInCurrentRoom(newX, newY);
-        if (!tile) return { success: false, reason: 'out_of_bounds' };
+        if (!tile) {
+            return { success: false, reason: 'out_of_bounds' };
+        }
 
         // Check if traversable
         if (tile.isWall) {
@@ -232,10 +244,14 @@ export class DungeonManager {
      */
     moveToRoom(roomIndex) {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active || !dungeonState.rooms) return { success: false };
+        if (!dungeonState?.active || !dungeonState.rooms) {
+            return { success: false };
+        }
 
         const currentRoom = this.getCurrentRoom();
-        if (!currentRoom) return { success: false };
+        if (!currentRoom) {
+            return { success: false };
+        }
 
         // Check if rooms are connected
         if (!currentRoom.connections.includes(roomIndex)) {
@@ -245,7 +261,9 @@ export class DungeonManager {
 
         // Get target room
         const targetRoom = dungeonState.rooms[roomIndex];
-        if (!targetRoom) return { success: false };
+        if (!targetRoom) {
+            return { success: false };
+        }
 
         // Update dungeon state
         dungeonState.currentRoomIndex = roomIndex;
@@ -274,7 +292,9 @@ export class DungeonManager {
      * Get monsters valid for the current dungeon's monster pool
      */
     getDungeonMonsterPool() {
-        if (!this.currentDungeon?.dungeonType) return [];
+        if (!this.currentDungeon?.dungeonType) {
+            return [];
+        }
 
         const dungeonType = this.currentDungeon.dungeonType;
         return dungeonType.monsterPool || [];
@@ -284,18 +304,24 @@ export class DungeonManager {
      * Get the boss monster for the current dungeon
      */
     getDungeonBoss() {
-        if (!this.currentDungeon?.dungeonType) return null;
+        if (!this.currentDungeon?.dungeonType) {
+            return null;
+        }
 
         const dungeonType = this.currentDungeon.dungeonType;
         const bossPool = dungeonType.bossPool || [];
 
-        if (bossPool.length === 0) return null;
+        if (bossPool.length === 0) {
+            return null;
+        }
 
         // Find boss room and return its assigned boss
         const dungeonState = gameState.get('dungeon');
         if (dungeonState?.rooms) {
             const bossRoom = dungeonState.rooms.find(r => r.isBossRoom);
-            if (bossRoom?.boss) return bossRoom.boss;
+            if (bossRoom?.boss) {
+                return bossRoom.boss;
+            }
         }
 
         // Fallback to random from pool (supports both old string and new object format)
@@ -308,7 +334,9 @@ export class DungeonManager {
      */
     isAtExit() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return false;
+        if (!dungeonState?.active) {
+            return false;
+        }
 
         const tile = this.getTileInCurrentRoom(
             dungeonState.playerPosition.x,
@@ -323,7 +351,9 @@ export class DungeonManager {
      */
     isAtDoor() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return false;
+        if (!dungeonState?.active) {
+            return false;
+        }
 
         const tile = this.getTileInCurrentRoom(
             dungeonState.playerPosition.x,
@@ -338,7 +368,9 @@ export class DungeonManager {
      */
     getDoorDestination() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return null;
+        if (!dungeonState?.active) {
+            return null;
+        }
 
         const tile = this.getTileInCurrentRoom(
             dungeonState.playerPosition.x,
@@ -358,7 +390,9 @@ export class DungeonManager {
      */
     getCurrentDoorTile() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return null;
+        if (!dungeonState?.active) {
+            return null;
+        }
 
         const tile = this.getTileInCurrentRoom(
             dungeonState.playerPosition.x,
@@ -373,7 +407,9 @@ export class DungeonManager {
      */
     markDoorLocked() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return;
+        if (!dungeonState?.active) {
+            return;
+        }
 
         const pos = dungeonState.playerPosition;
         const room = this.getCurrentRoom();
@@ -388,7 +424,9 @@ export class DungeonManager {
      */
     markDoorChallengeCompleted() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return;
+        if (!dungeonState?.active) {
+            return;
+        }
 
         const pos = dungeonState.playerPosition;
         const room = this.getCurrentRoom();
@@ -415,7 +453,9 @@ export class DungeonManager {
      */
     getEncounterModifier() {
         const room = this.getCurrentRoom();
-        if (!room) return 1.0;
+        if (!room) {
+            return 1.0;
+        }
 
         // Base modifier from dungeon type
         let modifier = this.currentDungeon?.dungeonType?.encounterModifier || 1.0;
@@ -431,10 +471,14 @@ export class DungeonManager {
      */
     getRoomSkillChallenges() {
         const room = this.getCurrentRoom();
-        if (!room) return [];
+        if (!room) {
+            return [];
+        }
 
         const dungeonType = this.currentDungeon?.dungeonType;
-        if (!dungeonType?.skillChallenges) return [];
+        if (!dungeonType?.skillChallenges) {
+            return [];
+        }
 
         // Return skill challenges that match room type
         return dungeonType.skillChallenges;
@@ -445,7 +489,9 @@ export class DungeonManager {
      */
     getDungeonSummary() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return null;
+        if (!dungeonState?.active) {
+            return null;
+        }
 
         const currentRoom = this.getCurrentRoom();
 

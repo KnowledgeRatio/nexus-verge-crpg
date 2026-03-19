@@ -222,6 +222,21 @@ class SaveManager {
             : [];
         const gold = Number(state.character?.gold) || 0;
 
+        // Serialize party companions (mirrors GameState.toJSON logic)
+        const party = {
+            companions: (state.party?.companions || []).map(c => ({
+                characterData: c.toJSON ? c.toJSON() : c,
+                companionMeta: { ...c.companionMeta, devotedPassiveUsedThisRest: false }
+            }))
+            // candidates intentionally omitted — transient, never persisted
+        };
+
+        // Capture dungeon exit position so we can place the player on the world map on load
+        // (we never save active dungeon state — player is exited to world map on load)
+        const dungeonExitPosition = state.dungeon?.active
+            ? (state.dungeon.worldMapPosition || state.world?.currentLocation || { x: 0, y: 0 })
+            : null;
+
         return {
             version: this.version,
             timestamp: Date.now(),
@@ -231,7 +246,24 @@ class SaveManager {
             weaponMasteries, // duplicate for backward compatibility/migration
             gold, // duplicate gold for backward compatibility/migration
             world: this.serializeWorld(state.world),
-            quests: state.quests || { active: [], completed: [] },
+            playerPosition: dungeonExitPosition || state.world?.currentLocation || { x: 0, y: 0 },
+            quests: {
+                available: state.quests?.available || [],
+                active: state.quests?.active || [],
+                completed: state.quests?.completed || [],
+                failed: state.quests?.failed || [],
+                campaignProgress: state.quests?.campaignProgress || { currentStage: 1 }
+            },
+            party,
+            fallenCompanions: [...(state.fallenCompanions || [])],
+            rest: {
+                shortRestsUsed: state.rest?.shortRestsUsed || 0,
+                lastLongRest: state.rest?.lastLongRest || null
+            },
+            fatigue: state.fatigue ? { ...state.fatigue } : null,
+            encounterAccumulator: state.player?.encounterAccumulator || 0,
+            flags: { ...(state.flags || {}) },
+            stats: { ...(state.stats || {}) },
             factions: this.serializeMap(state.factions),
             playtime: state.stats?.playTime || 0,
             ui: {
@@ -286,17 +318,100 @@ class SaveManager {
             gameState.set('world', world);
         }
 
-        // Restore quests
-        gameState.set('quests', saveData.quests || { active: [], completed: [] });
+        // Restore quests (full state including available, failed, campaignProgress)
+        gameState.set('quests', {
+            available: saveData.quests?.available || [],
+            active: saveData.quests?.active || [],
+            completed: saveData.quests?.completed || [],
+            failed: saveData.quests?.failed || [],
+            campaignProgress: saveData.quests?.campaignProgress || { currentStage: 1 }
+        });
+
+        // Restore party companions (Character instances with companionMeta)
+        if (saveData.party?.companions?.length) {
+            const companions = saveData.party.companions.map(entry => {
+                const character = Character.fromJSON(entry.characterData);
+                character.companionMeta = {
+                    ...entry.companionMeta,
+                    devotedPassiveUsedThisRest: false   // always reset on load
+                };
+                return character;
+            });
+            gameState.set('party', {
+                companions,
+                candidates: [],
+                activeSynergies: { vanguard: false, arcaneAssembly: false, bandOfRogues: false, trueParty: false }
+            });
+        } else {
+            gameState.set('party', {
+                companions: [],
+                candidates: [],
+                activeSynergies: { vanguard: false, arcaneAssembly: false, bandOfRogues: false, trueParty: false }
+            });
+        }
+
+        // Restore fallen companions
+        gameState.set('fallenCompanions', saveData.fallenCompanions || []);
+
+        // Restore rest state
+        gameState.set('rest', {
+            shortRestsUsed: saveData.rest?.shortRestsUsed || 0,
+            lastLongRest: saveData.rest?.lastLongRest || null
+        });
+
+        // Restore fatigue state (always set to avoid null causing system errors)
+        gameState.set('fatigue', saveData.fatigue ? { ...saveData.fatigue } : {
+            current: 0,
+            exhaustionLevels: 0,
+            supplies: 3,
+            suppliesZeroStreak: 0,
+            lastThreshold: 'rested'
+        });
+
+        // Restore encounter accumulator
+        gameState.set('player.encounterAccumulator', saveData.encounterAccumulator || 0);
+
+        // Restore quest/story flags
+        gameState.set('flags', saveData.flags || {});
+
+        // Restore statistics (merge saved stats, preserve playTime from playtime field for backward compat)
+        gameState.set('stats', {
+            playTime: saveData.playtime || saveData.stats?.playTime || 0,
+            combatsWon: saveData.stats?.combatsWon || 0,
+            combatsLost: saveData.stats?.combatsLost || 0,
+            questsCompleted: saveData.stats?.questsCompleted || 0,
+            enemiesDefeated: saveData.stats?.enemiesDefeated || 0,
+            deaths: saveData.stats?.deaths || 0
+        });
 
         // Restore factions (reconstruct Map)
         gameState.set('factions', this.deserializeMap(saveData.factions));
 
-        // Restore playtime
-        gameState.set('stats.playTime', saveData.playtime || 0);
-
         // Restore UI state
         gameState.set('ui.currentScreen', saveData.ui?.currentScreen || 'game');
+
+        // Clear dungeon state — never restore active dungeons, player exits to world map on load
+        gameState.set('dungeon', {
+            active: false,
+            dungeonId: null,
+            dungeonTypeId: null,
+            dungeonTypeName: null,
+            currentRoomIndex: 0,
+            playerPosition: null,
+            worldMapPosition: null,
+            rooms: null,
+            roomsExplored: [],
+            bossDefeated: false
+        });
+
+        // Store explicit player position as transient field for reinitializeGameAfterLoad.
+        // playerPosition is the authoritative saved position (may be dungeon exit point).
+        // Falls back to world.currentLocation from the saved world object for older saves.
+        if (saveData.playerPosition) {
+            gameState.set('_loadedPlayerPosition', saveData.playerPosition);
+        } else if (saveData.world?.currentLocation) {
+            gameState.set('_loadedPlayerPosition', saveData.world.currentLocation);
+        }
 
         // Clear combat state (don't save/load active combat)
         gameState.set('combat', null);
@@ -397,7 +512,9 @@ class SaveManager {
             regions: this.serializeMap(compressedRegions),
             settlements: world.settlements || [],
             npcs: this.serializeMap(world.npcs),
-            currentLocation: world.currentLocation || { x: 0, y: 0 }
+            currentLocation: world.currentLocation || { x: 0, y: 0 },
+            modifiedTiles: world.modifiedTiles || [],
+            metadata: world.metadata || null
         };
     }
 
@@ -581,22 +698,10 @@ class SaveManager {
      * @returns {Object} Full serialized game state
      */
     serializeGameStateFull() {
-        const state = gameState.data;
-
-        return {
-            version: this.version,
-            timestamp: Date.now(),
-            seed: state.seed,
-            worldConfig: state.worldConfig,
-            character: this.serializeCharacter(state.character),
-            world: this.serializeWorldFull(state.world), // Full data, not compressed
-            quests: state.quests || { active: [], completed: [] },
-            factions: this.serializeMap(state.factions),
-            playtime: state.stats?.playTime || 0,
-            ui: {
-                currentScreen: state.ui?.currentScreen || 'game'
-            }
-        };
+        // Delegate to serializeGameState but replace world with full (uncompressed) version.
+        const base = this.serializeGameState();
+        base.world = this.serializeWorldFull(gameState.data.world);
+        return base;
     }
 
     /**
@@ -617,7 +722,9 @@ class SaveManager {
             regions: this.serializeMap(allRegions), // ALL data, no compression
             settlements: world.settlements || [],
             npcs: this.serializeMap(world.npcs),
-            currentLocation: world.currentLocation || { x: 0, y: 0 }
+            currentLocation: world.currentLocation || { x: 0, y: 0 },
+            modifiedTiles: world.modifiedTiles || [],
+            metadata: world.metadata || null
         };
     }
 

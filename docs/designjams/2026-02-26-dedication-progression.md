@@ -184,13 +184,15 @@ Equipment modification. Apply mods to weapons, armor, and shields during long re
 
 ---
 
-## Oath — The Divine Warrior
+## Oath — The Sworn Warrior
 
 *Spends Resolve on smite (burst damage) or healing. The core tension: every smite point is healing you don't have.*
 
-### L3 Trait (auto): Divine Calling
+*Flavour: The Oath is not divine mandate — it is personal conviction. A soldier sworn to avenge the fallen, a knight pledged to protect the innocent, a warrior who made a promise they intend to keep. The source of power is the oath itself.*
 
-**Divine Smite** — On melee hit, spend 1-3 Resolve:
+### L3 Trait (auto): Oath's Edge
+
+**Sworn Strike** — On melee hit, spend 1-3 Resolve:
 - 1d8 radiant per Resolve spent
 - +1d8 bonus vs undead/fiend
 - Limit: once per attack
@@ -201,8 +203,8 @@ Equipment modification. Apply mods to weapons, armor, and shields during long re
 | 2 | 2d8 | 3d8 | 9 / 13.5 |
 | 3 | 3d8 | 4d8 | 13.5 / 18 |
 
-**Lay on Hands** — Bonus Action, spend 1+ Resolve:
-- Heal: (Resolve spent x CON mod) + level HP
+**Aid the Vulnerable** — Bonus Action, spend 1+ Resolve:
+- Heal: (Resolve spent × CON mod) + level HP
 - OR spend 1 Resolve to cure one curable condition
 
 | Resolve | Heal (CON+3, L5) | Heal (CON+3, L10) |
@@ -215,9 +217,9 @@ Equipment modification. Apply mods to weapons, armor, and shields during long re
 
 | Ability | Cost | Action | Effect |
 |---------|------|--------|--------|
-| Compelled Duel | 1 Resolve | Bonus Action | Target WIS save or can only attack you 2 rounds, you have advantage vs them |
-| Wrathful Smite | 1 Resolve | Free | Next hit: +1d6 psychic, WIS save or frightened |
-| Shield of Faith | 1 Resolve | Bonus Action | +2 AC until end of next turn |
+| Binding Challenge | 1 Resolve | Bonus Action | Target WIS save or can only attack you 2 rounds, you have advantage vs them |
+| Wrathful Strike | 1 Resolve | Free | Next hit: +1d6 psychic, WIS save or frightened |
+| Ironclad Stance | 1 Resolve | Bonus Action | +2 AC until end of next turn |
 
 ### L7 Ability Pool (Oath + Shared)
 
@@ -225,30 +227,30 @@ Equipment modification. Apply mods to weapons, armor, and shields during long re
 |---------|------|--------|
 | Indomitable | 1/LR | Shared — reroll failed save |
 | Aura of Protection | Passive | Oath — allies get +CON mod to saves in combat |
-| Sacred Oath (sub-choice) | 1/LR active | Oath — see below |
+| The Vow (sub-choice) | 1/LR active | Oath — see below |
 
-**Sacred Oath sub-choices:**
+**The Vow sub-choices:**
 
-| Oath | Passive | Active (1/LR) |
-|------|---------|---------------|
-| Devotion | Immune to frightened | Holy Rebuke: reaction, attacker takes `level` radiant |
+| Vow | Passive | Active (1/LR) |
+|-----|---------|---------------|
+| Stalwart | Immune to frightened | Oath's Retribution: reaction, attacker takes `level` radiant |
 | Vengeance | +1d4 vs enemy who damaged you this combat | Vow of Enmity: advantage vs one target all combat |
-| Ancients | Resistance to spell damage | Nature's Wrath: all enemies STR save or restrained 1 round |
+| Warden | Resistance to spell damage | Warden's Grasp: all enemies STR save or restrained 1 round |
 
 ### L9 Capstone Abilities (Choose 1 of 3)
 
 | Ability | Effect | Source |
 |---------|--------|--------|
-| Radiant Champion | Smite max 4 Resolve (4d8). 1/LR: 0 HP → 1 HP + regain CON mod Resolve | Oath |
-| Crusader's Might | Smite heals you for half damage dealt. Lay on Hands can target allies | Oath |
+| Champion of the Vow | Sworn Strike max 4 Resolve (4d8). 1/LR: 0 HP → 1 HP + regain CON mod Resolve | Oath |
+| Sworn Protector | Sworn Strike heals you for half damage dealt. Aid the Vulnerable can target allies | Oath |
 | Unbreakable | (Same shared option) | Shared |
 
 ### L10 Capstone Traits (Choose 1 of 3)
 
 | Trait | Effect | Source |
 |-------|--------|--------|
-| Divine Aura | Allies regain 1d6 HP at start of your turn. Enemies hitting you take CON mod radiant | Oath |
-| Sanctified Strikes | All weapon attacks +1d4 radiant (free). Smite type chooseable: radiant/fire/thunder | Oath |
+| Aura of Conviction | Allies regain 1d6 HP at start of your turn. Enemies hitting you take CON mod radiant | Oath |
+| Resolute Strikes | All weapon attacks +1d4 radiant (free). Sworn Strike damage type chooseable: radiant/fire/thunder | Oath |
 | Undying Resolve | (Same shared option) | Shared |
 
 ---

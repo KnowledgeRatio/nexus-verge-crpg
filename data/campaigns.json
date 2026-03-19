@@ -89,20 +89,18 @@
 
   "templateCampaigns": [
     {
-      "id": "dark-sun",
-      "name": "Dark Sun (Template)",
-      "description": "Post-apocalyptic desert world - defiling magic, limited metal, survival focus",
+      "id": "desert-wasteland",
+      "name": "Desert Wasteland (Template)",
+      "description": "Post-apocalyptic desert world - scarce resources, harsh survival, no divine magic",
       "isBase": false,
       "inherits": ["core"],
       "disabled": true,
       "settings": {
-        "defilerMagic": true,
-        "limitedMetal": true,
-        "psionicsCommon": true,
+        "harshEnvironment": true,
+        "limitedResources": true,
         "noGods": true
       },
       "restrictions": {
-        "excludeRaces": ["dragonborn"],
         "excludeSpellSchools": ["conjuration"],
         "metalItemsRare": true
       },
@@ -113,21 +111,21 @@
       }
     },
     {
-      "id": "ravenloft",
-      "name": "Ravenloft (Template)",
-      "description": "Gothic horror domains of dread - dark powers, mists, and despair",
+      "id": "gothic-horror",
+      "name": "Gothic Horror (Template)",
+      "description": "Domains of dread shrouded in mist - dark powers, cursed lands, and despair",
       "isBase": false,
       "inherits": ["core"],
       "disabled": true,
       "settings": {
         "darkPowers": true,
-        "mistsOfRavenloft": true,
+        "cursedLands": true,
         "horrorChecks": true
       },
       "worldGenOverrides": {
         "primaryBiome": "temperateForest",
         "atmosphereModifier": "dark",
-        "undead Frequency": 2.0
+        "undeadFrequency": 2.0
       }
     },
     {

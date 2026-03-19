@@ -89,7 +89,19 @@ export const RULES = {
 
         // Grid combat
         gridSize: 5, // feet per square
-        diagonalMovementCost: 1 // 1 (simple) or 1.5 (alternating 5/10)
+        diagonalMovementCost: 1, // 1 (simple) or 1.5 (alternating 5/10)
+
+        // Disengage action — prevents opportunity attacks this turn
+        disengage: {
+            enabled: true,
+            actionCost: 'action',
+            preventsOpportunityAttacks: true,
+            cunningAction: {
+                callingId: 'wanderlust',
+                levelRequired: 2,
+                actionCost: 'bonusAction'
+            }
+        }
     },
 
     // ====================
@@ -297,8 +309,8 @@ export const RULES = {
         },
 
         // Boss name prefixes and suffixes
-        bossNamePrefixes: ["Ancient", "Savage", "Dire", "Shadow", "Cursed", "Elder", "Dread"],
-        bossNameSuffixes: ["Warlord", "Champion", "Alpha", "Overlord", "Matriarch", "Tyrant"]
+        bossNamePrefixes: ['Ancient', 'Savage', 'Dire', 'Shadow', 'Cursed', 'Elder', 'Dread'],
+        bossNameSuffixes: ['Warlord', 'Champion', 'Alpha', 'Overlord', 'Matriarch', 'Tyrant']
     },
 
     // ====================
@@ -374,6 +386,45 @@ export const RULES = {
     },
 
     // ====================
+    // FATIGUE SYSTEM
+    // ====================
+    fatigue: {
+        enabled: true,                    // Master toggle — override per campaign or worldbuilder
+
+        // Movement fatigue
+        baseFatiguePerTile: 0.5,          // % per tile at movementCost 1.0, CON +0
+        maxFatigueTerrainMultiplier: 1.5, // Cap terrain scaling — prevents unavoidable exhaustion in swamp/mountain
+        conModMultiplier: 0.1,            // Each CON mod point reduces fatigue rate by 10%
+        minFatigueMultiplier: 0.5,        // Floor at CON +5 — can't go below 50% rate
+
+        // Activity fatigue (flat % per event)
+        combatEncounterFatigue: 8,        // Per combat encounter (any result)
+        skillChallengeFatigue: 2,         // Per skill challenge attempt
+
+        // Make Camp (unlimited, no hit dice spent)
+        makeCampFatigueRecovery: 15,      // % recovered per Make Camp action
+
+        // Spent threshold behaviour
+        exhaustionTriggerResetTo: 45,     // Fatigue resets to this % when hitting 100%
+
+        // Supplies
+        suppliesStartCount: 3,
+        suppliesMaxCarry: 3,              // Hard carry cap — can't stockpile past this
+        suppliesPerLongRest: 1,           // Consumed per long rest
+        suppliesZeroHPRecovery: 0.5,      // Long rest at 0 supplies = 50% max HP only
+        suppliesZeroExhaustionRests: 2,   // Consecutive 0-supply long rests before +1 exhaustion
+        maxExhaustionLevels: 6,           // D&D 5e 2024 cap — death at level 6
+
+        // Thresholds (fatigue % → named state)
+        thresholds: {
+            wearied:    50,   // -1 skill checks
+            tired:      75,   // -1 skill checks, -1 attack rolls
+            staggering: 90,   // Disadvantage on attacks AND skill checks
+            spent:      100   // Trigger exhaustion level
+        }
+    },
+
+    // ====================
     // NPC GENERATION
     // ====================
     npc: {
@@ -437,6 +488,21 @@ export const RULES = {
                 maxItems: 25,
                 allowedRarities: ['common', 'uncommon', 'rare']
             }
+        }
+    },
+
+    // ====================
+    // CALLING RESOURCES
+    // ====================
+    callingResources: {
+        // Resolve: Dedication's martial resource pool
+        resolve: {
+            enabled: true,
+            formula: 'con_mod + level',  // CON modifier + character level
+            minimum: 1,
+            recharge: 'shortRest',
+            unlocksAtLevel: 3,           // Arrives with L3 spec choice
+            callings: ['dedication']
         }
     },
 
@@ -984,7 +1050,9 @@ export const RULES = {
             actionCost: 'bonusAction'
             // No advantage — bonus action cost is the only differentiator
         },
-        rangedHarassmentAttacks: false      // dormant — enable if ranged flee becomes dominant
+        rangedHarassmentAttacks: false,     // dormant — enable if ranged flee becomes dominant
+        pushBreaksEngagement: false,         // Push mastery does NOT automatically break engagement
+        hitRequiredToReEngage: false         // Engagement forms on attack attempt (hit or miss) — closing to swing is enough
     },
 
     // ====================
@@ -1049,7 +1117,7 @@ export const RULES = {
         companionActionEconomyFactor: 0.75,
 
         // Cap companion skill challenge contributions at the player's proficiency bonus
-        skillContributionCap: "proficiencyBonus",
+        skillContributionCap: 'proficiencyBonus',
 
         companionTypeSkillCounts: {
             standard:   2,

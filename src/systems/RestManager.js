@@ -6,6 +6,7 @@
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { roll } from '../utils/dice.js';
+import { applyLongRestFatigue, getFatigueState } from './FatigueManager.js';
 
 class RestManager {
     constructor() {
@@ -253,6 +254,14 @@ class RestManager {
         // D&D 5e Long Rest: Restore all HP
         character.currentHP = character.maxHP;
 
+        // Apply fatigue long-rest effects (supplies, exhaustion clearing, fatigue reset)
+        const fatigueResult = applyLongRestFatigue();
+
+        // If out of supplies, cap HP recovery at 50% of max
+        if (fatigueResult.hpRecoveryMultiplier < 1) {
+            character.currentHP = Math.floor(character.maxHP * fatigueResult.hpRecoveryMultiplier);
+        }
+
         // Hit dice don't need restoring (they equal level and don't deplete)
         character.hitDice.current = character.hitDice.max;
 
@@ -272,7 +281,8 @@ class RestManager {
         // Add messages
         gameState.addMessage('You take a long rest at the inn...', 'info');
         gameState.addMessage('You wake up feeling refreshed!', 'success');
-        gameState.addMessage(`HP: ${character.currentHP}/${character.maxHP} (fully restored)`, 'success');
+        const hpLabel = fatigueResult.hpRecoveryMultiplier < 1 ? 'halved — no supplies!' : 'fully restored';
+        gameState.addMessage(`HP: ${character.currentHP}/${character.maxHP} (${hpLabel})`, fatigueResult.hpRecoveryMultiplier < 1 ? 'warning' : 'success');
         gameState.addMessage(`Hit dice: ${character.hitDice.current}/${character.hitDice.max}`, 'info');
 
         if (character.spellcasting) {
@@ -342,6 +352,21 @@ class RestManager {
             });
         }
 
+        // Make Camp button
+        const makeCampBtn = document.getElementById('makeCampBtn');
+        if (makeCampBtn) {
+            // Remove old handler if exists
+            const newMakeCampBtn = makeCampBtn.cloneNode(true);
+            makeCampBtn.parentNode.replaceChild(newMakeCampBtn, makeCampBtn);
+
+            newMakeCampBtn.addEventListener('click', () => {
+                if (window.game?.player) {
+                    window.game.player.makeCamp();
+                    this.updateRestUI();
+                }
+            });
+        }
+
         // Close button
         const closeRestBtn = document.getElementById('closeRestBtn');
         if (closeRestBtn) {
@@ -390,6 +415,22 @@ class RestManager {
                     <span class="label">Short Rests:</span>
                     <span class="value">${RULES.rest.shortRestsPerLongRest - character.shortRestsUsed} remaining</span>
                 </div>
+                ${RULES.fatigue.enabled ? (() => {
+        const fatigueState = getFatigueState();
+        const suppliesWarning = fatigueState.supplies <= 0;
+        return `
+                <div class="rest-stat">
+                    <span class="label">Supplies:</span>
+                    <span class="value${suppliesWarning ? ' warning-text' : ''}">${suppliesWarning ? '⚠️' : '🎒'} ${fatigueState.supplies} remaining${suppliesWarning ? ' — HP recovery halved!' : ''}</span>
+                </div>
+                ${fatigueState.exhaustionLevels > 0 ? `
+                <div class="rest-stat">
+                    <span class="label">Exhaustion:</span>
+                    <span class="value warning-text">💀 Level ${fatigueState.exhaustionLevels}</span>
+                </div>
+                ` : ''}
+                `;
+    })() : ''}
                 ${character.spellcasting ? `
                     <div class="rest-stat">
                         <span class="label">Spell Slots:</span>
@@ -420,6 +461,30 @@ class RestManager {
             longRestBtn.disabled = !longRestCheck.canRest;
             if (!longRestCheck.canRest) {
                 longRestBtn.title = longRestCheck.reason;
+            }
+        }
+
+        // Update Make Camp button
+        const makeCampBtn = document.getElementById('makeCampBtn');
+        if (makeCampBtn) {
+            const combat = gameState.get('combat');
+            const fatigueState = RULES.fatigue.enabled ? getFatigueState() : null;
+            const campDisabled = !!(
+                combat?.active ||
+                (fatigueState && fatigueState.supplies <= 0) ||
+                (fatigueState && fatigueState.current <= 0)
+            );
+            makeCampBtn.disabled = campDisabled;
+            if (campDisabled) {
+                if (combat?.active) {
+                    makeCampBtn.title = 'Cannot make camp during combat!';
+                } else if (fatigueState && fatigueState.supplies <= 0) {
+                    makeCampBtn.title = 'No supplies remaining.';
+                } else if (fatigueState && fatigueState.current <= 0) {
+                    makeCampBtn.title = 'You are already well rested.';
+                }
+            } else {
+                makeCampBtn.title = '';
             }
         }
 

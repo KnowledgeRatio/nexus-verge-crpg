@@ -319,10 +319,18 @@ class LootManager {
      * @returns {string} CR bracket
      */
     getCRBracket(cr) {
-        if (cr <= 0.5) return '0-0.5';
-        if (cr <= 2) return '1-2';
-        if (cr <= 5) return '3-5';
-        if (cr <= 8) return '6-8';
+        if (cr <= 0.5) {
+            return '0-0.5';
+        }
+        if (cr <= 2) {
+            return '1-2';
+        }
+        if (cr <= 5) {
+            return '3-5';
+        }
+        if (cr <= 8) {
+            return '6-8';
+        }
         return '9-10';
     }
 

@@ -326,7 +326,7 @@ class SettlementUI {
         // Select greeting based on relation tone (use DialogueManager if available)
         if (textEl) {
             if (!canSpeak) {
-                textEl.textContent = "..."; // Hostile NPCs refuse to speak
+                textEl.textContent = '...'; // Hostile NPCs refuse to speak
             } else {
                 const dm = window.game?.dialogueManager;
                 const tone = relation?.tone || 'neutral';
@@ -354,7 +354,9 @@ class SettlementUI {
           👋 Leave
         </button>
       `;
-            if (optionsEl) optionsEl.innerHTML = optionsHTML;
+            if (optionsEl) {
+                optionsEl.innerHTML = optionsHTML;
+            }
             modal.querySelectorAll('.dialogue-option').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     this.handleDialogueOption(e.target.dataset.action, npc);
@@ -404,7 +406,7 @@ class SettlementUI {
         }
 
         // Skill challenge option (contextual based on NPC role)
-        if (window.skillChallengeManager && window.skillChallengeManager.challenges) {
+        if (window.skillChallengeManager && window.skillChallengeManager.terrainChallengesData) {
             const challenges = this.getContextualSkillChallenges(npc);
             if (challenges.length > 0) {
                 optionsHTML += `
@@ -531,13 +533,19 @@ class SettlementUI {
      */
     _checkPassiveIntel(npc, relation) {
         // Only check NPCs that have intel and haven't been checked yet
-        if (!npc.hasIntel || npc.intelStatus !== null) return;
+        if (!npc.hasIntel || npc.intelStatus !== null) {
+            return;
+        }
 
         const config = window.game?.relationManager?.config?.intel;
-        if (!config) return;
+        if (!config) {
+            return;
+        }
 
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Passive Empathy = 10 + empathy modifier
         const empathyMod = character.skillBonuses?.empathy ?? character.abilityModifiers?.wis ?? 0;
@@ -566,10 +574,14 @@ class SettlementUI {
     _handleIntelCheck(npc, textEl, optionsEl) {
         const config = window.game?.relationManager?.config?.intel;
         const relationManager = window.game?.relationManager;
-        if (!config || !relationManager) return;
+        if (!config || !relationManager) {
+            return;
+        }
 
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         const relation = relationManager.getRelation(npc);
         const tierId = relation?.tier?.id || 'neutral';
@@ -615,7 +627,9 @@ class SettlementUI {
             // Remove the intel button and replace with locked state
             if (optionsEl) {
                 const intelBtn = optionsEl.querySelector('[data-action="intel"]');
-                if (intelBtn) intelBtn.remove();
+                if (intelBtn) {
+                    intelBtn.remove();
+                }
             }
 
             const lockedMsgs = dm?.dialogueData?.intelDialogue?.lockedMessage || ["{npcName} won't share information with you."];
@@ -641,7 +655,7 @@ class SettlementUI {
 
         const dynamicLines = dm.getDynamicLines(npc);
         if (dynamicLines.length === 0) {
-            const noIntel = intelDlg?.noIntel || ["Things have been quiet around here."];
+            const noIntel = intelDlg?.noIntel || ['Things have been quiet around here.'];
             textEl.textContent = noIntel[Math.floor(Math.random() * noIntel.length)];
             return;
         }
@@ -649,10 +663,10 @@ class SettlementUI {
         // Pick a random intro line, then show all intel lines
         const intros = intelDlg?.successIntro || ["Here's what I know."];
         const intro = intros[Math.floor(Math.random() * intros.length)];
-        textEl.innerHTML = `<p style="margin: 4px 0;">${intro}</p>` +
+        textEl.innerHTML = `<p style="margin: 4px 0;">${intro}</p>${
             dynamicLines.map(line =>
                 `<p style="margin: 4px 0;">• ${line}</p>`
-            ).join('');
+            ).join('')}`;
     }
 
     /**
@@ -1407,7 +1421,7 @@ class SettlementUI {
             return [];
         }
 
-        const allChallenges = window.skillChallengeManager.challenges.challenges;
+        const allChallenges = window.skillChallengeManager.terrainChallengesData?.challenges || {};
         const availableChallenges = [];
 
         // Map NPC roles to appropriate challenge types

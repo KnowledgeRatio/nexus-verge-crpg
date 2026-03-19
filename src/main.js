@@ -31,6 +31,7 @@ import DungeonManager from './systems/DungeonManager.js';
 import { execute as dispatchEffects, executeOption as dispatchOption, isDeferred as checkDeferred, buildContext as buildEffectContext, buildOutOfCombatContext } from './systems/EffectDispatcher.js';
 import DungeonUI from './ui/DungeonUI.js';
 import CompanionManager from './systems/CompanionManager.js';
+import { getFatigueModifiers } from './systems/FatigueManager.js';
 
 class Game {
     constructor() {
@@ -158,7 +159,9 @@ class Game {
      * Handle window resize - recalculate and resize viewport
      */
     handleWindowResize() {
-        if (!this.mapRenderer) return;
+        if (!this.mapRenderer) {
+            return;
+        }
 
         // Debounce resize events (wait 250ms after last resize)
         clearTimeout(this.resizeTimeout);
@@ -233,6 +236,186 @@ class Game {
                 floatingText.remove();
             }, 1500);
         }, delay);
+    }
+
+    /**
+     * Prompt the player to use a reaction ability mid-combat.
+     * Called from CombatManager.attack() at two hook points:
+     *   - 'afterMiss'  : attacker missed (Riposte fires here)
+     *   - 'afterHit'   : hit landed and damage rolled (Parry fires here, before damage applied)
+     *
+     * @param {string} hookPoint        - 'afterMiss' or 'afterHit'
+     * @param {Object} attacker         - Combatant that attacked
+     * @param {Object} defender         - Combatant that was targeted (the reactor)
+     * @param {Object} [ctx]            - Extra context: { damage, damageType, isMelee }
+     * @returns {Promise<Object|null>}  - { abilityId, result } or null if skipped / no reaction
+     */
+    async promptReaction(hookPoint, attacker, defender, ctx = {}) {
+        // Only prompt when it's the player's team that can react
+        if (defender.team !== 'player') {
+            return null;
+        }
+
+        // Must have reaction available
+        if (!defender.actions || defender.actions.reaction <= 0) {
+            return null;
+        }
+
+        // Gather eligible reaction abilities for this hook point
+        const character = gameState.get('character');
+        const abilities = character?.abilities || [];
+        const eligible = abilities.filter(ab => {
+            if (ab.actionType !== 'reaction') {
+                return false;
+            }
+            if (hookPoint === 'afterMiss' && ab.reactionTrigger === 'afterMiss') {
+                return true;
+            }
+            if (hookPoint === 'afterHit'  && ab.reactionTrigger === 'afterHit')  {
+                return true;
+            }
+            return false;
+        });
+
+        if (eligible.length === 0) {
+            return null;
+        }
+
+        // Show modal and await player choice
+        return new Promise(resolve => {
+            const modal    = document.getElementById('reactionModal');
+            const titleEl  = document.getElementById('reactionModalTitle');
+            const ctxEl    = document.getElementById('reactionModalContext');
+            const listEl   = document.getElementById('reactionAbilityList');
+            const skipBtn  = document.getElementById('reactionSkipBtn');
+
+            if (!modal) {
+                resolve(null); return;
+            }
+
+            // Build context text
+            if (hookPoint === 'afterMiss') {
+                ctxEl.textContent = `${attacker.name} just missed ${defender.name}!`;
+                titleEl.textContent = '⚡ Reaction: Counter-Attack';
+            } else {
+                const dmg = ctx.damage ?? '?';
+                ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
+                titleEl.textContent = '⚡ Reaction: Defend';
+            }
+
+            // Render ability buttons
+            listEl.innerHTML = '';
+            eligible.forEach(ab => {
+                const btn = document.createElement('button');
+                btn.className = 'reaction-ability-btn';
+                btn.innerHTML = `${ab.name}<span class="reaction-ability-desc">${ab.description || ''}</span>`;
+                btn.addEventListener('click', async () => {
+                    modal.classList.remove('active');
+                    defender.actions.reaction -= 1;
+
+                    if (ab.id === 'riposte') {
+                        // Execute riposte: immediate counter-attack + maneuver die bonus damage
+                        const level = defender.character?.level || 1;
+                        const dieSides = defender.character?.getManeuverDie?.() || 6;
+                        const dieRoll = Math.floor(Math.random() * dieSides) + 1;
+                        gameState.addMessage(`⚔️ ${defender.name} RIPOSTES! (+${dieRoll} maneuver die bonus damage)`, 'success');
+                        const cm = this.combatManager;
+                        if (cm) {
+                            await cm.attack(defender, attacker, 'mainHand', {
+                                shouldConsumeAction: false,
+                                extraDamage: dieRoll
+                            });
+                        }
+                        resolve({ abilityId: ab.id });
+                    } else if (ab.id === 'parry') {
+                        // Roll maneuver die + CON mod for damage reduction
+                        const dieSides = defender.character?.getManeuverDie?.() || 6;
+                        const dieRoll = Math.floor(Math.random() * dieSides) + 1;
+                        const conMod = defender.character?.abilityModifiers?.con || 0;
+                        const reduction = Math.max(0, dieRoll + conMod);
+                        gameState.addMessage(`🛡️ ${defender.name} PARRIES! Reduces incoming damage by ${dieRoll}+${conMod}=${reduction}`, 'success');
+                        resolve({ abilityId: ab.id, damageReduction: reduction });
+                    } else {
+                        resolve({ abilityId: ab.id, ability: ab });
+                    }
+                }, { once: true });
+                listEl.appendChild(btn);
+            });
+
+            // Skip button
+            const onSkip = () => {
+                modal.classList.remove('active'); resolve(null);
+            };
+            skipBtn.addEventListener('click', onSkip, { once: true });
+
+            modal.classList.add('active');
+        });
+    }
+
+    /**
+     * Prompt the player to spend Resolve on Sworn Strike after a melee hit.
+     * Only fires if attacker is Oath spec and has Resolve remaining.
+     * @returns {Promise<number>}  Resolve spent (0 = skip)
+     */
+    async promptSwornStrike(attacker, defender) {
+        if (attacker.team !== 'player') {
+            return 0;
+        }
+
+        const character = gameState.get('character');
+        if (character?.specialization !== 'oath') {
+            return 0;
+        }
+
+        const currentResolve = character.resolvePoints ?? 0;
+        if (currentResolve <= 0) {
+            return 0;
+        }
+
+        // Check attacker has the ability
+        const hasAbility = character.abilities?.some(a => a.id === 'swornStrike');
+        if (!hasAbility) {
+            return 0;
+        }
+
+        const maxSpend = Math.min(3, currentResolve);
+        const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
+
+        return new Promise(resolve => {
+            const modal    = document.getElementById('swornStrikeModal');
+            const ctxEl    = document.getElementById('swornStrikeContext');
+            const infoEl   = document.getElementById('swornStrikeResolveInfo');
+            const btnsEl   = document.getElementById('swornStrikeButtons');
+            const skipBtn  = document.getElementById('swornStrikeSkipBtn');
+
+            if (!modal) {
+                resolve(0); return;
+            }
+
+            ctxEl.textContent = `${attacker.name} strikes ${defender.name}!${isUndead ? ' (Undead/Fiend — +1d8 bonus)' : ''}`;
+            infoEl.textContent = `Resolve available: ${currentResolve} — Spend up to ${maxSpend}`;
+
+            btnsEl.innerHTML = '';
+            for (let i = 1; i <= maxSpend; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-primary';
+                const extraDice = isUndead ? i + 1 : i;
+                btn.innerHTML = `${i} Resolve<br><small>${i}d8${isUndead ? ' (+1d8 vs undead)' : ''} ≈ ${Math.round(extraDice * 4.5)} avg</small>`;
+                btn.style.flex = '1';
+                btn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    resolve(i);
+                }, { once: true });
+                btnsEl.appendChild(btn);
+            }
+
+            const onSkip = () => {
+                modal.classList.remove('active'); resolve(0);
+            };
+            skipBtn.addEventListener('click', onSkip, { once: true });
+
+            modal.classList.add('active');
+        });
     }
 
     /**
@@ -380,7 +563,9 @@ class Game {
         // Store custom overrides
         this.worldbuilderOverrides = null;
 
-        if (!worldbuilderBtn || !worldbuilderModal) return;
+        if (!worldbuilderBtn || !worldbuilderModal) {
+            return;
+        }
 
         // Open modal
         worldbuilderBtn.addEventListener('click', () => {
@@ -439,7 +624,9 @@ class Game {
      */
     async loadCampaignFeatureOverrides() {
         const campaignId = document.getElementById('campaign')?.value;
-        if (!campaignId) return;
+        if (!campaignId) {
+            return;
+        }
 
         try {
             // Load campaigns.json
@@ -600,6 +787,15 @@ class Game {
         // Update the RULES.worldGen.campaignOverrides so WorldGenerator uses them
         RULES.worldGen.campaignOverrides = this.worldbuilderOverrides;
 
+        // Read and apply fatigue toggle
+        const fatigueEnabled = document.getElementById('wbFatigueEnabled')?.value !== 'false';
+        RULES.fatigue.enabled = fatigueEnabled;
+
+        // Persist to worldConfig for save/load sync
+        const worldConfig = gameState.get('worldConfig') || {};
+        worldConfig.fatigueEnabled = fatigueEnabled;
+        gameState.set('worldConfig', worldConfig);
+
         console.log('⚙️ Worldbuilder settings applied:', this.worldbuilderOverrides);
     }
 
@@ -663,6 +859,11 @@ class Game {
         // Initialize game systems
         const worldConfig = gameState.get('worldConfig');
         const seed = gameState.get('seed');
+
+        // Sync fatigue toggle from worldConfig (set by worldbuilder or loaded save)
+        if (worldConfig?.fatigueEnabled !== undefined) {
+            RULES.fatigue.enabled = worldConfig.fatigueEnabled;
+        }
 
         if (!this.worldGenerator) {
             console.log('🌍 Initializing world generator...');
@@ -1097,7 +1298,9 @@ class Game {
         const playerDiv = document.getElementById('playerCombatants');
         const enemyDiv = document.getElementById('enemyCombatants');
 
-        if (!playerDiv || !enemyDiv || !combatState || !combatState.combatants) return;
+        if (!playerDiv || !enemyDiv || !combatState || !combatState.combatants) {
+            return;
+        }
 
         const currentTurn = combatState.currentTurn;
 
@@ -1114,8 +1317,8 @@ class Game {
             if (mainHand?.weaponType === 'ranged') {
                 const ammoCount = mainHand.ammoCount;
                 const ammoCapacity = mainHand.ammoCapacity ?? 20;
-                if (ammoCount == null) {
-                    ammoDisplay = `<div class="ammo-count">🏹 &mdash;</div>`;
+                if (ammoCount === null || ammoCount === undefined) {
+                    ammoDisplay = '<div class="ammo-count">🏹 &mdash;</div>';
                 } else {
                     const ammoClass = ammoCount <= 3 ? 'ammo-count ammo-low' : 'ammo-count';
                     ammoDisplay = `<div class="${ammoClass}">🏹 ${ammoCount} / ${ammoCapacity}</div>`;
@@ -1126,10 +1329,19 @@ class Game {
             const isCompanion = c.team === 'companion';
             const isDowned = c.isDowned === true;
             const companionBadge = isCompanion
-                ? `<div style="font-size:0.7rem;color:#5bc8d4;margin-top:2px;">Companion</div>`
+                ? '<div style="font-size:0.7rem;color:#5bc8d4;margin-top:2px;">Companion</div>'
                 : '';
             const downedBadge = isDowned
-                ? `<div style="color:var(--danger-color);font-weight:bold;font-size:0.8rem;text-align:center;padding:2px 0;">DOWNED</div>`
+                ? '<div style="color:var(--danger-color);font-weight:bold;font-size:0.8rem;text-align:center;padding:2px 0;">DOWNED</div>'
+                : '';
+
+            // Engagement badge — only show when at least one enemy is engaged
+            const engagedCount = Array.isArray(c.engagedWith) ? c.engagedWith.length : 0;
+            const engagementBadge = engagedCount > 0
+                ? `<div class="combatant-engaged-badge"
+                         title="Engaged with ${engagedCount} ${engagedCount === 1 ? 'enemy' : 'enemies'}. Fleeing will trigger opportunity attacks.">
+                       \u2694\uFE0F \u00D7${engagedCount}
+                   </div>`
                 : '';
 
             const cardClasses = [
@@ -1149,10 +1361,11 @@ class Game {
                     ${isDowned ? downedBadge : `
                     <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
                     <div class="hp-bar">
-                        <div class="hp-fill" style="width: ${Math.max(0,(c.hp/c.maxHP)*100)}%"></div>
+                        <div class="hp-fill" style="width: ${Math.max(0,(c.hp / c.maxHP) * 100)}%"></div>
                     </div>
                     <div class="combatant-ac">AC: ${c.ac}</div>
                     ${ammoDisplay}
+                    ${engagementBadge}
                     ${conditionsDisplay}
                     `}
                 </div>
@@ -1172,7 +1385,7 @@ class Game {
                     <div class="combatant-name">${c.name}</div>
                     <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
                     <div class="hp-bar">
-                        <div class="hp-fill" style="width: ${(c.hp/c.maxHP)*100}%"></div>
+                        <div class="hp-fill" style="width: ${(c.hp / c.maxHP) * 100}%"></div>
                     </div>
                     <div class="combatant-ac">AC: ${c.ac}</div>
                     ${conditionsDisplay}
@@ -1186,7 +1399,9 @@ class Game {
      */
     renderTurnOrder(combatState) {
         const turnOrderEl = document.getElementById('turnOrder');
-        if (!turnOrderEl || !this.combatManager) return;
+        if (!turnOrderEl || !this.combatManager) {
+            return;
+        }
 
         const turnOrder = this.combatManager.turnOrder || [];
         const currentCombatant = this.combatManager.getCurrentCombatant();
@@ -1220,7 +1435,7 @@ class Game {
             }
 
             const downedLabel = isDowned ? ' <span style="color:var(--danger-color);font-size:0.75rem;">(downed)</span>' : '';
-            const initiative = c.initiative != null ? `<span style="color:var(--text-secondary);font-size:0.75rem;margin-left:auto;">${c.initiative}</span>` : '';
+            const initiative = c.initiative !== null && c.initiative !== undefined ? `<span style="color:var(--text-secondary);font-size:0.75rem;margin-left:auto;">${c.initiative}</span>` : '';
 
             return `<div style="${baseStyle}${extraStyle}" class="${teamColorClass}">
                 ${teamIcon} ${c.name}${downedLabel} (${c.hp}/${c.maxHP})${initiative}
@@ -1234,35 +1449,43 @@ class Game {
      * make opportunity attacks before the flee check resolves.
      */
     getFleeTooltip() {
-        if (!this.combatManager) return 'Flee combat';
+        if (!this.combatManager) {
+            return 'Flee combat';
+        }
 
-        const combatants = this.combatManager.combatants;
+        const playerCombatant = this.combatManager.playerCombatant;
 
-        // Living non-player combatants that have engaged (made a melee attack)
-        const engagedEnemies = combatants.filter(c =>
-            c.team !== 'player' &&
-            c.currentHP > 0 &&
-            c.hasEngaged === true
-        );
-        const engagedCount = engagedEnemies.length;
+        // Use the player's engagedWith set for the most accurate DC (matches CombatManager.flee logic)
+        const engagedCount = playerCombatant?.engagedWith?.size ?? 0;
 
-        // Enemies that will make opp attacks: engaged + melee (not ranged)
-        const oppAttackers = engagedEnemies.filter(c => {
-            const weapon = c.character?.equipment?.mainHand;
-            if (weapon) return weapon.weaponType !== 'ranged';
-            // Fall back to monster attackType
-            const attackType = c.character?.attackType;
-            return attackType !== 'ranged';
-        });
+        // Enemies that will make opp attacks: those in engagedWith + melee attackType
+        const oppAttackers = engagedCount > 0
+            ? this.combatManager.combatants.filter(c => {
+                if (c.team === 'player' || c.team === 'companion') {
+                    return false;
+                }
+                if (!playerCombatant.engagedWith.has(c.id)) {
+                    return false;
+                }
+                if (c.hp <= 0) {
+                    return false;
+                }
+                const weapon = c.character?.equipment?.mainHand;
+                if (weapon) {
+                    return weapon.weaponType !== 'ranged';
+                }
+                return c.character?.attackType !== 'ranged';
+            })
+            : [];
 
         const dc = 10 + 2 * Math.max(0, engagedCount - 1);
 
         if (engagedCount === 0) {
-            return `DC ${dc} \u2014 no enemies engaged yet`;
+            return 'DC 10 \u2014 no enemies engaged, free escape';
         }
         const oppCount = oppAttackers.length;
         const attackWord = oppCount === 1 ? 'enemy' : 'enemies';
-        return `DC ${dc} \u2014 ${oppCount} ${attackWord} will attack before this resolves`;
+        return `DC ${dc} | Engaged: ${engagedCount} ${engagedCount === 1 ? 'enemy' : 'enemies'} | ${oppCount} ${attackWord} will attack before this resolves`;
     }
 
     /**
@@ -1270,7 +1493,9 @@ class Game {
      */
     renderCombatActions(combatState) {
         const actionsEl = document.getElementById('combatActions');
-        if (!actionsEl || !this.combatManager) return;
+        if (!actionsEl || !this.combatManager) {
+            return;
+        }
 
         const currentCombatant = this.combatManager.getCurrentCombatant();
 
@@ -1313,6 +1538,9 @@ class Game {
         const character = gameState.get('character');
         const hasOffHandWeapon = character?.equipment?.offHand?.type === 'weapon';
 
+        // Show pending maneuver indicator if one is queued
+        const pendingManeuver = currentCombatant.pendingManeuver;
+
         // --- Flee button state ---
         // Blocking conditions prevent flee entirely
         const blockingConditions = ['restrained', 'grappled', 'stunned', 'paralyzed', 'unconscious'];
@@ -1334,10 +1562,25 @@ class Game {
             fleeTooltip += ` — WARNING: ${names} ${downedCompanions.length === 1 ? 'is' : 'are'} downed and will be lost`;
         }
 
-        // --- Cunning Action Flee (Wanderlust level 2+) ---
+        // --- Cunning Action Flee / Disengage (Wanderlust level 2+) ---
         const isWanderlust = character?.class?.id === 'wanderlust';
         const characterLevel = character?.level || 1;
         const showCunningFlee = isWanderlust && characterLevel >= 2;
+
+        // --- Disengage button state ---
+        // Wanderlust L2+ may disengage as Bonus Action (Cunning Action)
+        const cunningDisengage = isWanderlust && characterLevel >= 2;
+        const disengageAvailable = cunningDisengage ? hasBonusAction : hasAction;
+        const playerEngagedCount = currentCombatant.engagedWith?.size ?? 0;
+        const disengageLabel = cunningDisengage ? '🏃 Disengage (Bonus)' : '🏃 Disengage';
+        const disengageTooltipBase = cunningDisengage
+            ? 'Bonus Action — Disengage: clear all melee engagement. No opportunity attacks this turn.'
+            : 'Disengage: Clear all melee engagement. No opportunity attacks this turn. [Action]';
+        const disengageTooltip = disengageAvailable
+            ? (playerEngagedCount > 0
+                ? `${disengageTooltipBase} Engaged with ${playerEngagedCount} ${playerEngagedCount === 1 ? 'enemy' : 'enemies'}.`
+                : disengageTooltipBase)
+            : `No ${cunningDisengage ? 'Bonus Action' : 'Action'} available.`;
         const cunningFleeBlocked = !!blockingCondition || !hasBonusAction;
         const cunningFleeTooltip = blockingCondition
             ? `Cannot flee while ${blockingCondition}`
@@ -1348,8 +1591,8 @@ class Game {
         const coverDisplay = combatCoverType === 'partial'
             ? '<div class="cover-indicator partial-cover">🌿 Partial Cover — +2 AC vs enemy ranged</div>'
             : combatCoverType === 'substantial'
-            ? '<div class="cover-indicator substantial-cover">🏰 Substantial Cover — +3 AC vs enemy ranged</div>'
-            : '';
+                ? '<div class="cover-indicator substantial-cover">🏰 Substantial Cover — +3 AC vs enemy ranged</div>'
+                : '';
 
         actionsEl.innerHTML = `
             ${coverDisplay}
@@ -1367,6 +1610,7 @@ class Game {
                     <div style="font-size: 18px; font-weight: bold; color: ${currentCombatant.actions.reaction > 0 ? 'var(--success)' : 'var(--text-muted)'};">${currentCombatant.actions.reaction}</div>
                 </div>
             </div>
+            ${pendingManeuver ? `<div style="text-align:center; padding: 4px 8px; margin-bottom: 8px; background: rgba(255,200,0,0.15); border: 1px solid var(--warning-color); border-radius: 4px; font-size: 12px; color: var(--warning-color);">⚔️ Queued: <strong>${pendingManeuver}</strong> — Attack to trigger</div>` : ''}
             <div class="action-buttons">
                 <button class="action-btn" onclick="window.game.selectAction('attack')"
                         ${!hasAction ? 'disabled' : ''}>
@@ -1386,6 +1630,11 @@ class Game {
                 <button class="action-btn" onclick="window.game.selectAction('dodge')"
                         ${!hasAction ? 'disabled' : ''}>
                     🛡️ Dodge
+                </button>
+                <button class="action-btn" onclick="window.game.selectAction('disengage')"
+                        ${!disengageAvailable ? 'disabled' : ''}
+                        title="${disengageTooltip}">
+                    ${disengageLabel}
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('ability')">
                     ✨ Ability
@@ -1436,6 +1685,18 @@ class Game {
 
         if (actionType === 'dodge') {
             this.dodge();
+            this.selectedAction = null;
+            return;
+        }
+
+        if (actionType === 'disengage') {
+            const combatant = this.combatManager.playerCombatant;
+            const result = this.combatManager.disengage(combatant);
+            if (!result.success && result.reason) {
+                gameState.addMessage(`Cannot disengage: ${result.reason}`, 'error');
+            }
+            // CombatManager.disengage() calls updateGameState() internally, which
+            // triggers the combat subscriber and re-renders actions + cards automatically.
             this.selectedAction = null;
             return;
         }
@@ -1513,7 +1774,7 @@ class Game {
         const attacker = this.combatManager.playerCombatant;
         const character = gameState.get('character');
 
-        switch(this.selectedAction) {
+        switch (this.selectedAction) {
             case 'attack':
                 this.combatManager.attack(attacker, target, 'mainHand');
                 break;
@@ -1576,7 +1837,9 @@ class Game {
      * Sync combat state to gameState (extracted repeated pattern)
      */
     syncCombatState() {
-        if (!this.combatManager) return;
+        if (!this.combatManager) {
+            return;
+        }
         const current = this.combatManager.getCurrentCombatant();
         const isCompanionTurn = current?.team === 'companion';
         gameState.set('combat', {
@@ -1646,12 +1909,31 @@ class Game {
         const charLevel = document.getElementById('charLevel');
         const hpDisplay = document.getElementById('hpDisplay');
         const acDisplay = document.getElementById('acDisplay');
+        const resolveDisplay = document.getElementById('resolveDisplay');
         const locationDisplay = document.getElementById('location');
 
-        if (charName) charName.textContent = character.name;
-        if (charLevel) charLevel.textContent = `Level ${character.level} ${character.class.displayName || character.class.name}`;
-        if (hpDisplay) hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
-        if (acDisplay) acDisplay.textContent = `AC: ${character.ac}`;
+        if (charName) {
+            charName.textContent = character.name;
+        }
+        if (charLevel) {
+            charLevel.textContent = `Level ${character.level} ${character.class.displayName || character.class.name}`;
+        }
+        if (hpDisplay) {
+            hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
+        }
+        if (acDisplay) {
+            acDisplay.textContent = `AC: ${character.ac}`;
+        }
+
+        // Resolve pool: show only for Dedication at L3+
+        if (resolveDisplay) {
+            if (character.maxResolvePoints > 0) {
+                resolveDisplay.textContent = `⚔️ Resolve: ${character.resolvePoints}/${character.maxResolvePoints}`;
+                resolveDisplay.style.display = 'inline';
+            } else {
+                resolveDisplay.style.display = 'none';
+            }
+        }
 
         // Update location display
         this.updateLocationDisplay();
@@ -1675,11 +1957,29 @@ class Game {
         // Subscribe to character changes (entire object)
         // This fires when character is replaced via gameState.set('character', newChar)
         gameState.subscribe('character', (updatedChar) => {
-            if (!updatedChar) return;
-            if (charName) charName.textContent = updatedChar.name;
-            if (charLevel) charLevel.textContent = `Level ${updatedChar.level} ${updatedChar.class.name}`;
-            if (hpDisplay) hpDisplay.textContent = `HP: ${updatedChar.currentHP}/${updatedChar.maxHP}`;
-            if (acDisplay) acDisplay.textContent = `AC: ${updatedChar.ac}`;
+            if (!updatedChar) {
+                return;
+            }
+            if (charName) {
+                charName.textContent = updatedChar.name;
+            }
+            if (charLevel) {
+                charLevel.textContent = `Level ${updatedChar.level} ${updatedChar.class.name}`;
+            }
+            if (hpDisplay) {
+                hpDisplay.textContent = `HP: ${updatedChar.currentHP}/${updatedChar.maxHP}`;
+            }
+            if (acDisplay) {
+                acDisplay.textContent = `AC: ${updatedChar.ac}`;
+            }
+            if (resolveDisplay) {
+                if (updatedChar.maxResolvePoints > 0) {
+                    resolveDisplay.textContent = `⚔️ Resolve: ${updatedChar.resolvePoints}/${updatedChar.maxResolvePoints}`;
+                    resolveDisplay.style.display = 'inline';
+                } else {
+                    resolveDisplay.style.display = 'none';
+                }
+            }
         });
 
         // Also subscribe to specific HP changes (for fine-grained updates via combat)
@@ -1697,6 +1997,78 @@ class Game {
 
         // Keep party health bar in sync with HUD updates
         this.updatePartyHealthBar?.();
+
+        // Keep fatigue HUD in sync
+        this.updateFatigueHUD();
+    }
+
+    updateFatigueHUD() {
+        const fatigueHUD = document.getElementById('fatigueHUD');
+        if (!fatigueHUD) {
+            return;
+        }
+
+        if (!RULES.fatigue.enabled) {
+            fatigueHUD.style.display = 'none';
+            return;
+        }
+
+        fatigueHUD.style.display = 'flex';
+
+        const { current, exhaustionLevels, supplies } = gameState.get('fatigue') || { current: 0, exhaustionLevels: 0, supplies: 3 };
+
+        // Bar fill and colour class
+        const bar = document.getElementById('fatigueBar');
+        if (bar) {
+            bar.style.width = `${current}%`;
+            bar.className = 'fatigue-bar';
+            if (current >= 90)      {
+                bar.classList.add('staggering');
+            } else if (current >= 75) {
+                bar.classList.add('tired');
+            } else if (current >= 50) {
+                bar.classList.add('wearied');
+            }
+        }
+
+        // Threshold label
+        const label = document.getElementById('fatigueLabel');
+        if (label) {
+            const names = { rested: 'Rested', wearied: 'Wearied', tired: 'Tired', staggering: 'Staggering' };
+            let state = 'rested';
+            if (current >= 90)      {
+                state = 'staggering';
+            } else if (current >= 75) {
+                state = 'tired';
+            } else if (current >= 50) {
+                state = 'wearied';
+            }
+            label.textContent = names[state];
+        }
+
+        // Tooltip on bar container
+        const container = fatigueHUD.querySelector('.fatigue-bar-container');
+        if (container) {
+            container.title = `Fatigue: ${Math.round(current)}% — Exhaustion Levels: ${exhaustionLevels}`;
+        }
+
+        // Exhaustion icons (💀 per level)
+        const icons = document.getElementById('exhaustionIcons');
+        if (icons) {
+            icons.textContent = '💀'.repeat(exhaustionLevels);
+        }
+
+        // Supplies counter
+        const suppliesEl = document.getElementById('suppliesDisplay');
+        if (suppliesEl) {
+            suppliesEl.textContent = `🎒 ${supplies}`;
+            suppliesEl.className = 'supplies-display';
+            if (supplies === 0)     {
+                suppliesEl.classList.add('empty');
+            } else if (supplies <= 1) {
+                suppliesEl.classList.add('low');
+            }
+        }
     }
 
     // ===========================================================
@@ -1720,7 +2092,9 @@ class Game {
 
         // Subscribe to companion turn signalling
         gameState.subscribe('combat', (combatState) => {
-            if (!combatState || !combatState.active) return;
+            if (!combatState || !combatState.active) {
+                return;
+            }
             if (combatState.isCompanionTurn && combatState.activeCompanionId) {
                 // renderCombatScreen already runs via the main combat subscription;
                 // this is the specific hook for the action panel switch.
@@ -1738,7 +2112,9 @@ class Game {
      */
     updatePartyHealthBar() {
         const bar = document.getElementById('partyHealthBar');
-        if (!bar) return;
+        if (!bar) {
+            return;
+        }
 
         const party = gameState.getFullParty ? gameState.getFullParty() : [];
         // Filter out null (can happen before character is set)
@@ -1761,8 +2137,11 @@ class Game {
             const hpPct = Math.max(0, Math.min(100, Math.round((currentHP / maxHP) * 100)));
 
             let fillClass = 'hp-high';
-            if (hpPct <= 25) fillClass = 'hp-low';
-            else if (hpPct <= 50) fillClass = 'hp-mid';
+            if (hpPct <= 25) {
+                fillClass = 'hp-low';
+            } else if (hpPct <= 50) {
+                fillClass = 'hp-mid';
+            }
 
             // Truncate name to 10 chars for compactness
             const displayName = (member.name || 'Unknown').slice(0, 10);
@@ -1799,12 +2178,16 @@ class Game {
      */
     renderCompanionActions(companionId, combatState) {
         const actionsEl = document.getElementById('combatActions');
-        if (!actionsEl || !this.combatManager) return;
+        if (!actionsEl || !this.combatManager) {
+            return;
+        }
 
         const companionCombatant = this.combatManager.combatants.find(
             c => c.id === companionId && c.team === 'companion'
         );
-        if (!companionCombatant) return;
+        if (!companionCombatant) {
+            return;
+        }
 
         const hasAction = companionCombatant.hasAction('action');
         const hasBonusAction = companionCombatant.hasAction('bonusAction');
@@ -1859,7 +2242,9 @@ class Game {
      */
     buildFallenCompanionsHTML() {
         const fallen = gameState.get('fallenCompanions') || [];
-        if (fallen.length === 0) return '';
+        if (fallen.length === 0) {
+            return '';
+        }
 
         const entries = fallen.map(c => {
             const callingName = c.callingName || c.class?.displayName || c.class?.name || 'Unknown';
@@ -1883,11 +2268,15 @@ class Game {
      * Call after any non-combat damage source (skill challenges, traps, environmental)
      */
     checkDeath(character) {
-        if (character.currentHP > 0) return false;
+        if (character.currentHP > 0) {
+            return false;
+        }
 
         // Already in combat — CombatManager handles defeat
         const combatState = gameState.get('combat');
-        if (combatState?.active) return false;
+        if (combatState?.active) {
+            return false;
+        }
 
         gameState.addMessage('💀 You have perished...', 'error');
 
@@ -1919,7 +2308,9 @@ class Game {
      */
     updateLocationDisplay() {
         const locationDisplay = document.getElementById('location');
-        if (!locationDisplay) return;
+        if (!locationDisplay) {
+            return;
+        }
 
         const location = this.getCurrentLocationString();
         locationDisplay.textContent = location;
@@ -1932,7 +2323,9 @@ class Game {
         const xpDisplay = document.getElementById('xpDisplay');
         const xpProgressBar = document.getElementById('xpProgressBar');
 
-        if (!xpDisplay || !xpProgressBar) return;
+        if (!xpDisplay || !xpProgressBar) {
+            return;
+        }
 
         const currentXP = character.xp;
         const currentLevel = character.level;
@@ -2036,7 +2429,9 @@ class Game {
      */
     renderLoadGameSlots() {
         const slotsContainer = document.getElementById('saveSlots');
-        if (!slotsContainer) return;
+        if (!slotsContainer) {
+            return;
+        }
 
         slotsContainer.innerHTML = `
             <div style="padding: 40px; text-align: center;">
@@ -2234,11 +2629,15 @@ class Game {
         // Quest action buttons (delegated event handling)
         document.addEventListener('click', (e) => {
             const actionBtn = e.target.closest('.quest-action-btn');
-            if (!actionBtn) return;
+            if (!actionBtn) {
+                return;
+            }
 
             const action = actionBtn.dataset.action;
             const questItem = actionBtn.closest('.quest-item');
-            if (!questItem) return;
+            if (!questItem) {
+                return;
+            }
 
             const questId = questItem.dataset.questId;
 
@@ -2311,7 +2710,9 @@ class Game {
      */
     renderSocialChallenge(detail) {
         const modal = document.getElementById('socialChallengeModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         // Show modal
         modal.classList.add('active');
@@ -2364,7 +2765,9 @@ class Game {
      */
     renderConversationHistory(history) {
         const container = document.getElementById('conversationHistory');
-        if (!container) return;
+        if (!container) {
+            return;
+        }
 
         container.innerHTML = '';
 
@@ -2385,7 +2788,9 @@ class Game {
      */
     renderSocialChoices(choices) {
         const container = document.getElementById('socialChallengeChoices');
-        if (!container) return;
+        if (!container) {
+            return;
+        }
 
         container.innerHTML = '';
 
@@ -2454,7 +2859,9 @@ class Game {
      */
     openQuestLog() {
         const modal = document.getElementById('questLogModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         const quests = gameState.get('quests') || { active: [], completed: [], failed: [] };
         this.updateQuestCounts(quests);
@@ -2507,7 +2914,9 @@ class Game {
     renderQuestTab(tabName) {
         const quests = gameState.get('quests') || { active: [], completed: [], failed: [] };
         const questList = document.getElementById(`${tabName}QuestsList`);
-        if (!questList) return;
+        if (!questList) {
+            return;
+        }
 
         const questArray = quests[tabName] || [];
 
@@ -2542,9 +2951,15 @@ class Game {
         }).join('');
 
         const rewards = [];
-        if (quest.rewards.xp) rewards.push(`${quest.rewards.xp} XP`);
-        if (quest.rewards.gold) rewards.push(`${quest.rewards.gold} Gold`);
-        if (quest.rewards.reputation) rewards.push(`+${quest.rewards.reputation.amount} Rep`);
+        if (quest.rewards.xp) {
+            rewards.push(`${quest.rewards.xp} XP`);
+        }
+        if (quest.rewards.gold) {
+            rewards.push(`${quest.rewards.gold} Gold`);
+        }
+        if (quest.rewards.reputation) {
+            rewards.push(`+${quest.rewards.reputation.amount} Rep`);
+        }
         const rewardText = rewards.join(' | ');
 
         let actionButtons = '';
@@ -2585,9 +3000,15 @@ class Game {
         const completedCount = document.getElementById('completedQuestCount');
         const failedCount = document.getElementById('failedQuestCount');
 
-        if (activeCount) activeCount.textContent = `(${quests.active?.length || 0})`;
-        if (completedCount) completedCount.textContent = `(${quests.completed?.length || 0})`;
-        if (failedCount) failedCount.textContent = `(${quests.failed?.length || 0})`;
+        if (activeCount) {
+            activeCount.textContent = `(${quests.active?.length || 0})`;
+        }
+        if (completedCount) {
+            completedCount.textContent = `(${quests.completed?.length || 0})`;
+        }
+        if (failedCount) {
+            failedCount.textContent = `(${quests.failed?.length || 0})`;
+        }
     }
 
     /**
@@ -2602,7 +3023,9 @@ class Game {
      * Abandon quest
      */
     abandonQuest(questId) {
-        if (!confirm('Are you sure you want to abandon this quest?')) return;
+        if (!confirm('Are you sure you want to abandon this quest?')) {
+            return;
+        }
 
         const result = this.questManager.abandonQuest(questId);
         if (result.success) {
@@ -2632,13 +3055,19 @@ class Game {
      */
     showQuestNotification(title, message, type = 'info') {
         const toast = document.getElementById('questNotification');
-        if (!toast) return;
+        if (!toast) {
+            return;
+        }
 
         const titleEl = document.getElementById('toastTitle');
         const messageEl = document.getElementById('toastMessage');
 
-        if (titleEl) titleEl.textContent = title;
-        if (messageEl) messageEl.textContent = message;
+        if (titleEl) {
+            titleEl.textContent = title;
+        }
+        if (messageEl) {
+            messageEl.textContent = message;
+        }
 
         toast.classList.add('show');
 
@@ -2653,7 +3082,9 @@ class Game {
      */
     async showAbilitySelection() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Load abilities data if not already loaded
         if (!this.abilitiesData) {
@@ -2669,9 +3100,28 @@ class Game {
 
         // Get available abilities for character's calling
         const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
-        const availableAbilities = callingAbilities.filter(ability =>
-            character.level >= ability.levelRequired
-        );
+        const availableAbilities = callingAbilities.filter(ability => {
+            if (character.level < (ability.levelRequired || 1)) {
+                return false;
+            }
+            // Specialization abilities: only show if character has matching specialization
+            if (ability.specialization && ability.specialization !== character.specialization) {
+                return false;
+            }
+            // Maneuver abilities (effects.maneuver): only show if in knownManeuvers
+            if (ability.effects?.maneuver && !character.knownManeuvers?.includes(ability.id)) {
+                return false;
+            }
+            // Reaction maneuvers auto-prompt via promptReaction — hide from active selection
+            if (ability.actionType === 'reaction' && ability.effects?.maneuver) {
+                return false;
+            }
+            // Sworn Strike auto-prompts post-hit — hide from active selection
+            if (ability.effects?.swornStrike) {
+                return false;
+            }
+            return true;
+        });
 
         if (availableAbilities.length === 0) {
             gameState.addMessage('No abilities available yet', 'info');
@@ -2762,25 +3212,43 @@ class Game {
      */
     canUseAbility(ability, character) {
         // Filter out passive/out-of-combat abilities from combat modal
-        if (ability.actionType === 'passive') return false;
+        if (ability.actionType === 'passive') {
+            return false;
+        }
 
         // Check resource availability
         if (ability.resourceType === 'shortRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerShortRest || 1;
-            if (used >= max) return false;
+            if (used >= max) {
+                return false;
+            }
         } else if (ability.resourceType === 'longRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerLongRest || 1;
-            if (used >= max) return false;
+            if (used >= max) {
+                return false;
+            }
+        }
+
+        // Resolve cost (combat maneuvers)
+        if (ability.resourceType === 'resolve' || ability.resolveCost) {
+            if ((character.resolvePoints ?? 0) <= 0) {
+                return false;
+            }
         }
 
         // Check action economy — does combatant have the required action type?
+        // beforeAttack/onHit maneuvers don't consume an action themselves (they modify next attack)
         const combatant = this.combatManager?.playerCombatant;
-        if (combatant && ability.actionType !== 'free') {
+        const isQueueManeuver = ability.effects?.maneuver &&
+            (ability.actionType === 'beforeAttack' || ability.actionType === 'onHit');
+        if (combatant && ability.actionType !== 'free' && !isQueueManeuver) {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
-            if (required && !combatant.hasAction(required)) return false;
+            if (required && !combatant.hasAction(required)) {
+                return false;
+            }
         }
 
         return true;
@@ -2798,6 +3266,10 @@ class Game {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerLongRest || 1;
             return `${max - used}/${max} per LR`;
+        } else if (ability.resourceType === 'resolve') {
+            const resolve = character.resolvePoints ?? 0;
+            const maxResolve = character.maxResolvePoints ?? 0;
+            return `${resolve}/${maxResolve} Resolve`;
         }
         return 'Available';
     }
@@ -2822,7 +3294,8 @@ class Game {
         const types = {
             shortRest: 'Short Rest',
             longRest: 'Long Rest',
-            stamina: 'Stamina'
+            stamina: 'Stamina',
+            resolve: 'Resolve'
         };
         return types[resourceType] || resourceType;
     }
@@ -2833,7 +3306,9 @@ class Game {
     async useAbility(ability, character) {
         console.log('Using ability:', ability.name);
 
-        if (!character.abilityUses) character.abilityUses = {};
+        if (!character.abilityUses) {
+            character.abilityUses = {};
+        }
 
         // Choice-based abilities: show generic choice modal
         if (ability.effects?.choice) {
@@ -2842,7 +3317,131 @@ class Game {
         }
 
         const combatant = this.combatManager?.playerCombatant;
-        if (!combatant) return;
+        if (!combatant) {
+            return;
+        }
+
+        // MANEUVER dispatch — queue for next attack, or immediate for Rally
+        if (ability.effects?.maneuver) {
+            const maneuverId = ability.id;
+            if (ability.actionType === 'bonusAction') {
+                // Rally: immediate bonus action effect — grant tempHP
+                if (!combatant.hasAction('bonusAction')) {
+                    gameState.addMessage('No Bonus Action available!', 'error');
+                    return;
+                }
+                if ((character.resolvePoints ?? 0) <= 0) {
+                    gameState.addMessage('No Resolve points!', 'error');
+                    return;
+                }
+                const dieSides = character.getManeuverDie?.() || 6;
+                const dieRoll = Math.floor(Math.random() * dieSides) + 1;
+                const conMod = character.abilityModifiers?.con || 0;
+                const tempHP = Math.max(1, dieRoll + conMod);
+                combatant.addCondition('tempHP', 'combat', combatant.id, { value: tempHP, isBuff: true, curable: false, icon: '✨' });
+                character.resolvePoints = Math.max(0, character.resolvePoints - 1);
+                gameState.set('character', character);
+                combatant.actions.bonusAction -= 1;
+                gameState.addMessage(`⚡ Rally! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + CON ${conMod})`, 'success');
+                this.showFloatingCombatText(combatant.id, `+${tempHP} THP ✨`, 'buff');
+                this.combatManager.updateGameState();
+            } else {
+                // beforeAttack / onHit: queue for next attack (toggle off if already queued)
+                if (combatant.pendingManeuver === maneuverId) {
+                    combatant.pendingManeuver = null;
+                    character.resolvePoints = Math.min(character.maxResolvePoints ?? 99, character.resolvePoints + 1);
+                    gameState.set('character', character);
+                    gameState.addMessage(`${ability.name} cancelled — Resolve refunded.`, 'info');
+                } else {
+                    if ((character.resolvePoints ?? 0) <= 0) {
+                        gameState.addMessage('No Resolve points!', 'error');
+                        return;
+                    }
+                    character.resolvePoints = Math.max(0, character.resolvePoints - 1);
+                    gameState.set('character', character);
+                    combatant.pendingManeuver = maneuverId;
+                    gameState.addMessage(`⚔️ ${ability.name} queued! Attack to trigger it. (1 Resolve spent)`, 'success');
+                }
+                this.combatManager.updateGameState();
+            }
+            return;
+        }
+
+        // AID THE VULNERABLE — variable Resolve spend heal or cure condition
+        if (ability.effects?.aidTheVulnerable) {
+            if (!combatant.hasAction('bonusAction')) {
+                gameState.addMessage('No Bonus Action available!', 'error');
+                return;
+            }
+            const currentResolve = character.resolvePoints ?? 0;
+            if (currentResolve <= 0) {
+                gameState.addMessage('No Resolve remaining!', 'error');
+                return;
+            }
+            const maxSpend = Math.min(3, currentResolve);
+            const conMod = character.abilityModifiers?.con || 0;
+            const level = character.level || 1;
+            // Check if there are curable debuffs to remove
+            const curableDebuffs = combatant.conditions?.filter(c => !c.isBuff && c.curable) || [];
+            const canCure = curableDebuffs.length > 0;
+
+            // Build choice prompt inline
+            const choiceHtml = `
+                <div style="padding:12px; background:var(--bg-secondary); border:1px solid var(--accent-color); border-radius:6px; min-width:260px;">
+                    <h4 style="margin:0 0 8px; color:var(--accent-color);">🤝 Aid the Vulnerable</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px;">Resolve: ${currentResolve} | CON mod: +${conMod}</p>
+                    <div style="display:flex; flex-direction:column; gap:6px;" id="atvChoiceList">
+                        ${Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
+        const heal = n * conMod + level;
+        return `<button class="btn btn-primary atv-btn" data-spend="${n}" style="text-align:left;">
+                                Heal (${n} Resolve) — ${heal} HP <small style="color:var(--text-muted)">(${n}×CON+level)</small>
+                            </button>`;
+    }).join('')}
+                        ${canCure ? `<button class="btn btn-secondary atv-btn" data-spend="cure" style="text-align:left;">
+                            Cure (1 Resolve) — Remove ${curableDebuffs[0]?.type || 'condition'}
+                        </button>` : ''}
+                        <button class="btn btn-secondary atv-btn" data-spend="0">Cancel</button>
+                    </div>
+                </div>`;
+
+            // Use a quick inline modal via the notification area (inject into a shared overlay)
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = choiceHtml;
+            document.body.appendChild(overlay);
+
+            overlay.querySelectorAll('.atv-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const spend = btn.dataset.spend;
+                    overlay.remove();
+                    if (spend === '0') {
+                        return;
+                    }
+
+                    if (spend === 'cure') {
+                        character.resolvePoints = Math.max(0, currentResolve - 1);
+                        gameState.set('character', character);
+                        combatant.actions.bonusAction -= 1;
+                        const removed = combatant.removeCurableConditions();
+                        const names = removed.map(c => c.type).join(', ');
+                        gameState.addMessage(`🤝 Aid the Vulnerable! Cured: ${names || 'condition'}`, 'success');
+                    } else {
+                        const n = parseInt(spend);
+                        const heal = n * conMod + level;
+                        character.resolvePoints = Math.max(0, currentResolve - n);
+                        character.currentHP = Math.min(character.maxHP, (character.currentHP || 0) + heal);
+                        gameState.set('character', character);
+                        combatant.actions.bonusAction -= 1;
+                        combatant.hp = character.currentHP;
+                        gameState.addMessage(`🤝 Aid the Vulnerable! Healed for ${heal} HP (${n} Resolve spent)`, 'success');
+                        this.showFloatingCombatText(combatant.id, `+${heal} HP`, 'healing');
+                    }
+                    this.combatManager.updateGameState();
+                    this.updateHUD(character);
+                }, { once: true });
+            });
+            return;
+        }
 
         // Check action availability (don't consume yet — wait for results)
         if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
@@ -2873,7 +3472,9 @@ class Game {
         if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
-            if (required) combatant.consumeAction(required);
+            if (required) {
+                combatant.consumeAction(required);
+            }
         }
 
         // Track usage and sync state
@@ -2911,7 +3512,9 @@ class Game {
 
         // Remove existing modal
         const existingModal = document.getElementById('abilityChoiceModal');
-        if (existingModal) existingModal.remove();
+        if (existingModal) {
+            existingModal.remove();
+        }
 
         document.body.insertAdjacentHTML('beforeend', modalHTML);
 
@@ -2920,7 +3523,9 @@ class Game {
 
         closeBtn.addEventListener('click', () => modal.remove());
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
+            if (e.target === modal) {
+                modal.remove();
+            }
         });
 
         // Choice button clicks — dispatch via EffectDispatcher
@@ -2941,7 +3546,9 @@ class Game {
      */
     async executeAbilityChoice(option, ability, character) {
         const combatant = this.combatManager?.playerCombatant;
-        if (!combatant) return;
+        if (!combatant) {
+            return;
+        }
 
         // Check action economy
         if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
@@ -2972,7 +3579,9 @@ class Game {
         if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
-            if (required) combatant.consumeAction(required);
+            if (required) {
+                combatant.consumeAction(required);
+            }
         }
 
         // Track usage and sync state
@@ -2984,7 +3593,9 @@ class Game {
      * Track ability usage and persist to character state
      */
     trackAbilityUsage(ability, character) {
-        if (!character.abilityUses) character.abilityUses = {};
+        if (!character.abilityUses) {
+            character.abilityUses = {};
+        }
         character.abilityUses[ability.id] = (character.abilityUses[ability.id] || 0) + 1;
         gameState.set('character', character);
     }
@@ -2993,7 +3604,9 @@ class Game {
      * Render abilities on character sheet with "Use" buttons for out-of-combat abilities
      */
     renderCharSheetAbilities(character) {
-        if (!this.abilitiesData) return '<p class="empty-state">Loading abilities...</p>';
+        if (!this.abilitiesData) {
+            return '<p class="empty-state">Loading abilities...</p>';
+        }
 
         const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
         const available = callingAbilities.filter(a => character.level >= a.levelRequired);
@@ -3032,17 +3645,23 @@ class Game {
      * Check if an ability can be used outside combat (has charges, HP not full for heals, etc.)
      */
     canUseAbilityOutOfCombat(ability, character) {
-        if (!ability.usableOutOfCombat) return false;
+        if (!ability.usableOutOfCombat) {
+            return false;
+        }
 
         // Check resource availability
         if (ability.resourceType === 'shortRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerShortRest || 1;
-            if (used >= max) return false;
+            if (used >= max) {
+                return false;
+            }
         } else if (ability.resourceType === 'longRest') {
             const used = character.abilityUses?.[ability.id] || 0;
             const max = ability.usesPerLongRest || 1;
-            if (used >= max) return false;
+            if (used >= max) {
+                return false;
+            }
         }
 
         return true;
@@ -3053,7 +3672,9 @@ class Game {
      */
     async useAbilityOutOfCombat(abilityId) {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Load abilities data if needed
         if (!this.abilitiesData) {
@@ -3068,14 +3689,18 @@ class Game {
 
         const callingAbilities = this.abilitiesData.abilities[character.class.id] || [];
         const ability = callingAbilities.find(a => a.id === abilityId);
-        if (!ability || !ability.usableOutOfCombat) return;
+        if (!ability || !ability.usableOutOfCombat) {
+            return;
+        }
 
         if (!this.canUseAbilityOutOfCombat(ability, character)) {
             gameState.addMessage(`❌ ${ability.name} has no uses remaining`, 'error');
             return;
         }
 
-        if (!character.abilityUses) character.abilityUses = {};
+        if (!character.abilityUses) {
+            character.abilityUses = {};
+        }
 
         // Choice-based abilities: show choices filtered to out-of-combat options
         if (ability.effects?.choice) {
@@ -3135,7 +3760,9 @@ class Game {
         `;
 
         const existingModal = document.getElementById('abilityChoiceModal');
-        if (existingModal) existingModal.remove();
+        if (existingModal) {
+            existingModal.remove();
+        }
 
         document.body.insertAdjacentHTML('beforeend', modalHTML);
 
@@ -3144,7 +3771,9 @@ class Game {
 
         closeBtn.addEventListener('click', () => modal.remove());
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
+            if (e.target === modal) {
+                modal.remove();
+            }
         });
 
         document.querySelectorAll('.ability-choice-btn').forEach(btn => {
@@ -3332,7 +3961,9 @@ class Game {
      */
     openWorldMap() {
         const modal = document.getElementById('worldMapModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         modal.classList.add('active');
 
@@ -3369,7 +4000,9 @@ class Game {
      */
     renderWorldMap() {
         const canvas = document.getElementById('worldMapCanvas');
-        if (!canvas) return;
+        if (!canvas) {
+            return;
+        }
 
         // Set canvas size to match container
         const container = canvas.parentElement;
@@ -3397,10 +4030,14 @@ class Game {
                 for (let localX = 0; localX < 32; localX++) {
                     const index = localY * 32 + localX;
                     const tile = region.tiles[index];
-                    if (!tile) continue;
+                    if (!tile) {
+                        continue;
+                    }
 
                     // Only render explored tiles
-                    if (!tile.explored) continue;
+                    if (!tile.explored) {
+                        continue;
+                    }
 
                     const worldX = regionX * 32 + localX;
                     const worldY = regionY * 32 + localY;
@@ -3434,7 +4071,7 @@ class Game {
                         } else if (tile.feature.type === 'sanctuary') {
                             ctx.fillStyle = '#FFD700';
                             ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
-                                       this.worldMapZoom / 2, this.worldMapZoom / 2);
+                                this.worldMapZoom / 2, this.worldMapZoom / 2);
                         }
                     }
                 }
@@ -3449,7 +4086,7 @@ class Game {
             ctx.fillStyle = '#FF0000';
             ctx.beginPath();
             ctx.arc(playerScreenX + this.worldMapZoom / 2, playerScreenY + this.worldMapZoom / 2,
-                   Math.max(3, this.worldMapZoom), 0, Math.PI * 2);
+                Math.max(3, this.worldMapZoom), 0, Math.PI * 2);
             ctx.fill();
         }
     }
@@ -3543,7 +4180,9 @@ class Game {
      */
     openCharacterSheet() {
         const modal = document.getElementById('characterSheetModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         modal.classList.add('active');
         this.renderCharacterSheet();
@@ -3588,7 +4227,9 @@ class Game {
      */
     async openHelp() {
         const modal = document.getElementById('helpModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         // Load terrain reference data dynamically
         await this.loadTerrainReference();
@@ -3601,7 +4242,9 @@ class Game {
      */
     async loadTerrainReference() {
         const container = document.getElementById('terrainReference');
-        if (!container) return;
+        if (!container) {
+            return;
+        }
 
         try {
             // Fetch terrain data with cache-busting
@@ -3621,8 +4264,12 @@ class Game {
 
                 // Format terrain properties
                 const properties = [];
-                if (difficultTerrain) properties.push('Difficult');
-                if (!traversable) properties.push('Blocked');
+                if (difficultTerrain) {
+                    properties.push('Difficult');
+                }
+                if (!traversable) {
+                    properties.push('Blocked');
+                }
                 const propsText = properties.length > 0 ? ` (${properties.join(', ')})` : '';
 
                 html += `
@@ -3750,7 +4397,9 @@ class Game {
 
         if (inDungeon) {
             // Handle dungeon zoom
-            if (!this.dungeonUI) return;
+            if (!this.dungeonUI) {
+                return;
+            }
 
             const changed = direction > 0 ? this.dungeonUI.zoomIn() : this.dungeonUI.zoomOut();
             if (changed) {
@@ -3762,7 +4411,9 @@ class Game {
             }
         } else {
             // Handle world map zoom
-            if (!this.mapRenderer) return;
+            if (!this.mapRenderer) {
+                return;
+            }
 
             const changed = direction > 0 ? this.mapRenderer.zoomIn() : this.mapRenderer.zoomOut();
 
@@ -3833,7 +4484,9 @@ class Game {
      */
     openSettings() {
         const modal = document.getElementById('settingsModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         // Load current volume values
         const masterVolume = Math.round(audioManager.getMasterVolume() * 100);
@@ -3872,7 +4525,9 @@ class Game {
      */
     closeSettings() {
         const modal = document.getElementById('settingsModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
         modal.classList.remove('active');
     }
 
@@ -3882,26 +4537,10 @@ class Game {
     setupLegalModal() {
         const modal = document.getElementById('legalModal');
         const closeBtn = document.getElementById('closeLegalBtn');
-        const footerLink = document.getElementById('footerLegalLink');
-
-        console.log('Legal Modal Setup:', {
-            modal: modal ? 'Found' : 'NOT FOUND',
-            closeBtn: closeBtn ? 'Found' : 'NOT FOUND',
-            footerLink: footerLink ? 'Found' : 'NOT FOUND'
-        });
 
         // Close button
         if (closeBtn) {
             closeBtn.addEventListener('click', () => this.closeLegal());
-        }
-
-        // Footer link
-        if (footerLink) {
-            footerLink.addEventListener('click', (e) => {
-                console.log('Footer legal link clicked!');
-                e.preventDefault();
-                this.openLegal();
-            });
         }
 
         // Close on backdrop click
@@ -3926,16 +4565,10 @@ class Game {
      */
     openLegal() {
         const modal = document.getElementById('legalModal');
-        console.log('openLegal called:', {
-            modal: modal ? 'Found' : 'NOT FOUND',
-            hasActiveClass: modal?.classList.contains('active')
-        });
         if (!modal) {
-            console.error('Legal modal element not found!');
             return;
         }
         modal.classList.add('active');
-        console.log('Legal modal opened - active class added');
     }
 
     /**
@@ -3943,7 +4576,9 @@ class Game {
      */
     closeLegal() {
         const modal = document.getElementById('legalModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
         modal.classList.remove('active');
     }
 
@@ -4035,7 +4670,9 @@ class Game {
      */
     async triggerBossEncounter(bossId) {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         try {
             const { buildBossEncounter } = await import('./systems/EncounterBuilder.js');
@@ -4079,7 +4716,9 @@ class Game {
      */
     updateDungeonUI() {
         const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) return;
+        if (!dungeonState?.active) {
+            return;
+        }
 
         const character = gameState.get('character');
 
@@ -4154,7 +4793,9 @@ class Game {
      */
     updateDungeonNavigation() {
         const navContainer = document.getElementById('dungeonNavigation');
-        if (!navContainer || !this.dungeonUI) return;
+        if (!navContainer || !this.dungeonUI) {
+            return;
+        }
 
         const dungeonState = gameState.get('dungeon');
         const navInfo = this.dungeonUI.getRoomNavigation(dungeonState);
@@ -4169,14 +4810,22 @@ class Game {
         navInfo.connections.forEach(conn => {
             const btn = document.createElement('button');
             btn.className = 'dungeon-nav-btn';
-            if (conn.isBoss) btn.classList.add('boss-room');
-            if (conn.isEntrance) btn.classList.add('entrance');
+            if (conn.isBoss) {
+                btn.classList.add('boss-room');
+            }
+            if (conn.isEntrance) {
+                btn.classList.add('entrance');
+            }
 
             let icon = '🚪';
-            if (conn.isBoss) icon = '☠️';
-            if (conn.isEntrance) icon = '▲';
+            if (conn.isBoss) {
+                icon = '☠️';
+            }
+            if (conn.isEntrance) {
+                icon = '▲';
+            }
 
-            let status = conn.explored ? '' : '(unexplored)';
+            const status = conn.explored ? '' : '(unexplored)';
 
             btn.innerHTML = `
                 <span class="room-icon">${icon}</span>
@@ -4206,7 +4855,9 @@ class Game {
         const quickMenuChevron = document.getElementById('quickMenuChevron');
         const questBadge = document.getElementById('questBadge');
 
-        if (!quickMenu || !quickMenuToggle) return;
+        if (!quickMenu || !quickMenuToggle) {
+            return;
+        }
 
         // Track collapsed state
         let isCollapsed = false;
@@ -4334,12 +4985,15 @@ class Game {
         const modal = document.getElementById('skillCheckModal');
 
         // Auto-roll the skill check
+        const fatigueMods = getFatigueModifiers();
         const rollResult = character.rollSkill(skillId, {
             advantage: config.advantage || false,
-            disadvantage: config.disadvantage || false
+            disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
         });
 
-        const success = rollResult.total >= dc;
+        // Apply fatigue skill modifier on top of the roll total
+        const fatigueAdjustedTotal = rollResult.total + fatigueMods.skillMod;
+        const success = fatigueAdjustedTotal >= dc;
 
         // Build roll message
         let rollMessage = '';
@@ -4350,12 +5004,16 @@ class Game {
         } else {
             rollMessage = `🎲 Rolled ${rollResult.roll}`;
         }
-        rollMessage += ` + ${skillBonus} = ${rollResult.total}`;
+        if (fatigueMods.skillMod !== 0) {
+            rollMessage += ` + ${skillBonus}${fatigueMods.skillMod > 0 ? ' +' : ' '}${fatigueMods.skillMod} (fatigue) = ${fatigueAdjustedTotal}`;
+        } else {
+            rollMessage += ` + ${skillBonus} = ${fatigueAdjustedTotal}`;
+        }
 
         // Check for critical success/failure
         let criticalInfo = null;
         if (challenge && window.skillChallengeManager) {
-            criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, rollResult.total, dc);
+            criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, fatigueAdjustedTotal, dc);
         }
 
         // Log to message system
@@ -4387,7 +5045,8 @@ class Game {
                         success,
                         critical: criticalInfo?.isCritical || false,
                         criticalType: criticalInfo?.type || null,
-                        ...rollResult
+                        ...rollResult,
+                        total: fatigueAdjustedTotal
                     }
                 );
 
@@ -4403,7 +5062,9 @@ class Game {
                 });
 
                 // Check for death from skill challenge damage
-                if (this.checkDeath(character)) return;
+                if (this.checkDeath(character)) {
+                    return;
+                }
 
                 // Handle combat initiation
                 if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
@@ -4458,7 +5119,7 @@ class Game {
         const description = stage?.description || config.description;
 
         // Populate modal with result
-        document.getElementById('skillCheckTitle').textContent = (config.title || challenge?.name || 'Skill Challenge') + ' - Result';
+        document.getElementById('skillCheckTitle').textContent = `${config.title || challenge?.name || 'Skill Challenge'  } - Result`;
         document.getElementById('skillCheckDescription').textContent = description;
         document.getElementById('skillCheckType').textContent = `${skillId.toUpperCase()} Check (Passive)`;
         document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
@@ -4546,23 +5207,37 @@ class Game {
             // Success outcomes
             if (stage?.onSuccess || challenge.onSuccess) {
                 const successData = stage?.onSuccess || challenge.onSuccess;
-                if (successData.xp) consequences.push(`<strong>Success:</strong> Gain experience`);
-                if (successData.gold) consequences.push(`<strong>Success:</strong> Find gold`);
-                if (successData.loot) consequences.push(`<strong>Success:</strong> Discover treasure`);
-                if (successData.message) consequences.push(`<strong>Success:</strong> ${successData.message}`);
+                if (successData.xp) {
+                    consequences.push('<strong>Success:</strong> Gain experience');
+                }
+                if (successData.gold) {
+                    consequences.push('<strong>Success:</strong> Find gold');
+                }
+                if (successData.loot) {
+                    consequences.push('<strong>Success:</strong> Discover treasure');
+                }
+                if (successData.message) {
+                    consequences.push(`<strong>Success:</strong> ${successData.message}`);
+                }
             }
 
             // Failure outcomes
             if (stage?.onFailure || challenge.onFailure) {
                 const failureData = stage?.onFailure || challenge.onFailure;
-                if (failureData.damage) consequences.push(`<strong>Failure:</strong> Take damage`);
-                if (failureData.condition) consequences.push(`<strong>Failure:</strong> Suffer ${failureData.condition}`);
+                if (failureData.damage) {
+                    consequences.push('<strong>Failure:</strong> Take damage');
+                }
+                if (failureData.condition) {
+                    consequences.push(`<strong>Failure:</strong> Suffer ${failureData.condition}`);
+                }
                 if (failureData.consequences) {
                     if (failureData.consequences.includes('initiateCombat')) {
-                        consequences.push(`<strong>Failure:</strong> Combat!`);
+                        consequences.push('<strong>Failure:</strong> Combat!');
                     }
                 }
-                if (failureData.message) consequences.push(`<strong>Failure:</strong> ${failureData.message}`);
+                if (failureData.message) {
+                    consequences.push(`<strong>Failure:</strong> ${failureData.message}`);
+                }
             }
 
             consequencesList.innerHTML = consequences.join('<br>');
@@ -4598,12 +5273,15 @@ class Game {
                 cleanup();
 
                 // Roll skill check using Character.rollSkill() with advantage/disadvantage support
+                const fatigueMods = getFatigueModifiers();
                 const rollResult = character.rollSkill(skillId, {
                     advantage: config.advantage || false,
-                    disadvantage: config.disadvantage || false
+                    disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
                 });
 
-                const success = rollResult.total >= dc;
+                // Apply fatigue skill modifier on top of the roll total
+                const fatigueAdjustedTotal = rollResult.total + fatigueMods.skillMod;
+                const success = fatigueAdjustedTotal >= dc;
 
                 // Show result message with roll details
                 let rollMessage = '';
@@ -4615,12 +5293,16 @@ class Game {
                     rollMessage = `🎲 Rolled ${rollResult.roll}`;
                 }
 
-                rollMessage += ` + ${skillBonus} = ${rollResult.total}`;
+                if (fatigueMods.skillMod !== 0) {
+                    rollMessage += ` + ${skillBonus}${fatigueMods.skillMod > 0 ? ' +' : ' '}${fatigueMods.skillMod} (fatigue) = ${fatigueAdjustedTotal}`;
+                } else {
+                    rollMessage += ` + ${skillBonus} = ${fatigueAdjustedTotal}`;
+                }
 
                 // Check for critical success/failure (if using SkillChallengeManager)
                 let criticalInfo = null;
                 if (challenge && window.skillChallengeManager) {
-                    criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, rollResult.total, dc);
+                    criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, fatigueAdjustedTotal, dc);
                 }
 
                 if (success) {
@@ -4651,7 +5333,8 @@ class Game {
                                 success,
                                 critical: criticalInfo?.isCritical || false,
                                 criticalType: criticalInfo?.type || null,
-                                ...rollResult
+                                ...rollResult,
+                                total: fatigueAdjustedTotal
                             }
                         );
 
@@ -4667,7 +5350,9 @@ class Game {
                         });
 
                         // Check for death from skill challenge damage
-                        if (this.checkDeath(character)) return;
+                        if (this.checkDeath(character)) {
+                            return;
+                        }
 
                         // Handle combat initiation
                         if (outcome.consequences && outcome.consequences.includes('initiateCombat')) {
@@ -4743,7 +5428,9 @@ class Game {
         // Check loaded skills data first
         if (this.skillsData) {
             const skill = this.skillsData.find(s => s.id === skillId);
-            if (skill) return skill.name;
+            if (skill) {
+                return skill.name;
+            }
         }
         // Fallback: convert camelCase to Title Case
         return skillId
@@ -4783,8 +5470,11 @@ class Game {
 
             // Determine chance color class
             let chanceClass = '';
-            if (successChance >= 60) chanceClass = 'high';
-            else if (successChance <= 30) chanceClass = 'low';
+            if (successChance >= 60) {
+                chanceClass = 'high';
+            } else if (successChance <= 30) {
+                chanceClass = 'low';
+            }
 
             card.innerHTML = `
                 <div class="choice-option-header">
@@ -4912,8 +5602,12 @@ class Game {
             const isCriticalFailure = rollResult.critical && rollResult.criticalType === 'failure';
 
             let outcomeClass = success ? 'success' : 'failure';
-            if (isCriticalSuccess) outcomeClass = 'critical-success';
-            if (isCriticalFailure) outcomeClass = 'critical-failure';
+            if (isCriticalSuccess) {
+                outcomeClass = 'critical-success';
+            }
+            if (isCriticalFailure) {
+                outcomeClass = 'critical-failure';
+            }
 
             // Set header styling
             header.className = `outcome-header ${outcomeClass}`;
@@ -5073,7 +5767,9 @@ class Game {
      */
     renderCharacterSheet() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Debug logging for fighting style
         console.log('🎯 Rendering character sheet');
@@ -5082,7 +5778,9 @@ class Game {
         console.log('Weapon Masteries:', character.weaponMasteries);
 
         const content = document.getElementById('characterSheetContent');
-        if (!content) return;
+        if (!content) {
+            return;
+        }
 
         // Build character sheet HTML
         content.innerHTML = `
@@ -5548,8 +6246,8 @@ class Game {
                 <span class="char-label">Spell Slots:</span>
                 <span class="char-value">
                     ${Object.entries(slots).map(([level, data]) =>
-                        `L${level}: ${data.current}/${data.max}`
-                    ).join(' | ')}
+        `L${level}: ${data.current}/${data.max}`
+    ).join(' | ')}
                 </span>
             </div>
         `;
@@ -5595,7 +6293,9 @@ class Game {
      */
     openInventory() {
         const modal = document.getElementById('inventoryModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         modal.classList.add('active');
         this.renderInventory();
@@ -5630,7 +6330,9 @@ class Game {
      */
     renderInventory() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Clean up invalid items from inventory
         if (character.inventory) {
@@ -5647,9 +6349,15 @@ class Game {
         const classEl = document.getElementById('invCharClass');
         const goldEl = document.getElementById('invGold');
 
-        if (nameEl) nameEl.textContent = character.name;
-        if (classEl) classEl.textContent = `${character.class.name} ${character.level}`;
-        if (goldEl) goldEl.textContent = `${character.gold || 0} gp`;
+        if (nameEl) {
+            nameEl.textContent = character.name;
+        }
+        if (classEl) {
+            classEl.textContent = `${character.class.name} ${character.level}`;
+        }
+        if (goldEl) {
+            goldEl.textContent = `${character.gold || 0} gp`;
+        }
 
         // Update equipment slots
         this.updateEquipmentSlots(character);
@@ -5693,8 +6401,12 @@ class Game {
         const maxWeightEl = document.getElementById('invMaxWeight');
         const weightBarEl = document.getElementById('invWeightBar');
 
-        if (weightEl) weightEl.textContent = totalWeight.toFixed(1);
-        if (maxWeightEl) maxWeightEl.textContent = maxWeight;
+        if (weightEl) {
+            weightEl.textContent = totalWeight.toFixed(1);
+        }
+        if (maxWeightEl) {
+            maxWeightEl.textContent = maxWeight;
+        }
 
         const percentage = (totalWeight / maxWeight) * 100;
         if (weightBarEl) {
@@ -5741,7 +6453,9 @@ class Game {
      */
     renderInventoryItems(character) {
         const listEl = document.getElementById('inventoryItemsList');
-        if (!listEl) return;
+        if (!listEl) {
+            return;
+        }
 
         const tab = this.currentInventoryTab || 'all';
 
@@ -5761,10 +6475,18 @@ class Game {
         // Filter by tab
         if (tab !== 'all') {
             items = items.filter(item => {
-                if (tab === 'weapons') return item.type === 'weapon';
-                if (tab === 'armor') return item.type === 'armor' || item.type === 'shield';
-                if (tab === 'consumables') return item.type === 'consumable' || item.consumable;
-                if (tab === 'misc') return !['weapon', 'armor', 'shield', 'consumable'].includes(item.type) && !item.consumable;
+                if (tab === 'weapons') {
+                    return item.type === 'weapon';
+                }
+                if (tab === 'armor') {
+                    return item.type === 'armor' || item.type === 'shield';
+                }
+                if (tab === 'consumables') {
+                    return item.type === 'consumable' || item.consumable;
+                }
+                if (tab === 'misc') {
+                    return !['weapon', 'armor', 'shield', 'consumable'].includes(item.type) && !item.consumable;
+                }
                 return true;
             });
         }
@@ -5810,7 +6532,7 @@ class Game {
             if (item.maxDexBonus !== undefined && item.maxDexBonus !== null) {
                 description += ` (Max DEX +${item.maxDexBonus})`;
             } else if (item.addDexModifier) {
-                description += ` (Max DEX Inf)`;
+                description += ' (Max DEX Inf)';
             }
         }
 
@@ -5936,7 +6658,9 @@ class Game {
      */
     async handleItemAction(action, itemId) {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Find item in inventory OR equipment
         let item = character.inventory.find(i => i.id === itemId);
@@ -5951,7 +6675,9 @@ class Game {
             }
         }
 
-        if (!item) return;
+        if (!item) {
+            return;
+        }
 
         switch (action) {
             case 'equip':
@@ -5997,7 +6723,7 @@ class Game {
         // VALIDATION: Off-hand weapons must have Light property
         if (item.type === 'weapon' && slot === 'offHand') {
             if (!item.properties || !item.properties.includes('light')) {
-                gameState.addMessage(`❌ Only weapons with the Light property can be equipped in the off-hand.`, 'error');
+                gameState.addMessage('❌ Only weapons with the Light property can be equipped in the off-hand.', 'error');
                 return;
             }
         }
@@ -6034,7 +6760,7 @@ class Game {
             }
         } else if (item.type === 'shield') {
             if (!this.isCharacterProficientWithShield(character)) {
-                gameState.addMessage(`❌ You are not proficient with shields. You cannot use this shield.`, 'error');
+                gameState.addMessage('❌ You are not proficient with shields. You cannot use this shield.', 'error');
                 return; // Prevent equipping shield without proficiency
             }
         }
@@ -6186,7 +6912,9 @@ class Game {
             // Remove item from inventory
             const inventory = character.inventory || [];
             const idx = inventory.findIndex(i => i.id === item.id);
-            if (idx !== -1) inventory.splice(idx, 1);
+            if (idx !== -1) {
+                inventory.splice(idx, 1);
+            }
             character.inventory = inventory;
 
             const icon = item.ammoType === 'bolt' ? '🏹' : '🏹';
@@ -6254,7 +6982,9 @@ class Game {
      */
     openSaveMenu() {
         const modalOverlay = document.getElementById('saveLoadModal');
-        if (!modalOverlay) return;
+        if (!modalOverlay) {
+            return;
+        }
 
         // Switch to save tab by default
         this.switchSaveLoadTab('save');
@@ -6277,7 +7007,9 @@ class Game {
      */
     renderSaveSlots() {
         const slotsContainer = document.getElementById('saveMenuSlots');
-        if (!slotsContainer) return;
+        if (!slotsContainer) {
+            return;
+        }
 
         const character = gameState.get('character');
 
@@ -6311,7 +7043,9 @@ class Game {
      */
     renderLoadSlots() {
         const slotsContainer = document.getElementById('loadMenuSlots');
-        if (!slotsContainer) return;
+        if (!slotsContainer) {
+            return;
+        }
 
         slotsContainer.innerHTML = `
             <div style="padding: 20px; text-align: center;">
@@ -6400,7 +7134,9 @@ class Game {
      */
     async importSaveFile(event) {
         const file = event.target.files[0];
-        if (!file) return;
+        if (!file) {
+            return;
+        }
 
         const result = await saveManager.importSaveFromFile(file);
 
@@ -6427,7 +7163,9 @@ class Game {
      */
     async importSaveFileFromMenu(event) {
         const file = event.target.files[0];
-        if (!file) return;
+        if (!file) {
+            return;
+        }
 
         const result = await saveManager.importSaveFromFile(file);
 
@@ -6458,6 +7196,11 @@ class Game {
         const seed = gameState.get('seed');
         const worldConfig = gameState.get('worldConfig');
         const character = gameState.get('character');
+
+        // Sync fatigue toggle from worldConfig (set by worldbuilder or loaded save)
+        if (worldConfig?.fatigueEnabled !== undefined) {
+            RULES.fatigue.enabled = worldConfig.fatigueEnabled;
+        }
 
         // Reinitialize world generator
         this.worldGenerator = new WorldGenerator(seed, worldConfig);
@@ -6587,14 +7330,34 @@ class Game {
             this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
         }
 
-        // Reinitialize player at saved position
-        this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
-        const savedPosition = gameState.get('world.currentLocation');
-        if (savedPosition) {
-            this.player.x = savedPosition.x;
-            this.player.y = savedPosition.y;
-            await this.player.updateVisibility();
+        // Unbind old player's input listeners before replacing (prevents duplicate handlers)
+        if (this.player) {
+            this.player.unbindInput();
         }
+
+        // Reinitialize player at saved position.
+        // _loadedPlayerPosition is written by SaveManager.deserializeGameState and is the
+        // authoritative position from the save file. Fall back to world.currentLocation.
+        const savedPosition = gameState.get('_loadedPlayerPosition') ||
+                              gameState.get('world.currentLocation') ||
+                              { x: 0, y: 0 };
+
+        this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
+        this.player.x = savedPosition.x;
+        this.player.y = savedPosition.y;
+
+        // Sync position back to gameState so everything agrees
+        gameState.set('world.currentLocation', { x: savedPosition.x, y: savedPosition.y });
+        gameState.set('player.position', { x: savedPosition.x, y: savedPosition.y });
+
+        await this.player.updateVisibility();
+
+        // Clear transient load field
+        gameState.set('_loadedPlayerPosition', null);
+
+        // Recalculate combat stats so fighting style bonuses (Defense AC, etc.) are always fresh
+        this.recalculateCombatStats(character);
+        gameState.set('character', character);
 
         // Update HUD
         this.updateHUD(character);
@@ -6605,8 +7368,16 @@ class Game {
         // Restart game loop
         this.startGameLoop();
 
+        // Force an immediate render centred on the restored position (prevents one-frame flash at origin)
+        if (this.mapRenderer && this.player) {
+            this.mapRenderer.renderWorld(
+                gameState.get('world'),
+                { x: this.player.x, y: this.player.y }
+            );
+        }
+
         gameState.addMessage('Game loaded successfully!', 'success');
-        console.log('✅ Game reinitialized after load');
+        console.log(`✅ Game reinitialized after load — player at (${this.player?.x}, ${this.player?.y})`);
     }
 
     /**
@@ -6750,7 +7521,9 @@ class Game {
      */
     setupMessageLog() {
         const messageLog = document.getElementById('messageLog');
-        if (!messageLog) return;
+        if (!messageLog) {
+            return;
+        }
 
         gameState.subscribe('ui.messageLog', (messages) => {
             // Show last 10 messages
@@ -6770,11 +7543,15 @@ class Game {
      */
     setupQuickStats() {
         const quickStats = document.getElementById('quickStats');
-        if (!quickStats) return;
+        if (!quickStats) {
+            return;
+        }
 
         const updateStats = () => {
             const character = gameState.get('character');
-            if (!character) return;
+            if (!character) {
+                return;
+            }
 
             quickStats.innerHTML = `
                 <div style="font-family: monospace; font-size: 0.85rem; line-height: 1.6;">
@@ -6855,14 +7632,18 @@ class Game {
         }
         if (modal) {
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) this.closeForgecraftModal();
+                if (e.target === modal) {
+                    this.closeForgecraftModal();
+                }
             });
         }
     }
 
     async openForgecraftModal() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Load practices data if not cached
         if (!this.practicesData) {
@@ -6876,7 +7657,9 @@ class Game {
         }
 
         const forgecraft = this.practicesData.practices.find(p => p.id === 'forgecraft');
-        if (!forgecraft) return;
+        if (!forgecraft) {
+            return;
+        }
 
         this.forgecraftData = forgecraft;
         this.forgecraftSelectedSlot = null;
@@ -6885,7 +7668,9 @@ class Game {
         const maxModEntries = Object.entries(forgecraft.modifications.maxModifiedItems);
         let maxMods = 0;
         for (const [lvl, count] of maxModEntries) {
-            if (character.level >= parseInt(lvl)) maxMods = count;
+            if (character.level >= parseInt(lvl)) {
+                maxMods = count;
+            }
         }
         this.forgecraftMaxMods = maxMods;
 
@@ -6894,21 +7679,27 @@ class Game {
 
         // Update mod count display
         const countEl = document.getElementById('forgecraftModCount');
-        if (countEl) countEl.textContent = `Modified: ${currentModCount}/${maxMods}`;
+        if (countEl) {
+            countEl.textContent = `Modified: ${currentModCount}/${maxMods}`;
+        }
 
         // Render equipment slots
         this.renderForgecraftSlots(character);
 
         // Show modal
         const modal = document.getElementById('forgecraftModal');
-        if (modal) modal.classList.add('active');
+        if (modal) {
+            modal.classList.add('active');
+        }
 
         gameState.addMessage('🔨 Forgecraft: You may modify your equipment during this rest.', 'info');
     }
 
     closeForgecraftModal() {
         const modal = document.getElementById('forgecraftModal');
-        if (modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+        }
 
         // Recalculate combat stats after mods may have changed
         const character = gameState.get('character');
@@ -6921,7 +7712,9 @@ class Game {
 
     renderForgecraftSlots(character) {
         const slotsEl = document.getElementById('forgecraftSlots');
-        if (!slotsEl) return;
+        if (!slotsEl) {
+            return;
+        }
 
         const slots = [
             { id: 'mainHand', label: 'Main Hand', category: 'weapon' },
@@ -6969,7 +7762,9 @@ class Game {
         const modsSection = document.getElementById('forgecraftMods');
         const modsList = document.getElementById('forgecraftModsList');
         const modsTitle = document.getElementById('forgecraftModsTitle');
-        if (!modsSection || !modsList) return;
+        if (!modsSection || !modsList) {
+            return;
+        }
 
         const item = character.equipment?.[slotId];
         if (!item) {
@@ -7025,9 +7820,13 @@ class Game {
 
     applyForgecraftMod(slotId, modId) {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
-        if (!character.equipmentMods) character.equipmentMods = {};
+        if (!character.equipmentMods) {
+            character.equipmentMods = {};
+        }
 
         if (modId === null) {
             // Remove mod
@@ -7045,18 +7844,22 @@ class Game {
         // Update UI
         const currentModCount = Object.keys(character.equipmentMods).length;
         const countEl = document.getElementById('forgecraftModCount');
-        if (countEl) countEl.textContent = `Modified: ${currentModCount}/${this.forgecraftMaxMods}`;
+        if (countEl) {
+            countEl.textContent = `Modified: ${currentModCount}/${this.forgecraftMaxMods}`;
+        }
 
         this.renderForgecraftSlots(character);
         this.renderForgecraftMods(character, slotId);
     }
 
     getForgecraftModName(modId) {
-        if (!modId || !this.forgecraftData) return 'Unknown';
+        if (!modId || !this.forgecraftData) {
+            return 'Unknown';
+        }
         const allMods = [
             ...(this.forgecraftData.modifications.armor || []),
             ...(this.forgecraftData.modifications.shield || []),
-            ...(this.forgecraftData.modifications.weapon || []),
+            ...(this.forgecraftData.modifications.weapon || [])
         ];
         const mod = allMods.find(m => m.id === modId);
         return mod ? mod.name : modId;
@@ -7201,6 +8004,18 @@ class Game {
         // Other bonuses (magic items, spells, etc.)
         ac += character.armorBonus || 0;
 
+        // Fighting Style: Defense (+1 AC while wearing armor)
+        if (character.fightingStyle === 'defense' && character.equipment.armor) {
+            ac += 1;
+        }
+
+        // Fighting Style: Mariner (+1 AC when not in heavy armor and no shield)
+        if (character.fightingStyle === 'mariner' &&
+            character.equipment.armor?.armorType !== 'heavy' &&
+            character.equipment.offHand?.type !== 'shield') {
+            ac += 1;
+        }
+
         return ac;
     }
 
@@ -7208,7 +8023,9 @@ class Game {
      * Calculate attack bonus for a weapon from plain character object
      */
     calculateAttackBonusForWeapon(character, weapon) {
-        if (!weapon) return 0;
+        if (!weapon) {
+            return 0;
+        }
 
         // Determine which ability modifier to use
         let abilityMod;
@@ -7233,7 +8050,9 @@ class Game {
      * Check if character is proficient with weapon
      */
     isCharacterProficientWithWeapon(character, weapon) {
-        if (!weapon) return false;
+        if (!weapon) {
+            return false;
+        }
 
         // Check if proficient with weapon category (simple, martial)
         if (character.proficiencies.weapons.includes(weapon.category)) {
@@ -7252,7 +8071,9 @@ class Game {
      * Check if character is proficient with armor
      */
     isCharacterProficientWithArmor(character, armor) {
-        if (!armor) return false;
+        if (!armor) {
+            return false;
+        }
 
         // Check if proficient with armor type (light, medium, heavy)
         if (character.proficiencies.armor.includes(armor.armorType)) {
@@ -7297,7 +8118,9 @@ class Game {
         // Apply Forgecraft modifications
         const mods = character.equipmentMods || {};
         for (const [slotId, modData] of Object.entries(mods)) {
-            if (!modData?.modId) continue;
+            if (!modData?.modId) {
+                continue;
+            }
             switch (modData.modId) {
                 case 'reinforced': // +1 AC (armor)
                     character.ac += 1;
@@ -7313,8 +8136,12 @@ class Game {
                     }
                     break;
                 case 'balanced': // +1 attack rolls (weapon)
-                    if (slotId === 'mainHand') character.mainHandAttackBonus += 1;
-                    if (slotId === 'offHand') character.offHandAttackBonus += 1;
+                    if (slotId === 'mainHand') {
+                        character.mainHandAttackBonus += 1;
+                    }
+                    if (slotId === 'offHand') {
+                        character.offHandAttackBonus += 1;
+                    }
                     break;
                 // tempered (+1 damage), keen (crit 19-20), adaptive (crit immunity),
                 // deflecting (reaction save) are handled in CombatManager during combat
@@ -7333,7 +8160,9 @@ class Game {
      */
     async openRoger() {
         const modal = document.getElementById('rogerModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
         modal.classList.add('active');
 
         // Reset to auth view while we check
@@ -7438,7 +8267,9 @@ class Game {
         const input = document.getElementById('rogerInput');
         const sendBtn = document.getElementById('rogerSendBtn');
         const message = input.value.trim();
-        if (!message || !this._rogerCurrentAgent) return;
+        if (!message || !this._rogerCurrentAgent) {
+            return;
+        }
 
         input.value = '';
         sendBtn.disabled = true;
@@ -7484,8 +8315,10 @@ class Game {
     _rogerAppendMessage(role, text, id = null, extraClass = '') {
         const container = document.getElementById('rogerMessages');
         const msg = document.createElement('div');
-        msg.className = `roger-msg ${role}${extraClass ? ' ' + extraClass : ''}`;
-        if (id) msg.id = id;
+        msg.className = `roger-msg ${role}${extraClass ? ` ${  extraClass}` : ''}`;
+        if (id) {
+            msg.id = id;
+        }
         // Preserve line breaks from agent responses
         msg.textContent = text;
         container.appendChild(msg);
@@ -7496,17 +8329,23 @@ class Game {
     _rogerShowView(view) {
         ['rogerAuthView', 'rogerAgentView', 'rogerChatView'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.classList.remove('active');
+            if (el) {
+                el.classList.remove('active');
+            }
         });
         const viewMap = { auth: 'rogerAuthView', agent: 'rogerAgentView', chat: 'rogerChatView' };
         const el = document.getElementById(viewMap[view]);
-        if (el) el.classList.add('active');
+        if (el) {
+            el.classList.add('active');
+        }
     }
 
     /** Close Roger modal and clean up */
     closeRoger() {
         const modal = document.getElementById('rogerModal');
-        if (modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+        }
         this._rogerCurrentAgent = null;
         this._rogerConversationId = null;
     }
@@ -7514,14 +8353,18 @@ class Game {
     /** Wire up Roger modal event listeners. Call once during init. */
     setupRoger() {
         const modal = document.getElementById('rogerModal');
-        if (!modal) return;
+        if (!modal) {
+            return;
+        }
 
         // Close button
         document.getElementById('rogerCloseBtn')?.addEventListener('click', () => this.closeRoger());
 
         // Click outside to close
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) this.closeRoger();
+            if (e.target === modal) {
+                this.closeRoger();
+            }
         });
 
         // Sign-in button

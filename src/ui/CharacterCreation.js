@@ -1066,7 +1066,7 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
-            case 'Abilities':
+            case 'Abilities': {
                 // Check all abilities assigned
                 const abilities = Object.values(this.characterData.baseAbilities);
                 const standardArray = RULES.core.standardArray;
@@ -1080,13 +1080,14 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
+            }
             case 'Skills':
                 if (this.characterData.skillChoices.length !== this.characterData.class.skillChoices.choose) {
                     alert(`Please choose exactly ${this.characterData.class.skillChoices.choose} skills.`);
                     return false;
                 }
                 break;
-            case 'Masteries':
+            case 'Masteries': {
                 // Get number of weapon masteries for this calling at level 1
                 const callingId = this.characterData.class.id;
                 const masteryProgression = this.weaponMasteriesData.callingMasteryProgression[callingId];
@@ -1097,6 +1098,7 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
+            }
         }
         return true;
     }

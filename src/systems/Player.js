@@ -8,6 +8,7 @@ import restManager from './RestManager.js';
 import { rollDice } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
 import { RULES } from '../core/rulesEngine.js';
+import { addFatigue, calcMovementFatigue, getFatigueState, removeFatigue } from './FatigueManager.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -67,14 +68,27 @@ class Player {
      * Bind keyboard input
      */
     bindInput() {
-        document.addEventListener('keydown', (e) => {
+        this._onKeyDown = (e) => {
             this.keys.add(e.key.toLowerCase());
             this.handleInput(e);
-        });
-
-        document.addEventListener('keyup', (e) => {
+        };
+        this._onKeyUp = (e) => {
             this.keys.delete(e.key.toLowerCase());
-        });
+        };
+        document.addEventListener('keydown', this._onKeyDown);
+        document.addEventListener('keyup', this._onKeyUp);
+    }
+
+    /**
+     * Remove keyboard input listeners (call before replacing this player instance)
+     */
+    unbindInput() {
+        if (this._onKeyDown) {
+            document.removeEventListener('keydown', this._onKeyDown);
+        }
+        if (this._onKeyUp) {
+            document.removeEventListener('keyup', this._onKeyUp);
+        }
     }
 
     /**
@@ -108,6 +122,9 @@ class Player {
                 break;
             case 'r':
                 this.rest();
+                break;
+            case 't':
+                this.makeCamp();
                 break;
             case ' ':
                 this.interact();
@@ -144,7 +161,9 @@ class Player {
         }
 
         // Guard against concurrent async moves (prevents "flying" on keydown repeat)
-        if (this.isMoving) return;
+        if (this.isMoving) {
+            return;
+        }
 
         let dx = 0, dy = 0;
 
@@ -251,9 +270,17 @@ class Player {
         const multiplier = Math.min(movementCost, RULES.movement.maxMoveDelayMultiplier);
         this.currentMoveDelay = RULES.movement.baseMoveDelay * multiplier;
 
+        // Fatigue from movement (runs before traversal check — rejected moves don't add fatigue)
+        const character = gameState.get('character');
+        if (character) {
+            const fatigueDelta = calcMovementFatigue(movementCost, character);
+            if (fatigueDelta > 0) {
+                addFatigue(fatigueDelta, 'movement');
+            }
+        }
+
         // Check if terrain is normally traversable
         if (!terrainDef.traversable) {
-            const character = gameState.get('character');
             const requirements = terrainDef.traversalRequirements || [];
 
             // Check if character has special ability to traverse this terrain
@@ -1002,7 +1029,9 @@ class Player {
      */
     checkForEncounters(tile, terrainDef) {
         // Skip encounter checks in safe zones
-        if (!terrainDef || terrainDef.encounterModifier === 0) return;
+        if (!terrainDef || terrainDef.encounterModifier === 0) {
+            return;
+        }
 
         // Step accumulator: fire a check only after enough movement cost has accumulated
         const playerState = gameState.get('player') || { encounterAccumulator: 0 };
@@ -1119,6 +1148,29 @@ class Player {
     rest() {
         // Rest UI handled by RestManager
         restManager.openRestMenu();
+    }
+
+    makeCamp() {
+        // Block Make Camp during active combat
+        if (gameState.get('combat')?.active) {
+            gameState.addMessage('⚔️ Cannot make camp during combat!', 'error');
+            return;
+        }
+        const fatigueState = getFatigueState();
+        if (fatigueState.current <= 0) {
+            gameState.addMessage('🏕️ You are well rested — no need to make camp.', 'info');
+            return;
+        }
+        if (fatigueState.supplies <= 0) {
+            gameState.addMessage('🏕️ You have no supplies to make camp.', 'warning');
+            return;
+        }
+        // Deduct 1 supply then recover fatigue
+        const updatedFatigue = gameState.get('fatigue');
+        updatedFatigue.supplies -= 1;
+        gameState.set('fatigue', updatedFatigue);
+        removeFatigue(RULES.fatigue.makeCampFatigueRecovery);
+        gameState.addMessage(`🏕️ Made camp. (-1 supply, ${updatedFatigue.supplies} remaining)`, 'success');
     }
 
     interact() {
@@ -1259,7 +1311,9 @@ class Player {
      */
     async triggerDungeonTrapChallenge() {
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Get trap tile data for DC and damage
         const dungeonState = gameState.get('dungeon');
@@ -1301,7 +1355,7 @@ class Player {
 
                     const config = {
                         title: '🪤 Trap Detected!',
-                        description: `You spot a hidden trap mechanism ahead. You can attempt to disarm it.`,
+                        description: 'You spot a hidden trap mechanism ahead. You can attempt to disarm it.',
                         skill: disarmStage.skill || 'sleightOfHand',
                         dc: adjustedDC
                     };
@@ -1317,7 +1371,9 @@ class Player {
                         const reducedDamage = Math.max(1, Math.floor(damage / 2));
                         character.currentHP = Math.max(0, character.currentHP - reducedDamage);
                         gameState.set('character', character);
-                        if (window.game) window.game.updateHUD(character);
+                        if (window.game) {
+                            window.game.updateHUD(character);
+                        }
                         gameState.addMessage(`💥 The trap triggers during disarm! You take ${reducedDamage} damage (reduced).`, 'danger');
                     } else {
                         // Player chose not to attempt - carefully step around
@@ -1336,7 +1392,9 @@ class Player {
             const damage = rollFn(trapDamageDice);
             character.currentHP = Math.max(0, character.currentHP - damage);
             gameState.set('character', character);
-            if (window.game) window.game.updateHUD(character);
+            if (window.game) {
+                window.game.updateHUD(character);
+            }
 
             gameState.addMessage(`⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
             gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
@@ -1369,16 +1427,26 @@ class Player {
      * The room chance IS the per-step trigger rate (e.g., 0.2 = 20% per step)
      */
     async checkForDungeonSkillChallenge() {
-        if (!this.dungeonManager?.isInDungeon()) return;
-        if (gameState.get('combat')?.active) return;
-        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) return;
+        if (!this.dungeonManager?.isInDungeon()) {
+            return;
+        }
+        if (gameState.get('combat')?.active) {
+            return;
+        }
+        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+            return;
+        }
 
         const character = gameState.get('character');
-        if (!character) return;
+        if (!character) {
+            return;
+        }
 
         // Get current room data
         const currentRoom = this.dungeonManager.getCurrentRoom();
-        if (!currentRoom) return;
+        if (!currentRoom) {
+            return;
+        }
 
         // Room's skillChallengeChance is the direct per-step trigger rate
         // Exploration rooms: 0.1-0.25, Puzzle rooms: 0.75-0.9, Treasure rooms: 0.25-0.5
@@ -1438,7 +1506,9 @@ class Player {
         const challengeId = relevantChallenges[Math.floor(Math.random() * relevantChallenges.length)];
         const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
 
-        if (!challenge) return;
+        if (!challenge) {
+            return;
+        }
 
         // Only check cooldown (not another random frequency check) for dungeon challenges
         // The room's skillChallengeChance already controls the trigger rate
@@ -1659,7 +1729,7 @@ class Player {
 
         consequences.forEach(consequence => {
             switch (consequence.type) {
-                case 'damage':
+                case 'damage': {
                     const damage = rollDice(consequence.dice);
                     character.takeDamage(damage);
                     gameState.addMessage(
@@ -1667,6 +1737,7 @@ class Player {
                         'danger'
                     );
                     break;
+                }
 
                 case 'exhaustion':
                     character.addExhaustion(consequence.level);

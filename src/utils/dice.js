@@ -38,7 +38,7 @@ export function roll(notation) {
     }
 
     // Parse notation: XdY+Z or XdY-Z
-    const match = notation.match(/(\d+)d(\d+)([\+\-]\d+)?/i);
+    const match = notation.match(/(\d+)d(\d+)([+-]\d+)?/i);
     if (!match) {
         console.error(`Invalid dice notation: ${notation}`);
         return 0;
@@ -191,7 +191,7 @@ export function savingThrow(saveModifier, dc, type = 'normal') {
  */
 export function damageRoll(damageDice, critical = false) {
     // Parse notation
-    const match = damageDice.match(/(\d+)d(\d+)([\+\-]\d+)?/i);
+    const match = damageDice.match(/(\d+)d(\d+)([+-]\d+)?/i);
     if (!match) {
         console.error(`Invalid damage dice: ${damageDice}`);
         return { total: 0, rolls: [], critical: false };

@@ -8,7 +8,7 @@ export default [
   {
     files: ['**/*.js'],
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2022,
       sourceType: 'module',
       globals: {
         // Browser globals
@@ -29,11 +29,16 @@ export default [
         CanvasRenderingContext2D: 'readonly',
         Image: 'readonly',
         Audio: 'readonly',
+        CustomEvent: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
         Map: 'readonly',
         Set: 'readonly',
         Promise: 'readonly',
         performance: 'readonly',
         process: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
 
         // Project-specific globals
         game: 'readonly',

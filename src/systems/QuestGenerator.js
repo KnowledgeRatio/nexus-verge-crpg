@@ -615,13 +615,12 @@ class QuestGenerator {
    * @returns {number} Calculated result
    */
     evaluateFormula(formula, variables) {
+        let expression = formula;
         try {
             // Replace variables in formula
             // IMPORTANT: Sort by length (longest first) to avoid partial replacements
             // e.g., "difficulty" shouldn't replace part of "difficultyMultiplier"
             const sortedKeys = Object.keys(variables).sort((a, b) => b.length - a.length);
-
-            let expression = formula;
             for (const key of sortedKeys) {
                 const value = variables[key];
                 expression = expression.replace(new RegExp(key, 'g'), value);

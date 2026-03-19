@@ -39,7 +39,9 @@ export async function execute(ability, effects, context) {
     const results = [];
 
     for (const [effectType, effectValue] of Object.entries(effects)) {
-        if (META_KEYS.has(effectType)) continue;
+        if (META_KEYS.has(effectType)) {
+            continue;
+        }
 
         const handler = handlers[effectType];
         if (!handler) {
@@ -139,7 +141,7 @@ registerHandler('extraAction', (value, ability, ctx) => {
     ctx.combatant.actions.action += count;
 
     ctx.addMessage(`⚡ ${ability.name}! ${ctx.combatant.name} gains an additional action!`, 'success');
-    ctx.showFloatingText(ctx.combatant.id, ability.name.toUpperCase() + '!', 'buff');
+    ctx.showFloatingText(ctx.combatant.id, `${ability.name.toUpperCase()  }!`, 'buff');
 
     // Re-render combat actions to show updated action count
     const combatState = gameState.get('combat');

@@ -27,35 +27,32 @@ export function evaluateFormula(formula, context) {
 
     for (const token of tokens) {
         const trimmed = token.trim();
-        if (!trimmed) continue;
+        if (!trimmed) {
+            continue;
+        }
 
         // Dice notation: 1d8, 2d6, etc.
         if (/^\d+d\d+$/i.test(trimmed)) {
             const rolled = roll(trimmed);
             total += rolled;
             parts.push(`${trimmed}(${rolled})`);
-        }
-        // Named context values
-        else if (trimmed === 'level' && context.level !== undefined) {
+        } else if (trimmed === 'level' && context.level !== undefined) {
+            // Named context values
             total += context.level;
             parts.push(`level(${context.level})`);
-        }
-        else if (trimmed === 'proficiency' && context.proficiency !== undefined) {
+        } else if (trimmed === 'proficiency' && context.proficiency !== undefined) {
             total += context.proficiency;
             parts.push(`prof(${context.proficiency})`);
-        }
-        // Ability modifier shortcuts
-        else if (['str', 'dex', 'con', 'int', 'wis', 'cha'].includes(trimmed) && context[trimmed] !== undefined) {
+        } else if (['str', 'dex', 'con', 'int', 'wis', 'cha'].includes(trimmed) && context[trimmed] !== undefined) {
+            // Ability modifier shortcuts
             total += context[trimmed];
             parts.push(`${trimmed}(${context[trimmed]})`);
-        }
-        // Plain number
-        else if (!isNaN(trimmed)) {
+        } else if (!isNaN(trimmed)) {
+            // Plain number
             const num = parseInt(trimmed);
             total += num;
             parts.push(String(num));
-        }
-        else {
+        } else {
             console.warn(`evaluateFormula: unknown token "${trimmed}"`);
         }
     }

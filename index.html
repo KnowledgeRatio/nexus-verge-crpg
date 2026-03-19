@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Verge - D&D 5e Roguelike CRPG</title>
+    <title>Nexus Verge - A 5e-Based Roguelike CRPG</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,13 +12,14 @@
         <div id="mainMenu" class="screen active">
             <div class="menu-container">
                 <h1 class="title">NEXUS VERGE</h1>
-                <p class="subtitle">A 5E Roguelike Roleplaying Game</p>
+                <p class="subtitle">A 5e-Based Roguelike Roleplaying Game</p>
                 <div class="menu-buttons">
                     <button id="newGameBtn" class="menu-btn">New Game</button>
                     <button id="loadGameBtn" class="menu-btn">Load Game</button>
                     <button id="helpBtn" class="menu-btn">Help</button>
                     <button id="devModeBtn" class="menu-btn secondary" style="margin-top: 20px;">Dev Mode: OFF</button>
                     <button id="talkToRogerBtn" class="menu-btn secondary" style="margin-top: 8px;">Talk to Roger</button>
+
                 </div>
             </div>
         </div>
@@ -88,6 +89,7 @@
                 <div class="hud-right">
                     <span id="hpDisplay">HP: 12/12</span>
                     <span id="acDisplay">AC: 16</span>
+                    <span id="resolveDisplay" style="display: none;">⚔️ Resolve: 0/0</span>
                     <span id="xpDisplay" class="xp-display">XP: 0/300</span>
                     <div class="xp-progress-bar">
                         <div id="xpProgressBar" class="xp-progress-fill" style="width: 0%;"></div>
@@ -95,6 +97,15 @@
                     <button id="levelUpBtn" class="level-up-button" style="display: none;">
                         ⭐ Level Up Available!
                     </button>
+                    <!-- Fatigue HUD (shown when fatigue system enabled) -->
+                    <div id="fatigueHUD" class="fatigue-hud" style="display: none;">
+                        <div class="fatigue-bar-container" title="">
+                            <div id="fatigueBar" class="fatigue-bar"></div>
+                        </div>
+                        <span id="fatigueLabel" class="fatigue-label">Rested</span>
+                        <span id="exhaustionIcons" class="exhaustion-icons"></span>
+                        <span id="suppliesDisplay" class="supplies-display">🎒 3</span>
+                    </div>
                 </div>
             </div>
 
@@ -254,6 +265,10 @@
                         <button id="longRestBtn" class="rest-btn long-rest-btn">
                             <span class="btn-title">Long Rest</span>
                             <span class="btn-desc">Fully restore HP and abilities</span>
+                        </button>
+                        <button id="makeCampBtn" class="rest-btn make-camp-btn">
+                            <span class="btn-title">🏕️ Make Camp</span>
+                            <span class="btn-desc">Recover 15% fatigue · Costs 1 supply</span>
                         </button>
                     </div>
                 </div>
@@ -773,7 +788,7 @@
                         <!-- Character Progression -->
                         <section class="help-section">
                             <h3>📈 Character Progression</h3>
-                            <p><strong>Experience:</strong> Gain XP from combat victories based on enemy CR. Level up when reaching XP thresholds (follows D&D 5e progression).</p>
+                            <p><strong>Experience:</strong> Gain XP from combat victories based on enemy CR. Level up when reaching XP thresholds (follows 5e SRD progression).</p>
                             <p><strong>HP & Hit Dice:</strong> HP = class hit die + CON modifier per level. Hit dice used during short rests for healing.</p>
                             <p><strong>Abilities:</strong> Six ability scores (STR, DEX, CON, INT, WIS, CHA) determine modifiers for all rolls and stats.</p>
                             <p><strong>Skills:</strong> 13 skills based on abilities. Proficiency bonus applies to skills you're proficient in.</p>
@@ -805,9 +820,9 @@
                             <p><strong>Quest Log:</strong> Press <kbd>Q</kbd> to view active, completed, and failed quests. Track specific quests to highlight them.</p>
                         </section>
 
-                        <!-- D&D 5e Rules -->
+                        <!-- 5e SRD Rules -->
                         <section class="help-section">
-                            <h3>🎲 D&D 5e Rules</h3>
+                            <h3>🎲 5e SRD Rules</h3>
                             <p><strong>Proficiency Bonus:</strong> Starts at +2, increases with level. Applies to proficient skills, saves, and attacks.</p>
                             <p><strong>Armor Class (AC):</strong> Base 10 + DEX modifier + armor bonus + shield bonus.</p>
                             <p><strong>Ability Modifiers:</strong> (Ability Score - 10) ÷ 2, rounded down. Applied to relevant rolls.</p>
@@ -1108,6 +1123,18 @@
                         </div>
                     </div>
 
+                    <div class="worldbuilder-section">
+                        <h3>⚙️ Gameplay</h3>
+                        <div class="worldbuilder-row">
+                            <label for="wbFatigueEnabled">Travel Fatigue:</label>
+                            <select id="wbFatigueEnabled">
+                                <option value="true">Enabled (recommended)</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                        <p class="worldbuilder-hint">When enabled, travel and combat drain fatigue. Rest at camps or settlements to recover. Supplies are consumed on long rests.</p>
+                    </div>
+
                     <div class="worldbuilder-summary" id="worldbuilderSummary">
                         <!-- Populated by JS -->
                     </div>
@@ -1174,7 +1201,6 @@
                 <span class="quick-menu-icon">⚙️</span>
                 <span class="quick-menu-label">Settings</span>
             </button>
-
             <!-- Hide/Show Chevron Button -->
             <button id="quickMenuChevron" class="quick-menu-chevron" title="Collapse/Expand Menu">▲</button>
         </div>
@@ -1189,28 +1215,29 @@
             <div class="modal-content legal-modal-content">
                 <div class="modal-header">
                     <h2>Legal & Licensing Information</h2>
-                    <button class="modal-close" id="closeLegalBtn">×</button>
+                    <button class="close-btn" id="closeLegalBtn" onclick="document.getElementById('legalModal').classList.remove('active')">&times;</button>
                 </div>
                 <div class="modal-body legal-body">
                     <!-- SRD Attribution Section -->
                     <section class="legal-section">
-                        <h3>📜 D&D 5e System Reference Document (SRD 5.2.1)</h3>
+                        <h3>📜 5e System Reference Document (SRD 5.2)</h3>
                         <div class="legal-content">
                             <p class="srd-statement">
-                                This work includes material taken from the <strong>System Reference Document 5.2.1</strong> ("SRD 5.2.1")
+                                This work includes material taken from the <strong>System Reference Document 5.2</strong> ("SRD 5.2")
                                 by Wizards of the Coast LLC, available at
                                 <a href="https://www.dndbeyond.com/attachments/39j2li89/SRD_CC_v5.2.pdf" target="_blank" rel="noopener noreferrer">
                                     https://www.dndbeyond.com/attachments/39j2li89/SRD_CC_v5.2.pdf
                                 </a>.
-                                The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License,
+                                The SRD 5.2 is licensed under the Creative Commons Attribution 4.0 International License,
                                 available at
                                 <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener noreferrer">
                                     https://creativecommons.org/licenses/by/4.0/legalcode
                                 </a>.
                             </p>
                             <p class="srd-trademark">
-                                <strong>Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks
-                                of Wizards of the Coast LLC in the USA and other countries. © Wizards of the Coast LLC.</strong>
+                                <strong>Wizards of the Coast, Dungeons &amp; Dragons, D&amp;D, and their respective logos are trademarks
+                                of Wizards of the Coast LLC in the USA and other countries. © Wizards of the Coast LLC.
+                                Nexus Verge is not affiliated with or endorsed by Wizards of the Coast LLC.</strong>
                             </p>
                             <div class="legal-links">
                                 <a href="legal/SRD_ATTRIBUTION.md" target="_blank">📄 Full SRD Attribution</a>
@@ -1228,7 +1255,7 @@
                             </p>
                             <ul>
                                 <li>All source code and implementation</li>
-                                <li>Original game mechanics and systems</li>
+                                <li>Original game mechanics and systems (including the 7 Callings)</li>
                                 <li>User interface and styling</li>
                                 <li>Procedural generation algorithms</li>
                             </ul>
@@ -1250,7 +1277,7 @@
                                 Development dependencies (used only for code quality, not distributed):
                             </p>
                             <ul>
-                                <li><strong>ESLint</strong> (v9.39.2) - MIT License</li>
+                                <li><strong>ESLint</strong> (v9.39.2) — MIT License</li>
                             </ul>
                             <div class="legal-links">
                                 <a href="legal/THIRD_PARTY_NOTICES.md" target="_blank">📄 Full Third-Party Notices</a>
@@ -1265,12 +1292,12 @@
                         <div class="legal-content">
                             <h4>Audio by Thomas Devlin</h4>
                             <p>
-                                <strong>All audio assets</strong> (combat sounds, footsteps, UI sounds) are created by <strong>Thomas Devlin</strong>.
+                                <strong>All audio assets</strong> (combat sounds, movement sounds, UI sounds) are created by <strong>Thomas Devlin</strong>.
                             </p>
                             <ul>
-                                <li>Combat sounds (sword, bow, spell impacts) - 7 files</li>
-                                <li>Movement sounds (footsteps) - 5 files</li>
-                                <li>UI interaction sounds - 1 file</li>
+                                <li>Combat sounds (sword, bow, spell impacts) — 7 files</li>
+                                <li>Movement sounds (footsteps) — 5 files</li>
+                                <li>UI interaction sounds — 1 file</li>
                                 <li><strong>Total: 13 audio files</strong></li>
                             </ul>
                             <p class="attribution-statement">
@@ -1279,7 +1306,10 @@
                                     tommusic.itch.io
                                 </a>
                             </p>
-
+                            <p class="legal-note">
+                                <em>⚠️ Audio license type is pending verification with the creator.
+                                See <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">ASSET_ATTRIBUTIONS.md</a> for details.</em>
+                            </p>
                             <div class="legal-links">
                                 <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">📄 Full Asset Attributions</a>
                                 <a href="https://tommusic.itch.io/" target="_blank" rel="noopener noreferrer">🔗 Thomas Devlin Music</a>
@@ -1295,12 +1325,8 @@
                                 We are committed to open source compliance. All required notices and attributions
                                 are provided in accordance with the terms of each license.
                             </p>
-                            <h4>Verification</h4>
-                            <p>To verify license compliance:</p>
-                            <pre><code>npm run legal:generate
-npm run legal:verify</code></pre>
-                            <h4>SBOM Generation</h4>
-                            <p>Software Bill of Materials (SBOM) is automatically generated and available:</p>
+                            <h4>SBOM</h4>
+                            <p>Software Bill of Materials (SBOM) is available:</p>
                             <ul>
                                 <li><a href="legal/sbom/npm-dependencies.json" target="_blank">Full dependency tree (JSON)</a></li>
                                 <li><a href="legal/sbom/npm-production.json" target="_blank">Production dependencies only (JSON)</a></li>
@@ -1316,8 +1342,7 @@ npm run legal:verify</code></pre>
                                 For licensing questions, compliance issues, or to report attribution errors:
                             </p>
                             <ul>
-                                <li><strong>GitHub Issues:</strong> <a href="https://github.com/yourusername/nexus-verge-crpg-5e/issues" target="_blank">Report an issue</a></li>
-                                <li><strong>Email:</strong> legal@nexusverge.com (if applicable)</li>
+                                <li><strong>GitHub Issues:</strong> <a href="https://github.com/KnowledgeRatio/nexus-verge-crpg-5e/issues" target="_blank" rel="noopener noreferrer">Report an issue</a></li>
                             </ul>
                         </div>
                     </section>
@@ -1429,12 +1454,44 @@ npm run legal:verify</code></pre>
                             <!-- Dynamically populated with radio buttons -->
                         </div>
                     </div>
+
+                    <div id="maneuverChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Combat Maneuvers (<span id="maneuverChoiceCount">Choose 3 — Required</span>)</h3>
+                        <div id="maneuverChoiceList" class="choice-list">
+                            <!-- Dynamically populated with checkboxes -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="level-up-footer">
                     <button id="confirmLevelUpBtn" class="confirm-btn" disabled>Confirm Level Up</button>
                     <p class="footer-hint" id="levelUpHint">Select an ability score to increase</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Reaction Prompt Modal (shown mid-combat to offer a reaction ability) -->
+        <div id="reactionModal" class="modal reaction-modal">
+            <div class="modal-content reaction-modal-content">
+                <h3 id="reactionModalTitle">⚡ Reaction Opportunity</h3>
+                <p id="reactionModalContext" class="reaction-context"></p>
+                <div id="reactionAbilityList" class="reaction-ability-list">
+                    <!-- Reaction ability buttons rendered dynamically -->
+                </div>
+                <button id="reactionSkipBtn" class="btn btn-secondary">Skip</button>
+            </div>
+        </div>
+
+        <!-- Sworn Strike Prompt Modal (shown after a melee hit for Oath spec) -->
+        <div id="swornStrikeModal" class="modal reaction-modal">
+            <div class="modal-content reaction-modal-content">
+                <h3>⚔️ Sworn Strike</h3>
+                <p id="swornStrikeContext" class="reaction-context"></p>
+                <p id="swornStrikeResolveInfo" style="font-size:0.85rem; color: var(--text-muted); margin-bottom: 8px;"></p>
+                <div id="swornStrikeButtons" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:8px;">
+                    <!-- Resolve spend buttons rendered dynamically -->
+                </div>
+                <button id="swornStrikeSkipBtn" class="btn btn-secondary">Skip</button>
             </div>
         </div>
 
@@ -1495,10 +1552,10 @@ npm run legal:verify</code></pre>
                 <div class="footer-left">
                     <span>&copy; 2026 Nexus Verge</span>
                     <span class="footer-separator">•</span>
-                    <a href="#" id="footerLegalLink" class="footer-link">Legal / Licensing</a>
+                    <button id="footerLegalLink" class="footer-link" onclick="document.getElementById('legalModal').classList.add('active')">Legal / Licensing</button>
                 </div>
                 <div class="footer-right">
-                    <span>Made with ❤️ for D&D fans</span>
+                    <span>Made with ❤️ for 5e fans</span>
                 </div>
             </div>
         </footer>

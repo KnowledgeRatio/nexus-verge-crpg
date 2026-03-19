@@ -2,14 +2,32 @@
 
 ## Key Design Decisions
 
-### Flee Mechanic (2026-02-28)
-- d20 + DEX mod + proficiency vs DC 10 + 2*(enemies-1). Costs Action.
-- Opportunity attacks from ALL living enemies ALWAYS trigger (before result).
-- Wanderlust Cunning Action: Bonus Action + Advantage on flee check (level 2+).
-- Boss encounters: +5 DC. Ambush: +3 DC round 1.
-- Prone = disadvantage. Restrained/Grappled/Stunned = cannot flee. Frightened = advantage.
-- Ranged-only enemies: no opportunity attacks but still count for DC.
+### Flee Mechanic (2026-02-28, updated 2026-03-14)
+- d20 + max(DEX mod, WIS mod) + proficiency vs DC 10 + 2*(engaged_enemies-1). Costs Action.
+- OAs from engaged melee enemies ONLY (before result). Ranged enemies: no OA but count for DC.
+- Wanderlust Cunning Action (L2+): Bonus Action flee (same check, no advantage).
+- Boss encounters: +5 DC. Ambush: +3 DC round 1. DC cap: 25.
+- Prone = disadvantage. Restrained/Grappled/Stunned/Paralyzed/Unconscious = cannot flee. Frightened = advantage.
 - Config in RULES.flee (rulesEngine.js). Per-encounter overrides via encounterData.
+
+### Engagement System (designed 2026-03-14 — not yet implemented)
+**Data structure:** `engagedWith: Set<id>` per Combatant (replaces boolean `hasEngaged`).
+- Backward-compat getter: `get hasEngaged() { return this.engagedWith.size > 0; }`
+- Set needs special JSON handling (serialize as Array, deserialize back to Set).
+
+**Engagement triggers:** Melee attack is *made* (roll attempted) in either direction → both combatants added to each other's `engagedWith`. Ranged attacks never engage.
+
+**Engagement breaks:** Enemy death/down, enemy flees, Disengage action by combatant, end of combat.
+
+**Flee interaction:** OAs and DC use `combatant.engagedWith` set, not global `hasEngaged`. More accurate: enemies who attacked *you* in melee also count.
+
+**Mitigation for L1 fairness:** Consider: bidirectional engagement only after combatant has taken their first turn (prevents "3 enemies attack on round 1 → DC 16 before player acts").
+
+**Disengage action (new):**
+- Cost: Action. Effect: clears `engagedWith` for that combatant for rest of turn.
+- Wanderlust Cunning Action (L2+): Disengage as Bonus Action (PHB 2024 Rogue RAW).
+- Config: `RULES.combat.disengage` block.
+- Disengage vs Flee distinction: Disengage = safe repositioning, stays in combat. Flee = exit attempt, has OAs + check.
 
 ### Resource System (from design docs)
 - Focus (was Stamina): CON mod + (level-2), full recharge short rest. Dedication only.

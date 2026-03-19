@@ -57,7 +57,9 @@ function calculateMonsterHP(hitDiceFormula, worldConfig = {}) {
  * @returns {Promise<Array>} Array of monster objects
  */
 async function loadMonsters() {
-    if (cachedMonsterData) return cachedMonsterData;
+    if (cachedMonsterData) {
+        return cachedMonsterData;
+    }
     const response = await fetch('data/monsters.json');
     const data = await response.json();
     cachedMonsterData = data.monsters;
@@ -107,7 +109,9 @@ function rollDifficulty(weights, rng) {
     let cumulative = 0;
     for (const [tier, weight] of Object.entries(weights)) {
         cumulative += weight;
-        if (rand <= cumulative) return tier;
+        if (rand <= cumulative) {
+            return tier;
+        }
     }
     return 'medium'; // fallback
 }
@@ -158,7 +162,7 @@ function createEnemyFromMonster(monster, options = {}) {
     if (isBoss && monsterActions.length > 0) {
         monsterActions = monsterActions.map(action => ({
             ...action,
-            attackBonus: action.attackBonus != null
+            attackBonus: action.attackBonus !== null && action.attackBonus !== undefined
                 ? action.attackBonus + bossBuffs.attackBonus
                 : action.attackBonus
         }));
@@ -214,12 +218,18 @@ function createEnemyFromMonster(monster, options = {}) {
  * @returns {number} Maximum possible HP
  */
 function rollMaxHP(hitDice) {
-    if (typeof hitDice === 'number') return hitDice;
-    if (typeof hitDice !== 'string') return 10;
+    if (typeof hitDice === 'number') {
+        return hitDice;
+    }
+    if (typeof hitDice !== 'string') {
+        return 10;
+    }
 
     // Parse "NdM+B" format
     const match = hitDice.match(/(\d+)d(\d+)([+-]\d+)?/);
-    if (!match) return roll(hitDice); // fallback to normal roll
+    if (!match) {
+        return roll(hitDice);
+    } // fallback to normal roll
 
     const numDice = parseInt(match[1]);
     const dieSize = parseInt(match[2]);
@@ -344,7 +354,9 @@ export async function buildEncounter(options = {}) {
             return adjustedXP <= xpBudget && monsterXP > 0;
         });
 
-        if (eligible.length === 0) break;
+        if (eligible.length === 0) {
+            break;
+        }
 
         // Pick a random eligible monster
         const chosen = eligible[Math.floor(rand() * eligible.length)];
@@ -447,10 +459,16 @@ async function buildMinionGroup(allMonsters, options) {
     const maxMinionCR = Math.max(0.25, Math.floor(partyLevel / 2));
     let minionCandidates = allMonsters.filter(m => {
         const cr = m.challengeRating ?? m.cr ?? 0;
-        if (cr > maxMinionCR) return false;
-        if (dungeonPool && !dungeonPool.includes(m.id)) return false;
+        if (cr > maxMinionCR) {
+            return false;
+        }
+        if (dungeonPool && !dungeonPool.includes(m.id)) {
+            return false;
+        }
         // Campaign filter
-        if (m.campaignIds && !m.campaignIds.includes('core') && !m.campaignIds.includes(campaignId)) return false;
+        if (m.campaignIds && !m.campaignIds.includes('core') && !m.campaignIds.includes(campaignId)) {
+            return false;
+        }
         return true;
     });
 
@@ -482,30 +500,42 @@ function filterMonsterPool(allMonsters, options) {
         const monsterXP = getXPForCR(cr);
 
         // Must have positive XP (CR 0 = 10 XP is fine)
-        if (monsterXP <= 0) return false;
+        if (monsterXP <= 0) {
+            return false;
+        }
 
         // Individual monster XP must not exceed budget
-        if (monsterXP > xpBudget) return false;
+        if (monsterXP > xpBudget) {
+            return false;
+        }
 
         // Explicit monster pool filter (dungeon or custom)
         if (monsterPool && monsterPool.length > 0) {
-            if (!monsterPool.includes(m.id)) return false;
+            if (!monsterPool.includes(m.id)) {
+                return false;
+            }
         }
 
         // Campaign filter
         if (campaignId && m.campaignIds) {
-            if (!m.campaignIds.includes('core') && !m.campaignIds.includes(campaignId)) return false;
+            if (!m.campaignIds.includes('core') && !m.campaignIds.includes(campaignId)) {
+                return false;
+            }
         }
 
         // Terrain/habitat filter (only for overworld)
         if (terrain && !dungeonTypeId && m.habitats) {
-            if (m.habitats.never && m.habitats.never.includes(terrain)) return false;
+            if (m.habitats.never && m.habitats.never.includes(terrain)) {
+                return false;
+            }
         }
 
         // Level appropriateness: monster should be roughly within the party's power range
         // Allow monsters from CR 0 up to partyLevel + 2 (budget handles the actual balancing)
         const maxCR = partyLevel + 2;
-        if (cr > maxCR && !isBoss) return false;
+        if (cr > maxCR && !isBoss) {
+            return false;
+        }
 
         return true;
     });
@@ -547,7 +577,9 @@ export async function buildBossEncounter(options = {}) {
             // Select boss from level-bracketed pool
             const validBosses = dungeonType.bossPool.filter(entry => {
                 // Support both old format (string) and new format (object with minLevel/maxLevel)
-                if (typeof entry === 'string') return true;
+                if (typeof entry === 'string') {
+                    return true;
+                }
                 return partyLevel >= entry.minLevel && partyLevel <= entry.maxLevel;
             });
 
@@ -624,7 +656,7 @@ export async function buildBossEncounter(options = {}) {
     const maxBossXP = deadlyThreshold * 3; // Boss can be up to 3× deadly
 
     // If encounter is too deadly, remove minions one by one until under budget
-    let finalMinions = [...minions];
+    const finalMinions = [...minions];
     while (adjustedXP > maxBossXP && finalMinions.length > 0) {
         console.warn(`⚠️ Boss encounter too deadly (${adjustedXP} XP > ${maxBossXP} max) - removing minion`);
         finalMinions.pop();

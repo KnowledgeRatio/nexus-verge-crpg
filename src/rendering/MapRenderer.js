@@ -103,7 +103,9 @@ class MapRenderer {
      */
     loadZoomSetting() {
         const saved = localStorage.getItem(RULES.zoom.storageKey);
-        if (saved === null) return RULES.zoom.defaultIndex;
+        if (saved === null) {
+            return RULES.zoom.defaultIndex;
+        }
         const index = parseInt(saved, 10);
         // Clamp to valid range in case zoom levels changed
         return Math.max(0, Math.min(index, this.zoomLevels.length - 1));
@@ -255,7 +257,6 @@ class MapRenderer {
     }
 
 
-
     /**
      * Pre-load available tile images
      * Only loads images for terrains that have tileImage defined in terrains.json
@@ -348,7 +349,9 @@ class MapRenderer {
      * @returns {HTMLImageElement|null}
      */
     getTileImage(tileId) {
-        if (!this.usePixelArt) return null;
+        if (!this.usePixelArt) {
+            return null;
+        }
         return this.tileImages.get(tileId) || null;
     }
 
@@ -577,12 +580,13 @@ class MapRenderer {
         };
 
         switch (feature.type) {
-            case 'settlement':
+            case 'settlement': {
                 // Look up town terrain from terrains.json
                 const townTerrain = getTerrain('town');
                 symbol = townTerrain?.symbol || '🏘️';
                 color = townTerrain?.color || '#d4af37';
                 break;
+            }
 
             case 'dungeon':
                 // Keep generic dungeon symbol (not tied to specific terrain)
@@ -590,12 +594,13 @@ class MapRenderer {
                 color = '#8b0000';
                 break;
 
-            case 'sanctuary':
+            case 'sanctuary': {
                 // Look up sanctuary terrain from terrains.json
                 const sanctuaryTerrain = getTerrain('sanctuary');
                 symbol = sanctuaryTerrain?.symbol || '⛩️';
                 color = sanctuaryTerrain?.color || '#f0e68c';
                 break;
+            }
 
             case 'poi':
                 switch (feature.poiType) {
@@ -604,18 +609,20 @@ class MapRenderer {
                         symbol = '†';
                         color = '#ffffff';
                         break;
-                    case 'ruins':
+                    case 'ruins': {
                         // Look up ruins terrain from terrains.json
                         const ruinsTerrain = getTerrain('ruins');
                         symbol = ruinsTerrain?.symbol || '🏛️';
                         color = ruinsTerrain?.color || '#7a7a7a';
                         break;
-                    case 'cave':
+                    }
+                    case 'cave': {
                         // Look up cave terrain from terrains.json
                         const caveTerrain = getTerrain('cave');
                         symbol = caveTerrain?.symbol || '🕳️';
                         color = caveTerrain?.color || '#3d3d3d';
                         break;
+                    }
                     case 'camp':
                         // Keep generic camp symbol (not in terrains.json)
                         symbol = 'A';

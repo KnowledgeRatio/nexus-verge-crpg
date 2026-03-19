@@ -60,7 +60,9 @@ export class DungeonUI {
      * Load terrain data for rendering
      */
     async loadTerrainData() {
-        if (this.terrainTypes) return;
+        if (this.terrainTypes) {
+            return;
+        }
 
         try {
             const response = await fetch('data/terrains.json');
@@ -316,7 +318,9 @@ export class DungeonUI {
      * Get terrain definition by ID
      */
     getTerrainDef(terrainId) {
-        if (!this.terrainTypes?.terrains) return null;
+        if (!this.terrainTypes?.terrains) {
+            return null;
+        }
         return this.terrainTypes.terrains.find(t => t.id === terrainId);
     }
 
@@ -394,7 +398,9 @@ export class DungeonUI {
      * @param {Object} dungeonState - Current dungeon state
      */
     renderMinimap(minimapCanvas, dungeonState) {
-        if (!dungeonState?.rooms) return;
+        if (!dungeonState?.rooms) {
+            return;
+        }
 
         const ctx = minimapCanvas.getContext('2d');
         const rooms = dungeonState.rooms;
@@ -479,9 +485,13 @@ export class DungeonUI {
                 ctx.textBaseline = 'middle';
 
                 let icon = '';
-                if (isEntrance) icon = '▲';
-                else if (isBoss) icon = '☠';
-                else icon = (index + 1).toString();
+                if (isEntrance) {
+                    icon = '▲';
+                } else if (isBoss) {
+                    icon = '☠';
+                } else {
+                    icon = (index + 1).toString();
+                }
 
                 ctx.fillText(icon, x + (roomSize - 4) / 2, y + (roomSize - 4) / 2);
             }
@@ -500,10 +510,14 @@ export class DungeonUI {
      * @returns {Object} Navigation info with connected rooms
      */
     getRoomNavigation(dungeonState) {
-        if (!dungeonState?.rooms) return { connections: [] };
+        if (!dungeonState?.rooms) {
+            return { connections: [] };
+        }
 
         const currentRoom = dungeonState.rooms[dungeonState.currentRoomIndex || 0];
-        if (!currentRoom) return { connections: [] };
+        if (!currentRoom) {
+            return { connections: [] };
+        }
 
         const connections = (currentRoom.connections || []).map(connIndex => {
             const room = dungeonState.rooms[connIndex];

@@ -23,7 +23,9 @@ let campaignsData = null;
  * @returns {Promise<Object>} Campaigns data
  */
 export async function loadCampaigns() {
-    if (campaignsData) return campaignsData;
+    if (campaignsData) {
+        return campaignsData;
+    }
 
     try {
         const response = await fetch('data/campaigns.json');
@@ -87,7 +89,9 @@ export function getEffectiveCampaignIds(campaignId) {
  * @returns {boolean} True if entry is available for this campaign
  */
 export function isAvailableForCampaign(entry, campaignId) {
-    if (!entry) return false;
+    if (!entry) {
+        return false;
+    }
 
     // If entry has no campaignIds, default to 'core' (available everywhere)
     const entryCampaigns = entry.campaignIds || ['core'];
@@ -106,8 +110,12 @@ export function isAvailableForCampaign(entry, campaignId) {
  * @returns {Array} Filtered array of entries available for this campaign
  */
 export function filterByCampaign(entries, campaignId) {
-    if (!Array.isArray(entries)) return entries;
-    if (!campaignId) campaignId = DEFAULT_CAMPAIGN_ID;
+    if (!Array.isArray(entries)) {
+        return entries;
+    }
+    if (!campaignId) {
+        campaignId = DEFAULT_CAMPAIGN_ID;
+    }
 
     return entries.filter(entry => isAvailableForCampaign(entry, campaignId));
 }
@@ -119,8 +127,12 @@ export function filterByCampaign(entries, campaignId) {
  * @returns {Object} Object with filtered arrays
  */
 export function filterObjectArraysByCampaign(obj, campaignId) {
-    if (!obj || typeof obj !== 'object') return obj;
-    if (!campaignId) campaignId = DEFAULT_CAMPAIGN_ID;
+    if (!obj || typeof obj !== 'object') {
+        return obj;
+    }
+    if (!campaignId) {
+        campaignId = DEFAULT_CAMPAIGN_ID;
+    }
 
     const result = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -139,11 +151,15 @@ export function filterObjectArraysByCampaign(obj, campaignId) {
  * @returns {Object|null} Campaign configuration or null if not found
  */
 export function getCampaignConfig(campaignId) {
-    if (!campaignsData) return null;
+    if (!campaignsData) {
+        return null;
+    }
 
     // Check active campaigns
     const active = campaignsData.campaigns?.find(c => c.id === campaignId);
-    if (active) return active;
+    if (active) {
+        return active;
+    }
 
     // Check template campaigns
     const template = campaignsData.templateCampaigns?.find(c => c.id === campaignId);
@@ -155,7 +171,9 @@ export function getCampaignConfig(campaignId) {
  * @returns {Array} Array of enabled campaign objects
  */
 export function getAvailableCampaigns() {
-    if (!campaignsData) return [{ id: 'core', name: 'Core Rules' }];
+    if (!campaignsData) {
+        return [{ id: 'core', name: 'Core Rules' }];
+    }
 
     return campaignsData.campaigns.filter(c => !c.disabled);
 }
@@ -180,8 +198,12 @@ export function getDefaultCampaignId() {
  * @returns {Object} Filtered data
  */
 export function filterLoadedData(data, campaignId, options = {}) {
-    if (!data) return data;
-    if (!campaignId) campaignId = DEFAULT_CAMPAIGN_ID;
+    if (!data) {
+        return data;
+    }
+    if (!campaignId) {
+        campaignId = DEFAULT_CAMPAIGN_ID;
+    }
 
     const result = { ...data };
 

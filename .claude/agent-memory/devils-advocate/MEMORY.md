@@ -68,6 +68,25 @@
 - 0.6 action economy factor was not derived from a balance model. Level 1 companion may over-scale XP budget vs. actual effective contribution.
 - Without mid-event companion reaction lines (brief dialogue), the hidden motivation system teaches players nothing before the Hostile departure triggers. Feedback loop is broken.
 
+### 10. Engagement System Design Traps (2026-03-14)
+- `engagedWith: Set<string>` design is sound; backward-compat getter `get hasEngaged()` is correct
+- Critical flaw: OA triggers and DC formula must use the SAME authoritative set. OAs from "who has you in their set" vs DC from "your own set.size" diverge under round-1 gate.
+- Round-1 gate ("combatant completed one turn") inverts DEX incentive: slow-DEX player who goes last has free escape even after 3 enemies pile on. Replace with `CombatManager.firstMeleeAttackLanded: boolean` flag.
+- `pushed` condition blocks melee attacks on actor's own turn (`executeMonsterAttack()` line 467) but does NOT block OAs in `resolveFleeOpportunityAttacks()` (line 1428) — OA filter must add `!c.hasCondition('pushed')`.
+- `disengagedThisTurn` flag should be a condition (`untilStartOfTurn`) to stay consistent with `pushed`, `harried`, etc.
+- Disengage + Cunning Flee both cost Bonus Action — cannot chain on same turn. UI must make this clear.
+
+### 11. Fatigue System Design Traps (2026-03-16)
+- Swamp (movementCost 2.5) forces CON+0 player into Exhaustion Level on ANY inter-rest journey >80 tiles — minimum spacing is 100 tiles. Brutal cliff edge on a common terrain type.
+- Mountain (movementCost 2.0): Spent at 100 tiles with CON+0. Same trap.
+- Road travel (movementCost 0.8): Spent at 250 tiles. Fine. CON modifier matters far more on difficult terrain than flat land — the penalty is front-loaded where players explore interesting terrain.
+- Combat grinding suppression is near-zero: 1 encounter per ~100 tiles = +3% per encounter = ~0.03% fatigue per tile from combat vs 0.5% from movement. The stated goal of "discouraging combat grinding" is not achieved by this formula alone.
+- Ration system adds friction without fun: 1gp per ration, 2-3 rests between towns = 2-3gp cost. Trivially cheap. Players who think to buy rations are never punished; players who forget suffer a harsh HP penalty. Binary with no interesting decision.
+- Short rest cap (2/long rest) means: at 90% fatigue with both short rests used, any movement forces Spent + Exhaustion Level with no way to avoid it. This is the hardest cliff edge.
+- The reset-to-60 on Exhaustion is benign for normal play but creates a perverse ceiling: walking at 99% is costly, but crossing 100% and resetting to 60% means heavy-terrain players rationally want to burn to 100%, get the reset, then continue. The threshold incentivizes burning through rather than managing.
+- Fieldcraft is a trap abstraction: Trail Sense addresses the symptom (rate) rather than the real problem (difficult terrain cliff edge). The 15%+20% reductions don't help much on swamp/mountain where the rate is 2.5x baseline.
+- No negative CON ceiling defined: CON -2 (score 6) gives `max(0.5, 1.2) = 1.2` factor. That's correct math but 60% worse than CON +0 — Scholar builds that dump CON face brutal penalties on difficult terrain.
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`
@@ -75,7 +94,9 @@
 - Combat action dispatch: `src/main.js` lines ~1240-1290
 - Resource redesign plan: `docs/plans/2026-02-25-resource-system-redesign.md`
 - EffectDispatcher design + review: `.claude/agent-memory/devils-advocate/patterns.md`
-- Current flee method: `src/systems/CombatManager.js` lines 1061-1090 (full rewrite needed)
+- Current flee method: `src/systems/CombatManager.js` lines ~1462-1590 (redesigned, functional)
+- OA resolution: `src/systems/CombatManager.js` lines 1428-1455 (`resolveFleeOpportunityAttacks`)
+- Engagement flag (current boolean): `CombatManager.js` lines 473-476 (monster) and 764-766 (player)
 - World gen tile selection: `src/systems/WorldGenerator.js` lines 150-412
 - World gen metadata: `src/systems/WorldGenerator.js` lines 1175-1274
 - Unused biome config: `src/core/rulesEngine.js` lines 684-700

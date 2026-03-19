@@ -9,6 +9,7 @@
 import { gameState } from '../core/GameState.js';
 import { rollD20 } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
+import { addFatigue } from './FatigueManager.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -42,7 +43,9 @@ class SkillChallengeManager {
     async loadTerrainChallenges() {
         try {
             const response = await fetch(`data/skillChallenges.json?v=${Date.now()}`);
-            if (!response.ok) throw new Error(`Failed to load skillChallenges.json: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`Failed to load skillChallenges.json: ${response.status}`);
+            }
             this.terrainChallengesData = await response.json();
             this.buildTerrainIndex();
             console.log(`✅ Loaded ${Object.keys(this.terrainChallengesData.challenges || {}).length} terrain challenges`);
@@ -117,7 +120,9 @@ class SkillChallengeManager {
      * @param {Object} node - Challenge node
      */
     processPassiveChecks(node) {
-        if (!node.passiveChecks) return;
+        if (!node.passiveChecks) {
+            return;
+        }
 
         const character = gameState.get('character');
 
@@ -204,7 +209,12 @@ class SkillChallengeManager {
      * @param {number} choiceIndex - Index of chosen option
      */
     selectChoice(choiceIndex) {
-        if (!this.currentChallenge) return;
+        if (!this.currentChallenge) {
+            return;
+        }
+
+        // Fatigue from skill challenge attempt
+        addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge');
 
         const node = this.getCurrentNode();
         const availableChoices = this.getAvailableChoices(node);
@@ -269,7 +279,9 @@ class SkillChallengeManager {
      * @param {string} nodeId - Node ID to move to
      */
     moveToNode(nodeId) {
-        if (!this.currentChallenge) return;
+        if (!this.currentChallenge) {
+            return;
+        }
 
         this.currentChallenge.currentNode = nodeId;
         this.currentChallenge.visitedNodes.add(nodeId);
@@ -430,7 +442,9 @@ class SkillChallengeManager {
      * @returns {Object} Current node
      */
     getCurrentNode() {
-        if (!this.currentChallenge) return null;
+        if (!this.currentChallenge) {
+            return null;
+        }
         return this.currentChallenge.tree.nodes[this.currentChallenge.currentNode];
     }
 
@@ -440,7 +454,9 @@ class SkillChallengeManager {
      * @returns {Array} Available choices
      */
     getAvailableChoices(node) {
-        if (!node || !node.choices) return [];
+        if (!node || !node.choices) {
+            return [];
+        }
 
         return node.choices.filter(choice => {
             // Check if requires revealed information
@@ -478,14 +494,18 @@ class SkillChallengeManager {
     getSkillModifier(character, skillId, companions = []) {
         // --- Player base calculation (unchanged) ---
         const skillData = character.skills.find(s => s.id === skillId);
-        if (!skillData) return 0;
+        if (!skillData) {
+            return 0;
+        }
 
         const abilityMod = character.abilityModifiers[skillData.ability];
         const profBonus = character.skillProficiencies.includes(skillId) ? character.proficiencyBonus : 0;
         const playerBase = abilityMod + profBonus;
 
         // --- Party disabled or no companions: return unchanged ---
-        if (!RULES.party?.enabled || companions.length === 0) return playerBase;
+        if (!RULES.party?.enabled || companions.length === 0) {
+            return playerBase;
+        }
 
         // --- Companion contribution (capped at player's proficiency bonus) ---
         const cap = character.proficiencyBonus;
@@ -493,10 +513,16 @@ class SkillChallengeManager {
 
         for (const companion of companions) {
             const meta = companion.companionMeta;
-            if (!meta || !meta.skillAssignments.includes(skillId)) continue;
-            if (meta.isDowned) continue;
+            if (!meta || !meta.skillAssignments.includes(skillId)) {
+                continue;
+            }
+            if (meta.isDowned) {
+                continue;
+            }
             companionContribution = Math.min(cap, companionContribution + companion.proficiencyBonus);
-            if (companionContribution >= cap) break;
+            if (companionContribution >= cap) {
+                break;
+            }
         }
 
         // --- trueParty synergy bonus ---
@@ -531,7 +557,9 @@ class SkillChallengeManager {
      * @returns {string} Processed text
      */
     processText(text) {
-        if (!this.currentChallenge) return text;
+        if (!this.currentChallenge) {
+            return text;
+        }
 
         const context = this.currentChallenge.context;
         let processed = text;
@@ -552,12 +580,12 @@ class SkillChallengeManager {
      */
     getRevealMessage(revealId, context) {
         const messages = {
-            'desperate_motivation': `These aren't hardened criminals - desperation drives them.`,
+            'desperate_motivation': 'These aren\'t hardened criminals - desperation drives them.',
             'wronged_motivation': `They have a legitimate grievance against ${context.settlement || 'the settlement'}.`,
-            'opportunists_motivation': `These are professionals running a protection racket.`,
-            'weakening_resolve': `Their resolve is cracking - they want a way out.`,
-            'angering': `You're pushing them towards violence.`,
-            'lying': `Their body language suggests deception.`
+            'opportunists_motivation': 'These are professionals running a protection racket.',
+            'weakening_resolve': 'Their resolve is cracking - they want a way out.',
+            'angering': 'You\'re pushing them towards violence.',
+            'lying': 'Their body language suggests deception.'
         };
 
         return messages[revealId] || 'You learned something important.';
@@ -675,7 +703,9 @@ class SkillChallengeManager {
      */
     buildTerrainIndex() {
         this.terrainChallengeIndex = {};
-        if (!this.terrainChallengesData?.challenges) return;
+        if (!this.terrainChallengesData?.challenges) {
+            return;
+        }
 
         for (const [id, challenge] of Object.entries(this.terrainChallengesData.challenges)) {
             const modifiers = challenge.terrainModifiers || {};
@@ -729,11 +759,17 @@ class SkillChallengeManager {
      * @returns {boolean}
      */
     shouldTriggerChallenge(challengeId, context) {
-        if (!this.terrainChallengesData) return false;
+        if (!this.terrainChallengesData) {
+            return false;
+        }
         const challenge = this.terrainChallengesData.challenges?.[challengeId];
-        if (!challenge) return false;
+        if (!challenge) {
+            return false;
+        }
 
-        if (!this.canAttemptChallenge(challengeId)) return false;
+        if (!this.canAttemptChallenge(challengeId)) {
+            return false;
+        }
 
         const terrainMod = challenge.terrainModifiers?.[context.terrainType] ?? 1.0;
         const globalMod = this.terrainChallengesData.balancing?.triggerFrequencyModifiers?.terrain_base ?? 0.1;
@@ -748,9 +784,13 @@ class SkillChallengeManager {
      * @returns {boolean} true if challenge can be attempted (not on cooldown)
      */
     canAttemptChallenge(challengeId) {
-        if (!this.terrainChallengesData) return false;
+        if (!this.terrainChallengesData) {
+            return false;
+        }
         const challenge = this.terrainChallengesData.challenges?.[challengeId];
-        if (!challenge) return false;
+        if (!challenge) {
+            return false;
+        }
 
         const lastAttempt = this.lastAttemptTimes?.[challengeId] || 0;
         const cooldown = challenge.balance?.cooldown || 0;
@@ -762,7 +802,9 @@ class SkillChallengeManager {
      * @param {string} challengeId
      */
     recordChallengeAttempt(challengeId) {
-        if (!this.lastAttemptTimes) this.lastAttemptTimes = {};
+        if (!this.lastAttemptTimes) {
+            this.lastAttemptTimes = {};
+        }
         this.lastAttemptTimes[challengeId] = Date.now();
     }
 }

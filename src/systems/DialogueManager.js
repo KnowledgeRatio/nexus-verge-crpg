@@ -182,17 +182,25 @@ export default class DialogueManager {
     getDynamicLines(npc) {
         const lines = [];
         const templates = this.dialogueData?.dynamicTemplates;
-        if (!templates) return lines;
+        if (!templates) {
+            return lines;
+        }
 
         const world = gameState.get('world');
-        if (!world?.generatedRegions) return lines;
+        if (!world?.generatedRegions) {
+            return lines;
+        }
 
         // Get settlement position
         const settlementId = npc.settlementId;
-        if (!settlementId) return lines;
+        if (!settlementId) {
+            return lines;
+        }
 
         const [sx, sy] = settlementId.split('_').map(Number);
-        if (isNaN(sx) || isNaN(sy)) return lines;
+        if (isNaN(sx) || isNaN(sy)) {
+            return lines;
+        }
 
         const radius = this.config.scanRadius;
 
@@ -203,11 +211,15 @@ export default class DialogueManager {
 
         for (const regionKey of Object.keys(world.generatedRegions)) {
             const region = world.generatedRegions[regionKey];
-            if (!region?.features) continue;
+            if (!region?.features) {
+                continue;
+            }
 
             for (const feature of region.features) {
                 const dist = this._tileDistance(sx, sy, feature.x, feature.y);
-                if (dist > radius * 32 || dist === 0) continue; // Skip self and far features
+                if (dist > radius * 32 || dist === 0) {
+                    continue;
+                } // Skip self and far features
 
                 if (feature.type === 'dungeon' && feature.name) {
                     nearbyDungeons.push({
@@ -336,14 +348,30 @@ export default class DialogueManager {
         // Note: in tile coords, positive Y is typically south
         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-        if (angle >= -22.5 && angle < 22.5) return 'east';
-        if (angle >= 22.5 && angle < 67.5) return 'southeast';
-        if (angle >= 67.5 && angle < 112.5) return 'south';
-        if (angle >= 112.5 && angle < 157.5) return 'southwest';
-        if (angle >= 157.5 || angle < -157.5) return 'west';
-        if (angle >= -157.5 && angle < -112.5) return 'northwest';
-        if (angle >= -112.5 && angle < -67.5) return 'north';
-        if (angle >= -67.5 && angle < -22.5) return 'northeast';
+        if (angle >= -22.5 && angle < 22.5) {
+            return 'east';
+        }
+        if (angle >= 22.5 && angle < 67.5) {
+            return 'southeast';
+        }
+        if (angle >= 67.5 && angle < 112.5) {
+            return 'south';
+        }
+        if (angle >= 112.5 && angle < 157.5) {
+            return 'southwest';
+        }
+        if (angle >= 157.5 || angle < -157.5) {
+            return 'west';
+        }
+        if (angle >= -157.5 && angle < -112.5) {
+            return 'northwest';
+        }
+        if (angle >= -112.5 && angle < -67.5) {
+            return 'north';
+        }
+        if (angle >= -67.5 && angle < -22.5) {
+            return 'northeast';
+        }
 
         return 'nearby';
     }
@@ -353,8 +381,12 @@ export default class DialogueManager {
      */
     _getDistanceLabel(tileDist) {
         const labels = this.config.distanceLabels;
-        if (tileDist <= labels.near.max * 32) return labels.near.label;
-        if (tileDist <= labels.medium.max * 32) return labels.medium.label;
+        if (tileDist <= labels.near.max * 32) {
+            return labels.near.label;
+        }
+        if (tileDist <= labels.medium.max * 32) {
+            return labels.medium.label;
+        }
         return labels.far.label;
     }
 

@@ -25,7 +25,9 @@ export class DungeonGenerator {
      * Must be called before generating dungeons
      */
     async loadData() {
-        if (this.dataLoaded) return;
+        if (this.dataLoaded) {
+            return;
+        }
 
         try {
             const [dungeonTypesData, dungeonRoomsData, terrainsData] = await Promise.all([
@@ -131,7 +133,9 @@ export class DungeonGenerator {
      * Select a random dungeon type, weighted by sizeWeight (larger dungeons are rarer)
      */
     selectDungeonType(rng) {
-        if (this.dungeonTypes.length === 0) return null;
+        if (this.dungeonTypes.length === 0) {
+            return null;
+        }
 
         // Build weighted selection using sizeWeight (default 1.0)
         const totalWeight = this.dungeonTypes.reduce((sum, dt) => sum + (dt.sizeWeight || 1.0), 0);
@@ -139,7 +143,9 @@ export class DungeonGenerator {
 
         for (const dt of this.dungeonTypes) {
             roll -= (dt.sizeWeight || 1.0);
-            if (roll <= 0) return dt;
+            if (roll <= 0) {
+                return dt;
+            }
         }
 
         // Fallback
@@ -240,7 +246,9 @@ export class DungeonGenerator {
      * ensuring the boss room ends up far from the entrance.
      */
     generateConnections(rng, rooms) {
-        if (rooms.length <= 1) return;
+        if (rooms.length <= 1) {
+            return;
+        }
 
         // Initialize connections arrays
         for (const room of rooms) {
@@ -318,7 +326,9 @@ export class DungeonGenerator {
                 const roomJ = rooms[j];
 
                 // Skip if already connected
-                if (roomI.connections.includes(j)) continue;
+                if (roomI.connections.includes(j)) {
+                    continue;
+                }
 
                 // Check if both have room for more connections
                 const maxI = roomI.maxConnections || 4;
@@ -396,7 +406,9 @@ export class DungeonGenerator {
 
         while (queue.length > 0) {
             const { index, depth } = queue.shift();
-            if (index === targetIndex) return depth;
+            if (index === targetIndex) {
+                return depth;
+            }
 
             const room = rooms[index];
             for (const connIdx of (room.connections || [])) {
@@ -515,19 +527,29 @@ export class DungeonGenerator {
      * (inside the shape but adjacent to outside or grid edge)
      */
     isShapePerimeter(mask, x, y, width, height) {
-        if (!mask[y][x]) return false; // Not in shape at all
+        if (!mask[y][x]) {
+            return false;
+        } // Not in shape at all
 
         // Edge of grid is always perimeter
-        if (x === 0 || x === width - 1 || y === 0 || y === height - 1) return true;
+        if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+            return true;
+        }
 
         // Adjacent to void (outside shape) is perimeter
         for (let dy = -1; dy <= 1; dy++) {
             for (let dx = -1; dx <= 1; dx++) {
-                if (dx === 0 && dy === 0) continue;
+                if (dx === 0 && dy === 0) {
+                    continue;
+                }
                 const nx = x + dx;
                 const ny = y + dy;
-                if (nx < 0 || nx >= width || ny < 0 || ny >= height) return true;
-                if (!mask[ny][nx]) return true;
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+                    return true;
+                }
+                if (!mask[ny][nx]) {
+                    return true;
+                }
             }
         }
 
@@ -567,16 +589,24 @@ export class DungeonGenerator {
             for (let x = 0; x < width; x++) {
                 switch (corner) {
                     case 0: // Top-left
-                        if (x < cutW && y < cutH) mask[y][x] = false;
+                        if (x < cutW && y < cutH) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 1: // Top-right
-                        if (x >= width - cutW && y < cutH) mask[y][x] = false;
+                        if (x >= width - cutW && y < cutH) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 2: // Bottom-left
-                        if (x < cutW && y >= height - cutH) mask[y][x] = false;
+                        if (x < cutW && y >= height - cutH) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 3: // Bottom-right
-                        if (x >= width - cutW && y >= height - cutH) mask[y][x] = false;
+                        if (x >= width - cutW && y >= height - cutH) {
+                            mask[y][x] = false;
+                        }
                         break;
                 }
             }
@@ -596,16 +626,24 @@ export class DungeonGenerator {
             for (let x = 0; x < width; x++) {
                 switch (side) {
                     case 0: // Cut top-left and top-right
-                        if (y < cutH && (x < cutW || x >= width - cutW)) mask[y][x] = false;
+                        if (y < cutH && (x < cutW || x >= width - cutW)) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 1: // Cut bottom-left and bottom-right
-                        if (y >= height - cutH && (x < cutW || x >= width - cutW)) mask[y][x] = false;
+                        if (y >= height - cutH && (x < cutW || x >= width - cutW)) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 2: // Cut top-left and bottom-left
-                        if (x < cutW && (y < cutH || y >= height - cutH)) mask[y][x] = false;
+                        if (x < cutW && (y < cutH || y >= height - cutH)) {
+                            mask[y][x] = false;
+                        }
                         break;
                     case 3: // Cut top-right and bottom-right
-                        if (x >= width - cutW && (y < cutH || y >= height - cutH)) mask[y][x] = false;
+                        if (x >= width - cutW && (y < cutH || y >= height - cutH)) {
+                            mask[y][x] = false;
+                        }
                         break;
                 }
             }
@@ -688,16 +726,24 @@ export class DungeonGenerator {
                 for (let x = 0; x < width; x++) {
                     switch (corner) {
                         case 0:
-                            if (x < cutW && y < cutH) mask[y][x] = false;
+                            if (x < cutW && y < cutH) {
+                                mask[y][x] = false;
+                            }
                             break;
                         case 1:
-                            if (x >= width - cutW && y < cutH) mask[y][x] = false;
+                            if (x >= width - cutW && y < cutH) {
+                                mask[y][x] = false;
+                            }
                             break;
                         case 2:
-                            if (x < cutW && y >= height - cutH) mask[y][x] = false;
+                            if (x < cutW && y >= height - cutH) {
+                                mask[y][x] = false;
+                            }
                             break;
                         case 3:
-                            if (x >= width - cutW && y >= height - cutH) mask[y][x] = false;
+                            if (x >= width - cutW && y >= height - cutH) {
+                                mask[y][x] = false;
+                            }
                             break;
                     }
                 }
@@ -719,7 +765,9 @@ export class DungeonGenerator {
             }
         }
 
-        if (validPositions.length === 0) return;
+        if (validPositions.length === 0) {
+            return;
+        }
 
         const pos = rng.choice(validPositions);
 
@@ -849,7 +897,9 @@ export class DungeonGenerator {
      */
     addConnectionDoors(rng, tiles, room, width, height) {
         const numConnections = room.connections?.length || 0;
-        if (numConnections === 0) return;
+        if (numConnections === 0) {
+            return;
+        }
 
         // For each wall side, find all valid wall tiles adjacent to a floor tile
         const wallCandidates = {
@@ -896,7 +946,9 @@ export class DungeonGenerator {
         // Place doors: pick one random valid position per side
         const doorsPlaced = [];
         for (const side of validSides) {
-            if (doorsPlaced.length >= numConnections) break;
+            if (doorsPlaced.length >= numConnections) {
+                break;
+            }
             // Pick the candidate closest to the midpoint of that wall for natural placement
             const candidates = wallCandidates[side];
             const mid = side === 'north' || side === 'south'
@@ -916,7 +968,9 @@ export class DungeonGenerator {
         // try placing additional doors on sides that have remaining candidates
         if (doorsPlaced.length < numConnections) {
             for (const side of validSides) {
-                if (doorsPlaced.length >= numConnections) break;
+                if (doorsPlaced.length >= numConnections) {
+                    break;
+                }
                 const candidates = wallCandidates[side];
                 // Find a candidate not already used
                 for (const c of candidates) {
@@ -956,7 +1010,9 @@ export class DungeonGenerator {
             }
         }
 
-        if (floorTiles.length === 0) return null;
+        if (floorTiles.length === 0) {
+            return null;
+        }
 
         // Prefer tiles near top for entrance exits, near bottom for boss exits
         const targetY = isEntrance ? 1 : height - 2;
@@ -977,7 +1033,9 @@ export class DungeonGenerator {
      */
     findPlayerSpawnInRoom(room) {
         const tiles = room.tiles;
-        if (!tiles) return { x: 1, y: 1 };
+        if (!tiles) {
+            return { x: 1, y: 1 };
+        }
 
         const height = tiles.length;
         const width = tiles[0]?.length || 0;
@@ -1009,7 +1067,9 @@ export class DungeonGenerator {
      */
     selectBoss(rng, dungeonType, playerLevel = 1) {
         const bossPool = dungeonType.bossPool || [];
-        if (bossPool.length === 0) return null;
+        if (bossPool.length === 0) {
+            return null;
+        }
 
         // Check if new level-bracketed format (objects with id, minLevel, maxLevel)
         if (bossPool[0] && typeof bossPool[0] === 'object' && bossPool[0].id) {
@@ -1046,7 +1106,9 @@ export class DungeonGenerator {
      * Get monsters valid for this dungeon type
      */
     getValidMonsters(dungeonType, monstersData) {
-        if (!dungeonType || !monstersData) return [];
+        if (!dungeonType || !monstersData) {
+            return [];
+        }
 
         return monstersData.monsters.filter(monster => {
             // Check if monster's dungeonTypes includes this dungeon type
@@ -1092,10 +1154,14 @@ export class DungeonGenerator {
 
             // Determine trap count for this room
             const trapCount = rng.nextInt(range.min, range.max);
-            if (trapCount <= 0) continue;
+            if (trapCount <= 0) {
+                continue;
+            }
 
             const tiles = room.tiles;
-            if (!tiles) continue;
+            if (!tiles) {
+                continue;
+            }
 
             const width = room.width || tiles[0]?.length || 8;
             const height = room.height || tiles.length || 8;
@@ -1107,13 +1173,17 @@ export class DungeonGenerator {
                     const tile = tiles[y]?.[x];
                     if (tile && !tile.isWall && !tile.isExit && !tile.isDoor && !tile.isInteractable && !tile.isTrap) {
                         // Don't place on player spawn point
-                        if (room.playerSpawn && room.playerSpawn.x === x && room.playerSpawn.y === y) continue;
+                        if (room.playerSpawn && room.playerSpawn.x === x && room.playerSpawn.y === y) {
+                            continue;
+                        }
                         validPositions.push({ x, y });
                     }
                 }
             }
 
-            if (validPositions.length === 0) continue;
+            if (validPositions.length === 0) {
+                continue;
+            }
 
             // Place traps
             const trapsToPlace = Math.min(trapCount, validPositions.length);
@@ -1147,10 +1217,18 @@ export class DungeonGenerator {
      * Get trap damage dice based on player level
      */
     getTrapDamage(playerLevel, rng) {
-        if (playerLevel <= 2) return '1d6';
-        if (playerLevel <= 4) return '2d6';
-        if (playerLevel <= 6) return '2d8';
-        if (playerLevel <= 8) return '3d6';
+        if (playerLevel <= 2) {
+            return '1d6';
+        }
+        if (playerLevel <= 4) {
+            return '2d6';
+        }
+        if (playerLevel <= 6) {
+            return '2d8';
+        }
+        if (playerLevel <= 8) {
+            return '3d6';
+        }
         return '3d8';
     }
 }

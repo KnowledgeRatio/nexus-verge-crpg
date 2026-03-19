@@ -8,6 +8,7 @@ import { RULES } from '../core/rulesEngine.js';
 import { rollDice, rollD20, roll } from '../utils/dice.js';
 import { SeededRandom } from '../utils/rng.js';
 import audioManager from './AudioManager.js';
+import { addFatigue, getFatigueModifiers } from './FatigueManager.js';
 
 class CombatManager {
     constructor() {
@@ -55,7 +56,6 @@ class CombatManager {
         this.combatants = [];
         this.turnOrder = [];
         this.companionCombatants = [];
-
         // Create player combatant
         this.playerCombatant = new Combatant(player, 'player');
         this.combatants.push(this.playerCombatant);
@@ -308,7 +308,9 @@ class CombatManager {
 
         // End turn after a delay (only if combat is still active)
         setTimeout(() => {
-            if (!this.active) return;
+            if (!this.active) {
+                return;
+            }
             console.log('Enemy turn ending');
             this.endTurn();
         }, 1000);
@@ -369,7 +371,9 @@ class CombatManager {
 
         // Execute each attack in the multiattack sequence
         for (let i = 0; i < attackCount; i++) {
-            if (target.hp <= 0) break; // Stop if target dies
+            if (target.hp <= 0) {
+                break;
+            } // Stop if target dies
 
             // Pick action — cycle through available attacks for variety
             const action = orderedActions[i % orderedActions.length];
@@ -389,7 +393,9 @@ class CombatManager {
      */
     getWeaponById(weaponId) {
         const items = gameState.data?.items;
-        if (!items || !weaponId) return null;
+        if (!items || !weaponId) {
+            return null;
+        }
         return items.find(i => i.id === weaponId) || null;
     }
 
@@ -470,11 +476,6 @@ class CombatManager {
             return;
         }
 
-        // Mark monster as engaged only when making a melee attack (for flee DC calculation)
-        if (isMeleeAction) {
-            combatant.hasEngaged = true;
-        }
-
         // Attack roll: derive bonus from monster stats + proficiency
         const attackStats = this.calculateMonsterAttackStats(combatant, action);
         const attackBonus = attackStats.attackBonus + (combatant.character.bossAttackBonus || 0);
@@ -507,6 +508,12 @@ class CombatManager {
         if (combatant.hasCondition && combatant.hasCondition('prone')) {
             hasDisadvantage = true;
             gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (prone)! 🔻`, 'warning');
+        }
+
+        // FRIGHTENED: attacker has disadvantage on attacks when frightened
+        if (combatant.hasCondition && combatant.hasCondition('frightened')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`😱 ${combatant.name} has disadvantage (Frightened)! 😱`, 'warning');
         }
 
         // Vexed: Monster has advantage vs the vexed target (one-time use, then cleared)
@@ -544,10 +551,25 @@ class CombatManager {
 
         gameState.addMessage(`🎲 ${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
 
+        // MELEE ENGAGEMENT: attacker switches focus — clear previous engagements, form new one with target
+        if (isMeleeAction) {
+            combatant.engagedWith.forEach(oldId => {
+                const old = this.combatants.find(c => c.id === oldId);
+                if (old) {
+                    old.engagedWith.delete(combatant.id);
+                }
+            });
+            combatant.engagedWith.clear();
+            combatant.engagedWith.add(target.id);
+            target.engagedWith.add(combatant.id);
+        }
+
         if (isCriticalMiss) {
-            gameState.addMessage(`❌ Critical miss!`, 'info');
+            gameState.addMessage('❌ Critical miss!', 'info');
             audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
-            if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            if (window.game) {
+                window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            }
             // Clear sapped condition after attacking (even on a critical miss)
             if (combatant.hasCondition && combatant.hasCondition('sapped')) {
                 combatant.removeCondition('sapped', true);
@@ -556,6 +578,7 @@ class CombatManager {
         }
 
         if (isCritical || attackTotal >= target.ac) {
+
             // Hit! Roll damage using stats derived from weapon data or action fallback
             const damageDice = attackStats.damageDice;
             const damageBonus = attackStats.damageBonus;
@@ -602,7 +625,9 @@ class CombatManager {
             // Check if target is defeated
             if (target.hp <= 0) {
                 gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
-                setTimeout(() => { audioManager.play('death'); }, 1000);
+                setTimeout(() => {
+                    audioManager.play('death');
+                }, 1000);
                 this.handleDefeat(target);
             }
 
@@ -613,7 +638,9 @@ class CombatManager {
         } else {
             gameState.addMessage(`❌ ${combatant.name} misses!`, 'info');
             audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
-            if (window.game) window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            if (window.game) {
+                window.game.showFloatingCombatText(target.id, 'MISS', 'miss');
+            }
             // Clear sapped condition after attacking (even on a miss)
             if (combatant.hasCondition && combatant.hasCondition('sapped')) {
                 combatant.removeCondition('sapped', true);
@@ -666,7 +693,9 @@ class CombatManager {
         const saved = saveTotal >= saveDC;
 
         let saveMsg = `🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod}`;
-        if (deflectBonus > 0) saveMsg += ` + ${deflectBonus} (deflecting)`;
+        if (deflectBonus > 0) {
+            saveMsg += ` + ${deflectBonus} (deflecting)`;
+        }
         saveMsg += ` = ${saveTotal} vs DC ${saveDC}`;
         gameState.addMessage(saveMsg, 'info');
 
@@ -699,7 +728,9 @@ class CombatManager {
         // Check if target is defeated
         if (target.hp <= 0) {
             gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
-            setTimeout(() => { audioManager.play('death'); }, 1000);
+            setTimeout(() => {
+                audioManager.play('death');
+            }, 1000);
             this.handleDefeat(target);
         }
     }
@@ -761,11 +792,6 @@ class CombatManager {
             return;
         }
 
-        // Mark attacker as engaged when making a melee attack (for flee opportunity attacks)
-        if (!isRanged) {
-            attacker.hasEngaged = true;
-        }
-
         const handLabel = isOffHandAttack ? ' (off-hand)' : '';
         gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
 
@@ -791,6 +817,9 @@ class CombatManager {
 
         // Add proficiency bonus
         const proficiency = attacker.character.proficiencyBonus;
+
+        // Fighting Style: Marksmanship (+2 to ranged attack rolls only, not damage)
+        const fightingStyleAttackBonus = (isRanged && attacker.character.fightingStyle === 'marksmanship') ? 2 : 0;
 
         // Check for advantage/disadvantage from mastery effects
         let hasAdvantage = false;
@@ -848,6 +877,26 @@ class CombatManager {
             gameState.addMessage(`🎯 ${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
         }
 
+        // FRIGHTENED: attacker has disadvantage on attacks when frightened
+        if (attacker.hasCondition('frightened')) {
+            hasDisadvantage = true;
+            gameState.addMessage(`😱 ${attacker.name} has disadvantage (Frightened)! 😱`, 'warning');
+        }
+
+        // FATIGUE: player attacker only — staggering threshold imposes disadvantage on attacks
+        let fatigueAttackMod = 0;
+        if (attacker.team === 'player') {
+            const fatigueMods = getFatigueModifiers();
+            if (fatigueMods.disadvantageAttacks && !hasDisadvantage) {
+                hasDisadvantage = true;
+                gameState.addMessage(`😩 ${attacker.name} has disadvantage (staggering fatigue)!`, 'warning');
+            }
+            fatigueAttackMod = fatigueMods.attackMod;
+            if (fatigueAttackMod !== 0) {
+                gameState.addMessage(`😴 Fatigue penalty: ${fatigueAttackMod} to attack roll`, 'warning');
+            }
+        }
+
         // COVER: symmetric, initiative-contested. Both sides can benefit.
         // Winner gets full bonus; loser gets Math.ceil(bonus * loserMultiplier).
         // Applies to ranged attacks only; no permanent AC mutation.
@@ -889,11 +938,27 @@ class CombatManager {
             gameState.addMessage(`🎲 Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
         }
 
-        const attackTotal = attackRoll + attackBonus + proficiency;
+        // MANEUVER: Precision Strike — adds maneuver die to attack roll (beforeAttack, spend 1 Resolve)
+        let maneuverAttackBonus = 0;
+        if (attacker.pendingManeuver === 'precisionStrike' && attacker.team === 'player') {
+            const dieSides = attacker.character.getManeuverDie?.() || 6;
+            maneuverAttackBonus = rollDice(1, dieSides);
+            gameState.addMessage(`⚔️ Precision Strike! +${maneuverAttackBonus} to attack roll (d${dieSides})`, 'success');
+        }
+
+        // MANEUVER CONDITION: Disarmed — -2 to attack rolls until start of attacker's next turn
+        let disarmedPenalty = 0;
+        if (attacker.hasCondition && attacker.hasCondition('disarmed')) {
+            const cond = attacker.getCondition('disarmed');
+            disarmedPenalty = cond?.value || -2;
+            gameState.addMessage(`🗡️ ${attacker.name} is disarmed! (${disarmedPenalty} to attack)`, 'warning');
+        }
+
+        const attackTotal = attackRoll + attackBonus + proficiency + fightingStyleAttackBonus + maneuverAttackBonus + disarmedPenalty + fatigueAttackMod;
         const effectiveAC = defender.ac + coverACBonus;
 
         // Forgecraft: Keen mod expands crit range to 19-20
-        let critRange = [...RULES.combat.criticalHitRange];
+        const critRange = [...RULES.combat.criticalHitRange];
         if (this.hasForgecraftModOnSlot(attacker, weaponSlot, 'keen') && !critRange.includes(19)) {
             critRange.push(19);
         }
@@ -915,9 +980,28 @@ class CombatManager {
         if (proficiency !== 0) {
             attackMsg += ` + ${proficiency} (prof)`;
         }
+        if (fightingStyleAttackBonus !== 0) {
+            attackMsg += ` + ${fightingStyleAttackBonus} (marksmanship)`;
+        }
+        if (fatigueAttackMod !== 0) {
+            attackMsg += ` ${fatigueAttackMod > 0 ? '+' : ''}${fatigueAttackMod} (fatigue)`;
+        }
         attackMsg += ` = ${attackTotal} vs AC ${effectiveAC}${coverACBonus > 0 ? ` (+${coverACBonus} cover)` : ''}`;
 
         gameState.addMessage(attackMsg, 'info');
+
+        // MELEE ENGAGEMENT: attacker switches focus — clear previous engagements, form new one with target
+        if (!isRanged) {
+            attacker.engagedWith.forEach(oldId => {
+                const old = this.combatants.find(c => c.id === oldId);
+                if (old) {
+                    old.engagedWith.delete(attacker.id);
+                }
+            });
+            attacker.engagedWith.clear();
+            attacker.engagedWith.add(defender.id);
+            defender.engagedWith.add(attacker.id);
+        }
 
         if (isCriticalMiss) {
             gameState.addMessage('💥 Critical miss!', 'error');
@@ -934,6 +1018,11 @@ class CombatManager {
                 critical: true
             });
 
+            // Clear pending maneuver on critical miss
+            if (attacker.team === 'player') {
+                attacker.pendingManeuver = null;
+            }
+
             if (shouldConsumeAction) {
                 attacker.consumeAction(actionType);
             }
@@ -942,14 +1031,20 @@ class CombatManager {
         }
 
         if (isCritical || attackTotal >= effectiveAC) {
+
             // Hit! Roll damage
-            let damageDice = 8; // Default d8
+            let damageDice = 4; // Default unarmed d4
             if (weapon?.damage?.dice) {
                 damageDice = parseInt(weapon.damage.dice.split('d')[1]) || 8;
+            } else if (!weapon && attacker.character.fightingStyle === 'unarmedFighting') {
+                // Unarmed Fighting style: 1d8 if both hands free, 1d6 otherwise
+                const mainHandFree = !attacker.character.equipment?.mainHand;
+                const offHandFree = !attacker.character.equipment?.offHand || attacker.character.equipment.offHand.type === 'shield';
+                damageDice = (mainHandFree && offHandFree) ? 8 : 6;
             }
 
             // Roll damage dice
-            const firstRoll = rollDice(1, damageDice);
+            let firstRoll = rollDice(1, damageDice);
             let damageRoll = firstRoll;
             let secondRoll = 0;
 
@@ -959,14 +1054,49 @@ class CombatManager {
                 gameState.addMessage('⭐ Critical hit!', 'success');
             }
 
+            // Fighting Style: Great Weapon Fighting (reroll 1s and 2s on two-handed damage)
+            if (attacker.character.fightingStyle === 'greatWeaponFighting' && !isOffHandAttack) {
+                const isTwoHandedWeapon = weapon?.properties?.includes('twoHanded') || weapon?.properties?.includes('versatile');
+                if (isTwoHandedWeapon) {
+                    const gwfParts = [];
+                    if (firstRoll <= 2) {
+                        const rerolled = rollDice(1, damageDice);
+                        gwfParts.push(`${firstRoll}→${rerolled}`);
+                        damageRoll += rerolled - firstRoll;
+                        firstRoll = rerolled;
+                    }
+                    if (isCritical && secondRoll <= 2) {
+                        const rerolled2 = rollDice(1, damageDice);
+                        gwfParts.push(`crit: ${secondRoll}→${rerolled2}`);
+                        damageRoll += rerolled2 - secondRoll;
+                        secondRoll = rerolled2;
+                    }
+                    if (gwfParts.length > 0) {
+                        gameState.addMessage(`⚔️ Great Weapon Fighting reroll [${gwfParts.join(', ')}]`, 'info');
+                    }
+                }
+            }
+
             // Calculate damage bonus
             let damageBonus = attackBonus;
 
             // TWO-WEAPON FIGHTING: Off-hand attacks don't add ability modifier to damage
-            // (unless character has Two-Weapon Fighting style - not yet implemented)
+            // unless the character has the Two-Weapon Fighting style
             if (isOffHandAttack) {
-                damageBonus = 0;
-                gameState.addMessage('⚔️ Off-hand attack: No ability modifier to damage', 'info');
+                if (attacker.character.fightingStyle !== 'twoWeaponFighting') {
+                    damageBonus = 0;
+                    gameState.addMessage('⚔️ Off-hand attack: No ability modifier to damage', 'info');
+                }
+            }
+
+            // Fighting Style: Dueling (+2 damage with one-handed melee, off-hand empty or shield)
+            if (!isRanged && !isOffHandAttack && attacker.character.fightingStyle === 'dueling' && weapon) {
+                const isTwoHandedWeapon = weapon.properties?.includes('twoHanded');
+                const offHand = attacker.character.equipment?.offHand;
+                const offHandIsEmptyOrShield = !offHand || offHand.type === 'shield';
+                if (!isTwoHandedWeapon && offHandIsEmptyOrShield) {
+                    damageBonus += 2;
+                }
             }
 
             // Forgecraft: Tempered mod adds +1 damage
@@ -975,7 +1105,9 @@ class CombatManager {
                 forgecraftDamageBonus = 1;
             }
 
-            const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus;
+            // Extra damage from special sources (e.g., Riposte maneuver die added in promptReaction)
+            const extraDamage = options.extraDamage || 0;
+            const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus + extraDamage;
 
             // Build detailed damage message
             let damageMsg = '💥 Hit! ';
@@ -1020,8 +1152,24 @@ class CombatManager {
                 critical: isCritical
             });
 
+            // REACTION HOOK: afterHit — e.g., Parry fires when defender is hit (damage already rolled)
+            // Parry can reduce damage before it's applied
+            let finalDamage = damageTotal;
+            if (!isRanged && window.game?.promptReaction) {
+                const reactionResult = await window.game.promptReaction('afterHit', attacker, defender, {
+                    damage: damageTotal,
+                    damageType: weapon?.damage?.type || 'bludgeoning',
+                    isMelee: true
+                });
+                // If Parry was used: reduce damage by maneuver die + CON mod (handled by caller returning reduction)
+                if (reactionResult?.damageReduction) {
+                    finalDamage = Math.max(0, damageTotal - reactionResult.damageReduction);
+                    gameState.addMessage(`🛡️ Parry! ${defender.name} reduces damage by ${reactionResult.damageReduction}! (${finalDamage} total)`, 'success');
+                }
+            }
+
             // Apply damage
-            defender.takeDamage(damageTotal);
+            defender.takeDamage(finalDamage);
 
             // Check if defender is defeated
             if (defender.hp <= 0) {
@@ -1033,6 +1181,46 @@ class CombatManager {
                 }, 1000);
 
                 this.handleDefeat(defender);
+            }
+
+            // MANEUVER: On-hit effects (tripAttack, menacingAttack, pushingAttack, disarmingAttack)
+            // Only fire when the defender is still alive (not defeated by main hit)
+            const onHitManeuvers = ['tripAttack', 'menacingAttack', 'pushingAttack', 'disarmingAttack'];
+            if (attacker.pendingManeuver && onHitManeuvers.includes(attacker.pendingManeuver)
+                && attacker.team === 'player' && defender.hp > 0) {
+                const dieSides = attacker.character.getManeuverDie?.() || 6;
+                const dieRoll  = rollDice(1, dieSides);
+                const saveDC   = this.getManeuverSaveDC(attacker);
+                this.executeOnHitManeuver(attacker.pendingManeuver, attacker, defender, dieRoll, dieSides, saveDC);
+            }
+            // Always clear pending maneuver after a hit
+            if (attacker.team === 'player') {
+                attacker.pendingManeuver = null;
+            }
+
+            // SWORN STRIKE: Oath specialization — prompt Resolve spend for bonus radiant damage
+            if (!isRanged && attacker.team === 'player' && window.game?.promptSwornStrike) {
+                const resolveSpent = await window.game.promptSwornStrike(attacker, defender);
+                if (resolveSpent > 0 && defender.hp > 0) {
+                    const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
+                    const dieCnt = resolveSpent + (isUndead ? 1 : 0);
+                    let smiteDmg = 0;
+                    for (let i = 0; i < dieCnt; i++) {
+                        smiteDmg += rollDice(1, 8);
+                    }
+                    gameState.addMessage(`✨ Sworn Strike! ${attacker.name} spends ${resolveSpent} Resolve — ${smiteDmg} radiant damage!${isUndead ? ' (bonus vs undead/fiend)' : ''}`, 'success');
+                    defender.takeDamage(smiteDmg);
+                    window.game.showFloatingCombatText(defender.id, `✨ ${smiteDmg}`, 'buff');
+                    // Deduct Resolve from character
+                    const char = gameState.get('character');
+                    char.resolvePoints = Math.max(0, (char.resolvePoints ?? 0) - resolveSpent);
+                    gameState.set('character', char);
+                    // Check defeat again after smite damage
+                    if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
+                        gameState.addMessage(`💀 ${defender.name} is defeated by Sworn Strike!`, 'warning');
+                        this.handleDefeat(defender);
+                    }
+                }
             }
 
             // HARRIED CONDITION: a melee hit makes the target's ranged attacks harder
@@ -1196,6 +1384,16 @@ class CombatManager {
                 hit: false,
                 critical: false
             });
+
+            // Clear pending maneuver on miss (maneuvers are wasted if the attack misses)
+            if (attacker.team === 'player') {
+                attacker.pendingManeuver = null;
+            }
+
+            // REACTION HOOK: afterMiss — e.g., Riposte fires when attacker misses defender
+            if (!isRanged && window.game?.promptReaction) {
+                await window.game.promptReaction('afterMiss', attacker, defender, { isMelee: true });
+            }
 
             // WEAPON MASTERY: Graze
             // If attacker missed and has Graze mastery, deal ability modifier damage
@@ -1374,7 +1572,7 @@ class CombatManager {
             if (weapon.ammoCount <= 3 && weapon.ammoCount > 0) {
                 gameState.addMessage(`⚠️ Low ammo: ${weapon.ammoCount} shot(s) remaining.`, 'warning');
             } else if (weapon.ammoCount === 0) {
-                gameState.addMessage(`❌ Out of ammunition! Use a Quiver of Arrows from inventory to reload.`, 'error');
+                gameState.addMessage('❌ Out of ammunition! Use a Quiver of Arrows from inventory to reload.', 'error');
             }
             console.log(`🪶 Ammo: ${attacker.name} fired ${weapon.name}. ${weapon.ammoCount} remaining.`);
         }
@@ -1413,10 +1611,16 @@ class CombatManager {
      */
     isCunningActionFlee(combatant) {
         const ca = RULES.flee.cunningAction;
-        if (!ca) return false;
+        if (!ca) {
+            return false;
+        }
         const callingId = combatant.character?.class?.id;
-        if (callingId !== ca.callingId) return false;
-        if ((combatant.character?.level ?? 1) < ca.levelRequired) return false;
+        if (callingId !== ca.callingId) {
+            return false;
+        }
+        if ((combatant.character?.level ?? 1) < ca.levelRequired) {
+            return false;
+        }
         return combatant.hasAction('bonusAction');
     }
 
@@ -1426,12 +1630,20 @@ class CombatManager {
      * @param {Object} combatant - The fleeing combatant
      */
     resolveFleeOpportunityAttacks(combatant) {
+
+        // If combatant disengaged this turn, no OAs fire
+        if (combatant.hasCondition('disengaged')) {
+            gameState.addMessage(`${combatant.name} disengaged — no opportunity attacks.`, 'info');
+            return;
+        }
+
         const oppAttackers = this.combatants.filter(c =>
             c.id !== combatant.id &&
             c.character.currentHP > 0 &&
             c.hp > 0 &&
-            c.hasEngaged &&
-            !this.isRangedCombatant(c)
+            combatant.engagedWith.has(c.id) &&
+            !this.isRangedCombatant(c) &&
+            !c.hasCondition('pushed')
         );
 
         if (oppAttackers.length === 0) {
@@ -1448,7 +1660,9 @@ class CombatManager {
         for (const attacker of oppAttackers) {
             // Stop if the fleeing combatant is already downed
             const target = this.combatants.find(c => c.id === combatant.id);
-            if (!target || target.hp <= 0) break;
+            if (!target || target.hp <= 0) {
+                break;
+            }
             // Opportunity attack doesn't consume the attacker's action
             this.attack(attacker, target, 'mainHand', { consumeAction: false, isOpportunityAttack: true });
         }
@@ -1514,20 +1728,21 @@ class CombatManager {
         }
 
         // --- Calculate flee DC ---
-        // Only engaged enemies count toward DC
-        const engagedEnemies = this.combatants.filter(c =>
-            c.id !== combatant.id && c.hp > 0 && c.hasEngaged
-        );
-        const engagedCount = engagedEnemies.length;
+        // Use the fleeing combatant's own engagedWith set for DC calculation
+        const engagedCount = combatant.engagedWith.size;
 
         let dc = fleeRules.baseDC + fleeRules.dcPerExtraEnemy * Math.max(0, engagedCount - 1);
 
         // Situational modifiers
-        if (combatState?.isBoss) dc += fleeRules.bossDCBonus;
+        if (combatState?.isBoss) {
+            dc += fleeRules.bossDCBonus;
+        }
         if (combatState?.isAmbush && (combatState?.round || 1) <= fleeRules.ambushRoundLimit) {
             dc += fleeRules.ambushDCBonus;
         }
-        if (typeof combatState?.fleeModifier === 'number') dc += combatState.fleeModifier;
+        if (typeof combatState?.fleeModifier === 'number') {
+            dc += combatState.fleeModifier;
+        }
 
         dc = Math.min(dc, fleeRules.dcCapMax);
 
@@ -1544,10 +1759,14 @@ class CombatManager {
         let hasDisadvantage = false;
         if (combatant.hasCondition) {
             for (const cond of fleeRules.advantageConditions) {
-                if (combatant.hasCondition(cond)) hasAdvantage = true;
+                if (combatant.hasCondition(cond)) {
+                    hasAdvantage = true;
+                }
             }
             for (const cond of fleeRules.disadvantageConditions) {
-                if (combatant.hasCondition(cond)) hasDisadvantage = true;
+                if (combatant.hasCondition(cond)) {
+                    hasDisadvantage = true;
+                }
             }
         }
         // Advantage and disadvantage cancel per 5e RAW
@@ -1632,6 +1851,76 @@ class CombatManager {
     }
 
     /**
+     * Disengage action — clears engagement and prevents opportunity attacks this turn.
+     * Wanderlust (level 2+) can use Cunning Action to disengage as a bonus action.
+     * @param {Combatant} combatant - The combatant taking the Disengage action
+     * @returns {{ success: boolean, reason?: string, actionCost?: string, clearedEngagement?: string[] }}
+     */
+    disengage(combatant) {
+        const disengageRules = RULES.combat.disengage;
+        if (!disengageRules?.enabled) {
+            return { success: false, reason: 'Disengage is disabled.' };
+        }
+
+        // Determine if Wanderlust Cunning Action applies
+        const isWanderlust = combatant.character?.class?.id === disengageRules.cunningAction?.callingId;
+        const level = combatant.character?.level ?? 1;
+        const cunningActionAvailable = isWanderlust &&
+            level >= (disengageRules.cunningAction?.levelRequired ?? 2) &&
+            combatant.hasAction('bonusAction');
+
+        // Determine action cost
+        let actionCost = 'action';
+        if (cunningActionAvailable) {
+            actionCost = 'bonusAction';
+        }
+
+        // Check action availability
+        if (actionCost === 'action' && !combatant.hasAction('action')) {
+            return { success: false, reason: 'No Action available to Disengage.' };
+        }
+        if (actionCost === 'bonusAction' && !combatant.hasAction('bonusAction')) {
+            return { success: false, reason: 'No Bonus Action available to Disengage.' };
+        }
+
+        // Consume action
+        combatant.consumeAction(actionCost);
+
+        // Apply 'disengaged' condition — clears at start of this combatant's NEXT turn
+        // appliedBy = combatant.id so the untilStartOfTurn cleanup fires when their turn starts
+        combatant.addCondition('disengaged', 'untilStartOfTurn', combatant.id, {
+            isBuff: true,
+            curable: false,
+            icon: null   // No visible icon — internal-use only
+        });
+
+        // Snapshot and clear engagement
+        const wasEngagedWith = Array.from(combatant.engagedWith);
+        combatant.engagedWith.clear();
+
+        // Build log message
+        const engagedNames = wasEngagedWith
+            .map(id => this.combatants.find(c => c.id === id)?.name ?? id)
+            .join(', ');
+        const actionWord = actionCost === 'bonusAction' ? 'Bonus Action' : 'Action';
+
+        if (wasEngagedWith.length > 0) {
+            gameState.addMessage(
+                `🏃 ${combatant.name} disengages (${actionWord}) — engagement cleared with ${engagedNames}. No opportunity attacks this turn.`,
+                'info'
+            );
+        } else {
+            gameState.addMessage(`🏃 ${combatant.name} disengages (${actionWord}).`, 'info');
+        }
+
+        console.log(`🏃 ${combatant.name} disengaged. Was engaged with: [${engagedNames}]`);
+
+        this.updateGameState();
+
+        return { success: true, actionCost, clearedEngagement: wasEngagedWith };
+    }
+
+    /**
      * Use an ability (placeholder for future implementation)
      */
     useAbility(combatant, ability, target) {
@@ -1648,9 +1937,24 @@ class CombatManager {
     }
 
     /**
+     * Clear a combatant from all engagement sets when they are removed from combat.
+     * @param {Combatant} defeatedCombatant
+     */
+    clearEngagement(defeatedCombatant) {
+        this.combatants.forEach(other => {
+            other.engagedWith.delete(defeatedCombatant.id);
+        });
+        defeatedCombatant.engagedWith.clear();
+        console.log(`⚔️ Engagement cleared for ${defeatedCombatant.name}`);
+    }
+
+    /**
      * Handle combatant defeat
      */
     handleDefeat(combatant) {
+        // Clear engagement for the defeated combatant
+        this.clearEngagement(combatant);
+
         // Check for combat end
         if (combatant.team === 'player') {
             this.endCombat('defeat');
@@ -1749,7 +2053,9 @@ class CombatManager {
                 (a.cost || 1) <= boss.legendaryActionsRemaining
             );
 
-            if (affordableActions.length === 0) continue;
+            if (affordableActions.length === 0) {
+                continue;
+            }
 
             // AI: prefer attack-type actions
             const attackActions = affordableActions.filter(a => a.attackBonus !== undefined);
@@ -1764,7 +2070,9 @@ class CombatManager {
 
             // Find target (the player, or the combatant that just acted if enemy)
             const target = this.playerCombatant.hp > 0 ? this.playerCombatant : null;
-            if (!target) continue;
+            if (!target) {
+                continue;
+            }
 
             if (chosen.attackBonus !== undefined && chosen.damage) {
                 // Attack-type legendary action
@@ -1801,11 +2109,13 @@ class CombatManager {
         // Clean up all combat-only conditions and mastery effects
         this.combatants.forEach(combatant => {
             // Clean up conditions with 'combat' or 'untilStartOfTurn'/'untilEndOfTurn' duration
+            // Also remove tempHP (any duration) — temp HP is lost after combat
             // Note: 'rounds' duration conditions (like prone) are handled by auto-countdown and don't need explicit cleanup
             const conditionsToRemove = combatant.conditions.filter(c =>
                 c.duration === 'combat' ||
                 c.duration === 'untilStartOfTurn' ||
-                c.duration === 'untilEndOfTurn'
+                c.duration === 'untilEndOfTurn' ||
+                c.type === 'tempHP'
             );
 
             conditionsToRemove.forEach(condition => {
@@ -1832,6 +2142,9 @@ class CombatManager {
         // Clear companion turn flags regardless of outcome
         gameState.set('combat.isCompanionTurn', false);
         gameState.set('combat.activeCompanionId', null);
+
+        // Fatigue from combat encounter (applies regardless of outcome)
+        addFatigue(RULES.fatigue.combatEncounterFatigue, 'combat');
 
         if (result === 'victory') {
             const character = gameState.get('character');
@@ -2154,7 +2467,9 @@ class CombatManager {
      */
     hasForgecraftMod(combatant, modId) {
         const mods = combatant.character?.equipmentMods;
-        if (!mods) return false;
+        if (!mods) {
+            return false;
+        }
         return Object.values(mods).some(m => m.modId === modId);
     }
 
@@ -2185,6 +2500,89 @@ class CombatManager {
         const adjacentEnemy = this.enemyCombatants.find(c => c.id === nextId);
 
         return adjacentEnemy || null;
+    }
+
+    /**
+     * Maneuver save DC = 8 + proficiency + max(STR, DEX) for a player combatant
+     */
+    getManeuverSaveDC(attacker) {
+        const char = attacker.character;
+        const strMod = char.abilityModifiers?.str || 0;
+        const dexMod = char.abilityModifiers?.dex || 0;
+        const profBonus = char.proficiencyBonus || 2;
+        return 8 + profBonus + Math.max(strMod, dexMod);
+    }
+
+    /**
+     * Execute an on-hit maneuver effect (tripAttack, menacingAttack, pushingAttack, disarmingAttack)
+     * Adds maneuver die damage + applies condition on failed save.
+     */
+    executeOnHitManeuver(maneuverType, attacker, defender, dieRoll, dieSides, saveDC) {
+        const strSave  = () => rollD20().result + (defender.character?.abilityModifiers?.str || 0);
+        const wisSave  = () => rollD20().result + (defender.character?.abilityModifiers?.wis || 0);
+
+        switch (maneuverType) {
+            case 'tripAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Trip Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('prone', 'combat', attacker.id, { isBuff: false, curable: false, icon: '🔻' });
+                    gameState.addMessage(`🔻 ${defender.name} is PRONE! (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'PRONE! 🔻', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists the trip (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'menacingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Menacing Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = wisSave();
+                if (save < saveDC) {
+                    defender.addCondition('frightened', 'untilEndOfTurn', attacker.id, { isBuff: false, curable: false, icon: '😱' });
+                    gameState.addMessage(`😱 ${defender.name} is FRIGHTENED until end of their turn! (WIS save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'FRIGHTENED! 😱', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists fear (WIS save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'pushingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Pushing Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('pushed', 'untilEndOfTurn', attacker.id, { isBuff: false, curable: false, icon: '💨' });
+                    gameState.addMessage(`💨 ${defender.name} is PUSHED back! (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'PUSHED! 💨', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists being pushed (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'disarmingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Disarming Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('disarmed', 'untilStartOfTurn', attacker.id, { value: -2, isBuff: false, curable: false, icon: '🗡️' });
+                    gameState.addMessage(`🗡️ ${defender.name} is DISARMED! -2 to attacks until their next turn. (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'DISARMED! 🗡️', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} keeps hold of their weapon (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -2281,13 +2679,15 @@ class CombatManager {
         const attackTotal = attackRollObj.result + strMod;
 
         let attackMsg = `🎲 Improvised strike: Rolled ${attackRollObj.result}`;
-        if (strMod !== 0) attackMsg += ` + ${strMod} (STR)`;
+        if (strMod !== 0) {
+            attackMsg += ` + ${strMod} (STR)`;
+        }
         attackMsg += ` = ${attackTotal} vs AC ${defender.ac}`;
         gameState.addMessage(attackMsg, 'info');
 
         if (attackRollObj.result === 1) {
             // Critical miss
-            gameState.addMessage(`💥 Critical miss!`, 'error');
+            gameState.addMessage('💥 Critical miss!', 'error');
             if (window.game?.showFloatingCombatText) {
                 window.game.showFloatingCombatText(defender.id, 'CRITICAL MISS!', 'miss');
             }
@@ -2298,7 +2698,7 @@ class CombatManager {
             let dmg = rollDice(1, 4);
             if (isCritical) {
                 dmg += rollDice(1, 4); // Double dice on crit
-                gameState.addMessage(`⭐ Critical hit!`, 'success');
+                gameState.addMessage('⭐ Critical hit!', 'success');
             }
             const damage = Math.max(1, dmg);
 
@@ -2316,7 +2716,9 @@ class CombatManager {
 
             if (defender.hp <= 0) {
                 gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
-                setTimeout(() => { audioManager.play('death'); }, 1000);
+                setTimeout(() => {
+                    audioManager.play('death');
+                }, 1000);
                 this.handleDefeat(defender);
             }
         } else {
@@ -2371,7 +2773,7 @@ class Combatant {
         this.name = character.name;
 
         // Combat stats
-        this.hp = character.currentHP != null ? character.currentHP : character.maxHP;
+        this.hp = character.currentHP !== null && character.currentHP !== undefined ? character.currentHP : character.maxHP;
         this.maxHP = character.maxHP;
         this.ac = character.ac;
         this.initiative = 0;
@@ -2402,6 +2804,10 @@ class Combatant {
         // }
         this.conditions = [];
 
+        // Queued maneuver: set before attacking, consumed on attack resolution
+        // e.g., 'precisionStrike' | 'tripAttack' | 'menacingAttack' | etc.
+        this.pendingManeuver = null;
+
         // Weapon mastery effects (legacy - kept for backwards compatibility)
         this.masteryEffects = {
             sapped: false,          // DEPRECATED: Use conditions system. Has disadvantage on next attack (Sap mastery)
@@ -2410,9 +2816,9 @@ class Combatant {
             prone: false            // DEPRECATED: Use conditions system. Knocked prone (Topple mastery)
         };
 
-        // Engagement tracking for flee mechanic
-        // Set to true the first time this combatant makes a melee attack
-        this.hasEngaged = false;
+        // Engagement tracking for flee mechanic and opportunity attacks.
+        // Contains IDs of combatants this combatant is currently engaged with (bidirectional, many-to-many).
+        this.engagedWith = new Set();
 
         // Downed tracking for companions (goes to 0 HP but not permanently dead until post-combat)
         // Only meaningful for team === 'companion'; enemies and player use the normal defeat flow.
@@ -2436,6 +2842,14 @@ class Combatant {
     }
 
     /**
+     * Backward-compat getter — true when this combatant is engaged with at least one other.
+     * Replaces the old boolean `hasEngaged` property.
+     */
+    get hasEngaged() {
+        return this.engagedWith.size > 0;
+    }
+
+    /**
      * Add a condition to this combatant
      * @param {string} type - Condition type (e.g., 'slowed', 'poisoned', 'blessed')
      * @param {string} duration - 'untilStartOfTurn', 'untilEndOfTurn', 'rounds', 'combat', 'permanent'
@@ -2454,7 +2868,13 @@ class Combatant {
         // Check if condition already exists (non-stacking by default)
         const existing = this.conditions.find(c => c.type === type);
         if (existing) {
-            return false; // Already has this condition
+            // tempHP: keep the higher value (D&D 5e rule — they don't stack, but new pool can replace)
+            if (type === 'tempHP' && options.value !== null && options.value !== undefined && options.value > (existing.value || 0)) {
+                existing.value = options.value;
+                existing.roundsRemaining = options.roundsRemaining ?? existing.roundsRemaining;
+                existing.duration = duration;
+            }
+            return false; // Already has this condition (or updated)
         }
 
         // For 'permanent' conditions, only allow if curable is explicitly set
@@ -2678,10 +3098,26 @@ class Combatant {
     }
 
     /**
-     * Take damage
+     * Take damage — absorbs through tempHP condition first
      */
     takeDamage(amount) {
-        this.hp = Math.max(0, this.hp - amount);
+        let remaining = amount;
+
+        // TempHP absorbs damage first (D&D 5e rule)
+        const tempHPCondition = this.getCondition('tempHP');
+        if (tempHPCondition && tempHPCondition.value > 0) {
+            const absorbed = Math.min(tempHPCondition.value, remaining);
+            tempHPCondition.value -= absorbed;
+            remaining -= absorbed;
+            if (tempHPCondition.value <= 0) {
+                this.removeCondition('tempHP', true);
+                gameState.addMessage(`🛡️ ${this.name}'s temporary HP is depleted!`, 'info');
+            } else {
+                gameState.addMessage(`🛡️ ${this.name}'s temporary HP absorbs ${absorbed} damage! (${tempHPCondition.value} remaining)`, 'info');
+            }
+        }
+
+        this.hp = Math.max(0, this.hp - remaining);
 
         // Update character
         if (this.team === 'player') {
@@ -2738,7 +3174,8 @@ class Combatant {
             initiative: this.initiative,
             actions: { ...this.actions },
             conditions: [...this.conditions],
-            masteryEffects: { ...this.masteryEffects }
+            masteryEffects: { ...this.masteryEffects },
+            engagedWith: Array.from(this.engagedWith)
         };
     }
 }

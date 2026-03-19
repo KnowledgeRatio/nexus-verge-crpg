@@ -67,6 +67,15 @@ export class GameState {
                 lastLongRest: null
             },
 
+            // Fatigue state
+            fatigue: {
+                current: 0,             // 0–100 percent
+                exhaustionLevels: 0,    // Persistent D&D exhaustion (cleared 1/long rest)
+                supplies: 3,            // Trail supplies — default; overridden by initNewGame() via RULES
+                suppliesZeroStreak: 0,  // Consecutive long rests with 0 supplies
+                lastThreshold: 'rested' // 'rested'|'wearied'|'tired'|'staggering'
+            },
+
             // UI state
             ui: {
                 currentScreen: 'mainMenu',  // mainMenu, newGame, charCreation, game, combat
@@ -244,6 +253,15 @@ export class GameState {
         this.data.worldConfig = worldConfig;
         this.data.rest.lastLongRest = Date.now();
         this.data.stats.playTime = 0;
+
+        // Initialise fatigue state with rules-configured starting supplies
+        this.set('fatigue', {
+            current: 0,
+            exhaustionLevels: 0,
+            supplies: RULES.fatigue.suppliesStartCount,
+            suppliesZeroStreak: 0,
+            lastThreshold: 'rested'
+        });
 
         // Initialize empty world
         this.data.world = {
@@ -442,7 +460,9 @@ export class GameState {
      */
     updateCompanionRelationship(companionId, value) {
         const companions = this.data.party?.companions;
-        if (!companions) return;
+        if (!companions) {
+            return;
+        }
         const idx = companions.findIndex(c => c.id === companionId);
         if (idx >= 0) {
             companions[idx].companionMeta.relationship = value;
@@ -604,6 +624,13 @@ export class GameState {
             rest: {
                 shortRestsUsed: 0,
                 lastLongRest: null
+            },
+            fatigue: {
+                current: 0,
+                exhaustionLevels: 0,
+                supplies: 3,
+                suppliesZeroStreak: 0,
+                lastThreshold: 'rested'
             },
             ui: {
                 currentScreen: 'mainMenu',

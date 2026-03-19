@@ -52,7 +52,9 @@ export default class RelationManager {
             while (currentId && !visited.has(currentId)) {
                 visited.add(currentId);
                 const campaign = campaignData.campaigns.find(c => c.id === currentId);
-                if (!campaign) break;
+                if (!campaign) {
+                    break;
+                }
 
                 if (campaign.featureGeneration?.startingRelation !== undefined) {
                     this.startingScore = campaign.featureGeneration.startingRelation;
@@ -170,16 +172,24 @@ export default class RelationManager {
      */
     modifySettlementRelations(settlementId, excludeNpcId) {
         const world = gameState.get('world');
-        if (!world?.generatedRegions) return;
+        if (!world?.generatedRegions) {
+            return;
+        }
 
         // Find settlement NPCs across all regions
         for (const regionKey of Object.keys(world.generatedRegions)) {
             const region = world.generatedRegions[regionKey];
-            if (!region?.features) continue;
+            if (!region?.features) {
+                continue;
+            }
 
             for (const feature of region.features) {
-                if (feature.type !== 'settlement') continue;
-                if (feature.id !== settlementId && `${feature.x},${feature.y}` !== settlementId) continue;
+                if (feature.type !== 'settlement') {
+                    continue;
+                }
+                if (feature.id !== settlementId && `${feature.x},${feature.y}` !== settlementId) {
+                    continue;
+                }
 
                 if (feature.npcs) {
                     for (const npc of feature.npcs) {
@@ -266,13 +276,17 @@ export default class RelationManager {
      */
     calculateBuyPrice(item, npc, character) {
         const basePrice = item.value || 0;
-        if (basePrice <= 0) return 0;
+        if (basePrice <= 0) {
+            return 0;
+        }
 
         const { tier } = this.getRelation(npc);
         const tierPricing = this.config.pricingByTier[tier.id];
 
         // Trading blocked for hostile
-        if (tierPricing.buyMultiplier === 0) return Infinity;
+        if (tierPricing.buyMultiplier === 0) {
+            return Infinity;
+        }
 
         // Influence skill modifier (ability mod + proficiency if proficient)
         const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
@@ -291,13 +305,17 @@ export default class RelationManager {
      */
     calculateSellPrice(item, npc, character) {
         const basePrice = item.value || 0;
-        if (basePrice <= 0) return 0;
+        if (basePrice <= 0) {
+            return 0;
+        }
 
         const { tier } = this.getRelation(npc);
         const tierPricing = this.config.pricingByTier[tier.id];
 
         // Trading blocked for hostile
-        if (tierPricing.sellMultiplier === 0) return 0;
+        if (tierPricing.sellMultiplier === 0) {
+            return 0;
+        }
 
         // Influence skill modifier
         const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;

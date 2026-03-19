@@ -502,13 +502,19 @@ class WorldGenerator {
 
             // Get radii for this settlement type
             const radii = sprawlRadii[settlement.settlementType];
-            if (!radii) continue;
+            if (!radii) {
+                continue;
+            }
 
             // Skip if outside all sprawl zones
-            if (distance > radii.farmland) continue;
+            if (distance > radii.farmland) {
+                continue;
+            }
 
             // Skip the exact settlement tile
-            if (distance < 1) continue;
+            if (distance < 1) {
+                continue;
+            }
 
             // Determine zone based on distance (with some randomness for natural edges)
             const variation = (rng ? rng.next() : Math.random()) * 1.5;
@@ -727,7 +733,9 @@ class WorldGenerator {
      * Load dungeon theme data from data/dungeons.json
      */
     async loadDungeonData() {
-        if (this.dungeonData) return;
+        if (this.dungeonData) {
+            return;
+        }
         try {
             const response = await fetch(`data/dungeons.json?v=${Date.now()}`);
             this.dungeonData = await response.json();
@@ -812,7 +820,9 @@ class WorldGenerator {
 
         for (const [key, weight] of entries) {
             roll -= weight;
-            if (roll <= 0) return key;
+            if (roll <= 0) {
+                return key;
+            }
         }
         return entries[entries.length - 1][0]; // Fallback to last
     }
@@ -1350,10 +1360,14 @@ class WorldGenerator {
             const target = targetCounts[settlementType];
 
             for (const { rx, ry } of allRegions) {
-                if (currentCounts[settlementType] >= target) break;
+                if (currentCounts[settlementType] >= target) {
+                    break;
+                }
 
                 // Skip starting region (already handled)
-                if (rx === 0 && ry === 0) continue;
+                if (rx === 0 && ry === 0) {
+                    continue;
+                }
 
                 const regionSeedString = `${this.worldSeed}_${rx}_${ry}`;
                 const regionRNG = new SeededRandom(regionSeedString);
@@ -1366,15 +1380,21 @@ class WorldGenerator {
                 const alreadyOccupied = placedSettlements.some(s =>
                     Math.abs(s.x - settlementX) < regionSize && Math.abs(s.y - settlementY) < regionSize
                 );
-                if (alreadyOccupied) continue;
+                if (alreadyOccupied) {
+                    continue;
+                }
 
                 // Check spacing constraints
-                if (!meetsSpacing(settlementX, settlementY, settlementType)) continue;
+                if (!meetsSpacing(settlementX, settlementY, settlementType)) {
+                    continue;
+                }
 
                 // Use RNG to add some randomness (not every valid spot gets a settlement)
                 const placementChance = settlementType === 'city' ? 0.8 :
-                                       settlementType === 'town' ? 0.7 : 0.6;
-                if (regionRNG.next() > placementChance) continue;
+                    settlementType === 'town' ? 0.7 : 0.6;
+                if (regionRNG.next() > placementChance) {
+                    continue;
+                }
 
                 // Place the settlement
                 settlements.push({
@@ -1460,7 +1480,9 @@ class WorldGenerator {
         const placeDungeon = (rx, ry) => {
             const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_dungeon`);
             const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) return false;
+            if (!pos) {
+                return false;
+            }
 
             // Determine difficulty based on distribution
             const diffRoll = regionRNG.next();
@@ -1489,7 +1511,9 @@ class WorldGenerator {
         // First pass: spread dungeons across regions (skip some for distribution)
         const skippedRegions = [];
         for (const { rx, ry } of validRegions) {
-            if (dungeonsPlaced >= featureConfig.dungeons) break;
+            if (dungeonsPlaced >= featureConfig.dungeons) {
+                break;
+            }
 
             // Skip ~40% of regions for spread - but track skipped ones for second pass
             if (dungeonRNG.next() > 0.6) {
@@ -1503,7 +1527,9 @@ class WorldGenerator {
         // Second pass: fill remaining target from skipped regions
         if (dungeonsPlaced < featureConfig.dungeons) {
             for (const { rx, ry } of skippedRegions) {
-                if (dungeonsPlaced >= featureConfig.dungeons) break;
+                if (dungeonsPlaced >= featureConfig.dungeons) {
+                    break;
+                }
                 placeDungeon(rx, ry);
             }
         }
@@ -1514,13 +1540,19 @@ class WorldGenerator {
         const sanctuaryRNG = new SeededRandom(`${this.worldSeed}_sanctuaries`);
 
         for (const { rx, ry } of validRegions) {
-            if (sanctuariesPlaced >= featureConfig.sanctuaries) break;
+            if (sanctuariesPlaced >= featureConfig.sanctuaries) {
+                break;
+            }
 
-            if (sanctuaryRNG.next() > 0.3) continue; // Check ~30% of regions
+            if (sanctuaryRNG.next() > 0.3) {
+                continue;
+            } // Check ~30% of regions
 
             const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_sanctuary`);
             const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) continue;
+            if (!pos) {
+                continue;
+            }
 
             features.push({
                 id: `${pos.x},${pos.y}`,
@@ -1538,13 +1570,19 @@ class WorldGenerator {
 
         for (const { rx, ry } of validRegions) {
             const totalPoisPlaced = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
-            if (totalPoisPlaced >= featureConfig.pois) break;
+            if (totalPoisPlaced >= featureConfig.pois) {
+                break;
+            }
 
-            if (poiRNG.next() > 0.4) continue; // Check ~40% of regions
+            if (poiRNG.next() > 0.4) {
+                continue;
+            } // Check ~40% of regions
 
             const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_poi`);
             const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) continue;
+            if (!pos) {
+                continue;
+            }
 
             // Pick POI type based on distribution, prioritizing under-quota types
             let poiType = null;
@@ -1553,7 +1591,9 @@ class WorldGenerator {
 
             for (const type of poiTypes) {
                 const targetCount = featureConfig.poiCounts[type];
-                if (poisPlaced[type] >= targetCount) continue;
+                if (poisPlaced[type] >= targetCount) {
+                    continue;
+                }
 
                 cumulative += featureConfig.poiDistribution[type];
                 if (typeRoll < cumulative || !poiType) {
@@ -1561,7 +1601,9 @@ class WorldGenerator {
                 }
             }
 
-            if (!poiType) continue;
+            if (!poiType) {
+                continue;
+            }
 
             features.push({
                 id: `${pos.x},${pos.y}`,
@@ -1688,7 +1730,9 @@ class WorldGenerator {
         // Get cached terrain info (passable + cost)
         const getTerrainInfo = (x, y) => {
             const key = `${x},${y}`;
-            if (terrainCache.has(key)) return terrainCache.get(key);
+            if (terrainCache.has(key)) {
+                return terrainCache.get(key);
+            }
 
             const elevation = this.elevationNoise.octaveNoise2D(x * scale, y * scale, 4, 0.5);
             const e = (elevation + 1) / 2;
@@ -1702,7 +1746,9 @@ class WorldGenerator {
 
             // Calculate cost (simplified - skip expensive moisture/river checks for speed)
             let cost = 1;
-            if (e > 0.6) cost += 1; // Hills
+            if (e > 0.6) {
+                cost += 1;
+            } // Hills
 
             const info = { passable: true, cost };
             terrainCache.set(key, info);
@@ -1764,17 +1810,23 @@ class WorldGenerator {
                 const neighborKey = `${nx},${ny}`;
 
                 // Skip if already evaluated
-                if (closedSet.has(neighborKey)) continue;
+                if (closedSet.has(neighborKey)) {
+                    continue;
+                }
 
                 // Get terrain info (cached)
                 const terrain = getTerrainInfo(nx, ny);
-                if (!terrain.passable) continue;
+                if (!terrain.passable) {
+                    continue;
+                }
 
                 const tentativeG = current.g + terrain.cost;
 
                 // Skip if we've found a better path
                 const existingG = gScore.get(neighborKey);
-                if (existingG !== undefined && tentativeG >= existingG) continue;
+                if (existingG !== undefined && tentativeG >= existingG) {
+                    continue;
+                }
 
                 // This is the best path so far
                 cameFrom.set(neighborKey, currentKey);
@@ -1808,7 +1860,9 @@ class WorldGenerator {
         while (true) {
             path.push({ x: x0, y: y0 });
 
-            if (x0 === x1 && y0 === y1) break;
+            if (x0 === x1 && y0 === y1) {
+                break;
+            }
 
             const e2 = 2 * err;
             if (e2 > -dy) {

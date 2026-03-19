@@ -12,14 +12,24 @@
 - Formula variable collision bug: sort replacement variables longest-first to prevent substring matches (e.g. `difficultyMultiplier` before `difficulty`).
 - `consumeAction(type)` / `hasAction(type)` are the Combatant API. Pass `{ consumeAction: false }` to `attack()` for free attacks (opportunity, cleave, etc.).
 
-## Flee Mechanic (implemented 2026-03-04)
+## Flee Mechanic (updated 2026-03-14 — engagement redesign)
 - Formula: `d20 + max(DEX mod, WIS mod) + proficiency >= DC`
-- DC: `10 + 2*(engagedCount-1)`, capped at 25. See `RULES.flee` for all modifiers.
-- `hasEngaged = true` is set on `Combatant` when a melee attack is MADE (not just hit). Set right after the push restriction check in `attack()`.
+- DC: `10 + 2*(engagedCount-1)`, capped at 25. `engagedCount = combatant.engagedWith.size`.
 - `isRangedCombatant(combatant)`: checks equipped weapon first, then `character.attackType` field. `"both"` returns false (has melee capability).
 - Opportunity attacks use `{ consumeAction: false, isOpportunityAttack: true }` — does NOT consume the attacker's action.
 - DO NOT use `combatant.initiative` as a modifier — it is a fully-rolled value (d20 + DEX). Always use `combatant.character.abilityModifiers.dex` directly.
 - Wanderlust Cunning Action flee uses bonus action instead of action (same roll, no advantage).
+
+## Engagement System (redesigned 2026-03-14)
+- `Combatant.engagedWith` is a `Set<string>` of IDs (was `hasEngaged: boolean`). Bidirectional, many-to-many.
+- `get hasEngaged()` getter on Combatant — backward-compat, returns `this.engagedWith.size > 0`.
+- Engagement forms ONLY on a confirmed melee hit (not on miss, not on ranged attacks). Both attacker and defender get each other's ID added to their `engagedWith` sets.
+- `CombatManager.firstMeleeAttackLanded` — reset in `startCombat()`, set to `true` on first melee hit. Gates the round-1 free-flee path.
+- `clearEngagement(defeatedCombatant)` — removes the defeated combatant's ID from all others' sets and clears their own set. Called at the top of `handleDefeat()`.
+- `disengage(combatant)` — new CombatManager method. Clears `engagedWith`, applies `'disengaged'` condition (`untilStartOfTurn`). Wanderlust L2+ can use as bonus action.
+- OA filter in `resolveFleeOpportunityAttacks()`: `combatant.engagedWith.has(c.id) && !this.isRangedCombatant(c) && !c.hasCondition('pushed')`.
+- RULES config: `RULES.combat.disengage` block; `RULES.flee.pushBreaksEngagement = false`; `RULES.flee.hitRequiredToReEngage = true`.
+- `toJSON()` on Combatant now includes `engagedWith: Array.from(this.engagedWith)`.
 
 ## monsters.json attackType field
 All monsters now have `attackType`: `"melee"`, `"ranged"`, or `"both"`.
@@ -100,6 +110,14 @@ All monsters now have `attackType`: `"melee"`, `"ranged"`, or `"both"`.
 - `LevelUpManager.confirmLevelUp(targetCharacter = null)` — when null, player path (existing). When companion passed, writes to `gameState.set('party.companions', companions)`, skips HUD update.
 - `Player.js` encounter call: `partySize: Math.floor(gameState.getEffectivePartySize?.() ?? 1)` — uses optional chaining so solo play returns 1 when party system not yet initialized.
 - `EncounterBuilder.buildMinionGroup` partySize check changed from `=== 1` to `<= 1` (safe for floored floats).
+
+## Fatigue System (implemented 2026-03-16)
+- `src/systems/FatigueManager.js` — pure-function module, no class. Exports: `getFatigueState`, `getThresholdName`, `getFatigueModifiers`, `addFatigue`, `removeFatigue`, `applyLongRestFatigue`, `calcMovementFatigue`.
+- `gameState.get('fatigue')` holds: `{ current, exhaustionLevels, supplies, suppliesZeroStreak, lastThreshold }`.
+- `applyLongRestFatigue()` returns `{ hpRecoveryMultiplier, exhaustionCleared, suppliesConsumed, exhaustionGained }`. When `hpRecoveryMultiplier < 1`, HP cap must OVERWRITE the full restore (set AFTER `character.currentHP = character.maxHP`).
+- `RULES.fatigue.enabled` guards all fatigue code — always check this flag before reading fatigue state in UI.
+- Rest modal supplies display: uses IIFE `(() => { ... })()` pattern inside template literal to call `getFatigueState()` only when `RULES.fatigue.enabled` is true.
+- `_updateFatigueHUD()` in FatigueManager calls `window.game?.updateFatigueHUD()` — frontend must implement this method.
 
 ## User Preferences
 - Do NOT run git commits. User manages all commits through GitHub.
