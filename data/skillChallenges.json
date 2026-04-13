@@ -362,7 +362,7 @@
           "baseDC": 15,
           "description": "Climb the cliff face",
           "onSuccess": {
-            "message": "You reach the top safely!",
+            "message": "You pull yourself over the lip. The valley falls away below you.",
             "xp": 120,
             "gold": 30,
             "consequences": [
@@ -370,7 +370,7 @@
             ]
           },
           "onFailure": {
-            "message": "You slip and fall!",
+            "message": "Your boot finds nothing. Three seconds of silence, then stone.",
             "damage": "3d6",
             "damageType": "bludgeoning"
           }
@@ -422,7 +422,7 @@
           "baseDC": 12,
           "description": "Open the hidden compartment",
           "onSuccess": {
-            "message": "You retrieve the hidden treasure!",
+            "message": "Your fingers find the latch. Inside: worth the trouble.",
             "xp": 75,
             "gold": 20,
             "loot": {
@@ -432,7 +432,7 @@
             }
           },
           "onFailure": {
-            "message": "The compartment is stuck. You cannot open it."
+            "message": "The mechanism is seized. Whatever's inside stays inside."
           }
         }
       ],
@@ -471,7 +471,7 @@
       },
       "terrainModifiers": { "jungle": 2.5, "forest": 2.0, "swamp": 1.5, "grassland": 1.5, "road": 0.0, "dungeon": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
       "onSuccess": {
-        "message": "You connect with the animal. It calms down and leaves peacefully.",
+        "message": "The animal reads you. Something in your stillness tells it you're not prey. It moves off.",
         "xp": 80,
         "gold": 15,
         "consequences": [
@@ -534,7 +534,7 @@
             }
           },
           "onFailure": {
-            "message": "You make a noise and a guard spots you!",
+            "message": "Your heel finds a loose stone. A guard turns.",
             "consequences": [
               "initiateCombat"
             ],
@@ -829,7 +829,7 @@
           "baseDC": 14,
           "description": "Follow the trail to discover where it leads",
           "onSuccess": {
-            "message": "You carefully follow the trail through the wilderness...",
+            "message": "The signs are everywhere once you know them: a pressed reed, a turned stone, a blood-fleck on bark. You have it.",
             "xp": 60,
             "gold": 15,
             "consequences": [
@@ -992,9 +992,7 @@
       "id": "narrow_ledge",
       "name": "Narrow Ledge",
       "description": "A narrow ledge is the only way forward",
-      "type": "single",
-      "skill": "acrobatics",
-      "baseDC": 13,
+      "type": "sequential",
       "balance": {
         "skillValue": "high",
         "rewardMultiplier": 0.75,
@@ -1003,16 +1001,40 @@
         "riskLevel": "medium"
       },
       "terrainModifiers": { "mountain": 3.0, "hills": 1.5, "denseForest": 1.5, "grassland": 0.0, "plains": 0.0, "road": 0.0, "swamp": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
-      "onSuccess": {
-        "message": "You nimbly cross the narrow ledge!",
-        "xp": 75,
-        "gold": 15
-      },
-      "onFailure": {
-        "message": "You lose your balance and fall!",
-        "damage": "2d6",
-        "damageType": "bludgeoning"
-      },
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Read the ledge before you commit",
+          "onSuccess": {
+            "message": "The ledge is narrow — six inches, maybe eight. You note where to step.",
+            "nextStage": "cross",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You approach without a plan.",
+            "nextStage": "cross"
+          }
+        },
+        {
+          "id": "cross",
+          "skill": "acrobatics",
+          "baseDC": 13,
+          "description": "Cross the narrow ledge",
+          "onSuccess": {
+            "message": "You make it across. Don't look down was good advice.",
+            "xp": 75,
+            "gold": 15
+          },
+          "onFailure": {
+            "message": "The ledge crumbles under your foot. Stone and then air.",
+            "damage": "2d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
       "contextualTriggers": {
         "exploration": {
           "terrain": [
@@ -1030,9 +1052,7 @@
       "id": "endure_harsh_environment",
       "name": "Endure Harsh Environment",
       "description": "The extreme conditions test your limits",
-      "type": "single",
-      "skill": "endurance",
-      "baseDC": 14,
+      "type": "sequential",
       "canTurnBack": false,
       "balance": {
         "skillValue": "low",
@@ -1042,16 +1062,40 @@
         "riskLevel": "medium"
       },
       "terrainModifiers": { "swamp": 3.0, "jungle": 3.0, "desert": 2.5, "tundra": 2.0, "snowyPlains": 2.0, "road": 0.0, "grassland": 0.0, "plains": 0.0, "sanctuary": 0.0, "farmland": 0.0, "beach": 0.0 },
-      "onSuccess": {
-        "message": "You push through the harsh conditions!",
-        "xp": 125,
-        "gold": 25
-      },
-      "onFailure": {
-        "message": "The conditions overwhelm you.",
-        "damage": "2d4",
-        "damageType": "environmental"
-      },
+      "stages": [
+        {
+          "id": "read",
+          "skill": "cunning",
+          "baseDC": 11,
+          "passiveRoll": true,
+          "description": "Read the terrain for what's coming",
+          "onSuccess": {
+            "message": "The ground tells a story: scorched rock, dead insects, cracked mud. You know what this means.",
+            "nextStage": "endure",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The conditions build without warning.",
+            "nextStage": "endure"
+          }
+        },
+        {
+          "id": "endure",
+          "skill": "endurance",
+          "baseDC": 14,
+          "description": "Endure the harsh conditions",
+          "onSuccess": {
+            "message": "You push through the harsh conditions!",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The conditions overwhelm you.",
+            "damage": "2d4",
+            "damageType": "environmental"
+          }
+        }
+      ],
       "contextualTriggers": {
         "exploration": {
           "terrain": [
@@ -1080,9 +1124,9 @@
         "riskLevel": "low",
         "lootChanceMultiplier": 1.5
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "mountain": 1.5, "hills": 1.0, "desertHills": 0.8 },
       "onSuccess": {
-        "message": "With a mighty heave, you roll the boulder aside, revealing a hidden cache!",
+        "message": "The boulder grinds aside. Behind it: packed earth, and beneath that, something worth hiding.",
         "xp": 120,
         "gold": 30,
         "consequences": [
@@ -1125,7 +1169,7 @@
         "cooldown": 300000,
         "riskLevel": "high"
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "mountain": 1.5 },
       "stages": [
         {
           "id": "find_route",
@@ -1175,9 +1219,7 @@
       "id": "heat_endurance",
       "name": "Desert Heat Wave",
       "description": "The scorching sun beats down relentlessly",
-      "type": "single",
-      "skill": "endurance",
-      "baseDC": 14,
+      "type": "sequential",
       "balance": {
         "skillValue": "low",
         "rewardMultiplier": 1.25,
@@ -1185,18 +1227,42 @@
         "cooldown": 600000,
         "riskLevel": "medium"
       },
-      "terrainModifiers": {},
-      "onSuccess": {
-        "message": "You endure the extreme heat and press onward!",
-        "xp": 125,
-        "gold": 25
-      },
-      "onFailure": {
-        "message": "The heat overwhelms you.",
-        "damage": "1d6",
-        "damageType": "fire",
-        "condition": "exhaustion_1"
-      },
+      "terrainModifiers": { "desert": 2.5, "desertHills": 2.0, "savanna": 1.5 },
+      "stages": [
+        {
+          "id": "notice",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Notice the heat before it becomes something else",
+          "onSuccess": {
+            "message": "The air above the sand shimmers. You slow down, drink, cover exposed skin. Not yet, but coming.",
+            "nextStage": "endure",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The heat builds without warning.",
+            "nextStage": "endure"
+          }
+        },
+        {
+          "id": "endure",
+          "skill": "endurance",
+          "baseDC": 14,
+          "description": "Endure the scorching heat",
+          "onSuccess": {
+            "message": "You endure the extreme heat and press onward!",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The heat overwhelms you.",
+            "damage": "1d6",
+            "damageType": "fire",
+            "condition": "exhaustion_1"
+          }
+        }
+      ],
       "contextualTriggers": {
         "exploration": {
           "terrain": [
@@ -1220,7 +1286,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "swamp": 3.0 },
       "options": [
         {
           "skill": "cunning",
@@ -1294,7 +1360,7 @@
         "cooldown": 300000,
         "riskLevel": "low"
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "jungle": 2.5, "denseForest": 1.5, "snowForest": 0.5 },
       "onSuccess": {
         "message": "You find a path through the dense vegetation!",
         "xp": 75,
@@ -1329,7 +1395,7 @@
         "cooldown": 600000,
         "riskLevel": "deadly"
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "mountain": 0.5 },
       "stages": [
         {
           "id": "assess_peak",
@@ -1378,9 +1444,7 @@
       "id": "ice_climbing",
       "name": "Ice Wall Climbing",
       "description": "A wall of slick ice blocks your path",
-      "type": "single",
-      "skill": "athletics",
-      "baseDC": 17,
+      "type": "sequential",
       "balance": {
         "skillValue": "low",
         "rewardMultiplier": 1.25,
@@ -1388,17 +1452,41 @@
         "cooldown": 300000,
         "riskLevel": "high"
       },
-      "terrainModifiers": {},
-      "onSuccess": {
-        "message": "You carefully ascend the icy wall!",
-        "xp": 125,
-        "gold": 25
-      },
-      "onFailure": {
-        "message": "You slip on the ice and fall!",
-        "damage": "3d6",
-        "damageType": "bludgeoning"
-      },
+      "terrainModifiers": { "tundra": 2.5, "snowyPlains": 1.5, "snowForest": 1.0 },
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "cunning",
+          "baseDC": 11,
+          "passiveRoll": true,
+          "description": "Read the ice before you commit your weight",
+          "onSuccess": {
+            "message": "The blue-grey patches hold. The white streaks don't. You file that away.",
+            "nextStage": "climb",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You begin climbing without reading the ice.",
+            "nextStage": "climb"
+          }
+        },
+        {
+          "id": "climb",
+          "skill": "athletics",
+          "baseDC": 17,
+          "description": "Climb the ice wall",
+          "onSuccess": {
+            "message": "Handhold by handhold. You reach the top and press your face against the cold.",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "Your grip breaks. The wall rushes past you.",
+            "damage": "3d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
       "contextualTriggers": {
         "exploration": {
           "terrain": [
@@ -1423,7 +1511,7 @@
         "cooldown": 300000,
         "riskLevel": "medium"
       },
-      "terrainModifiers": {},
+      "terrainModifiers": { "shallowWater": 3.0, "beach": 0.5 },
       "options": [
         {
           "skill": "athletics",
@@ -1783,6 +1871,176 @@
       "campaignIds": [
         "core"
       ]
+    },
+    "predator_stalk": {
+      "id": "predator_stalk",
+      "name": "Predator Stalking",
+      "description": "Something is following you. The grass is too still.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "savanna": 2.5, "grassland": 0.8, "jungle": 1.5, "forest": 1.0, "road": 0.0, "sanctuary": 0.0, "farmland": 0.0 },
+      "stages": [
+        {
+          "id": "notice",
+          "skill": "perception",
+          "baseDC": 12,
+          "passiveRoll": true,
+          "description": "Notice the predator before it commits",
+          "onSuccess": {
+            "message": "A shadow at the edge of the tall grass. Eyes. You stop moving.",
+            "nextStage": "face",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You sense something wrong. Too late to do anything about it.",
+            "nextStage": "face"
+          }
+        },
+        {
+          "id": "face",
+          "skill": "empathy",
+          "baseDC": 14,
+          "description": "Face down the predator",
+          "onSuccess": {
+            "message": "The predator backs down. You hold your ground until it turns.",
+            "xp": 100,
+            "gold": 20,
+            "consequences": ["avoidCombat"]
+          },
+          "onFailure": {
+            "message": "It charges. You had no good options anyway.",
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["wolf"]
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["savanna", "grassland", "jungle", "forest"]
+        }
+      },
+      "campaignIds": ["core"]
+    },
+    "desert_wayfinding": {
+      "id": "desert_wayfinding",
+      "name": "Desert Wayfinding",
+      "description": "The dunes all look the same. The sun is moving. You need to orient before you lose another hour.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.2,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "desert": 2.0, "desertHills": 1.5, "road": 0.0, "grassland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "orient",
+          "skill": "investigation",
+          "baseDC": 12,
+          "passiveRoll": true,
+          "description": "Read the sun and landscape for orientation",
+          "onSuccess": {
+            "message": "The sun is a clock. You triangulate against two ridgelines and a dune shadow. Heading set.",
+            "nextStage": "navigate",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The glare is blinding. You pick a direction and hope.",
+            "nextStage": "navigate"
+          }
+        },
+        {
+          "id": "navigate",
+          "skill": "endurance",
+          "baseDC": 15,
+          "description": "Hold your bearing through the heat",
+          "onSuccess": {
+            "message": "The heat tries everything. You're still pointed the right way when the dunes break open.",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The sun shifts. So do your footprints. You've been walking in a slow arc for the last hour.",
+            "damage": "1d6",
+            "damageType": "environmental",
+            "condition": "exhaustion_1"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["desert", "desertHills"]
+        }
+      },
+      "campaignIds": ["core"]
+    },
+    "beach_salvage": {
+      "id": "beach_salvage",
+      "name": "Shipwreck Salvage",
+      "description": "Debris from a shipwreck bobs in the shallows. Something in there is worth the cold.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.5,
+        "triggerFrequency": 0.25,
+        "cooldown": 600000,
+        "riskLevel": "low",
+        "lootChanceMultiplier": 2.0
+      },
+      "terrainModifiers": { "beach": 2.5, "shallowWater": 1.0, "grassland": 0.0, "road": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "spot",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Spot salvageable cargo before the tide takes it",
+          "onSuccess": {
+            "message": "A sealed crate. Still floating. You mark its drift and move.",
+            "nextStage": "retrieve",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "Splinters and sailcloth. You wade in anyway.",
+            "nextStage": "retrieve"
+          }
+        },
+        {
+          "id": "retrieve",
+          "skill": "athletics",
+          "baseDC": 13,
+          "description": "Drag the cargo clear of the surf",
+          "onSuccess": {
+            "message": "Cold to the bone. Worth it.",
+            "xp": 100,
+            "gold": 40,
+            "loot": {
+              "table": "shipwreck_salvage",
+              "rolls": 2,
+              "chance": 0.85
+            }
+          },
+          "onFailure": {
+            "message": "The surf takes it. You watch it go under.",
+            "damage": "1d4",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["beach", "shallowWater"]
+        }
+      },
+      "campaignIds": ["core"]
     }
   },
   "dcThresholds": {
