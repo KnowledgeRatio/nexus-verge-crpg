@@ -307,6 +307,34 @@
             </div>
         </div>
 
+        <!-- Hearthcraft Modal -->
+        <div id="hearthcraftModal" class="modal">
+            <div class="modal-dialog hearthcraft-dialog">
+                <div class="modal-header">
+                    <h2>🍲 Hearthcraft</h2>
+                    <button class="close-btn" id="closeHearthcraftBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="hearthcraftDescription" class="hearthcraft-intro"></p>
+
+                    <!-- Uniform choice mode (L1–5) -->
+                    <div id="hearthcraftUniformSection">
+                        <p class="hearthcraft-instruction">Choose one ability score to boost for the whole party:</p>
+                        <div id="hearthcraftAbilityButtons" class="ability-choice-grid"></div>
+                    </div>
+
+                    <!-- Individual choice mode (L6+) -->
+                    <div id="hearthcraftIndividualSection" style="display:none">
+                        <p class="hearthcraft-instruction">Choose an ability score for each party member:</p>
+                        <div id="hearthcraftMemberChoices"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="hearthcraftConfirmBtn" class="confirm-btn" disabled>Prepare Meal</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Load Game Screen -->
         <div id="loadGameScreen" class="screen">
             <div class="menu-container">

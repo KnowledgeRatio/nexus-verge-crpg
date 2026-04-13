@@ -47,6 +47,7 @@ Then systematically challenge using this framework:
 - Content that should be in data/*.json?
 - System that can't be disabled without breaking others?
 - State that doesn't go through GameState?
+- **ADR-010 violation?** Any `if (ability.id === 'X')` or `if (ability.effects?.specificName)` in dispatch logic? Effect handlers must be keyed to effect *types* in EffectDispatcher, not ability IDs. JSON drives dispatch — code never checks specific ability names.
 
 ### 6. Performance
 - Runs on every frame/movement/turn - sustainable?

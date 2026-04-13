@@ -56,6 +56,25 @@ Ability Mod:    floor((score - 10) / 2)
 Critical Hit:   Natural 20 = double ALL damage dice
 ```
 
+## Core Principle: Data Drives Code (ADR-010)
+
+**This is the most important rule for ability and progression implementation.**
+
+JSON files are the single source of truth for what abilities exist, what they cost, and what effects they apply. The code provides generic dispatch infrastructure keyed to effect handler *types* — never to specific ability IDs or names.
+
+**Never do this:**
+```javascript
+if (ability.id === 'swornStrike') { ... }
+if (ability.effects?.swornStrike) { ... }
+```
+
+**Always do this:**
+- Define a handler key in the `effects` object in abilities.json (e.g. `"variableCostDamage": { ... }`)
+- Register a generic handler in `EffectDispatcher.js` keyed to that type
+- All abilities using that effect type get it for free
+
+This applies to: ability dispatch, level-up grants (`autoGrantAbilities`, `grantedResource` must be read generically from `levelProgression.json`), resource systems, and condition application. See `docs/ARCHITECTURE.md` ADR-010 for full detail and known violations table.
+
 ## Common Pitfalls
 
 - Modifying character objects without saving back to GameState
@@ -64,6 +83,7 @@ Critical Hit:   Natural 20 = double ALL damage dice
 - Variable name collision in formula evaluation (sort by length, longest first)
 - Forgetting campaign filtering on loaded data
 - Not handling null/undefined equipment slots
+- Writing hardcoded ability ID checks instead of generic effect handlers (ADR-010 violation)
 
 ## Output
 

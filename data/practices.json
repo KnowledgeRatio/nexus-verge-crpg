@@ -120,6 +120,38 @@
         ],
         "artifact": []
       }
+    },
+    {
+      "id": "hearthcraft",
+      "name": "Hearthcraft",
+      "campaignIds": ["core"],
+      "description": "The art of preparing sustaining meals during a long rest. A well-prepared meal fortifies the body and mind, granting the whole party lasting resilience until the next long rest.",
+      "callings": null,
+      "meal": {
+        "description": "During a long rest, prepare a meal for the party. The meal grants +1 to a chosen ability score and slows fatigue accumulation. Preparing a new meal replaces the previous one.",
+        "applyDuring": "longRest",
+        "applyTo": "allPartyMembers",
+        "persists": "untilNextLongRest",
+        "stacksWithPriorBonus": false,
+        "effects": [
+          {
+            "type": "abilityScoreBonus",
+            "bonusMagnitude": 1,
+            "scoreChoices": ["str", "dex", "con", "int", "wis", "cha"],
+            "bonusApplication": {
+              "mode": {
+                "1": "uniformChoice",
+                "6": "individualChoice"
+              }
+            }
+          },
+          {
+            "type": "fatigueRateMultiplier",
+            "value": 0.75,
+            "levelRequired": 1
+          }
+        ]
+      }
     }
   ]
 }

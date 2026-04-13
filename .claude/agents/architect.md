@@ -52,6 +52,7 @@ Flag these immediately:
 - State stored outside GameState that should persist
 - Missing `campaignIds` on new data entries
 - New patterns that contradict established ones
+- **Hardcoded ability ID checks in dispatch logic** — `if (ability.id === 'X')` or `if (ability.effects?.specificName)` in any JS file. This is ADR-010: data drives code. Effect handlers must be keyed to effect *types*, not ability IDs. See `docs/ARCHITECTURE.md` ADR-010 for the full decision, correct pattern, and known violations list.
 
 ## Output Format
 

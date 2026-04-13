@@ -29,6 +29,35 @@
       },
       "3": {
         "abilityScoreIncrease": 1,
+        "newFeatures": [
+          {
+            "name": "Resolve",
+            "description": "You gain a pool of Resolve equal to your CON modifier + your level (minimum 1). Resolve recharges fully on a short rest.",
+            "grantedResource": {
+              "id": "resolve",
+              "formula": "conMod + level",
+              "minimum": 1,
+              "recharge": "shortRest"
+            }
+          }
+        ],
+        "specializationFeatures": {
+          "exemplar": {
+            "name": "Combat Maneuvers",
+            "description": "You learn three combat maneuvers from the Exemplar list. Each maneuver costs 1 Resolve and may be used once per attack. Your Maneuver Die is 1d6, increasing to 1d8 at level 7 and 1d10 at level 10.",
+            "autoGrantAbilities": [],
+            "maneuverDie": {
+              "1": "1d6",
+              "7": "1d8",
+              "10": "1d10"
+            }
+          },
+          "oath": {
+            "name": "Oath's Edge",
+            "description": "Your conviction manifests as power. You gain two Resolve-fuelled abilities: Sworn Strike and Aid the Vulnerable.",
+            "autoGrantAbilities": ["swornStrike", "aidTheVulnerable"]
+          }
+        },
         "choices": [
           {
             "type": "specialization",

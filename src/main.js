@@ -313,12 +313,13 @@ class Game {
                     modal.classList.remove('active');
                     defender.actions.reaction -= 1;
 
-                    if (ab.id === 'riposte') {
-                        // Execute riposte: immediate counter-attack + maneuver die bonus damage
-                        const level = defender.character?.level || 1;
-                        const dieSides = defender.character?.getManeuverDie?.() || 6;
-                        const dieRoll = Math.floor(Math.random() * dieSides) + 1;
-                        gameState.addMessage(`⚔️ ${defender.name} RIPOSTES! (+${dieRoll} maneuver die bonus damage)`, 'success');
+                    if (ab.effects?.reactionAttack) {
+                        // Riposte-style: immediate counter-attack + maneuver die bonus damage
+                        const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
+                        const _ctx = _buildCtx(gameState.get('character'), defender, this.combatManager);
+                        const _results = await _execEffects(ab, { reactionAttack: ab.effects.reactionAttack }, _ctx);
+                        const _result = _results.find(r => r.type === 'reactionAttack');
+                        const dieRoll = _result?.result?.bonus ?? 0;
                         const cm = this.combatManager;
                         if (cm) {
                             await cm.attack(defender, attacker, 'mainHand', {
@@ -327,13 +328,13 @@ class Game {
                             });
                         }
                         resolve({ abilityId: ab.id });
-                    } else if (ab.id === 'parry') {
-                        // Roll maneuver die + CON mod for damage reduction
-                        const dieSides = defender.character?.getManeuverDie?.() || 6;
-                        const dieRoll = Math.floor(Math.random() * dieSides) + 1;
-                        const conMod = defender.character?.abilityModifiers?.con || 0;
-                        const reduction = Math.max(0, dieRoll + conMod);
-                        gameState.addMessage(`🛡️ ${defender.name} PARRIES! Reduces incoming damage by ${dieRoll}+${conMod}=${reduction}`, 'success');
+                    } else if (ab.effects?.reactionDamageReduction) {
+                        // Parry-style: roll maneuver die + CON mod for damage reduction
+                        const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
+                        const _ctx = _buildCtx(gameState.get('character'), defender, this.combatManager);
+                        const _results = await _execEffects(ab, { reactionDamageReduction: ab.effects.reactionDamageReduction }, _ctx);
+                        const _result = _results.find(r => r.type === 'reactionDamageReduction');
+                        const reduction = _result?.result?.damageReduction ?? 0;
                         resolve({ abilityId: ab.id, damageReduction: reduction });
                     } else {
                         resolve({ abilityId: ab.id, ability: ab });
@@ -353,54 +354,63 @@ class Game {
     }
 
     /**
-     * Prompt the player to spend Resolve on Sworn Strike after a melee hit.
-     * Only fires if attacker is Oath spec and has Resolve remaining.
-     * @returns {Promise<number>}  Resolve spent (0 = skip)
+     * Prompt the player to spend Resolve on an on-hit variableCostDamage ability.
+     * Generic: reads config from ability.effects.variableCostDamage.
+     * Called by CombatManager after a confirmed melee hit.
+     * @param {Object} attacker - Combatant
+     * @param {Object} defender - Combatant
+     * @param {Object} ability  - Full ability definition from abilities.json
+     * @returns {Promise<number>} Resolve spent (0 = skip)
      */
-    async promptSwornStrike(attacker, defender) {
+    async promptVariableCostDamage(attacker, defender, ability) {
         if (attacker.team !== 'player') {
             return 0;
         }
 
         const character = gameState.get('character');
-        if (character?.specialization !== 'oath') {
-            return 0;
-        }
-
-        const currentResolve = character.resolvePoints ?? 0;
+        const currentResolve = character?.resolvePoints ?? 0;
         if (currentResolve <= 0) {
             return 0;
         }
 
-        // Check attacker has the ability
-        const hasAbility = character.abilities?.some(a => a.id === 'swornStrike');
+        const config = ability.effects?.variableCostDamage;
+        if (!config) {
+            return 0;
+        }
+
+        // Verify character knows this ability
+        const hasAbility = character.selectedAbilities?.includes(ability.id);
         if (!hasAbility) {
             return 0;
         }
 
-        const maxSpend = Math.min(3, currentResolve);
-        const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
+        const maxSpend = Math.min(ability.maxResolveCost ?? 3, currentResolve);
+        const isBonus = Array.isArray(config.bonusVsCreatureTypes)
+            && config.bonusVsCreatureTypes.includes(defender.character?.type);
 
         return new Promise(resolve => {
-            const modal    = document.getElementById('swornStrikeModal');
-            const ctxEl    = document.getElementById('swornStrikeContext');
-            const infoEl   = document.getElementById('swornStrikeResolveInfo');
-            const btnsEl   = document.getElementById('swornStrikeButtons');
-            const skipBtn  = document.getElementById('swornStrikeSkipBtn');
+            const modal   = document.getElementById('swornStrikeModal');
+            const ctxEl   = document.getElementById('swornStrikeContext');
+            const infoEl  = document.getElementById('swornStrikeResolveInfo');
+            const btnsEl  = document.getElementById('swornStrikeButtons');
+            const skipBtn = document.getElementById('swornStrikeSkipBtn');
 
             if (!modal) {
                 resolve(0); return;
             }
 
-            ctxEl.textContent = `${attacker.name} strikes ${defender.name}!${isUndead ? ' (Undead/Fiend — +1d8 bonus)' : ''}`;
+            const bonusNote = isBonus ? ` (${defender.character?.type} — +${config.bonusDice || '1d8'} bonus)` : '';
+            ctxEl.textContent = `${attacker.name} strikes ${defender.name}!${bonusNote}`;
             infoEl.textContent = `Resolve available: ${currentResolve} — Spend up to ${maxSpend}`;
 
             btnsEl.innerHTML = '';
             for (let i = 1; i <= maxSpend; i++) {
                 const btn = document.createElement('button');
                 btn.className = 'btn btn-primary';
-                const extraDice = isUndead ? i + 1 : i;
-                btn.innerHTML = `${i} Resolve<br><small>${i}d8${isUndead ? ' (+1d8 vs undead)' : ''} ≈ ${Math.round(extraDice * 4.5)} avg</small>`;
+                const dieCnt = i + (isBonus ? 1 : 0);
+                const diceLabel = config.damageFormula || '1d8';
+                const avgPerDie = 4.5; // 1d8 avg
+                btn.innerHTML = `${i} Resolve<br><small>${dieCnt}×${diceLabel}${isBonus ? ' (bonus)' : ''} ≈ ${Math.round(dieCnt * avgPerDie)} avg</small>`;
                 btn.style.flex = '1';
                 btn.addEventListener('click', () => {
                     modal.classList.remove('active');
@@ -409,9 +419,7 @@ class Game {
                 btnsEl.appendChild(btn);
             }
 
-            const onSkip = () => {
-                modal.classList.remove('active'); resolve(0);
-            };
+            const onSkip = () => { modal.classList.remove('active'); resolve(0); };
             skipBtn.addEventListener('click', onSkip, { once: true });
 
             modal.classList.add('active');
@@ -3108,16 +3116,16 @@ class Game {
             if (ability.specialization && ability.specialization !== character.specialization) {
                 return false;
             }
-            // Maneuver abilities (effects.maneuver): only show if in knownManeuvers
-            if (ability.effects?.maneuver && !character.knownManeuvers?.includes(ability.id)) {
+            // Maneuver abilities (typed effect keys): only show if in knownManeuvers
+            if (this._isManeuverAbility(ability) && !character.knownManeuvers?.includes(ability.id)) {
                 return false;
             }
             // Reaction maneuvers auto-prompt via promptReaction — hide from active selection
-            if (ability.actionType === 'reaction' && ability.effects?.maneuver) {
+            if (ability.actionType === 'reaction' && this._isManeuverAbility(ability)) {
                 return false;
             }
-            // Sworn Strike auto-prompts post-hit — hide from active selection
-            if (ability.effects?.swornStrike) {
+            // onHit variableCostDamage abilities (e.g. Sworn Strike) auto-prompt post-hit — hide from active selection
+            if (ability.actionType === 'onHit' && ability.effects?.variableCostDamage?.trigger === 'onHit') {
                 return false;
             }
             return true;
@@ -3241,7 +3249,7 @@ class Game {
         // Check action economy — does combatant have the required action type?
         // beforeAttack/onHit maneuvers don't consume an action themselves (they modify next attack)
         const combatant = this.combatManager?.playerCombatant;
-        const isQueueManeuver = ability.effects?.maneuver &&
+        const isQueueManeuver = this._isManeuverAbility(ability) &&
             (ability.actionType === 'beforeAttack' || ability.actionType === 'onHit');
         if (combatant && ability.actionType !== 'free' && !isQueueManeuver) {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
@@ -3288,6 +3296,26 @@ class Game {
     }
 
     /**
+     * Returns true if an ability uses one of the typed maneuver effect keys (ADR-010).
+     * Replaces the old `ability.effects?.maneuver` name-string check.
+     * @param {Object} ability - ability definition from abilities.json
+     * @returns {boolean}
+     */
+    _isManeuverAbility(ability) {
+        if (!ability?.effects) return false;
+        const MANEUVER_EFFECT_TYPES = [
+            'precisionAttackBonus',
+            'onHitSaveOrCondition',
+            'onHitCondition',
+            'onHitPush',
+            'selfTempHP',
+            'reactionAttack',
+            'reactionDamageReduction'
+        ];
+        return MANEUVER_EFFECT_TYPES.some(k => k in ability.effects);
+    }
+
+    /**
      * Format resource type for display
      */
     formatResourceType(resourceType) {
@@ -3321,11 +3349,14 @@ class Game {
             return;
         }
 
-        // MANEUVER dispatch — queue for next attack, or immediate for Rally
-        if (ability.effects?.maneuver) {
+        // MANEUVER dispatch — data-driven via effect type keys (ADR-010).
+        // selfTempHP (Rally) fires immediately on bonus action.
+        // precisionAttackBonus / onHitSaveOrCondition / onHitCondition / onHitPush queue for next attack.
+        // reactionAttack / reactionDamageReduction are handled by promptReaction and never reach here.
+        if (this._isManeuverAbility(ability)) {
             const maneuverId = ability.id;
-            if (ability.actionType === 'bonusAction') {
-                // Rally: immediate bonus action effect — grant tempHP
+            if (ability.effects?.selfTempHP) {
+                // Rally-style: immediate bonus action — dispatch via EffectDispatcher
                 if (!combatant.hasAction('bonusAction')) {
                     gameState.addMessage('No Bonus Action available!', 'error');
                     return;
@@ -3334,112 +3365,25 @@ class Game {
                     gameState.addMessage('No Resolve points!', 'error');
                     return;
                 }
-                const dieSides = character.getManeuverDie?.() || 6;
-                const dieRoll = Math.floor(Math.random() * dieSides) + 1;
-                const conMod = character.abilityModifiers?.con || 0;
-                const tempHP = Math.max(1, dieRoll + conMod);
-                combatant.addCondition('tempHP', 'combat', combatant.id, { value: tempHP, isBuff: true, curable: false, icon: '✨' });
-                character.resolvePoints = Math.max(0, character.resolvePoints - 1);
-                gameState.set('character', character);
-                combatant.actions.bonusAction -= 1;
-                gameState.addMessage(`⚡ Rally! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + CON ${conMod})`, 'success');
-                this.showFloatingCombatText(combatant.id, `+${tempHP} THP ✨`, 'buff');
+                const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
+                const _ctx = _buildCtx(character, combatant, this.combatManager);
+                await _execEffects(ability, { selfTempHP: ability.effects.selfTempHP }, _ctx);
                 this.combatManager.updateGameState();
             } else {
                 // beforeAttack / onHit: queue for next attack (toggle off if already queued)
                 if (combatant.pendingManeuver === maneuverId) {
                     combatant.pendingManeuver = null;
-                    character.resolvePoints = Math.min(character.maxResolvePoints ?? 99, character.resolvePoints + 1);
-                    gameState.set('character', character);
-                    gameState.addMessage(`${ability.name} cancelled — Resolve refunded.`, 'info');
+                    gameState.addMessage(`${ability.name} cancelled.`, 'info');
                 } else {
                     if ((character.resolvePoints ?? 0) <= 0) {
                         gameState.addMessage('No Resolve points!', 'error');
                         return;
                     }
-                    character.resolvePoints = Math.max(0, character.resolvePoints - 1);
-                    gameState.set('character', character);
                     combatant.pendingManeuver = maneuverId;
-                    gameState.addMessage(`⚔️ ${ability.name} queued! Attack to trigger it. (1 Resolve spent)`, 'success');
+                    gameState.addMessage(`⚔️ ${ability.name} queued! Resolve spent when it triggers.`, 'success');
                 }
                 this.combatManager.updateGameState();
             }
-            return;
-        }
-
-        // AID THE VULNERABLE — variable Resolve spend heal or cure condition
-        if (ability.effects?.aidTheVulnerable) {
-            if (!combatant.hasAction('bonusAction')) {
-                gameState.addMessage('No Bonus Action available!', 'error');
-                return;
-            }
-            const currentResolve = character.resolvePoints ?? 0;
-            if (currentResolve <= 0) {
-                gameState.addMessage('No Resolve remaining!', 'error');
-                return;
-            }
-            const maxSpend = Math.min(3, currentResolve);
-            const conMod = character.abilityModifiers?.con || 0;
-            const level = character.level || 1;
-            // Check if there are curable debuffs to remove
-            const curableDebuffs = combatant.conditions?.filter(c => !c.isBuff && c.curable) || [];
-            const canCure = curableDebuffs.length > 0;
-
-            // Build choice prompt inline
-            const choiceHtml = `
-                <div style="padding:12px; background:var(--bg-secondary); border:1px solid var(--accent-color); border-radius:6px; min-width:260px;">
-                    <h4 style="margin:0 0 8px; color:var(--accent-color);">🤝 Aid the Vulnerable</h4>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px;">Resolve: ${currentResolve} | CON mod: +${conMod}</p>
-                    <div style="display:flex; flex-direction:column; gap:6px;" id="atvChoiceList">
-                        ${Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
-        const heal = n * conMod + level;
-        return `<button class="btn btn-primary atv-btn" data-spend="${n}" style="text-align:left;">
-                                Heal (${n} Resolve) — ${heal} HP <small style="color:var(--text-muted)">(${n}×CON+level)</small>
-                            </button>`;
-    }).join('')}
-                        ${canCure ? `<button class="btn btn-secondary atv-btn" data-spend="cure" style="text-align:left;">
-                            Cure (1 Resolve) — Remove ${curableDebuffs[0]?.type || 'condition'}
-                        </button>` : ''}
-                        <button class="btn btn-secondary atv-btn" data-spend="0">Cancel</button>
-                    </div>
-                </div>`;
-
-            // Use a quick inline modal via the notification area (inject into a shared overlay)
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;';
-            overlay.innerHTML = choiceHtml;
-            document.body.appendChild(overlay);
-
-            overlay.querySelectorAll('.atv-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const spend = btn.dataset.spend;
-                    overlay.remove();
-                    if (spend === '0') {
-                        return;
-                    }
-
-                    if (spend === 'cure') {
-                        character.resolvePoints = Math.max(0, currentResolve - 1);
-                        gameState.set('character', character);
-                        combatant.actions.bonusAction -= 1;
-                        const removed = combatant.removeCurableConditions();
-                        const names = removed.map(c => c.type).join(', ');
-                        gameState.addMessage(`🤝 Aid the Vulnerable! Cured: ${names || 'condition'}`, 'success');
-                    } else {
-                        const n = parseInt(spend);
-                        const heal = n * conMod + level;
-                        character.resolvePoints = Math.max(0, currentResolve - n);
-                        character.currentHP = Math.min(character.maxHP, (character.currentHP || 0) + heal);
-                        gameState.set('character', character);
-                        combatant.actions.bonusAction -= 1;
-                        combatant.hp = character.currentHP;
-                        gameState.addMessage(`🤝 Aid the Vulnerable! Healed for ${heal} HP (${n} Resolve spent)`, 'success');
-                        this.showFloatingCombatText(combatant.id, `+${heal} HP`, 'healing');
-                    }
-                    this.combatManager.updateGameState();
-                    this.updateHUD(character);
-                }, { once: true });
-            });
             return;
         }
 
@@ -3483,10 +3427,49 @@ class Game {
     }
 
     /**
-     * Show generic ability choices modal (for choice-based abilities like Steady Nerve)
+     * Show generic ability choices modal (for choice-based abilities like Steady Nerve, Aid the Vulnerable).
+     * For options with variableCostHeal effects, expands into per-resolve-spend buttons.
+     * For options with cureCondition effects, shows a single button with fixedCost noted.
      */
     showAbilityChoices(ability, character) {
         const options = ability.effects.options.filter(opt => opt.implemented !== false);
+        const currentResolve = character.resolvePoints ?? 0;
+        const maxResolveCost = ability.maxResolveCost ?? 1;
+        const conMod = character.abilityModifiers?.con ?? 0;
+        const level = character.level ?? 1;
+
+        // Build option buttons — expand variableCostHeal into per-spend rows
+        const optionButtonsHTML = options.map(option => {
+            if (option.effects?.variableCostHeal) {
+                // Render N resolve-spend buttons (1 to maxResolveCost)
+                const maxSpend = Math.min(maxResolveCost, currentResolve);
+                if (maxSpend <= 0) {
+                    return `<div class="ability-choice-disabled"><strong>${option.name}</strong> — No Resolve remaining</div>`;
+                }
+                return Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
+                    const formula = option.effects.variableCostHeal.formula || 'resolveCost * conMod + level';
+                    // Simple preview: substitute known values
+                    const approxHeal = n * Math.max(1, conMod) + level;
+                    return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${n}">
+                                <strong>${option.name} (${n} Resolve)</strong>
+                                <p>~${approxHeal} HP — ${formula.replace('resolveCost', n).replace('conMod', conMod).replace('level', level)}</p>
+                            </button>`;
+                }).join('');
+            } else if (option.effects?.cureCondition) {
+                const cost = option.fixedCost ?? 1;
+                const canAfford = currentResolve >= cost;
+                return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${cost}" ${!canAfford ? 'disabled' : ''}>
+                            <strong>${option.name} (${cost} Resolve)</strong>
+                            <p>${option.description}</p>
+                        </button>`;
+            } else {
+                // Standard option (no resolve cost)
+                return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="0">
+                            <strong>${option.name}</strong>
+                            <p>${option.description}</p>
+                        </button>`;
+            }
+        }).join('');
 
         const modalHTML = `
             <div id="abilityChoiceModal" class="modal active">
@@ -3497,13 +3480,9 @@ class Game {
                     </div>
                     <div class="modal-body">
                         <p>${ability.description}</p>
+                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | CON mod: ${conMod >= 0 ? '+' : ''}${conMod}</p>` : ''}
                         <div class="ability-choices">
-                            ${options.map(option => `
-                                <button class="ability-choice-btn" data-option-id="${option.id}">
-                                    <strong>${option.name}</strong>
-                                    <p>${option.description}</p>
-                                </button>
-                            `).join('')}
+                            ${optionButtonsHTML}
                         </div>
                     </div>
                 </div>
@@ -3532,9 +3511,10 @@ class Game {
         document.querySelectorAll('.ability-choice-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const optionId = btn.dataset.optionId;
+                const resolveSpend = parseInt(btn.dataset.resolveSpend ?? '0', 10);
                 const option = options.find(o => o.id === optionId);
                 if (option) {
-                    this.executeAbilityChoice(option, ability, character);
+                    this.executeAbilityChoice(option, ability, character, resolveSpend);
                     modal.remove();
                 }
             });
@@ -3542,16 +3522,22 @@ class Game {
     }
 
     /**
-     * Execute a chosen option from a choice-based ability via EffectDispatcher
+     * Execute a chosen option from a choice-based ability via EffectDispatcher.
+     * @param {Object} option       - The selected option from ability.effects.options
+     * @param {Object} ability      - Full ability definition
+     * @param {Object} character    - Character from gameState
+     * @param {number} resolveSpend - Resolve to spend (0 for non-variable-cost options)
      */
-    async executeAbilityChoice(option, ability, character) {
+    async executeAbilityChoice(option, ability, character, resolveSpend = 0) {
         const combatant = this.combatManager?.playerCombatant;
-        if (!combatant) {
+        // Allow out-of-combat use for usableOutOfCombat abilities
+        const isOutOfCombat = !combatant;
+        if (isOutOfCombat && !ability.usableOutOfCombat && !option.usableOutOfCombat) {
             return;
         }
 
-        // Check action economy
-        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+        // Check action economy (combat only)
+        if (!isOutOfCombat && ability.actionType !== 'free' && ability.actionType !== 'passive') {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
             if (required && !combatant.hasAction(required)) {
@@ -3560,8 +3546,13 @@ class Game {
             }
         }
 
+        // Build context and inject resolveSpent for variable-cost handlers
+        const context = isOutOfCombat
+            ? buildOutOfCombatContext(character)
+            : buildEffectContext(character, combatant, this.combatManager);
+        context.resolveSpent = resolveSpend;
+
         // Dispatch option effects via EffectDispatcher (zero conditionals!)
-        const context = buildEffectContext(character, combatant, this.combatManager);
         const results = await dispatchOption(option, ability, context);
 
         // Deferred effect (e.g. weapon_attack needs target selection)
@@ -3575,8 +3566,8 @@ class Game {
             return; // Don't consume action or track usage yet
         }
 
-        // Consume action
-        if (ability.actionType !== 'free' && ability.actionType !== 'passive') {
+        // Consume action (combat only)
+        if (!isOutOfCombat && combatant && ability.actionType !== 'free' && ability.actionType !== 'passive') {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
             if (required) {
@@ -3586,7 +3577,11 @@ class Game {
 
         // Track usage and sync state
         this.trackAbilityUsage(ability, character);
-        this.syncCombatState();
+        if (!isOutOfCombat) {
+            this.syncCombatState();
+        } else {
+            this.updateHUD(gameState.get('character'));
+        }
     }
 
     /**
@@ -3737,6 +3732,40 @@ class Game {
             return;
         }
 
+        const currentResolve = character.resolvePoints ?? 0;
+        const maxResolveCost = ability.maxResolveCost ?? 1;
+        const conMod = character.abilityModifiers?.con ?? 0;
+        const level = character.level ?? 1;
+
+        // Build option buttons — expand variableCostHeal into per-spend rows
+        const optionButtonsHTML = options.map(option => {
+            if (option.effects?.variableCostHeal) {
+                const maxSpend = Math.min(maxResolveCost, currentResolve);
+                if (maxSpend <= 0) {
+                    return `<div class="ability-choice-disabled"><strong>${option.name}</strong> — No Resolve remaining</div>`;
+                }
+                return Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
+                    const approxHeal = n * Math.max(1, conMod) + level;
+                    return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${n}">
+                                <strong>${option.name} (${n} Resolve)</strong>
+                                <p>~${approxHeal} HP</p>
+                            </button>`;
+                }).join('');
+            } else if (option.effects?.cureCondition) {
+                const cost = option.fixedCost ?? 1;
+                const canAfford = currentResolve >= cost;
+                return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${cost}" ${!canAfford ? 'disabled' : ''}>
+                            <strong>${option.name} (${cost} Resolve)</strong>
+                            <p>${option.description}</p>
+                        </button>`;
+            } else {
+                return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="0">
+                            <strong>${option.name}</strong>
+                            <p>${option.description}</p>
+                        </button>`;
+            }
+        }).join('');
+
         const modalHTML = `
             <div id="abilityChoiceModal" class="modal active">
                 <div class="modal-content ability-modal">
@@ -3746,13 +3775,9 @@ class Game {
                     </div>
                     <div class="modal-body">
                         <p>${ability.description}</p>
+                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | CON mod: ${conMod >= 0 ? '+' : ''}${conMod}</p>` : ''}
                         <div class="ability-choices">
-                            ${options.map(option => `
-                                <button class="ability-choice-btn" data-option-id="${option.id}">
-                                    <strong>${option.name}</strong>
-                                    <p>${option.description}</p>
-                                </button>
-                            `).join('')}
+                            ${optionButtonsHTML}
                         </div>
                     </div>
                 </div>
@@ -3779,9 +3804,10 @@ class Game {
         document.querySelectorAll('.ability-choice-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const optionId = btn.dataset.optionId;
+                const resolveSpend = parseInt(btn.dataset.resolveSpend ?? '0', 10);
                 const option = options.find(o => o.id === optionId);
                 if (option) {
-                    this.executeOutOfCombatChoice(option, ability, character);
+                    this.executeOutOfCombatChoice(option, ability, character, resolveSpend);
                     modal.remove();
                 }
             });
@@ -3790,9 +3816,14 @@ class Game {
 
     /**
      * Execute a choice option outside combat
+     * @param {Object} option       - Selected option
+     * @param {Object} ability      - Parent ability
+     * @param {Object} character    - Character from gameState
+     * @param {number} resolveSpend - Resolve to spend (injected into context for variable-cost handlers)
      */
-    async executeOutOfCombatChoice(option, ability, character) {
+    async executeOutOfCombatChoice(option, ability, character, resolveSpend = 0) {
         const context = buildOutOfCombatContext(character);
+        context.resolveSpent = resolveSpend;
         await dispatchOption(option, ability, context);
 
         this.trackAbilityUsage(ability, character);
@@ -7593,6 +7624,11 @@ class Game {
                     // Small delay to let rest messages display first
                     setTimeout(() => this.openForgecraftModal(), 500);
                 }
+                if (character?.practices?.includes('hearthcraft')) {
+                    // Offset after forgecraft if both practices are held
+                    const offset = character.practices.includes('forgecraft') ? 1000 : 500;
+                    setTimeout(() => this.openHearthcraftModal(), offset);
+                }
 
                 // Check companion ultimata after long rest
                 if (this.companionManager?.checkUltimata) {
@@ -7613,6 +7649,9 @@ class Game {
 
         // Setup Forgecraft modal
         this.setupForgecraftModal();
+
+        // Setup Hearthcraft modal
+        this.setupHearthcraftModal();
 
         console.log('✅ Rest system UI initialized');
     }
@@ -7969,6 +8008,151 @@ class Game {
 
         // Prune distant regions from cache
         this.worldGenerator.pruneCache(regionX, regionY, 3);
+    }
+
+    // ========== HEARTHCRAFT SYSTEM ==========
+
+    setupHearthcraftModal() {
+        document.getElementById('closeHearthcraftBtn')?.addEventListener('click', () => this.closeHearthcraftModal());
+        document.getElementById('hearthcraftModal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('hearthcraftModal')) this.closeHearthcraftModal();
+        });
+        document.getElementById('hearthcraftConfirmBtn')?.addEventListener('click', () => this.confirmHearthcraft());
+    }
+
+    async openHearthcraftModal() {
+        // Load practices data (shared cache with Forgecraft)
+        if (!this.practicesData) {
+            const response = await fetch(`data/practices.json?v=${Date.now()}`);
+            this.practicesData = await response.json();
+        }
+        const hearthcraft = this.practicesData.practices.find(p => p.id === 'hearthcraft');
+        if (!hearthcraft) return;
+
+        const character = gameState.get('character');
+        const mealEffects = hearthcraft.meal.effects;
+        const abilityEffect = mealEffects.find(e => e.type === 'abilityScoreBonus');
+        const scoreChoices = abilityEffect?.scoreChoices ?? ['str','dex','con','int','wis','cha'];
+
+        // Resolve mode for this character's level
+        const { resolveLevelKeyedValue } = await import('./utils/practiceUtils.js');
+        const mode = resolveLevelKeyedValue(abilityEffect.bonusApplication.mode, character.level) ?? 'uniformChoice';
+
+        this._hearthcraftData = hearthcraft;
+        this._hearthcraftMode = mode;
+        this._hearthcraftChoice = null;
+        this._hearthcraftChoices = {};
+
+        // Description
+        document.getElementById('hearthcraftDescription').textContent = hearthcraft.meal.description;
+
+        // Show correct section
+        const uniformSection = document.getElementById('hearthcraftUniformSection');
+        const individualSection = document.getElementById('hearthcraftIndividualSection');
+        const confirmBtn = document.getElementById('hearthcraftConfirmBtn');
+        confirmBtn.disabled = true;
+
+        const scoreLabels = { str: 'STR', dex: 'DEX', con: 'CON', int: 'INT', wis: 'WIS', cha: 'CHA' };
+
+        if (mode === 'uniformChoice') {
+            uniformSection.style.display = '';
+            individualSection.style.display = 'none';
+
+            const btnsEl = document.getElementById('hearthcraftAbilityButtons');
+            btnsEl.innerHTML = scoreChoices.map(score => `
+                <button class="ability-choice-btn" data-score="${score}" onclick="window.game._hearthcraftSelectUniform('${score}')">
+                    ${scoreLabels[score]}
+                </button>
+            `).join('');
+        } else {
+            uniformSection.style.display = 'none';
+            individualSection.style.display = '';
+
+            const party = gameState.getFullParty?.() ?? [character];
+            const membersEl = document.getElementById('hearthcraftMemberChoices');
+            membersEl.innerHTML = party.map((member, i) => {
+                const memberId = member.id ?? (i === 0 ? 'player' : `companion_${i}`);
+                return `
+                    <div class="hearthcraft-member-row">
+                        <div class="hearthcraft-member-name">${member.name ?? 'Player'}</div>
+                        <div class="ability-choice-grid" id="hearthcraftMemberBtns_${memberId}">
+                            ${scoreChoices.map(score => `
+                                <button class="ability-choice-btn" data-score="${score}" data-member="${memberId}"
+                                    onclick="window.game._hearthcraftSelectIndividual('${memberId}', '${score}')">
+                                    ${scoreLabels[score]}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            this._hearthcraftPartySize = party.length;
+        }
+
+        document.getElementById('hearthcraftModal').classList.add('active');
+    }
+
+    _hearthcraftSelectUniform(score) {
+        this._hearthcraftChoice = score;
+        document.querySelectorAll('#hearthcraftAbilityButtons .ability-choice-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.score === score);
+        });
+        document.getElementById('hearthcraftConfirmBtn').disabled = false;
+    }
+
+    _hearthcraftSelectIndividual(memberId, score) {
+        this._hearthcraftChoices[memberId] = score;
+        document.querySelectorAll(`#hearthcraftMemberBtns_${memberId} .ability-choice-btn`).forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.score === score);
+        });
+        // Enable confirm once all party members have a choice
+        const allChosen = Object.keys(this._hearthcraftChoices).length >= this._hearthcraftPartySize;
+        document.getElementById('hearthcraftConfirmBtn').disabled = !allChosen;
+    }
+
+    _applyHearthcraftBuff(member, chosenScore, mealEffects) {
+        const abilityEffect = mealEffects.find(e => e.type === 'abilityScoreBonus');
+        const fatigueEffect = mealEffects.find(e => e.type === 'fatigueRateMultiplier');
+        // Clear previous meal buff then write new one — prevents stacking across rests
+        member.activeMealBuff = {
+            practiceId: 'hearthcraft',
+            abilityScore: chosenScore,
+            bonusMagnitude: abilityEffect?.bonusMagnitude ?? 1,
+            fatigueRateMultiplier: fatigueEffect?.value ?? 1
+        };
+    }
+
+    confirmHearthcraft() {
+        const character = gameState.get('character');
+        const mealEffects = this._hearthcraftData?.meal?.effects ?? [];
+        const party = gameState.getFullParty?.() ?? [character];
+
+        if (this._hearthcraftMode === 'uniformChoice') {
+            if (!this._hearthcraftChoice) return;
+            party.forEach(member => this._applyHearthcraftBuff(member, this._hearthcraftChoice, mealEffects));
+        } else {
+            party.forEach((member, i) => {
+                const memberId = member.id ?? (i === 0 ? 'player' : `companion_${i}`);
+                const chosen = this._hearthcraftChoices[memberId];
+                if (chosen) this._applyHearthcraftBuff(member, chosen, mealEffects);
+            });
+        }
+
+        // Persist — player character always first in party
+        gameState.set('character', party[0]);
+        // Companions persisted via party state when companion system ships
+
+        const scoreLabel = this._hearthcraftMode === 'uniformChoice'
+            ? this._hearthcraftChoice?.toUpperCase()
+            : 'individual scores';
+        gameState.addMessage(`🍲 Hearthcraft: meal prepared — +1 ${scoreLabel} and reduced fatigue until next long rest.`, 'success');
+
+        this.closeHearthcraftModal();
+        this.updateHUD(gameState.get('character'));
+    }
+
+    closeHearthcraftModal() {
+        document.getElementById('hearthcraftModal')?.classList.remove('active');
     }
 
     // ==================== HELPER FUNCTIONS FOR PLAIN CHARACTER OBJECTS ====================

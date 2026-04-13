@@ -214,7 +214,7 @@ class SkillChallengeManager {
         }
 
         // Fatigue from skill challenge attempt
-        addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge');
+        addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge', gameState.get('character'));
 
         const node = this.getCurrentNode();
         const availableChoices = this.getAvailableChoices(node);

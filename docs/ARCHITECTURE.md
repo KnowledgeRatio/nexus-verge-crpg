@@ -1221,6 +1221,96 @@ gameState.update('character.hp.current', newHP);
 
 ---
 
+## ADR-010: Data-Driven Ability Dispatch — JSON Drives Code, Not the Reverse
+
+**Status:** Accepted
+**Date:** 2026-04-09
+**Decision Makers:** Development Team
+
+### Context
+
+As ability systems grew (Exemplar maneuvers, Oath smites, variable-cost heals), a pattern emerged of hardcoding ability IDs and names directly into game logic — `if (ability.id === 'swornStrike')`, `if (ability.effects?.swornStrike)`, `if (ability.effects?.aidTheVulnerable)`. This directly violates ADR-000's data-driven principle and creates a structural problem:
+
+- Adding a new ability requires editing both the JSON *and* the dispatch JS
+- Removing or renaming an ability silently breaks behaviour
+- The JSON data files become decorative — the real source of truth lives in scattered `if` blocks
+- Future designers cannot add abilities without knowing which JS files to also patch
+
+This is the most critical form of modifiability drift: the data ceases to drive the system.
+
+### Decision
+
+**THE JSON DATA FILES ARE THE SINGLE SOURCE OF TRUTH FOR ABILITY BEHAVIOUR.**
+
+The code provides generic dispatch infrastructure. The data specifies what to dispatch.
+
+#### The Rule
+
+> If you find yourself writing `if (ability.id === 'X')` or `if (ability.effects?.X)` for a *specific named ability*, you are violating this principle. Stop. Define a generic effect handler keyed to a handler type and wire the JSON to it instead.
+
+#### Correct Pattern
+
+**In `data/abilities.json`** — define the effect using a registered handler key:
+```json
+{
+  "id": "swornStrike",
+  "effects": {
+    "variableDamage": {
+      "handlerKey": "swornStrike",
+      "damageFormula": "1d8 * resolveCost",
+      "damageType": "radiant",
+      "bonusVsTypes": ["undead", "fiend"],
+      "bonusDice": "1d8"
+    }
+  }
+}
+```
+
+**In `EffectDispatcher.js`** — register a handler for the key, not for the ID:
+```javascript
+registerHandler('swornStrike', (context) => {
+    // Generic handler: reads all params from context.effectConfig
+    const { damageFormula, damageType, bonusVsTypes, bonusDice } = context.effectConfig;
+    // ... resolve cost prompt, roll damage, apply
+});
+```
+
+**Never:**
+```javascript
+// ❌ WRONG — hardcoded ability ID check
+if (ability.id === 'swornStrike') { ... }
+if (ability.effects?.swornStrike) { ... }
+```
+
+#### Scope
+
+This applies to:
+- **Ability dispatch** (`EffectDispatcher.js`, `CombatManager.js`)
+- **Level-up grants** (`LevelUpManager.js`) — `autoGrantAbilities` and `grantedResource` must be read from data, not hardcoded per calling
+- **Resource systems** — resource types, formulas, and recharge rules must come from data
+- **Condition application** — conditions applied by abilities must be specified in data, not inferred from ability ID
+
+#### Known Violations (Technical Debt to Resolve)
+
+| Location | Violation |
+|----------|-----------|
+| `main.js` | `promptSwornStrike()` — hardcoded handler for swornStrike ID |
+| `main.js` | `aidTheVulnerable` inline modal — hardcoded handler |
+| `CombatManager.js` | `ability.effects?.swornStrike` check |
+| `LevelUpManager.js` | `autoGrantAbilities` not read — must be implemented generically |
+| `LevelUpManager.js` | `grantedResource` not read — must be implemented generically |
+
+These must be migrated to generic dispatch before the ability system is expanded further.
+
+### Consequences
+
+- New abilities require **only a JSON entry** — no JS changes unless a genuinely new *type* of effect is needed
+- New effect types require **one new handler registration** — all abilities using that type benefit immediately
+- Renaming or rebalancing abilities is a data-only change
+- Designers can read abilities.json and understand the full behaviour without reading source code
+
+---
+
 ## Summary of Key Decisions
 
 | Decision | Choice | Rationale |

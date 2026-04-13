@@ -31,6 +31,10 @@ Then evaluate the requested feature/mechanic against:
 6. **Pillar alignment** - Which of the 5 core pillars does this serve? (Authentic D&D 5e, Infinite Replayability, Meaningful Choices, Performance First, Modifiable Foundation)
 7. **Balance across levels** - Does this work at level 1? Level 5 (Extra Attack)? Level 10 (capstone)?
 
+## Implementation Constraint: Data Drives Code (ADR-010)
+
+When designing abilities, spells, or progression features, structure them so the **JSON data file is the complete specification** — effect type, cost, targets, formulas. The code registers generic handlers keyed to effect *types* (e.g. `variableCostDamage`, `cureCondition`), never to specific ability IDs. A new ability should require **only a JSON entry**, not a JS code change, unless it introduces a genuinely new *type* of effect. Flag any design that would require per-ability special-casing in code as needing a more general effect model.
+
 ## Nexus Verge Specifics
 
 - **3 Callings:** Dedication (fighter), Scholar (mage), Wanderlust (thief) - with specializations branching at level 3

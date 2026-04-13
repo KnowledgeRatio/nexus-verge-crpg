@@ -170,6 +170,9 @@ export class Character {
         this.selectedTraits = data.selectedTraits || [];
         this.practices = data.practices || [];
         this.equipmentMods = data.equipmentMods || {};
+        // Hearthcraft meal buff — null when no active meal, cleared at each long rest.
+        // Shape: { practiceId, abilityScore, bonusMagnitude, fatigueRateMultiplier }
+        this.activeMealBuff = data.activeMealBuff || null;
     }
 
     /**
@@ -1535,6 +1538,7 @@ export class Character {
             maxResolvePoints: this.maxResolvePoints,
             practices: this.practices,
             equipmentMods: this.equipmentMods,
+            activeMealBuff: this.activeMealBuff,
             isNPC: this.isNPC,
             isHostile: this.isHostile,
             faction: this.faction

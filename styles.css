@@ -928,6 +928,77 @@ body {
     margin-top: 4px;
 }
 
+/* ─── Hearthcraft ─────────────────────────────────────────────────────────── */
+
+.hearthcraft-dialog {
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.hearthcraft-intro {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.hearthcraft-instruction {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.ability-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ability-choice-btn {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.ability-choice-btn:hover {
+    border-color: #c8943a;
+    background: rgba(200, 148, 58, 0.15);
+}
+
+.ability-choice-btn.selected {
+    border-color: #e8a84a;
+    background: rgba(232, 168, 74, 0.25);
+    color: #e8a84a;
+}
+
+.hearthcraft-member-row {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hearthcraft-member-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.hearthcraft-member-name {
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
 /* Modals */
 .modal-overlay {
     display: none;

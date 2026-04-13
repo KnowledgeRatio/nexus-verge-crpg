@@ -75,14 +75,20 @@ export function getFatigueModifiers() {
  * @param {number} amount  Positive number (% to add)
  * @param {string} _source  For log messages: 'movement' | 'combat' | 'skillChallenge'
  */
-export function addFatigue(amount, _source = 'movement') {
+export function addFatigue(amount, _source = 'movement', character = null) {
     if (!RULES.fatigue.enabled) {
         return;
     }
 
+    // Apply meal buff multiplier for non-movement sources (movement applies it in calcMovementFatigue)
+    const mealMult = (_source !== 'movement')
+        ? (character?.activeMealBuff?.fatigueRateMultiplier ?? 1)
+        : 1;
+    const effectiveAmount = amount * mealMult;
+
     const state = getFatigueState();
     const prevThreshold = getThresholdName(state.current);
-    let newPct = Math.min(100, state.current + amount);
+    let newPct = Math.min(100, state.current + effectiveAmount);
 
     // Trigger exhaustion level if hitting 100
     if (newPct >= RULES.fatigue.thresholds.spent) {
@@ -211,7 +217,8 @@ export function calcMovementFatigue(movementCost, character) {
     const statMod = isWanderlust ? Math.max(conMod, dexMod) : conMod;
     const conFactor = Math.max(r.minFatigueMultiplier, 1 - statMod * r.conModMultiplier);
 
-    return r.baseFatiguePerTile * terrainMult * conFactor;
+    const mealMult = character?.activeMealBuff?.fatigueRateMultiplier ?? 1;
+    return r.baseFatiguePerTile * terrainMult * conFactor * mealMult;
 }
 
 // ─── Private helpers ──────────────────────────────────────────────────────────

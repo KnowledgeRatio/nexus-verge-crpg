@@ -4046,6 +4046,7 @@ get ac() {
 4. **Procedural Variety:** Same seed = same world, different seeds = different experiences
 5. **Meaningful Choices:** Player decisions should have consequences
 6. **No Backend Required:** 100% client-side, works offline
+7. **Data Drives Code — Never the Reverse:** JSON files are the single source of truth for what abilities exist, what they cost, and what effects they apply. The code provides generic dispatch infrastructure keyed to *effect handler types*, not to specific ability IDs or names. If you find yourself writing `if (ability.id === 'X')` or `if (ability.effects?.X)` for a named ability, stop — define a generic handler and wire the JSON to it. See ADR-010 in `docs/ARCHITECTURE.md` for the full decision and known violations to resolve.
 
 ---
 

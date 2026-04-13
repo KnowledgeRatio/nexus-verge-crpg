@@ -119,6 +119,39 @@ All monsters now have `attackType`: `"melee"`, `"ranged"`, or `"both"`.
 - Rest modal supplies display: uses IIFE `(() => { ... })()` pattern inside template literal to call `getFatigueState()` only when `RULES.fatigue.enabled` is true.
 - `_updateFatigueHUD()` in FatigueManager calls `window.game?.updateFatigueHUD()` — frontend must implement this method.
 
+## EffectDispatcher Resolve Gate (implemented 2026-04-09)
+- `execute()` has a single pre-dispatch Resolve gate: checks + deducts BEFORE any handler fires.
+- Gate only fires when `ability.resourceType === 'resolve'` AND `!context.resolveAlreadyDeducted`.
+- Cost priority: `ctx.resolveSpent` (variable-cost) > `ability.resolveCost` (number) > 1 (default).
+- Returns `[{ type: '_resolveGate', result: { skipped: true } }]` and stops if insufficient Resolve.
+- Handlers (`variableCostDamage`, `variableCostHeal`, `cureCondition`, `selfTempHP`) are pure effect code — they never read or write `resolvePoints`.
+- Maneuver beforeAttack/onHit paths in CombatManager set `ctx.resolveAlreadyDeducted = true` because Resolve is deducted at queue time in main.js (not dispatch time). Reaction maneuvers (Riposte, Parry) do NOT set this flag — their Resolve is deducted by the gate at dispatch time.
+- `resourceType: 'shortRest'` abilities (Steady Nerve, Action Surge) are unaffected — the gate skips them entirely.
+
+## ADR-010: Data-Driven Ability Dispatch (implemented 2026-04-09)
+- NEVER write `if (ability.id === 'X')` or `if (ability.effects?.specificName)` for a named ability. Register a handler by effect-type key in EffectDispatcher.
+- `character.selectedAbilities` — array of known ability IDs (includes auto-granted). NOT `character.abilities` (that's `{str, dex...}`).
+- `variableCostDamage` handler in EffectDispatcher: reads `ctx.resolveSpent` + `ctx.defender` (injected by CombatManager post-hit loop). Config in JSON: `{ damageFormula, damageType, bonusVsCreatureTypes, bonusDice, trigger: "onHit", rangeType: "melee" }`.
+- `variableCostHeal` handler: reads `ctx.resolveSpent` (injected by showAbilityChoices). Formula string e.g. `"resolveCost * conMod + level"` — evaluates via `Function()` after longest-first substitution.
+- `cureCondition` handler: reads `ctx.resolveSpent` as fixed cost (1). Calls `combatant.removeCurableConditions()` limited to `count`.
+- On-hit onHit abilities hidden from active ability list via: `ability.actionType === 'onHit' && ability.effects?.variableCostDamage?.trigger === 'onHit'`.
+- CombatManager post-hit loop: searches `window.game.abilitiesData.abilities[class.id]` for `variableCostDamage.trigger === 'onHit'` abilities, checks `character.selectedAbilities.includes(ab.id)`. Calls `window.game.promptVariableCostDamage(attacker, defender, ability)` then dispatches via EffectDispatcher with `ctx.resolveSpent = resolveSpent` and `ctx.defender = defender`.
+- `showAbilityChoices` (combat) and `showOutOfCombatAbilityChoices`: expand `variableCostHeal` options into per-resolve-spend buttons; pass `data-resolve-spend` attribute. `executeAbilityChoice` / `executeOutOfCombatChoice` injects `context.resolveSpent = resolveSpend`.
+- LevelUpManager `confirmLevelUp`: after `applyLevelUpSelections`, reads `specializationFeatures[spec].autoGrantAbilities` from progression data and pushes to `character.selectedAbilities`. Also reads `newFeatures[].grantedResource` and sets `character.max{Id}Points`, `character.{id}Points`, `character.{id}Recharge` generically from data.
+- `aidTheVulnerable` now uses `effects.choice` + options — routes through `showAbilityChoices` / `executeAbilityChoice` (same as Steady Nerve). No inline modal.
+
+## ADR-010: Exemplar Maneuver Migration (implemented 2026-04-09)
+- All 8 Exemplar maneuvers in abilities.json now use typed effect keys — `"maneuver": "tripAttack"` pattern is gone.
+- Effect type → maneuver mapping: `precisionAttackBonus` (Precision Strike), `onHitSaveOrCondition` (Trip Attack, Menacing Attack), `onHitPush` (Pushing Attack), `onHitCondition` (Disarming Attack), `selfTempHP` (Rally), `reactionAttack` (Riposte), `reactionDamageReduction` (Parry).
+- EffectDispatcher.js handlers: `resolveManeuverDieSides(character)` — L3-6=d6, L7-9=d8, L10+=d10. `maneuverSaveDC(character)` = 8+prof+max(STR,DEX). Both are module-level helpers, not exported.
+- All on-hit handlers (`onHitSaveOrCondition`, `onHitCondition`, `onHitPush`) require `ctx.attacker` and `ctx.defender` injected by CombatManager (NOT in standard buildContext output — must be added manually).
+- `precisionAttackBonus` handler returns `{ bonus: N }` — CombatManager reads `result.bonus` to add to attackTotal.
+- `selfTempHP` handler consumes bonusAction internally — Resolve is now deducted by the pre-dispatch gate in `execute()`, not inside the handler.
+- `reactionAttack` / `reactionDamageReduction` return the die roll — promptReaction in main.js dispatches them via EffectDispatcher and reads `result.bonus` / `result.damageReduction` to pass to `cm.attack(extraDamage)` / `resolve({ damageReduction })`.
+- CombatManager `executeOnHitManeuver` switch block DELETED. Replaced by: `_getPendingManeuverAbility(attacker)` helper (searches `window.game.abilitiesData.abilities` by ability ID).
+- main.js: `_isManeuverAbility(ability)` helper — returns true when any maneuver effect key is present in `ability.effects`. Used everywhere `ability.effects?.maneuver` was previously checked.
+- Do NOT check `ability.effects?.maneuver` anywhere — that key no longer exists. Use `_isManeuverAbility(ability)` or check specific effect type keys.
+
 ## User Preferences
 - Do NOT run git commits. User manages all commits through GitHub.
 

@@ -19,6 +19,7 @@ export default class LevelUpManager {
         this.spellsData = null;
         this.traitsData = null;
         this.practicesData = null;
+        this.specializationsData = null;
 
         // Current level-up state
         this.currentSelections = {
@@ -63,6 +64,15 @@ export default class LevelUpManager {
             } catch (e) {
                 console.warn('No practices.json found, skipping:', e);
                 this.practicesData = { practices: [] };
+            }
+
+            // Load specializations data
+            try {
+                const specializationsResponse = await fetch('data/specializations.json');
+                this.specializationsData = await specializationsResponse.json();
+            } catch (e) {
+                console.warn('No specializations.json found, skipping:', e);
+                this.specializationsData = { specializations: {} };
             }
 
             // Get modal reference
@@ -575,21 +585,18 @@ export default class LevelUpManager {
     }
 
     /**
-   * Get specialization description (placeholder)
+   * Get specialization description from data/specializations.json
    */
     getSpecializationDescription(id) {
-    // TODO: Load from specializations.json when implemented
-        const descriptions = {
-            exemplar: 'Tactical weapon master. Spends Resolve on combat maneuvers for precision, control, and defense.',
-            oath: 'Divine warrior. Spends Resolve on smite (burst damage) or healing. Every smite point is healing you don\'t have.',
-            champion: 'Master of physical combat and critical strikes',
-            battleMaster: 'Tactical fighter with combat maneuvers',
-            eldritchKnight: 'Warrior who blends magic with martial prowess',
-            evocation: 'Master of destructive spells',
-            abjuration: 'Specialist in protective magic',
-            enchantment: 'Weaver of mind-affecting spells'
-        };
-        return descriptions[id] || 'A powerful specialization path';
+        if (this.specializationsData) {
+            // Support both flat array and calling-keyed object structures
+            const allSpecs = Array.isArray(this.specializationsData.specializations)
+                ? this.specializationsData.specializations
+                : Object.values(this.specializationsData.specializations).flat();
+            const spec = allSpecs.find(s => s.id === id);
+            if (spec) return spec.description;
+        }
+        return 'A powerful specialization path';
     }
 
     /**
@@ -736,8 +743,104 @@ export default class LevelUpManager {
             return;
         }
 
+        const newLevel = character.pendingLevelUp.newLevel;
+
         // Apply selections to character (existing logic, unchanged)
         character.applyLevelUpSelections(this.currentSelections);
+
+        // --- Process autoGrantAbilities from specializationFeatures ---
+        // When a specialization was chosen, auto-grant the abilities listed in its data
+        if (this.currentSelections.specialization && this.progressionData) {
+            const classProgression = this.progressionData.progressionByClass[character.class?.id];
+            const levelData = classProgression?.[newLevel];
+            const specFeatures = levelData?.specializationFeatures?.[this.currentSelections.specialization];
+            const autoGrant = specFeatures?.autoGrantAbilities;
+
+            if (Array.isArray(autoGrant) && autoGrant.length > 0) {
+                if (!character.selectedAbilities) {
+                    character.selectedAbilities = [];
+                }
+                for (const abilityId of autoGrant) {
+                    if (!character.selectedAbilities.includes(abilityId)) {
+                        character.selectedAbilities.push(abilityId);
+                        console.log(`  ✨ Auto-granted ability: ${abilityId}`);
+                    }
+                }
+            }
+        }
+
+        // --- Process grantedResource from newFeatures ---
+        // Any newFeatures entry with a grantedResource sub-object adds that resource to the character.
+        // This works for any calling — reads id, formula, minimum, recharge from data.
+        if (this.progressionData) {
+            const classProgression = this.progressionData.progressionByClass[character.class?.id];
+            const levelData = classProgression?.[newLevel];
+            const newFeatures = levelData?.newFeatures || [];
+
+            for (const feature of newFeatures) {
+                const res = feature.grantedResource;
+                if (!res || !res.id) {
+                    continue;
+                }
+
+                // Evaluate formula: only + and identifier tokens (con, level, etc.)
+                // Use the same context as formulaEvaluator
+                const mods = character.abilityModifiers || {};
+                const formulaCtx = {
+                    level: character.level,
+                    con: mods.con || 0,
+                    str: mods.str || 0,
+                    dex: mods.dex || 0,
+                    int: mods.int || 0,
+                    wis: mods.wis || 0,
+                    cha: mods.cha || 0,
+                    proficiency: character.proficiencyBonus || 2
+                };
+
+                let maxValue = 0;
+                const formulaStr = res.formula || '0';
+                // Substitute named tokens (longest first to avoid substring collisions)
+                const tokenMap = [
+                    ['proficiency', formulaCtx.proficiency],
+                    ['level', formulaCtx.level],
+                    ['conMod', formulaCtx.con],
+                    ['con', formulaCtx.con],
+                    ['str', formulaCtx.str],
+                    ['dex', formulaCtx.dex],
+                    ['int', formulaCtx.int],
+                    ['wis', formulaCtx.wis],
+                    ['cha', formulaCtx.cha]
+                ].sort((a, b) => b[0].length - a[0].length);
+
+                let evalFormula = formulaStr;
+                for (const [name, val] of tokenMap) {
+                    evalFormula = evalFormula.split(name).join(String(val));
+                }
+
+                try {
+                    // eslint-disable-next-line no-new-func
+                    maxValue = Math.max(
+                        res.minimum ?? 0,
+                        Math.floor(Function(`"use strict"; return (${evalFormula})`)())
+                    );
+                } catch (e) {
+                    console.warn(`LevelUpManager: grantedResource formula eval failed for ${res.id}:`, evalFormula, e);
+                    maxValue = res.minimum ?? 1;
+                }
+
+                // Store on character — use the resource's own id as the key
+                // Naming convention: maxXxxPoints + xxxPoints (e.g. maxResolvePoints + resolvePoints)
+                const capId = res.id.charAt(0).toUpperCase() + res.id.slice(1);
+                const maxKey = `max${capId}Points`;
+                const curKey = `${res.id}Points`;
+
+                character[maxKey] = maxValue;
+                character[curKey] = maxValue; // Start at full
+                character[`${res.id}Recharge`] = res.recharge || 'shortRest';
+
+                console.log(`  💎 Granted resource: ${res.id} = ${maxValue} (recharge: ${res.recharge || 'shortRest'}) [formula: "${formulaStr}" → ${evalFormula} = ${maxValue}]`);
+            }
+        }
 
         // Persist to correct location
         if (targetCharacter) {

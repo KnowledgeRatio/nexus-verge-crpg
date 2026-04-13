@@ -4,136 +4,26 @@
 
     "dedication": [
       {
-        "id": "bladedancer",
-        "name": "Bladedancer",
+        "id": "exemplar",
+        "name": "Exemplar",
         "calling": "dedication",
         "chosenAtLevel": 3,
-        "description": "Masters of agile combat who blend martial prowess with graceful movement. They favor finesse weapons and high mobility.",
-        "flavorText": "You have dedicated yourself to the art of the blade dance, a fighting style that emphasizes speed, precision, and grace over brute force.",
-        "primaryAttributes": ["dex", "wis"],
-        "playstyle": "Mobile skirmisher with high AC and precision strikes",
-
-        "automaticGrants": {
-          "3": [
-            {
-              "type": "trait",
-              "id": "unarmored_defense_bladedancer",
-              "name": "Unarmored Defense",
-              "description": "While not wearing armor, your AC = 10 + DEX + WIS"
-            }
-          ],
-          "7": [
-            {
-              "type": "trait",
-              "id": "evasion_bladedancer",
-              "name": "Evasion",
-              "description": "DEX saves: success = no damage, fail = half damage"
-            }
-          ],
-          "10": [
-            {
-              "type": "trait",
-              "id": "mythic_bladedancer",
-              "name": "Dance of Ten Thousand Cuts",
-              "description": "Extra attack when you take the Attack action, +2 AC without heavy armor"
-            }
-          ]
-        },
-
-        "recommendedWeaponMasteries": ["vex", "nick", "topple"],
-        "recommendedAttributes": {
-          "primary": "dex",
-          "secondary": "wis"
-        }
+        "description": "Tactical weapon master. Spends Resolve on combat maneuvers for precision, control, and defense.",
+        "flavorText": "You have pushed beyond raw strength into something rarer — the ability to read a fight and shape it. Every exchange is an opportunity.",
+        "primaryAttributes": ["str", "dex"],
+        "playstyle": "Tactical weapon master with combat maneuvers for precision, control, and defense",
+        "campaignIds": ["core"]
       },
-
       {
-        "id": "juggernaut",
-        "name": "Juggernaut",
+        "id": "oath",
+        "name": "Oath",
         "calling": "dedication",
         "chosenAtLevel": 3,
-        "description": "Unstoppable tanks who wade into battle in heavy armor. They specialize in protection, control, and outlasting their foes.",
-        "flavorText": "You have become an immovable object, a wall of steel that protects your allies and crushes your enemies.",
+        "description": "Sworn warrior. Spends Resolve on Sworn Strike (burst radiant damage) or Aid the Vulnerable (healing and condition cleanse). Every smite point is healing you don't have.",
+        "flavorText": "The source of your power is not a god or a patron. It is the oath itself — a promise made and kept through blood and will.",
         "primaryAttributes": ["str", "con"],
-        "playstyle": "Tanky defender with area control and durability",
-
-        "automaticGrants": {
-          "3": [
-            {
-              "type": "trait",
-              "id": "heavy_armor_master_juggernaut",
-              "name": "Heavy Armor Master",
-              "description": "Physical damage reduced by 3 when wearing heavy armor"
-            }
-          ],
-          "7": [
-            {
-              "type": "ability",
-              "id": "indomitable",
-              "name": "Indomitable",
-              "description": "Reroll a failed saving throw once per long rest",
-              "source": "abilities.dedication"
-            }
-          ],
-          "10": [
-            {
-              "type": "trait",
-              "id": "mythic_juggernaut",
-              "name": "Unstoppable",
-              "description": "Advantage on STR checks/saves, can't be knocked prone while conscious"
-            }
-          ]
-        },
-
-        "recommendedWeaponMasteries": ["push", "sap", "topple"],
-        "recommendedAttributes": {
-          "primary": "str",
-          "secondary": "con"
-        }
-      },
-
-      {
-        "id": "ascetic",
-        "name": "Ascetic",
-        "calling": "dedication",
-        "chosenAtLevel": 3,
-        "description": "Monk traditions focused on unarmed combat, spiritual discipline, and ki mastery.",
-        "flavorText": "You have embraced the ascetic path, honing your body and mind into perfect harmony through rigorous discipline.",
-        "primaryAttributes": ["dex", "wis"],
-        "playstyle": "Unarmed striker with mobility and ki abilities",
-
-        "automaticGrants": {
-          "3": [
-            {
-              "type": "trait",
-              "id": "martial_arts_ascetic",
-              "name": "Martial Arts",
-              "description": "Unarmed strikes use d6 (d8 at 5th, d10 at 10th), can use DEX for unarmed strikes"
-            }
-          ],
-          "7": [
-            {
-              "type": "ability",
-              "id": "stunning_strike_ascetic",
-              "name": "Stunning Strike",
-              "description": "Spend 1 ki to force CON save or stun until your next turn"
-            }
-          ],
-          "10": [
-            {
-              "type": "trait",
-              "id": "mythic_ascetic",
-              "name": "Perfect Self",
-              "description": "Regain 4 ki points at start of turn if you have 0, unarmed strikes count as magical"
-            }
-          ]
-        },
-
-        "recommendedWeaponMasteries": ["topple", "push", "nick"],
-        "recommendedAttributes": {
-          "primary": "dex",
-          "secondary": "wis"
-        }
+        "playstyle": "Sworn warrior with burst damage or healing — every smite point is healing you don't have",
+        "campaignIds": ["core"]
       }
     ],
 
