@@ -34,28 +34,28 @@ class AudioManager {
         const soundFiles = {
             // === COMBAT SOUNDS ===
             // Melee weapon sounds
-            meleeCritical: 'data/sound/Sword Impact Hit 2.wav',
-            meleeHit: 'data/sound/Sword Impact Hit 3.wav',
-            meleeMiss: 'data/sound/Sword Attack 1.wav',
+            meleeCritical: 'data/sound/sword-impact-hit-2.wav',
+            meleeHit: 'data/sound/sword-impact-hit-3.wav',
+            meleeMiss: 'data/sound/sword-attack-1.wav',
 
             // Ranged weapon sounds
-            rangedCritical: 'data/sound/Spell Impact 2.wav',
-            rangedHit: 'data/sound/Spell Impact 1.wav',
-            rangedMiss: 'data/sound/Bow Blocked 1.wav',
+            rangedCritical: 'data/sound/spell-impact-2.wav',
+            rangedHit: 'data/sound/spell-impact-1.wav',
+            rangedMiss: 'data/sound/bow-blocked-1.wav',
 
             // Healing/ability sounds
-            heal: 'data/sound/Ice Freeze 1.wav',
+            heal: 'data/sound/ice-freeze-1.wav',
 
             // Death/defeat sound (plays 1 second after fatal damage)
-            death: 'data/sound/Light Torch 2.wav',
+            death: 'data/sound/light-torch-2.wav',
 
             // === EXPLORATION SOUNDS ===
             // Footstep sounds (dirt/terrain)
-            footstep1: 'data/sound/Dirt Run 1.wav',
-            footstep2: 'data/sound/Dirt Run 2.wav',
-            footstep3: 'data/sound/Dirt Run 3.wav',
-            footstep4: 'data/sound/Dirt Run 4.wav',
-            footstep5: 'data/sound/Dirt Run 5.wav'
+            footstep1: 'data/sound/dirt-run-1.wav',
+            footstep2: 'data/sound/dirt-run-2.wav',
+            footstep3: 'data/sound/dirt-run-3.wav',
+            footstep4: 'data/sound/dirt-run-4.wav',
+            footstep5: 'data/sound/dirt-run-5.wav'
 
             // === EXPLORATION SOUNDS (placeholders for future) ===
             // doorOpen: 'data/sound/door_open.wav',

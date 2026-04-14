@@ -1,6 +1,7 @@
 # Exclude dev/tooling directories from Azure Static Web Apps deployment
 .claude/
 .github/
+.playwright-mcp/
 docs/
 scripts/
 node_modules/
