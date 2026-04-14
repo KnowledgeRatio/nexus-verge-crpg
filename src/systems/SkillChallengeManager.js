@@ -7,7 +7,7 @@
  */
 
 import { gameState } from '../core/GameState.js';
-import { rollD20 } from '../utils/dice.js';
+import { rollD20, roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue } from './FatigueManager.js';
 
@@ -806,6 +806,104 @@ class SkillChallengeManager {
             this.lastAttemptTimes = {};
         }
         this.lastAttemptTimes[challengeId] = Date.now();
+    }
+
+    /**
+     * Apply all consequences (XP, gold, damage, loot) from a skill challenge outcome block.
+     * Called by main.js after both passive and active skill checks resolve.
+     *
+     * Does NOT touch social challenge nodes — those go through selectChoice() path.
+     *
+     * @param {Object} character - Plain character object from gameState
+     * @param {Object} challenge - Challenge definition (from terrainChallengesData.challenges)
+     * @param {Object} outcome - The onSuccess or onFailure block from the challenge data
+     * @param {Object} rollContext - Additional context: { rollTotal, naturalRoll, dc, succeeded }
+     * @returns {Object} result - { xpAwarded, goldAwarded, damageDealt, itemsAwarded, consequenceFlags }
+     */
+    applyConsequences(character, challenge, outcome, rollContext = {}) {
+        const result = {
+            xpAwarded: 0,
+            goldAwarded: 0,
+            damageDealt: 0,
+            itemsAwarded: [],
+            consequenceFlags: []
+        };
+
+        if (!outcome) return result;
+
+        // --- XP ---
+        if (outcome.xp && outcome.xp > 0) {
+            if (typeof character.gainXP === 'function') {
+                character.gainXP(outcome.xp);
+            } else {
+                // Fallback for plain objects (character stripped of methods by gameState)
+                character.xp = (character.xp || 0) + outcome.xp;
+            }
+            result.xpAwarded = outcome.xp;
+        }
+
+        // --- Gold ---
+        if (outcome.gold && outcome.gold > 0) {
+            character.gold = (character.gold || 0) + outcome.gold;
+            result.goldAwarded = outcome.gold;
+        }
+
+        // --- Damage ---
+        if (outcome.damage) {
+            const dmg = roll(outcome.damage);
+            if (typeof character.takeDamage === 'function') {
+                character.takeDamage(dmg, outcome.damageType || 'environmental');
+            } else {
+                // Fallback: direct HP reduction for plain objects
+                character.currentHP = Math.max(0, (character.currentHP || 0) - dmg);
+            }
+            result.damageDealt = dmg;
+        }
+
+        // --- Consequence flags (e.g. revealInformation, questClue) ---
+        if (Array.isArray(outcome.consequences)) {
+            result.consequenceFlags = [...outcome.consequences];
+        }
+
+        // --- Loot ---
+        const lootSpec = outcome.loot;
+        if (lootSpec && lootSpec.tableId) {
+            const chance = lootSpec.chance ?? 1.0;
+            if (Math.random() < chance) {
+                const lootManager = window.lootManager;
+                if (!lootManager) {
+                    console.warn('⚠️ SkillChallengeManager.applyConsequences: window.lootManager not available');
+                } else {
+                    const rolls = lootSpec.rolls ?? 1;
+                    const playerLevel = character.level || 1;
+                    const rarityFilter = lootSpec.rarityFilter || null;
+                    const lootResults = lootManager.rollOnTableWithRarityFilter(
+                        lootSpec.tableId,
+                        rolls,
+                        playerLevel,
+                        rarityFilter
+                    );
+
+                    for (const entry of lootResults) {
+                        if (entry.isGold) {
+                            // Gold pseudo-item — roll dice and award directly
+                            const goldAmount = roll(entry.amount || '1d6');
+                            character.gold = (character.gold || 0) + goldAmount;
+                            result.goldAwarded += goldAmount;
+                        } else {
+                            // Physical item — push to inventory
+                            if (!Array.isArray(character.inventory)) {
+                                character.inventory = [];
+                            }
+                            character.inventory.push(entry);
+                            result.itemsAwarded.push(entry);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }
 

@@ -716,7 +716,7 @@ class Player {
 
         // Pick a random challenge from the terrain's list
         const challengeId = possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
-        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+        const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.[challengeId];
 
         if (!challenge) {
             return;
@@ -1342,8 +1342,8 @@ class Player {
             gameState.addMessage(`👁️ Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
 
             // Offer disarm attempt via skill challenge modal
-            if (window.skillChallengeManager?.challenges) {
-                const challenge = window.skillChallengeManager.challenges.challenges['trap_detect_disarm'];
+            if (window.skillChallengeManager?.terrainChallengesData) {
+                const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.['trap_detect_disarm'];
                 if (challenge && challenge.stages?.length >= 2) {
                     // Skip stage 1 (detect) - already detected via passive perception
                     // Go directly to stage 2 (disarm)
@@ -1504,7 +1504,7 @@ class Player {
 
         // Pick a random challenge from relevant pool
         const challengeId = relevantChallenges[Math.floor(Math.random() * relevantChallenges.length)];
-        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+        const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.[challengeId];
 
         if (!challenge) {
             return;

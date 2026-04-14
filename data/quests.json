@@ -82,7 +82,7 @@
       "rewards": {
         "xp": 1000,
         "gold": 250,
-        "item": "potion-greater-healing",
+        "item": "potionOfGreaterHealing",
         "reputation": {
           "faction": "settlement",
           "amount": 100
@@ -156,7 +156,7 @@
       "rewards": {
         "xp": 5000,
         "gold": 1000,
-        "item": "legendary-weapon",
+        "item": "vorpal-sword",
         "reputation": {
           "faction": "all",
           "amount": 500
@@ -193,7 +193,7 @@
         }
       ],
       "rewards": {
-        "xpFormula": "creatureCR * count * 100",
+        "xpFormula": "Math.max(150, creatureCR * count * 100)",
         "goldFormula": "creatureCR * count * 25",
         "reputation": {
           "faction": "settlement",
@@ -242,7 +242,7 @@
         }
       ],
       "rewards": {
-        "xpFormula": "creatureCR * 200",
+        "xpFormula": "Math.max(200, creatureCR * 200)",
         "goldFormula": "creatureCR * 50",
         "itemChance": 0.4,
         "reputation": {

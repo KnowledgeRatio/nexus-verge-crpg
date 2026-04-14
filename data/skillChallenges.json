@@ -81,7 +81,7 @@
             "xp": 100,
             "gold": 25,
             "loot": {
-              "table": "trapDisarm_common",
+              "tableId": "trapDisarm_common",
               "rolls": 1,
               "chance": 0.8,
               "rarityFilter": {
@@ -111,7 +111,7 @@
         "gold": 40,
         "message": "Masterful work! You find a hidden compartment with treasure",
         "loot": {
-          "table": "trapDisarm_uncommon",
+          "tableId": "trapDisarm_uncommon",
           "rolls": 2,
           "chance": 1
         }
@@ -426,7 +426,7 @@
             "xp": 75,
             "gold": 20,
             "loot": {
-              "table": "hiddenCache_common",
+              "tableId": "hiddenCache_common",
               "rolls": 1,
               "chance": 0.9
             }
@@ -528,7 +528,7 @@
               "avoidCombat"
             ],
             "loot": {
-              "table": "hiddenCache_common",
+              "tableId": "hiddenCache_common",
               "rolls": 1,
               "chance": 0.3
             }
@@ -557,7 +557,7 @@
               "avoidCombat"
             ],
             "loot": {
-              "table": "hiddenCache_common",
+              "tableId": "hiddenCache_common",
               "rolls": 1,
               "chance": 0.3
             }
@@ -647,7 +647,12 @@
           "onSuccess": {
             "message": "You understand the magical principles and solve the puzzle!",
             "xp": 120,
-            "gold": 25
+            "gold": 25,
+            "loot": {
+              "tableId": "arcaneReward_uncommon",
+              "rolls": 1,
+              "chance": 0.5
+            }
           },
           "onFailure": {
             "message": "The puzzle remains unsolved."
@@ -721,7 +726,12 @@
         "consequences": [
           "revealInformation",
           "questClue"
-        ]
+        ],
+        "loot": {
+          "tableId": "sc_lore_reward",
+          "rolls": 1,
+          "chance": 0.4
+        }
       },
       "onFailure": {
         "message": "The text is too damaged or complex to understand."
@@ -965,7 +975,12 @@
       "onSuccess": {
         "message": "You successfully perform the ritual. The area is blessed!",
         "xp": 150,
-        "gold": 30
+        "gold": 30,
+        "loot": {
+          "tableId": "sc_ritual_reward",
+          "rolls": 1,
+          "chance": 0.35
+        }
       },
       "onFailure": {
         "message": "The ritual fails to take effect."
@@ -1134,7 +1149,7 @@
           "revealFeature"
         ],
         "loot": {
-          "table": "boulderReward_low",
+          "tableId": "boulderReward_low",
           "rolls": 2,
           "chance": 1
         }
@@ -2023,7 +2038,7 @@
             "xp": 100,
             "gold": 40,
             "loot": {
-              "table": "shipwreck_salvage",
+              "tableId": "shipwreck_salvage",
               "rolls": 2,
               "chance": 0.85
             }

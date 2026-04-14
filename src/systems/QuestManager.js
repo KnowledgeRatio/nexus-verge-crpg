@@ -240,11 +240,19 @@ class QuestManager {
             summary.gold = rewards.gold;
         }
 
-        // Award Item (TODO: Implement item system)
+        // Award Item
         if (rewards.item && rewards.item !== 'random') {
-            // Future: Add item to inventory
-            summary.item = rewards.item;
-            console.log(`Quest reward item: ${rewards.item} (not yet implemented)`);
+            const item = window.lootManager?.getItemById(rewards.item);
+            if (item) {
+                character.inventory = character.inventory || [];
+                character.inventory.push({ ...item, quantity: 1 });
+                gameState.set('character', character);
+                gameState.addMessage(`📦 Quest reward: ${item.name}!`, 'success');
+                summary.item = item.name;
+            } else {
+                console.warn(`QuestManager: reward item '${rewards.item}' not found in items`);
+                summary.item = rewards.item;
+            }
         }
 
         // Award Reputation (TODO: Implement faction system)

@@ -18,7 +18,7 @@
       "twoHanded": false,
       "range": { "normal": 20, "long": 60 },
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 150,
       "description": "A dagger with a +1 bonus to attack and damage rolls."
@@ -37,7 +37,7 @@
       "equipSlots": ["mainHand", "offHand"],
       "twoHanded": false,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 200,
       "description": "A shortsword with a +1 bonus to attack and damage rolls."
@@ -57,7 +57,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 250,
       "description": "A longsword with a +1 bonus to attack and damage rolls."
@@ -76,7 +76,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": true,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 300,
       "description": "A greatsword with a +1 bonus to attack and damage rolls."
@@ -96,7 +96,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 250,
       "description": "A battleaxe with a +1 bonus to attack and damage rolls."
@@ -115,7 +115,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 250,
       "description": "A rapier with a +1 bonus to attack and damage rolls."
@@ -135,7 +135,7 @@
       "twoHanded": true,
       "range": { "normal": 80, "long": 320 },
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 200,
       "description": "A shortbow with a +1 bonus to attack and damage rolls."
@@ -155,7 +155,7 @@
       "twoHanded": true,
       "range": { "normal": 150, "long": 600 },
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 250,
       "description": "A longbow with a +1 bonus to attack and damage rolls."
@@ -175,7 +175,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1000,
       "description": "A longsword with a +2 bonus to attack and damage rolls."
@@ -194,7 +194,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": true,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1200,
       "description": "A greatsword with a +2 bonus to attack and damage rolls."
@@ -214,7 +214,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1000,
       "description": "A battleaxe with a +2 bonus to attack and damage rolls."
@@ -233,7 +233,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1000,
       "description": "A rapier with a +2 bonus to attack and damage rolls."
@@ -253,7 +253,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": false,
       "bonus": 3,
-      "minimumLevel": 15,
+      "minimumLevel": 10,
       "rarity": "veryRare",
       "value": 5000,
       "description": "A longsword with a +3 bonus to attack and damage rolls."
@@ -272,7 +272,7 @@
       "equipSlots": ["mainHand"],
       "twoHanded": true,
       "bonus": 3,
-      "minimumLevel": 15,
+      "minimumLevel": 10,
       "rarity": "veryRare",
       "value": 6000,
       "description": "A greatsword with a +3 bonus to attack and damage rolls."
@@ -290,7 +290,7 @@
       "addDexModifier": true,
       "weight": 10,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 200,
       "description": "Leather armor with a +1 bonus to AC (AC 12 + Dex modifier)."
@@ -306,7 +306,7 @@
       "maxDexBonus": 2,
       "weight": 20,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 300,
       "description": "Chain shirt with a +1 bonus to AC (AC 14 + Dex modifier, max +2)."
@@ -322,7 +322,7 @@
       "maxDexBonus": 2,
       "weight": 20,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 400,
       "description": "Breastplate with a +1 bonus to AC (AC 15 + Dex modifier, max +2)."
@@ -336,9 +336,10 @@
       "armorClass": 16,
       "addDexModifier": true,
       "maxDexBonus": 2,
+      "stealthDisadvantage": true,
       "weight": 40,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 500,
       "description": "Half plate with a +1 bonus to AC (AC 16 + Dex modifier, max +2)."
@@ -354,7 +355,7 @@
       "strengthRequirement": 13,
       "weight": 55,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 600,
       "description": "Chain mail with a +1 bonus to AC (AC 17)."
@@ -370,7 +371,7 @@
       "strengthRequirement": 15,
       "weight": 65,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 800,
       "description": "Plate mail with a +1 bonus to AC (AC 19)."
@@ -386,7 +387,7 @@
       "maxDexBonus": 2,
       "weight": 20,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1500,
       "description": "Chain shirt with a +2 bonus to AC (AC 15 + Dex modifier, max +2)."
@@ -402,7 +403,7 @@
       "maxDexBonus": 2,
       "weight": 20,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 2000,
       "description": "Breastplate with a +2 bonus to AC (AC 16 + Dex modifier, max +2)."
@@ -416,9 +417,10 @@
       "armorClass": 17,
       "addDexModifier": true,
       "maxDexBonus": 2,
+      "stealthDisadvantage": true,
       "weight": 40,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 2500,
       "description": "Half plate with a +2 bonus to AC (AC 17 + Dex modifier, max +2)."
@@ -434,7 +436,7 @@
       "strengthRequirement": 15,
       "weight": 65,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 4000,
       "description": "Plate mail with a +2 bonus to AC (AC 20)."
@@ -450,7 +452,7 @@
       "strengthRequirement": 15,
       "weight": 65,
       "bonus": 3,
-      "minimumLevel": 15,
+      "minimumLevel": 10,
       "rarity": "veryRare",
       "value": 10000,
       "description": "Plate mail with a +3 bonus to AC (AC 21)."
@@ -466,7 +468,7 @@
       "armorClassBonus": 3,
       "weight": 6,
       "bonus": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 200,
       "description": "A shield with a +1 bonus to AC (+3 total AC bonus)."
@@ -479,7 +481,7 @@
       "armorClassBonus": 4,
       "weight": 6,
       "bonus": 2,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1000,
       "description": "A shield with a +2 bonus to AC (+4 total AC bonus)."
@@ -494,7 +496,7 @@
       "bonusAC": 1,
       "bonusSaves": 1,
       "weight": 1,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 500,
       "description": "While you wear this cloak, you gain a +1 bonus to AC and saving throws."
@@ -506,7 +508,7 @@
       "bonusAC": 1,
       "bonusSaves": 1,
       "weight": 0,
-      "minimumLevel": 5,
+      "minimumLevel": 4,
       "rarity": "uncommon",
       "value": 500,
       "description": "While wearing this ring, you gain a +1 bonus to AC and saving throws."
@@ -517,7 +519,7 @@
       "type": "wondrous",
       "setCON": 19,
       "weight": 0,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 2000,
       "description": "Your Constitution score is 19 while you wear this amulet (has no effect if your CON is already 19 or higher)."
@@ -528,10 +530,24 @@
       "type": "wondrous",
       "bonusSpeed": 10,
       "weight": 1,
-      "minimumLevel": 10,
+      "minimumLevel": 8,
       "rarity": "rare",
       "value": 1500,
       "description": "While you wear these boots, your walking speed increases by 10 feet."
+    },
+    {
+      "id": "wand-of-magic-missiles",
+      "name": "Wand of Magic Missiles",
+      "type": "wand",
+      "effect": "spell",
+      "spellId": "magicMissile",
+      "charges": 7,
+      "rechargeOnDawn": true,
+      "weight": 1,
+      "minimumLevel": 5,
+      "rarity": "uncommon",
+      "value": 500,
+      "description": "This wand has 7 charges. You can use it to cast Magic Missile (1d4+1 force damage per missile, 3 missiles). Regains 1d6+1 charges at dawn."
     }
   ],
 
@@ -551,7 +567,7 @@
       "twoHanded": false,
       "bonus": 3,
       "specialAbility": "On a natural 20, target must make DC 15 CON save or be beheaded (instant death)",
-      "minimumLevel": 15,
+      "minimumLevel": 9,
       "rarity": "legendary",
       "value": 20000,
       "description": "A legendary sword with a +3 bonus. On a critical hit, the target must make a DC 15 Constitution saving throw or be beheaded."
@@ -567,7 +583,7 @@
       "weight": 65,
       "bonus": 2,
       "specialAbility": "Resistance to all non-magical damage",
-      "minimumLevel": 15,
+      "minimumLevel": 10,
       "rarity": "legendary",
       "value": 25000,
       "description": "Plate mail with a +2 bonus to AC. You have resistance to all non-magical bludgeoning, piercing, and slashing damage."

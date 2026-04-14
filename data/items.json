@@ -483,6 +483,56 @@
       ]
     },
     {
+      "id": "glaive",
+      "name": "Glaive",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d10",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "reach",
+        "twoHanded"
+      ],
+      "weight": 6,
+      "description": "A polearm with a single-edged blade mounted on a long shaft.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "halberd",
+      "name": "Halberd",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d10",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "reach",
+        "twoHanded"
+      ],
+      "weight": 6,
+      "description": "A polearm combining an axe blade, a spike, and a hook on a long shaft.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "battleaxe",
       "name": "Battleaxe",
       "type": "weapon",
@@ -587,6 +637,26 @@
     }
   ],
   "armor": [
+    {
+      "id": "halfPlate",
+      "name": "Half Plate",
+      "type": "armor",
+      "armorType": "medium",
+      "armorClass": 15,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "stealthDisadvantage": true,
+      "strengthRequirement": null,
+      "weight": 40,
+      "value": 750,
+      "rarity": "common",
+      "description": "Half plate consists of shaped metal plates that cover most of the wearer's body.",
+      "equipSlot": "armor",
+      "reputationRequirement": 25,
+      "campaignIds": [
+        "core"
+      ]
+    },
     {
       "id": "clothes",
       "name": "Common Clothes",
@@ -853,6 +923,87 @@
       "description": "A character who drinks this potion regains 4d4 + 4 hit points.",
       "rarity": "uncommon",
       "reputationRequirement": 30,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfSuperiorHealing",
+      "name": "Potion of Superior Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healDice": "8d4",
+      "healBonus": 8,
+      "healAmount": "8d4+8",
+      "weight": 0.5,
+      "value": 450,
+      "description": "You regain 8d4+8 hit points when you drink this potion.",
+      "rarity": "rare",
+      "reputationRequirement": 50,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfSupremeHealing",
+      "name": "Potion of Supreme Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healDice": "10d4",
+      "healBonus": 20,
+      "healAmount": "10d4+20",
+      "weight": 0.5,
+      "value": 1350,
+      "description": "You regain 10d4+20 hit points when you drink this potion.",
+      "rarity": "veryRare",
+      "reputationRequirement": 70,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfIdentify",
+      "name": "Scroll of Identify",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "identify",
+      "weight": 0.1,
+      "value": 25,
+      "description": "A spell scroll containing the Identify spell. Reveals the properties of a magic item.",
+      "rarity": "common",
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfFireball",
+      "name": "Scroll of Fireball",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "fireball",
+      "weight": 0.1,
+      "value": 150,
+      "description": "A spell scroll containing the Fireball spell. Deals 8d6 fire damage in a 20-foot radius.",
+      "rarity": "uncommon",
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfDispelMagic",
+      "name": "Scroll of Dispel Magic",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "dispelMagic",
+      "weight": 0.1,
+      "value": 100,
+      "description": "A spell scroll containing the Dispel Magic spell. Ends one magical effect on a target.",
+      "rarity": "uncommon",
       "consumable": true,
       "campaignIds": [
         "core"
@@ -1184,6 +1335,62 @@
       "campaignIds": [
         "core"
       ]
+    },
+    {
+      "id": "rope",
+      "name": "Rope (50 ft)",
+      "type": "gear",
+      "weight": 10,
+      "value": 1,
+      "description": "Fifty feet of hempen rope.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "rations",
+      "name": "Rations (1 day)",
+      "type": "gear",
+      "weight": 2,
+      "value": 1,
+      "description": "A day's worth of travel rations.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "torch",
+      "name": "Torch",
+      "type": "gear",
+      "weight": 1,
+      "value": 1,
+      "description": "A torch that burns for 1 hour.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
     }
+  ],
+  "materials": [
+    { "id": "animalPelt", "name": "Animal Pelt", "type": "material", "weight": 2, "value": 5, "rarity": "common", "description": "A rough pelt stripped from a beast. Can be sold to a merchant.", "campaignIds": ["core"] },
+    { "id": "animalBone", "name": "Animal Bone", "type": "material", "weight": 1, "value": 2, "rarity": "common", "description": "A bone from a slain beast.", "campaignIds": ["core"] },
+    { "id": "rawMeat", "name": "Raw Meat", "type": "material", "weight": 2, "value": 3, "rarity": "common", "description": "Fresh meat from a slain beast. Edible if cooked.", "campaignIds": ["core"] },
+    { "id": "rareHide", "name": "Rare Hide", "type": "material", "weight": 3, "value": 25, "rarity": "uncommon", "description": "A valuable hide from a rare creature.", "campaignIds": ["core"] },
+    { "id": "exoticMeat", "name": "Exotic Meat", "type": "material", "weight": 2, "value": 15, "rarity": "uncommon", "description": "Unusual meat with a strange quality.", "campaignIds": ["core"] },
+    { "id": "magicalBone", "name": "Magical Bone", "type": "material", "weight": 1, "value": 40, "rarity": "uncommon", "description": "A bone that faintly pulses with residual magic.", "campaignIds": ["core"] },
+    { "id": "enchantedPelt", "name": "Enchanted Pelt", "type": "material", "weight": 2, "value": 80, "rarity": "rare", "description": "A pelt suffused with magical energy.", "campaignIds": ["core"] },
+    { "id": "boneDust", "name": "Bone Dust", "type": "material", "weight": 0.5, "value": 3, "rarity": "common", "description": "Ground bone powder from an undead creature.", "campaignIds": ["core"] },
+    { "id": "tarnishedCoin", "name": "Tarnished Coin", "type": "material", "weight": 0.1, "value": 1, "rarity": "common", "description": "An old coin found among undead remains.", "campaignIds": ["core"] },
+    { "id": "rottenCloth", "name": "Rotted Cloth", "type": "material", "weight": 0.5, "value": 1, "rarity": "common", "description": "Decomposed fabric torn from an undead.", "campaignIds": ["core"] },
+    { "id": "cursedBone", "name": "Cursed Bone", "type": "material", "weight": 1, "value": 15, "rarity": "uncommon", "description": "A bone from an undead creature, still radiating dark energy.", "campaignIds": ["core"] },
+    { "id": "graveDirt", "name": "Grave Dirt", "type": "material", "weight": 1, "value": 5, "rarity": "common", "description": "Soil from a desecrated grave, used in dark rituals.", "campaignIds": ["core"] },
+    { "id": "necroticEssence", "name": "Necrotic Essence", "type": "material", "weight": 0.5, "value": 50, "rarity": "rare", "description": "A vial of distilled necrotic energy.", "campaignIds": ["core"] },
+    { "id": "ancientCoin", "name": "Ancient Coin", "type": "material", "weight": 0.1, "value": 8, "rarity": "common", "description": "An old coin of unknown origin found among ancient remains.", "campaignIds": ["core"] },
+    { "id": "soulGem", "name": "Soul Gem", "type": "material", "weight": 0.5, "value": 150, "rarity": "rare", "description": "A gem containing a trapped soul fragment.", "campaignIds": ["core"] }
   ]
 }

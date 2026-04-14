@@ -305,6 +305,7 @@ export const RULES = {
             goldMultiplier: 3,
             guaranteedLoot: true,
             extraLootRolls: 2,
+            guaranteedMagicMinLevel: 4, // Minimum player level to guarantee magic item drop from boss
             minions: { min: 1, max: 2 }  // Boss rooms spawn 1-2 adds
         },
 

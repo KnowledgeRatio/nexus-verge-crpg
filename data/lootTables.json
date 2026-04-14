@@ -260,10 +260,13 @@
   "itemTables": {
     "humanoid_weapons_tier1": [
       { "itemId": "dagger", "weight": 30 },
-      { "itemId": "club", "weight": 25 },
+      { "itemId": "club", "weight": 20 },
       { "itemId": "handaxe", "weight": 20 },
       { "itemId": "mace", "weight": 15 },
-      { "itemId": "shortsword", "weight": 10 }
+      { "itemId": "shortsword", "weight": 10 },
+      { "itemId": "spear", "weight": 20 },
+      { "itemId": "javelin", "weight": 15 },
+      { "itemId": "scimitar", "weight": 15 }
     ],
 
     "humanoid_weapons_tier2": [
@@ -272,7 +275,10 @@
       { "itemId": "battleaxe", "weight": 15 },
       { "itemId": "rapier", "weight": 15 },
       { "itemId": "shortbow", "weight": 15 },
-      { "itemId": "handaxe", "weight": 10 }
+      { "itemId": "handaxe", "weight": 10 },
+      { "itemId": "lightCrossbow", "weight": 20 },
+      { "itemId": "greataxe", "weight": 15 },
+      { "itemId": "morningstar", "weight": 10 }
     ],
 
     "humanoid_weapons_tier3": [
@@ -280,7 +286,9 @@
       { "itemId": "greatsword", "weight": 20 },
       { "itemId": "battleaxe", "weight": 20 },
       { "itemId": "rapier", "weight": 15 },
-      { "itemId": "longbow", "weight": 20 }
+      { "itemId": "longbow", "weight": 20 },
+      { "itemId": "handCrossbow", "weight": 15 },
+      { "itemId": "heavyCrossbow", "weight": 10 }
     ],
 
     "humanoid_weapons_tier4": [
@@ -293,8 +301,9 @@
 
     "humanoid_armor_tier1": [
       { "itemId": "leatherArmor", "weight": 50 },
-      { "itemId": "hide", "weight": 30 },
-      { "itemId": "studdedLeather", "weight": 20 }
+      { "itemId": "hideArmor", "weight": 25 },
+      { "itemId": "studdedLeather", "weight": 10 },
+      { "itemId": "ringMail", "weight": 15 }
     ],
 
     "humanoid_armor_tier2": [
@@ -312,41 +321,40 @@
     ],
 
     "humanoid_armor_tier4": [
-      { "itemId": "breastplate", "weight": 25 },
-      { "itemId": "halfPlate", "weight": 30 },
+      { "itemId": "breastplate", "weight": 20 },
+      { "itemId": "halfPlate", "weight": 15 },
       { "itemId": "chainMail", "weight": 20 },
+      { "itemId": "plateMail", "weight": 20 },
       { "itemId": "shield", "weight": 25 }
     ],
 
     "consumables_tier1": [
       { "itemId": "potionOfHealing", "weight": 70 },
       { "itemId": "healersKit", "weight": 15 },
-      { "itemId": "arrow", "count": "3d6", "weight": 10 },
-      { "itemId": "bolt", "count": "2d6", "weight": 5 }
+      { "itemId": "quiverOfArrows", "weight": 10 },
+      { "itemId": "boltCase", "weight": 5 }
     ],
 
     "consumables_tier2": [
       { "itemId": "potionOfHealing", "weight": 50 },
       { "itemId": "potionOfGreaterHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 15 },
-      { "itemId": "arrow", "count": "3d6", "weight": 10 },
-      { "itemId": "antitoxin", "weight": 5 }
+      { "itemId": "quiverOfArrows", "weight": 10 },
+      { "itemId": "boltCase", "weight": 5 }
     ],
 
     "consumables_tier3": [
       { "itemId": "potionOfGreaterHealing", "weight": 40 },
       { "itemId": "potionOfHealing", "weight": 30 },
-      { "itemId": "potionOfSuperiorHealing", "weight": 15 },
-      { "itemId": "healersKit", "weight": 10 },
-      { "itemId": "antitoxin", "weight": 5 }
+      { "itemId": "potionOfSuperiorHealing", "weight": 20 },
+      { "itemId": "healersKit", "weight": 10 }
     ],
 
     "consumables_tier4": [
       { "itemId": "potionOfSuperiorHealing", "weight": 40 },
       { "itemId": "potionOfGreaterHealing", "weight": 30 },
-      { "itemId": "potionOfSupremeHealing", "weight": 15 },
-      { "itemId": "healersKit", "weight": 10 },
-      { "itemId": "antitoxin", "weight": 5 }
+      { "itemId": "potionOfSupremeHealing", "weight": 20 },
+      { "itemId": "healersKit", "weight": 10 }
     ],
 
     "beast_parts_tier1": [
@@ -437,7 +445,7 @@
   "skillChallengeLootTables": {
     "trapDisarm_common": [
       { "itemId": "gold", "amount": "2d10", "weight": 50 },
-      { "itemId": "arrow", "count": "2d6", "weight": 30 },
+      { "itemId": "quiverOfArrows", "weight": 30 },
       { "itemId": "potionOfHealing", "weight": 20 }
     ],
 
@@ -445,7 +453,7 @@
       { "itemId": "gold", "amount": "3d20", "weight": 40 },
       { "itemId": "potionOfGreaterHealing", "weight": 25 },
       { "itemId": "dagger-plus-1", "weight": 20 },
-      { "itemId": "arrow", "count": "3d6", "weight": 15 }
+      { "itemId": "quiverOfArrows", "weight": 15 }
     ],
 
     "hiddenCache_common": [
@@ -529,7 +537,64 @@
       { "itemId": "rareHide", "weight": 30 },
       { "itemId": "potionOfHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 10 }
+    ],
+
+    "sc_lore_reward": [
+      { "itemId": "gold", "amount": "2d20", "weight": 45 },
+      { "itemId": "scrollOfIdentify", "weight": 25 },
+      { "itemId": "componentPouch", "weight": 15 },
+      { "itemId": "healersKit", "weight": 10 },
+      { "itemId": "potionOfHealing", "weight": 5 }
+    ],
+
+    "sc_ritual_reward": [
+      { "itemId": "gold", "amount": "2d12", "weight": 40 },
+      { "itemId": "potionOfHealing", "weight": 30 },
+      { "itemId": "healersKit", "weight": 20 },
+      { "itemId": "potionOfGreaterHealing", "weight": 10 }
+    ],
+
+    "shipwreck_salvage": [
+      { "itemId": "gold", "amount": "1d20", "weight": 40 },
+      { "itemId": "rope", "weight": 25 },
+      { "itemId": "rations", "weight": 20 },
+      { "itemId": "healersKit", "weight": 10 },
+      { "itemId": "torch", "weight": 5 }
     ]
+  },
+
+  "bossLootTables": {
+    "1-3": {
+      "guaranteedMagicMinLevel": 4,
+      "tables": [
+        { "tableId": "magic_items_tier1", "rollCount": 1, "weight": 60 },
+        { "tableId": "consumables_tier2", "rollCount": 1, "weight": 40 }
+      ],
+      "guaranteedGoldMultiplier": 2.5
+    },
+    "4-6": {
+      "guaranteedMagicMinLevel": 4,
+      "tables": [
+        { "tableId": "magic_items_tier1", "rollCount": 1, "weight": 50 },
+        { "tableId": "magic_items_tier2_progressive", "rollCount": 1, "weight": 50 }
+      ],
+      "guaranteedGoldMultiplier": 3
+    },
+    "7-9": {
+      "guaranteedMagicMinLevel": 4,
+      "tables": [
+        { "tableId": "magic_items_tier2_progressive", "rollCount": 2, "weight": 100 }
+      ],
+      "guaranteedGoldMultiplier": 4
+    },
+    "10": {
+      "guaranteedMagicMinLevel": 4,
+      "tables": [
+        { "tableId": "magic_items_tier2_progressive", "rollCount": 1, "weight": 40 },
+        { "tableId": "magic_items_tier3_progressive", "rollCount": 1, "weight": 60 }
+      ],
+      "guaranteedGoldMultiplier": 5
+    }
   },
 
   "goldTables": {

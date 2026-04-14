@@ -45,6 +45,14 @@
 - Proficiency: +2 (L1-4), +3 (L5-8), +4 (L9-10)
 - Monster attack bonuses by tier: CR 0.25 = +3-4, CR 1 = +4-5, CR 5 = +7-8
 
+### Skill Challenge Loot Wiring (2026-04-14)
+- 5 of 23 challenges get loot; 78% gold/XP only. No magic gear from challenges.
+- Schema: `loot: { tableId, rolls, chance, rarityFilter? }` in `onSuccess` blocks
+- Rename `"table"` → `"tableId"` in 4 existing entries; add 3 new `loot` blocks
+- New tables: `sc_lore_reward` (scrolls/utility), `sc_ritual_reward` (healing only)
+- Two code gaps: `LootManager` needs dual-namespace lookup; `SkillChallengeManager` needs `applyLootReward()` wired
+- Design doc: `docs/designjams/2026-04-14-skill-challenge-loot-wiring.md`
+
 ## User Preferences
 - Brevity preferred: tables over prose, "super brief" responses
 - Design docs go to docs/designjams/ (not docs/plans/ - that dir doesn't exist)

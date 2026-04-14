@@ -88,6 +88,12 @@ class LootManager {
                 }
             });
 
+            // Merge itemTables and skillChallengeLootTables into a single flat lookup
+            this.allTables = {
+                ...(this.lootTables.itemTables || {}),
+                ...(this.lootTables.skillChallengeLootTables || {})
+            };
+
             console.log(`✅ LootManager: Loaded ${Object.keys(this.allItems).length} items (campaign: ${campaignId})`);
             console.log(`✅ LootManager: Loaded loot tables for ${Object.keys(this.lootTables.monsterLootTables.byCreatureType).length} creature types`);
         } catch (error) {
@@ -169,13 +175,57 @@ class LootManager {
             }
         }
 
-        // Roll gold (bosses get multiplied gold)
+        // Roll gold
         loot.gold = this.rollGold(monsterCR, playerLevel, rng);
+
+        // Boss loot: use bossLootTables for items and gold multiplier
         if (isBoss) {
-            loot.gold = Math.floor(loot.gold * (bossBuffs.goldMultiplier || 3));
+            const bossLevelBracket = this.getBossLevelBracket(playerLevel);
+            const bossTableConfig = this.lootTables.bossLootTables?.[bossLevelBracket];
+            if (bossTableConfig) {
+                const minMagicLevel = bossTableConfig.guaranteedMagicMinLevel ?? 4;
+                if (playerLevel >= minMagicLevel) {
+                    // Pick a table by weight
+                    const totalWeight = bossTableConfig.tables.reduce((s, t) => s + t.weight, 0);
+                    let roll = rng.next() * totalWeight;
+                    for (const tableEntry of bossTableConfig.tables) {
+                        roll -= tableEntry.weight;
+                        if (roll <= 0) {
+                            const bossItems = this.rollOnTable(tableEntry.tableId, tableEntry.rollCount, rng, playerLevel);
+                            loot.items.push(...bossItems);
+                            break;
+                        }
+                    }
+                }
+                loot.gold = Math.floor(loot.gold * (bossTableConfig.guaranteedGoldMultiplier || 3));
+            } else {
+                // Fallback: use legacy gold multiplier if no boss table config
+                loot.gold = Math.floor(loot.gold * (bossBuffs.goldMultiplier || 3));
+            }
         }
 
         return loot;
+    }
+
+    /**
+     * Map player level to boss loot bracket string
+     * @param {number} level - Player level
+     * @returns {string} Boss bracket string
+     */
+    getBossLevelBracket(level) {
+        if (level <= 3) return '1-3';
+        if (level <= 6) return '4-6';
+        if (level <= 9) return '7-9';
+        return '10';
+    }
+
+    /**
+     * Get an item directly by ID with no level gate (for quest rewards)
+     * @param {string} itemId - Item ID to look up
+     * @returns {Object|null} Item object or null if not found
+     */
+    getItemById(itemId) {
+        return this.allItems?.[itemId] ?? null;
     }
 
     /**
@@ -187,7 +237,7 @@ class LootManager {
      * @returns {Array} Array of item objects
      */
     rollOnTable(tableName, rollCount = 1, rng, playerLevel) {
-        const table = this.lootTables.itemTables[tableName];
+        const table = this.allTables[tableName];
         if (!table) {
             console.warn(`⚠️ LootManager: Table "${tableName}" not found`);
             return [];
@@ -210,6 +260,86 @@ class LootManager {
                     const item = this.resolveItem(entry, rng, playerLevel);
                     if (item) {
                         results.push(item);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Roll on a named table with optional rarity pre-filtering based on player level bracket.
+     * Uses Math.random() instead of a SeededRNG because skill challenge loot is contextual
+     * (not deterministic — triggered by player action at runtime).
+     *
+     * @param {string} tableId - Key in this.allTables
+     * @param {number} rollCount - Number of items to roll for
+     * @param {number} playerLevel - Player level (used for bracket lookup)
+     * @param {Object|null} rarityFilter - Optional map of level bracket → allowed rarities array
+     *   e.g. { "1-4": ["common"], "5-9": ["common","uncommon"], "10+": ["uncommon","rare"] }
+     * @returns {Array} Array of resolved item objects (may include gold pseudo-items)
+     */
+    rollOnTableWithRarityFilter(tableId, rollCount = 1, playerLevel = 1, rarityFilter = null) {
+        const table = this.allTables[tableId];
+        if (!table) {
+            console.warn(`⚠️ LootManager: Table "${tableId}" not found`);
+            return [];
+        }
+
+        // Determine allowed rarities for this player level
+        let allowedRarities = null;
+        if (rarityFilter) {
+            let bracketKey;
+            if (playerLevel <= 4) {
+                bracketKey = '1-4';
+            } else if (playerLevel <= 9) {
+                bracketKey = '5-9';
+            } else {
+                bracketKey = '10+';
+            }
+            allowedRarities = rarityFilter[bracketKey] || null;
+        }
+
+        // Pre-filter entries by rarity if a filter is active
+        const filteredTable = allowedRarities
+            ? table.filter(entry => {
+                if (entry.itemId === 'gold') return true; // gold always passes
+                const item = this.allItems[entry.itemId];
+                if (!item) return false;
+                return allowedRarities.includes(item.rarity || 'common');
+            })
+            : table;
+
+        if (filteredTable.length === 0) {
+            console.warn(`⚠️ LootManager: No entries remain after rarity filter for "${tableId}" at level ${playerLevel}`);
+            return [];
+        }
+
+        const results = [];
+
+        for (let i = 0; i < rollCount; i++) {
+            const totalWeight = filteredTable.reduce((sum, entry) => sum + entry.weight, 0);
+            const roll = Math.floor(Math.random() * totalWeight) + 1;
+
+            let currentWeight = 0;
+            for (const entry of filteredTable) {
+                currentWeight += entry.weight;
+                if (roll <= currentWeight) {
+                    // Gold entries are returned as pseudo-item objects for caller to handle
+                    if (entry.itemId === 'gold') {
+                        results.push({ itemId: 'gold', amount: entry.amount || '1d6', isGold: true });
+                    } else {
+                        const item = this.allItems[entry.itemId];
+                        if (item) {
+                            // Check minimum level requirement
+                            if (!item.minimumLevel || playerLevel >= item.minimumLevel) {
+                                results.push({ ...item });
+                            }
+                        } else {
+                            console.warn(`⚠️ LootManager: Item "${entry.itemId}" not found in allItems`);
+                        }
                     }
                     break;
                 }

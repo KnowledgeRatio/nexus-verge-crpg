@@ -84,6 +84,14 @@ Net rate per tile formula: `encounterModifier × movementCost × baseEncounterPr
 - Party application via `gameState.getFullParty()`. uniformChoice iterates all; individualChoice loops UI per member.
 - Modal trigger in main.js: same restCompleted block as Forgecraft (lines 7621–7632), 1000ms delay offset.
 
+## Skill Challenge Loot Wiring (2026-04-14)
+- `applyConsequences()` is called by main.js (two sites) but does NOT exist in SkillChallengeManager.js — must be implemented as part of SC loot wiring work
+- `shipwreck_salvage` table is referenced in skillChallenges.json but missing from lootTables.json — pre-existing broken reference, must be added
+- Correct loot hook is INSIDE applyConsequences(), not a separate applyLootReward() method
+- LootManager namespace fix: merge `itemTables` + `skillChallengeLootTables` into single `allTables` flat map at loadData() time
+- `rarityFilter` belongs on the loot BLOCK (per-challenge), not the table definition — same table must be reusable at different rarity brackets
+- `"table"` → `"tableId"` rename affects 7 loot blocks in skillChallenges.json (not 4 as designer counted — shipwreck_salvage is a 7th)
+
 ## Red Flags to Watch
 - Any new `if (ability.id === '...')` branches in main.js -- should use EffectDispatcher instead
 - Hardcoded ability names/descriptions in JS instead of reading from abilities.json

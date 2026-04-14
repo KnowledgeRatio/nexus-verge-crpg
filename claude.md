@@ -4047,6 +4047,7 @@ get ac() {
 5. **Meaningful Choices:** Player decisions should have consequences
 6. **No Backend Required:** 100% client-side, works offline
 7. **Data Drives Code — Never the Reverse:** JSON files are the single source of truth for what abilities exist, what they cost, and what effects they apply. The code provides generic dispatch infrastructure keyed to *effect handler types*, not to specific ability IDs or names. If you find yourself writing `if (ability.id === 'X')` or `if (ability.effects?.X)` for a named ability, stop — define a generic handler and wire the JSON to it. See ADR-010 in `docs/ARCHITECTURE.md` for the full decision and known violations to resolve.
+8. **Loot Tables Reference Items — Never Invent Them:** `data/items.json` and `data/magicItems.json` are the single source of truth for all items in the game. A loot table entry must reference an `itemId` that already exists in one of those files. If you are adding an item to a loot table that does not yet exist in `items.json` or `magicItems.json`, create it there first. Never add an `itemId` to a loot table and leave it as a ghost reference — ghost IDs silently produce nothing and break tables without any error. This applies to all contributors including subagents.
 
 ---
 
