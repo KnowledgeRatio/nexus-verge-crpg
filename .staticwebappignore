@@ -9,3 +9,4 @@ node_modules/
 # Dev files
 *.md
 !README.md
+*.txt

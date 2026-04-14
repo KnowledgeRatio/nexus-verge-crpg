@@ -1,15 +1,4 @@
 {
-  "auth": {
-    "identityProviders": {
-      "azureActiveDirectory": {
-        "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/0eb03282-1658-4739-9d1f-6af494c80343/v2.0",
-          "clientIdSettingName": "ROGER_ENTRA_CLIENT_ID",
-          "clientSecretSettingName": "ROGER_ENTRA_CLIENT_SECRET"
-        }
-      }
-    }
-  },
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/data/*", "/src/*", "/assets/*", "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico}"]
