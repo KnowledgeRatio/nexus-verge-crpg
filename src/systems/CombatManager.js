@@ -938,20 +938,12 @@ class CombatManager {
             gameState.addMessage(`🎲 Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
         }
 
-        // MANEUVER: precisionAttackBonus — adds maneuver die to attack roll (beforeAttack, spend 1 Resolve)
-        // Data-driven: fires when a pendingManeuver's ability has an effects.precisionAttackBonus entry.
+        // MANEUVER: Precision Strike — adds maneuver die to attack roll (beforeAttack, spend 1 Resolve)
         let maneuverAttackBonus = 0;
-        if (attacker.pendingManeuver && attacker.team === 'player') {
-            const pendingAbility = this._getPendingManeuverAbility(attacker);
-            if (pendingAbility?.effects?.precisionAttackBonus) {
-                const { buildContext: _buildCtx, execute: _execEffects } = await import('./EffectDispatcher.js');
-                const _ctx = _buildCtx(gameState.get('character'), attacker, this);
-                _ctx.attacker = attacker;
-                _ctx.defender = null;
-                const _results = await _execEffects(pendingAbility, { precisionAttackBonus: pendingAbility.effects.precisionAttackBonus }, _ctx);
-                const _result = _results.find(r => r.type === 'precisionAttackBonus');
-                maneuverAttackBonus = _result?.result?.bonus ?? 0;
-            }
+        if (attacker.pendingManeuver === 'precisionStrike' && attacker.team === 'player') {
+            const dieSides = attacker.character.getManeuverDie?.() || 6;
+            maneuverAttackBonus = rollDice(1, dieSides);
+            gameState.addMessage(`⚔️ Precision Strike! +${maneuverAttackBonus} to attack roll (d${dieSides})`, 'success');
         }
 
         // MANEUVER CONDITION: Disarmed — -2 to attack rolls until start of attacker's next turn
@@ -1191,70 +1183,42 @@ class CombatManager {
                 this.handleDefeat(defender);
             }
 
-            // MANEUVER: On-hit effects — data-driven dispatch via EffectDispatcher.
-            // Fires for any pending maneuver whose ability has onHitSaveOrCondition, onHitCondition, or onHitPush.
-            // Only fires when defender is still alive (not defeated by main hit).
-            if (attacker.pendingManeuver && attacker.team === 'player' && defender.hp > 0) {
-                const pendingAbility = this._getPendingManeuverAbility(attacker);
-                if (pendingAbility) {
-                    const onHitEffectTypes = ['onHitSaveOrCondition', 'onHitCondition', 'onHitPush'];
-                    const hasOnHitEffect = onHitEffectTypes.some(k => pendingAbility.effects?.[k]);
-                    if (hasOnHitEffect) {
-                        const { buildContext: _buildCtx, execute: _execEffects } = await import('./EffectDispatcher.js');
-                        const _ctx = _buildCtx(gameState.get('character'), attacker, this);
-                        _ctx.attacker = attacker;
-                        _ctx.defender = defender;
-                        // Only dispatch the on-hit effect types (not the full effects object which may have other keys)
-                        const onHitEffects = {};
-                        for (const k of onHitEffectTypes) {
-                            if (pendingAbility.effects?.[k]) {
-                                onHitEffects[k] = pendingAbility.effects[k];
-                            }
-                        }
-                        await _execEffects(pendingAbility, onHitEffects, _ctx);
-                    }
-                }
+            // MANEUVER: On-hit effects (tripAttack, menacingAttack, pushingAttack, disarmingAttack)
+            // Only fire when the defender is still alive (not defeated by main hit)
+            const onHitManeuvers = ['tripAttack', 'menacingAttack', 'pushingAttack', 'disarmingAttack'];
+            if (attacker.pendingManeuver && onHitManeuvers.includes(attacker.pendingManeuver)
+                && attacker.team === 'player' && defender.hp > 0) {
+                const dieSides = attacker.character.getManeuverDie?.() || 6;
+                const dieRoll  = rollDice(1, dieSides);
+                const saveDC   = this.getManeuverSaveDC(attacker);
+                this.executeOnHitManeuver(attacker.pendingManeuver, attacker, defender, dieRoll, dieSides, saveDC);
             }
             // Always clear pending maneuver after a hit
             if (attacker.team === 'player') {
                 attacker.pendingManeuver = null;
             }
 
-            // ON-HIT variableCostDamage abilities — generic dispatch for any ability with
-            // effects.variableCostDamage.trigger === 'onHit' and rangeType === 'melee' (or absent)
-            if (!isRanged && attacker.team === 'player' && window.game?.promptVariableCostDamage) {
-                const character = gameState.get('character');
-                // Find any known onHit variableCostDamage abilities that match
-                const abilitiesData = window.game.abilitiesData;
-                const callingAbilities = abilitiesData?.abilities?.[character?.class?.id] || [];
-                const onHitAbilities = callingAbilities.filter(ab => {
-                    const cfg = ab.effects?.variableCostDamage;
-                    if (!cfg || cfg.trigger !== 'onHit') {
-                        return false;
+            // SWORN STRIKE: Oath specialization — prompt Resolve spend for bonus radiant damage
+            if (!isRanged && attacker.team === 'player' && window.game?.promptSwornStrike) {
+                const resolveSpent = await window.game.promptSwornStrike(attacker, defender);
+                if (resolveSpent > 0 && defender.hp > 0) {
+                    const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
+                    const dieCnt = resolveSpent + (isUndead ? 1 : 0);
+                    let smiteDmg = 0;
+                    for (let i = 0; i < dieCnt; i++) {
+                        smiteDmg += rollDice(1, 8);
                     }
-                    if (cfg.rangeType && cfg.rangeType !== 'melee') {
-                        return false;
-                    }
-                    if (ab.specialization && ab.specialization !== character?.specialization) {
-                        return false;
-                    }
-                    return character?.selectedAbilities?.includes(ab.id);
-                });
-
-                for (const onHitAbility of onHitAbilities) {
-                    const resolveSpent = await window.game.promptVariableCostDamage(attacker, defender, onHitAbility);
-                    if (resolveSpent > 0 && defender.hp > 0) {
-                        // Dispatch via EffectDispatcher with resolveSpent injected into context
-                        const { buildContext: buildCtx, execute: execEffects } = await import('./EffectDispatcher.js');
-                        const ctx = buildCtx(gameState.get('character'), attacker, this);
-                        ctx.resolveSpent = resolveSpent;
-                        ctx.defender = defender;
-                        await execEffects(onHitAbility, onHitAbility.effects, ctx);
-                        // Check defeat after damage
-                        if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
-                            gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
-                            this.handleDefeat(defender);
-                        }
+                    gameState.addMessage(`✨ Sworn Strike! ${attacker.name} spends ${resolveSpent} Resolve — ${smiteDmg} radiant damage!${isUndead ? ' (bonus vs undead/fiend)' : ''}`, 'success');
+                    defender.takeDamage(smiteDmg);
+                    window.game.showFloatingCombatText(defender.id, `✨ ${smiteDmg}`, 'buff');
+                    // Deduct Resolve from character
+                    const char = gameState.get('character');
+                    char.resolvePoints = Math.max(0, (char.resolvePoints ?? 0) - resolveSpent);
+                    gameState.set('character', char);
+                    // Check defeat again after smite damage
+                    if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
+                        gameState.addMessage(`💀 ${defender.name} is defeated by Sworn Strike!`, 'warning');
+                        this.handleDefeat(defender);
                     }
                 }
             }
@@ -2180,7 +2144,7 @@ class CombatManager {
         gameState.set('combat.activeCompanionId', null);
 
         // Fatigue from combat encounter (applies regardless of outcome)
-        addFatigue(RULES.fatigue.combatEncounterFatigue, 'combat', gameState.get('character'));
+        addFatigue(RULES.fatigue.combatEncounterFatigue, 'combat');
 
         if (result === 'victory') {
             const character = gameState.get('character');
@@ -2550,29 +2514,75 @@ class CombatManager {
     }
 
     /**
-     * Look up the ability data object for a combatant's current pendingManeuver.
-     * Searches the loaded abilitiesData for the matching ability id.
-     * Returns null if not found (ability data not loaded yet, or maneuver ID not valid).
-     * @param {Combatant} attacker
-     * @returns {Object|null} ability definition from abilities.json
+     * Execute an on-hit maneuver effect (tripAttack, menacingAttack, pushingAttack, disarmingAttack)
+     * Adds maneuver die damage + applies condition on failed save.
      */
-    _getPendingManeuverAbility(attacker) {
-        const maneuverId = attacker.pendingManeuver;
-        if (!maneuverId) {
-            return null;
-        }
-        // abilities are grouped by class id in window.game.abilitiesData.abilities
-        const allAbilitiesGroups = window.game?.abilitiesData?.abilities;
-        if (!allAbilitiesGroups) {
-            return null;
-        }
-        for (const group of Object.values(allAbilitiesGroups)) {
-            const found = group.find(ab => ab.id === maneuverId);
-            if (found) {
-                return found;
+    executeOnHitManeuver(maneuverType, attacker, defender, dieRoll, dieSides, saveDC) {
+        const strSave  = () => rollD20().result + (defender.character?.abilityModifiers?.str || 0);
+        const wisSave  = () => rollD20().result + (defender.character?.abilityModifiers?.wis || 0);
+
+        switch (maneuverType) {
+            case 'tripAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Trip Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('prone', 'combat', attacker.id, { isBuff: false, curable: false, icon: '🔻' });
+                    gameState.addMessage(`🔻 ${defender.name} is PRONE! (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'PRONE! 🔻', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists the trip (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'menacingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Menacing Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = wisSave();
+                if (save < saveDC) {
+                    defender.addCondition('frightened', 'untilEndOfTurn', attacker.id, { isBuff: false, curable: false, icon: '😱' });
+                    gameState.addMessage(`😱 ${defender.name} is FRIGHTENED until end of their turn! (WIS save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'FRIGHTENED! 😱', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists fear (WIS save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'pushingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Pushing Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('pushed', 'untilEndOfTurn', attacker.id, { isBuff: false, curable: false, icon: '💨' });
+                    gameState.addMessage(`💨 ${defender.name} is PUSHED back! (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'PUSHED! 💨', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists being pushed (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
+            }
+            case 'disarmingAttack': {
+                defender.takeDamage(dieRoll);
+                gameState.addMessage(`⚔️ Disarming Attack! +${dieRoll} extra damage (d${dieSides})`, 'success');
+                const save = strSave();
+                if (save < saveDC) {
+                    defender.addCondition('disarmed', 'untilStartOfTurn', attacker.id, { value: -2, isBuff: false, curable: false, icon: '🗡️' });
+                    gameState.addMessage(`🗡️ ${defender.name} is DISARMED! -2 to attacks until their next turn. (STR save ${save} vs DC ${saveDC})`, 'warning');
+                    if (window.game?.showFloatingCombatText) {
+                        window.game.showFloatingCombatText(defender.id, 'DISARMED! 🗡️', 'condition');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} keeps hold of their weapon (STR save ${save} vs DC ${saveDC})`, 'info');
+                }
+                break;
             }
         }
-        return null;
     }
 
     /**

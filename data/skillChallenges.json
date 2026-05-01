@@ -1656,7 +1656,7 @@
       "type": "single",
       "terrainModifiers": {},
       "skill": "influence",
-      "dc": 13,
+      "baseDC": 13,
       "onSuccess": {
         "message": "The merchant grudgingly accepts your counteroffer!",
         "xp": 50,
@@ -2056,6 +2056,272 @@
         }
       },
       "campaignIds": ["core"]
+    }
+    ,
+    "gather_rumors": {
+        "id": "gather_rumors",
+        "name": "Gather Rumors",
+        "description": "The innkeeper has an ear for local gossip. You could try to draw them out.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Buy them a drink and ask casually — Empathy DC 11 (costs 5 gold)",
+                "skill": "empathy",
+                "dc": 11,
+                "onSuccess": {
+                    "message": "Over a shared drink, the innkeeper lets slip something useful.",
+                    "xp": 40,
+                    "gold": -5,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed",
+                    "relationChange": "dialogueSkillCheckPass"
+                },
+                "onFailure": {
+                    "message": "They smile politely and change the subject.",
+                    "xp": 10,
+                    "gold": -5
+                }
+            },
+            {
+                "text": "Ask directly — you heard there's trouble — Investigation DC 14",
+                "skill": "investigation",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "Your direct approach catches them off guard. They confirm what you suspected.",
+                    "xp": 60,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed"
+                },
+                "onFailure": {
+                    "message": "They clam up. Too forward.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Spin a cover story about being a traveling merchant — Deception DC 13",
+                "skill": "deception",
+                "dc": 13,
+                "onSuccess": {
+                    "message": "Your false identity opens doors. The innkeeper warns you about the roads.",
+                    "xp": 50,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed"
+                },
+                "onFailure": {
+                    "message": "They see through the act. Their expression cools.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            }
+        ],
+        "campaignIds": ["core"]
+    },
+    "appraise_goods": {
+        "id": "appraise_goods",
+        "name": "Appraise Goods",
+        "description": "You want to know if this merchant's wares are worth the asking price.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "investigation",
+        "baseDC": 12,
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "onSuccess": {
+            "message": "You assess the stock with a practiced eye. You know exactly what's worth buying.",
+            "xp": 30,
+            "npcFlag": "goodsAppraised"
+        },
+        "onFailure": {
+            "message": "The quality is hard to judge. You're not sure what's genuine.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "identify_item_quality": {
+        "id": "identify_item_quality",
+        "name": "Read the Craft",
+        "description": "A blacksmith's work reveals their skill. You could tell a lot by examining the forge.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "academia",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "onSuccess": {
+            "message": "You spot the hallmarks of exceptional craft. This smith knows their trade.",
+            "xp": 40,
+            "npcFlag": "craftQualityRead",
+            "relationChange": "dialogueSkillCheckPass"
+        },
+        "onFailure": {
+            "message": "The metalwork is competent but you can't read more than that.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "craft_assistance": {
+        "id": "craft_assistance",
+        "name": "Lend a Hand",
+        "description": "The blacksmith is in the middle of a difficult job. You could help — or hinder.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Grip the metal and work the bellows — Athletics DC 14",
+                "skill": "athletics",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "You haul and hold. The smith nods, impressed. The job goes faster.",
+                    "xp": 60,
+                    "relationChange": "dialogueSkillCheckPass",
+                    "npcFlag": "craftHelped"
+                },
+                "onFailure": {
+                    "message": "You fumble the grip. The smith waves you off, jaw tight.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Suggest a technique from something you've studied — Academia DC 13",
+                "skill": "academia",
+                "dc": 13,
+                "onSuccess": {
+                    "message": "The smith raises an eyebrow, tries it, and it works. Respect earned.",
+                    "xp": 70,
+                    "relationChange": "dialogueSkillCheckPass",
+                    "npcFlag": "craftHelped"
+                },
+                "onFailure": {
+                    "message": "The suggestion falls flat. Book learning doesn't translate here.",
+                    "xp": 10
+                }
+            }
+        ],
+        "campaignIds": ["core"]
+    },
+    "intimidate_npc": {
+        "id": "intimidate_npc",
+        "name": "Intimidating Presence",
+        "description": "You make clear that obstructing you would be unwise.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "influence",
+        "baseDC": 16,
+        "balance": { "cooldown": 3600000, "riskLevel": "high", "npcOnly": true },
+        "onSuccess": {
+            "message": "They measure you and decide cooperation costs less than resistance.",
+            "xp": 50,
+            "npcFlag": "intimidated",
+            "relationChange": "intimidationUsed"
+        },
+        "onFailure": {
+            "message": "They hold your gaze. Your threat lands hollow.",
+            "xp": 10,
+            "relationChange": "dialogueSkillCheckFail"
+        },
+        "campaignIds": ["core"]
+    },
+    "negotiate": {
+        "id": "negotiate",
+        "name": "Negotiate Terms",
+        "description": "Propose a mutual benefit — appeal to their self-interest.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "influence",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "onSuccess": {
+            "message": "They see the angle and nod slowly. Terms accepted.",
+            "xp": 70,
+            "gold": 30,
+            "relationChange": "dialogueSkillCheckPass",
+            "npcFlag": "negotiationWon"
+        },
+        "onFailure": {
+            "message": "The deal doesn't look appealing enough to them.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "persuade_npc": {
+        "id": "persuade_npc",
+        "name": "Make Your Case",
+        "description": "Find an unexpected angle they hadn't considered — lateral thinking, not direct pressure.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "creativity",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "onSuccess": {
+            "message": "Your argument is clear and well-reasoned. They yield the point.",
+            "xp": 60,
+            "relationChange": "dialogueSkillCheckPass",
+            "npcFlag": "persuaded"
+        },
+        "onFailure": {
+            "message": "They're not convinced. Perhaps another approach.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "gather_information": {
+        "id": "gather_information",
+        "name": "Ask the Guard",
+        "description": "Guards see everything that moves through a settlement.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Ask casually about recent activity — Influence DC 12",
+                "skill": "influence",
+                "dc": 12,
+                "onSuccess": {
+                    "message": "The guard relaxes and shares what they've seen lately.",
+                    "xp": 40,
+                    "revealIntel": true,
+                    "npcFlag": "guardInfoGathered"
+                },
+                "onFailure": {
+                    "message": "They're not in a talkative mood. 'Move along.'",
+                    "xp": 10
+                }
+            },
+            {
+                "text": "Claim you're investigating on behalf of the town — Deception DC 15",
+                "skill": "deception",
+                "dc": 15,
+                "onSuccess": {
+                    "message": "The authority of the claim loosens their tongue considerably.",
+                    "xp": 60,
+                    "revealIntel": true,
+                    "npcFlag": "guardInfoGathered"
+                },
+                "onFailure": {
+                    "message": "They know the real investigators. This doesn't add up.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Don't ask — read their posture and fill in the gaps — Empathy DC 14",
+                "skill": "empathy",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "You don't need them to talk. Their body language tells the story.",
+                    "xp": 55,
+                    "revealIntel": true
+                },
+                "onFailure": {
+                    "message": "Nothing readable in their expression. Professionally blank.",
+                    "xp": 10
+                }
+            }
+        ],
+        "campaignIds": ["core"]
     }
   },
   "dcThresholds": {

@@ -276,6 +276,7 @@ class NPCGenerator {
             givenQuestIds: [], // Quests already given to player
             hasIntel: false, // Set by assignIntelFlags after all NPCs generated
             intelStatus: null, // null → "available" (passed passive) → "revealed" (passed active) or "locked" (failed)
+            passiveFlags: {}, // Populated by SettlementUI passive approach checks
             relations: {
                 score: window.game?.relationManager?.startingScore ?? 0,
                 history: []

@@ -336,6 +336,19 @@ class SettlementUI {
 
         // Run passive Empathy check for intel (silent, once per NPC)
         this._checkPassiveIntel(npc, relation);
+        this._runPassiveApproachChecks(npc, relation);
+
+        // Append passive flag context clues to dialogue text
+        if (textEl) {
+            const flags = npc.passiveFlags || {};
+            let clue = '';
+            if (flags.atmosphereRead === true)      clue = ' The common room feels tense tonight.';
+            else if (flags.innkeeperWorried === true) clue = ' The innkeeper keeps glancing toward the door.';
+            else if (flags.goodsOverpriced === true)  clue = ' You notice the prices marked higher than they should be.';
+            else if (flags.guardDistracted === true)  clue = ' The guard seems distracted, eyes elsewhere.';
+            else if (flags.leaderStressed === true)   clue = ' There are lines of worry around their eyes.';
+            if (clue) textEl.textContent = (textEl.textContent || '') + clue;
+        }
 
         // Debug logging for NPC quest status
         console.log(`💬 Showing dialogue for ${npc.name} (${npc.role}) [${relation?.tierLabel || 'unknown'}]`);
@@ -563,6 +576,52 @@ class SettlementUI {
             npc.intelStatus = 'locked';
             console.log(`🔍 Passive Empathy failed for ${npc.name} (${passiveEmpathy} < DC ${dc}) — intel locked permanently`);
         }
+    }
+
+    _runPassiveApproachChecks(npc, relation) {
+        if (!npc?.role) return;
+        const config = window.game?.relationManager?.config;
+        if (!config?.passiveApproachChecks) return;
+
+        const checksForRole = config.passiveApproachChecks[npc.role] || [];
+        if (!checksForRole.length) return;
+
+        const character = window.gameState?.get('character');
+        if (!character) return;
+
+        if (!npc.passiveFlags) npc.passiveFlags = {};
+
+        const tierMod = config.intel?.dcModifierByTier?.[relation?.tier?.id || 'neutral'] ?? 0;
+
+        for (const check of checksForRole) {
+            if (npc.passiveFlags[check.flag] !== undefined) continue; // already run
+
+            const skillMod = window.skillChallengeManager
+                ? window.skillChallengeManager.getSkillModifier(character, check.skill)
+                : (character.skillBonuses?.[check.skill] ?? character.abilityModifiers?.[this._skillToAbility(check.skill)] ?? 0);
+
+            const passiveScore = 10 + skillMod;
+            const dc = check.dc + tierMod;
+            const passed = passiveScore >= dc;
+
+            npc.passiveFlags[check.flag] = passed;
+
+            if (passed && check.setsIntel) {
+                npc.intelStatus = 'available';
+            }
+
+            console.log(`🔍 Passive ${check.skill} (${check.flag}): ${passiveScore} vs DC ${dc} → ${passed ? 'pass' : 'fail'}`);
+        }
+    }
+
+    _skillToAbility(skillId) {
+        const map = {
+            athletics: 'str', acrobatics: 'dex', sleightOfHand: 'dex',
+            endurance: 'con', academia: 'int', arcana: 'int', investigation: 'int',
+            perception: 'wis', cunning: 'wis', creativity: 'wis', empathy: 'wis',
+            influence: 'cha', deception: 'cha'
+        };
+        return map[skillId] || 'wis';
     }
 
     /**
@@ -1417,20 +1476,20 @@ class SettlementUI {
    * @returns {Array<Object>} Available challenges
    */
     getContextualSkillChallenges(npc) {
-        if (!window.skillChallengeManager || !window.skillChallengeManager.challenges) {
+        if (!window.skillChallengeManager || !window.skillChallengeManager.terrainChallengesData) {
             return [];
         }
 
-        const allChallenges = window.skillChallengeManager.terrainChallengesData?.challenges || {};
+        const allChallenges = window.skillChallengeManager.terrainChallengesData.challenges || {};
         const availableChallenges = [];
 
         // Map NPC roles to appropriate challenge types
         const roleChallengeMap = {
-            'merchant': ['haggle', 'appraise_goods', 'detect_lie'],
+            'merchant':   ['market_haggle', 'appraise_goods', 'detect_lie'],
             'blacksmith': ['identify_item_quality', 'craft_assistance'],
-            'innkeeper': ['gather_rumors', 'detect_lie', 'social_challenge'],
-            'leader': ['intimidate_threat', 'negotiate', 'persuade'],
-            'guard': ['intimidate_threat', 'detect_lie', 'gather_information']
+            'innkeeper':  ['gather_rumors', 'detect_lie'],
+            'leader':     ['intimidate_npc', 'negotiate', 'persuade_npc'],
+            'guard':      ['intimidate_npc', 'detect_lie', 'gather_information']
         };
 
         const possibleChallengeIds = roleChallengeMap[npc.role] || [];
@@ -1504,60 +1563,85 @@ class SettlementUI {
             return;
         }
 
-        const challenge = window.skillChallengeManager.challenges.challenges[challengeId];
+        const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.[challengeId];
         if (!challenge) {
             console.error(`Challenge ${challengeId} not found`);
             return;
         }
 
-        // Close dialogue modal before starting challenge
         this.closeNPCDialogue();
 
-        // Get character
         const character = window.gameState?.get('character');
-        if (!character) {
-            console.error('No character found');
+        if (!character) return;
+
+        window.skillChallengeManager.recordChallengeAttempt(challengeId);
+
+        // Relation-aware DC
+        const relationManager = window.game?.relationManager;
+        const relation = relationManager?.getRelation(npc);
+        const tierConfig = relationManager?.config?.intel?.dcModifierByTier || {};
+        const tierMod = tierConfig[relation?.tier?.id || 'neutral'] ?? 0;
+
+        const effectiveType = challenge.type === 'contested' ? 'single' : challenge.type;
+        const skillField = challenge.type === 'contested' ? challenge.playerSkill : challenge.skill;
+        const baseDC = challenge.baseDC ?? challenge.dc ?? challenge.stages?.[0]?.baseDC ?? 14;
+        const adjustedDC = Math.min(25, baseDC + tierMod);
+
+        const config = {
+            title: challenge.name,
+            description: challenge.description,
+            skill: skillField,
+            dc: adjustedDC
+        };
+
+        let result;
+        if (effectiveType === 'single') {
+            result = await window.game.promptSkillCheck(config, challenge, null);
+        } else if (effectiveType === 'sequential') {
+            await window.game.player.handleSequentialSkillChallenge(challenge);
+            return;
+        } else if (effectiveType === 'choice') {
+            await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
             return;
         }
 
-        // Record attempt for cooldown
-        window.skillChallengeManager.recordChallengeAttempt(challengeId);
-
-        // Calculate level-adjusted DC
-        const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
-        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
-
-        // Execute challenge based on type
-        if (challenge.type === 'single') {
-            const config = {
-                title: challenge.name,
-                description: challenge.description,
-                skill: challenge.skill,
-                dc: adjustedDC
-            };
-
-            const result = await window.game.promptSkillCheck(config, challenge, null);
-
-            if (result.attempted) {
-                // Notify QuestManager
-                if (window.questManager) {
-                    window.questManager.onSkillChallengeCompleted(challengeId, result);
-                }
-
-                // Show completion dialogue
-                const message = result.success
-                    ? npc.dialogue.skillChallengeSuccess || 'Well done! You passed the test.'
-                    : npc.dialogue.skillChallengeFailure || 'Better luck next time.';
-
-                window.gameState?.addMessage(`${npc.name}: ${message}`, result.success ? 'success' : 'info');
-            }
-        } else if (challenge.type === 'sequential') {
-            // Sequential challenges handled by Player methods
-            await window.game.player.handleSequentialSkillChallenge(challenge);
-        } else if (challenge.type === 'choice') {
-            // Choice challenges handled by Player methods
-            await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
+        if (result?.attempted) {
+            this._applyNPCChallengeOutcome(challengeId, npc, challenge, result.success, relation);
+            window.questManager?.onSkillChallengeCompleted(challengeId, result);
         }
+    }
+
+    _applyNPCChallengeOutcome(challengeId, npc, challenge, success, relation) {
+        const outcomeBlock = success ? challenge.onSuccess : challenge.onFailure;
+        if (!outcomeBlock) return;
+
+        // Delegate XP and gold to the existing consequence system
+        const character = window.gameState?.get('character');
+        if (character && window.skillChallengeManager) {
+            window.skillChallengeManager.applyConsequences(
+                character, challenge, outcomeBlock,
+                { success, rollTotal: 0, naturalRoll: 0, dc: 0, succeeded: success }
+            );
+        }
+
+        // Relation change via named event key
+        if (outcomeBlock.relationChange && window.game?.relationManager && npc) {
+            window.game.relationManager.applyRelationEvent(npc, outcomeBlock.relationChange);
+        }
+
+        // NPC flag for downstream dialogue/pricing
+        if (outcomeBlock.npcFlag && npc) {
+            if (!npc.passiveFlags) npc.passiveFlags = {};
+            npc.passiveFlags[outcomeBlock.npcFlag] = true;
+        }
+
+        // Intel reveal
+        if (outcomeBlock.revealIntel && npc) {
+            npc.intelStatus = 'available';
+        }
+
+        const msg = outcomeBlock.message || (success ? 'You succeeded.' : 'You failed.');
+        window.gameState?.addMessage(`${npc?.name ?? 'NPC'}: ${msg}`, success ? 'success' : 'info');
     }
 
     /**

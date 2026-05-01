@@ -767,6 +767,9 @@ class SkillChallengeManager {
             return false;
         }
 
+        // NPC-only challenges must not fire during terrain movement
+        if (challenge?.balance?.npcOnly === true) return false;
+
         if (!this.canAttemptChallenge(challengeId)) {
             return false;
         }

@@ -27,7 +27,8 @@
         "dialogueSkillCheckFail":     { "min": -10, "max": -5, "description": "Failed dialogue skill check" },
         "successfulTrade":            { "min": 1,  "max": 1,  "description": "Completed a trade" },
         "questAbandoned":             { "min": -10, "max": -10, "description": "Abandoned a quest" },
-        "questFailed":                { "min": -10, "max": -10, "description": "Failed a quest" }
+        "questFailed":                { "min": -10, "max": -10, "description": "Failed a quest" },
+        "intimidationUsed":           { "min": -5,  "max": -5,  "description": "Player used intimidation (even on success)" }
     },
     "pricingByTier": {
         "hostile":    { "buyMultiplier": 0,    "sellMultiplier": 0 },
@@ -76,5 +77,24 @@
         "maxIntelNPCsPerSettlement": 3,
         "relationChangeOnActivePass": "dialogueSkillCheckPass",
         "relationChangeOnActiveFail": "dialogueSkillCheckFail"
+    },
+    "passiveApproachChecks": {
+        "innkeeper": [
+            { "skill": "empathy",      "dc": 12, "flag": "innkeeperWorried",  "setsIntel": true },
+            { "skill": "perception",   "dc": 11, "flag": "atmosphereRead" }
+        ],
+        "merchant": [
+            { "skill": "investigation","dc": 12, "flag": "goodsOverpriced" },
+            { "skill": "academia",     "dc": 13, "flag": "raritySpotted" }
+        ],
+        "blacksmith": [
+            { "skill": "academia",     "dc": 12, "flag": "qualityRead" }
+        ],
+        "guard": [
+            { "skill": "perception",   "dc": 12, "flag": "guardDistracted" }
+        ],
+        "leader": [
+            { "skill": "empathy",      "dc": 14, "flag": "leaderStressed" }
+        ]
     }
 }
