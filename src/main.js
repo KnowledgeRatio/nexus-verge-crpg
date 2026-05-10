@@ -32,6 +32,7 @@ import { execute as dispatchEffects, executeOption as dispatchOption, isDeferred
 import DungeonUI from './ui/DungeonUI.js';
 import CompanionManager from './systems/CompanionManager.js';
 import { getFatigueModifiers } from './systems/FatigueManager.js';
+import consequenceManager from './systems/ConsequenceManager.js';
 
 class Game {
     constructor() {
@@ -1946,6 +1947,9 @@ class Game {
         // Update location display
         this.updateLocationDisplay();
 
+        // Update world clock display
+        this.updateWorldClockDisplay();
+
         // Update dev mode indicator
         this.updateDevModeIndicator(gameState.get('devMode'));
 
@@ -2001,6 +2005,10 @@ class Game {
         // Subscribe to location changes
         gameState.subscribe('world.currentLocation', () => {
             this.updateLocationDisplay();
+        });
+
+        gameState.subscribe('world', () => {
+            this.updateWorldClockDisplay();
         });
 
         // Keep party health bar in sync with HUD updates
@@ -2324,6 +2332,13 @@ class Game {
         locationDisplay.textContent = location;
     }
 
+    updateWorldClockDisplay() {
+        const el = document.getElementById('worldClockDisplay');
+        if (!el) return;
+        const clock = gameState.get('world')?.worldClock || 0;
+        el.textContent = clock === 0 ? 'Day one on the Verge' : `${clock} week${clock === 1 ? '' : 's'} on the Verge`;
+    }
+
     /**
      * Update XP progress bar in HUD
      */
@@ -2605,6 +2620,8 @@ class Game {
     setupQuestSystem() {
         // Make quest manager globally accessible for UI
         window.questManager = this.questManager;
+        // Make consequence manager globally accessible for SettlementManager, DungeonManager, etc.
+        window.consequenceManager = consequenceManager;
 
         // Quest Log Modal elements
         const questLogModal = document.getElementById('questLogModal');
@@ -2938,41 +2955,53 @@ class Game {
 
     /**
      * Render individual quest card HTML
+     * Supports both legacy objective fields (required/completed) and new fields
+     * (count/progress) plus new metadata fields (callingArchetype, distanceTiles, etc.)
      */
     renderQuestCard(quest, status) {
-        const objectives = quest.objectives.map(obj => {
+        const archetypeColors = { dedication: '#c0392b', wanderlust: '#16a085', scholar: '#8e44ad' };
+        const archetypeColor = archetypeColors[quest.callingArchetype] || null;
+        const archetypeBadge = quest.callingArchetype
+            ? `<span class="quest-archetype-badge" style="background:${archetypeColor}">${quest.callingArchetype.toUpperCase()}</span>`
+            : '';
+
+        const objectives = (quest.objectives || []).map(obj => {
             const progress = obj.progress || 0;
-            const required = obj.required || 1;
-            const completed = obj.completed || false;
-            const percentage = required > 0 ? (progress / required) * 100 : 0;
+            const total = obj.count || obj.required || 1;
+            const completed = obj.completed || (progress >= total);
+            const percentage = total > 0 ? Math.min(100, (progress / total) * 100) : 0;
+            const filled = Math.round(percentage / 10);
+            const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
 
             return `
                 <div class="objective-item ${completed ? 'completed' : ''}">
                     <span class="objective-checkbox">${completed ? '☑' : '☐'}</span>
+                    <span class="quest-obj-bar">[${bar}]</span>
                     <span class="objective-text">${obj.description}</span>
-                    <span class="objective-progress">${progress}/${required}</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${percentage}%"></div>
-                    </div>
+                    <span class="objective-progress">${progress}/${total}</span>
                 </div>
             `;
         }).join('');
 
         const rewards = [];
-        if (quest.rewards.xp) {
-            rewards.push(`${quest.rewards.xp} XP`);
-        }
-        if (quest.rewards.gold) {
-            rewards.push(`${quest.rewards.gold} Gold`);
-        }
-        if (quest.rewards.reputation) {
-            rewards.push(`+${quest.rewards.reputation.amount} Rep`);
-        }
+        if (quest.rewards?.xp) rewards.push(`${quest.rewards.xp} XP`);
+        if (quest.rewards?.gold) rewards.push(`${quest.rewards.gold} Gold`);
+        if (quest.rewards?.reputation) rewards.push(`+${quest.rewards.reputation.amount} Rep`);
         const rewardText = rewards.join(' | ');
+
+        const distanceText = quest.distanceTiles ? `📍 ${quest.distanceTiles} tiles` : '';
+        const timeLimitBadge = quest.timeLimit
+            ? `<span class="quest-time-limit">⚠ ${quest.timeLimit} rooms</span>`
+            : '';
+        const dungeonText = quest.dungeonName
+            ? `<span class="quest-dungeon-name">${quest.dungeonName}</span>`
+            : '';
 
         let actionButtons = '';
         if (status === 'active') {
-            const allCompleted = quest.objectives.every(obj => obj.completed);
+            const allCompleted = (quest.objectives || []).every(obj =>
+                obj.completed || ((obj.progress || 0) >= (obj.count || obj.required || 1))
+            );
             actionButtons = `
                 <div class="quest-actions">
                     <button class="quest-action-btn" data-action="track">Track</button>
@@ -2985,19 +3014,92 @@ class Game {
         return `
             <div class="quest-item" data-quest-id="${quest.id}">
                 <div class="quest-header">
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                        ${archetypeBadge}
+                        <span class="quest-difficulty ${quest.difficulty}">${quest.difficulty || 'normal'}</span>
+                        ${timeLimitBadge}
+                    </div>
                     <h3 class="quest-title">${quest.name}</h3>
-                    <span class="quest-difficulty ${quest.difficulty}">${quest.difficulty}</span>
                 </div>
                 <p class="quest-description">${quest.description}</p>
                 <div class="quest-objectives">
                     ${objectives}
                 </div>
                 <div class="quest-rewards">
-                    🎁 ${rewardText}
+                    ${dungeonText}
+                    <span class="quest-reward">🎁 ${rewardText}</span>
+                    ${distanceText ? `<span class="quest-distance">${distanceText}</span>` : ''}
                 </div>
                 ${actionButtons}
             </div>
         `;
+    }
+
+    /**
+     * Render the quest board for a settlement (available quests only).
+     * Called when a settlement modal is opened.
+     * @param {string} settlementId - settlement.id or "x,y" coordinate key
+     */
+    renderQuestBoard(settlementId) {
+        const container = document.getElementById('questBoardCards');
+        if (!container) return;
+
+        const questState = gameState.get('quests');
+        const available = (questState?.available || []).filter(q =>
+            q.settlementId === settlementId && q.status === 'available'
+        );
+
+        if (!available.length) {
+            container.innerHTML = '<div class="quest-board-empty">No quests posted.</div>';
+            return;
+        }
+
+        const archetypeColors = { dedication: '#c0392b', wanderlust: '#16a085', scholar: '#8e44ad' };
+        const difficultyColors = { easy: '#27ae60', normal: '#f39c12', hard: '#e67e22', deadly: '#c0392b' };
+
+        container.innerHTML = available.map(quest => {
+            const archetypeColor = archetypeColors[quest.callingArchetype] || '#7f8c8d';
+            const diffColor = difficultyColors[quest.difficulty] || '#7f8c8d';
+            const distanceText = quest.distanceTiles ? `${quest.distanceTiles} tiles` : '';
+            const timeLimitBadge = quest.timeLimit
+                ? `<span class="board-time-limit">⚠ Time-sensitive</span>`
+                : '';
+
+            return `<div class="quest-board-card">
+                <div class="quest-board-card-header">
+                    ${quest.callingArchetype ? `<span class="quest-archetype-badge" style="background:${archetypeColor}">${quest.callingArchetype.toUpperCase()}</span>` : ''}
+                    <span class="quest-difficulty-badge" style="color:${diffColor}">${(quest.difficulty || 'normal').toUpperCase()}</span>
+                    ${timeLimitBadge}
+                </div>
+                <div class="quest-board-card-title">${quest.name}</div>
+                <div class="quest-board-card-desc">${quest.description}</div>
+                <div class="quest-board-card-footer">
+                    <span class="quest-reward">${quest.rewards?.xp || 0} XP | ${quest.rewards?.gold || 0} gold</span>
+                    ${distanceText ? `<span class="quest-distance">📍 ${distanceText}</span>` : ''}
+                </div>
+                <button class="quest-accept-btn" onclick="window.game.acceptQuestFromBoard('${quest.id}')">Accept Quest</button>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * Accept a quest from the settlement quest board.
+     * @param {string} questId
+     */
+    acceptQuestFromBoard(questId) {
+        if (!this.questManager) return;
+
+        const result = this.questManager.acceptQuest(questId);
+        if (result) {
+            gameState.addMessage('Quest accepted!', 'success');
+            // Re-render the board to remove the accepted quest
+            const settlement = this.settlementManager?.currentSettlement;
+            if (settlement) {
+                const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
+                this.renderQuestBoard(settlementId);
+            }
+            this.renderCurrentQuestTab();
+        }
     }
 
     /**
@@ -3029,18 +3131,22 @@ class Game {
 
     /**
      * Abandon quest
+     * Can be called from the quest log action buttons or inline from quest cards.
+     * Prompts for confirmation when called from the quest log (confirmFirst = true).
+     * @param {string} questId
+     * @param {boolean} [confirmFirst=true]
      */
-    abandonQuest(questId) {
-        if (!confirm('Are you sure you want to abandon this quest?')) {
+    abandonQuest(questId, confirmFirst = true) {
+        if (confirmFirst && !confirm('Are you sure you want to abandon this quest?')) {
             return;
         }
 
-        const result = this.questManager.abandonQuest(questId);
-        if (result.success) {
-            this.showQuestNotification('Quest Abandoned', result.message);
+        const success = this.questManager.abandonQuest(questId);
+        if (success) {
+            this.showQuestNotification('Quest Abandoned', 'Quest removed from your log.');
             this.renderCurrentQuestTab();
         } else {
-            gameState.addMessage(result.message, 'error');
+            gameState.addMessage('Could not abandon quest.', 'error');
         }
     }
 
@@ -4726,6 +4832,40 @@ class Game {
             }
 
             const bossMonster = encounter.monsters[0];
+
+            // --- Quest: Kill-Chief elite promotion ---
+            // If there is an active kill-chief quest targeting this dungeon, double the boss HP,
+            // boost AC by 2, and give it a named-boss prefix. Guard with isNamedBoss so re-entry
+            // into the same dungeon doesn't stack the boost.
+            if (!bossMonster.isNamedBoss) {
+                const dungeonState = gameState.get('dungeon');
+                const dungeonX = this.dungeonManager?.currentDungeon?.x;
+                const dungeonY = this.dungeonManager?.currentDungeon?.y;
+                if (dungeonX !== undefined && dungeonY !== undefined) {
+                    const hookKey = `${dungeonX},${dungeonY}`;
+                    const quests = gameState.get('quests');
+                    const killChiefQuest = quests?.active?.find(q =>
+                        q.type === 'kill' &&
+                        q.callingArchetype === 'dedication' &&
+                        q.dungeonHookId === hookKey
+                    );
+                    if (killChiefQuest) {
+                        const targetType = killChiefQuest.objectives?.[0]?.targetType;
+                        // Apply promotion: 2× HP, +2 AC, named-boss flag
+                        bossMonster.maxHP = Math.round((bossMonster.maxHP || bossMonster.hp || 10) * 2);
+                        bossMonster.currentHP = bossMonster.maxHP;
+                        bossMonster.hp = bossMonster.maxHP;
+                        bossMonster.ac = (bossMonster.ac || 12) + 2;
+                        if (targetType && !bossMonster.name.includes('Chief')) {
+                            bossMonster.name = `${targetType.charAt(0).toUpperCase() + targetType.slice(1)} Chief`;
+                        }
+                        bossMonster.isNamedBoss = true;
+                        gameState.addMessage(`⚔️ A powerful ${bossMonster.name} — your quarry — commands this dungeon.`, 'warning');
+                        console.log(`⚔️ Kill-chief promotion applied to ${bossMonster.name} (quest: ${killChiefQuest.id})`);
+                    }
+                }
+            }
+
             gameState.addMessage(`☠️ ${bossMonster.name} attacks!`, 'danger');
 
             if (encounter.monsters.length > 1) {
@@ -8583,9 +8723,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
     game.init();
 
-    // Expose to window for debugging
+    // Expose to window for debugging and non-module access
     window.game = game;
     window.gameState = gameState;
+    window.RULES = RULES;
 });
 
 export default Game;

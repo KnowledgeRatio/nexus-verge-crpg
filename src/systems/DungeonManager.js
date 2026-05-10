@@ -279,6 +279,31 @@ export class DungeonManager {
         // Show room entry message
         gameState.addMessage(`🚪 You enter ${targetRoom.name || 'a new room'}.`, 'info');
 
+        // --- Quest: Retrieve item injection on boss room entry ---
+        if (targetRoom.isBossRoom && this.currentDungeon) {
+            this._injectQuestBind(this.currentDungeon.x, this.currentDungeon.y);
+        }
+
+        // --- Quest: Investigate room completion check ---
+        if (window.questManager && this.currentDungeon) {
+            const character = gameState.get('character');
+            window.questManager.onRoomEntered(
+                this.currentDungeon.x,
+                this.currentDungeon.y,
+                roomIndex,
+                character
+            );
+        }
+
+        // --- Quest: Time-limit check for timed quests ---
+        if (this.currentDungeon) {
+            this._checkTimeLimitQuests(
+                this.currentDungeon.x,
+                this.currentDungeon.y,
+                dungeonState.roomsExplored.length
+            );
+        }
+
         // Check for boss room with undefeated boss
         const bossFight = targetRoom.isBossRoom && targetRoom.boss && !dungeonState.bossDefeated;
         if (bossFight) {
@@ -286,6 +311,77 @@ export class DungeonManager {
         }
 
         return { success: true, bossFight, bossId: bossFight ? targetRoom.boss : null };
+    }
+
+    /**
+     * Check whether any active time-limited quests have exceeded their room budget.
+     * Fails the quest and writes a pendingEvent for the ConsequenceManager.
+     * @param {number} dungeonX
+     * @param {number} dungeonY
+     * @param {number} roomsExploredCount - total rooms explored so far (length of the array)
+     */
+    _checkTimeLimitQuests(dungeonX, dungeonY, roomsExploredCount) {
+        const quests = gameState.get('quests');
+        if (!quests?.active?.length) return;
+
+        const hookKey = `${dungeonX},${dungeonY}`;
+        let stateModified = false;
+
+        for (let i = quests.active.length - 1; i >= 0; i--) {
+            const quest = quests.active[i];
+            if (!quest.timeLimit || quest.dungeonHookId !== hookKey) continue;
+            if (quest.status !== 'active') continue;
+
+            const remaining = quest.timeLimit - roomsExploredCount;
+
+            if (remaining > 0) {
+                gameState.addMessage(
+                    `⚠️ ${remaining} room${remaining === 1 ? '' : 's'} remaining — hurry!`,
+                    'warning'
+                );
+            } else {
+                // Time limit exceeded — fail the quest
+                quest.status = 'failed';
+                quest.failReason = 'Time limit exceeded — the ritual completed.';
+                gameState.addMessage(`💀 Too late. The ritual is complete. Quest failed: ${quest.name}`, 'error');
+                console.log(`⏰ Quest time limit exceeded: ${quest.name} (${quest.id})`);
+
+                // Route failure consequence through ConsequenceManager
+                if (window.consequenceManager) {
+                    window.consequenceManager.queueConsequence('quest_failure_consequence', {
+                        flagToApply: 'cursed',
+                        targetSettlementId: quest.settlementId || null,
+                        sourceQuestId: quest.id
+                    });
+                } else {
+                    // Fallback: write directly if ConsequenceManager not yet available
+                    const pendingEvents = gameState.get('world.pendingEvents') || [];
+                    pendingEvents.push({
+                        id: `evt_${Date.now()}_timelimit_fail`,
+                        type: 'quest_failure_consequence',
+                        sourceSettlementId: quest.settlementId || null,
+                        sourceQuestId: quest.id,
+                        payload: { flagToApply: 'cursed', targetSettlementId: quest.settlementId || null },
+                        expiresAtVisitCount: (gameState.get('world.visitCount') || 0) + 999,
+                        visitWindow: 999,
+                        useLocalCounter: false,
+                        isProcessed: false,
+                        resolved: false
+                    });
+                    gameState.set('world.pendingEvents', pendingEvents);
+                }
+
+                // Move to failed list
+                quests.active.splice(i, 1);
+                quests.failed = quests.failed || [];
+                quests.failed.push(quest);
+                stateModified = true;
+            }
+        }
+
+        if (stateModified) {
+            gameState.set('quests', quests);
+        }
     }
 
     /**
@@ -437,7 +533,7 @@ export class DungeonManager {
     }
 
     /**
-     * Mark boss as defeated
+     * Mark boss as defeated, and inject any bound quest item into the player's inventory.
      */
     markBossDefeated() {
         const dungeonState = gameState.get('dungeon');
@@ -445,6 +541,87 @@ export class DungeonManager {
             dungeonState.bossDefeated = true;
             gameState.set('dungeon', dungeonState);
             gameState.addMessage('🏆 The dungeon boss has been defeated!', 'success');
+        }
+
+        // Inject quest item if this dungeon has a retrieve questBind
+        if (this.currentDungeon) {
+            this._injectQuestBind(this.currentDungeon.x, this.currentDungeon.y);
+        }
+    }
+
+    /**
+     * Inject a quest-bound retrieve item into the player's inventory when the dungeon boss is defeated.
+     * Always reads questBind from world.metadata by coordinate — never from the region feature object,
+     * which may be re-inflated from compressed save data and will not contain questBind written after
+     * initial generation.
+     * @param {number} dungeonX - World X coordinate of this dungeon
+     * @param {number} dungeonY - World Y coordinate of this dungeon
+     */
+    _injectQuestBind(dungeonX, dungeonY) {
+        const metadata = gameState.get('world.metadata');
+        const feature = metadata?.features?.find(f => f.x === dungeonX && f.y === dungeonY);
+        if (!feature?.questBind || feature.questBind.bindType !== 'retrieve') return;
+
+        // Only inject once — guard against duplicate injection on re-entry
+        if (feature.questBind.injected) return;
+
+        const { itemId, itemName } = feature.questBind;
+
+        // Add to player inventory
+        const character = gameState.get('character');
+        if (!character) {
+            console.warn('🏰 _injectQuestBind: no character in gameState');
+            return;
+        }
+
+        const questItem = {
+            id: itemId,
+            name: itemName,
+            type: 'quest_item',
+            description: 'A quest item. Return this to the quest giver.',
+            weight: 1,
+            value: 0,
+            canDrop: false,
+            quantity: 1
+        };
+
+        // Place item visibly in the boss room loot so it can be picked up like normal loot
+        const dungeonState = gameState.get('dungeon');
+        if (dungeonState?.rooms) {
+            const bossRoom = dungeonState.rooms.find(r => r.isBossRoom);
+            if (bossRoom) {
+                bossRoom.loot = bossRoom.loot || [];
+                if (!bossRoom.loot.some(l => l.id === itemId)) {
+                    bossRoom.loot.push({ id: itemId, name: itemName, type: 'quest_item', canDrop: false });
+                    gameState.set('dungeon', dungeonState);
+                    console.log(`🏰 Quest item placed in boss room loot: ${itemName}`);
+                }
+            }
+        }
+
+        // Also add directly to character inventory as a fallback (e.g. boss killed before room loot picked up)
+        if (typeof character.addItem === 'function') {
+            character.addItem(questItem);
+        } else {
+            character.inventory = character.inventory || [];
+            character.inventory.push(questItem);
+        }
+
+        gameState.set('character', character);
+        gameState.addMessage(`📦 You find ${itemName} among the boss's remains.`, 'success');
+        console.log(`🏰 Quest item injected: ${itemName} (${itemId}) for dungeon (${dungeonX},${dungeonY})`);
+
+        // Mark as injected so re-entry doesn't duplicate
+        feature.questBind.injected = true;
+        gameState.set('world.metadata', metadata);
+        // Keep worldGenerator in sync if accessible
+        if (window.game?.worldGenerator) {
+            window.game.worldGenerator.worldMetadata = metadata;
+        }
+
+        // Notify QuestManager of item acquisition
+        if (window.questManager) {
+            window.questManager.onItemAcquired(itemId);
         }
     }
 

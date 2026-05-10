@@ -278,6 +278,11 @@ class RestManager {
         // Update game state
         gameState.set('character', character);
 
+        // Advance world clock — one long rest = one week on the Verge
+        const world = gameState.get('world');
+        world.worldClock = (world.worldClock || 0) + (RULES.quests.clockUnitsPerLongRest || 1);
+        gameState.set('world', world);
+
         // Add messages
         gameState.addMessage('You take a long rest at the inn...', 'info');
         gameState.addMessage('You wake up feeling refreshed!', 'success');

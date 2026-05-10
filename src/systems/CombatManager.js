@@ -2207,7 +2207,7 @@ class CombatManager {
 
             // Notify quest system of kills
             if (window.questManager) {
-                const playerPos = gameState.get('world.currentLocation');
+                const playerPos = gameState.get('player.position');
                 this.enemyCombatants.forEach(enemy => {
                     if (enemy.hp <= 0) {
                         // Get creature type ID (race.id or monster type)

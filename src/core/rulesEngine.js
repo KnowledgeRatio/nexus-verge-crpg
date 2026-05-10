@@ -974,11 +974,15 @@ export const RULES = {
     // QUEST SYSTEM
     // ====================
     quests: {
-        // Quest generation frequency
-        questsPerSettlement: {
-            village: 1,
-            town: 2,
-            city: 4
+        enabled: true,
+        questsPerSettlement: 3,
+        maxHookDistanceTiles: 150,
+        hookRadius: 150,
+        enableWorldHooks: true,
+        questSlotBudget: {
+            village: 3,
+            town: 3,
+            city: 3
         },
 
         // Quest difficulty scaling
@@ -990,6 +994,14 @@ export const RULES = {
             10: 'hard'
         },
 
+        // World clock — one tick per long rest
+        clockUnitsPerLongRest: 1,
+        deadlines: {
+            urgent:   { min: 2, max: 3, label: 'within a fortnight'  },
+            normal:   { min: 4, max: 6, label: 'within a month'      },
+            generous: { min: 8, max: 10, label: 'within two months'  }
+        },
+
         // Quest rewards
         baseXPReward: 100,
         xpMultiplierByDifficulty: {
@@ -999,6 +1011,30 @@ export const RULES = {
             hard: 2.0,
             deadly: 3.0
         }
+    },
+
+    // ====================
+    // CONSEQUENCE SYSTEM
+    // ====================
+    consequences: {
+        dungeonTierThresholds: { 1: 0.25, 2: 0.50, 3: 0.75 },
+        visitWindows: {
+            vengeance: { min: 2, max: 4, useLocalCounter: true },
+            reputationBleed: { min: 3, max: 6, useLocalCounter: true },
+            escalation: { min: 999, max: 999, useLocalCounter: false },
+            attention: { min: 1, max: 2, useLocalCounter: true },
+            unintendedConsequence: { min: 3, max: 8, useLocalCounter: false }
+        },
+        flagTypes: {
+            vendetta_active: { validVerbs: ['confront', 'negotiate'] },
+            disease_spreading: { validVerbs: ['cleanse', 'outlast'] },
+            watch_suspicious: { validVerbs: ['negotiate', 'outlast'] },
+            cursed: { validVerbs: ['cleanse', 'confront'] },
+            settlement_sacked: { validVerbs: ['cleanse'] }
+        },
+        eventTypes: ['vengeance_raids', 'reputation_bleed', 'escalation_confrontation', 'faction_attention', 'unintended_consequence'],
+        resolutionVerbs: ['confront', 'negotiate', 'cleanse', 'outlast'],
+        maxCascadeDepth: 1
     },
 
     // ====================

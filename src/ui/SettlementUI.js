@@ -84,6 +84,15 @@ class SettlementUI {
 
         // Update settlement info
         this.renderSettlementInfo(settlement);
+
+        // Populate quest board with available quests for this settlement
+        if (window.game?.renderQuestBoard) {
+            const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
+            window.game.renderQuestBoard(settlementId);
+        }
+
+        // Render active consequence flags
+        this.renderSettlementFlags(settlement);
     }
 
     /**
@@ -502,11 +511,18 @@ class SettlementUI {
                 this.showQuestOptions(npc, textEl, optionsEl);
                 break;
 
-            case 'trade':
+            case 'trade': {
+                // Check if settlement has been sacked — merchants have fled
+                const currentSettlement = gameState.get('ui.currentSettlement');
+                if (currentSettlement?.merchantLocked) {
+                    gameState.addMessage('💀 The merchants have fled. There is nothing to trade here.', 'warning');
+                    break;
+                }
                 // Open trading UI
                 this.closeNPCDialogue();
                 this.openTradingModal(npc);
                 break;
+            }
 
             case 'rest':
                 // Open rest menu
@@ -982,6 +998,101 @@ class SettlementUI {
             'deadly': '💀'
         };
         return icons[difficulty?.toLowerCase()] || '❓';
+    }
+
+    /**
+     * Render the settlement consequence flags panel.
+     * Shows nothing if no active flags.
+     * @param {Object} settlement - Settlement feature object
+     */
+    renderSettlementFlags(settlement) {
+        const panel = document.getElementById('settlementFlagsPanel');
+        const list  = document.getElementById('settlementFlagsList');
+        if (!panel || !list) return;
+
+        const activeFlags = window.consequenceManager
+            ? window.consequenceManager.getActiveFlags(settlement)
+            : (settlement.flags || []).filter(f => f.active);
+
+        if (activeFlags.length === 0) {
+            panel.style.display = 'none';
+            return;
+        }
+
+        panel.style.display = '';
+
+        const FLAG_META = {
+            vendetta_active:   { icon: '⚔️', label: 'Vendetta Active',    desc: 'Hostile agents may ambush you on entry.' },
+            watch_suspicious:  { icon: '👁️', label: 'Under Suspicion',    desc: 'Merchants have raised prices by 25%.' },
+            cursed:            { icon: '💀', label: 'Cursed',             desc: 'Long rests here restore only half your hit dice.' },
+            settlement_sacked: { icon: '💥', label: 'Settlement Sacked',  desc: 'The quest board is bare. Merchants have fled.' },
+            disease_spreading: { icon: '🤒', label: 'Disease Spreading',  desc: 'Resting here risks catching the disease.' }
+        };
+
+        const VERB_LABELS = {
+            confront:  '⚔️ Confront',
+            negotiate: '🤝 Negotiate',
+            cleanse:   '✨ Cleanse',
+            outlast:   '⏳ Outlast'
+        };
+
+        const rulesConsequences = window.RULES?.consequences || {};
+        const flagTypeDefs = rulesConsequences.flagTypes || {
+            vendetta_active:   { validVerbs: ['confront', 'negotiate'] },
+            watch_suspicious:  { validVerbs: ['negotiate', 'outlast'] },
+            cursed:            { validVerbs: ['cleanse', 'confront'] },
+            settlement_sacked: { validVerbs: ['cleanse'] },
+            disease_spreading: { validVerbs: ['cleanse', 'outlast'] }
+        };
+
+        list.innerHTML = activeFlags.map(flag => {
+            const meta   = FLAG_META[flag.type] || { icon: '⚠️', label: flag.type, desc: '' };
+            const verbs  = flagTypeDefs[flag.type]?.validVerbs || [];
+            const verbBtns = verbs.map(v =>
+                `<button class="flag-verb-btn" data-flag="${flag.type}" data-verb="${v}">${VERB_LABELS[v] || v}</button>`
+            ).join('');
+
+            return `
+<div class="flag-card" data-flag-type="${flag.type}">
+  <div class="flag-card-header">
+    <span class="flag-icon">${meta.icon}</span>
+    <span class="flag-label">${meta.label}</span>
+  </div>
+  <div class="flag-description">${meta.desc}</div>
+  <div class="flag-verbs">${verbBtns}</div>
+</div>`;
+        }).join('');
+
+        // Wire verb buttons
+        list.querySelectorAll('.flag-verb-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const flagType = btn.dataset.flag;
+                const verb     = btn.dataset.verb;
+                this._handleFlagResolution(settlement, flagType, verb);
+            });
+        });
+    }
+
+    /**
+     * Attempt to resolve a settlement flag via verb.
+     * Re-renders the flags panel on success.
+     * @param {Object} settlement
+     * @param {string} flagType
+     * @param {string} verb
+     */
+    _handleFlagResolution(settlement, flagType, verb) {
+        if (!window.consequenceManager) {
+            window.gameState?.addMessage('Consequence system not available.', 'warning');
+            return;
+        }
+
+        const result = window.consequenceManager.resolveFlag(settlement, flagType, verb);
+
+        if (result.success) {
+            this.renderSettlementFlags(settlement);
+        } else {
+            window.gameState?.addMessage(result.message, 'warning');
+        }
     }
 
     /**

@@ -526,39 +526,33 @@
       ]
     },
     {
-      "id": "skill-challenge-social",
-      "name": "Negotiate with Bandits",
-      "description": "A group of bandits is demanding tribute from {settlement}. {npcName} asks you to negotiate or intimidate them into leaving.",
-      "type": "skill",
-      "difficulty": "normal",
+      "id": "negotiate-bandits",
+      "name": "The Bandits Threatening {settlementName}",
+      "type": "social",
+      "callingArchetype": "wanderlust",
+      "description": "Bandits are demanding tribute from {settlement}. {npcName} wants them gone — whether through words or fear.",
       "objectives": [
         {
-          "type": "encounter",
-          "description": "Find the bandit camp",
+          "type": "reach_location",
+          "description": "Find the bandit camp at {dungeonName}",
           "requirement": {
-            "encounterType": "bandit_camp",
-            "within": 100
+            "dungeonHookId": "{dungeonHookId}",
+            "radius": 3
           }
         },
         {
-          "type": "skill_choice",
-          "description": "Intimidate or Persuade the bandits to leave",
+          "type": "social_challenge",
+          "description": "Negotiate with or intimidate the bandit leader",
           "requirement": {
-            "skills": [
-              "intimidation",
-              "persuasion"
-            ],
+            "challengeId": "bandit_negotiation",
+            "skills": ["influence", "deception"],
             "dc": 14
           }
         }
       ],
       "rewards": {
-        "xp": 300,
-        "gold": 150,
-        "reputation": {
-          "faction": "settlement",
-          "amount": 60
-        }
+        "xpFormula": "playerLevel * baseXPReward * 1.2",
+        "goldFormula": "playerLevel * 30"
       },
       "alternativeOutcomes": [
         {
@@ -571,16 +565,475 @@
           ]
         }
       ],
+      "intelQuality": "high",
+      "intelDialogue": {
+        "high": "They're camped at {dungeonName}, to the {direction}. I know exactly where.",
+        "medium": "Somewhere to the {direction}. I've seen their scouts on that road.",
+        "low": "They come from the {direction}. I haven't found the camp.",
+        "none": "I have no idea where they're based."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "safer",
+      "factionConsequence": null,
+      "questGiverRole": "guard_captain",
       "generation": {
         "validNPCRoles": [
           "leader",
           "guard",
-          "merchant"
+          "guard_captain"
         ]
       },
       "campaignIds": [
         "core"
       ]
+    },
+    {
+      "id": "kill-chief-warlord",
+      "name": "{enemyType} Warlord {bossName} of {dungeonName}",
+      "type": "kill",
+      "callingArchetype": "dedication",
+      "description": "A named {enemyType} warlord leads raids from {dungeonName}. The settlement elders want them dead.",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Defeat the {enemyType} chief in {dungeonName}",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": 1,
+            "elite": true
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.5",
+        "goldFormula": "playerLevel * 25"
+      },
+      "intelQuality": "high",
+      "intelDialogue": {
+        "high": "I know exactly where {bossName} lairs — {dungeonName}, to the {direction}.",
+        "medium": "Somewhere to the {direction}. A ruin, I think.",
+        "low": "I've only heard rumours from the merchants.",
+        "none": "I have no information to give you."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "powerVacuum",
+      "factionConsequence": null,
+      "questGiverRole": "elder",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "kill-chief-bounty",
+      "name": "The Bounty on {bossName}: Dead or Alive",
+      "type": "kill",
+      "callingArchetype": "dedication",
+      "description": "A merchant who was robbed by {bossName} wants proof of death — or the head. They have specific information about the target.",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Defeat {bossName} and bring proof",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": 1,
+            "elite": true
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.5",
+        "goldFormula": "playerLevel * 35"
+      },
+      "intelQuality": "medium",
+      "intelDialogue": {
+        "high": "I know exactly where they are — {dungeonName}. I watched them go in.",
+        "medium": "They're holed up in a ruin to the {direction}. I saw the approach.",
+        "low": "Last seen heading {direction}. That's all I know.",
+        "none": "I haven't seen them since the robbery."
+      },
+      "timeLimit": null,
+      "competingParty": true,
+      "worldTag": null,
+      "factionConsequence": null,
+      "questGiverRole": "merchant",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "kill-chief-extermination",
+      "name": "Cull the {creaturePlural} Before Winter",
+      "type": "kill",
+      "callingArchetype": "dedication",
+      "description": "A local farmer needs {count} {creaturePlural} killed before they raid the food stores. A den mother leads the pack.",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Kill {count} {creaturePlural}",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": "{count}"
+          }
+        },
+        {
+          "type": "kill",
+          "description": "Defeat the den mother",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": 1,
+            "elite": true
+          },
+          "unlockAfterObjective": 0
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.2",
+        "goldFormula": "playerLevel * 15"
+      },
+      "intelQuality": "low",
+      "intelDialogue": {
+        "high": "They've been seen near {dungeonName}. That's where the den mother nests.",
+        "medium": "Somewhere to the {direction}. That's where I've seen them come from.",
+        "low": "They come from the {direction}. That's all I know.",
+        "none": "I just know they keep coming."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "safer",
+      "factionConsequence": null,
+      "questGiverRole": "farmer",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "kill-chief-sacrifice",
+      "name": "Stop the {enemyType} Ritual at {dungeonName}",
+      "type": "kill",
+      "callingArchetype": "dedication",
+      "description": "A temple keeper says a ritual sacrifice is scheduled. The ritual leader must be stopped within three rooms. There is no time to loot.",
+      "objectives": [
+        {
+          "type": "kill",
+          "description": "Stop the ritual leader within 3 rooms",
+          "requirement": {
+            "creatureTypes": ["{creatureType}"],
+            "count": 1,
+            "elite": true,
+            "roomLimit": 3
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 2.0",
+        "goldFormula": "playerLevel * 20"
+      },
+      "intelQuality": "high",
+      "intelDialogue": {
+        "high": "The ritual is tonight in {dungeonName}. You have three rooms — no more.",
+        "medium": "It's happening now. Somewhere in the ruins to the {direction}.",
+        "low": "You must hurry. I don't know where exactly.",
+        "none": "There is no time to explain. Go."
+      },
+      "timeLimit": 3,
+      "competingParty": false,
+      "worldTag": "cleansed",
+      "factionConsequence": null,
+      "failureConsequence": {
+        "targetSettlementFlag": "cursed",
+        "settlementScope": "nearest"
+      },
+      "questGiverRole": "temple_keeper",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "retrieve-heirloom",
+      "name": "Recover the {itemType} of {familyName}",
+      "type": "retrieve",
+      "callingArchetype": "wanderlust",
+      "description": "A grieving noble wants their family heirloom back — a {itemType} lost when {dungeonName} was overrun. It's on a body inside.",
+      "objectives": [
+        {
+          "type": "retrieve",
+          "description": "Find the {itemType} of {familyName} in {dungeonName}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "location": "body"
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.0",
+        "goldFormula": "playerLevel * 40"
+      },
+      "intelQuality": "high",
+      "intelDialogue": {
+        "high": "It's on my cousin's body. In {dungeonName}. I couldn't retrieve it myself.",
+        "medium": "Someone carried it in. It should be near where they fell.",
+        "low": "It's in there somewhere. I last saw it years ago.",
+        "none": "I have nothing useful to tell you."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": null,
+      "factionConsequence": null,
+      "questGiverRole": "noble",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "retrieve-contraband",
+      "name": "Don't Ask What It Is — Just Bring It Back",
+      "type": "retrieve",
+      "callingArchetype": "wanderlust",
+      "description": "A sketchy merchant won't say what's in the crate. Only that it's theirs, it's in {dungeonName}, and they're paying well.",
+      "objectives": [
+        {
+          "type": "retrieve",
+          "description": "Recover the sealed crate from {dungeonName}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "displayName": "Sealed Crate",
+            "revealOnComplete": true
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.0",
+        "goldFormula": "playerLevel * 50"
+      },
+      "intelQuality": "none",
+      "intelDialogue": {
+        "high": "It's in {dungeonName}. That's all you need to know.",
+        "medium": "Somewhere to the {direction}. I'm not saying more.",
+        "low": "You'll know it when you see it.",
+        "none": "Don't ask questions. Just bring it."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": null,
+      "factionConsequence": {
+        "factionId": "city_watch",
+        "delta": -10
+      },
+      "questGiverRole": "merchant",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "retrieve-relic",
+      "name": "The {dungeonName} Held Our People's {relicName}",
+      "type": "retrieve",
+      "callingArchetype": "wanderlust",
+      "description": "A cultural elder says an artifact looted generations ago is in {dungeonName}. Returning it would mean much to the settlement.",
+      "objectives": [
+        {
+          "type": "retrieve",
+          "description": "Recover the {relicName} from {dungeonName}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "callingHint": {
+              "wanderlust": "proximity_ping",
+              "scholar": "clue_scroll",
+              "dedication": null
+            }
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.2",
+        "goldFormula": "playerLevel * 30"
+      },
+      "intelQuality": "medium",
+      "intelDialogue": {
+        "high": "It's in {dungeonName}. The elder knows which room.",
+        "medium": "It's in {dungeonName} somewhere. Our elders lost track of where.",
+        "low": "Somewhere in the ruins to the {direction}.",
+        "none": "The knowledge of its exact location was lost."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": null,
+      "factionConsequence": null,
+      "questGiverRole": "elder",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "retrieve-trophy",
+      "name": "Bring Me Proof It's Dead",
+      "type": "retrieve",
+      "callingArchetype": "wanderlust",
+      "description": "A mercenary captain needs confirmation of kill. The trophy drops from the creature — a Wanderlust can grab it without a full clear.",
+      "objectives": [
+        {
+          "type": "retrieve",
+          "description": "Bring back proof of the {creatureType}'s death",
+          "requirement": {
+            "itemId": "{itemId}",
+            "dropsFrom": "{creatureType}",
+            "elite": true
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.3",
+        "goldFormula": "playerLevel * 45"
+      },
+      "intelQuality": "medium",
+      "intelDialogue": {
+        "high": "It's in {dungeonName}. Our scouts confirmed it yesterday.",
+        "medium": "Somewhere to the {direction}. That terrain suits them.",
+        "low": "I only know the creature type. You'll have to track it.",
+        "none": "My client gave me nothing useful."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": null,
+      "factionConsequence": null,
+      "questGiverRole": "mercenary",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "investigate-outbreak",
+      "name": "Why Are the {creaturePlural} Acting Strange?",
+      "type": "investigate",
+      "callingArchetype": "scholar",
+      "description": "A healer has noticed {creaturePlural} behaving abnormally — attacking outside their normal range and season. The cause is in room one of {dungeonName}.",
+      "objectives": [
+        {
+          "type": "investigate",
+          "description": "Find the source of the disturbance in {dungeonName}",
+          "requirement": {
+            "location": "{dungeonId}",
+            "payoffRoom": 1,
+            "investigationDC": 12
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 0.8",
+        "goldFormula": "playerLevel * 20"
+      },
+      "intelQuality": "low",
+      "intelDialogue": {
+        "high": "Check room one of {dungeonName}. That's where the disturbance originates.",
+        "medium": "Start near {dungeonName}. The answer should be near the entrance.",
+        "low": "I only know the {creaturePlural} have changed. Look for signs.",
+        "none": "I have no useful information."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "cleansed",
+      "factionConsequence": null,
+      "questGiverRole": "healer",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "investigate-disappearance",
+      "name": "{count} {npcType} Vanished on the {roadName} Road",
+      "type": "investigate",
+      "callingArchetype": "scholar",
+      "description": "The guard captain found bodies but no witnesses. Evidence of what happened is in {dungeonName}. A partial report earns partial reward.",
+      "objectives": [
+        {
+          "type": "investigate",
+          "description": "Find evidence of what happened in {dungeonName}",
+          "requirement": {
+            "location": "{dungeonId}",
+            "payoffRoom": 1,
+            "investigationDC": 14
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.0",
+        "goldFormula": "playerLevel * 25",
+        "partialReward": {
+          "xpMultiplier": 0.5,
+          "goldMultiplier": 0.5,
+          "triggerOn": "firstObjectiveComplete"
+        }
+      },
+      "intelQuality": "medium",
+      "intelDialogue": {
+        "high": "The evidence is in {dungeonName}, room one. I've had scouts look.",
+        "medium": "Start in {dungeonName}. The bodies were found on that road.",
+        "low": "They disappeared on the {roadName} road. Check nearby ruins.",
+        "none": "I have no leads."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "safer",
+      "factionConsequence": null,
+      "questGiverRole": "guard_captain",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "investigate-conspiracy",
+      "name": "The {factionName} Are Hiding Something in {dungeonName}",
+      "type": "investigate",
+      "callingArchetype": "scholar",
+      "description": "A rival faction wants leverage. Evidence is in {dungeonName}. What the player does with the evidence after is their choice.",
+      "objectives": [
+        {
+          "type": "investigate",
+          "description": "Find the evidence in {dungeonName}",
+          "requirement": {
+            "location": "{dungeonId}",
+            "payoffRoom": 1,
+            "investigationDC": 15
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.2",
+        "goldFormula": "playerLevel * 30"
+      },
+      "intelQuality": "low",
+      "intelDialogue": {
+        "high": "The document is in room one of {dungeonName}. My informant confirmed it.",
+        "medium": "It's in {dungeonName} somewhere near the entrance.",
+        "low": "I believe something is hidden in the ruins to the {direction}.",
+        "none": "I have suspicions. No more."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "disturbed",
+      "factionConsequence": {
+        "factionId": "{targetFaction}",
+        "delta": -20
+      },
+      "questGiverRole": "rival_faction",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "investigate-awakening",
+      "name": "That {dungeonName} Didn't Used to Be Dangerous",
+      "type": "investigate",
+      "callingArchetype": "scholar",
+      "description": "An old farmer says the dungeon used to be safe. Something changed. A Scholar understands why — others only see that it did.",
+      "objectives": [
+        {
+          "type": "investigate",
+          "description": "Discover what changed in {dungeonName}",
+          "requirement": {
+            "location": "{dungeonId}",
+            "payoffRoom": 1,
+            "investigationDC": 16
+          }
+        }
+      ],
+      "rewards": {
+        "xpFormula": "playerLevel * baseXPReward * 1.5",
+        "goldFormula": "playerLevel * 35"
+      },
+      "intelQuality": "none",
+      "intelDialogue": {
+        "high": "It changed three seasons ago. I know exactly when — check the oldest chamber.",
+        "medium": "Start at the entrance. Whatever changed began there.",
+        "low": "It used to be safe. Now it isn't. That's all I know.",
+        "none": "It just changed. I can't explain it."
+      },
+      "timeLimit": null,
+      "competingParty": false,
+      "worldTag": "disturbed",
+      "factionConsequence": null,
+      "questGiverRole": "farmer",
+      "campaignIds": ["core"]
     }
   ],
   "wordLists": {

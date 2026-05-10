@@ -753,6 +753,59 @@ class WorldGenerator {
      * @param {Array} tiles - Region tile array
      * @param {Object} rng - Seeded RNG
      */
+    /**
+     * Compute the nearest settlement quest hook for a dungeon at (x, y).
+     * Returns a questHook stub if a settlement is within maxHookDistanceTiles, else null.
+     * @param {number} x - World X coordinate of the dungeon
+     * @param {number} y - World Y coordinate of the dungeon
+     * @returns {Object|null} questHook stub or null
+     */
+    _computeQuestHook(x, y) {
+        if (!RULES.quests || !RULES.quests.enableWorldHooks) return null;
+        const maxDist = RULES.quests.maxHookDistanceTiles;
+        const settlements = this.worldMetadata?.settlements || [];
+        let nearest = null;
+        let nearestDist = Infinity;
+        for (const s of settlements) {
+            const dx = s.x - x;
+            const dy = s.y - y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < nearestDist) {
+                nearestDist = dist;
+                nearest = s;
+            }
+        }
+        if (!nearest || nearestDist > maxDist) return null;
+        return {
+            nearestSettlementId: nearest.id || `${nearest.x},${nearest.y}`,
+            distanceTiles: Math.round(nearestDist),
+            namedBossId: null
+        };
+    }
+
+    _sampleTerrainAt(worldX, worldY) {
+        const scale = RULES.worldGen.biomeNoiseScale;
+        const bg = RULES.worldGen.biomeGeneration;
+
+        const elevation = this.elevationNoise.octaveNoise2D(worldX * scale, worldY * scale, 4, 0.5);
+        const rawMoisture = this.moistureNoise.octaveNoise2D(worldX * scale * 0.6, worldY * scale * 0.6, 3, 0.5);
+        const rawTemperature = this.temperatureNoise.octaveNoise2D(worldX * scale * 0.8, worldY * scale * 0.8, 3, 0.5);
+
+        const worldHeight = this.worldBounds.size * RULES.worldGen.regionSize;
+        const worldMinY = this.worldBounds.minY * RULES.worldGen.regionSize;
+        const normalizedY = (worldY - worldMinY) / worldHeight;
+        const latitudeTemp = Math.cos((normalizedY - 0.5) * Math.PI * 2);
+        const temperature = rawTemperature * (1 - bg.latitudeInfluence) + latitudeTemp * bg.latitudeInfluence;
+
+        const normElevation = (elevation + 1) / 2;
+        const moisturePenalty = normElevation > 0.6 ? (normElevation - 0.6) * bg.elevationWeight : 0;
+        const moisture = rawMoisture - moisturePenalty;
+
+        const biomeNoise = this.biomeNoise.octaveNoise2D(worldX * bg.continentalScale, worldY * bg.continentalScale, 2, 0.5);
+
+        return this.selectTerrain(elevation, moisture, temperature, biomeNoise);
+    }
+
     enrichDungeonFeature(dungeon, tiles, rng) {
         if (!this.dungeonData) {
             // Sync fallback — data not loaded yet, assign minimal defaults
@@ -808,6 +861,12 @@ class WorldGenerator {
         dungeon.theme = themeId;
         dungeon.creatureType = theme.creatureType;
         dungeon.dominantCreatures = [...creaturePool];
+
+        // Populate namedBossId on questHook now that dominantCreatures is known
+        if (dungeon.questHook && dungeon.questHook.namedBossId === null
+            && Array.isArray(dungeon.dominantCreatures) && dungeon.dominantCreatures.length > 0) {
+            dungeon.questHook.namedBossId = dungeon.dominantCreatures[0];
+        }
     }
 
     /**
@@ -985,7 +1044,12 @@ class WorldGenerator {
                     // Ensure these fields are preserved
                     npcs: settlement.npcs || [],
                     questsGenerated: settlement.questsGenerated || false,
-                    visitedAt: settlement.visitedAt || null
+                    visitedAt: settlement.visitedAt || null,
+                    // Consequence system fields
+                    flags: settlement.flags || [],
+                    localVisitCount: settlement.localVisitCount || 0,
+                    merchantLocked: settlement.merchantLocked || false,
+                    sacked: settlement.sacked || false
                 });
             } else {
                 // Update existing settlement with latest state
@@ -1423,6 +1487,7 @@ class WorldGenerator {
      * Uses featureGeneration config from rulesEngine for counts and distribution
      */
     async preGenerateFeatures() {
+        await this.loadDungeonData();
         const features = [];
         const regionSize = RULES.worldGen.regionSize;
 
@@ -1496,14 +1561,21 @@ class WorldGenerator {
                 }
             }
 
-            features.push({
+            const dungeonFeature = {
                 id: `${pos.x},${pos.y}`,
                 x: pos.x,
                 y: pos.y,
                 type: 'dungeon',
                 difficulty: difficulty,
                 explored: false
-            });
+            };
+            const hook = this._computeQuestHook(dungeonFeature.x, dungeonFeature.y);
+            if (hook) dungeonFeature.questHook = hook;
+            // Enrich dungeon at world-gen time — terrain sampled deterministically from noise
+            const sampledTerrain = this._sampleTerrainAt(dungeonFeature.x, dungeonFeature.y);
+            const syntheticTiles = [{ x: dungeonFeature.x, y: dungeonFeature.y, terrain: sampledTerrain }];
+            this.enrichDungeonFeature(dungeonFeature, syntheticTiles, regionRNG);
+            features.push(dungeonFeature);
             dungeonsPlaced++;
             return true;
         };

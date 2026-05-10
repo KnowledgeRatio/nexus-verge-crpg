@@ -514,7 +514,10 @@ class SaveManager {
             npcs: this.serializeMap(world.npcs),
             currentLocation: world.currentLocation || { x: 0, y: 0 },
             modifiedTiles: world.modifiedTiles || [],
-            metadata: world.metadata || null
+            metadata: world.metadata || null,
+            visitCount: world.visitCount || 0,
+            pendingEvents: world.pendingEvents || [],
+            worldClock: world.worldClock || 0
         };
     }
 

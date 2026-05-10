@@ -175,6 +175,30 @@ class QuestManager {
             this.advanceCampaign(quest.nextStage);
         }
 
+        // Write worldTag to world.modifiedTiles for future rendering/consequence use
+        if (quest.worldTag && quest.dungeonHookId) {
+            const parts = quest.dungeonHookId.split(',');
+            const x = Number(parts[0]);
+            const y = Number(parts[1]);
+            if (!isNaN(x) && !isNaN(y)) {
+                const modifiedTiles = gameState.get('world.modifiedTiles') || [];
+                modifiedTiles.push({
+                    x,
+                    y,
+                    tag: quest.worldTag,
+                    questId: quest.id,
+                    timestamp: Date.now()
+                });
+                gameState.set('world.modifiedTiles', modifiedTiles);
+                console.log(`📜 worldTag '${quest.worldTag}' written to world.modifiedTiles at (${x},${y})`);
+            }
+        }
+
+        // Route worldTag consequence through ConsequenceManager (ADR-010: by tag, not by quest ID)
+        if (quest.worldTag && window.consequenceManager) {
+            window.consequenceManager.queueConsequenceForTag(quest.worldTag, quest);
+        }
+
         return {
             success: true,
             rewards: rewardSummary
@@ -426,6 +450,70 @@ class QuestManager {
                 }
             });
         });
+
+        if (updated) {
+            gameState.set('quests', quests);
+            this.checkQuestCompletion();
+        }
+    }
+
+    /**
+     * Called when the player enters a dungeon room.
+     * Fires investigation skill checks for any active investigate quests targeting this dungeon.
+     * @param {number} dungeonX - World X coordinate of the dungeon
+     * @param {number} dungeonY - World Y coordinate of the dungeon
+     * @param {number} roomIndex - 0-based index of the room entered
+     * @param {Object} character - Plain character object from gameState
+     */
+    onRoomEntered(dungeonX, dungeonY, roomIndex, character) {
+        const quests = gameState.get('quests');
+        if (!quests?.active?.length) return;
+
+        const hookKey = `${dungeonX},${dungeonY}`;
+        let updated = false;
+
+        for (const quest of quests.active) {
+            if (quest.type !== 'investigate') continue;
+
+            for (const obj of (quest.objectives || [])) {
+                if (obj.type !== 'investigate' || obj.completed) continue;
+
+                // Match by targetLocation (generated quests) or dungeonHookId on the quest
+                const targetLoc = obj.targetLocation || quest.dungeonHookId;
+                if (targetLoc !== hookKey) continue;
+
+                // payoffRoom in JSON is 1-indexed; convert to 0-based for comparison
+                const payoffRoomIndex = (obj.payoffRoom ?? obj.payoffRoomIndex ?? 1) - 1;
+                if (roomIndex !== payoffRoomIndex) continue;
+
+                // Run Investigation skill check
+                const dc = obj.investigationDC || 14;
+                const investMod = character?.skillModifiers?.investigation
+                    ?? character?.abilityModifiers?.int
+                    ?? 0;
+                const roll = Math.floor(Math.random() * 20) + 1;
+                const total = roll + investMod;
+                const passed = total >= dc;
+
+                const rollMsg = `🔍 Investigation check: rolled ${roll} + ${investMod} = ${total} vs DC ${dc}`;
+                gameState.addMessage(rollMsg, 'info');
+
+                if (passed) {
+                    obj.completed = true;
+                    obj.progress = 1;
+                    const completionText = obj.description
+                        ? `✅ ${obj.description} — complete.`
+                        : '✅ You find the evidence. Investigation complete.';
+                    gameState.addMessage(completionText, 'success');
+                    updated = true;
+                } else {
+                    gameState.addMessage(
+                        `You search the room carefully but find nothing conclusive yet. (Need ${dc}, rolled ${total})`,
+                        'warning'
+                    );
+                }
+            }
+        }
 
         if (updated) {
             gameState.set('quests', quests);

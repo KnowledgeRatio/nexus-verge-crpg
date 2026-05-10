@@ -416,78 +416,56 @@ class Player {
     }
 
     /**
-     * Check if player has discovered quest-based encounter locations (bandit camps, etc.)
-     * Shows notification when nearby, E key triggers interaction
+     * Check if player is near a world-first social quest location (bandit camp, etc.)
+     * Shows notification when nearby; E key triggers interaction.
+     * Camp coordinates come from dungeonHookId on the quest — no Math.random() placement.
      */
     async checkForQuestEncounters() {
-        // Don't check during combat
-        if (gameState.get('combat')?.active) {
-            return;
-        }
+        if (gameState.get('combat')?.active) return;
 
-        // Get active quests
         const quests = gameState.get('quests');
-        if (!quests || !quests.active || quests.active.length === 0) {
+        if (!quests?.active?.length) {
             this.nearBanditCamp = false;
             return;
         }
 
-        // Check for "Negotiate with Bandits" quest
-        const banditQuest = quests.active.find(q =>
-            q.id?.includes('negotiate_bandits') ||
-            (q.objectives && q.objectives.some(obj =>
-                obj.type === 'encounter' && obj.encounter === 'bandit_camp'
-            ))
+        // Find any active social/encounter quest with a world-first location
+        const socialQuest = quests.active.find(q =>
+            q.type === 'social' &&
+            q.dungeonHookId &&
+            q.objectives?.some(obj => obj.type === 'reach_location' && !obj.completed)
         );
 
-        if (!banditQuest) {
+        if (!socialQuest) {
             this.nearBanditCamp = false;
             return;
         }
 
-        // Find the encounter objective
-        const encounterObj = banditQuest.objectives?.find(obj =>
-            obj.type === 'encounter' && obj.encounter === 'bandit_camp'
-        );
-
-        if (!encounterObj || encounterObj.completed) {
+        // Parse world coordinates from dungeonHookId ("x,y")
+        const parts = socialQuest.dungeonHookId.split(',');
+        const campX = Number(parts[0]);
+        const campY = Number(parts[1]);
+        if (isNaN(campX) || isNaN(campY)) {
             this.nearBanditCamp = false;
             return;
         }
 
-        // Generate bandit camp location if not set (near quest giver's settlement)
-        if (!banditQuest.banditCampLocation) {
-            // Get quest giver's location (settlement location)
-            const questGiverLoc = banditQuest.questGiver?.location || { x: 0, y: 0 };
-
-            // Place bandit camp 20-40 tiles away from settlement in random direction
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 20 + Math.random() * 20; // 20-40 tiles
-            const campX = Math.round(questGiverLoc.x + Math.cos(angle) * distance);
-            const campY = Math.round(questGiverLoc.y + Math.sin(angle) * distance);
-
-            banditQuest.banditCampLocation = { x: campX, y: campY };
-            gameState.set('quests', quests);
-
-            console.log(`🏕️ Bandit camp generated at (${campX}, ${campY}), ${distance.toFixed(1)} tiles from settlement`);
+        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location' && !obj.completed);
+        if (!locationObj) {
+            this.nearBanditCamp = false;
+            return;
         }
 
-        // Check if player is near bandit camp (within 3 tiles)
-        const { x: campX, y: campY } = banditQuest.banditCampLocation;
-        const distance = Math.sqrt(
-            Math.pow(this.x - campX, 2) +
-            Math.pow(this.y - campY, 2)
-        );
+        const radius = locationObj.radius || 3;
+        const dist = Math.sqrt(Math.pow(this.x - campX, 2) + Math.pow(this.y - campY, 2));
 
-        if (distance <= 3) {
-            // Player is near bandit camp
+        if (dist <= radius) {
             if (!this.nearBanditCamp) {
-                // First time entering area - show notification
-                gameState.addMessage('🏕️ You spot a bandit camp in the distance. Press E to approach.', 'warning');
+                const dungeonName = socialQuest.dungeonName || 'the bandit camp';
+                gameState.addMessage(`🏕️ You spot ${dungeonName} ahead. Press E to approach.`, 'warning');
                 this.nearBanditCamp = true;
             }
         } else {
-            // Player left the area
             this.nearBanditCamp = false;
         }
     }
@@ -610,50 +588,46 @@ class Player {
     }
 
     /**
-     * Handle approaching bandit camp for "Negotiate with Bandits" quest
-     * Triggers the social challenge conversation
+     * Handle approaching a social-quest location (bandit camp, etc.)
+     * Marks the reach_location objective complete and triggers the skill challenge.
      */
     async approachBanditCamp() {
-        // Get active quests
         const quests = gameState.get('quests');
-        const banditQuest = quests.active.find(q =>
-            q.id?.includes('negotiate_bandits') ||
-            (q.objectives && q.objectives.some(obj =>
-                obj.type === 'encounter' && obj.encounter === 'bandit_camp'
-            ))
+        const socialQuest = quests?.active?.find(q =>
+            q.type === 'social' &&
+            q.objectives?.some(obj => obj.type === 'reach_location' && !obj.completed)
         );
 
-        if (!banditQuest) {
-            gameState.addMessage('The bandit camp is empty.', 'info');
+        if (!socialQuest) {
+            gameState.addMessage('The camp is empty.', 'info');
             return;
         }
 
-        // Get encounter objective
-        const encounterObj = banditQuest.objectives?.find(obj =>
-            obj.type === 'encounter' && obj.encounter === 'bandit_camp'
-        );
+        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location' && !obj.completed);
+        const challengeObj = socialQuest.objectives.find(obj => obj.type === 'social_challenge');
 
-        if (encounterObj?.completed) {
-            gameState.addMessage('The bandits have already left this camp.', 'info');
+        if (challengeObj?.completed) {
+            gameState.addMessage('You have already resolved this situation.', 'info');
             return;
         }
 
-        // Mark encounter as triggered
-        if (encounterObj) {
-            encounterObj.triggered = true;
+        // Mark reach_location objective complete
+        if (locationObj) {
+            locationObj.completed = true;
+            locationObj.progress = 1;
             gameState.set('quests', quests);
         }
 
-        // Start social challenge
         if (window.skillChallengeManager) {
-            gameState.addMessage('🏕️ You approach the bandit camp. A grizzled leader steps forward...', 'warning');
+            const dungeonName = socialQuest.dungeonName || 'the camp';
+            gameState.addMessage(`🏕️ You approach ${dungeonName}. A grizzled leader steps forward...`, 'warning');
 
-            // Trigger bandit negotiation social challenge
             const context = {
-                questId: banditQuest.id,
-                settlement: banditQuest.questGiver?.settlement || 'the settlement',
+                questId: socialQuest.id,
+                settlement: socialQuest.settlementId || 'the settlement',
                 npcName: 'Bandit Leader',
-                npcRole: 'Hostile'
+                npcRole: 'Hostile',
+                motivation: 'opportunists'
             };
 
             await window.skillChallengeManager.startChallenge('bandit_negotiation', context);

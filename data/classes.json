@@ -122,7 +122,7 @@
       "displayName": "Scholar (COMING SOON)",
       "description": "Scholars are seekers of knowledge who have turned their intellect into power. Through years of study, experimentation, and arcane research, they have learned to reshape reality itself. Whether driven by academic curiosity, a thirst for forbidden lore, or the desire to push the boundaries of what is possible, their pursuit of understanding leads them into the unknown.",
       "flavor": "The mage archetype - intellect, arcane mastery, and innovation",
-      "hitDie": 6,
+      "hitDie": 8,
       "primaryAbility": ["int"],
       "savingThrowProficiencies": ["int", "wis"],
       "armorProficiencies": ["light"],

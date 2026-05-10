@@ -6,6 +6,7 @@
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
 import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
+import { gameState } from '../core/GameState.js';
 
 class QuestGenerator {
     constructor(worldSeed, campaignId = null) {
@@ -83,7 +84,23 @@ class QuestGenerator {
     }
 
     /**
-   * Generate quests for a settlement when first discovered
+     * Return unbound dungeon hooks that point to a given settlement.
+     * @param {string} settlementId - e.g. "12,34"
+     * @returns {Array<Object>} Matching feature objects from world.metadata
+     */
+    getHooksForSettlement(settlementId) {
+        const metadata = gameState.get('world.metadata');
+        if (!metadata?.features) return [];
+        return metadata.features.filter(f =>
+            f.type === 'dungeon' &&
+            f.questHook?.nearestSettlementId === settlementId &&
+            !f.questBind
+        );
+    }
+
+    /**
+   * Generate quests for a settlement when first discovered.
+   * Uses world hook stubs (Phase 1) to create contextual, world-grounded quests.
    * @param {Object} settlement - Settlement feature data
    * @param {number} playerLevel - Current player level
    * @returns {Array<Object>} Generated quest instances
@@ -95,44 +112,327 @@ class QuestGenerator {
 
         await this.loadData();
 
-        const seed = `${this.worldSeed}_settlement_${settlement.x}_${settlement.y}_quests`;
-        const rng = new SeededRandom(seed);
+        const budget = RULES.quests.questSlotBudget?.[settlement.settlementType]
+            ?? RULES.quests.questsPerSettlement
+            ?? 3;
 
-        const quests = [];
+        const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
+        const hooks = RULES.quests.enableWorldHooks
+            ? this.getHooksForSettlement(settlementId)
+            : [];
 
-        // Determine quest count based on settlement type
-        const questCounts = {
-            'village': { min: 2, max: 3 },
-            'town': { min: 3, max: 5 },
-            'city': { min: 4, max: 6 }
-        };
+        console.log(`   - Quest budget: ${budget}, world hooks found: ${hooks.length}`);
 
-        const settlementType = settlement.settlementType || 'village';
-        const config = questCounts[settlementType] || questCounts['village'];
-        const questCount = rng.nextInt(config.min, config.max);
+        const rng = new SeededRandom(
+            `${this.worldSeed}_settlement_${settlement.x}_${settlement.y}_quests`
+        );
 
-        console.log(`   - Will generate ${questCount} quests`);
-
-        // Select random templates
-        const templates = this.questData.sideQuestTemplates;
-        console.log(`   - Available templates: ${templates?.length || 0}`);
-        const selectedTemplates = [];
-
-        for (let i = 0; i < questCount; i++) {
-            const template = rng.choice(templates);
-            selectedTemplates.push(template);
-        }
-
-        // Generate quest instances from templates
-        for (const template of selectedTemplates) {
-            const quest = await this.generateFromTemplate(template, settlement, playerLevel, rng);
-            if (quest) {
-                quests.push(quest);
-            }
-        }
+        const quests = [
+            this._generateKillChief(settlement, playerLevel, hooks, rng),
+            this._generateNegotiateQuest(settlement, playerLevel, hooks, rng) || this._generateRetrieveArtifact(settlement, playerLevel, hooks, rng),
+            this._generateInvestigateChain(settlement, playerLevel, hooks, rng)
+        ].filter(Boolean).slice(0, budget);
 
         console.log(`📜 Generated ${quests.length} quests for ${settlement.name}`);
         return quests;
+    }
+
+    /**
+     * Slot 1: Kill-Chief quest — clear the dungeon leader.
+     * @param {Object} settlement
+     * @param {number} playerLevel
+     * @param {Array<Object>} hooks
+     * @param {SeededRandom} rng
+     * @returns {Object} Quest object
+     */
+    _generateKillChief(settlement, playerLevel, hooks, rng) {
+        const hook = hooks.find(h => h.questHook?.namedBossId) || hooks[0] || null;
+        const bossName = hook?.questHook?.namedBossId || this._pickCreatureForLevel(playerLevel, rng);
+        const dungeonName = hook?.name || 'the nearby ruin';
+        const direction = hook ? this._getDirection(settlement, hook) : 'nearby';
+        const difficulty = this._getDifficultyLabel(hook?.questHook?.distanceTiles, playerLevel);
+
+        const questId = `quest_kill_chief_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`;
+        return {
+            id: questId,
+            type: 'kill',
+            callingArchetype: 'dedication',
+            name: `End the ${bossName} Chief`,
+            description: `A named ${bossName} leads raids from ${dungeonName}, to the ${direction}.`,
+            objectives: [{
+                type: 'kill',
+                targetType: bossName,
+                count: 1,
+                progress: 0,
+                description: `Defeat the ${bossName} chief in ${dungeonName}`
+            }],
+            rewards: {
+                xp: Math.round(RULES.quests.baseXPReward * (RULES.quests.xpMultiplierByDifficulty?.[difficulty] || 1.5) * playerLevel),
+                gold: Math.round(25 * playerLevel)
+            },
+            dungeonHookId: hook ? `${hook.x},${hook.y}` : null,
+            dungeonName,
+            distanceTiles: hook?.questHook?.distanceTiles || null,
+            difficulty,
+            intelQuality: 'high',
+            intelDialogue: {
+                high: `I know exactly where they lair — ${dungeonName}, to the ${direction}.`,
+                medium: `Somewhere to the ${direction}. A ruin, I think.`,
+                low: `I've only heard rumours from the merchants.`,
+                none: `I have no information to give you.`
+            },
+            timeLimit: null,
+            competingParty: false,
+            worldTag: 'powerVacuum',
+            status: 'available',
+            questGiverId: null,
+            settlementId: settlement.id || `${settlement.x},${settlement.y}`
+        };
+    }
+
+    /**
+     * Check whether a creature ID is a bandit-type enemy.
+     * @param {string} creatureId
+     * @returns {boolean}
+     */
+    _isBanditType(creatureId) {
+        if (!creatureId) return false;
+        const banditTypes = ['bandit', 'bandit_captain', 'brigand', 'cutthroat', 'outlaw', 'thug', 'marauder'];
+        return banditTypes.some(t => creatureId.toLowerCase().includes(t));
+    }
+
+    /**
+     * Slot 2 (Wanderlust alternate): Negotiate-Bandits quest — world-first social quest.
+     * Only generated when a bandit-type dungeon hook exists near the settlement.
+     * @param {Object} settlement
+     * @param {number} playerLevel
+     * @param {Array<Object>} hooks
+     * @param {SeededRandom} rng
+     * @returns {Object|null} Quest object, or null if no bandit hook is available
+     */
+    _generateNegotiateQuest(settlement, playerLevel, hooks, rng) {
+        // Find a dungeon hook whose named boss is a bandit type
+        const hook = hooks.find(h => this._isBanditType(h.questHook?.namedBossId)) || null;
+        if (!hook) return null; // Only generate if a bandit dungeon exists nearby
+
+        const dungeonName = hook.name || 'the bandit camp';
+        const direction = this._getDirection(settlement, hook);
+        const difficulty = this._getDifficultyLabel(hook.questHook?.distanceTiles, playerLevel);
+        const questId = `quest_negotiate_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`;
+        const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
+
+        return {
+            id: questId,
+            type: 'social',
+            callingArchetype: 'wanderlust',
+            name: `The Bandits Threatening ${settlement.name || 'the Settlement'}`,
+            description: `Bandits are demanding tribute. Find their camp at ${dungeonName} and make them leave — through words or fear.`,
+            objectives: [
+                {
+                    type: 'reach_location',
+                    description: `Find the bandit camp at ${dungeonName}`,
+                    dungeonHookId: `${hook.x},${hook.y}`,
+                    radius: 3,
+                    progress: 0,
+                    completed: false
+                },
+                {
+                    type: 'social_challenge',
+                    challengeId: 'bandit_negotiation',
+                    description: 'Negotiate with or intimidate the bandit leader',
+                    skills: ['influence', 'deception'],
+                    dc: 14,
+                    progress: 0,
+                    completed: false
+                }
+            ],
+            rewards: {
+                xp: Math.round(RULES.quests.baseXPReward * 1.2 * playerLevel),
+                gold: Math.round(30 * playerLevel)
+            },
+            dungeonHookId: `${hook.x},${hook.y}`,
+            dungeonName,
+            distanceTiles: hook.questHook?.distanceTiles || null,
+            difficulty,
+            intelQuality: 'high',
+            intelDialogue: {
+                high: `They're camped at ${dungeonName}, to the ${direction}. I know exactly where.`,
+                medium: `Somewhere to the ${direction}. I've seen their scouts on that road.`,
+                low: `They come from the ${direction}. I haven't found the camp.`,
+                none: `I have no idea where they're based.`
+            },
+            timeLimit: null,
+            competingParty: false,
+            worldTag: 'safer',
+            status: 'available',
+            questGiverId: null,
+            settlementId
+        };
+    }
+
+    /**
+     * Slot 2: Retrieve-Artifact quest — recover an item from a dungeon.
+     * Writes pendingBind so SettlementManager can mark the dungeon as bound.
+     * @param {Object} settlement
+     * @param {number} playerLevel
+     * @param {Array<Object>} hooks
+     * @param {SeededRandom} rng
+     * @returns {Object} Quest object
+     */
+    _generateRetrieveArtifact(settlement, playerLevel, hooks, rng) {
+        const hook = hooks.find(h => !h.questBind) || null;
+        const itemNames = ['Corrupted Medallion', 'Ancient Seal', 'Stolen Ledger', 'Cursed Idol', 'Lost Relic'];
+        const itemName = itemNames[rng.nextInt(0, itemNames.length - 1)];
+        const itemId = `quest_item_${rng.nextInt(10000, 99999)}`;
+        const dungeonName = hook?.name || 'a nearby dungeon';
+        const direction = hook ? this._getDirection(settlement, hook) : 'nearby';
+        const difficulty = this._getDifficultyLabel(hook?.questHook?.distanceTiles, playerLevel);
+
+        const questId = `quest_retrieve_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`;
+        return {
+            id: questId,
+            type: 'retrieve',
+            callingArchetype: 'wanderlust',
+            name: `Recover the ${itemName}`,
+            description: `Retrieve the ${itemName} from ${dungeonName}, to the ${direction}.`,
+            objectives: [{
+                type: 'retrieve',
+                targetItemId: itemId,
+                targetItemName: itemName,
+                progress: 0,
+                description: `Find the ${itemName} in ${dungeonName}`
+            }],
+            rewards: {
+                xp: Math.round(RULES.quests.baseXPReward * (RULES.quests.xpMultiplierByDifficulty?.[difficulty] || 1.0) * playerLevel),
+                gold: Math.round(40 * playerLevel)
+            },
+            dungeonHookId: hook ? `${hook.x},${hook.y}` : null,
+            dungeonName,
+            distanceTiles: hook?.questHook?.distanceTiles || null,
+            difficulty,
+            intelQuality: hook ? 'medium' : 'low',
+            intelDialogue: {
+                high: `I know exactly where the ${itemName} is — ${dungeonName}, to the ${direction}.`,
+                medium: `It's in ${dungeonName}, somewhere to the ${direction}. I don't know which room.`,
+                low: `Somewhere in the ruins nearby. I haven't been there.`,
+                none: `I have no useful information.`
+            },
+            timeLimit: null,
+            competingParty: false,
+            worldTag: null,
+            status: 'available',
+            questGiverId: null,
+            settlementId: settlement.id || `${settlement.x},${settlement.y}`,
+            pendingBind: hook ? { dungeonX: hook.x, dungeonY: hook.y, itemId, itemName } : null
+        };
+    }
+
+    /**
+     * Slot 3: Investigate-Chain quest — find out why something is wrong.
+     * Does not consume a hook.
+     * @param {Object} settlement
+     * @param {number} playerLevel
+     * @param {Array<Object>} hooks
+     * @param {SeededRandom} rng
+     * @returns {Object} Quest object
+     */
+    _generateInvestigateChain(settlement, playerLevel, hooks, rng) {
+        const subjects = [
+            { creature: 'wolves', description: 'acting outside their normal range' },
+            { creature: 'bandits', description: 'using unusual tactics' },
+            { creature: 'undead', description: 'stirring in the old burial grounds' },
+            { creature: 'cultists', description: 'gathering in secret' }
+        ];
+        const subject = subjects[rng.nextInt(0, subjects.length - 1)];
+        const hook = hooks[rng.nextInt(0, Math.max(0, hooks.length - 1))] || null;
+        const dungeonName = hook?.name || 'a nearby ruin';
+        const direction = hook ? this._getDirection(settlement, hook) : 'nearby';
+        const dc = 12 + Math.floor(playerLevel / 3);
+
+        const questId = `quest_investigate_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`;
+        const creatureCap = subject.creature.charAt(0).toUpperCase() + subject.creature.slice(1);
+        const descCap = subject.description.charAt(0).toUpperCase() + subject.description.slice(1);
+        return {
+            id: questId,
+            type: 'investigate',
+            callingArchetype: 'scholar',
+            name: `Why Are the ${creatureCap} ${descCap}?`,
+            description: `Someone needs to understand why the ${subject.creature} have been ${subject.description}. The answer may lie in ${dungeonName}.`,
+            objectives: [{
+                type: 'investigate',
+                targetLocation: hook ? `${hook.x},${hook.y}` : null,
+                investigationDC: dc,
+                progress: 0,
+                description: `Find evidence in ${dungeonName}`
+            }],
+            rewards: {
+                xp: Math.round(RULES.quests.baseXPReward * 0.8 * playerLevel),
+                gold: Math.round(20 * playerLevel)
+            },
+            dungeonHookId: hook ? `${hook.x},${hook.y}` : null,
+            dungeonName,
+            distanceTiles: hook?.questHook?.distanceTiles || null,
+            difficulty: 'easy',
+            intelQuality: 'low',
+            intelDialogue: {
+                high: `I know exactly what you'll find — look in room one of ${dungeonName}.`,
+                medium: `Start in ${dungeonName}. The answer should be near the entrance.`,
+                low: `I only know the ${subject.creature} have changed. Look for signs.`,
+                none: `I have no useful information.`
+            },
+            timeLimit: null,
+            competingParty: false,
+            worldTag: 'cleansed',
+            status: 'available',
+            questGiverId: null,
+            settlementId: settlement.id || `${settlement.x},${settlement.y}`,
+            pendingBind: null
+        };
+    }
+
+    /**
+     * Compute cardinal direction from settlement to feature.
+     * @param {Object} settlement
+     * @param {Object} feature
+     * @returns {string} 'north'|'south'|'east'|'west'
+     */
+    _getDirection(settlement, feature) {
+        const dx = feature.x - settlement.x;
+        const dy = feature.y - settlement.y;
+        if (Math.abs(dx) > Math.abs(dy)) return dx > 0 ? 'east' : 'west';
+        return dy > 0 ? 'south' : 'north';
+    }
+
+    /**
+     * Map distance-tiles to a difficulty label.
+     * @param {number|null} distanceTiles
+     * @param {number} playerLevel
+     * @returns {string}
+     */
+    _getDifficultyLabel(distanceTiles, playerLevel) {
+        if (!distanceTiles) return 'normal';
+        if (distanceTiles < 30) return 'easy';
+        if (distanceTiles < 80) return 'normal';
+        if (distanceTiles < 130) return 'hard';
+        return 'deadly';
+    }
+
+    /**
+     * Pick a creature appropriate for the player's level.
+     * @param {number} playerLevel
+     * @param {SeededRandom} rng
+     * @returns {string} Creature type ID
+     */
+    _pickCreatureForLevel(playerLevel, rng) {
+        const byLevel = [
+            ['goblin', 'bandit', 'wolf'],
+            ['orc', 'bugbear', 'skeleton'],
+            ['gnoll', 'hobgoblin', 'ghoul'],
+            ['ogre', 'werewolf', 'wraith'],
+            ['veteran', 'mage', 'medusa']
+        ];
+        const bracket = byLevel[Math.min(Math.floor((playerLevel - 1) / 2), byLevel.length - 1)];
+        return bracket[rng.nextInt(0, bracket.length - 1)];
     }
 
     /**

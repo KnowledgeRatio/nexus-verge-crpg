@@ -479,6 +479,16 @@ class MapRenderer {
 
         this.clear();
 
+        // Build O(1) lookup for modified tiles (world tags from completed quests).
+        // Rebuild once per frame so the render loop stays O(1) per tile.
+        const rawModifiedTiles = worldData?.modifiedTiles || [];
+        this._modifiedTilesMap = new Map();
+        for (const entry of rawModifiedTiles) {
+            if (entry && entry.tag) {
+                this._modifiedTilesMap.set(`${entry.x},${entry.y}`, entry.tag);
+            }
+        }
+
         // Center camera on player
         this.centerOn(playerPosition.x, playerPosition.y);
 
@@ -547,23 +557,51 @@ class MapRenderer {
         // Check for features (settlements, dungeons, etc.) - always use ASCII for features
         if (tile.feature) {
             this.renderFeature(screenX, screenY, tile.feature, visible);
-            return;
+            // Fall through to tag overlay below (no early return)
+        } else {
+            // Try to use pixel art tile if enabled
+            const tileImage = this.getTileImage(tile.terrain);
+
+            if (tileImage) {
+                // Use pixel art tile
+                const opacity = visible ? 1.0 : 0.4; // Dim for fog of war
+                this.drawImageTile(screenX, screenY, tileImage, opacity);
+            } else if (visible) {
+                // ASCII fallback - currently visible - full color
+                this.drawTile(screenX, screenY, terrain.symbol, terrain.color, null);
+            } else {
+                // ASCII fallback - explored but not visible - dimmed
+                const dimmedColor = this.dimColor(terrain.color, 0.4);
+                this.drawTile(screenX, screenY, terrain.symbol, dimmedColor, null);
+            }
         }
 
-        // Try to use pixel art tile if enabled
-        const tileImage = this.getTileImage(tile.terrain);
-
-        if (tileImage) {
-            // Use pixel art tile
-            const opacity = visible ? 1.0 : 0.4; // Dim for fog of war
-            this.drawImageTile(screenX, screenY, tileImage, opacity);
-        } else if (visible) {
-            // ASCII fallback - currently visible - full color
-            this.drawTile(screenX, screenY, terrain.symbol, terrain.color, null);
-        } else {
-            // ASCII fallback - explored but not visible - dimmed
-            const dimmedColor = this.dimColor(terrain.color, 0.4);
-            this.drawTile(screenX, screenY, terrain.symbol, dimmedColor, null);
+        // World-tag overlay: draw a small dot in the top-right corner of this tile
+        // when a quest has marked it with a tag (e.g. powerVacuum, safer, cleansed, disturbed).
+        // Only shown on currently-visible tiles — not fog-of-war dimmed tiles.
+        if (visible && this._modifiedTilesMap) {
+            const tag = this._modifiedTilesMap.get(`${tile.x},${tile.y}`);
+            if (tag) {
+                const TAG_COLORS = {
+                    powerVacuum: 'rgba(180, 60, 60, 0.35)',
+                    safer:       'rgba(60, 180, 100, 0.30)',
+                    cleansed:    'rgba(120, 180, 255, 0.30)',
+                    disturbed:   'rgba(160, 80, 200, 0.30)'
+                };
+                const dotColor = TAG_COLORS[tag];
+                if (dotColor) {
+                    const dotSize = Math.max(3, Math.floor(this.config.tileWidth * 0.18));
+                    const pixelX = screenX * this.config.tileWidth;
+                    const pixelY = screenY * this.config.tileHeight;
+                    this.ctx.fillStyle = dotColor;
+                    this.ctx.fillRect(
+                        pixelX + this.config.tileWidth - dotSize - 1,
+                        pixelY + 1,
+                        dotSize,
+                        dotSize
+                    );
+                }
+            }
         }
     }
 

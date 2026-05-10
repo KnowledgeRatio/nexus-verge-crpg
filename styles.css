@@ -1,16 +1,16 @@
 /* Nexus Verge - Main Stylesheet */
 
 :root {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2a2a2a;
-    --bg-tertiary: #3a3a3a;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --text-highlight: #ffd700;
-    --border-color: #4a4a4a;
-    --accent-color: #4a9eff;
+    --bg-primary: #0f3c46;
+    --bg-secondary: #0a2730;
+    --bg-tertiary: #1a5561;
+    --text-primary: #f3e9d2;
+    --text-secondary: #8a877f;
+    --text-highlight: #d5a425;
+    --border-color: #6f6d67;
+    --accent-color: #d5a425;
     --danger-color: #ff4444;
-    --success-color: #44ff44;
+    --success-color: #5cb85c;
     --warning-color: #ffaa44;
 
     /* Terrain colors */
@@ -19,10 +19,11 @@
     --terrain-mountain: #8b7355;
     --terrain-water: #4a9eff;
     --terrain-road: #b8a589;
-    --terrain-town: #d4af37;
+    --terrain-town: #d5a425;
 
     --font-mono: 'Courier New', Consolas, monospace;
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    --font-sans: 'Georgia', 'Times New Roman', serif;
+    --font-display: 'Press Start 2P', var(--font-mono);
 }
 
 * {
@@ -69,12 +70,13 @@ body {
 }
 
 .title {
-    font-size: 4rem;
-    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-family: var(--font-display);
     color: var(--text-highlight);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    text-shadow: 0 0 10px rgba(213, 164, 37, 0.5);
     margin-bottom: 10px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
 }
 
 .subtitle {
@@ -131,8 +133,10 @@ body {
 .setup-container h2 {
     text-align: center;
     margin-bottom: 40px;
-    font-size: 2rem;
+    font-size: 1.4rem;
     color: var(--text-highlight);
+    font-family: var(--font-display);
+    line-height: 1.8;
 }
 
 .setup-section {
@@ -193,8 +197,10 @@ body {
 .char-creation-container h2 {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2rem;
+    font-size: 1.4rem;
     color: var(--text-highlight);
+    font-family: var(--font-display);
+    line-height: 1.8;
 }
 
 /* Game Screen */
@@ -216,6 +222,19 @@ body {
 .hud-left, .hud-center, .hud-right {
     display: flex;
     gap: 20px;
+}
+
+.hud-center {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.world-clock {
+    font-size: 0.7rem;
+    color: var(--text-muted, #888);
+    letter-spacing: 0.05em;
+    opacity: 0.8;
 }
 
 .game-container {
@@ -403,7 +422,7 @@ body {
 #dungeonMinimap {
     width: 100%;
     max-width: 270px;
-    background-color: #1a1a1a;
+    background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
 }
 
@@ -644,8 +663,8 @@ body {
 
 .combatant-card.current-turn {
     border-color: var(--text-highlight);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    background: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 15px rgba(213, 164, 37, 0.5);
+    background: rgba(213, 164, 37, 0.05);
 }
 
 .combatant-card.dead {
@@ -855,8 +874,8 @@ body {
 }
 
 .forgecraft-slot.selected {
-    border-color: #ffd700;
-    background: rgba(255, 215, 0, 0.08);
+    border-color: #d5a425;
+    background: rgba(213, 164, 37, 0.08);
 }
 
 .forgecraft-slot.empty {
@@ -875,7 +894,7 @@ body {
 }
 
 .forgecraft-slot-mod {
-    color: #ffd700;
+    color: #d5a425;
     font-size: 0.8rem;
     font-style: italic;
 }
@@ -896,13 +915,13 @@ body {
 }
 
 .forgecraft-mod-card:hover:not(.locked) {
-    border-color: #ffd700;
-    background: rgba(255, 215, 0, 0.08);
+    border-color: #d5a425;
+    background: rgba(213, 164, 37, 0.08);
 }
 
 .forgecraft-mod-card.active {
-    border-color: #ffd700;
-    background: rgba(255, 215, 0, 0.12);
+    border-color: #d5a425;
+    background: rgba(213, 164, 37, 0.12);
 }
 
 .forgecraft-mod-card.locked {
@@ -1681,7 +1700,9 @@ body {
 
 .modal-header h2 {
     color: var(--text-highlight);
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 .close-btn {
@@ -2123,6 +2144,8 @@ body {
     padding: 30px;
     max-width: 800px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
@@ -2519,12 +2542,12 @@ body {
 
 .dialogue-option.quest-option {
     border-color: var(--warning-color);
-    background: linear-gradient(to right, var(--bg-tertiary), rgba(255, 215, 0, 0.1));
+    background: linear-gradient(to right, var(--bg-tertiary), rgba(213, 164, 37, 0.1));
 }
 
 .dialogue-option.quest-option:hover {
     border-color: var(--warning-color);
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(213, 164, 37, 0.3);
 }
 
 /* ===================================
@@ -3563,7 +3586,7 @@ body {
 }
 
 .quest-difficulty.normal {
-    background: #FFD700;
+    background: #d5a425;
     color: #000;
 }
 
@@ -5133,7 +5156,7 @@ body {
 
 .choice-option-card:hover {
     border-color: var(--text-highlight);
-    background: rgba(255, 215, 0, 0.05);
+    background: rgba(213, 164, 37, 0.05);
     transform: translateX(4px);
 }
 
@@ -5249,7 +5272,7 @@ body {
     font-size: 2.8rem;
     text-shadow:
         0 0 20px rgba(255, 255, 0, 1),
-        0 0 30px rgba(255, 215, 0, 0.8),
+        0 0 30px rgba(213, 164, 37, 0.8),
         2px 2px 6px rgba(0, 0, 0, 1),
         -2px -2px 6px rgba(0, 0, 0, 1);
     animation: floatUpCrit 1.5s ease-out forwards;
@@ -5387,7 +5410,7 @@ body {
     background: rgba(48, 48, 48, 0.9); /* More opaque on hover */
     border-color: var(--accent-color);
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(74, 158, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(213, 164, 37, 0.3);
 }
 
 .quick-menu-btn:active {
@@ -5503,7 +5526,7 @@ body {
 
 .quick-menu-toggle:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(74, 158, 255, 0.5);
+    box-shadow: 0 6px 15px rgba(213, 164, 37, 0.5);
 }
 
 .quick-menu-toggle:active {
@@ -6672,7 +6695,7 @@ body {
 
 /* SRD Statement - Prominent styling */
 .srd-statement {
-    background: rgba(74, 158, 255, 0.1);
+    background: rgba(213, 164, 37, 0.1);
     border-left: 4px solid var(--accent-color);
     padding: 16px;
     margin: 16px 0;
@@ -6681,7 +6704,7 @@ body {
 }
 
 .srd-trademark {
-    background: rgba(255, 215, 0, 0.1);
+    background: rgba(213, 164, 37, 0.1);
     border-left: 4px solid var(--text-highlight);
     padding: 12px;
     margin: 16px 0;
@@ -7735,7 +7758,7 @@ body {
 }
 
 .roger-close-btn:hover {
-    color: #ffd700;
+    color: #d5a425;
 }
 
 /* Body */
@@ -7802,7 +7825,7 @@ body {
 }
 
 .roger-sign-in-btn:hover {
-    background: #ffd700;
+    background: #d5a425;
     transform: translateY(-1px);
 }
 
@@ -7914,7 +7937,7 @@ body {
 }
 
 .roger-back-btn:hover {
-    color: #ffd700;
+    color: #d5a425;
 }
 
 .roger-agent-name {
@@ -8030,7 +8053,7 @@ body {
 }
 
 #rogerSendBtn:hover:not(:disabled) {
-    background: #ffd700;
+    background: #d5a425;
 }
 
 #rogerSendBtn:disabled {
@@ -8397,7 +8420,7 @@ body {
 /* Player card gets gold border */
 .party-member-card.is-player {
     border-color: var(--text-highlight);
-    box-shadow: 0 0 6px rgba(255, 215, 0, 0.25);
+    box-shadow: 0 0 6px rgba(213, 164, 37, 0.25);
 }
 
 /* Companion card gets cyan border */
@@ -8740,3 +8763,322 @@ body {
 .supplies-display.empty { color: var(--danger-color); }
 
 .warning-text { color: var(--warning-color); }
+
+/* ===================================
+   Quest Board (settlement UI)
+   =================================== */
+
+.quest-board {
+    margin-top: 16px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.quest-board-header {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+}
+
+.quest-board-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quest-board-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    transition: border-color 0.15s ease;
+}
+
+.quest-board-card:hover {
+    border-color: var(--accent-color);
+}
+
+.quest-board-card-header {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.quest-board-card-title {
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    font-size: 0.88rem;
+}
+
+.quest-board-card-desc {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.quest-board-card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.quest-accept-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    width: 100%;
+    transition: opacity 0.15s ease;
+}
+
+.quest-accept-btn:hover {
+    opacity: 0.85;
+}
+
+.quest-board-empty {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-style: italic;
+    padding: 6px 0;
+}
+
+/* ===================================
+   Settlement Flags / Consequence Panel
+   =================================== */
+
+.settlement-flags-panel {
+    margin-top: 14px;
+    border-top: 1px solid var(--error-color);
+    padding-top: 10px;
+}
+
+.flags-panel-header {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--error-color);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.flags-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flag-card {
+    background: rgba(180, 40, 40, 0.12);
+    border: 1px solid rgba(180, 40, 40, 0.4);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.flag-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flag-icon {
+    font-size: 1.1rem;
+}
+
+.flag-label {
+    font-weight: bold;
+    color: var(--error-color);
+    font-size: 0.88rem;
+}
+
+.flag-description {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+.flag-verbs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+}
+
+.flag-verb-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.flag-verb-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.flag-verb-btn[data-verb="confront"]  { border-color: rgba(220, 80, 80, 0.6); }
+.flag-verb-btn[data-verb="negotiate"] { border-color: rgba(80, 160, 220, 0.6); }
+.flag-verb-btn[data-verb="cleanse"]   { border-color: rgba(80, 220, 140, 0.6); }
+.flag-verb-btn[data-verb="outlast"]   { border-color: rgba(180, 140, 60, 0.6); }
+
+.flag-verb-btn[data-verb="confront"]:hover  { color: rgba(220, 80, 80, 1); border-color: rgba(220, 80, 80, 1); }
+.flag-verb-btn[data-verb="negotiate"]:hover { color: rgba(80, 160, 220, 1); border-color: rgba(80, 160, 220, 1); }
+.flag-verb-btn[data-verb="cleanse"]:hover   { color: rgba(80, 220, 140, 1); border-color: rgba(80, 220, 140, 1); }
+.flag-verb-btn[data-verb="outlast"]:hover   { color: rgba(200, 160, 60, 1); border-color: rgba(200, 160, 60, 1); }
+
+.board-time-limit {
+    color: var(--warning-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+    font-family: var(--font-mono);
+}
+
+/* ===================================
+   Shared quest badge styles
+   (archetype + difficulty — used in
+   both quest board and quest log)
+   =================================== */
+
+.quest-archetype-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-weight: bold;
+    color: white;
+    font-family: var(--font-mono);
+}
+
+.quest-difficulty-badge {
+    font-size: 0.72rem;
+    font-weight: bold;
+    font-family: var(--font-mono);
+}
+
+/* ===================================
+   Quest Log card enhancements
+   (progress bar, new metadata fields)
+   =================================== */
+
+.quest-obj-bar {
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    white-space: nowrap;
+    font-size: 0.72rem;
+}
+
+.quest-reward {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+.quest-distance {
+    color: var(--text-secondary);
+}
+
+.quest-dungeon-name {
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.quest-time-limit {
+    color: var(--warning-color);
+    font-weight: bold;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+}
+
+/* Responsive: mobile (<768px) */
+@media (max-width: 767px) {
+    .quest-board-card {
+        padding: 8px 10px;
+    }
+
+    .quest-board-card-title {
+        font-size: 0.82rem;
+    }
+
+    .quest-accept-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Responsive: laptop (768-1200px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .quest-board-cards {
+        gap: 6px;
+    }
+}
+
+/* Responsive: desktop (1200-1400px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .quest-board-card {
+        font-size: 0.84rem;
+    }
+
+    .quest-board-card-title {
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive: large (1400-1600px) */
+@media (min-width: 1400px) and (max-width: 1599px) {
+    .quest-board-card {
+        font-size: 0.86rem;
+        padding: 12px 14px;
+    }
+}
+
+/* Responsive: HD (1600-1920px) */
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .quest-board-card {
+        font-size: 0.88rem;
+        padding: 12px 16px;
+    }
+
+    .quest-board-header {
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive: ultra (1920px+) */
+@media (min-width: 1920px) {
+    .quest-board-card {
+        font-size: 0.9rem;
+        padding: 14px 18px;
+    }
+
+    .quest-board-header {
+        font-size: 0.95rem;
+    }
+
+    .quest-accept-btn {
+        font-size: 0.82rem;
+        padding: 6px 12px;
+    }
+}

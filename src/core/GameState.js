@@ -268,7 +268,10 @@ export class GameState {
             generatedRegions: new Map(),
             settlements: [],
             npcs: new Map(),
-            modifiedTiles: []
+            modifiedTiles: [],
+            pendingEvents: [],   // Consequence events written by time-limited quests, skill challenges, etc.
+            visitCount: 0,       // Incremented on each settlement visit; used for event expiry
+            worldClock: 0        // Incremented by 1 per long rest; used for quest deadlines
         };
 
         // Initialize quest system

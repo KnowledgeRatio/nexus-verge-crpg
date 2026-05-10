@@ -107,6 +107,19 @@
 - Example: XP × 2.5 + +2 items at L7 + guaranteed boss magic at L1-3 together destroy the "mildly starved" economy even if each change seems reasonable in isolation
 - Pattern: balance proposals that touch XP, item gate levels, or drop rates must be reviewed in the same session
 
+### 15. World-First Quest Generation Design Traps (2026-05-02)
+- `questBind` on `world.metadata` is the right approach but needs multi-bind array support: two settlements equidistant from the same dungeon can both generate retrieve quests pointing at it — `questBind` must be an array, not a scalar
+- **`worldMetadata` mutation is NOT auto-persisted:** `worldMetadata` is written to gameState once at world gen (line 1275). Any post-gen mutation (SettlementManager writing `questBind`, dungeon `explored` flag updates) must explicitly call `gameState.set('world.metadata', this.worldMetadata)` again or the write is lost on reload — there is no dirty tracking on nested objects
+- `persistSettlementData()` / `restoreSettlementData()` only handle `type === 'settlement'` features — dungeons are NOT persisted through this path; they survive via `worldMetadata.features` array or `compressedData.features` in saves, but `questBind` mutations on those objects need explicit re-save
+- Quest abandon must explicitly clean its `questBind` entry; if not cleaned, the item persists in dungeon forever or re-accept breaks
+- `explored: true` on a dungeon blocks regeneration permanently — player who accepts a retrieve quest for an already-cleared dungeon hits an uncompletable state; guard quest accept against explored dungeons
+- `specialSpawnTrigger` on the encounter system has no valid attachment point: encounter builder has no spatial awareness, so the "boss" can die on a random field encounter. Correct architecture: named elite injected as a special combatant in the dungeon's final room via DungeonManager, not promoted by the encounter system
+- Investigate-Chain as Scholar-primary is a design trap: the chain terminates at a dungeon, Scholar is d6 HP with light armor — needs an explicit non-combat resolution path (information victory) or the quest is hostile to the calling it supposedly serves
+- Orphan dungeons (deep wilderness, no nearby settlement) need `RULES.quests.maxHookDistanceTiles` and a skip-if-no-settlement rule at `preGenerateFeatures()` time
+- Settlement quest overflow: if 5 dungeons all have the same city as nearest settlement, that city gets 15 hooks. Must enforce quest cap at feature generation time, not at quest generation time
+- Fixed seed quest-calling alignment creates "optimal seed" meta: salt quest-type-to-calling assignment with character creation entropy, not just world seed
+- `RULES.quests` config block does not exist — `maxHookDistanceTiles` and per-settlement slot caps are both load-bearing values that must be added before the dungeon-assignment loop is written
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`
