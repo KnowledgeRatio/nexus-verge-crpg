@@ -16,7 +16,12 @@
     "legal:generate": "node scripts/generate_legal_artifacts.js",
     "legal:verify": "node scripts/verify_legal_compliance.js",
     "legal:verify-assets": "node scripts/verify_legal_compliance.js",
-    "legal:all": "npm run legal:generate && npm run legal:verify"
+    "legal:all": "npm run legal:generate && npm run legal:verify",
+    "gen:assets": "node tools/image-gen/generate.js",
+    "gen:terrain": "node tools/image-gen/generate.js --type terrain",
+    "gen:monsters": "node tools/image-gen/generate.js --type monsters",
+    "gen:items": "node tools/image-gen/generate.js --type items",
+    "gen:portraits": "node tools/image-gen/generate.js --type portraits"
   },
   "keywords": [],
   "author": "",

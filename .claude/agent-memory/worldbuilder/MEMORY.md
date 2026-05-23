@@ -2,8 +2,7 @@
 
 ## Tone Rulings
 
-<!-- Record decisions about voice, register, and tone here as they are made -->
-<!-- Example: "2026-05-07 — Quest titles use active verb + specific noun format. No gerunds." -->
+- [Visual tone and art direction](tone_visual_style.md) — Desaturated earth tones, grim-hopeful mood, worn equipment, serious expressions, per-asset lighting rules
 
 ## Naming Conventions
 
@@ -11,7 +10,7 @@
 
 ## Established Canon
 
-<!-- Record lore facts that have been written into content and must not be contradicted -->
+- [The Fracture — canonical world-breaking event](established_canon_fracture.md) — Always "the Fracture", not Cataclysm/Breaking/Fall; magic is rare and unsettling; nature warped
 
 ## Campaign Themes
 
