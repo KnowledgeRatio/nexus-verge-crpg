@@ -224,6 +224,27 @@ class CombatManager {
             }
         });
 
+        // Process damageOnTurnStart conditions (generic — any condition can use this)
+        for (const condition of combatant.conditions) {
+            if (condition.damageOnTurnStart && condition.value > 0) {
+                const dmgType = condition.damageOnTurnStart.type || 'necrotic';
+                combatant.takeDamage(condition.value);
+                gameState.addMessage(
+                    `${condition.icon || '💢'} ${combatant.name} takes ${condition.value} ${dmgType} damage (${condition.type})`,
+                    'warning'
+                );
+                if (window.game?.showFloatingCombatText) {
+                    window.game.showFloatingCombatText(combatant.id, `-${condition.value}`, 'damage');
+                }
+                if (combatant.hp <= 0) {
+                    gameState.addMessage(`💀 ${combatant.name} is defeated!`, 'warning');
+                    setTimeout(() => audioManager.play('death'), 1000);
+                    this.handleDefeat(combatant);
+                    return;
+                }
+            }
+        }
+
         // Process conditions with 'untilStartOfTurn' duration where this combatant was the applier
         this.combatants.forEach(target => {
             // Find all conditions applied by this combatant that expire at their turn start
@@ -284,6 +305,39 @@ class CombatManager {
     async executeEnemyAI(combatant) {
         console.log(`⚔️ AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is acting...`, 'info');
+
+        // Generic passive trait handler — applyConditionOnTurnStart
+        const passiveTraits = combatant.character?.traits?.filter(
+            t => t.effectType === 'applyConditionOnTurnStart'
+        ) || [];
+        if (passiveTraits.length > 0) {
+            const livingTargets = [this.playerCombatant, ...(this.companionCombatants || [])]
+                .filter(c => c.hp > 0 && !c.isDowned);
+            for (const trait of passiveTraits) {
+                for (const traitTarget of livingTargets) {
+                    const applied = traitTarget.addCondition(
+                        trait.condition.type,
+                        trait.condition.duration,
+                        combatant.id,
+                        {
+                            value:             trait.condition.value,
+                            isBuff:            trait.condition.isBuff ?? false,
+                            curable:           trait.condition.curable ?? false,
+                            icon:              trait.condition.icon ?? '💢',
+                            stackable:         trait.condition.stackable ?? false,
+                            stackBehavior:     trait.condition.stackBehavior ?? 'addValue',
+                            damageOnTurnStart: trait.condition.damageOnTurnStart ?? null
+                        }
+                    );
+                    if (applied || trait.condition.stackable) {
+                        gameState.addMessage(
+                            `${trait.condition.icon || '🌑'} ${combatant.name}'s ${trait.name} seeps into ${traitTarget.name}!`,
+                            'warning'
+                        );
+                    }
+                }
+            }
+        }
 
         // Pick random living friendly target (player + companions)
         const targets = [this.playerCombatant, ...(this.companionCombatants || [])]
@@ -2862,35 +2916,36 @@ class Combatant {
             roundsRemaining = 1,
             isBuff = false,
             curable = true,
-            icon = isBuff ? '✨' : '💢'
+            icon = isBuff ? '✨' : '💢',
+            stackable = false,
+            stackBehavior = 'addValue',
+            damageOnTurnStart = null
         } = options;
 
-        // Check if condition already exists (non-stacking by default)
         const existing = this.conditions.find(c => c.type === type);
         if (existing) {
-            // tempHP: keep the higher value (D&D 5e rule — they don't stack, but new pool can replace)
             if (type === 'tempHP' && options.value !== null && options.value !== undefined && options.value > (existing.value || 0)) {
                 existing.value = options.value;
                 existing.roundsRemaining = options.roundsRemaining ?? existing.roundsRemaining;
                 existing.duration = duration;
+            } else if (stackable) {
+                if (stackBehavior === 'addValue' && value !== null) {
+                    existing.value = (existing.value || 0) + value;
+                } else if (stackBehavior === 'refreshDuration') {
+                    existing.roundsRemaining = roundsRemaining;
+                }
+                return true;
             }
-            return false; // Already has this condition (or updated)
+            return false;
         }
 
-        // For 'permanent' conditions, only allow if curable is explicitly set
         if (duration === 'permanent' && options.curable === undefined) {
             console.warn(`Permanent condition '${type}' should explicitly set curable flag`);
         }
 
         this.conditions.push({
-            type,
-            duration,
-            appliedBy,
-            value,
-            roundsRemaining,
-            isBuff,
-            curable,
-            icon
+            type, duration, appliedBy, value, roundsRemaining,
+            isBuff, curable, icon, damageOnTurnStart
         });
         return true;
     }

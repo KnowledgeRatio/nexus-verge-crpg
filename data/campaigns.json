@@ -17,7 +17,8 @@
     {
       "id": "nexus-verge",
       "name": "Nexus Verge",
-      "description": "The default Nexus Verge campaign - a procedurally generated world of exploration and adventure",
+      "nativeName": "Aevorn",
+      "description": "A procedural D&D 5e roguelike set in Aevorn — a dimension where the edges of countless worlds have folded into one. Explore an infinite frontier, build your reputation across five distinct cultures, and confront the Void that is quietly erasing everything at the edges. You arrive the way most do — unexpectedly, and without a satisfying explanation.",
       "isBase": false,
       "inherits": ["core"],
       "settings": {
@@ -35,6 +36,7 @@
     },
     {
       "id": "defeatLichKing",
+      "disabled": true,
       "name": "Defeat the Lich King",
       "description": "A dark threat rises - the Lich King amasses an undead army. Hunt down his phylactery and end his reign.",
       "isBase": false,
@@ -48,6 +50,7 @@
     },
     {
       "id": "uniteKingdoms",
+      "disabled": true,
       "name": "Unite the Kingdoms",
       "description": "War threatens to tear the land apart. Forge alliances, broker peace, and unite the fractured kingdoms.",
       "isBase": false,
@@ -66,6 +69,7 @@
     },
     {
       "id": "recoverArtifact",
+      "disabled": true,
       "name": "Recover the Lost Artifact",
       "description": "An ancient artifact of immense power has been lost. Explore forgotten ruins and dangerous dungeons to recover it.",
       "isBase": false,

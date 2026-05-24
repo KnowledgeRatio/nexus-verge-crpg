@@ -88,6 +88,7 @@
         "goblinWarren",
         "dragonLair"
       ],
+      "description": "Quick-fingered scavengers who arrived through a dozen convergence events and never left. They work the margins between settlements, picking through what expeditions abandon. Underestimated consistently. Dangerous consistently.",
       "campaignIds": [
         "core"
       ]
@@ -175,6 +176,7 @@
         "beastDen",
         "frozenCavern"
       ],
+      "description": "Pack predators that arrived with a temperate forest convergence and found the Verge's biome variety suited them. They hunt the same way they always have. There is something reassuring about that.",
       "campaignIds": [
         "core"
       ]
@@ -248,6 +250,7 @@
         "sunkenRuins",
         "wizardTower"
       ],
+      "description": "What remains when death gets interrupted. Old magic, mostly — the Verge is ancient enough that its graveyards have had time to become complicated.",
       "campaignIds": [
         "core"
       ]
@@ -314,6 +317,7 @@
       "dungeonTypes": [
         "orcStronghold"
       ],
+      "description": "Survivors of a shattered convergence zone who arrived with nothing and rebuilt a warrior culture from the wreckage. Their aggression reads as cruelty to outsiders. To the orcs, it is memory.",
       "campaignIds": [
         "core"
       ]
@@ -416,6 +420,7 @@
         "abandonedMine",
         "thievesGuild"
       ],
+      "description": "The Verge draws people chasing things, and some run out of legitimate options. Bandits are usually failed Delhari arrivals or Kethara settlers who chose a faster route to survival.",
       "campaignIds": [
         "core"
       ]
@@ -501,6 +506,7 @@
         "forgottenTemple",
         "hauntedMansion"
       ],
+      "description": "Someone's last act of spite or desperation or failed theory. Zombies are isolated incidents on the Verge. Usually.",
       "campaignIds": [
         "core"
       ]
@@ -587,6 +593,7 @@
         "volcanicCave",
         "thievesGuild"
       ],
+      "description": "They came with the first settlements. They are everywhere. They will outlast most things on this frontier.",
       "campaignIds": [
         "core"
       ]
@@ -665,6 +672,7 @@
         "frozenCavern",
         "thievesGuild"
       ],
+      "description": "Apex ambush predators that arrived with a woodland convergence and stayed because the Verge's chaos suits their method. They don't raid for territory. They raid because they are efficient.",
       "campaignIds": [
         "core"
       ]
@@ -727,6 +735,7 @@
       },
       "attackType": "melee",
       "dungeonTypes": [],
+      "description": "Everyone on the Verge is from somewhere else, or descended from someone who was. Commoners here carry more history than they show.",
       "campaignIds": [
         "core"
       ]
@@ -819,6 +828,7 @@
         "dragonLair",
         "abandonedMine"
       ],
+      "description": "Kobolds claim descent from the first dragons to enter Nexus Verge — whether that is true, they have been here longer than most settlers admit. They dig deep, remember everything, and hold grudges across generations.",
       "campaignIds": [
         "core"
       ]
@@ -887,6 +897,7 @@
         "spiderNest",
         "volcanicCave"
       ],
+      "description": "Arrived through a swamp convergence and spread fast — they find warm blood wherever life has taken root. The Vethri note they were present before recorded Verathi settlement, which the Verathi dispute.",
       "campaignIds": [
         "core"
       ]
@@ -969,6 +980,7 @@
         "abandonedMine",
         "goblinWarren"
       ],
+      "description": "Colony hunters native to multiple biomes that merged in the Verge. Their webs don't just catch prey — they map the spaces between things with a precision that makes certain Delhari theorists uncomfortable.",
       "campaignIds": [
         "core"
       ]
@@ -1053,6 +1065,7 @@
         "frozenCavern",
         "goblinWarren"
       ],
+      "description": "The larger variant that arrived through a northern convergence. Pack hierarchies so complex that scholars who study them tend to stop at a certain point and change fields.",
       "campaignIds": [
         "core"
       ]
@@ -1144,6 +1157,7 @@
         "orcStronghold",
         "beastDen"
       ],
+      "description": "Gnolls follow the scent of conflict across the Verge. Where there is war, they arrive. Where there is carrion, they feed. Some Sirathi communities hire them as boundary guards. Nobody asks too many questions.",
       "campaignIds": [
         "core"
       ]
@@ -1253,6 +1267,7 @@
         "sunkenRuins",
         "wizardTower"
       ],
+      "description": "Not all things that pass through convergence rifts are visible. The shadow remembers being solid and hasn't stopped reaching.",
       "campaignIds": [
         "core"
       ]
@@ -1350,6 +1365,7 @@
         "banditHideout",
         "thievesGuild"
       ],
+      "description": "Paid to know things first. The Verge's frontier economy runs on information as much as goods, and scouts are the ones who move it.",
       "campaignIds": [
         "core"
       ]
@@ -1438,6 +1454,7 @@
         "hauntedMansion",
         "sunkenRuins"
       ],
+      "description": "The hunger that does not stop when the body does. Some Vethri scholars believe ghouls represent a crude entropy-propagation pattern — biological void-state in early form. The mainstream dismisses this.",
       "campaignIds": [
         "core"
       ]
@@ -1515,6 +1532,7 @@
       "dungeonTypes": [
         "beastDen"
       ],
+      "description": "Arrived with a savanna convergence. They produce the laughing sound because they have no concept of what is funny. The distinction stops mattering when they are running at you.",
       "campaignIds": [
         "core"
       ]
@@ -1599,6 +1617,7 @@
         "forgottenTemple",
         "wizardTower"
       ],
+      "description": "The part of a person that refused to leave. Specters form where trauma was concentrated enough to leave a mark on the fabric of the dimension.",
       "campaignIds": [
         "core"
       ]
@@ -1707,6 +1726,7 @@
         "thievesGuild",
         "banditHideout"
       ],
+      "description": "Information is the primary currency after reputation. Someone is always watching. This one got close.",
       "campaignIds": [
         "core"
       ]
@@ -1795,6 +1815,7 @@
         "abandonedMine",
         "beastDen"
       ],
+      "description": "Arrived through a giant-kin convergence and never adapted to the Verge's frontier pace. They operate on older, slower logic. That logic involves hitting things.",
       "campaignIds": [
         "core"
       ]
@@ -1874,6 +1895,7 @@
         "hauntedMansion",
         "sunkenRuins"
       ],
+      "description": "A ghoul that found a way to keep feeding. The smell tells you everything you need to know about its recent history.",
       "campaignIds": [
         "core"
       ]
@@ -1958,6 +1980,7 @@
         "orcStronghold",
         "banditHideout"
       ],
+      "description": "Not a culture — a condition. The Verge produces people who have lost enough that fury is the only remaining currency.",
       "campaignIds": [
         "core"
       ]
@@ -2033,6 +2056,7 @@
         "sunkenRuins",
         "dragonLair"
       ],
+      "description": "Stone that learned to wait. They arrived with the architecture of a dead civilization through an old convergence, and when the buildings came, the guardians came with them.",
       "campaignIds": [
         "core"
       ]
@@ -2134,6 +2158,7 @@
         "forgottenTemple",
         "abandonedMine"
       ],
+      "description": "Not a single species — a convergence artifact. Every world that arrived with a labyrinth brought its guardian. The minotaurs of the Verge remember the maze. The Verge has no maze for them.",
       "campaignIds": [
         "core"
       ]
@@ -2234,6 +2259,7 @@
         "hauntedMansion",
         "forgottenTemple"
       ],
+      "description": "An act of will so strong it survived death. Wights remember who they were. That is the horror — they still are, partly.",
       "campaignIds": [
         "core"
       ]
@@ -2317,6 +2343,7 @@
       "dungeonTypes": [
         "beastDen"
       ],
+      "description": "Nobody designed this. It arrived through a convergence zone that had been experimenting with life in ways that weren't careful. It is angry at the result.",
       "campaignIds": [
         "core"
       ]
@@ -2424,6 +2451,7 @@
         "banditHideout",
         "thievesGuild"
       ],
+      "description": "The Verge produces survivors. Enough battles and the wars stop mattering — only staying alive through the next one does.",
       "campaignIds": [
         "core"
       ]
@@ -2519,6 +2547,7 @@
         "wizardTower",
         "forgottenTemple"
       ],
+      "description": "The concentrated spite of a mage who refused to accept the conclusion. The fire is not metaphorical.",
       "campaignIds": [
         "core"
       ]
@@ -2615,6 +2644,7 @@
         "abandonedMine",
         "orcStronghold"
       ],
+      "description": "Two heads, one body, constant argument. The argument is about everything. The consensus they reach is that you are in the way.",
       "campaignIds": [
         "core"
       ]
@@ -2712,6 +2742,7 @@
         "volcanicCave",
         "beastDen"
       ],
+      "description": "Regenerative tissue that predates any biome the Verge has absorbed. Nobody knows where trolls are originally from. The trolls do not know either.",
       "campaignIds": [
         "core"
       ]
@@ -2799,6 +2830,7 @@
         "hauntedMansion",
         "forgottenTemple"
       ],
+      "description": "At a certain point the line between concentrated will and void-state begins to blur. Wraiths exist at that boundary. The Vethri have not agreed on which side they fall.",
       "campaignIds": [
         "core"
       ]
@@ -2885,6 +2917,7 @@
       },
       "attackType": "both",
       "dungeonTypes": [],
+      "description": "The accumulated weight of a dozen converged worlds compressed into one creature. Hill giants are not stupid — they are operating on a timescale that does not include you.",
       "campaignIds": [
         "core"
       ]
@@ -2992,6 +3025,7 @@
         "dragonLair",
         "frozenCavern"
       ],
+      "description": "Cold-biome convergences brought them. White dragons are the least patient of their kind — they want territory now, and the Verge's frontier chaos gives them justification.",
       "campaignIds": [
         "core"
       ]
@@ -3102,6 +3136,7 @@
       "dungeonTypes": [
         "dragonLair"
       ],
+      "description": "Poison and patience. Green dragons understand the Verge better than most arrivals — they know information is the real currency, and they have been collecting it since they arrived.",
       "campaignIds": [
         "core"
       ]
@@ -3203,6 +3238,7 @@
       "dungeonTypes": [
         "dragonLair"
       ],
+      "description": "The fire-convergence zones are theirs, as far as they are concerned. Red dragons do not negotiate the Verge's frontier politics. They set the terms.",
       "campaignIds": [
         "core"
       ]
@@ -3273,7 +3309,7 @@
       "preferRanged": true,
       "attackType": "both",
       "dungeonTypes": ["goblinWarren", "dragonLair"],
-      "description": "A goblin trained in ranged combat, preferring to pepper enemies with arrows from a safe distance.",
+      "description": "A goblin who learned that distance is the difference between surviving a fight and not. The arrows come from somewhere you weren't watching.",
       "campaignIds": ["core"]
     },
     {
@@ -3332,7 +3368,7 @@
       "preferRanged": true,
       "attackType": "both",
       "dungeonTypes": ["banditHideout"],
-      "description": "A bandit who specializes in crossbow ambushes, keeping their distance while allies engage in melee.",
+      "description": "The Verge's terrain rewards patience. A crossbow and high ground turns an ambush into a guarantee.",
       "campaignIds": ["core"]
     },
     {
@@ -3407,7 +3443,7 @@
       "preferRanged": true,
       "attackType": "both",
       "dungeonTypes": ["beastDen"],
-      "description": "A fearsome winged creature with the body of a lion and a tail bristling with iron spikes it can hurl at prey.",
+      "description": "Arrived through a predator-rich convergence and immediately established dominance in its biome. The manticore does not see the Verge's other apex predators as competition. It sees them as variables in its territory.",
       "campaignIds": ["core"]
     },
     {
@@ -3476,7 +3512,7 @@
       "preferRanged": true,
       "attackType": "both",
       "dungeonTypes": ["wizardTower", "forgottenTemple"],
-      "description": "A powerful spellcaster who blasts enemies from range with devastating magical attacks.",
+      "description": "Delhari mostly — came for dimensional theory, stayed because riftborn materials make their work here unlike anything possible elsewhere. The power that accumulates is a side effect.",
       "campaignIds": ["core"]
     },
     {
@@ -3549,8 +3585,443 @@
       "preferRanged": true,
       "attackType": "both",
       "dungeonTypes": ["forgottenTemple", "sunkenRuins"],
-      "description": "A cursed creature whose gaze can turn living beings to stone. Attacks from range with her longbow while her petrifying gaze affects nearby foes.",
+      "description": "A curse that became a species, or a species that became a curse. In the Verge, the distinction matters less than eye contact.",
       "campaignIds": ["core"]
+    },
+    {
+      "id": "voidTrace",
+      "name": "Void Trace",
+      "description": "A marginal void-state concentration — barely present, which makes it no less dangerous. Where Void Traces drift, sound diminishes before they arrive. They don't seek you. Complexity draws them, the way water finds gradient. You are complex enough.",
+      "size": "tiny",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 0.25,
+      "xpValue": 10,
+      "armorClass": 11,
+      "hitPoints": "1d4",
+      "speed": 30,
+      "abilities": {
+        "str": 6,
+        "dex": 12,
+        "con": 10,
+        "int": 1,
+        "wis": 8,
+        "cha": 2
+      },
+      "skills": {},
+      "senses": "lifesense 30 ft.",
+      "languages": [],
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["charmed", "frightened", "poisoned"],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 2,
+            "damageOnTurnStart": { "type": "necrotic" },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Touch",
+          "type": "meleeSpellAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": {
+            "dice": "1d4",
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": ["nexus-verge"]
+    },
+    {
+      "id": "voidSpawn",
+      "name": "Void Spawn",
+      "description": "A void-state concentration with enough density to sustain propagation. The Kethara call them Void Spawn because the name helped people run from them; the Vethri have other words. They don't hunt. They move toward ordered matter because that is what void-state does. The distinction stops mattering quickly.",
+      "size": "small",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 12,
+      "hitPoints": "2d6+2",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 12,
+        "int": 2,
+        "wis": 10,
+        "cha": 4
+      },
+      "skills": {},
+      "senses": "lifesense 30 ft.",
+      "languages": [],
+      "damageResistances": ["necrotic"],
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["charmed", "frightened", "poisoned"],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Spawn can sense living creatures within 30 feet."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 3,
+            "damageOnTurnStart": { "type": "necrotic" },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Touch",
+          "type": "meleeSpellAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": {
+            "dice": "1d8",
+            "bonus": 2,
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": ["nexus-verge"]
+    },
+    {
+      "id": "voidHunter",
+      "name": "Void Hunter",
+      "description": "A coherent void-state concentration — not intelligent, but consistent in direction. The Vethri named these before they understood what they were looking at. The name stuck because it helped people survive. A Void Hunter is not hunting. It is a gradient finding its lowest point, and you are in the way.",
+      "size": "medium",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "4d8+8",
+      "speed": 40,
+      "abilities": {
+        "str": 10,
+        "dex": 16,
+        "con": 14,
+        "int": 3,
+        "wis": 12,
+        "cha": 4
+      },
+      "skills": {},
+      "senses": "lifesense 60 ft.",
+      "languages": [],
+      "damageResistances": ["necrotic", "psychic"],
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["charmed", "frightened", "poisoned"],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Hunter can sense living creatures within 60 feet."
+        },
+        {
+          "name": "Phase Drift",
+          "description": "Once per turn the Void Hunter can pass through solid objects as difficult terrain."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 5,
+            "damageOnTurnStart": { "type": "necrotic" },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Claw",
+          "type": "meleeSpellAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": {
+            "dice": "2d6",
+            "bonus": 3,
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": ["nexus-verge"]
+    },
+    {
+      "id": "voidShaper",
+      "name": "Void Shaper",
+      "description": "At sufficient density, void-state concentrations begin to distort local matter-space. The Shaper designation comes from the Vethri observation that space bends around these as void-state replaces ordered matter. This is not intentional. It is physics. Looking directly at a Void Shaper produces the sensation that the ground beneath you is a proposal, not a fact.",
+      "size": "large",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 15,
+      "hitPoints": "8d10+24",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 10,
+        "con": 16,
+        "int": 4,
+        "wis": 14,
+        "cha": 6
+      },
+      "skills": {},
+      "senses": "lifesense 60 ft.",
+      "languages": [],
+      "damageResistances": ["necrotic", "psychic", "bludgeoning", "piercing", "slashing"],
+      "damageImmunities": ["poison"],
+      "conditionImmunities": ["charmed", "exhaustion", "frightened", "poisoned"],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Shaper can sense living creatures within 60 feet."
+        },
+        {
+          "name": "Void Distortion",
+          "description": "Ranged attacks against the Void Shaper from more than 30 feet are made with disadvantage."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 8,
+            "damageOnTurnStart": { "type": "necrotic" },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "type": "multiattack",
+          "attacks": 2,
+          "attackName": "Void Strike"
+        },
+        {
+          "name": "Void Strike",
+          "type": "meleeSpellAttack",
+          "attackBonus": 6,
+          "reach": 10,
+          "damage": {
+            "dice": "2d8",
+            "bonus": 4,
+            "type": "necrotic"
+          }
+        },
+        {
+          "name": "Entropy Pulse",
+          "type": "special",
+          "recharge": "5-6",
+          "saveDC": 14,
+          "saveAbility": "con",
+          "range": 15,
+          "damage": {
+            "dice": "4d8",
+            "type": "necrotic"
+          },
+          "description": "All creatures within 15 feet must make a DC 14 CON save or take 4d8 necrotic damage, half on success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": ["nexus-verge"]
+    },
+    {
+      "id": "voidTitan",
+      "name": "Void Titan",
+      "description": "A massive void-state concentration that forms near major rifts after sustained propagation. Void Titans do not move quickly. They do not need to — the area they occupy is already mid-conversion. The Sirathi have a name for the sound they make, which translates approximately as 'the last thing.'",
+      "size": "huge",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 10,
+      "xpValue": 5900,
+      "armorClass": 17,
+      "hitPoints": "16d12+96",
+      "speed": 30,
+      "abilities": {
+        "str": 22,
+        "dex": 10,
+        "con": 22,
+        "int": 6,
+        "wis": 14,
+        "cha": 8
+      },
+      "skills": {},
+      "senses": "lifesense 120 ft.",
+      "languages": [],
+      "damageResistances": ["necrotic", "psychic"],
+      "damageImmunities": ["poison", "bludgeoning", "piercing", "slashing"],
+      "conditionImmunities": ["charmed", "exhaustion", "frightened", "poisoned"],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Titan can sense living creatures within 120 feet."
+        },
+        {
+          "name": "Legendary Resistance",
+          "description": "3/Day. If the Void Titan fails a saving throw, it can choose to succeed instead."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 15,
+            "damageOnTurnStart": { "type": "necrotic" },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "type": "multiattack",
+          "attacks": 2,
+          "attackName": "Void Slam"
+        },
+        {
+          "name": "Void Slam",
+          "type": "meleeSpellAttack",
+          "attackBonus": 11,
+          "reach": 10,
+          "damage": {
+            "dice": "3d10",
+            "bonus": 6,
+            "type": "necrotic"
+          }
+        },
+        {
+          "name": "Void Pulse",
+          "type": "special",
+          "recharge": "5-6",
+          "saveDC": 18,
+          "saveAbility": "con",
+          "range": 30,
+          "damage": {
+            "dice": "6d10",
+            "type": "necrotic"
+          },
+          "description": "All creatures within 30 feet must make a DC 18 CON save or take 6d10 necrotic damage and have their speed halved until the end of their next turn. Half damage on success."
+        }
+      ],
+      "legendaryActions": 3,
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": ["nexus-verge"]
     }
   ]
 }
