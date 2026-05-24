@@ -10,6 +10,15 @@ const REPO_ROOT = join(__dirname, '../..');
 const MANIFEST_PATH = join(__dirname, 'manifest.json');
 const GRAPHICS_DIR = join(REPO_ROOT, 'data/graphics');
 
+// Load .env from this directory automatically
+const ENV_PATH = join(__dirname, '.env');
+if (existsSync(ENV_PATH)) {
+  for (const line of readFileSync(ENV_PATH, 'utf8').split('\n')) {
+    const m = line.match(/^([^#=\s][^=]*)=(.*)$/);
+    if (m) process.env[m[1].trim()] ??= m[2].trim();
+  }
+}
+
 function loadJson(relativePath) {
   return JSON.parse(readFileSync(join(REPO_ROOT, relativePath), 'utf8'));
 }
@@ -21,6 +30,10 @@ function loadManifest() {
 
 function saveManifest(manifest) {
   writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
+}
+
+function dateStamp() {
+  return new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 }
 
 function loadStyleGuide() {
@@ -45,9 +58,10 @@ function buildJobs(type, opts, manifest) {
 
   function addJobs(assetType, assets, outDir) {
     if (outDir) mkdirSync(outDir, { recursive: true });
+    const stamp = dateStamp();
     for (const asset of assets) {
       if (opts.id && asset.id !== opts.id) continue;
-      const filename = `${asset.id}.png`;
+      const filename = `${asset.id}_${stamp}.png`;
       const outputPath = outDir ? join(outDir, filename) : join(GRAPHICS_DIR, filename);
       const key = `${assetType}/${asset.id}`;
       if (opts.missingOnly && manifest[key] && existsSync(outputPath)) continue;

@@ -1,0 +1,22 @@
+{
+  "monsters/goblin": {
+    "generatedAt": "2026-05-24T22:46:17.843Z",
+    "promptHash": "2cc06d3b",
+    "outputPath": "data/graphics/monsters/goblin_2026-05-24T22-46-00.png"
+  },
+  "items/dagger": {
+    "generatedAt": "2026-05-24T22:24:07.264Z",
+    "promptHash": "f49a3f28",
+    "outputPath": "data/graphics/items/dagger_2026-05-24T22-23-42.png"
+  },
+  "terrain/grassland": {
+    "generatedAt": "2026-05-24T22:44:18.602Z",
+    "promptHash": "fb7d6d8c",
+    "outputPath": "data/graphics/grassland_2026-05-24T22-43-51.png"
+  },
+  "monsters/wolf": {
+    "generatedAt": "2026-05-24T22:45:11.825Z",
+    "promptHash": "ecf28875",
+    "outputPath": "data/graphics/monsters/wolf_2026-05-24T22-44-54.png"
+  }
+}

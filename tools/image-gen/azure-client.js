@@ -3,43 +3,39 @@ import { createHash } from 'crypto';
 export async function generateImage(prompt, options = {}) {
   const endpoint = process.env.AZURE_FOUNDRY_ENDPOINT;
   const apiKey = process.env.AZURE_FOUNDRY_API_KEY;
-  const deployment = process.env.AZURE_FOUNDRY_DEPLOYMENT || 'dall-e-3';
-  const apiVersion = process.env.AZURE_FOUNDRY_API_VERSION || '2024-02-01';
+  const model = process.env.AZURE_FOUNDRY_MODEL || 'MAI-Image-2e';
 
   if (!endpoint || !apiKey) {
     throw new Error('AZURE_FOUNDRY_ENDPOINT and AZURE_FOUNDRY_API_KEY must be set');
   }
 
-  const url = `${endpoint}/openai/deployments/${deployment}/images/generations?api-version=${apiVersion}`;
+  // MAI image generation API — returns base64 PNG directly
+  const url = `${endpoint}/mai/v1/images/generations`;
 
-  const generationResponse = await fetch(url, {
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'api-key': apiKey,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      model,
       prompt,
-      size: options.size || '1024x1024',
-      quality: options.quality || 'standard',
-      n: 1,
-      response_format: 'url',
+      width: options.width || 1024,
+      height: options.height || 1024,
     }),
   });
 
-  if (!generationResponse.ok) {
-    const body = await generationResponse.text();
-    throw new Error(`Azure API ${generationResponse.status}: ${body}`);
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Azure API ${response.status}: ${body}`);
   }
 
-  const data = await generationResponse.json();
-  const imageUrl = data.data?.[0]?.url;
-  if (!imageUrl) throw new Error(`Unexpected response shape: ${JSON.stringify(data).slice(0, 200)}`);
+  const data = await response.json();
+  const b64 = data.data?.[0]?.b64_json;
+  if (!b64) throw new Error(`Unexpected response shape: ${JSON.stringify(data).slice(0, 200)}`);
 
-  const imageResponse = await fetch(imageUrl);
-  if (!imageResponse.ok) throw new Error(`Failed to fetch image from Azure CDN: ${imageResponse.status}`);
-
-  return Buffer.from(await imageResponse.arrayBuffer());
+  return Buffer.from(b64, 'base64');
 }
 
 export function promptHash(prompt) {

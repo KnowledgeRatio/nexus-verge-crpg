@@ -1,22 +1,60 @@
 ---
-name: established-canon-fracture
-description: Canonical name and description of the world-breaking event in Nexus Verge — the Fracture
+name: established-canon-nexus-verge-world
+description: Canonical world identity for Nexus Verge — convergence dimension, the Void, five cultures, no Fracture event
 metadata:
   type: project
 ---
 
-Established 2026-05-24.
+Updated 2026-05-24. Previous memory recorded "the Fracture" as canonical — that was incorrect and has been replaced.
 
-**The Fracture** is the canonical name for the ancient magical catastrophe that broke the world of Nexus Verge. It is not "the Cataclysm", "the Breaking", or "the Fall" — it is the Fracture.
+## The World
 
-**Consequences (established canon):**
-- Terrain between settlements is unstable and wild
-- Magic is rare and makes people uneasy — it is not commonplace
-- Nature has warped: forests grow wrong, animals have changed proportions and behaviours
-- Civilisation survives in pockets of stability — settlements are functional not grand
+**Nexus Verge** (Verathi: **Aevorn**, "the deep weaving") is a convergence dimension. It has been pulling matter, ecology, and peoples from other dimensions for ages. There is no single catastrophic origin event. Every biome exists because a fragment of another world fell in and took root.
 
-**Why:** Committed to this name in the image generation style-guide World Setting section. Subsequent narrative text (monster flavour, quest descriptions, NPC dialogue) should reference "the Fracture" by name when alluding to the world's broken state.
+Tone: **Desperate wonder. Survival on a living frontier.** Not grim-hopeful. Not post-apocalyptic. It is a frontier in full swing — competing interests, improvised law, towns built because someone planted a flag.
 
-**How to apply:** If writing lore text that references the catastrophe, always use "the Fracture". If a campaign or quest references a different event, it is a consequence of or related to the Fracture, not a replacement term.
+## The Void and the Voidborn
+
+**The Void** is a neighboring dimension of pure entropy. Its boundary with Nexus Verge is slowly, unevenly advancing. It does not approach like an army — regions simply become absent.
+
+**Voidborn** are concentrations of void-state. They are not creatures. Never alive. Not undead. No intent, hunger, rage, or malice. They propagate toward complexity the way entropy does — they are physics, not enemies. They don't know you exist.
+
+**Never use emotional language for Voidborn.** No hunger, no malice, no desire.
+
+You cannot kill them. You disrupt, scatter, or seal the rift they propagate through.
+
+## The Five Cultures
+
+| Culture | Who | Voice pattern |
+|---|---|---|
+| Verathi | Oldest inhabitants; consider themselves stewards of Aevorn | Measured, allusive |
+| Kethara | 2–5 generations settled; built the towns | Direct, pragmatic |
+| Vethri | Settled near the Void boundary by choice or drift; not corrupted, calibrated | Minimal, precise |
+| Delhari | Active arrivals with a specific objective; have not settled | Precise, often condescending |
+| Sirathi | Void refugees; their home regions were consumed | Weight in everything they say |
+
+## Naming
+
+- Formal/outsider label: **Nexus Verge**
+- Common speech: **"the Verge"** — older cultures never say "Nexus Verge"
+- Verathi place names: flowing, compound, soft consonants (Aethenmoor, Erevorn, Caelindra)
+- Kethara place names: short, functional (Karath Crossing, Ember Post)
+- Vethri place names: monosyllabic (Null, Thin, The Shelf)
+- Sirathi place names: aching, ironic (Old Moru, The Before)
+
+## Economy
+
+Gold exists but is not the primary value language. NPCs prize reputation, knowledge, access, and riftborn materials. This grounds the reputation economy.
+
+## What to avoid
+
+- Any reference to "the Fracture" as a world event — it does not exist
+- Describing terrain as post-apocalyptic ruin (cracked, scorched, blighted)
+- Describing Voidborn with emotional or biological terms
+- Portrait backgrounds using D&D race-based environments (Elves in ruins, Dwarves in rock) — use culture backgrounds instead
+
+**Why:** Canonical world design documented in `docs/plans/2026-05-15-world-design.md`. Style guide updated 2026-05-24 to align.
+
+**How to apply:** All lore text, NPC dialogue, monster flavour, terrain descriptions, and image generation prompts must use this as the source of truth. Fracture references anywhere in data files are bugs.
 
 Related: [[tone-visual-style]]

@@ -2,7 +2,8 @@
 
 ## Tone Rulings
 
-- [Visual tone and art direction](tone_visual_style.md) — Desaturated earth tones, grim-hopeful mood, worn equipment, serious expressions, per-asset lighting rules
+- [Visual tone and art direction](tone_visual_style.md) — Desaturated earth tones, desperate-wonder mood (not grim-hopeful), worn equipment, culture-based portrait backgrounds, per-asset lighting rules
+- [Riftborn materials visual language](riftborn_materials.md) — Six canonical substances (Vethsteel, Meridian Amber, Splitstone, Thrennwood, Coldcast Bronze, Weftglass); render as impossible physical facts, not as glow/distortion
 
 ## Naming Conventions
 
@@ -10,7 +11,7 @@
 
 ## Established Canon
 
-- [The Fracture — canonical world-breaking event](established_canon_fracture.md) — Always "the Fracture", not Cataclysm/Breaking/Fall; magic is rare and unsettling; nature warped
+- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); five cultures; no Fracture event exists
 
 ## Campaign Themes
 

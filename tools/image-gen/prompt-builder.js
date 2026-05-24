@@ -27,9 +27,13 @@ function terrainPrompt(terrain, baseStyle, typeGuide, negativeClause) {
 
 function monsterPrompt(monster, baseStyle, typeGuide, negativeClause) {
   const sizeType = [monster.size, monster.type].filter(Boolean).join(' ');
+  const voidbornNote = monster.type === 'voidborn'
+    ? 'Render as absence given shape: geometry that should not cohere, dissolving into the background, no readable face, no expression, no intent.'
+    : '';
   const parts = [
     `Fantasy game illustration of a ${monster.name}${sizeType ? `, a ${sizeType}` : ''}.`,
     monster.description,
+    voidbornNote,
     typeGuide,
     baseStyle,
     negativeClause,
