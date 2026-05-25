@@ -13,6 +13,7 @@ class NPCGenerator {
         this.campaignId = campaignId;
         this.nameData = null;
         this.dialogueData = null;
+        this.racesData = null;
     }
 
     /**
@@ -27,21 +28,24 @@ class NPCGenerator {
    * Load NPC name and dialogue data files
    */
     async loadData() {
-        if (this.nameData && this.dialogueData) {
-            return; // Already loaded
+        if (this.nameData && this.dialogueData && this.racesData) {
+            return;
         }
 
         try {
             // Load campaign data for filtering
             await loadCampaigns();
 
-            const [nameResponse, dialogueResponse] = await Promise.all([
+            const [nameResponse, dialogueResponse, racesResponse] = await Promise.all([
                 fetch('data/npcNames.json'),
-                fetch('data/dialogueTemplates.json')
+                fetch('data/dialogueTemplates.json'),
+                fetch('data/races.json')
             ]);
 
             const rawNameData = await nameResponse.json();
             this.dialogueData = await dialogueResponse.json();
+            const rawRaces = await racesResponse.json();
+            this.racesData = (rawRaces.races || rawRaces).filter(r => r.npcWeight > 0);
 
             // Filter name pools by campaign (if they have campaignIds)
             const campaignId = this.campaignId || getDefaultCampaignId();
@@ -329,26 +333,22 @@ class NPCGenerator {
    * @returns {string} Generated name
    */
     generateName(role, settlementType, rng) {
-    // Determine race (mostly humans in settlements)
+        // Determine race by weighted selection from races.json npcWeight
         const raceRoll = rng.next();
-        let race = 'human';
-        if (raceRoll < 0.1) {
-            race = 'elf';
-        } else if (raceRoll < 0.15) {
-            race = 'dwarf';
+        let cumulative = 0;
+        let selectedRace = this.racesData[0];
+        for (const r of this.racesData) {
+            cumulative += r.npcWeight;
+            if (raceRoll < cumulative) { selectedRace = r; break; }
         }
 
         // Determine gender
         const gender = rng.next() < 0.5 ? 'male' : 'female';
 
-        let firstName;
-        if (race === 'human') {
-            firstName = rng.choice(this.nameData.humanFirstNames[gender]);
-        } else if (race === 'elf') {
-            firstName = rng.choice(this.nameData.elfFirstNames[gender]);
-        } else if (race === 'dwarf') {
-            firstName = rng.choice(this.nameData.dwarfFirstNames[gender]);
-        }
+        const namePool = this.nameData[`${selectedRace.namePool}FirstNames`];
+        const firstName = namePool?.[gender]
+            ? rng.choice(namePool[gender])
+            : rng.choice(this.nameData.humanFirstNames[gender]);
 
         // For leaders and important NPCs, add title
         if (role === 'leader') {

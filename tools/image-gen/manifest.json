@@ -1,22 +1,52 @@
 {
   "monsters/goblin": {
-    "generatedAt": "2026-05-24T22:46:17.843Z",
-    "promptHash": "2cc06d3b",
-    "outputPath": "data/graphics/monsters/goblin_2026-05-24T22-46-00.png"
+    "generatedAt": "2026-05-25T21:31:20.684Z",
+    "promptHash": "86253964",
+    "outputPath": "data/graphics/monsters/goblin_2026-05-25T21-30-54.png"
   },
   "items/dagger": {
-    "generatedAt": "2026-05-24T22:24:07.264Z",
-    "promptHash": "f49a3f28",
-    "outputPath": "data/graphics/items/dagger_2026-05-24T22-23-42.png"
+    "generatedAt": "2026-05-25T21:38:35.554Z",
+    "promptHash": "09313496",
+    "outputPath": "data/graphics/items/dagger_2026-05-25T21-38-00.png"
   },
   "terrain/grassland": {
-    "generatedAt": "2026-05-24T22:44:18.602Z",
-    "promptHash": "fb7d6d8c",
-    "outputPath": "data/graphics/grassland_2026-05-24T22-43-51.png"
+    "generatedAt": "2026-05-25T21:37:21.029Z",
+    "promptHash": "982c1edd",
+    "outputPath": "data/graphics/grassland_2026-05-25T21-36-59.png"
   },
   "monsters/wolf": {
     "generatedAt": "2026-05-24T22:45:11.825Z",
     "promptHash": "ecf28875",
     "outputPath": "data/graphics/monsters/wolf_2026-05-24T22-44-54.png"
+  },
+  "terrain/mountain": {
+    "generatedAt": "2026-05-25T21:31:41.436Z",
+    "promptHash": "4cb743b2",
+    "outputPath": "data/graphics/mountain_2026-05-25T21-31-20.png"
+  },
+  "items/potionOfHealing": {
+    "generatedAt": "2026-05-25T21:32:09.093Z",
+    "promptHash": "cd2946a2",
+    "outputPath": "data/graphics/items/potionOfHealing_2026-05-25T21-31-41.png"
+  },
+  "portraits/elf": {
+    "generatedAt": "2026-05-25T21:32:35.479Z",
+    "promptHash": "dbdfbcca",
+    "outputPath": "data/graphics/portraits/elf_2026-05-25T21-32-09.png"
+  },
+  "items/longsword": {
+    "generatedAt": "2026-05-25T21:33:13.105Z",
+    "promptHash": "31029e67",
+    "outputPath": "data/graphics/items/longsword_2026-05-25T21-32-46.png"
+  },
+  "monsters/orc": {
+    "generatedAt": "2026-05-25T21:37:59.917Z",
+    "promptHash": "8526ec99",
+    "outputPath": "data/graphics/monsters/orc_2026-05-25T21-37-24.png"
+  },
+  "portraits/human": {
+    "generatedAt": "2026-05-25T21:39:05.319Z",
+    "promptHash": "ca787ffb",
+    "outputPath": "data/graphics/portraits/human_2026-05-25T21-38-35.png"
   }
 }

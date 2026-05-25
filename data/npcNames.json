@@ -223,6 +223,28 @@
       "core"
     ]
   },
+  "halflingFirstNames": {
+    "male": [
+      "Pip", "Renn", "Dav", "Cael", "Wix", "Brim", "Sorn", "Tock", "Oll", "Finn",
+      "Jak", "Mori", "Sev", "Tav", "Wick", "Bren", "Cade", "Dorn", "Elto", "Goss"
+    ],
+    "female": [
+      "Vell", "Bree", "Lissa", "Mira", "Pell", "Nessa", "Wren", "Calla", "Sori", "Trix",
+      "Fenn", "Jori", "Kael", "Lari", "Mell", "Nori", "Perri", "Rella", "Saba", "Della"
+    ],
+    "campaignIds": ["core"]
+  },
+  "dragonbornFirstNames": {
+    "male": [
+      "Vorn", "Kraith", "Dossek", "Balar", "Thurek", "Navarr", "Osseth", "Korrak", "Gharret", "Messen",
+      "Torrath", "Varesh", "Durrek", "Harkan", "Orreth", "Rathek", "Soran", "Terryn", "Vorath", "Zarak"
+    ],
+    "female": [
+      "Akara", "Dhavar", "Lirreth", "Navaress", "Ossaril", "Thariva", "Dorveth", "Vethara", "Mirrak", "Kessara",
+      "Braveth", "Dorrith", "Haressa", "Korrath", "Lissavel", "Nariveth", "Ossavel", "Raveth", "Therrak", "Vorreth"
+    ],
+    "campaignIds": ["core"]
+  },
   "lastNames": [
     "Ashford",
     "Blackwood",

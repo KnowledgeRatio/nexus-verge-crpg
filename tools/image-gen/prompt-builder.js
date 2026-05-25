@@ -1,12 +1,13 @@
 export function buildPrompt(styleGuide, assetType, asset) {
   const sections = parseStyleGuide(styleGuide);
   const baseStyle = sections['Art Style'] || '';
+  const terrainStyle = sections['Terrain Art Style'] || '';
   const negativeClause = sections['Negative Prompts']
     ? ` Avoid: ${sections['Negative Prompts'].replace(/\n/g, ', ')}`
     : '';
 
   switch (assetType) {
-    case 'terrain':   return terrainPrompt(asset, baseStyle, sections['Terrain Tiles'] || '', negativeClause);
+    case 'terrain':   return terrainPrompt(asset, terrainStyle, sections['Terrain Tiles'] || '', negativeClause);
     case 'monsters':  return monsterPrompt(asset, baseStyle, sections['Monster Art'] || '', negativeClause);
     case 'items':     return itemPrompt(asset, baseStyle, sections['Item Icons'] || '', negativeClause);
     case 'portraits': return portraitPrompt(asset, baseStyle, sections['Character Portraits'] || '', negativeClause);

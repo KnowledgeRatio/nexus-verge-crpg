@@ -120,6 +120,14 @@
 - Fixed seed quest-calling alignment creates "optimal seed" meta: salt quest-type-to-calling assignment with character creation entropy, not just world seed
 - `RULES.quests` config block does not exist — `maxHookDistanceTiles` and per-settlement slot caps are both load-bearing values that must be added before the dungeon-assignment loop is written
 
+### 16. Race vs. Origin System Debate (2026-05-25)
+- Worldbuilder proposed replacing SRD races with dimensional "origin" system
+- `races.json` is pure data — player-character path swap is low-cost
+- ONE logic branch on race ID: `Character.js` line 353 checks `race.id === 'elf'` for Trance
+- NPCGenerator.js lines 332-349 hardcodes 'human'/'elf'/'dwarf' strings for name generation — ADR-010 violation, breaks if race IDs change, must fix as prerequisite
+- CharacterCreation.js already labels the field "Culture:" not "Race:" — cosmetic divergence already in place
+- See `project_race_origin_debate.md` for full analysis
+
 ## Key File Locations
 - Ability data: `data/abilities.json`
 - Spell data: `data/spells.json`

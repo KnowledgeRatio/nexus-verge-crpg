@@ -3,8 +3,13 @@
     {
       "id": "human",
       "campaignIds": ["core"],
-      "name": "Human",
-      "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.",
+      "npcWeight": 0.85,
+      "namePool": "human",
+      "name": "Varath",
+      "namePlural": "Varathi",
+      "nameOutsider": "Human",
+      "etymology": "Carriers of variance — arrived from dozens of source-worlds, no two migrations alike",
+      "description": "Medium build, warm-toned skin ranging from pale ochre to deep umber, hair worn practical — cropped, bound, or tucked under weather-beaten hoods. Dress is layered and improvised: base cloth underneath, repaired leather or scavenged plate over it, tools and supplies strapped where they fit. They arrived in the Verge from dozens of source-worlds, no two migrations alike, and it shows — no two Varath look like they came from the same place.",
       "abilityScoreIncrease": {
         "str": 1,
         "dex": 1,
@@ -19,15 +24,21 @@
       "traits": [
         {
           "name": "Versatile",
-          "description": "You gain +1 to all ability scores, reflecting human adaptability."
+          "description": "You gain +1 to all ability scores, reflecting Varath adaptability."
         }
       ]
     },
     {
       "id": "elf",
       "campaignIds": ["core"],
-      "name": "Elf",
-      "description": "Elves are a magical people of otherworldly grace, living in places of ethereal beauty. They love nature and magic, art and artistry, music and poetry.",
+      "npcWeight": 0.10,
+      "namePool": "elf",
+      "skillProficiencies": ["perception"],
+      "name": "Aethari",
+      "namePlural": "Aethari",
+      "nameOutsider": "Elf",
+      "etymology": "Threshold-dwellers — those who remain at the edges where two worlds meet",
+      "description": "Tall and lean, with silver-grey or deep olive skin and eyes that carry a faint luminescence — pale gold, washed green, or near-white. Their features are angular and unhurried, their posture upright even under full load. They carry equipment as though it was designed for them specifically, often modified with materials that don't match the original construction — the mark of long time on the Verge.",
       "abilityScoreIncrease": {
         "dex": 2,
         "int": 1
@@ -50,15 +61,20 @@
         },
         {
           "name": "Trance",
-          "description": "Elves don't need to sleep. Instead, they meditate deeply for 4 hours a day (during a long rest, you only need 4 hours instead of 8)."
+          "description": "Aethari don't need to sleep. Instead, they meditate deeply for 4 hours a day (during a long rest, you only need 4 hours instead of 8)."
         }
       ]
     },
     {
       "id": "dwarf",
       "campaignIds": ["core"],
-      "name": "Dwarf",
-      "description": "Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human.",
+      "npcWeight": 0.05,
+      "namePool": "dwarf",
+      "name": "Sethrim",
+      "namePlural": "Sethrim",
+      "nameOutsider": "Dwarf",
+      "etymology": "The stone-bound — those who hold their shape under pressure",
+      "description": "Short and broad-framed, with dense muscle and skin weathered to ash-brown or iron grey, heavily textured at the hands and jaw. Hair and beard are thick and kept functional — shaved back from the face or braided tight to avoid catching in machinery. Their gear tends toward the structural: heavy leather reinforced with stone-fitted plate, fastened with rivets rather than straps, built to take repetitive punishment.",
       "abilityScoreIncrease": {
         "con": 2,
         "wis": 1
@@ -81,15 +97,20 @@
         },
         {
           "name": "Stonecunning",
-          "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check."
+          "description": "Whenever you make an Intelligence check related to the origin of stonework, you are considered proficient and add double your proficiency bonus to the check."
         }
       ]
     },
     {
       "id": "halfling",
       "campaignIds": ["core"],
-      "name": "Halfling",
-      "description": "The diminutive halflings survive in a world full of larger creatures by avoiding notice or, barring that, avoiding offense. They are inclined to be affable and get along well with others.",
+      "npcWeight": 0,
+      "namePool": "halfling",
+      "name": "Orith",
+      "namePlural": "Orithen",
+      "nameOutsider": "Halfling",
+      "etymology": "The low path — those who move where others don't look",
+      "description": "Small and light-footed, with round faces, warm skin in sandy or russet tones, and dark curly hair worn loose or pinned back. They stand around three and a half feet and carry themselves low and level — centre of gravity dropped, weight forward. Their gear is compact and re-proportioned: scaled-down equipment lashed together from whatever the Verge made available, rarely matching in material or origin.",
       "abilityScoreIncrease": {
         "dex": 2,
         "cha": 1
@@ -107,7 +128,7 @@
           "description": "You have advantage on saving throws against being frightened."
         },
         {
-          "name": "Halfling Nimbleness",
+          "name": "Orith Nimbleness",
           "description": "You can move through the space of any creature that is of a size larger than yours."
         }
       ]
@@ -115,8 +136,13 @@
     {
       "id": "dragonborn",
       "campaignIds": ["core"],
-      "name": "Dragonborn",
-      "description": "Dragonborn look very much like dragons standing erect in humanoid form, though they lack wings or a tail. They are proud and honorable, with a strong sense of clan and heritage.",
+      "npcWeight": 0,
+      "namePool": "dragonborn",
+      "name": "Kaeveth",
+      "namePlural": "Kaeveth",
+      "nameOutsider": "Dragonborn",
+      "etymology": "The line-kept — those who carried their lineage through the dimensional membrane intact",
+      "description": "Tall and heavily built, with scaled skin in deep jewel tones — charcoal black, tarnished copper, dark indigo, or bone white — that catches light differently depending on the angle. Their face is blunt-snouted and ridge-browed, eyes vertical-pupilled and reflective. They arrived in the Verge as intact lineage groups, and their equipment often reflects it: matched sets, deliberately maintained, standing out against the patchwork gear of everyone around them.",
       "abilityScoreIncrease": {
         "str": 2,
         "cha": 1

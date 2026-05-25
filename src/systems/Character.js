@@ -349,9 +349,11 @@ export class Character {
             }
         }
 
-        // Apply racial skill proficiencies (e.g., Elf Keen Senses)
-        if (this.race?.id === 'elf') {
-            skills.perception.proficient = true;
+        // Apply racial skill proficiencies from race data
+        if (this.race?.skillProficiencies) {
+            for (const skill of this.race.skillProficiencies) {
+                if (skills[skill]) skills[skill].proficient = true;
+            }
         }
 
         // Calculate bonuses
