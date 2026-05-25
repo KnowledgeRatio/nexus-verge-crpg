@@ -16,10 +16,10 @@ export function buildPrompt(styleGuide, assetType, asset) {
 
 function terrainPrompt(terrain, baseStyle, typeGuide, negativeClause) {
   const parts = [
+    baseStyle,
     `Top-down game tile: ${terrain.name} terrain.`,
     terrain.description,
     typeGuide,
-    baseStyle,
     negativeClause,
   ];
   return parts.filter(Boolean).join(' ').trim();
@@ -31,11 +31,11 @@ function monsterPrompt(monster, baseStyle, typeGuide, negativeClause) {
     ? 'Render as absence given shape: geometry that should not cohere, dissolving into the background, no readable face, no expression, no intent.'
     : '';
   const parts = [
+    baseStyle,
     `Fantasy game illustration of a ${monster.name}${sizeType ? `, a ${sizeType}` : ''}.`,
     monster.description,
     voidbornNote,
     typeGuide,
-    baseStyle,
     negativeClause,
   ];
   return parts.filter(Boolean).join(' ').trim();
@@ -44,10 +44,10 @@ function monsterPrompt(monster, baseStyle, typeGuide, negativeClause) {
 function itemPrompt(item, baseStyle, typeGuide, negativeClause) {
   const category = [item.category, item.type].filter(Boolean).join(' ');
   const parts = [
+    baseStyle,
     `Game item icon: ${item.name}${category ? ` (${category})` : ''}.`,
     item.description,
     typeGuide,
-    baseStyle,
     negativeClause,
   ];
   return parts.filter(Boolean).join(' ').trim();
@@ -55,10 +55,10 @@ function itemPrompt(item, baseStyle, typeGuide, negativeClause) {
 
 function portraitPrompt(race, baseStyle, typeGuide, negativeClause) {
   const parts = [
+    baseStyle,
     `Character portrait of a ${race.name} adventurer.`,
     race.description,
     typeGuide,
-    baseStyle,
     negativeClause,
   ];
   return parts.filter(Boolean).join(' ').trim();
