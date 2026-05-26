@@ -8,9 +8,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint src/**/*.js --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint 'src/**/*.js' 'tests/**/*.js'",
+    "lint:fix": "eslint 'src/**/*.js' 'tests/**/*.js' --fix",
     "lint:all": "eslint .",
     "lint:report": "eslint src/**/*.js --output-file eslint-report.txt",
     "legal:generate": "node scripts/generate_legal_artifacts.js",
@@ -28,6 +30,7 @@
   "license": "MIT",
   "devDependencies": {
     "@cyclonedx/cyclonedx-npm": "^4.1.2",
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.2",
+    "vitest": "^4.1.7"
   }
 }
