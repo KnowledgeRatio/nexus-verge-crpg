@@ -39,12 +39,19 @@ describe('mulberry32', () => {
         }
     });
 
-    it('different seeds produce different first values', () => {
-        const v1 = mulberry32(1)();
-        const v2 = mulberry32(2)();
-        // Overwhelmingly likely to differ; if they happen to match, the hash collision
-        // would be caught by the sequence test below
-        expect(v1).not.toBe(v2);
+    it('different seeds produce sequences that differ within the first 20 values', () => {
+        const rng1 = mulberry32(1);
+        const rng2 = mulberry32(2);
+        let differs = false;
+
+        for (let i = 0; i < 20; i++) {
+            if (rng1() !== rng2()) {
+                differs = true;
+                break;
+            }
+        }
+
+        expect(differs).toBe(true);
     });
 });
 
