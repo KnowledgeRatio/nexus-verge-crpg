@@ -1,66 +1,61 @@
 # Nexus Verge
 ## Procedural D&D 5e Roguelike CRPG
 
-A procedurally generated, top-down roguelike CRPG that faithfully implements D&D 5e 2024 rules. Explore infinite worlds with shareable seeds, engage in turn-based tactical combat, and experience deep character progression with unique class fusion system.
+A procedurally generated, top-down roguelike CRPG built on D&D 5e 2024 SRD rules. Explore infinite worlds with shareable seeds, engage in turn-based tactical combat, and experience deep character progression across levels 1–10.
 
 ---
 
 ## 🎮 Core Features
 
 ### Procedural Generation
-- **Shareable Seeds:** Generate and share unique worlds with friends (like Minecraft)
-- **Infinite Exploration:** Regions generate as you explore, with 18 coherent biome types
+- **Shareable Seeds:** Generate and share unique worlds
+- **Infinite Exploration:** Regions generate on demand, 18+ coherent biome types with climate-coherent terrain
 - **Persistent World:** Return to previously explored areas exactly as you left them
-- **Dynamic Settlements:** Villages, towns, and cities with procedural NPCs and merchants
+- **Dynamic Settlements:** Villages, towns, and cities with procedural NPCs, merchants, and quest givers
 
 ### D&D 5e 2024 Rules
-- **Authentic Implementation:** Combat, skills, and progression follow official rules
-- **7 Unique Callings:** Fusion classes combining traditional D&D archetypes
-  - **Dedication** (Fighter + Monk): Martial mastery with stamina techniques
-  - **Scholar** (Wizard + Artificer): Arcane intellect with magical invention
-  - **Pact** (Cleric + Warlock): Divine power meets eldritch might
-  - **Wanderlust** (Rogue + Bard): Ultimate skill monkey with charm
-  - **Bond** (Ranger + Druid): Nature warrior with wild shape
-  - **Oath** (Paladin + Blood Hunter): Sacred oaths with blood magic
-  - **Instinct** (Barbarian + Sorcerer): Primal rage meets innate magic
+- **Authentic Implementation:** Combat, skills, and progression follow SRD 5.2.1 rules
+- **3 Callings:** Custom fusion classes compressing D&D archetypes to levels 1–10
+  - **Dedication** (martial): STR + CON build. Focus resource (CON-based, recharges on short rest)
+  - **Scholar** (caster): INT + CON build. Mana pool (recharges on long rest) + Arcane Recovery
+  - **Wanderlust** (hybrid): DEX + CHA build. Mana pool (recharges on long rest)
+- **Specializations** branch at level 3; capstone at level 10
 - **5 Cultures:** Human, Elf, Dwarf, Halfling, Dragonborn
-- **Streamlined Skills:** 13-skill system (merged from 18 D&D skills for focused gameplay)
-- **Weapon Masteries:** 8 mastery types with unique combat techniques
-- **Modifiable Rules:** Data-driven design for easy homebrew content
-
-### Gold-Based Trading Economy
-- **Traditional Currency:** Buy and sell items with gold pieces
-- **CHA-Modified Pricing:** Higher Charisma = better prices (1% per modifier point)
-- **Merchant Inventories:** Procedurally generated stock based on settlement tier
-- **Settlement Tiers:** Villages (common items) → Towns (uncommon) → Cities (rare/magical)
+- **13-Skill System:** Streamlined from the standard 18 D&D 5e skills
+- **8 Weapon Masteries:** All official 2024 masteries implemented
+- **Data-Driven Rules Engine:** All balance values in `src/core/rulesEngine.js`
 
 ### Turn-Based Tactical Combat
-- **D&D Initiative:** Roll for turn order with DEX modifier, ties broken by DEX score
-- **Action Economy:** Action, Bonus Action, Reaction (no grid-based movement)
-- **Weapon Masteries:** Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex
-- **Two-Weapon Fighting:** Dual-wield light weapons with off-hand attacks
-- **Simplified Combat:** No grid positioning, focus on action economy and tactics
-
-### Character Progression
-- **Levels 1-5 (Current):** Full progression with calling features
-- **Point Buy or Standard Array:** Choose your ability score method
-- **Background System:** Soldier, Acolyte, Criminal, Sage, Folk Hero
-- **Weapon Mastery Choices:** Select masteries based on your calling
-- **Spell Progression:** 5 of 7 callings have spellcasting (varying start levels)
-
-### Quest System
-- **Procedurally Generated:** Infinite variety of quests from templates
-- **Campaign Quests:** 4-stage main storyline (Monster Threat → Ancient Corruption → Enemy Stronghold → BBEG)
-- **Side Quests:** Kill, retrieve, deliver, explore, and skill challenge quests
-- **Quest Tracking:** Quest log with objectives, progress bars, and rewards
-- **NPC Quest Givers:** Settlement NPCs offer quests based on their roles
+- **D&D Initiative:** d20 + DEX modifier; individual initiative per combatant
+- **Action Economy:** Action, Bonus Action, Reaction — no movement grid
+- **8 Weapon Masteries fully implemented:**
+  - Cleave, Graze, Nick, Push, Sap, Slow (→ –1 AC substitute), Topple, Vex
+- **Two-Weapon Fighting:** Dual-wield light weapons with off-hand bonus action
+- **Conditions System:** Object-based conditions with typed durations (rounds, combat, turn-end, permanent)
+- **Flee Mechanic:** d20 + max(DEX, WIS) + prof vs dynamic DC (base 10, +2 per engaged enemy)
+- **Floating Combat Text:** Damage, crits, heals, conditions over combatant cards
+- **Ranged Enemies:** Distinct AI behaviour with `preferRanged` flag; 5 ranged monster types
+- **Void Creatures:** Void enemy type with turn-damage aura
 
 ### Rich Non-Combat Gameplay
-- **13 Skills:** Athletics, Acrobatics, Sleight of Hand, Endurance, Academia, Arcana, Investigation, Perception, Cunning, Creativity, Empathy, Influence, Deception
-- **Skill Challenges:** Sequential, choice-based, and contested skill checks
-- **Social Encounters:** Dialogue with NPCs, quest acceptance/turn-in
-- **Rest System:** Short rests (roll all hit dice, 2 per long rest) and long rests (full HP, requires tavern/sanctuary)
-- **Trading:** Buy/sell items with CHA-modified pricing
+- **Skill Challenges:** Sequential, choice-based, and contested checks with terrain modifiers
+- **Social Encounters:** Multi-turn NPC conversations with tension meter; combat triggers at threshold
+- **Dungeon System:** Procedurally generated dungeons with dedicated DungeonManager
+- **NPC Relations:** Relationship scoring system per NPC
+- **Rest System:** Short rests (hit dice recovery, 2/long rest) and long rests (full HP, tavern/sanctuary required)
+- **Fatigue System:** FatigueManager tracking exhaustion over time
+
+### Economy & Quests
+- **Trading:** Buy/sell with gold; CHA-modified pricing (1% per modifier point)
+- **Settlement Tiers:** Villages (common) → Towns (uncommon) → Cities (rare/magical)
+- **Campaign Quests:** 4-stage main storyline (Monster Threat → Ancient Corruption → Enemy Stronghold → BBEG)
+- **Side Quests:** Kill, retrieve, deliver, explore, and skill challenge types
+- **Quest Tracking:** Objectives with progress bars, XP/gold/item rewards
+
+### Audio
+- **AudioManager:** Pooled audio (3 instances/sound), three-tier volume (master/sfx/music)
+- **Combat Sounds:** Melee/ranged × hit/miss/critical, floating text integration
+- **13 Audio Assets** by Thomas Devlin ([tommusic.itch.io](https://tommusic.itch.io/))
 
 ---
 
@@ -68,122 +63,103 @@ A procedurally generated, top-down roguelike CRPG that faithfully implements D&D
 
 ### Requirements
 - Modern web browser (Chrome, Firefox, Safari, Edge)
-- No installation needed - runs 100% in browser
+- No installation needed — runs 100% in browser
 - Works offline after initial load
 
 ### How to Run
 ```bash
-# Clone the repository
 git clone <repository-url>
 cd nexus-verge-crpg-5e
 
-# Open index.html in your browser
-# OR use a local server:
+# Open index.html directly, or use a local server:
 python -m http.server 8000
 # Then visit http://localhost:8000
 ```
 
-### Quick Start Guide
+### Quick Start
 1. **New Game:** Enter a seed (or generate random), select map size and difficulty
-2. **Create Character:**
-   - Choose culture (race), background, calling (class)
-   - Assign ability scores (Point Buy or Standard Array)
-   - Select skills and weapon masteries
-3. **Explore:** Use WASD or arrow keys to move around the world
-4. **Combat:** Random encounters trigger turn-based combat (8% base chance per move)
-5. **Settlements:** Press E near settlements to enter, trade, rest, and accept quests
-6. **Rest:** Press R to rest (short rests anywhere, long rests in taverns/sanctuaries)
-7. **Save:** Press ESC to save your progress (5 save slots available)
+2. **Create Character:** Choose culture, background, calling; assign ability scores (Point Buy or Standard Array); select skills and weapon masteries
+3. **Explore:** WASD / arrow keys to move
+4. **Combat:** Encounters trigger automatically (1% base chance per move, terrain-modified)
+5. **Settlements:** Press E near settlement tiles to enter, trade, rest, and accept quests
+6. **Rest:** Press R for rest menu (short rests anywhere; long rests in taverns/sanctuaries)
+7. **Help:** Press H for full in-game manual
+8. **Save:** Press ESC (5 save slots)
 
 ---
 
 ## 🎯 Controls
 
 ### Exploration
-- **WASD / Arrow Keys:** Move character
-- **I:** Open inventory
-- **C:** Open character sheet
-- **Q:** Open quest log
-- **R:** Open rest menu (short/long rest)
-- **E:** Enter settlement (when near settlement tiles)
-- **ESC:** Save menu (5 save slots)
+| Key | Action |
+|---|---|
+| WASD / Arrow Keys | Move |
+| I | Inventory |
+| C | Character sheet |
+| Q | Quest log |
+| R | Rest menu |
+| E | Enter settlement |
+| H | Help manual |
+| +/− | Zoom in/out |
+| ESC | Save menu |
 
 ### Combat
-- **Click Buttons:** Select action (Attack, Attack Off-Hand, End Turn, Flee)
-- **Click Enemy Card:** Target enemy for attack
-- **Auto-Targeting:** Enemies targeted by clicking their combat cards
-- Combat is turn-based with initiative order displayed
-
-### Settlement UI
-- **Click NPCs:** Open dialogue and view quests
-- **Trading:** Buy/sell items with merchants and blacksmiths
-- **Quest Turn-In:** Return to quest giver NPCs to complete quests
-- **Rest:** Long rests available in taverns
-
-### System
-- **ESC:** Save menu (during exploration)
-- **Load Game:** Main menu → Load Game → Select save slot
-
----
-
-## 📚 Documentation
-
-### For Players
-- **[Game Rules](docs/GAME_RULES.md):** Complete gameplay guide (coming soon)
-- **[FAQ](docs/FAQ.md):** Common questions (coming soon)
-
-### For Developers
-- **[PRD](docs/PRD.md):** Product Requirements Document with full feature specification
-- **[Architecture](docs/ARCHITECTURE.md):** Technical decisions and system architecture
-- **[Project Plan](docs/PROJECT_PLAN.md):** Day-by-day development timeline
-- **[Data Schema](docs/DATA_SCHEMA.md):** Complete data structure reference
-
-### For Modders
-- **[Modding Guide](docs/MODDING.md):** How to add custom content (coming soon)
-- **Data Files:** All content in `/data/` as JSON (easy to edit)
-- **Rules Engine:** Modify game balance in `src/core/rulesEngine.js`
+- Click buttons to select action (Attack, Attack Off-Hand, End Turn, Flee)
+- Click an enemy card to target
+- Initiative order displayed in turn tracker
 
 ---
 
 ## 🗺️ Development Roadmap
 
-### ✅ Phase 1: Playable Vertical Slice (Complete)
-- [x] Procedural world generation with seeds (18 terrain types)
-- [x] Character creation (7 Callings, Point Buy + Standard Array)
+### ✅ Phase 1 — Vertical Slice (Complete)
+- [x] Procedural world generation with seeds (18+ terrain types, climate-coherent biomes)
+- [x] Character creation (3 Callings, Point Buy + Standard Array)
 - [x] Exploration with fog of war persistence
 - [x] Turn-based combat with initiative system
-- [x] XP and leveling (1-5)
+- [x] XP and leveling (1–10 framework)
 - [x] Equipment system with proficiency checks
-- [x] Save/Load system (5 slots, metadata, playtime tracking)
+- [x] Save/Load system (5 slots)
 
-### ✅ Phase 2: Core Systems (Complete)
-- [x] 7 Callings with unique features (Dedication, Scholar, Pact, Wanderlust, Bond, Oath, Instinct)
+### ✅ Phase 2 — Core Systems (Complete)
+- [x] 3 Callings with unique features (Dedication, Scholar, Wanderlust)
 - [x] 5 Cultures (Human, Elf, Dwarf, Halfling, Dragonborn)
-- [x] 13-skill system (streamlined from 18 D&D skills)
-- [x] Weapon mastery system (8 masteries: Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex)
-- [x] Two-weapon fighting mechanics
-- [x] Rest system (short rests with hit dice, long rests in taverns/sanctuaries)
-- [x] Settlement system (villages, towns, cities with NPCs)
-- [x] Trading system (buy/sell with CHA-modified pricing)
-- [x] Quest system (campaign + side quests, tracking, turn-in)
+- [x] 13-skill system
+- [x] 8 Weapon masteries fully implemented in combat
+- [x] Two-weapon fighting
+- [x] Rest system (hit dice / long rest)
+- [x] Settlement system with procedural NPCs
+- [x] Trading with CHA-modified pricing
+- [x] Quest system (campaign + side quests)
+- [x] Conditions system (typed durations)
+- [x] AudioManager (pooled audio, three-tier volume)
+- [x] Floating combat text
 
-### 🚧 Phase 3: Combat & Abilities (IN PROGRESS)
-- [x] Weapon masteries - All 8 masteries fully implemented (Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex)
-- [ ] Class abilities (Action Surge, Rage, Bardic Inspiration, Wild Shape, etc.)
-- [ ] Spell system (cantrips + levels 1-2, casting UI)
-- [ ] Resource systems (Stamina, Sorcery Points, Pact Magic)
+### 🚧 Phase 3 — Combat & Content Expansion (In Progress)
+- [x] Ranged enemy AI (`preferRanged` flag, 5 ranged monsters)
+- [x] Terrain movement costs + encounter rate accumulator
+- [x] Flee mechanic redesign (DEX/WIS + prof vs dynamic DC)
+- [x] Biome generation fixes (inland beaches, climate coherence, hydrology)
+- [x] Skill challenges with terrain modifiers
+- [x] Social encounter system (multi-turn NPC conversations, tension meter)
+- [x] Campaign content filtering system (`campaignIds`)
+- [x] Tile graphics + 4-level zoom system
+- [x] Dungeon system (DungeonGenerator + DungeonManager)
+- [x] NPC Relations system (RelationManager)
+- [x] Void creatures + turn-damage aura
+- [x] ConsequenceManager + effect dispatcher
+- [x] FatigueManager
+- [ ] Calling abilities fully implemented (Action Surge, Rage, Arcane Recovery, etc.)
+- [ ] Spell casting system (cantrips + levels 1–5, Mana pool UI)
+- [ ] Levelling 6–10 + specialization branches
 
-### 📋 Phase 4: Content Expansion (Future)
-- [ ] Calling subpaths (specializations for each calling)
-- [ ] Levels 6-10 progression
-- [ ] Additional spell levels (3-5)
-- [ ] 50+ monsters (expanded CR range)
-- [ ] Loot system with combat drops
-- [ ] Faction reputation system
-- [ ] Advanced skill challenges
-- [ ] Audio (sound effects, music)
+### 📋 Phase 4 — Party & Polish (Next)
+- [ ] Companion/party system (design locked — up to 3 companions, BG3-style direct control, permanent death, relationship scoring)
+- [ ] Advanced skill challenges and NPC dialogue trees
+- [ ] Faction reputation
+- [ ] Loot system overhaul
 - [ ] Visual polish and animations
-- [ ] Party/companion system (future consideration)
+- [ ] Music tracks
 
 ---
 
@@ -193,223 +169,85 @@ python -m http.server 8000
 nexus-verge-crpg-5e/
 ├── index.html              # Main entry point
 ├── styles.css              # Global styles
-├── README.md              # This file
-├── docs/                  # Documentation
-│   ├── PRD.md
-│   ├── ARCHITECTURE.md
-│   ├── PROJECT_PLAN.md
-│   └── DATA_SCHEMA.md
-├── src/                   # Source code
-│   ├── main.js           # Application entry
-│   ├── core/             # Core engine
-│   ├── systems/          # Game systems
-│   ├── rendering/        # Rendering layer
-│   ├── ui/               # UI components
-│   └── utils/            # Utilities
-├── data/                 # Game data (JSON)
-│   ├── classes.json
-│   ├── races.json
-│   ├── spells.json
-│   ├── items.json
+├── src/
+│   ├── main.js             # App entry, UI wiring
+│   ├── core/               # rulesEngine.js, gameState.js
+│   ├── systems/            # Game systems (see below)
+│   ├── rendering/          # Canvas renderer
+│   ├── ui/                 # UI components
+│   └── utils/              # Helpers, campaignFilter.js
+├── data/                   # JSON game data (single source of truth)
+│   ├── callings.json
+│   ├── cultures.json
+│   ├── items.json / magicItems.json
 │   ├── monsters.json
+│   ├── spells.json
+│   ├── weaponMasteries.json
+│   ├── skillChallenges.json
+│   ├── terrains.json
+│   ├── campaigns.json
 │   └── ...
-└── assets/               # Future: images, sounds
+├── legal/                  # SRD attribution, SBOM, third-party notices
+└── docs/                   # Architecture, PRD, changelog, plans
 ```
+
+**Key systems (`src/systems/`):** `CombatManager`, `WorldGenerator`, `QuestManager`, `QuestGenerator`, `SettlementManager`, `NPCGenerator`, `MerchantManager`, `LootManager`, `AudioManager`, `SkillChallengeManager`, `DialogueManager`, `RelationManager`, `CompanionManager`, `DungeonGenerator`, `DungeonManager`, `EffectDispatcher`, `ConsequenceManager`, `FatigueManager`, `PassiveModifierRegistry`, `LevelUpManager`, `RestManager`, `SaveManager`, `Player`, `Character`, `EncounterBuilder`
 
 ---
 
 ## 🛠️ Technical Stack
 
-- **Frontend:** Vanilla JavaScript (ES6 modules)
-- **Rendering:** HTML5 Canvas for game view, DOM for UI
-- **Storage:** LocalStorage (save files), JSON (game data)
-- **Architecture:** 100% client-side, no backend required
-- **RNG:** Mulberry32 seeded PRNG for deterministic generation
-- **World Gen:** Simplex noise for coherent terrain
-- **Bundle Size:** <500KB (lightweight and fast)
+- **Frontend:** Vanilla JavaScript (ES6 modules), no framework
+- **Rendering:** HTML5 Canvas (game view) + DOM (UI)
+- **Storage:** LocalStorage (saves), JSON (game data)
+- **Architecture:** 100% client-side, no backend
+- **RNG:** Mulberry32 seeded PRNG for deterministic world generation; `Math.random()` for live combat rolls (prevents save-scumming)
+- **World Gen:** Simplex noise with latitude/elevation-based climate coherence
+- **State:** Observer pattern via `gameState.subscribe()` / `gameState.set()`
 
 ---
 
-## 🎲 Game Systems Overview
+## 📚 Documentation
 
-### Character Creation
-- Choose from 5 cultures (Human, Elf, Dwarf, Halfling, Dragonborn)
-- Select 1 of 7 callings (Dedication, Scholar, Pact, Wanderlust, Bond, Oath, Instinct)
-- Choose background (Soldier, Acolyte, Criminal, Sage, Folk Hero)
-- Assign ability scores (Point Buy 27 points or Standard Array)
-- Select skills (2-4 based on calling) and weapon masteries (1-3 based on calling)
-- Full D&D 5e character sheet with equipment, spells, and features
-
-### Combat System
-- Turn-based with initiative (d20 + DEX modifier, ties broken by DEX score)
-- Simplified non-grid combat (focus on action economy)
-- Action economy: Action, Bonus Action, Reaction (no movement tracking)
-- Attack rolls (d20 + mods vs AC), damage rolls with weapon dice + modifiers
-- **8 Weapon Masteries fully implemented:**
-  - **Cleave:** Extra attack on adjacent enemy for ability modifier damage
-  - **Graze:** Ability modifier damage even on a miss
-  - **Nick:** Free off-hand light weapon attack as part of main attack action
-  - **Push:** Prevents melee attacks next turn (Large or smaller creatures)
-  - **Sap:** Target has disadvantage on next attack roll
-  - **Slow:** Reduces AC by 1 until attacker's next turn
-  - **Topple:** CON save or knocked prone (disadvantage on attacks, advantage for melee attackers)
-  - **Vex:** Advantage on next attack vs same target
-- Two-weapon fighting: Light weapons in both hands, off-hand uses bonus action
-- Conditions system: Buffs/debuffs with duration tracking (combat, rounds, until turn)
-- Flee mechanic: d20 + initiative vs DC 30
-
-### Skill System
-- 13 streamlined skills (merged from 18 D&D 5e skills)
-- Skills by ability: STR (1), DEX (2), CON (1), INT (3), WIS (4), CHA (2)
-- Proficiency (+2 to +3) and expertise (double proficiency)
-- Skill challenges: Sequential stages, player choice, contested rolls
-- Integrated with quest objectives
-
-### Trading System
-- Buy/sell items with gold pieces (traditional economy)
-- CHA-modified pricing: 1% discount/markup per CHA modifier point
-- Merchant inventories: Procedurally generated based on settlement tier
-- Settlement tiers affect rarity: Villages (common), Towns (uncommon), Cities (rare/magical)
-
-### Quest System
-- Campaign quests: 4-stage main storyline (Monster Threat → Ancient Corruption → Enemy Stronghold → BBEG)
-- Side quests: Kill, retrieve, deliver, explore, skill challenge types
-- Quest tracking: Objectives with progress bars, rewards (XP/gold/items/reputation)
-- NPC quest givers: Roles determine quest types (leaders/guards = combat, merchants = retrieval, etc.)
-
-### World Generation
-- Seed-based deterministic generation (shareable seeds)
-- Chunk/region system (32x32 tiles, generated on-demand)
-- 18 terrain types with Simplex noise (coherent biome clustering)
-- Settlements: Villages, towns, cities with procedural NPCs
-- Sanctuaries: Safe rest locations scattered across wilderness (2x as common as settlements)
-
----
-
-## 🤝 Contributing
-
-This is currently a solo project in active development. Contributions, bug reports, and feature suggestions are welcome!
-
-### Reporting Bugs
-- Check existing issues first
-- Provide seed, save file, and steps to reproduce
-- Include browser and OS information
-
-### Suggesting Features
-- Check the roadmap first
-- Explain use case and benefit
-- Consider D&D 5e rules compatibility
+| Doc | Purpose |
+|---|---|
+| [PRD](docs/PRD.md) | Product requirements and design pillars |
+| [Architecture](docs/ARCHITECTURE.md) | ADRs, system design, known gaps |
+| [Changelog](docs/CHANGELOG.md) | Session-by-session history |
+| [plans/](docs/plans/) | Design jam notes and implementation plans |
+| [legal/](legal/) | SRD attribution, asset credits, SBOM |
 
 ---
 
 ## 📜 License & Legal
 
-### Project License
-**Nexus Verge** is licensed under the **MIT License** - see [LICENSE](LICENSE) file for details.
+**Nexus Verge** is licensed under the **MIT License** — see [LICENSE](LICENSE).
 
-### D&D 5e System Reference Document
-This project uses content from the **System Reference Document 5.2.1** (SRD 5.2.1) by Wizards of the Coast LLC, licensed under the **Creative Commons Attribution 4.0 International License** (CC BY 4.0).
+This project uses content from the **System Reference Document 5.2** (SRD 5.2) by Wizards of the Coast LLC, licensed under **CC BY 4.0**.
 
-**Full SRD Attribution:** [legal/SRD_ATTRIBUTION.md](legal/SRD_ATTRIBUTION.md)
+Full attribution: [legal/SRD_ATTRIBUTION.md](legal/SRD_ATTRIBUTION.md)
 
-**Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks of Wizards of the Coast LLC. © Wizards of the Coast LLC.**
+*Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks of Wizards of the Coast LLC. © Wizards of the Coast LLC.*
 
-### Third-Party Dependencies
-- **Runtime Dependencies:** None (100% vanilla JavaScript)
-- **Development Dependencies:** ESLint (MIT License)
+**Third-party notices:** [legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md)  
+**Asset attributions:** [legal/ASSET_ATTRIBUTIONS.md](legal/ASSET_ATTRIBUTIONS.md)  
+**SBOM:** [legal/sbom/](legal/sbom/)
 
-**Full Third-Party Notices:** [legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md)
-
-### Asset Attributions
-**All Audio Assets** (13 files) created by **Thomas Devlin** ([tommusic.itch.io](https://tommusic.itch.io/)).
-
-**Full Asset Attributions:** [legal/ASSET_ATTRIBUTIONS.md](legal/ASSET_ATTRIBUTIONS.md)
-
-### Legal Compliance
-All legal and licensing information is accessible in-game via the **Legal / Licensing** modal (footer link) and in the [legal/](legal/) directory:
-
-- 📄 [SRD Attribution](legal/SRD_ATTRIBUTION.md) - D&D 5e SRD 5.2.1 compliance
-- 📄 [Third-Party Notices](legal/THIRD_PARTY_NOTICES.md) - Dependency licenses
-- 📄 [Asset Attributions](legal/ASSET_ATTRIBUTIONS.md) - Sound effects and assets
-- 📋 [SBOM](legal/sbom/) - Software Bill of Materials (npm + CycloneDX for Dependency-Track)
-
-**Verify Compliance:**
 ```bash
-npm run legal:verify
+npm run legal:verify    # check compliance
+npm run legal:generate  # regenerate legal artifacts
 ```
-
-**Regenerate Legal Artifacts:**
-```bash
-npm run legal:generate
-```
-
----
-
-## 🙏 Acknowledgments
-
-- **Wizards of the Coast** for D&D 5e and the SRD
-- **Roguelike community** for inspiration (NetHack, DCSS, ToME)
-- **Procedural generation pioneers** (Perlin noise, simplex noise)
-
----
-
-## 📧 Contact
-
-For questions, feedback, or support:
-- **GitHub Issues:** [Report bugs or suggest features]
-- **Project Lead:** KnowledgeRatio
 
 ---
 
 ## 🌟 Project Status
 
-**Current Phase:** Phase 2 Complete → Phase 3 In Progress
-**Version:** 0.2.0-alpha
-**Last Updated:** 2025-12-18
-
-**Playable:** Yes (core systems complete)
-**MVP Status:** Core gameplay loop functional
-**Production Ready:** No (alpha stage)
+**Phase:** 3 — Combat & Content Expansion (in progress)  
+**Branch:** `main-beta-quests`  
+**Last Updated:** 2026-06-20  
+**Playable:** Yes — core gameplay loop functional  
+**Production Ready:** No (alpha)
 
 ---
 
-## 🎮 Current Features
-
-The game is in active development with a functional core gameplay loop:
-
-**Character System:**
-- 7 unique Callings with fusion class mechanics
-- 5 Cultures with racial traits
-- Point Buy + Standard Array ability score assignment
-- Weapon mastery selection (8 mastery types)
-- Full equipment system with proficiency checks
-
-**World & Exploration:**
-- Infinite procedural world with shareable seeds
-- 18 terrain biomes with Simplex noise generation
-- Settlement system (villages, towns, cities)
-- Fog of war with exploration persistence
-- Save/Load system (5 slots)
-
-**Combat:**
-- Turn-based initiative system
-- All 8 weapon masteries fully implemented (Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex)
-- Two-weapon fighting mechanics
-- Simplified action economy (no grid)
-- Conditions system tracking buffs/debuffs
-
-**Progression:**
-- Quest system with campaign + side quests
-- Trading with CHA-modified pricing
-- Rest system (short rests with hit dice, long rests in taverns)
-- Levels 1-5 progression
-
-**Coming Soon (Phase 3):**
-- Class abilities (Action Surge, Rage, Wild Shape, Bardic Inspiration, etc.)
-- Spell casting system (cantrips + levels 1-2)
-- Resource tracking (Stamina, Sorcery Points, Pact Magic, Ki, Rage uses)
-- Advanced combat features (Reactions, Opportunity Attacks)
-
----
-
-**Made with ❤️ for D&D fans and roguelike enthusiasts**
+**Made for D&D fans and roguelike enthusiasts**
