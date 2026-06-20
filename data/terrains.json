@@ -1,0 +1,736 @@
+{
+  "terrains": [
+    {
+      "id": "grassland",
+      "name": "Grassland",
+      "symbol": ".",
+      "color": "#7ec850",
+      "tileImage": "grassland-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Lush green grasses of at least three distinct species grow together in dense, living midsummer growth.",
+      "encounterModifier": 0.8,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "symbol": "T",
+      "color": "#2d5016",
+      "tileImage": "forest-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Dense trees provide shade and cover.",
+      "encounterModifier": 1,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "mountain",
+      "name": "Mountain",
+      "symbol": "^",
+      "color": "#8b7355",
+      "tileImage": "mountain-mai-2.png",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Rocky peaks reach toward the sky.",
+      "encounterModifier": 0.6,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "mountainPeak",
+      "name": "Mountain Peak",
+      "symbol": "^",
+      "color": "#7a766f",
+      "tileImage": "mountainPeak-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Jagged summits rise above the clouds, too steep to climb.",
+      "encounterModifier": 0,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "traversalRequirements": [
+        "flying"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean",
+      "symbol": "≈",
+      "color": "#0047AB",
+      "tileImage": "ocean-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Deep ocean waters, impossible to swim across.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "traversalRequirements": [
+        "waterWalking",
+        "ship",
+        "flying"
+      ],
+      "marinerTraversable": true,
+      "marinerMessage": "Swimming through ocean waters with Mariner training!",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "deepWater",
+      "name": "Deep Water",
+      "symbol": "~",
+      "color": "#1e5ba8",
+      "tileImage": "deepWater-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Deep water blocks your path.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "traversalRequirements": [
+        "waterWalking",
+        "ship",
+        "flying"
+      ],
+      "marinerTraversable": true,
+      "marinerMessage": "Swimming through deep water with Mariner training!",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "sanctuary",
+      "name": "Sanctuary",
+      "symbol": "⛩️",
+      "color": "#f0e68c",
+      "tileImage": "sanctuary-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A peaceful sanctuary where weary travelers can rest safely.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "canLongRest": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shallowWater",
+      "name": "Shallow Water",
+      "symbol": "≈",
+      "color": "#6ab8ff",
+      "tileImage": "shallowWater-mai-2.png",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Shallow water that can be waded through.",
+      "encounterModifier": 0.3,
+      "coverType": null,
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "beach",
+      "name": "Beach",
+      "symbol": "≈",
+      "color": "#f4e4c1",
+      "tileImage": "beach-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.2,
+      "description": "Sandy coastline where land meets sea.",
+      "encounterModifier": 0.33,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "road",
+      "name": "Road",
+      "symbol": "=",
+      "color": "#b8a589",
+      "tileImage": "road-mai-2.png",
+      "traversable": true,
+      "movementCost": 0.8,
+      "description": "A well-worn path that connects settlements.",
+      "encounterModifier": 0.38,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "symbol": "≡",
+      "color": "#8b7355",
+      "tileImage": "bridge-mai-2.png",
+      "traversable": true,
+      "movementCost": 0.8,
+      "description": "A sturdy bridge spans the water.",
+      "encounterModifier": 0.38,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "town",
+      "name": "Town",
+      "symbol": "🏘️",
+      "color": "#d4af37",
+      "tileImage": "town-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A settlement with buildings and people.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isSettlement": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "hills",
+      "name": "Hills",
+      "symbol": "n",
+      "color": "#9aad72",
+      "tileImage": "hills-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Rolling hills provide vantage points.",
+      "encounterModifier": 0.67,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "desertHills",
+      "name": "Desert Hills",
+      "symbol": "n",
+      "color": "#c4a068",
+      "tileImage": "desertHills-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Eroded sandstone ridges bake under the sun.",
+      "encounterModifier": 0.47,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "swamp",
+      "name": "Swamp",
+      "symbol": "m",
+      "color": "#4a6838",
+      "tileImage": "swamp-mai-2.png",
+      "traversable": true,
+      "movementCost": 2.5,
+      "description": "A murky wetland filled with thick vegetation.",
+      "encounterModifier": 0.8,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "desert",
+      "name": "Desert",
+      "symbol": ":",
+      "color": "#edc9af",
+      "tileImage": "desert-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Endless sands stretch in all directions.",
+      "encounterModifier": 0.53,
+      "coverType": null,
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "cave",
+      "name": "Cave Entrance",
+      "symbol": "🕳️",
+      "color": "#3d3d3d",
+      "tileImage": "cave-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A dark opening leading underground.",
+      "encounterModifier": 1.5,
+      "coverType": "substantial",
+      "difficultTerrain": false,
+      "isDungeon": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ruins",
+      "name": "Ruins",
+      "symbol": "🏛️",
+      "color": "#7a7a7a",
+      "tileImage": "ruins-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Ancient structures crumbling with age.",
+      "encounterModifier": 1.4,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "isDungeon": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "plains",
+      "name": "Plains",
+      "symbol": ".",
+      "color": "#d4c896",
+      "tileImage": "plains-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Wide open lowland, green and alive in full growth, grasses dense and knee-high under a clear sky.",
+      "encounterModifier": 0.9,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "denseForest",
+      "name": "Dense Forest",
+      "symbol": "♣",
+      "color": "#1a3a0f",
+      "tileImage": "denseForest-mai-2.png",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Thick forest with towering trees and dense undergrowth.",
+      "encounterModifier": 1.5,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "tundra",
+      "name": "Tundra",
+      "symbol": ".",
+      "color": "#c8d8e8",
+      "tileImage": "tundra-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Frozen ground with sparse vegetation.",
+      "encounterModifier": 0.7,
+      "coverType": null,
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "snowyPlains",
+      "name": "Snowy Plains",
+      "symbol": "*",
+      "color": "#f0f8ff",
+      "tileImage": "snowyPlains-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Snow-covered plains glitter in the cold.",
+      "encounterModifier": 0.6,
+      "coverType": null,
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "jungle",
+      "name": "Jungle",
+      "symbol": "♠",
+      "color": "#2d6b22",
+      "tileImage": "jungle-mai-2.png",
+      "traversable": true,
+      "movementCost": 2.5,
+      "description": "Dense tropical jungle teeming with life.",
+      "encounterModifier": 1.8,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "savanna",
+      "name": "Savanna",
+      "symbol": "'",
+      "color": "#e8c870",
+      "tileImage": "savanna-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Warm-climate grassland, green and dry-season sparse, scattered with flat-topped trees under a high bright sun.",
+      "encounterModifier": 1.4,
+      "coverType": null,
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "residential",
+      "name": "Residential",
+      "symbol": "H",
+      "color": "#d2b48c",
+      "tileImage": "residential-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Houses and shops line the streets of the settlement outskirts.",
+      "encounterModifier": 0.3,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "farmland",
+      "name": "Farmland",
+      "symbol": "#",
+      "color": "#f5deb3",
+      "tileImage": "farmland-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.2,
+      "description": "Cultivated fields and pastures surround the settlement.",
+      "encounterModifier": 0.4,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "symbol": "I",
+      "color": "#a0826d",
+      "tileImage": "industrial-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Warehouses, workshops, and forges bustle with activity.",
+      "encounterModifier": 0.5,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "isUrban": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonFloor",
+      "name": "Dungeon Floor",
+      "symbol": ".",
+      "color": "#4a4a4a",
+      "tileImage": "dungeonFloor-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Cold stone floor stretches into darkness.",
+      "encounterModifier": 1.3,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonWall",
+      "name": "Dungeon Wall",
+      "symbol": "#",
+      "color": "#2a2a2a",
+      "tileImage": "dungeonWall-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Solid stone wall blocks your path.",
+      "encounterModifier": 0,
+      "coverType": "substantial",
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonDoor",
+      "name": "Door",
+      "symbol": "+",
+      "color": "#8b4513",
+      "tileImage": "dungeonDoor-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A wooden door leading to another chamber.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "isConnection": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonExit",
+      "name": "Dungeon Exit",
+      "symbol": "▲",
+      "color": "#ffd700",
+      "tileImage": "dungeonExit-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Stairs leading back to the surface.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "isExit": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonWater",
+      "name": "Underground Pool",
+      "symbol": "~",
+      "color": "#1a4a5e",
+      "tileImage": "dungeonWater-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Dark water fills this section of the dungeon.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonPit",
+      "name": "Pit",
+      "symbol": "O",
+      "color": "#1a1a1a",
+      "tileImage": "dungeonPit-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "A gaping pit drops into darkness below.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonRubble",
+      "name": "Rubble",
+      "symbol": ",",
+      "color": "#5a5a5a",
+      "tileImage": "dungeonRubble-mai-2.png",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Broken stones and debris litter the floor.",
+      "encounterModifier": 1,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonAltar",
+      "name": "Altar",
+      "symbol": "†",
+      "color": "#8b0000",
+      "tileImage": "dungeonAltar-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "An ancient altar stands here, dark stains marking its surface.",
+      "encounterModifier": 1.5,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "isInteractable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonTreasure",
+      "name": "Treasure Chest",
+      "symbol": "$",
+      "color": "#ffd700",
+      "tileImage": "dungeonTreasure-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A treasure chest sits here, waiting to be opened.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "isInteractable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonTrap",
+      "name": "Trapped Floor",
+      "symbol": "!",
+      "color": "#ff4500",
+      "tileImage": "dungeonTrap-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "The floor here looks suspicious...",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "isTrap": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonWeb",
+      "name": "Spider Web",
+      "symbol": "w",
+      "color": "#d3d3d3",
+      "tileImage": "dungeonWeb-mai-2.png",
+      "traversable": true,
+      "movementCost": 2,
+      "description": "Thick webs cling to everything here.",
+      "encounterModifier": 1.4,
+      "coverType": "partial",
+      "difficultTerrain": true,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonLava",
+      "name": "Lava",
+      "symbol": "≈",
+      "color": "#ff4500",
+      "tileImage": "dungeonLava-mai-2.png",
+      "traversable": false,
+      "movementCost": null,
+      "description": "Molten rock glows with deadly heat.",
+      "encounterModifier": 0,
+      "coverType": null,
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonIce",
+      "name": "Ice Floor",
+      "symbol": "=",
+      "color": "#add8e6",
+      "tileImage": "dungeonIce-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Slippery ice covers the floor.",
+      "encounterModifier": 1,
+      "coverType": null,
+      "difficultTerrain": true,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonMushroom",
+      "name": "Mushroom Grove",
+      "symbol": "♠",
+      "color": "#9370db",
+      "tileImage": "dungeonMushroom-mai-2.png",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "Giant glowing mushrooms illuminate the cavern.",
+      "encounterModifier": 1.2,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dungeonBones",
+      "name": "Bone Pile",
+      "symbol": "x",
+      "color": "#f5f5dc",
+      "tileImage": "dungeonBones-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Scattered calcified remains and dungeon detritus cover the stone floor.",
+      "encounterModifier": 1.5,
+      "coverType": null,
+      "difficultTerrain": true,
+      "isDungeonTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "snowForest",
+      "name": "Snow Forest",
+      "symbol": "♣",
+      "color": "#4a6741",
+      "tileImage": "snowForest-mai-2.png",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "Dense conifer forest draped in snow. Wind whispers through dark boughs.",
+      "encounterModifier": 1,
+      "coverType": "substantial",
+      "difficultTerrain": true,
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "traits": [
+    {
+      "id": "fighting_style_marksmanship",
+      "type": "trait",
+      "name": "Fighting Style: Marksmanship",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "You gain a +2 bonus to attack rolls you make with ranged weapons.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "attackBonus",
+          "amount": 2,
+          "condition": {
+            "weaponType": "ranged"
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🏹",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_defense",
+      "type": "trait",
+      "name": "Fighting Style: Defense",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "While you are wearing armor, you gain a +1 bonus to AC.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "acBonus",
+          "amount": 1,
+          "condition": {
+            "wearingArmor": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🛡️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_dueling",
+      "type": "trait",
+      "name": "Fighting Style: Dueling",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "damageBonus",
+          "amount": 2,
+          "condition": {
+            "weaponSlot": "mainHand",
+            "weaponType": "melee",
+            "offHandEmpty": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "⚔️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_great_weapon_fighting",
+      "type": "trait",
+      "name": "Fighting Style: Great Weapon Fighting",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon that you are wielding with two hands, you can reroll the die and must use the new roll. The weapon must have the Two-Handed or Versatile property for you to gain this benefit.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "rerollDamage",
+          "rerollOn": [
+            1,
+            2
+          ],
+          "condition": {
+            "weaponProperties": [
+              "twoHanded",
+              "versatile"
+            ],
+            "wieldingTwoHanded": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🗡️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_protection",
+      "type": "trait",
+      "name": "Fighting Style: Protection",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "reactionAbility",
+          "trigger": "allyAttackedNearby",
+          "effect": "disadvantageOnAttack",
+          "range": 5,
+          "condition": {
+            "wieldingShield": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🛡️",
+        "message": "{characterName} intercepts the attack!"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_two_weapon_fighting",
+      "type": "trait",
+      "name": "Fighting Style: Two-Weapon Fighting",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "When you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "damageBonus",
+          "amount": "@abilityModifier",
+          "condition": {
+            "weaponSlot": "offHand",
+            "twoWeaponFighting": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "⚔️⚔️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_thrown_weapon_fighting",
+      "type": "trait",
+      "name": "Fighting Style: Thrown Weapon Fighting",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "You can draw a weapon that has the Thrown property as part of the attack you make with the weapon. In addition, when you hit with a ranged attack using a thrown weapon, you gain a +2 bonus to the damage roll.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "damageBonus",
+          "amount": 2,
+          "condition": {
+            "weaponProperties": [
+              "thrown"
+            ],
+            "attackType": "ranged"
+          }
+        },
+        {
+          "type": "freeObjectInteraction",
+          "action": "drawWeapon",
+          "condition": {
+            "weaponProperties": [
+              "thrown"
+            ]
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🎯",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_unarmed_fighting",
+      "type": "trait",
+      "name": "Fighting Style: Unarmed Fighting",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "Your unarmed strikes can deal bludgeoning damage equal to 1d6 + your Strength modifier on a hit. If you aren't wielding any weapons or a shield when you make the attack roll, the d6 becomes a d8.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "unarmedDamage",
+          "damageWhenArmed": "1d6",
+          "damageWhenUnarmed": "1d8"
+        }
+      ],
+      "visualFeedback": {
+        "icon": "👊",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_blind_fighting",
+      "type": "trait",
+      "name": "Fighting Style: Blind Fighting",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "You have blindsight with a range of 10 feet. Within that range, you can effectively see anything that isn't behind total cover, even if you're blinded or in darkness. Moreover, you can see an invisible creature within that range, unless the creature successfully hides from you.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "sense",
+          "senseType": "blindsight",
+          "range": 10
+        }
+      ],
+      "visualFeedback": {
+        "icon": "👁️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_interception",
+      "type": "trait",
+      "name": "Fighting Style: Interception",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "When a creature you can see hits a target, other than you, within 5 feet of you with an attack, you can use your reaction to reduce the damage the target takes by 1d10 + your proficiency bonus (to a minimum of 0 damage). You must be wielding a shield or a simple or martial weapon to use this reaction.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "reactionAbility",
+          "trigger": "allyHitNearby",
+          "effect": "reduceDamage",
+          "formula": "1d10 + @proficiencyBonus",
+          "range": 5,
+          "condition": {
+            "wieldingWeaponOrShield": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🛡️",
+        "message": "{characterName} intercepts the blow!"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fighting_style_mariner",
+      "type": "trait",
+      "name": "Fighting Style: Mariner",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "category": "fightingStyle",
+      "description": "As long as you are not wearing heavy armor or wielding a shield, you have a swimming speed equal to your walking speed, can swim through deep water terrain, and you gain a +1 bonus to AC.",
+      "passive": true,
+      "permanent": true,
+      "effects": [
+        {
+          "type": "acBonus",
+          "amount": 1,
+          "condition": {
+            "noHeavyArmor": true,
+            "noShield": true
+          }
+        },
+        {
+          "type": "movement",
+          "movementType": "swim",
+          "speed": "@walkingSpeed",
+          "condition": {
+            "noHeavyArmor": true,
+            "noShield": true
+          }
+        },
+        {
+          "type": "terrainTraversal",
+          "terrain": "deepWater",
+          "canTraverse": true,
+          "condition": {
+            "noHeavyArmor": true,
+            "noShield": true
+          }
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🌊",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ]
+}

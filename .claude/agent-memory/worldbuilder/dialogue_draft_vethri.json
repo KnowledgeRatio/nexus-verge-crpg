@@ -1,0 +1,611 @@
+{
+  "greetingsByCulture": {
+    "vethri": {
+      "innkeeper": {
+        "friendly": {
+          "hostile": [
+            "No room. Not for you.",
+            "Door's that way."
+          ],
+          "cold": [
+            "Bed's full price. No haggling.",
+            "Eat quiet. Leave quiet."
+          ],
+          "guarded": [
+            "There's a bed. If you need it.",
+            "You're loud. Settle down or go."
+          ],
+          "neutral": [
+            "One bed left.",
+            "Food's cold. Eat it anyway."
+          ],
+          "warm": [
+            "Your bed's the one by the wall. Quieter there.",
+            "{name}. Sit. I'll bring food."
+          ],
+          "affable": [
+            "I kept your spot.",
+            "Ate yet? Sit first."
+          ],
+          "devoted": [
+            "Don't pay for the bed tonight.",
+            "Storm's coming. Stay the week. No charge."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Not serving you.",
+            "Out."
+          ],
+          "cold": [
+            "What.",
+            "Coin first."
+          ],
+          "guarded": [
+            "Bed's there. Don't touch the rest.",
+            "Quiet house. Keep it that way."
+          ],
+          "neutral": [
+            "Bed or food.",
+            "There's space."
+          ],
+          "warm": [
+            "Bed's open. Take it.",
+            "{name}'s back."
+          ],
+          "affable": [
+            "Saved the dry corner for you.",
+            "Sit. I'll bring it."
+          ],
+          "devoted": [
+            "No charge tonight.",
+            "You eat first. Always."
+          ]
+        },
+        "mysterious": {
+          "hostile": [
+            "Felt you coming. Don't like it.",
+            "Leave before I decide something."
+          ],
+          "cold": [
+            "You carry something. Not asking what.",
+            "Sit far from the door."
+          ],
+          "guarded": [
+            "Knew you'd come tonight.",
+            "Bed's there. Watch the candle — it gutters when something's near."
+          ],
+          "neutral": [
+            "Expected you.",
+            "Bed's by the window. You'll want to see it."
+          ],
+          "warm": [
+            "The candle's steady when you're here.",
+            "{name}. Sit close to the fire."
+          ],
+          "affable": [
+            "I poured before you walked in.",
+            "Your room never gets cold. Noticed that."
+          ],
+          "devoted": [
+            "The rift's been quiet since you started coming.",
+            "Stay. The house is calmer with you in it."
+          ]
+        }
+      },
+      "patron": {
+        "friendly": {
+          "hostile": [
+            "Move.",
+            "Not sitting near you."
+          ],
+          "cold": [
+            "Table's taken.",
+            "Drink elsewhere."
+          ],
+          "guarded": [
+            "There's a stool. If you're quiet.",
+            "You can sit. Don't talk much."
+          ],
+          "neutral": [
+            "Sit if you want.",
+            "Ale's flat tonight."
+          ],
+          "warm": [
+            "Sit here. Less drafty.",
+            "{name}. Good timing."
+          ],
+          "affable": [
+            "Saved you the stool.",
+            "You drink slow. I respect that."
+          ],
+          "devoted": [
+            "Tell me what you need. I'll get it.",
+            "This one's mine. Sit."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Not now.",
+            "Go."
+          ],
+          "cold": [
+            "Don't.",
+            "Sit somewhere else."
+          ],
+          "guarded": [
+            "Fine. Sit.",
+            "Don't ask questions."
+          ],
+          "neutral": [
+            "Stool's free.",
+            "Suit yourself."
+          ],
+          "warm": [
+            "Sit. Won't talk your ear off.",
+            "{name}'s alright."
+          ],
+          "affable": [
+            "You can stay.",
+            "Bought your drink. Don't make it strange."
+          ],
+          "devoted": [
+            "Sit where I can see you.",
+            "Lost count of what I owe you."
+          ]
+        },
+        "jovial": {
+          "hostile": [
+            "Not funny anymore. Go.",
+            "Don't sit near me."
+          ],
+          "cold": [
+            "Save it.",
+            "Not in the mood."
+          ],
+          "guarded": [
+            "Sit. I'll try not to talk too much.",
+            "You're new. Quiet's better."
+          ],
+          "neutral": [
+            "Pull up a stool.",
+            "Quiet night. Good night."
+          ],
+          "warm": [
+            "Good seat's open. Take it.",
+            "{name}. Sit before it's gone."
+          ],
+          "affable": [
+            "Brought an extra cup. Figured you'd come.",
+            "Sit. I'll stop talking eventually."
+          ],
+          "devoted": [
+            "Saved the best seat. All night.",
+            "You make the quiet easier."
+          ]
+        },
+        "nervous": {
+          "hostile": [
+            "Stay back.",
+            "Please go."
+          ],
+          "cold": [
+            "I'll move.",
+            "Didn't see you there."
+          ],
+          "guarded": [
+            "You can sit. Just— quiet, please.",
+            "Is something wrong? You're standing oddly."
+          ],
+          "neutral": [
+            "There's room.",
+            "Sit if you like."
+          ],
+          "warm": [
+            "Sit near me. Feels steadier.",
+            "{name}. Good. You're here."
+          ],
+          "affable": [
+            "Easier when you're around.",
+            "Sit close. Please."
+          ],
+          "devoted": [
+            "Don't leave yet.",
+            "I sleep better when you're in the house."
+          ]
+        }
+      },
+      "merchant": {
+        "friendly": {
+          "hostile": [
+            "Not selling to you.",
+            "Go."
+          ],
+          "cold": [
+            "Coin up front.",
+            "Look. Don't touch."
+          ],
+          "guarded": [
+            "Goods are there. Ask before you handle them.",
+            "What do you need."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Goods are sorted by use, not price."
+          ],
+          "warm": [
+            "{name}. Good stock today.",
+            "Took your size into account this trip."
+          ],
+          "affable": [
+            "Set something aside for you.",
+            "Came in yesterday. Thought of you."
+          ],
+          "devoted": [
+            "Take it. Pay when you can.",
+            "Whatever's left is yours first."
+          ]
+        },
+        "greedy": {
+          "hostile": [
+            "Your coin's no good here.",
+            "Not for you. At any price."
+          ],
+          "cold": [
+            "Price doubles for you.",
+            "Coin first. Then we talk."
+          ],
+          "guarded": [
+            "Browse. Don't waste my time.",
+            "Everything's for sale. Nothing's cheap."
+          ],
+          "neutral": [
+            "What's it worth to you.",
+            "Name a price. I'll laugh, then we'll negotiate."
+          ],
+          "warm": [
+            "{name}. Fair price, for you.",
+            "I'll round down. This once."
+          ],
+          "affable": [
+            "Held the good piece back. For you.",
+            "Discount's real this time."
+          ],
+          "devoted": [
+            "Take it. I don't need the coin from you.",
+            "You've paid enough already."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave my stall.",
+            "Not welcome here."
+          ],
+          "cold": [
+            "State it plainly.",
+            "Quick. I have other business."
+          ],
+          "guarded": [
+            "What do you need.",
+            "No haggling. Price stands."
+          ],
+          "neutral": [
+            "Goods are listed. Read them.",
+            "What's the need."
+          ],
+          "warm": [
+            "{name}. Reliable customer.",
+            "Good stock for you today."
+          ],
+          "affable": [
+            "Held this back. Knew you'd want it.",
+            "You don't waste my time. Rare."
+          ],
+          "devoted": [
+            "Whatever you need, it's yours.",
+            "You've earned more than I can give back."
+          ]
+        }
+      },
+      "blacksmith": {
+        "friendly": {
+          "hostile": [
+            "Not forging for you.",
+            "Fire's not for your business."
+          ],
+          "cold": [
+            "What's broken.",
+            "Quick. The forge doesn't wait."
+          ],
+          "guarded": [
+            "What do you need fixed.",
+            "Show me the damage."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Steel's ready when you are."
+          ],
+          "warm": [
+            "{name}. Good edge on this one.",
+            "Made something. Thought it'd suit you."
+          ],
+          "affable": [
+            "Set this aside for you.",
+            "Better steel than usual. For you."
+          ],
+          "devoted": [
+            "No charge. Take it.",
+            "Made this with you in mind. Keep it."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Out of my forge.",
+            "Not for you."
+          ],
+          "cold": [
+            "What.",
+            "Quick. I'm working."
+          ],
+          "guarded": [
+            "What's broken.",
+            "Show me. Don't explain."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Steel's there. Take your pick."
+          ],
+          "warm": [
+            "Fine. You can interrupt me.",
+            "{name}. Good piece, this one."
+          ],
+          "affable": [
+            "Made this thinking of you.",
+            "Don't tell anyone I like you."
+          ],
+          "devoted": [
+            "Take it. No charge.",
+            "Best work I've done. Yours."
+          ]
+        },
+        "proud": {
+          "hostile": [
+            "Not for unworthy hands.",
+            "My work isn't for you."
+          ],
+          "cold": [
+            "Hands off until you've earned it.",
+            "Quality costs. You haven't shown you deserve it."
+          ],
+          "guarded": [
+            "Look. Don't touch without asking.",
+            "What's the need."
+          ],
+          "neutral": [
+            "Every piece I make holds. What do you need.",
+            "You'll find no better steel."
+          ],
+          "warm": [
+            "{name}. You have an eye for the work.",
+            "This piece is sound. I stand behind it."
+          ],
+          "affable": [
+            "Best thing I've forged this season. For you.",
+            "Few deserve this work. You do."
+          ],
+          "devoted": [
+            "This is my finest. It's yours.",
+            "When this blade is spoken of, your name will be too."
+          ]
+        }
+      },
+      "leader": {
+        "wise": {
+          "hostile": [
+            "Don't come here again.",
+            "Nothing left to say to you."
+          ],
+          "cold": [
+            "State it.",
+            "Speak. I'm listening, not trusting."
+          ],
+          "guarded": [
+            "What brings you.",
+            "Speak plainly. We don't have time for else."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Here. What's the matter."
+          ],
+          "warm": [
+            "{name}. You've been useful.",
+            "Sit. Tell me what's wrong."
+          ],
+          "affable": [
+            "Good you're here. We need clear heads.",
+            "Your judgment's sound. Speak."
+          ],
+          "devoted": [
+            "The rift's held longer since you came. Noted.",
+            "You should know — the boundary moved less this season. That's you."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave.",
+            "You've cost us enough."
+          ],
+          "cold": [
+            "Speak. Quickly.",
+            "I'm not inclined toward patience with you."
+          ],
+          "guarded": [
+            "State your business.",
+            "What is it."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Here. Speak."
+          ],
+          "warm": [
+            "{name}. You've earned a hearing.",
+            "Speak. I'll listen properly."
+          ],
+          "affable": [
+            "You're reliable. Rare.",
+            "Say what you need. I'll act on it."
+          ],
+          "devoted": [
+            "I'd put this place in your hands, if asked.",
+            "You hold weight here. More than most."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "You're not welcome.",
+            "Go."
+          ],
+          "cold": [
+            "Speak. I owe you that much.",
+            "Quickly. Trust isn't free."
+          ],
+          "guarded": [
+            "What is it.",
+            "Speak plainly."
+          ],
+          "neutral": [
+            "What do you need.",
+            "Here. Say it."
+          ],
+          "warm": [
+            "{name}. Your word has held before.",
+            "Speak. I'll act on what you say."
+          ],
+          "affable": [
+            "Few keep their word like you do.",
+            "Whatever it is, I'll hear it fully."
+          ],
+          "devoted": [
+            "You've never asked for more than was needed. That's rare.",
+            "If the boundary takes this place, you'll know first. You've earned that."
+          ]
+        }
+      },
+      "guard": {
+        "friendly": {
+          "hostile": [
+            "Turn around.",
+            "Not past this point."
+          ],
+          "cold": [
+            "State your business.",
+            "Weapons down."
+          ],
+          "guarded": [
+            "Stay where I can see you.",
+            "What's your business here."
+          ],
+          "neutral": [
+            "Pass.",
+            "Watch the edge of camp after dark."
+          ],
+          "warm": [
+            "{name}. Go ahead.",
+            "Quiet tonight. Good."
+          ],
+          "affable": [
+            "You're fine. Go through.",
+            "Easier watch when you're around."
+          ],
+          "devoted": [
+            "I'd stand a line for you.",
+            "Tell me if you see something at the edge. I'll believe you first."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave. Now.",
+            "Don't make me say it twice."
+          ],
+          "cold": [
+            "State it.",
+            "Hands where I can see them."
+          ],
+          "guarded": [
+            "Business.",
+            "Stay in sight."
+          ],
+          "neutral": [
+            "Pass.",
+            "Nothing to report."
+          ],
+          "warm": [
+            "{name}. Go on.",
+            "No trouble from you. Noted."
+          ],
+          "affable": [
+            "Through. No need to ask twice.",
+            "You make the post easier."
+          ],
+          "devoted": [
+            "I'd hold this line for you specifically.",
+            "Tell the others. They listen when you speak."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "Not past me.",
+            "You've forfeited that right."
+          ],
+          "cold": [
+            "Speak your business.",
+            "I'm watching. Carefully."
+          ],
+          "guarded": [
+            "State it.",
+            "Stay visible."
+          ],
+          "neutral": [
+            "Pass.",
+            "Quiet at the edge tonight."
+          ],
+          "warm": [
+            "{name}. Through.",
+            "Good to have you near the line."
+          ],
+          "affable": [
+            "I trust your eyes out there. Go.",
+            "You've held the line as well as any of us."
+          ],
+          "devoted": [
+            "I'd give you my post if it mattered more than yours.",
+            "If the rift moves, you're the first I'd warn."
+          ]
+        }
+      },
+      "citizen": {
+        "friendly": {
+          "hostile": ["Leave me be.", "Not now."],
+          "cold": ["Nothing to say.", "Busy."],
+          "guarded": ["What do you need.", "Speak. I'm listening."],
+          "neutral": ["Here.", "What is it."],
+          "warm": ["{name}. Good to see you upright.", "You're back. Good."],
+          "affable": ["You're alright to have around.", "Glad it's you."],
+          "devoted": ["I tell people about you. Not often. But I do.", "You're the reason I still go outside."]
+        }
+      }
+    }
+  },
+  "flavorDialogueByCulture": {
+    "vethri": [
+      "The boundary moved again. Less than last season.",
+      "Waste nothing. Even words.",
+      "Nothing here is permanent. Act accordingly.",
+      "I don't ask why. The void doesn't either.",
+      "Quiet's not empty. Listen.",
+      "Said enough for today.",
+      "It comes whether we speak of it or not.",
+      "Most people fill silence. We don't need to."
+    ]
+  }
+}

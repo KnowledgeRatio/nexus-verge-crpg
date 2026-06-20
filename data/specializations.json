@@ -1,0 +1,33 @@
+{
+  "specializations": {
+    "description": "Subclass specializations for each calling, chosen at level 3 (Tier 2)",
+
+    "dedication": [
+      {
+        "id": "exemplar",
+        "name": "Exemplar",
+        "calling": "dedication",
+        "chosenAtLevel": 3,
+        "description": "Tactical weapon master. Spends Resolve on combat maneuvers for precision, control, and defense.",
+        "flavorText": "You have pushed beyond raw strength into something rarer — the ability to read a fight and shape it. Every exchange is an opportunity.",
+        "primaryAttributes": ["str", "dex"],
+        "playstyle": "Tactical weapon master with combat maneuvers for precision, control, and defense",
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "oath",
+        "name": "Oath",
+        "calling": "dedication",
+        "chosenAtLevel": 3,
+        "description": "Sworn warrior. Spends Resolve on Sworn Strike (burst radiant damage) or Aid the Vulnerable (healing and condition cleanse). Every smite point is healing you don't have.",
+        "flavorText": "The source of your power is not a god or a patron. It is the oath itself — a promise made and kept through blood and will.",
+        "primaryAttributes": ["str", "con"],
+        "playstyle": "Sworn warrior with burst damage or healing — every smite point is healing you don't have",
+        "campaignIds": ["core"]
+      }
+    ],
+
+    "scholar": [],
+    "wanderlust": []
+  }
+}

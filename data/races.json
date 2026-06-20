@@ -1,0 +1,184 @@
+{
+  "races": [
+    {
+      "id": "human",
+      "campaignIds": ["core"],
+      "npcWeight": 0.85,
+      "namePool": "human",
+      "name": "Varath",
+      "namePlural": "Varathi",
+      "nameOutsider": "Human",
+      "etymology": "Carriers of variance — arrived from dozens of source-worlds, no two migrations alike",
+      "description": "Medium build, warm-toned skin ranging from pale ochre to deep umber, hair worn practical — cropped, bound, or tucked under weather-beaten hoods. Dress is layered and improvised: base cloth underneath, repaired leather or scavenged plate over it, tools and supplies strapped where they fit. They arrived in the Verge from dozens of source-worlds, no two migrations alike, and it shows — no two Varath look like they came from the same place.",
+      "abilityScoreIncrease": {
+        "str": 1,
+        "dex": 1,
+        "con": 1,
+        "int": 1,
+        "wis": 1,
+        "cha": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common"],
+      "traits": [
+        {
+          "name": "Versatile",
+          "description": "You gain +1 to all ability scores, reflecting Varath adaptability."
+        }
+      ]
+    },
+    {
+      "id": "elf",
+      "campaignIds": ["core"],
+      "npcWeight": 0.10,
+      "namePool": "elf",
+      "skillProficiencies": ["perception"],
+      "name": "Aethari",
+      "namePlural": "Aethari",
+      "nameOutsider": "Elf",
+      "etymology": "Threshold-dwellers — those who remain at the edges where two worlds meet",
+      "description": "Tall and lean, with silver-grey or deep olive skin and eyes that carry a faint luminescence — pale gold, washed green, or near-white. Their features are angular and unhurried, their posture upright even under full load. They carry equipment as though it was designed for them specifically, often modified with materials that don't match the original construction — the mark of long time on the Verge.",
+      "abilityScoreIncrease": {
+        "dex": 2,
+        "int": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common", "elvish"],
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "You have proficiency in the Perception skill."
+        },
+        {
+          "name": "Fey Ancestry",
+          "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep."
+        },
+        {
+          "name": "Trance",
+          "description": "Aethari don't need to sleep. Instead, they meditate deeply for 4 hours a day (during a long rest, you only need 4 hours instead of 8)."
+        }
+      ]
+    },
+    {
+      "id": "dwarf",
+      "campaignIds": ["core"],
+      "npcWeight": 0.05,
+      "namePool": "dwarf",
+      "name": "Sethrim",
+      "namePlural": "Sethrim",
+      "nameOutsider": "Dwarf",
+      "etymology": "The stone-bound — those who hold their shape under pressure",
+      "description": "Short and broad-framed, with dense muscle and skin weathered to ash-brown or iron grey, heavily textured at the hands and jaw. Hair and beard are thick and kept functional — shaved back from the face or braided tight to avoid catching in machinery. Their gear tends toward the structural: heavy leather reinforced with stone-fitted plate, fastened with rivets rather than straps, built to take repetitive punishment.",
+      "abilityScoreIncrease": {
+        "con": 2,
+        "wis": 1
+      },
+      "size": "medium",
+      "speed": 25,
+      "languages": ["common", "dwarvish"],
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light."
+        },
+        {
+          "name": "Dwarven Resilience",
+          "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."
+        },
+        {
+          "name": "Dwarven Combat Training",
+          "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer."
+        },
+        {
+          "name": "Stonecunning",
+          "description": "Whenever you make an Intelligence check related to the origin of stonework, you are considered proficient and add double your proficiency bonus to the check."
+        }
+      ]
+    },
+    {
+      "id": "halfling",
+      "campaignIds": ["core"],
+      "npcWeight": 0,
+      "namePool": "halfling",
+      "name": "Orith",
+      "namePlural": "Orithen",
+      "nameOutsider": "Halfling",
+      "etymology": "The low path — those who move where others don't look",
+      "description": "Small and light-footed, with round faces, warm skin in sandy or russet tones, and dark curly hair worn loose or pinned back. They stand around three and a half feet and carry themselves low and level — centre of gravity dropped, weight forward. Their gear is compact and re-proportioned: scaled-down equipment lashed together from whatever the Verge made available, rarely matching in material or origin.",
+      "abilityScoreIncrease": {
+        "dex": 2,
+        "cha": 1
+      },
+      "size": "small",
+      "speed": 25,
+      "languages": ["common", "halfling"],
+      "traits": [
+        {
+          "name": "Lucky",
+          "description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll."
+        },
+        {
+          "name": "Brave",
+          "description": "You have advantage on saving throws against being frightened."
+        },
+        {
+          "name": "Orith Nimbleness",
+          "description": "You can move through the space of any creature that is of a size larger than yours."
+        }
+      ]
+    },
+    {
+      "id": "dragonborn",
+      "campaignIds": ["core"],
+      "npcWeight": 0,
+      "namePool": "dragonborn",
+      "name": "Kaeveth",
+      "namePlural": "Kaeveth",
+      "nameOutsider": "Dragonborn",
+      "etymology": "The line-kept — those who carried their lineage through the dimensional membrane intact",
+      "description": "Tall and heavily built, with scaled skin in deep jewel tones — charcoal black, tarnished copper, dark indigo, or bone white — that catches light differently depending on the angle. Their face is blunt-snouted and ridge-browed, eyes vertical-pupilled and reflective. They arrived in the Verge as intact lineage groups, and their equipment often reflects it: matched sets, deliberately maintained, standing out against the patchwork gear of everyone around them.",
+      "abilityScoreIncrease": {
+        "str": 2,
+        "cha": 1
+      },
+      "size": "medium",
+      "speed": 30,
+      "languages": ["common", "draconic"],
+      "dragonAncestry": {
+        "options": ["black", "blue", "brass", "bronze", "copper", "gold", "green", "red", "silver", "white"],
+        "damageTypes": {
+          "black": "acid",
+          "blue": "lightning",
+          "brass": "fire",
+          "bronze": "lightning",
+          "copper": "acid",
+          "gold": "fire",
+          "green": "poison",
+          "red": "fire",
+          "silver": "cold",
+          "white": "cold"
+        }
+      },
+      "traits": [
+        {
+          "name": "Draconic Ancestry",
+          "description": "You have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type."
+        },
+        {
+          "name": "Breath Weapon",
+          "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type. When you use your breath weapon, each creature in the area must make a saving throw (DC = 8 + your Constitution modifier + your proficiency bonus). A creature takes 2d6 damage on a failed save, and half as much on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level. After using your breath weapon, you can't use it again until you complete a short or long rest."
+        },
+        {
+          "name": "Damage Resistance",
+          "description": "You have resistance to the damage type associated with your draconic ancestry."
+        }
+      ]
+    }
+  ]
+}

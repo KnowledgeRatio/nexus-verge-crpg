@@ -1,0 +1,60 @@
+{
+  "description": "Nexus Verge cultures — defined by when someone arrived and why they stayed, not by race (see docs/world/PEOPLES.md). Used by NPCGenerator to pick a culture-flavoured name pool for procedural NPCs, independent of mechanical race in races.json. npcWeight reflects PEOPLES.md 'Writing Across Cultures': Kethara are the majority in any mixed settlement; Vaethori hold a significant administrative/military presence; Verathi, Delhari, and Sirathi are minorities; Vethri are rare outside void-adjacent settlements.",
+  "version": "1.0.0",
+  "cultures": [
+    {
+      "id": "kethara",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.45,
+      "namePool": "kethara",
+      "name": "Kethara",
+      "namePlural": "Kethara",
+      "etymology": "The Settled — 2-5 generations in, descendants of early arrivals who stopped being from somewhere else"
+    },
+    {
+      "id": "vaethori",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.20,
+      "namePool": "vaethori",
+      "name": "Vaethori",
+      "namePlural": "Vaethori",
+      "etymology": "Citizens of Vaethora — the colonial empire that built the roads, keeps the census, and maintains the forts"
+    },
+    {
+      "id": "verathi",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.10,
+      "namePool": "verathi",
+      "name": "Verathi",
+      "namePlural": "Verathi",
+      "etymology": "Old Blood — the oldest inhabitants, who didn't arrive but rather are the dimension"
+    },
+    {
+      "id": "delhari",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.10,
+      "namePool": "delhari",
+      "name": "Delhari",
+      "namePlural": "Delhari",
+      "etymology": "The Arrivals — here deliberately, in the last generation, for something specific"
+    },
+    {
+      "id": "sirathi",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.10,
+      "namePool": "sirathi",
+      "name": "Sirathi",
+      "namePlural": "Sirathi",
+      "etymology": "The Unmoored — void refugees whose home regions have been consumed or are going"
+    },
+    {
+      "id": "vethri",
+      "campaignIds": ["nexus-verge"],
+      "npcWeight": 0.05,
+      "namePool": "vethri",
+      "name": "Vethri",
+      "namePlural": "Vethri",
+      "etymology": "The Silent — settled at or near the Void boundary, calibrated rather than corrupted"
+    }
+  ]
+}

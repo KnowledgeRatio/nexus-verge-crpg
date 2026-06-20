@@ -1,0 +1,2334 @@
+{
+  "description": "Reusable skill challenge templates for contextual gameplay with balance tuning",
+  "version": "3.0.0",
+  "note": "Updated for new 13-skill system with comprehensive balance framework. Skills: athletics, acrobatics, sleightOfHand, endurance, academia, arcana, investigation, perception, cunning, creativity, empathy, influence, deception.",
+  "balancing": {
+    "skillValueMultipliers": {
+      "very_high": 0.5,
+      "high": 0.75,
+      "medium": 1,
+      "low": 1.25,
+      "very_low": 1.5
+    },
+    "baseRewardRates": {
+      "xpPerDCPoint": 10,
+      "goldPerDCPoint": 5,
+      "lootChancePerDC": 0.02
+    },
+    "levelScaling": {
+      "dcIncreasePerLevel": 0.5,
+      "xpMultiplierPerLevel": 0.15,
+      "goldMultiplierPerLevel": 0.2
+    },
+    "riskLevelModifiers": {
+      "low": 0.8,
+      "medium": 1,
+      "high": 1.3,
+      "deadly": 1.6
+    },
+    "criticalThresholds": {
+      "naturalCrit": true,
+      "marginCrit": true,
+      "critMargin": 10,
+      "critSuccessBonus": 0.5,
+      "critFailureSeverity": 1.5
+    },
+    "triggerFrequencyModifiers": {
+      "terrain_base": 0.1,
+      "quest_objective": 1,
+      "npc_dialogue": 0.3
+    }
+  },
+  "challenges": {
+    "trap_detect_disarm": {
+      "id": "trap_detect_disarm",
+      "name": "Trap Detection & Disarm",
+      "description": "You notice suspicious markings on the floor ahead...",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "medium",
+        "lootChanceMultiplier": 0.8
+      },
+      "terrainModifiers": { "dungeon": 2.0, "mountain": 0.0, "grassland": 0.0, "plains": 0.0, "road": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "detect",
+          "skill": "perception",
+          "baseDC": 13,
+          "passiveRoll": true,
+          "description": "Notice the trap before triggering it",
+          "onSuccess": {
+            "message": "You spot the trap mechanism!",
+            "nextStage": "disarm"
+          },
+          "onFailure": {
+            "message": "You trigger the trap!",
+            "damage": "2d6",
+            "damageType": "piercing"
+          }
+        },
+        {
+          "id": "disarm",
+          "skill": "sleightOfHand",
+          "baseDC": 14,
+          "description": "Carefully disable the trap mechanism",
+          "onSuccess": {
+            "message": "You successfully disarm the trap!",
+            "xp": 100,
+            "gold": 25,
+            "loot": {
+              "tableId": "trapDisarm_common",
+              "rolls": 1,
+              "chance": 0.8,
+              "rarityFilter": {
+                "1-4": [
+                  "common"
+                ],
+                "5-9": [
+                  "common",
+                  "uncommon"
+                ],
+                "10+": [
+                  "uncommon",
+                  "rare"
+                ]
+              }
+            }
+          },
+          "onFailure": {
+            "message": "Your hand slips...",
+            "damage": "1d6",
+            "damageType": "piercing"
+          }
+        }
+      ],
+      "criticalSuccess": {
+        "xp": 150,
+        "gold": 40,
+        "message": "Masterful work! You find a hidden compartment with treasure",
+        "loot": {
+          "tableId": "trapDisarm_uncommon",
+          "rolls": 2,
+          "chance": 1
+        }
+      },
+      "criticalFailure": {
+        "damage": "3d6",
+        "damageType": "piercing",
+        "message": "The trap was more deadly than you thought..."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "dungeon",
+            "ruins",
+            "cave"
+          ],
+          "terrain": [
+            "cave",
+            "ruins"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "explore",
+            "retrieve"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "locked_door": {
+      "id": "locked_door",
+      "name": "Locked Door",
+      "description": "A locked door bars your way. Choose how to get through - but choose wisely, failure means this door stays shut forever.",
+      "type": "choice",
+      "doorChallenge": true,
+      "canTurnBack": true,
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.6,
+        "cooldown": 0,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "options": [
+        {
+          "skill": "sleightOfHand",
+          "baseDC": 15,
+          "description": "Pick the lock with finesse",
+          "onSuccess": {
+            "message": "You pick the lock and the door swings open silently.",
+            "xp": 75,
+            "gold": 15
+          },
+          "onFailure": {
+            "message": "You break your lockpick. The lock remains intact."
+          }
+        },
+        {
+          "skill": "athletics",
+          "baseDC": 18,
+          "description": "Force the door open with brute strength",
+          "onSuccess": {
+            "message": "You smash the door open with brute force!",
+            "xp": 50,
+            "gold": 10,
+            "alertEnemies": true
+          },
+          "onFailure": {
+            "message": "You hurt your shoulder trying to break down the door.",
+            "damage": "1d4",
+            "damageType": "bludgeoning"
+          }
+        },
+        {
+          "skill": "arcana",
+          "baseDC": 14,
+          "description": "Detect and dispel magical lock",
+          "onSuccess": {
+            "message": "You identify a magical seal and dispel it!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "The magical seal resists your attempts."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "dungeon",
+            "ruins",
+            "town"
+          ],
+          "terrain": [
+            "cave",
+            "ruins"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "explore",
+            "infiltration",
+            "retrieve"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "bandit_negotiation": {
+      "id": "bandit_negotiation",
+      "name": "Bandit Negotiation",
+      "description": "Bandits block your path. Perhaps you can avoid bloodshed?",
+      "type": "choice",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.6,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "options": [
+        {
+          "skill": "influence",
+          "baseDC": 14,
+          "description": "Threaten or persuade the bandits to leave",
+          "onSuccess": {
+            "message": "The bandits are convinced by your words and flee!",
+            "xp": 150,
+            "gold": 30,
+            "consequences": [
+              "avoidCombat"
+            ]
+          },
+          "onFailure": {
+            "message": "The bandits reject your words and attack!",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit"
+            ]
+          }
+        },
+        {
+          "skill": "deception",
+          "baseDC": 15,
+          "description": "Trick the bandits with false information",
+          "onSuccess": {
+            "message": "The bandits believe your lie about approaching guards and flee!",
+            "xp": 150,
+            "gold": 30,
+            "consequences": [
+              "avoidCombat"
+            ]
+          },
+          "onFailure": {
+            "message": "The bandits see through your deception and attack!",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit"
+            ]
+          }
+        },
+        {
+          "skill": "empathy",
+          "baseDC": 16,
+          "description": "Appeal to their better nature",
+          "onSuccess": {
+            "message": "You connect with the bandits emotionally. They agree to leave peacefully!",
+            "xp": 175,
+            "gold": 35,
+            "consequences": [
+              "avoidCombat"
+            ]
+          },
+          "onFailure": {
+            "message": "Your emotional appeal falls flat and they attack!",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit"
+            ]
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "forest",
+            "grassland",
+            "hills"
+          ]
+        },
+        "social": {
+          "npcType": [
+            "hostile",
+            "bandit"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "cliff_climb": {
+      "id": "cliff_climb",
+      "name": "Cliff Climbing",
+      "description": "A towering cliff face blocks your path",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.25,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "mountain": 3.0, "hills": 2.0, "denseForest": 0.5, "grassland": 0.0, "plains": 0.0, "road": 0.0, "swamp": 0.0, "desert": 0.0, "beach": 0.0, "savanna": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "perception",
+          "baseDC": 12,
+          "description": "Spot the best climbing route",
+          "onSuccess": {
+            "message": "You identify handholds and a safe path.",
+            "nextStage": "climb",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You begin climbing without a clear plan.",
+            "nextStage": "climb"
+          }
+        },
+        {
+          "id": "climb",
+          "skill": "athletics",
+          "baseDC": 15,
+          "description": "Climb the cliff face",
+          "onSuccess": {
+            "message": "You pull yourself over the lip. The valley falls away below you.",
+            "xp": 120,
+            "gold": 30,
+            "consequences": [
+              "unlockPath"
+            ]
+          },
+          "onFailure": {
+            "message": "Your boot finds nothing. Three seconds of silence, then stone.",
+            "damage": "3d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "mountains",
+            "hills",
+            "cliff"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "hidden_treasure": {
+      "id": "hidden_treasure",
+      "name": "Hidden Treasure Search",
+      "description": "This chamber looks like it might hide secrets...",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.12,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "denseForest": 2.0, "forest": 1.5, "dungeon": 2.0, "road": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "investigation",
+          "skill": "investigation",
+          "baseDC": 13,
+          "description": "Search the area methodically",
+          "onSuccess": {
+            "message": "You find signs of a hidden compartment!",
+            "nextStage": "retrieve"
+          },
+          "onFailure": {
+            "message": "You find nothing of interest."
+          }
+        },
+        {
+          "id": "retrieve",
+          "skill": "sleightOfHand",
+          "baseDC": 12,
+          "description": "Open the hidden compartment",
+          "onSuccess": {
+            "message": "Your fingers find the latch. Inside: worth the trouble.",
+            "xp": 75,
+            "gold": 20,
+            "loot": {
+              "tableId": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.9
+            }
+          },
+          "onFailure": {
+            "message": "The mechanism is seized. Whatever's inside stays inside."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "dungeon",
+            "ruins",
+            "cave"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "retrieve",
+            "explore"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "calm_wild_beast": {
+      "id": "calm_wild_beast",
+      "name": "Calm Wild Beast",
+      "description": "A wild animal blocks your path, snarling aggressively",
+      "type": "single",
+      "skill": "empathy",
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 0.8,
+        "triggerFrequency": 0.18,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "jungle": 2.5, "forest": 2.0, "swamp": 1.5, "grassland": 1.5, "road": 0.0, "dungeon": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
+      "onSuccess": {
+        "message": "The animal reads you. Something in your stillness tells it you're not prey. It moves off.",
+        "xp": 80,
+        "gold": 15,
+        "consequences": [
+          "avoidCombat"
+        ]
+      },
+      "onFailure": {
+        "message": "The animal remains hostile and attacks!",
+        "consequences": [
+          "initiateCombat"
+        ],
+        "enemyTypes": [
+          "wolf"
+        ]
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "forest",
+            "jungle",
+            "grassland",
+            "mountains"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "sneak_past_guards": {
+      "id": "sneak_past_guards",
+      "name": "Sneak Past Guards",
+      "description": "Guards patrol the corridor ahead...",
+      "type": "choice",
+      "balance": {
+        "skillValue": "very_high",
+        "rewardMultiplier": 0.5,
+        "triggerFrequency": 0.1,
+        "cooldown": 600000,
+        "riskLevel": "high",
+        "lootChanceMultiplier": 0.3
+      },
+      "terrainModifiers": { "denseForest": 2.0, "forest": 1.5, "sanctuary": 0.0, "beach": 0.0, "swamp": 0.0, "desert": 0.0 },
+      "options": [
+        {
+          "skill": "acrobatics",
+          "baseDC": 14,
+          "description": "Move silently past the guards",
+          "onSuccess": {
+            "message": "You slip past the guards unnoticed.",
+            "xp": 50,
+            "gold": 15,
+            "consequences": [
+              "avoidCombat"
+            ],
+            "loot": {
+              "tableId": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.3
+            }
+          },
+          "onFailure": {
+            "message": "Your heel finds a loose stone. A guard turns.",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit",
+              "orc",
+              "skeleton"
+            ]
+          }
+        },
+        {
+          "skill": "cunning",
+          "baseDC": 13,
+          "description": "Hide in the shadows and wait for an opening",
+          "onSuccess": {
+            "message": "You blend into the shadows and slip past when they're not looking.",
+            "xp": 50,
+            "gold": 15,
+            "consequences": [
+              "avoidCombat"
+            ],
+            "loot": {
+              "tableId": "hiddenCache_common",
+              "rolls": 1,
+              "chance": 0.3
+            }
+          },
+          "onFailure": {
+            "message": "A guard spots you hiding!",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit",
+              "orc",
+              "skeleton"
+            ]
+          }
+        },
+        {
+          "skill": "influence",
+          "baseDC": 12,
+          "description": "Bluff your way past with confidence",
+          "onSuccess": {
+            "message": "You walk past confidently and the guards don't question you.",
+            "xp": 60,
+            "gold": 18,
+            "consequences": [
+              "avoidCombat"
+            ]
+          },
+          "onFailure": {
+            "message": "The guards challenge you and attack!",
+            "consequences": [
+              "initiateCombat"
+            ],
+            "enemyTypes": [
+              "bandit",
+              "orc",
+              "skeleton"
+            ]
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "guardpost",
+            "town"
+          ],
+          "terrain": [
+            "town",
+            "residential"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "infiltration",
+            "stealth"
+          ]
+        },
+        "social": {
+          "npcType": [
+            "guard"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "arcane_puzzle": {
+      "id": "arcane_puzzle",
+      "name": "Arcane Puzzle",
+      "description": "Ancient runes glow faintly on the door ahead",
+      "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "dungeon": 2.0, "grassland": 0.0, "plains": 0.0, "forest": 0.0, "swamp": 0.0, "desert": 0.0, "mountain": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0, "hills": 0.0, "tundra": 0.0, "jungle": 0.0 },
+      "options": [
+        {
+          "skill": "arcana",
+          "baseDC": 16,
+          "description": "Use magical knowledge to solve the puzzle",
+          "onSuccess": {
+            "message": "You understand the magical principles and solve the puzzle!",
+            "xp": 120,
+            "gold": 25,
+            "loot": {
+              "tableId": "arcaneReward_uncommon",
+              "rolls": 1,
+              "chance": 0.5
+            }
+          },
+          "onFailure": {
+            "message": "The puzzle remains unsolved."
+          }
+        },
+        {
+          "skill": "investigation",
+          "baseDC": 18,
+          "description": "Examine the puzzle for patterns",
+          "onSuccess": {
+            "message": "Through careful observation, you solve the puzzle!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "The puzzle is too complex to understand."
+          }
+        },
+        {
+          "skill": "creativity",
+          "baseDC": 17,
+          "description": "Think outside the box for an unconventional solution",
+          "onSuccess": {
+            "message": "Your creative approach reveals a hidden solution!",
+            "xp": 110,
+            "gold": 22
+          },
+          "onFailure": {
+            "message": "Your unconventional approach doesn't work."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "dungeon",
+            "ruins",
+            "temple"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "explore",
+            "investigate"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "ancient_text": {
+      "id": "ancient_text",
+      "name": "Decipher Ancient Text",
+      "description": "Ancient writing covers the stone tablet",
+      "type": "single",
+      "skill": "academia",
+      "baseDC": 15,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.12,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "dungeon": 2.0, "grassland": 0.0, "plains": 0.0, "forest": 0.0, "swamp": 0.0, "desert": 0.0, "mountain": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0, "hills": 0.0, "tundra": 0.0, "jungle": 0.0 },
+      "onSuccess": {
+        "message": "You translate the ancient text and gain valuable information!",
+        "xp": 125,
+        "gold": 25,
+        "consequences": [
+          "revealInformation",
+          "questClue"
+        ],
+        "loot": {
+          "tableId": "sc_lore_reward",
+          "rolls": 1,
+          "chance": 0.4
+        }
+      },
+      "onFailure": {
+        "message": "The text is too damaged or complex to understand."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "ruins",
+            "temple",
+            "dungeon"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "investigate"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "stabilize_wounded": {
+      "id": "stabilize_wounded",
+      "name": "Stabilize Wounded NPC",
+      "description": "A wounded person lies before you, bleeding heavily",
+      "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.1,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "options": [
+        {
+          "skill": "academia",
+          "baseDC": 13,
+          "description": "Apply scholarly medical knowledge",
+          "onSuccess": {
+            "message": "You stabilize the wounded person using your medical knowledge!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "Despite your efforts, the person's condition worsens."
+          }
+        },
+        {
+          "skill": "investigation",
+          "baseDC": 14,
+          "description": "Examine the wounds and apply practical first aid",
+          "onSuccess": {
+            "message": "You identify the injury and treat it effectively!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You cannot determine how to help them."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "quest": {
+          "objectiveType": [
+            "rescue"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "track_creature": {
+      "id": "track_creature",
+      "name": "Track Creature",
+      "description": "You notice animal tracks and signs of passage through the area",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "very_high",
+        "rewardMultiplier": 0.5,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "jungle": 2.5, "forest": 2.0, "grassland": 1.5, "hills": 1.5, "road": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0 },
+      "stages": [
+        {
+          "id": "find_tracks",
+          "skill": "perception",
+          "baseDC": 13,
+          "description": "Examine the tracks more closely",
+          "onSuccess": {
+            "message": "You identify fresh tracks leading away from here. The creature passed through recently.",
+            "nextStage": "follow"
+          },
+          "onFailure": {
+            "message": "The tracks are too faint or confused to follow."
+          }
+        },
+        {
+          "id": "follow",
+          "skill": "investigation",
+          "baseDC": 14,
+          "description": "Follow the trail to discover where it leads",
+          "onSuccess": {
+            "message": "The signs are everywhere once you know them: a pressed reed, a turned stone, a blood-fleck on bark. You have it.",
+            "xp": 60,
+            "gold": 15,
+            "consequences": [
+              "revealLocation"
+            ]
+          },
+          "onFailure": {
+            "message": "You lose the trail in the undergrowth."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "forest",
+            "grassland",
+            "mountains",
+            "desert"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "hunt",
+            "track"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "detect_lie": {
+      "id": "detect_lie",
+      "name": "Detect Deception",
+      "description": "Something about their story doesn't add up...",
+      "type": "contested",
+      "playerSkill": "empathy",
+      "opposingSkill": "deception",
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.2,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "onSuccess": {
+        "message": "You sense the NPC is being deceptive!",
+        "xp": 75,
+        "gold": 15,
+        "consequences": [
+          "revealInformation"
+        ]
+      },
+      "onFailure": {
+        "message": "You believe the NPC is telling the truth."
+      },
+      "contextualTriggers": {
+        "social": {
+          "npcType": [
+            "merchant",
+            "hostile",
+            "stranger"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "investigate",
+            "social"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "creative_distraction": {
+      "id": "creative_distraction",
+      "name": "Create Distraction",
+      "description": "You need to divert attention away from your true goal",
+      "type": "single",
+      "skill": "creativity",
+      "baseDC": 13,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "onSuccess": {
+        "message": "Your clever distraction works perfectly, creating an opening!",
+        "xp": 125,
+        "gold": 25
+      },
+      "onFailure": {
+        "message": "Your distraction attempt fails to fool anyone."
+      },
+      "contextualTriggers": {
+        "social": {
+          "npcType": [
+            "guard"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "infiltration",
+            "stealth"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "holy_ritual": {
+      "id": "holy_ritual",
+      "name": "Perform Holy Ritual",
+      "description": "The sacred site calls for blessing",
+      "type": "single",
+      "skill": "academia",
+      "baseDC": 14,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.08,
+        "cooldown": 600000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
+      "onSuccess": {
+        "message": "You successfully perform the ritual. The area is blessed!",
+        "xp": 150,
+        "gold": 30,
+        "loot": {
+          "tableId": "sc_ritual_reward",
+          "rolls": 1,
+          "chance": 0.35
+        }
+      },
+      "onFailure": {
+        "message": "The ritual fails to take effect."
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "featureType": [
+            "temple",
+            "shrine"
+          ]
+        },
+        "quest": {
+          "objectiveType": [
+            "ritual",
+            "religious"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "narrow_ledge": {
+      "id": "narrow_ledge",
+      "name": "Narrow Ledge",
+      "description": "A narrow ledge is the only way forward",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.18,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "mountain": 3.0, "hills": 1.5, "denseForest": 1.5, "grassland": 0.0, "plains": 0.0, "road": 0.0, "swamp": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Read the ledge before you commit",
+          "onSuccess": {
+            "message": "The ledge is narrow — six inches, maybe eight. You note where to step.",
+            "nextStage": "cross",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You approach without a plan.",
+            "nextStage": "cross"
+          }
+        },
+        {
+          "id": "cross",
+          "skill": "acrobatics",
+          "baseDC": 13,
+          "description": "Cross the narrow ledge",
+          "onSuccess": {
+            "message": "You make it across. Don't look down was good advice.",
+            "xp": 75,
+            "gold": 15
+          },
+          "onFailure": {
+            "message": "The ledge crumbles under your foot. Stone and then air.",
+            "damage": "2d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "mountains",
+            "cliff",
+            "cave"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "endure_harsh_environment": {
+      "id": "endure_harsh_environment",
+      "name": "Endure Harsh Environment",
+      "description": "The extreme conditions test your limits",
+      "type": "sequential",
+      "canTurnBack": false,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.2,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "swamp": 3.0, "jungle": 3.0, "desert": 2.5, "tundra": 2.0, "snowyPlains": 2.0, "road": 0.0, "grassland": 0.0, "plains": 0.0, "sanctuary": 0.0, "farmland": 0.0, "beach": 0.0 },
+      "stages": [
+        {
+          "id": "read",
+          "skill": "cunning",
+          "baseDC": 11,
+          "passiveRoll": true,
+          "description": "Read the terrain for what's coming",
+          "onSuccess": {
+            "message": "The ground tells a story: scorched rock, dead insects, cracked mud. You know what this means.",
+            "nextStage": "endure",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The conditions build without warning.",
+            "nextStage": "endure"
+          }
+        },
+        {
+          "id": "endure",
+          "skill": "endurance",
+          "baseDC": 14,
+          "description": "Endure the harsh conditions",
+          "onSuccess": {
+            "message": "You push through the harsh conditions!",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The conditions overwhelm you.",
+            "damage": "2d4",
+            "damageType": "environmental"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "desert",
+            "tundra",
+            "mountains"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "boulder_push": {
+      "id": "boulder_push",
+      "name": "Move Heavy Boulder",
+      "description": "A massive boulder blocks your path",
+      "type": "single",
+      "skill": "athletics",
+      "baseDC": 16,
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.25,
+        "cooldown": 300000,
+        "riskLevel": "low",
+        "lootChanceMultiplier": 1.5
+      },
+      "terrainModifiers": { "mountain": 1.5, "hills": 1.0, "desertHills": 0.8 },
+      "onSuccess": {
+        "message": "The boulder grinds aside. Behind it: packed earth, and beneath that, something worth hiding.",
+        "xp": 120,
+        "gold": 30,
+        "consequences": [
+          "unlockPath",
+          "revealFeature"
+        ],
+        "loot": {
+          "tableId": "boulderReward_low",
+          "rolls": 2,
+          "chance": 1
+        }
+      },
+      "onFailure": {
+        "message": "You strain your muscles but the boulder won't budge.",
+        "damage": "1d4",
+        "damageType": "bludgeoning"
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "mountains",
+            "hills",
+            "ruins"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "mountain_climb": {
+      "id": "mountain_climb",
+      "name": "Mountain Climbing",
+      "description": "Steep mountain slopes require careful navigation",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.15,
+        "cooldown": 300000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "mountain": 1.5 },
+      "stages": [
+        {
+          "id": "find_route",
+          "skill": "perception",
+          "baseDC": 12,
+          "description": "Find the safest climbing route",
+          "onSuccess": {
+            "message": "You identify a manageable path up the mountain!",
+            "nextStage": "climb"
+          },
+          "onFailure": {
+            "message": "You proceed without a clear route.",
+            "nextStage": "climb",
+            "climbDCModifier": 3
+          }
+        },
+        {
+          "id": "climb",
+          "skill": "athletics",
+          "baseDC": 15,
+          "description": "Scale the steep slope",
+          "onSuccess": {
+            "message": "You successfully climb the mountain!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You slip and fall!",
+            "damage": "2d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "mountains",
+            "mountainPeak"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "heat_endurance": {
+      "id": "heat_endurance",
+      "name": "Desert Heat Wave",
+      "description": "The scorching sun beats down relentlessly",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.18,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "desert": 2.5, "desertHills": 2.0, "savanna": 1.5 },
+      "stages": [
+        {
+          "id": "notice",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Notice the heat before it becomes something else",
+          "onSuccess": {
+            "message": "The air above the sand shimmers. You slow down, drink, cover exposed skin. Not yet, but coming.",
+            "nextStage": "endure",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The heat builds without warning.",
+            "nextStage": "endure"
+          }
+        },
+        {
+          "id": "endure",
+          "skill": "endurance",
+          "baseDC": 14,
+          "description": "Endure the scorching heat",
+          "onSuccess": {
+            "message": "You endure the extreme heat and press onward!",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The heat overwhelms you.",
+            "damage": "1d6",
+            "damageType": "fire",
+            "condition": "exhaustion_1"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "desert"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "swamp_navigation": {
+      "id": "swamp_navigation",
+      "name": "Navigate Treacherous Swamp",
+      "description": "The murky swamp conceals dangerous ground",
+      "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.12,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "swamp": 3.0 },
+      "options": [
+        {
+          "skill": "cunning",
+          "baseDC": 13,
+          "description": "Probe ahead carefully with a stick",
+          "onSuccess": {
+            "message": "You identify safe paths through the swamp!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You step into quicksand!",
+            "damage": "1d6",
+            "damageType": "environmental"
+          }
+        },
+        {
+          "skill": "acrobatics",
+          "baseDC": 15,
+          "description": "Hop between solid ground patches",
+          "onSuccess": {
+            "message": "You nimbly navigate the swamp!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You lose your footing and sink!",
+            "damage": "1d6",
+            "damageType": "environmental"
+          }
+        },
+        {
+          "skill": "academia",
+          "baseDC": 12,
+          "description": "Use knowledge of wetlands to identify safe paths",
+          "onSuccess": {
+            "message": "Your knowledge guides you safely through!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "The swamp is more treacherous than expected.",
+            "damage": "1d4",
+            "damageType": "environmental"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "swamp",
+            "swampland"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "dense_undergrowth": {
+      "id": "dense_undergrowth",
+      "name": "Dense Jungle Undergrowth",
+      "description": "Thick vines and vegetation block your path",
+      "type": "single",
+      "skill": "cunning",
+      "baseDC": 12,
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.1,
+        "cooldown": 300000,
+        "riskLevel": "low"
+      },
+      "terrainModifiers": { "jungle": 2.5, "denseForest": 1.5, "snowForest": 0.5 },
+      "onSuccess": {
+        "message": "You find a path through the dense vegetation!",
+        "xp": 75,
+        "gold": 15
+      },
+      "onFailure": {
+        "message": "Thorny vines tear at your skin.",
+        "damage": "1d4",
+        "damageType": "piercing"
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "jungle",
+            "denseForest"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "cliff_climb_advanced": {
+      "id": "cliff_climb_advanced",
+      "name": "Scale Mountain Peak",
+      "description": "The near-vertical peak demands expert climbing",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "high",
+        "rewardMultiplier": 0.75,
+        "triggerFrequency": 0.25,
+        "cooldown": 600000,
+        "riskLevel": "deadly"
+      },
+      "terrainModifiers": { "mountain": 0.5 },
+      "stages": [
+        {
+          "id": "assess_peak",
+          "skill": "perception",
+          "baseDC": 15,
+          "description": "Study the treacherous peak route",
+          "onSuccess": {
+            "message": "You map out a challenging but possible route!",
+            "nextStage": "peak_climb",
+            "climbDCModifier": -3
+          },
+          "onFailure": {
+            "message": "The route looks insurmountable.",
+            "nextStage": "peak_climb"
+          }
+        },
+        {
+          "id": "peak_climb",
+          "skill": "athletics",
+          "baseDC": 18,
+          "description": "Ascend the perilous peak",
+          "onSuccess": {
+            "message": "You reach the summit!",
+            "xp": 75,
+            "gold": 15
+          },
+          "onFailure": {
+            "message": "You lose your grip and plummet!",
+            "damage": "4d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "mountainPeak"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "ice_climbing": {
+      "id": "ice_climbing",
+      "name": "Ice Wall Climbing",
+      "description": "A wall of slick ice blocks your path",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "low",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.2,
+        "cooldown": 300000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "tundra": 2.5, "snowyPlains": 1.5, "snowForest": 1.0 },
+      "stages": [
+        {
+          "id": "assess",
+          "skill": "cunning",
+          "baseDC": 11,
+          "passiveRoll": true,
+          "description": "Read the ice before you commit your weight",
+          "onSuccess": {
+            "message": "The blue-grey patches hold. The white streaks don't. You file that away.",
+            "nextStage": "climb",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You begin climbing without reading the ice.",
+            "nextStage": "climb"
+          }
+        },
+        {
+          "id": "climb",
+          "skill": "athletics",
+          "baseDC": 17,
+          "description": "Climb the ice wall",
+          "onSuccess": {
+            "message": "Handhold by handhold. You reach the top and press your face against the cold.",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "Your grip breaks. The wall rushes past you.",
+            "damage": "3d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "glacier",
+            "tundra"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "river_crossing": {
+      "id": "river_crossing",
+      "name": "Cross Swift River",
+      "description": "A fast-flowing river blocks your path",
+      "type": "choice",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1,
+        "triggerFrequency": 0.08,
+        "cooldown": 300000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "shallowWater": 3.0, "beach": 0.5 },
+      "options": [
+        {
+          "skill": "athletics",
+          "baseDC": 14,
+          "description": "Wade across the current",
+          "onSuccess": {
+            "message": "You power through the current and reach the other side!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "The current sweeps you downstream!",
+            "damage": "2d6",
+            "damageType": "bludgeoning"
+          }
+        },
+        {
+          "skill": "acrobatics",
+          "baseDC": 13,
+          "description": "Leap across stepping stones",
+          "onSuccess": {
+            "message": "You nimbly hop across the river!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You slip on a wet stone and fall in!",
+            "damage": "1d6",
+            "damageType": "bludgeoning"
+          }
+        },
+        {
+          "skill": "investigation",
+          "baseDC": 12,
+          "description": "Find a shallow crossing point",
+          "onSuccess": {
+            "message": "You discover a safe ford and cross easily!",
+            "xp": 100,
+            "gold": 20
+          },
+          "onFailure": {
+            "message": "You misjudge the depth and get swept away!",
+            "damage": "1d6",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "river",
+            "shallowWater"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "guard_patrol": {
+      "id": "guard_patrol",
+      "name": "Guard Patrol",
+      "description": "City guards approach, demanding to know your business.",
+      "type": "choice",
+      "terrainModifiers": {},
+      "choices": [
+        {
+          "text": "Show credentials and explain peacefully",
+          "skill": "influence",
+          "dc": 12,
+          "onSuccess": {
+            "message": "The guards nod and wave you through.",
+            "xp": 50
+          },
+          "onFailure": {
+            "message": "The guards remain suspicious and demand you leave the area.",
+            "reputation": -1
+          }
+        },
+        {
+          "text": "Bribe the guards with gold",
+          "skill": "deception",
+          "dc": 13,
+          "costGold": 10,
+          "onSuccess": {
+            "message": "The guards pocket the coin and look the other way.",
+            "xp": 50
+          },
+          "onFailure": {
+            "message": "The guards are offended and threaten arrest!",
+            "reputation": -2
+          }
+        },
+        {
+          "text": "Blend into the crowd and slip away",
+          "skill": "cunning",
+          "dc": 14,
+          "onSuccess": {
+            "message": "You disappear into the crowd before they notice.",
+            "xp": 75
+          },
+          "onFailure": {
+            "message": "The guards spot you and give chase!",
+            "triggerCombat": [
+              "guard",
+              "guard"
+            ]
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "residential",
+            "industrial"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "market_haggle": {
+      "id": "market_haggle",
+      "name": "Market Haggling",
+      "description": "A merchant offers goods at inflated prices. You could negotiate for a better deal.",
+      "type": "single",
+      "terrainModifiers": {},
+      "skill": "influence",
+      "baseDC": 13,
+      "onSuccess": {
+        "message": "The merchant grudgingly accepts your counteroffer!",
+        "xp": 50,
+        "gold": 25
+      },
+      "onFailure": {
+        "message": "The merchant refuses to budge on price.",
+        "xp": 10
+      },
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "residential"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "pickpocket_attempt": {
+      "id": "pickpocket_attempt",
+      "name": "Pickpocket Encounter",
+      "description": "You notice a pickpocket attempting to steal from a nearby merchant.",
+      "type": "choice",
+      "terrainModifiers": {},
+      "choices": [
+        {
+          "text": "Catch the thief and demand they return the goods",
+          "skill": "athletics",
+          "dc": 14,
+          "onSuccess": {
+            "message": "You catch the thief! The merchant rewards you.",
+            "xp": 100,
+            "gold": 50,
+            "reputation": 1
+          },
+          "onFailure": {
+            "message": "The thief escapes into the crowd.",
+            "xp": 25
+          }
+        },
+        {
+          "text": "Alert the city guard",
+          "skill": "perception",
+          "dc": 12,
+          "onSuccess": {
+            "message": "Guards arrive quickly and apprehend the thief.",
+            "xp": 75,
+            "reputation": 1
+          },
+          "onFailure": {
+            "message": "By the time guards arrive, the thief is long gone.",
+            "xp": 10
+          }
+        },
+        {
+          "text": "Ignore it and move on",
+          "skill": null,
+          "dc": 0,
+          "onSuccess": {
+            "message": "You mind your own business."
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "residential"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "warehouse_sneak": {
+      "id": "warehouse_sneak",
+      "name": "Warehouse Infiltration",
+      "description": "You notice suspicious activity in a warehouse. Investigate?",
+      "type": "sequential",
+      "terrainModifiers": {},
+      "stages": [
+        {
+          "skill": "cunning",
+          "dc": 14,
+          "description": "Hide in the shadows and observe",
+          "onSuccess": {
+            "message": "You spot smugglers loading contraband!",
+            "nextStage": true
+          },
+          "onFailure": {
+            "message": "A guard spots movement and investigates!",
+            "triggerCombat": [
+              "bandit",
+              "bandit"
+            ]
+          }
+        },
+        {
+          "skill": "investigation",
+          "dc": 13,
+          "description": "Search for evidence of criminal activity",
+          "onSuccess": {
+            "message": "You find smuggling manifests! The city guard will reward this.",
+            "xp": 150,
+            "gold": 100,
+            "reputation": 2
+          },
+          "onFailure": {
+            "message": "You find nothing conclusive.",
+            "xp": 50
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "industrial"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "crop_trampling": {
+      "id": "crop_trampling",
+      "name": "Crop Field Crossing",
+      "description": "You need to cross farmland. The farmer watches suspiciously.",
+      "type": "choice",
+      "terrainModifiers": {},
+      "choices": [
+        {
+          "text": "Ask permission to cross carefully",
+          "skill": "influence",
+          "dc": 11,
+          "onSuccess": {
+            "message": "The farmer grants permission and shows you the safest path.",
+            "xp": 25
+          },
+          "onFailure": {
+            "message": "The farmer refuses and warns you away.",
+            "reputation": -1
+          }
+        },
+        {
+          "text": "Navigate carefully to avoid trampling crops",
+          "skill": "acrobatics",
+          "dc": 13,
+          "onSuccess": {
+            "message": "You cross without damaging the crops.",
+            "xp": 50
+          },
+          "onFailure": {
+            "message": "You accidentally trample several rows! The farmer demands compensation.",
+            "gold": -20,
+            "reputation": -1
+          }
+        },
+        {
+          "text": "Walk straight through, crops be damned",
+          "skill": null,
+          "dc": 0,
+          "onSuccess": {
+            "message": "You cross quickly but anger the farmer.",
+            "reputation": -2
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "farmland"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "forge_accident": {
+      "id": "forge_accident",
+      "name": "Forge Fire",
+      "description": "A forge fire has gotten out of control! Help extinguish it?",
+      "type": "sequential",
+      "terrainModifiers": {},
+      "stages": [
+        {
+          "skill": "endurance",
+          "dc": 12,
+          "description": "Brave the heat to get close to the fire",
+          "onSuccess": {
+            "message": "You withstand the intense heat!",
+            "nextStage": true
+          },
+          "onFailure": {
+            "message": "The heat is too intense!",
+            "damage": "1d6",
+            "damageType": "fire"
+          }
+        },
+        {
+          "skill": "athletics",
+          "dc": 13,
+          "description": "Pour water and beat back the flames",
+          "onSuccess": {
+            "message": "You successfully extinguish the blaze! The workers are grateful.",
+            "xp": 150,
+            "gold": 75,
+            "reputation": 2
+          },
+          "onFailure": {
+            "message": "The fire spreads! Workers rush to help.",
+            "xp": 50,
+            "reputation": 1
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": [
+            "industrial"
+          ]
+        }
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    "predator_stalk": {
+      "id": "predator_stalk",
+      "name": "Predator Stalking",
+      "description": "Something is following you. The grass is too still.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.0,
+        "triggerFrequency": 0.15,
+        "cooldown": 600000,
+        "riskLevel": "high"
+      },
+      "terrainModifiers": { "savanna": 2.5, "grassland": 0.8, "jungle": 1.5, "forest": 1.0, "road": 0.0, "sanctuary": 0.0, "farmland": 0.0 },
+      "stages": [
+        {
+          "id": "notice",
+          "skill": "perception",
+          "baseDC": 12,
+          "passiveRoll": true,
+          "description": "Notice the predator before it commits",
+          "onSuccess": {
+            "message": "A shadow at the edge of the tall grass. Eyes. You stop moving.",
+            "nextStage": "face",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "You sense something wrong. Too late to do anything about it.",
+            "nextStage": "face"
+          }
+        },
+        {
+          "id": "face",
+          "skill": "empathy",
+          "baseDC": 14,
+          "description": "Face down the predator",
+          "onSuccess": {
+            "message": "The predator backs down. You hold your ground until it turns.",
+            "xp": 100,
+            "gold": 20,
+            "consequences": ["avoidCombat"]
+          },
+          "onFailure": {
+            "message": "It charges. You had no good options anyway.",
+            "consequences": ["initiateCombat"],
+            "enemyTypes": ["wolf"]
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["savanna", "grassland", "jungle", "forest"]
+        }
+      },
+      "campaignIds": ["core"]
+    },
+    "desert_wayfinding": {
+      "id": "desert_wayfinding",
+      "name": "Desert Wayfinding",
+      "description": "The dunes all look the same. The sun is moving. You need to orient before you lose another hour.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.25,
+        "triggerFrequency": 0.2,
+        "cooldown": 600000,
+        "riskLevel": "medium"
+      },
+      "terrainModifiers": { "desert": 2.0, "desertHills": 1.5, "road": 0.0, "grassland": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "orient",
+          "skill": "investigation",
+          "baseDC": 12,
+          "passiveRoll": true,
+          "description": "Read the sun and landscape for orientation",
+          "onSuccess": {
+            "message": "The sun is a clock. You triangulate against two ridgelines and a dune shadow. Heading set.",
+            "nextStage": "navigate",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "The glare is blinding. You pick a direction and hope.",
+            "nextStage": "navigate"
+          }
+        },
+        {
+          "id": "navigate",
+          "skill": "endurance",
+          "baseDC": 15,
+          "description": "Hold your bearing through the heat",
+          "onSuccess": {
+            "message": "The heat tries everything. You're still pointed the right way when the dunes break open.",
+            "xp": 125,
+            "gold": 25
+          },
+          "onFailure": {
+            "message": "The sun shifts. So do your footprints. You've been walking in a slow arc for the last hour.",
+            "damage": "1d6",
+            "damageType": "environmental",
+            "condition": "exhaustion_1"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["desert", "desertHills"]
+        }
+      },
+      "campaignIds": ["core"]
+    },
+    "beach_salvage": {
+      "id": "beach_salvage",
+      "name": "Shipwreck Salvage",
+      "description": "Debris from a shipwreck bobs in the shallows. Something in there is worth the cold.",
+      "type": "sequential",
+      "balance": {
+        "skillValue": "medium",
+        "rewardMultiplier": 1.5,
+        "triggerFrequency": 0.25,
+        "cooldown": 600000,
+        "riskLevel": "low",
+        "lootChanceMultiplier": 2.0
+      },
+      "terrainModifiers": { "beach": 2.5, "shallowWater": 1.0, "grassland": 0.0, "road": 0.0, "sanctuary": 0.0 },
+      "stages": [
+        {
+          "id": "spot",
+          "skill": "perception",
+          "baseDC": 10,
+          "passiveRoll": true,
+          "description": "Spot salvageable cargo before the tide takes it",
+          "onSuccess": {
+            "message": "A sealed crate. Still floating. You mark its drift and move.",
+            "nextStage": "retrieve",
+            "climbDCModifier": -2
+          },
+          "onFailure": {
+            "message": "Splinters and sailcloth. You wade in anyway.",
+            "nextStage": "retrieve"
+          }
+        },
+        {
+          "id": "retrieve",
+          "skill": "athletics",
+          "baseDC": 13,
+          "description": "Drag the cargo clear of the surf",
+          "onSuccess": {
+            "message": "Cold to the bone. Worth it.",
+            "xp": 100,
+            "gold": 40,
+            "loot": {
+              "tableId": "shipwreck_salvage",
+              "rolls": 2,
+              "chance": 0.85
+            }
+          },
+          "onFailure": {
+            "message": "The surf takes it. You watch it go under.",
+            "damage": "1d4",
+            "damageType": "bludgeoning"
+          }
+        }
+      ],
+      "contextualTriggers": {
+        "exploration": {
+          "terrain": ["beach", "shallowWater"]
+        }
+      },
+      "campaignIds": ["core"]
+    }
+    ,
+    "gather_rumors": {
+        "id": "gather_rumors",
+        "name": "Gather Rumors",
+        "description": "The innkeeper has an ear for local gossip. You could try to draw them out.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Buy them a drink and ask casually — Empathy DC 11 (costs 5 gold)",
+                "skill": "empathy",
+                "dc": 11,
+                "onSuccess": {
+                    "message": "Over a shared drink, the innkeeper lets slip something useful.",
+                    "xp": 40,
+                    "gold": -5,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed",
+                    "relationChange": "dialogueSkillCheckPass"
+                },
+                "onFailure": {
+                    "message": "They smile politely and change the subject.",
+                    "xp": 10,
+                    "gold": -5
+                }
+            },
+            {
+                "text": "Ask directly — you heard there's trouble — Investigation DC 14",
+                "skill": "investigation",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "Your direct approach catches them off guard. They confirm what you suspected.",
+                    "xp": 60,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed"
+                },
+                "onFailure": {
+                    "message": "They clam up. Too forward.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Spin a cover story about being a traveling merchant — Deception DC 13",
+                "skill": "deception",
+                "dc": 13,
+                "onSuccess": {
+                    "message": "Your false identity opens doors. The innkeeper warns you about the roads.",
+                    "xp": 50,
+                    "revealIntel": true,
+                    "npcFlag": "rumorRevealed"
+                },
+                "onFailure": {
+                    "message": "They see through the act. Their expression cools.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            }
+        ],
+        "campaignIds": ["core"]
+    },
+    "appraise_goods": {
+        "id": "appraise_goods",
+        "name": "Appraise Goods",
+        "description": "You want to know if this merchant's wares are worth the asking price.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "investigation",
+        "baseDC": 12,
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "onSuccess": {
+            "message": "You assess the stock with a practiced eye. You know exactly what's worth buying.",
+            "xp": 30,
+            "npcFlag": "goodsAppraised"
+        },
+        "onFailure": {
+            "message": "The quality is hard to judge. You're not sure what's genuine.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "identify_item_quality": {
+        "id": "identify_item_quality",
+        "name": "Read the Craft",
+        "description": "A blacksmith's work reveals their skill. You could tell a lot by examining the forge.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "academia",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "onSuccess": {
+            "message": "You spot the hallmarks of exceptional craft. This smith knows their trade.",
+            "xp": 40,
+            "npcFlag": "craftQualityRead",
+            "relationChange": "dialogueSkillCheckPass"
+        },
+        "onFailure": {
+            "message": "The metalwork is competent but you can't read more than that.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "craft_assistance": {
+        "id": "craft_assistance",
+        "name": "Lend a Hand",
+        "description": "The blacksmith is in the middle of a difficult job. You could help — or hinder.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Grip the metal and work the bellows — Athletics DC 14",
+                "skill": "athletics",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "You haul and hold. The smith nods, impressed. The job goes faster.",
+                    "xp": 60,
+                    "relationChange": "dialogueSkillCheckPass",
+                    "npcFlag": "craftHelped"
+                },
+                "onFailure": {
+                    "message": "You fumble the grip. The smith waves you off, jaw tight.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Suggest a technique from something you've studied — Academia DC 13",
+                "skill": "academia",
+                "dc": 13,
+                "onSuccess": {
+                    "message": "The smith raises an eyebrow, tries it, and it works. Respect earned.",
+                    "xp": 70,
+                    "relationChange": "dialogueSkillCheckPass",
+                    "npcFlag": "craftHelped"
+                },
+                "onFailure": {
+                    "message": "The suggestion falls flat. Book learning doesn't translate here.",
+                    "xp": 10
+                }
+            }
+        ],
+        "campaignIds": ["core"]
+    },
+    "intimidate_npc": {
+        "id": "intimidate_npc",
+        "name": "Intimidating Presence",
+        "description": "You make clear that obstructing you would be unwise.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "influence",
+        "baseDC": 16,
+        "balance": { "cooldown": 3600000, "riskLevel": "high", "npcOnly": true },
+        "onSuccess": {
+            "message": "They measure you and decide cooperation costs less than resistance.",
+            "xp": 50,
+            "npcFlag": "intimidated",
+            "relationChange": "intimidationUsed"
+        },
+        "onFailure": {
+            "message": "They hold your gaze. Your threat lands hollow.",
+            "xp": 10,
+            "relationChange": "dialogueSkillCheckFail"
+        },
+        "campaignIds": ["core"]
+    },
+    "negotiate": {
+        "id": "negotiate",
+        "name": "Negotiate Terms",
+        "description": "Propose a mutual benefit — appeal to their self-interest.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "influence",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "onSuccess": {
+            "message": "They see the angle and nod slowly. Terms accepted.",
+            "xp": 70,
+            "gold": 30,
+            "relationChange": "dialogueSkillCheckPass",
+            "npcFlag": "negotiationWon"
+        },
+        "onFailure": {
+            "message": "The deal doesn't look appealing enough to them.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "persuade_npc": {
+        "id": "persuade_npc",
+        "name": "Make Your Case",
+        "description": "Find an unexpected angle they hadn't considered — lateral thinking, not direct pressure.",
+        "type": "single",
+        "terrainModifiers": {},
+        "skill": "creativity",
+        "baseDC": 13,
+        "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
+        "onSuccess": {
+            "message": "Your argument is clear and well-reasoned. They yield the point.",
+            "xp": 60,
+            "relationChange": "dialogueSkillCheckPass",
+            "npcFlag": "persuaded"
+        },
+        "onFailure": {
+            "message": "They're not convinced. Perhaps another approach.",
+            "xp": 10
+        },
+        "campaignIds": ["core"]
+    },
+    "gather_information": {
+        "id": "gather_information",
+        "name": "Ask the Guard",
+        "description": "Guards see everything that moves through a settlement.",
+        "type": "choice",
+        "terrainModifiers": {},
+        "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
+        "choices": [
+            {
+                "text": "Ask casually about recent activity — Influence DC 12",
+                "skill": "influence",
+                "dc": 12,
+                "onSuccess": {
+                    "message": "The guard relaxes and shares what they've seen lately.",
+                    "xp": 40,
+                    "revealIntel": true,
+                    "npcFlag": "guardInfoGathered"
+                },
+                "onFailure": {
+                    "message": "They're not in a talkative mood. 'Move along.'",
+                    "xp": 10
+                }
+            },
+            {
+                "text": "Claim you're investigating on behalf of the town — Deception DC 15",
+                "skill": "deception",
+                "dc": 15,
+                "onSuccess": {
+                    "message": "The authority of the claim loosens their tongue considerably.",
+                    "xp": 60,
+                    "revealIntel": true,
+                    "npcFlag": "guardInfoGathered"
+                },
+                "onFailure": {
+                    "message": "They know the real investigators. This doesn't add up.",
+                    "xp": 10,
+                    "relationChange": "dialogueSkillCheckFail"
+                }
+            },
+            {
+                "text": "Don't ask — read their posture and fill in the gaps — Empathy DC 14",
+                "skill": "empathy",
+                "dc": 14,
+                "onSuccess": {
+                    "message": "You don't need them to talk. Their body language tells the story.",
+                    "xp": 55,
+                    "revealIntel": true
+                },
+                "onFailure": {
+                    "message": "Nothing readable in their expression. Professionally blank.",
+                    "xp": 10
+                }
+            }
+        ],
+        "campaignIds": ["core"]
+    }
+  },
+  "dcThresholds": {
+    "easy": 10,
+    "medium": 13,
+    "hard": 15,
+    "veryHard": 18,
+    "nearlyImpossible": 20
+  }
+}

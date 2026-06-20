@@ -1,0 +1,317 @@
+{
+  "monsters/goblin": {
+    "generatedAt": "2026-06-10T21:52:51.703Z",
+    "promptHash": "302ec482",
+    "outputPath": "data/graphics/monsters/goblin_2026-06-10T21-52-32.png"
+  },
+  "items/dagger": {
+    "generatedAt": "2026-05-25T21:38:35.554Z",
+    "promptHash": "09313496",
+    "outputPath": "data/graphics/items/dagger_2026-05-25T21-38-00.png"
+  },
+  "terrain/grassland": {
+    "generatedAt": "2026-06-10T17:35:50.542Z",
+    "promptHash": "2287ffe7",
+    "outputPath": "data/graphics/grassland-mai-25flash.png"
+  },
+  "monsters/wolf": {
+    "generatedAt": "2026-06-10T21:53:42.870Z",
+    "promptHash": "2665166f",
+    "outputPath": "data/graphics/monsters/wolf_2026-06-10T21-52-32.png"
+  },
+  "terrain/mountain": {
+    "generatedAt": "2026-05-25T21:31:41.436Z",
+    "promptHash": "4cb743b2",
+    "outputPath": "data/graphics/mountain_2026-05-25T21-31-20.png"
+  },
+  "items/potionOfHealing": {
+    "generatedAt": "2026-05-25T21:32:09.093Z",
+    "promptHash": "cd2946a2",
+    "outputPath": "data/graphics/items/potionOfHealing_2026-05-25T21-31-41.png"
+  },
+  "portraits/elf": {
+    "generatedAt": "2026-05-27T21:47:18.306Z",
+    "promptHash": "9d0640b8",
+    "outputPath": "data/graphics/portraits/elf_2026-05-27T21-46-44.png"
+  },
+  "items/longsword": {
+    "generatedAt": "2026-05-25T21:33:13.105Z",
+    "promptHash": "31029e67",
+    "outputPath": "data/graphics/items/longsword_2026-05-25T21-32-46.png"
+  },
+  "monsters/orc": {
+    "generatedAt": "2026-06-10T21:55:30.098Z",
+    "promptHash": "1b326dec",
+    "outputPath": "data/graphics/monsters/orc_2026-06-10T21-52-32.png"
+  },
+  "portraits/human": {
+    "generatedAt": "2026-06-10T17:36:30.735Z",
+    "promptHash": "8edcb151",
+    "outputPath": "data/graphics/portraits/human-mai-25flash.png"
+  },
+  "items/leatherArmor": {
+    "generatedAt": "2026-05-27T21:46:44.851Z",
+    "promptHash": "f43dea79",
+    "outputPath": "data/graphics/items/leatherArmor_2026-05-27T21-46-08.png"
+  },
+  "terrain/swamp": {
+    "generatedAt": "2026-05-27T21:59:28.283Z",
+    "promptHash": "34f7a1ff",
+    "outputPath": "data/graphics/swamp_2026-05-27T21-58-57.png"
+  },
+  "terrain/mountainPeak": {
+    "generatedAt": "2026-05-27T22:11:05.986Z",
+    "promptHash": "8074b186",
+    "outputPath": "data/graphics/mountainPeak-mai-2.png"
+  },
+  "terrain/tundra": {
+    "generatedAt": "2026-05-27T22:12:38.475Z",
+    "promptHash": "89d735ee",
+    "outputPath": "data/graphics/tundra-mai-2.png"
+  },
+  "terrain/dungeonTrap": {
+    "generatedAt": "2026-05-27T22:14:33.654Z",
+    "promptHash": "dd817d06",
+    "outputPath": "data/graphics/dungeonTrap-mai-2.png"
+  },
+  "terrain/shallowWater": {
+    "generatedAt": "2026-05-27T22:17:59.832Z",
+    "promptHash": "2423eefa",
+    "outputPath": "data/graphics/shallowWater-mai-2.png"
+  },
+  "terrain/sanctuary": {
+    "generatedAt": "2026-05-27T22:18:39.007Z",
+    "promptHash": "9eaab3ca",
+    "outputPath": "data/graphics/sanctuary-mai-2.png"
+  },
+  "terrain/plains": {
+    "generatedAt": "2026-05-27T22:19:00.058Z",
+    "promptHash": "78a7ca7e",
+    "outputPath": "data/graphics/plains-mai-2.png"
+  },
+  "terrain/dungeonBones": {
+    "generatedAt": "2026-05-27T22:20:44.657Z",
+    "promptHash": "95a4cee5",
+    "outputPath": "data/graphics/dungeonBones-mai-2.png"
+  },
+  "items/shortsword": {
+    "generatedAt": "2026-06-10T17:37:13.784Z",
+    "promptHash": "1a4c9671",
+    "outputPath": "data/graphics/items/shortsword-mai-25flash.png"
+  },
+  "monsters/zombie": {
+    "generatedAt": "2026-06-10T22:35:08.314Z",
+    "promptHash": "bba0ed64",
+    "outputPath": "data/graphics/monsters/zombie_2026-06-10T22-34-47.png"
+  },
+  "monsters/giantRat": {
+    "generatedAt": "2026-06-10T21:57:59.019Z",
+    "promptHash": "5393728a",
+    "outputPath": "data/graphics/monsters/giantRat_2026-06-10T21-52-32.png"
+  },
+  "monsters/bugbear": {
+    "generatedAt": "2026-06-10T21:58:50.559Z",
+    "promptHash": "408c9ce7",
+    "outputPath": "data/graphics/monsters/bugbear_2026-06-10T21-52-32.png"
+  },
+  "monsters/commoner": {
+    "generatedAt": "2026-06-10T21:59:43.418Z",
+    "promptHash": "f7bb3fe7",
+    "outputPath": "data/graphics/monsters/commoner_2026-06-10T21-52-32.png"
+  },
+  "monsters/kobold": {
+    "generatedAt": "2026-06-10T22:00:36.492Z",
+    "promptHash": "0054bb71",
+    "outputPath": "data/graphics/monsters/kobold_2026-06-10T21-52-32.png"
+  },
+  "monsters/giantSpider": {
+    "generatedAt": "2026-06-10T22:02:18.467Z",
+    "promptHash": "038d41f9",
+    "outputPath": "data/graphics/monsters/giantSpider_2026-06-10T21-52-32.png"
+  },
+  "monsters/direWolf": {
+    "generatedAt": "2026-06-10T22:03:10.905Z",
+    "promptHash": "c2944943",
+    "outputPath": "data/graphics/monsters/direWolf_2026-06-10T21-52-32.png"
+  },
+  "monsters/shadow": {
+    "generatedAt": "2026-06-10T22:04:55.886Z",
+    "promptHash": "28258e5a",
+    "outputPath": "data/graphics/monsters/shadow_2026-06-10T21-52-32.png"
+  },
+  "monsters/scout": {
+    "generatedAt": "2026-06-10T22:05:51.092Z",
+    "promptHash": "3f8d80c6",
+    "outputPath": "data/graphics/monsters/scout_2026-06-10T21-52-32.png"
+  },
+  "monsters/ghoul": {
+    "generatedAt": "2026-06-10T22:06:42.791Z",
+    "promptHash": "57a23bd3",
+    "outputPath": "data/graphics/monsters/ghoul_2026-06-10T21-52-32.png"
+  },
+  "monsters/specter": {
+    "generatedAt": "2026-06-10T22:08:26.817Z",
+    "promptHash": "13d3727c",
+    "outputPath": "data/graphics/monsters/specter_2026-06-10T21-52-32.png"
+  },
+  "monsters/spy": {
+    "generatedAt": "2026-06-10T22:09:18.658Z",
+    "promptHash": "bd83b868",
+    "outputPath": "data/graphics/monsters/spy_2026-06-10T21-52-32.png"
+  },
+  "monsters/ogre": {
+    "generatedAt": "2026-06-10T22:10:10.286Z",
+    "promptHash": "1b391535",
+    "outputPath": "data/graphics/monsters/ogre_2026-06-10T21-52-32.png"
+  },
+  "monsters/ghast": {
+    "generatedAt": "2026-06-10T22:35:28.151Z",
+    "promptHash": "c1445b1f",
+    "outputPath": "data/graphics/monsters/ghast_2026-06-10T22-35-08.png"
+  },
+  "monsters/gargoyle": {
+    "generatedAt": "2026-06-10T22:12:36.584Z",
+    "promptHash": "ec7ae96e",
+    "outputPath": "data/graphics/monsters/gargoyle_2026-06-10T21-52-32.png"
+  },
+  "monsters/owlbear": {
+    "generatedAt": "2026-06-10T22:15:11.126Z",
+    "promptHash": "cda6824e",
+    "outputPath": "data/graphics/monsters/owlbear_2026-06-10T21-52-32.png"
+  },
+  "monsters/veteran": {
+    "generatedAt": "2026-06-10T22:16:02.494Z",
+    "promptHash": "a72780af",
+    "outputPath": "data/graphics/monsters/veteran_2026-06-10T21-52-32.png"
+  },
+  "monsters/flameskull": {
+    "generatedAt": "2026-06-10T22:16:52.509Z",
+    "promptHash": "85101917",
+    "outputPath": "data/graphics/monsters/flameskull_2026-06-10T21-52-32.png"
+  },
+  "monsters/ettin": {
+    "generatedAt": "2026-06-10T22:17:44.995Z",
+    "promptHash": "1e6c12ff",
+    "outputPath": "data/graphics/monsters/ettin_2026-06-10T21-52-32.png"
+  },
+  "monsters/troll": {
+    "generatedAt": "2026-06-10T22:18:36.850Z",
+    "promptHash": "71e7dc82",
+    "outputPath": "data/graphics/monsters/troll_2026-06-10T21-52-32.png"
+  },
+  "monsters/wraith": {
+    "generatedAt": "2026-06-10T22:19:29.425Z",
+    "promptHash": "b1adccd2",
+    "outputPath": "data/graphics/monsters/wraith_2026-06-10T21-52-32.png"
+  },
+  "monsters/hillGiant": {
+    "generatedAt": "2026-06-10T22:20:20.622Z",
+    "promptHash": "de8df420",
+    "outputPath": "data/graphics/monsters/hillGiant_2026-06-10T21-52-32.png"
+  },
+  "monsters/youngWhiteDragon": {
+    "generatedAt": "2026-06-10T22:21:13.774Z",
+    "promptHash": "f9c647d2",
+    "outputPath": "data/graphics/monsters/youngWhiteDragon_2026-06-10T21-52-32.png"
+  },
+  "monsters/youngGreenDragon": {
+    "generatedAt": "2026-06-10T22:22:03.599Z",
+    "promptHash": "61599309",
+    "outputPath": "data/graphics/monsters/youngGreenDragon_2026-06-10T21-52-32.png"
+  },
+  "monsters/youngRedDragon": {
+    "generatedAt": "2026-06-10T22:22:54.733Z",
+    "promptHash": "1b312fd6",
+    "outputPath": "data/graphics/monsters/youngRedDragon_2026-06-10T21-52-32.png"
+  },
+  "monsters/goblinArcher": {
+    "generatedAt": "2026-06-10T22:24:35.851Z",
+    "promptHash": "8fbfc211",
+    "outputPath": "data/graphics/monsters/goblinArcher_2026-06-10T21-52-32.png"
+  },
+  "monsters/manticore": {
+    "generatedAt": "2026-06-10T22:26:20.460Z",
+    "promptHash": "7cd9d016",
+    "outputPath": "data/graphics/monsters/manticore_2026-06-10T21-52-32.png"
+  },
+  "monsters/mage": {
+    "generatedAt": "2026-06-10T22:27:13.010Z",
+    "promptHash": "04826ecf",
+    "outputPath": "data/graphics/monsters/mage_2026-06-10T21-52-32.png"
+  },
+  "monsters/medusa": {
+    "generatedAt": "2026-06-10T22:28:07.388Z",
+    "promptHash": "393ffce7",
+    "outputPath": "data/graphics/monsters/medusa_2026-06-10T21-52-32.png"
+  },
+  "monsters/voidTrace": {
+    "generatedAt": "2026-06-10T22:28:59.246Z",
+    "promptHash": "fbdbd91b",
+    "outputPath": "data/graphics/monsters/voidTrace_2026-06-10T21-52-32.png"
+  },
+  "monsters/voidSpawn": {
+    "generatedAt": "2026-06-10T22:29:53.626Z",
+    "promptHash": "f5446c0a",
+    "outputPath": "data/graphics/monsters/voidSpawn_2026-06-10T21-52-32.png"
+  },
+  "monsters/voidHunter": {
+    "generatedAt": "2026-06-10T22:30:44.594Z",
+    "promptHash": "040d2d2f",
+    "outputPath": "data/graphics/monsters/voidHunter_2026-06-10T21-52-32.png"
+  },
+  "monsters/voidShaper": {
+    "generatedAt": "2026-06-10T22:31:35.013Z",
+    "promptHash": "c77d6c65",
+    "outputPath": "data/graphics/monsters/voidShaper_2026-06-10T21-52-32.png"
+  },
+  "monsters/voidTitan": {
+    "generatedAt": "2026-06-10T22:32:27.579Z",
+    "promptHash": "56b3d794",
+    "outputPath": "data/graphics/monsters/voidTitan_2026-06-10T21-52-32.png"
+  },
+  "monsters/skeleton": {
+    "generatedAt": "2026-06-10T21:54:37.463Z",
+    "promptHash": "5df898b8",
+    "outputPath": "data/graphics/monsters/skeleton_2026-06-10T21-52-32.png"
+  },
+  "monsters/bandit": {
+    "generatedAt": "2026-06-10T21:56:24.455Z",
+    "promptHash": "965c4f64",
+    "outputPath": "data/graphics/monsters/bandit_2026-06-10T21-52-32.png"
+  },
+  "monsters/stirge": {
+    "generatedAt": "2026-06-10T22:01:27.140Z",
+    "promptHash": "ce1f7727",
+    "outputPath": "data/graphics/monsters/stirge_2026-06-10T21-52-32.png"
+  },
+  "monsters/giantHyena": {
+    "generatedAt": "2026-06-10T22:07:35.522Z",
+    "promptHash": "6161beb5",
+    "outputPath": "data/graphics/monsters/giantHyena_2026-06-10T21-52-32.png"
+  },
+  "monsters/banditCrossbowman": {
+    "generatedAt": "2026-06-10T22:25:28.263Z",
+    "promptHash": "1c284468",
+    "outputPath": "data/graphics/monsters/banditCrossbowman_2026-06-10T21-52-32.png"
+  },
+  "monsters/berserker": {
+    "generatedAt": "2026-06-10T22:11:44.162Z",
+    "promptHash": "dd3aea11",
+    "outputPath": "data/graphics/monsters/berserker_2026-06-10T21-52-32.png"
+  },
+  "monsters/minotaur": {
+    "generatedAt": "2026-06-10T22:13:28.055Z",
+    "promptHash": "726e4fa5",
+    "outputPath": "data/graphics/monsters/minotaur_2026-06-10T21-52-32.png"
+  },
+  "monsters/wight": {
+    "generatedAt": "2026-06-10T22:14:20.122Z",
+    "promptHash": "ff324c7e",
+    "outputPath": "data/graphics/monsters/wight_2026-06-10T21-52-32.png"
+  },
+  "monsters/gnoll": {
+    "generatedAt": "2026-06-10T22:04:02.935Z",
+    "promptHash": "44d18703",
+    "outputPath": "data/graphics/monsters/gnoll_2026-06-10T21-52-32.png"
+  }
+}

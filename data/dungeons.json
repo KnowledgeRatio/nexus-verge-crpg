@@ -1,0 +1,763 @@
+{
+  "version": "1.0.0",
+  "themes": [
+    {
+      "id": "tomb",
+      "creatureType": "undead",
+      "creatures": {
+        "1": [
+          "skeleton",
+          "zombie"
+        ],
+        "2": [
+          "skeleton",
+          "zombie",
+          "shadow"
+        ],
+        "3": [
+          "ghoul",
+          "ghast",
+          "specter",
+          "wight"
+        ],
+        "5": [
+          "wraith",
+          "flameskull",
+          "wight"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{noun} of {concept}",
+        "The {adjective} {noun} of {concept}",
+        "{concept}'s {noun}"
+      ],
+      "adjectives": [
+        "Whispering",
+        "Silent",
+        "Forgotten",
+        "Rotting",
+        "Cursed",
+        "Hollow",
+        "Sunken",
+        "Shadowed",
+        "Blighted",
+        "Wailing",
+        "Ashen",
+        "Defiled",
+        "Restless",
+        "Blackened",
+        "Ancient",
+        "Forsaken",
+        "Withered",
+        "Haunted"
+      ],
+      "nouns": [
+        "Crypt",
+        "Tomb",
+        "Catacomb",
+        "Ossuary",
+        "Sepulchre",
+        "Barrow",
+        "Mausoleum",
+        "Charnel Pit",
+        "Burial Mound",
+        "Necropolis",
+        "Vault",
+        "Chamber",
+        "Reliquary",
+        "Mortuary"
+      ],
+      "concepts": [
+        "Forgotten Souls",
+        "the Damned",
+        "Eternal Rest",
+        "Lost Kings",
+        "the Fallen",
+        "Endless Night",
+        "the Pale Court",
+        "Silent Weeping",
+        "Bone and Ash",
+        "the Hollow Crown",
+        "Withered Grace",
+        "the Unquiet Dead",
+        "Fading Echoes",
+        "the Last Breath"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "warren",
+      "creatureType": "goblinoid",
+      "creatures": {
+        "1": [
+          "goblin",
+          "kobold",
+          "giantRat"
+        ],
+        "2": [
+          "goblin",
+          "kobold",
+          "bugbear"
+        ],
+        "3": [
+          "bugbear",
+          "gnoll",
+          "goblin"
+        ],
+        "5": [
+          "ogre",
+          "bugbear",
+          "gnoll"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{adjective} {noun}",
+        "The {noun} of {concept}",
+        "{concept} {noun}"
+      ],
+      "adjectives": [
+        "Stinking",
+        "Wretched",
+        "Blackfang",
+        "Foulbreath",
+        "Reeking",
+        "Filthy",
+        "Swarming",
+        "Skittering",
+        "Gnashing",
+        "Festering",
+        "Grimy",
+        "Crawling",
+        "Putrid",
+        "Chittering",
+        "Mangy",
+        "Scabrous"
+      ],
+      "nouns": [
+        "Warrens",
+        "Hollow",
+        "Den",
+        "Burrow",
+        "Tunnels",
+        "Nest",
+        "Lair",
+        "Pit",
+        "Holes",
+        "Caverns",
+        "Maze",
+        "Mound",
+        "Hive"
+      ],
+      "concepts": [
+        "the Horde",
+        "Gnashing Teeth",
+        "a Thousand Eyes",
+        "the Swarm",
+        "Vermin",
+        "the Rat King",
+        "Goblin Town",
+        "the Chitinous Dark",
+        "Filth and Fury",
+        "the Green Tide",
+        "Bone Chewers",
+        "the Pack"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "beast_lair",
+      "creatureType": "beasts",
+      "creatures": {
+        "1": [
+          "wolf",
+          "giantRat",
+          "stirge"
+        ],
+        "2": [
+          "direWolf",
+          "giantSpider",
+          "giantHyena"
+        ],
+        "3": [
+          "owlbear",
+          "giantSpider",
+          "direWolf"
+        ],
+        "5": [
+          "owlbear",
+          "ettin",
+          "troll"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{adjective} {noun}",
+        "{noun} of the {concept}",
+        "The {concept}'s {noun}"
+      ],
+      "adjectives": [
+        "Howling",
+        "Fangmaw",
+        "Bloodied",
+        "Savage",
+        "Prowling",
+        "Snarling",
+        "Ravenous",
+        "Stalking",
+        "Feral",
+        "Mangled",
+        "Clawed",
+        "Jagged",
+        "Thundering",
+        "Matted",
+        "Bristling",
+        "Ravaged"
+      ],
+      "nouns": [
+        "Den",
+        "Cavern",
+        "Lair",
+        "Grotto",
+        "Hollow",
+        "Nest",
+        "Burrow",
+        "Roost",
+        "Thicket",
+        "Gorge",
+        "Ravine",
+        "Cave"
+      ],
+      "concepts": [
+        "Alpha",
+        "Great Beast",
+        "Pack Mother",
+        "Bone Gnawer",
+        "Iron Hide",
+        "Blood Fang",
+        "Night Stalker",
+        "Dread Predator",
+        "Howling Dark",
+        "Primal Terror",
+        "Claw and Fang",
+        "Wild Hunt"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "bandit",
+      "creatureType": "humanoid",
+      "creatures": {
+        "1": [
+          "bandit",
+          "commoner"
+        ],
+        "2": [
+          "bandit",
+          "scout",
+          "spy"
+        ],
+        "3": [
+          "berserker",
+          "spy",
+          "veteran"
+        ],
+        "5": [
+          "veteran",
+          "berserker"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{adjective} {noun}",
+        "{noun} of the {concept}",
+        "The {concept}"
+      ],
+      "adjectives": [
+        "Cutthroat",
+        "Crooked",
+        "Broken",
+        "Scarred",
+        "Shadowed",
+        "Lawless",
+        "Bloodstained",
+        "Smuggler's",
+        "Outlaw",
+        "Bandit",
+        "Brigand",
+        "Thieves'",
+        "Ragged",
+        "Desperate",
+        "Hidden",
+        "Forsaken"
+      ],
+      "nouns": [
+        "Hideout",
+        "Camp",
+        "Stronghold",
+        "Refuge",
+        "Outpost",
+        "Den",
+        "Roost",
+        "Fort",
+        "Redoubt",
+        "Keep",
+        "Bastion",
+        "Haven"
+      ],
+      "concepts": [
+        "Black Hand",
+        "Red Knives",
+        "Broken Blades",
+        "Shadow Brotherhood",
+        "Crimson Coin",
+        "Iron Noose",
+        "Dead Man's Oath",
+        "Gallows Company",
+        "Night Runners",
+        "Cutpurse Gang",
+        "Scarred Few",
+        "Branded Outcasts"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "cult",
+      "creatureType": "fiend",
+      "creatures": {
+        "1": [
+          "bandit",
+          "commoner"
+        ],
+        "2": [
+          "bandit",
+          "shadow",
+          "spy"
+        ],
+        "3": [
+          "berserker",
+          "ghoul",
+          "specter"
+        ],
+        "5": [
+          "flameskull",
+          "wraith",
+          "gargoyle"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{noun} of {concept}",
+        "The {adjective} {noun} of {concept}",
+        "{concept}'s {noun}"
+      ],
+      "adjectives": [
+        "Bleeding",
+        "Profane",
+        "Corrupted",
+        "Accursed",
+        "Abyssal",
+        "Void-Touched",
+        "Blighted",
+        "Ruinous",
+        "Heretical",
+        "Dread",
+        "Unholy",
+        "Twisted",
+        "Entropic",
+        "Maddening",
+        "Eldritch",
+        "Warped"
+      ],
+      "nouns": [
+        "Sanctum",
+        "Altar",
+        "Temple",
+        "Shrine",
+        "Chapel",
+        "Cathedral",
+        "Tabernacle",
+        "Circle",
+        "Chamber",
+        "Pit",
+        "Fane",
+        "Reliquary"
+      ],
+      "concepts": [
+        "the Void",
+        "Endless Hunger",
+        "the Unblinking Eye",
+        "the Abyss",
+        "Shattered Minds",
+        "the Blood Pact",
+        "the Faceless One",
+        "Dark Ascension",
+        "the Writhing Dark",
+        "Forbidden Knowledge",
+        "the Final Gate",
+        "the Unspeakable"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "fey_grove",
+      "creatureType": "fey",
+      "creatures": {
+        "1": [
+          "stirge",
+          "wolf",
+          "giantRat"
+        ],
+        "2": [
+          "giantSpider",
+          "direWolf",
+          "scout"
+        ],
+        "3": [
+          "owlbear",
+          "giantSpider"
+        ],
+        "5": [
+          "troll",
+          "owlbear",
+          "ettin"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{noun} of {concept}",
+        "The {adjective} {noun} of {concept}",
+        "{concept}'s {noun}"
+      ],
+      "adjectives": [
+        "Shimmering",
+        "Twilight",
+        "Enchanted",
+        "Woven",
+        "Dreaming",
+        "Misty",
+        "Silver",
+        "Moonlit",
+        "Gossamer",
+        "Dancing",
+        "Whispering",
+        "Thornbound",
+        "Luminous",
+        "Bewitching",
+        "Fading",
+        "Verdant"
+      ],
+      "nouns": [
+        "Thicket",
+        "Grove",
+        "Glade",
+        "Dell",
+        "Hollow",
+        "Garden",
+        "Briar",
+        "Bower",
+        "Copse",
+        "Glen",
+        "Weald",
+        "Maze"
+      ],
+      "concepts": [
+        "Whispers",
+        "the Lost Path",
+        "Eternal Dusk",
+        "the Thorn Queen",
+        "Stolen Time",
+        "Midsummer Dreams",
+        "the Green Court",
+        "Wild Song",
+        "the Veil Between",
+        "Faerie Fire",
+        "the Unseelie Pact",
+        "Bramble and Bloom"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "frost_hold",
+      "creatureType": "cold creatures",
+      "creatures": {
+        "1": [
+          "wolf",
+          "kobold",
+          "goblin"
+        ],
+        "2": [
+          "direWolf",
+          "orc",
+          "bugbear"
+        ],
+        "3": [
+          "ogre",
+          "berserker",
+          "wight"
+        ],
+        "5": [
+          "troll",
+          "ettin",
+          "youngWhiteDragon"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{adjective} {noun}",
+        "{noun} of {concept}",
+        "The {noun} of the {concept}"
+      ],
+      "adjectives": [
+        "Frozen",
+        "Rimefang",
+        "Glacial",
+        "Frostbitten",
+        "Howling",
+        "Bitter",
+        "Shivering",
+        "Ice-Bound",
+        "Blizzard",
+        "Pale",
+        "Permafrost",
+        "Windswept",
+        "Frigid",
+        "Crystalline",
+        "Boreal",
+        "Gelid"
+      ],
+      "nouns": [
+        "Vault",
+        "Fortress",
+        "Citadel",
+        "Hold",
+        "Keep",
+        "Spire",
+        "Bastion",
+        "Cavern",
+        "Tomb",
+        "Hall",
+        "Stronghold",
+        "Sanctum"
+      ],
+      "concepts": [
+        "the North Wind",
+        "Endless Winter",
+        "the Ice Crown",
+        "Frozen Tears",
+        "the Last Thaw",
+        "Shattered Frost",
+        "the Pale King",
+        "Bitter End",
+        "the Howling Storm",
+        "Rime and Ruin",
+        "the Cold Dark",
+        "Glacier's Heart"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dragon_den",
+      "creatureType": "draconic",
+      "creatures": {
+        "1": [
+          "kobold",
+          "goblin"
+        ],
+        "2": [
+          "kobold",
+          "scout",
+          "bugbear"
+        ],
+        "3": [
+          "gargoyle",
+          "berserker",
+          "veteran"
+        ],
+        "5": [
+          "youngWhiteDragon",
+          "youngGreenDragon",
+          "youngRedDragon"
+        ]
+      },
+      "namePatterns": [
+        "The {adjective} {noun}",
+        "{noun} of the {concept}",
+        "The {concept}'s {noun}",
+        "{adjective} {noun} of {concept}"
+      ],
+      "adjectives": [
+        "Scorchscale",
+        "Smouldering",
+        "Hoarded",
+        "Draconic",
+        "Wyrm-Scarred",
+        "Ashen",
+        "Molten",
+        "Scaled",
+        "Ancient",
+        "Ravaged",
+        "Searing",
+        "Ember",
+        "Cindermaw",
+        "Thunder",
+        "Coiled",
+        "Winged"
+      ],
+      "nouns": [
+        "Lair",
+        "Throne",
+        "Hoard",
+        "Aerie",
+        "Nest",
+        "Peak",
+        "Roost",
+        "Caldera",
+        "Sanctum",
+        "Den",
+        "Vault",
+        "Dominion"
+      ],
+      "concepts": [
+        "the Wyrm",
+        "Dragonfire",
+        "the Scaled Tyrant",
+        "Ash and Gold",
+        "the Clutch",
+        "Scorched Earth",
+        "the Winged Terror",
+        "Fire and Fury",
+        "the Ancient One",
+        "Dragon's Greed",
+        "the Last Roar",
+        "Scales and Shadow"
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "terrainThemeWeights": {
+    "grassland": {
+      "bandit": 0.3,
+      "warren": 0.25,
+      "beast_lair": 0.25,
+      "tomb": 0.2
+    },
+    "plains": {
+      "bandit": 0.35,
+      "warren": 0.25,
+      "beast_lair": 0.2,
+      "tomb": 0.2
+    },
+    "forest": {
+      "warren": 0.25,
+      "beast_lair": 0.25,
+      "fey_grove": 0.25,
+      "bandit": 0.25
+    },
+    "denseForest": {
+      "beast_lair": 0.3,
+      "fey_grove": 0.3,
+      "warren": 0.25,
+      "cult": 0.15
+    },
+    "mountain": {
+      "tomb": 0.25,
+      "dragon_den": 0.2,
+      "warren": 0.2,
+      "beast_lair": 0.2,
+      "bandit": 0.15
+    },
+    "hills": {
+      "bandit": 0.3,
+      "warren": 0.25,
+      "tomb": 0.25,
+      "beast_lair": 0.2
+    },
+    "swamp": {
+      "tomb": 0.3,
+      "cult": 0.25,
+      "beast_lair": 0.25,
+      "warren": 0.2
+    },
+    "desert": {
+      "tomb": 0.35,
+      "cult": 0.25,
+      "beast_lair": 0.2,
+      "bandit": 0.2
+    },
+    "tundra": {
+      "frost_hold": 0.3,
+      "beast_lair": 0.3,
+      "tomb": 0.25,
+      "bandit": 0.15
+    },
+    "snowyPlains": {
+      "frost_hold": 0.35,
+      "beast_lair": 0.25,
+      "tomb": 0.25,
+      "bandit": 0.15
+    },
+    "jungle": {
+      "beast_lair": 0.25,
+      "cult": 0.25,
+      "fey_grove": 0.2,
+      "tomb": 0.2,
+      "warren": 0.1
+    },
+    "savanna": {
+      "beast_lair": 0.35,
+      "bandit": 0.25,
+      "tomb": 0.2,
+      "warren": 0.2
+    },
+    "beach": {
+      "bandit": 0.35,
+      "beast_lair": 0.25,
+      "tomb": 0.25,
+      "cult": 0.15
+    }
+  },
+  "defaultThemeWeights": {
+    "bandit": 0.25,
+    "warren": 0.25,
+    "beast_lair": 0.25,
+    "tomb": 0.25
+  },
+  "dynamicDialogue": {
+    "scanRadius": 5,
+    "maxDungeonLines": 2,
+    "maxSettlementLines": 1,
+    "maxTerrainLines": 1,
+    "distanceLabels": {
+      "near": {
+        "max": 2,
+        "label": "nearby"
+      },
+      "medium": {
+        "max": 4,
+        "label": "a day's travel away"
+      },
+      "far": {
+        "max": 6,
+        "label": "far to the"
+      }
+    }
+  }
+}

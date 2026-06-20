@@ -1,0 +1,385 @@
+{
+  "spells": {
+    "description": "Spells use spell slots and require spellcasting ability. Spells are organized by level (cantrips = 0, then 1-9).",
+
+    "cantrips": [
+      {
+        "id": "fireBolt",
+        "campaignIds": ["core"],
+        "name": "Fire Bolt",
+        "level": 0,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": 120,
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Make a ranged spell attack. On hit, deal 1d10 fire damage. Damage increases by 1d10 at 5th, 11th, and 17th level.",
+        "damage": "1d10",
+        "damageType": "fire",
+        "attackType": "rangedSpellAttack",
+        "scaling": {
+          "5": { "damage": "2d10" },
+          "11": { "damage": "3d10" },
+          "17": { "damage": "4d10" }
+        },
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "rayOfFrost",
+        "campaignIds": ["core"],
+        "name": "Ray of Frost",
+        "level": 0,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": 60,
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Make a ranged spell attack. On hit, deal 1d8 cold damage and reduce target's speed by 10 feet until the start of your next turn.",
+        "damage": "1d8",
+        "damageType": "cold",
+        "attackType": "rangedSpellAttack",
+        "effect": "reduce_speed_10",
+        "scaling": {
+          "5": { "damage": "2d8" },
+          "11": { "damage": "3d8" },
+          "17": { "damage": "4d8" }
+        },
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "shockingGrasp",
+        "campaignIds": ["core"],
+        "name": "Shocking Grasp",
+        "level": 0,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": "touch",
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Make a melee spell attack. Advantage if target is wearing metal armor. On hit, deal 1d8 lightning damage and target can't take reactions until start of its next turn.",
+        "damage": "1d8",
+        "damageType": "lightning",
+        "attackType": "meleeSpellAttack",
+        "advantageCondition": "metal_armor",
+        "effect": "no_reactions",
+        "scaling": {
+          "5": { "damage": "2d8" },
+          "11": { "damage": "3d8" },
+          "17": { "damage": "4d8" }
+        },
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "sacredFlame",
+        "campaignIds": ["core"],
+        "name": "Sacred Flame",
+        "level": 0,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": 60,
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Target must succeed on a DEX save or take 1d8 resonant damage. Target gains no benefit from cover for this save.",
+        "damage": "1d8",
+        "damageType": "resonant",
+        "savingThrow": "dex",
+        "effect": "ignores_cover",
+        "scaling": {
+          "5": { "damage": "2d8" },
+          "11": { "damage": "3d8" },
+          "17": { "damage": "4d8" }
+        },
+        "callings": []
+      },
+
+      {
+        "id": "guidanceBolt",
+        "campaignIds": ["core"],
+        "name": "Guidance",
+        "level": 0,
+        "school": "divination",
+        "castingTime": "action",
+        "range": "touch",
+        "components": ["V", "S"],
+        "duration": "concentration_1min",
+        "concentration": true,
+        "usableOutOfCombat": true,
+        "description": "Touch a creature. Once before the spell ends, it can roll 1d4 and add the result to one ability check of its choice.",
+        "effect": "+1d4_ability_check",
+        "callings": []
+      },
+
+      {
+        "id": "light",
+        "campaignIds": ["core"],
+        "name": "Light",
+        "level": 0,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": "touch",
+        "components": ["V", "M"],
+        "duration": "1hour",
+        "usableOutOfCombat": true,
+        "description": "Touch an object no larger than 10 feet. It sheds bright light in a 20-foot radius and dim light for another 20 feet. Lasts 1 hour.",
+        "effect": "light_20ft",
+        "callings": ["scholar"]
+      }
+    ],
+
+    "level1": [
+      {
+        "id": "magicMissile",
+        "campaignIds": ["core"],
+        "name": "Magic Missile",
+        "level": 1,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": 120,
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Create 3 darts of magical force. Each dart hits automatically and deals 1d4+1 resonant damage. The darts strike simultaneously.",
+        "damage": "3 × (1d4+1)",
+        "damageType": "resonant",
+        "attackType": "autoHit",
+        "upcastScaling": "+1 dart per level",
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "burningHands",
+        "campaignIds": ["core"],
+        "name": "Burning Hands",
+        "level": 1,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": "self_15ft_cone",
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Each creature in a 15-foot cone must make a DEX save or take 3d6 fire damage, half on success.",
+        "damage": "3d6",
+        "damageType": "fire",
+        "savingThrow": "dex",
+        "areaOfEffect": "15ft_cone",
+        "upcastScaling": "+1d6 per level",
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "shield",
+        "campaignIds": ["core"],
+        "name": "Shield",
+        "level": 1,
+        "school": "abjuration",
+        "castingTime": "reaction",
+        "trigger": "when_hit",
+        "range": "self",
+        "components": ["V", "S"],
+        "duration": "1_round",
+        "usableOutOfCombat": false,
+        "description": "When hit by an attack or Magic Missile, gain +5 AC until the start of your next turn, potentially causing the attack to miss.",
+        "effect": "+5_ac_until_next_turn",
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "cureWounds",
+        "campaignIds": ["core"],
+        "name": "Cure Wounds",
+        "level": 1,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": "touch",
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": true,
+        "description": "Touch a creature to restore 1d8 + spellcasting modifier hit points.",
+        "healing": "1d8 + mod",
+        "upcastScaling": "+1d8 per level",
+        "callings": []
+      },
+
+      {
+        "id": "bless",
+        "campaignIds": ["core"],
+        "name": "Bless",
+        "level": 1,
+        "school": "enchantment",
+        "castingTime": "action",
+        "range": 30,
+        "components": ["V", "S", "M"],
+        "duration": "concentration_1min",
+        "concentration": true,
+        "usableOutOfCombat": false,
+        "description": "Up to 3 creatures of your choice within range gain +1d4 to attack rolls and saving throws for the duration.",
+        "effect": "+1d4_attacks_and_saves",
+        "targets": 3,
+        "upcastScaling": "+1 target per level",
+        "callings": []
+      },
+
+      {
+        "id": "huntersMark",
+        "campaignIds": ["core"],
+        "name": "Hunter's Mark",
+        "level": 1,
+        "school": "divination",
+        "castingTime": "bonusAction",
+        "range": 90,
+        "components": ["V"],
+        "duration": "concentration_1hour",
+        "concentration": true,
+        "usableOutOfCombat": false,
+        "description": "Mark a creature. Deal an extra 1d6 damage when you hit it with a weapon attack. If the target drops to 0 HP, you can use a bonus action to move the mark to a new creature.",
+        "damage": "+1d6",
+        "damageType": "weapon",
+        "upcastScaling": "longer duration at higher levels",
+        "callings": ["wanderlust"]
+      },
+
+      {
+        "id": "healingWord",
+        "campaignIds": ["core"],
+        "name": "Healing Word",
+        "level": 1,
+        "school": "evocation",
+        "castingTime": "bonusAction",
+        "range": 60,
+        "components": ["V"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": true,
+        "description": "A creature you can see within range regains 1d4 + spellcasting modifier hit points.",
+        "healing": "1d4 + mod",
+        "upcastScaling": "+1d4 per level",
+        "callings": ["wanderlust"]
+      },
+
+      {
+        "id": "thunderwave",
+        "campaignIds": ["core"],
+        "name": "Thunderwave",
+        "level": 1,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": "self_15ft_cube",
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Each creature in a 15-foot cube must make a CON save or take 2d8 resonant damage and be pushed 10 feet away. Half damage on success, no push.",
+        "damage": "2d8",
+        "damageType": "resonant",
+        "savingThrow": "con",
+        "areaOfEffect": "15ft_cube",
+        "effect": "push_10ft",
+        "upcastScaling": "+1d8 per level",
+        "callings": ["scholar", "wanderlust"]
+      }
+    ],
+
+    "level2": [
+      {
+        "id": "scorchingRay",
+        "campaignIds": ["core"],
+        "name": "Scorching Ray",
+        "level": 2,
+        "school": "evocation",
+        "castingTime": "action",
+        "range": 120,
+        "components": ["V", "S"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Create 3 rays of fire. Make a ranged spell attack for each ray. On hit, deal 2d6 fire damage.",
+        "damage": "3 × 2d6",
+        "damageType": "fire",
+        "attackType": "rangedSpellAttack",
+        "rays": 3,
+        "upcastScaling": "+1 ray per level",
+        "callings": ["scholar"]
+      },
+
+      {
+        "id": "mistyStep",
+        "campaignIds": ["core"],
+        "name": "Misty Step",
+        "level": 2,
+        "school": "conjuration",
+        "castingTime": "bonusAction",
+        "range": "self",
+        "components": ["V"],
+        "duration": "instantaneous",
+        "usableOutOfCombat": false,
+        "description": "Teleport up to 30 feet to an unoccupied space you can see.",
+        "effect": "teleport_30ft",
+        "callings": ["scholar", "wanderlust"]
+      },
+
+      {
+        "id": "holdPerson",
+        "campaignIds": ["core"],
+        "name": "Hold Person",
+        "level": 2,
+        "school": "enchantment",
+        "castingTime": "action",
+        "range": 60,
+        "components": ["V", "S", "M"],
+        "duration": "concentration_1min",
+        "concentration": true,
+        "usableOutOfCombat": false,
+        "description": "Target humanoid must make a WIS save or be paralyzed. Repeat save at end of each turn.",
+        "savingThrow": "wis",
+        "effect": "paralyzed",
+        "upcastScaling": "+1 target per level",
+        "callings": ["scholar", "wanderlust"]
+      },
+
+      {
+        "id": "spiritualWeapon",
+        "campaignIds": ["core"],
+        "name": "Spiritual Weapon",
+        "level": 2,
+        "school": "evocation",
+        "castingTime": "bonusAction",
+        "range": 60,
+        "components": ["V", "S"],
+        "duration": "1min",
+        "usableOutOfCombat": false,
+        "description": "Create a floating weapon that lasts 1 minute. As a bonus action, move it 20 feet and make a melee spell attack: 1d8 + spellcasting modifier resonant damage.",
+        "damage": "1d8 + mod",
+        "damageType": "resonant",
+        "attackType": "meleeSpellAttack",
+        "upcastScaling": "+1d8 per 2 levels",
+        "callings": []
+      }
+    ]
+  },
+
+  "spellLists": {
+    "description": "Defines which spells each calling has access to",
+
+    "scholar": {
+      "cantrips": ["fireBolt", "rayOfFrost", "shockingGrasp", "light"],
+      "level1": ["magicMissile", "burningHands", "shield", "thunderwave"],
+      "level2": ["scorchingRay", "mistyStep", "holdPerson"]
+    },
+
+    "wanderlust": {
+      "cantrips": [],
+      "level1": ["huntersMark", "healingWord", "thunderwave"],
+      "level2": ["mistyStep", "holdPerson"]
+    },
+
+    "dedication": {
+      "cantrips": [],
+      "level1": [],
+      "level2": []
+    }
+  }
+}

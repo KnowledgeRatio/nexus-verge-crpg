@@ -1,0 +1,256 @@
+{
+  "maxLevel": 10,
+  "defaultProgression": {
+    "abilityScoreIncreasePerLevel": 1,
+    "choices": []
+  },
+  "progressionByClass": {
+    "dedication": {
+      "1": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "2": {
+        "abilityScoreIncrease": 1,
+        "newFeatures": [
+          {
+            "name": "Action Surge",
+            "description": "On your turn, you can take one additional action. Once per short rest. (Free action — does not cost an action to activate.)"
+          }
+        ],
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": true,
+            "label": "Choose a Practice"
+          }
+        ]
+      },
+      "3": {
+        "abilityScoreIncrease": 1,
+        "newFeatures": [
+          {
+            "name": "Resolve",
+            "description": "You gain a pool of Resolve equal to your CON modifier + your level (minimum 1). Resolve recharges fully on a short rest.",
+            "grantedResource": {
+              "id": "resolve",
+              "formula": "conMod + level",
+              "minimum": 1,
+              "recharge": "shortRest"
+            }
+          }
+        ],
+        "specializationFeatures": {
+          "exemplar": {
+            "name": "Combat Maneuvers",
+            "description": "You learn three combat maneuvers from the Exemplar list. Each maneuver costs 1 Resolve and may be used once per attack. Your Maneuver Die is 1d6, increasing to 1d8 at level 7 and 1d10 at level 10.",
+            "autoGrantAbilities": [],
+            "maneuverDie": {
+              "1": "1d6",
+              "7": "1d8",
+              "10": "1d10"
+            }
+          },
+          "oath": {
+            "name": "Oath's Edge",
+            "description": "Your conviction manifests as power. You gain two Resolve-fuelled abilities: Sworn Strike and Aid the Vulnerable.",
+            "autoGrantAbilities": ["swornStrike", "aidTheVulnerable"]
+          }
+        },
+        "choices": [
+          {
+            "type": "specialization",
+            "count": 1,
+            "required": true,
+            "label": "Choose Specialization",
+            "options": ["exemplar", "oath"]
+          },
+          {
+            "type": "maneuver",
+            "count": 3,
+            "required": true,
+            "label": "Choose Combat Maneuvers",
+            "requiresSpecialization": "exemplar"
+          }
+        ]
+      },
+      "4": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "5": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "6": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "7": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "8": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "9": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "10": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      }
+    },
+    "scholar": {
+      "1": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "2": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 2,
+            "required": false,
+            "label": "Learn New Spells",
+            "filter": { "level": 1 }
+          }
+        ]
+      },
+      "3": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "specialization",
+            "count": 1,
+            "required": true,
+            "label": "Arcane Tradition",
+            "options": ["evocation", "abjuration", "enchantment"]
+          }
+        ]
+      },
+      "4": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 1,
+            "required": false,
+            "label": "Learn New Spell",
+            "filter": { "level": 2 }
+          }
+        ]
+      },
+      "5": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 1,
+            "required": false,
+            "label": "Learn New Spell",
+            "filter": { "level": 2 }
+          }
+        ]
+      },
+      "6": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "7": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "8": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "9": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "10": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      }
+    },
+    "wanderlust": {
+      "1": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "2": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 2,
+            "required": false,
+            "label": "Learn New Spells (Spellcasting Unlocked)",
+            "filter": { "level": 0 }
+          }
+        ]
+      },
+      "3": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "specialization",
+            "count": 1,
+            "required": true,
+            "label": "Roguish Archetype / Bardic College",
+            "options": ["trickster", "lore", "valor"]
+          }
+        ]
+      },
+      "4": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 1,
+            "required": false,
+            "label": "Learn New Spell",
+            "filter": { "level": 1 }
+          }
+        ]
+      },
+      "5": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "6": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "7": {
+        "abilityScoreIncrease": 1,
+        "choices": [
+          {
+            "type": "spell",
+            "count": 1,
+            "required": false,
+            "label": "Learn New Spell",
+            "filter": { "level": 2 }
+          }
+        ]
+      },
+      "8": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "9": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      },
+      "10": {
+        "abilityScoreIncrease": 1,
+        "choices": []
+      }
+    }
+  }
+}

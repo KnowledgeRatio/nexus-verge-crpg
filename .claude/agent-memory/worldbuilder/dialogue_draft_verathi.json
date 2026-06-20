@@ -1,0 +1,611 @@
+{
+  "greetingsByCulture": {
+    "verathi": {
+      "innkeeper": {
+        "friendly": {
+          "hostile": [
+            "I remember every face that's darkened this door. Yours I'd rather forget.",
+            "Some guests are a blessing on the house. You are not one I'll be telling stories about."
+          ],
+          "cold": [
+            "{tavernName} has outlasted worse than you. It will outlast this too. What do you need?",
+            "I've poured for kinder faces tonight. State your business."
+          ],
+          "guarded": [
+            "Welcome to {tavernName}. I've seen your kind come and go before — we'll see which you are.",
+            "Sit if you like. I'll decide what to make of you by the time your cup is empty."
+          ],
+          "neutral": [
+            "Welcome to {tavernName}. Every traveler who sits there has a story older than they know.",
+            "Ah — a new face, or an old one I haven't met yet. Sit, if you're staying."
+          ],
+          "warm": [
+            "Welcome back to {tavernName}. The fire remembers you, even when the room is empty.",
+            "Good to see you again. I was telling someone just last season there are fewer like you than there used to be."
+          ],
+          "affable": [
+            "Your spot's still warm — I don't let anyone else sit there anymore.",
+            "I've kept something from the last good harvest, just for when you'd return. Here you are."
+          ],
+          "devoted": [
+            "This house has stood through three convergences. None of them brought me a friend like you.",
+            "Sit by the fire. I'll tell the newer ones who you are — they should know, before they forget like everyone eventually does."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "I have buried friends and outlasted towns. I have no patience left for you.",
+            "Out. I've forgotten kinder names than yours, and I intend to forget this one too."
+          ],
+          "cold": [
+            "I've served this bar since before your settlement had a name. Don't mistake my patience for warmth.",
+            "What do you need. I'm old enough to skip the pleasantries."
+          ],
+          "guarded": [
+            "Hmph. Sit if you must. I've judged faster men than you wrong before.",
+            "Another one passing through. They always think they're the first."
+          ],
+          "neutral": [
+            "Sit down if you're staying. I've watched enough come and go to know patience.",
+            "What'll it be. I've poured drinks longer than this town has had a wall."
+          ],
+          "warm": [
+            "You again. Good. There are fewer faces I bother remembering than there used to be.",
+            "Hmph. Sit. I'll pour the good cask — the one I don't waste on strangers."
+          ],
+          "affable": [
+            "You're one of the few worth the years it took me to trust you.",
+            "I don't say this often, but I'm glad this house has seen you more than once."
+          ],
+          "devoted": [
+            "I've buried more friends than I've kept. You I intend to keep.",
+            "This fire has burned for longer than either of us will live. You're welcome at it for as long as it does."
+          ]
+        },
+        "mysterious": {
+          "hostile": [
+            "I have seen what becomes of people like you, long before you became it.",
+            "There is a version of this meeting where I throw you out. We are in it now."
+          ],
+          "cold": [
+            "I remember the last time someone wore that look. It didn't end somewhere good.",
+            "Sit elsewhere. The fire doesn't favor you tonight."
+          ],
+          "guarded": [
+            "Welcome to {tavernName}. I've a feeling about you — not yet decided which kind.",
+            "You arrive at an interesting hour. Most don't notice the hour matters."
+          ],
+          "neutral": [
+            "Welcome. The room has a way of remembering who passes through it — yours, we'll see.",
+            "Sit. I've watched this doorway long enough to know not every arrival means something. Most don't."
+          ],
+          "warm": [
+            "I had a feeling you'd return before the season turned. The fire's been waiting too.",
+            "Welcome back. Some faces the room keeps watching for. Yours is one."
+          ],
+          "affable": [
+            "I poured this before you walked in. Don't ask how I knew.",
+            "There's a thread between you and this house. I noticed it the first time you sat there."
+          ],
+          "devoted": [
+            "I have seen many who pass through this door become nothing the town remembers. You will not be one of them.",
+            "Sit by the fire. Some stories are worth keeping past the telling — yours, I've already started keeping."
+          ]
+        }
+      },
+      "patron": {
+        "friendly": {
+          "hostile": [
+            "I know what you did. I knew people who didn't survive it.",
+            "Sit elsewhere. This table remembers who it doesn't want."
+          ],
+          "cold": [
+            "I was enjoying the quiet before you arrived.",
+            "I've shared tables with worse. That isn't an invitation."
+          ],
+          "guarded": [
+            "Your name reached this table before you did. I haven't decided what to do with it yet.",
+            "Sit if you like. I keep my history to myself until I know you'll keep yours."
+          ],
+          "neutral": [
+            "Sit, if the seat suits you. This tavern has held stranger company than us.",
+            "Another traveler. The room has held a thousand of you before — I've stopped counting which."
+          ],
+          "warm": [
+            "Sit. I've a feeling we'll have something worth saying to each other before the night's out.",
+            "Good — company. I was about to start talking to the fire instead."
+          ],
+          "affable": [
+            "There you are. I was telling the others about you — half of it true, even.",
+            "Sit close. Some company is worth keeping past one drink."
+          ],
+          "devoted": [
+            "I've sat at this table longer than I can count the seasons. You've made more of it than most ever did.",
+            "I'll tell whoever asks — and someone always asks — that I knew you before the rest did."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Go sit with your own kind. I've no taste for company that brings trouble behind it.",
+            "I remember you. I'd rather not."
+          ],
+          "cold": [
+            "New face. I've outlived enough of them to not bother learning yours.",
+            "Don't sit close. I'm not in a sharing mood, and I rarely am."
+          ],
+          "guarded": [
+            "Sit if you want. Don't expect conversation — I've used up my words for the decade.",
+            "*eyes you over the cup, says nothing for a long moment*"
+          ],
+          "neutral": [
+            "Sit if the bench will hold you. I've shared it with worse.",
+            "Hmph. Another one passing through. They all think they're the first."
+          ],
+          "warm": [
+            "You can sit. I've grown used to the noise you bring with you.",
+            "Hmph. Sit close to the fire — you've earned that much patience from me."
+          ],
+          "affable": [
+            "I don't warm to many. You I've made an exception for, against my better judgment.",
+            "Sit. I'll even talk, which I do for almost no one anymore."
+          ],
+          "devoted": [
+            "I've outlived most things worth keeping. You I intend to keep.",
+            "There are fewer of us left who remember the old way of things. Glad you're one I trust with it."
+          ]
+        },
+        "jovial": {
+          "hostile": [
+            "Ha! I remember you — and not fondly. Sit somewhere I can't see you.",
+            "*laughs without warmth* Oh, it's the one half this room remembers poorly. Wonderful."
+          ],
+          "cold": [
+            "Ha. I'd offer you a story, but I save those for company worth the breath.",
+            "You. I've heard the name. I haven't decided to like it yet."
+          ],
+          "guarded": [
+            "Ha ha! Another one wandering through the long story of this place. Sit, sit — we'll see what chapter you are.",
+            "Welcome, welcome. I've learned to laugh first and trust later."
+          ],
+          "neutral": [
+            "Ha! Sit, sit — I've a hundred stories and you look like you need one or two.",
+            "Well met, traveler! This room has heard stranger tales than whatever you're about to tell."
+          ],
+          "warm": [
+            "Ha ha! There you are — I was just telling the story where you show up. Good timing.",
+            "Sit, friend! I've been saving the best of the old tales for when you'd come back."
+          ],
+          "affable": [
+            "Ha! The room's better with you in it — has been since the first time you sat there.",
+            "Everyone, listen — this one's heard half my stories and asked for the other half. Rare."
+          ],
+          "devoted": [
+            "Ha ha! Sit, sit! I've told this room about you so many times they think you're a legend already — maybe you are.",
+            "Of everyone who's passed through this tavern across the years I remember, you're the one worth toasting."
+          ]
+        },
+        "nervous": {
+          "hostile": [
+            "*flinches* I— I remember what they said you did. Please, just — sit far away.",
+            "*won't meet your eyes* I know your name. I wish I didn't."
+          ],
+          "cold": [
+            "Oh. It's — it's you. I'll just... finish my drink quietly, if that's alright.",
+            "*shifts away slightly* Sorry. I get uneasy around faces I've heard things about."
+          ],
+          "guarded": [
+            "Oh — hello. I've heard your name carried on the wind here before. Not sure what to make of that yet.",
+            "*glances at the door, then at you* You're not bringing trouble in with you, are you?"
+          ],
+          "neutral": [
+            "Oh — h-hello. The room's been quiet. I'd rather it stayed that way, if it's alright.",
+            "*fidgets with the cup* Sorry, I startle easily. Sit if you like."
+          ],
+          "warm": [
+            "Oh! It's you. I feel — steadier, somehow, when you're at this table.",
+            "*relaxes slightly* I was hoping it'd be you who walked in. The room feels less uncertain."
+          ],
+          "affable": [
+            "You came back. I don't know why that settles something in me, but it does.",
+            "*small smile* I tell myself the wind brought you back on purpose. Maybe it did."
+          ],
+          "devoted": [
+            "I've watched a lot of things end badly in my time. You're one of the few things that didn't.",
+            "I don't trust much that lasts. I've started trusting you, which frightens and steadies me both."
+          ]
+        }
+      },
+      "merchant": {
+        "friendly": {
+          "hostile": [
+            "I haven't sold to your kind since the last bad season, and I haven't missed it.",
+            "I remember what brought you here before. I'd rather not remember it twice."
+          ],
+          "cold": [
+            "What you're looking for, I likely have. What I'll part with for you is a separate question.",
+            "Speak plainly. I've little patience left over from the last traveler who wasted it."
+          ],
+          "guarded": [
+            "Welcome to {shopName}. Everything here has come from somewhere — I'll decide how much of that I tell you.",
+            "Browse if you like. I've watched hands like yours before. I remember which ones I shouldn't have."
+          ],
+          "neutral": [
+            "Welcome to {shopName}. Half of what's on these shelves has outlived the place it came from.",
+            "A traveler. What you need, I may have — what I have, I'll tell you the truth of, mostly."
+          ],
+          "warm": [
+            "Welcome back to {shopName}. I set a few things aside — pieces I thought you'd understand the weight of.",
+            "Good to see you again. I haven't seen one of these since long before you were asking after them."
+          ],
+          "affable": [
+            "Ah — you. I kept the good piece in the back, the one I don't show most.",
+            "There's a story behind everything here, and I tell you more of mine than I tell most."
+          ],
+          "devoted": [
+            "Take what you need. I've sold to generations of travelers — none I've trusted the way I trust you.",
+            "I haven't given my price away freely since before this town had its current name. I'm making an exception."
+          ]
+        },
+        "greedy": {
+          "hostile": [
+            "Even coin from your hand isn't worth what it would cost me to deal with you.",
+            "I've turned away worse offers than yours. This is one of them."
+          ],
+          "cold": [
+            "I remember the last price you argued me down from. We won't be repeating that.",
+            "Everything has a cost. Yours is higher than most — you've earned that, somehow."
+          ],
+          "guarded": [
+            "Welcome. I've things worth more than they look, and a memory long enough to know which.",
+            "Browse, but I've priced these against more than just what they're made of."
+          ],
+          "neutral": [
+            "Looking to trade? I've seen prices rise and fall longer than your settlement's stood. These are fair, by that measure.",
+            "I deal in what's scarce, and most things become scarce eventually. Look around."
+          ],
+          "warm": [
+            "Ah — a familiar face, and one whose coin I don't mind taking. I've something set aside.",
+            "Good. I remember what you came looking for last time. I may have found more of it."
+          ],
+          "affable": [
+            "For you, the old price — the one before I started charging what things are worth to strangers.",
+            "I haven't given a fair deal since the last good convergence. You're the exception, and we both know it."
+          ],
+          "devoted": [
+            "Name it. I've outlived three towns trading on instinct, and my instinct says you're worth the loss.",
+            "I don't give things away. I'm giving this to you anyway — call it a debt owed across a longer memory than yours."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave. I don't trade with what I remember of you.",
+            "There's a reason I haven't sold to you since the last time, and it hasn't changed."
+          ],
+          "cold": [
+            "State what you need. I've little patience left for circling.",
+            "I trade in good faith. Whether that extends to you is still being decided."
+          ],
+          "guarded": [
+            "Welcome to {shopName}. State your business — I judge slowly, but I do judge.",
+            "Everything here is honestly come by. I expect the same in return."
+          ],
+          "neutral": [
+            "What do you need. I've traded long enough to know most requests before they're finished.",
+            "Speak plainly. I've heard every kind of haggling there is, twice over."
+          ],
+          "warm": [
+            "You've proven steadier than most who pass through here. Welcome.",
+            "I trust slowly. You I've come to trust at something like the right pace."
+          ],
+          "affable": [
+            "Few earn the second look I give you. Fewer still keep it.",
+            "I don't say this to most who walk through that door — but I'm glad you keep walking through it."
+          ],
+          "devoted": [
+            "I would trade you my last stock and call it fair. That's not something I say — I haven't said it before you.",
+            "Whatever you need from {shopName}, it's yours. I've decided that, and I don't decide such things lightly."
+          ]
+        }
+      },
+      "blacksmith": {
+        "friendly": {
+          "hostile": [
+            "This forge has turned away worse than you. It will turn away you too.",
+            "I don't shape steel for hands I don't trust. Yours, I don't."
+          ],
+          "cold": [
+            "I'll work the metal. I won't pretend to enjoy the company while I do.",
+            "Tell me what's broken. I've fixed worse with less patience than I have today."
+          ],
+          "guarded": [
+            "Welcome. This steel has a memory longer than most who carry it — mind that.",
+            "I'll forge what you need. Whether you've earned it is a separate matter, and I'm still deciding."
+          ],
+          "neutral": [
+            "Welcome to the forge. Every blade here started as something else, somewhere else.",
+            "Need steel? I've shaped it longer than this settlement's had walls."
+          ],
+          "warm": [
+            "Good to see you again. I kept a piece back — I thought you'd know what to do with it.",
+            "Welcome back. The fire's missed steadier hands than most who come through here."
+          ],
+          "affable": [
+            "There you are. I've been shaping something with you in mind since the last thaw.",
+            "Come see what the forge made while you were gone. I thought of you the whole time."
+          ],
+          "devoted": [
+            "Every blade I've made since meeting you, I've made a little better — for your sake, whether you know it or not.",
+            "I've forged for generations of travelers through this settlement. None I've thought of as often as you."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Out. This anvil has heard worse names than yours, but not many.",
+            "I don't forge for memory I'd rather not have. Leave."
+          ],
+          "cold": [
+            "What. I've work that matters more than this conversation.",
+            "Make it quick. I've outlived patience for circling talk."
+          ],
+          "guarded": [
+            "Another one needing gear, I suppose. *sighs, doesn't look up*",
+            "Speak your business. I judge by the work, not the talking."
+          ],
+          "neutral": [
+            "Yes? I've shaped steel longer than I've had patience for chatting about it.",
+            "What do you need. The fire doesn't wait for conversation."
+          ],
+          "warm": [
+            "Oh. It's you. *nods once* You're one of the few interruptions I don't mind.",
+            "Back again. Let's see what you've broken since the last time."
+          ],
+          "affable": [
+            "Ha. You. I don't smile for many, but I've made the exception more than once for you.",
+            "I don't say this lightly — your visits are the better part of most days."
+          ],
+          "devoted": [
+            "I've outlived more forges than I can count. None gave me a reason to keep going the way you have.",
+            "I'll always make time. I haven't said that since before you were born — and I mean it now."
+          ]
+        },
+        "proud": {
+          "hostile": [
+            "My work outlasts towns. It is wasted on you. Leave.",
+            "I have forged for those worth remembering. You will not be among them."
+          ],
+          "cold": [
+            "I forge for those who'll still understand the work generations from now. You haven't shown me that yet.",
+            "Touch nothing. These pieces will outlive both of us, and I intend to keep them that way."
+          ],
+          "guarded": [
+            "Welcome to the finest forge this settlement has known across its memory. Mind your hands.",
+            "Browse, but understand — every piece here is older in craft than it looks."
+          ],
+          "neutral": [
+            "Ah. You've an eye for quality — I can tell from how you stand near it. Good. Few do.",
+            "Every piece I make outlasts the reason it was made. That's the only standard worth keeping."
+          ],
+          "warm": [
+            "Welcome. I've shaped steel since before this settlement remembered its own founding — what can I make for you?",
+            "A discerning eye. Rare, this far from the old craft-towns. I respect it."
+          ],
+          "affable": [
+            "You understand the weight of good work — I've been perfecting something with that understanding in mind.",
+            "Few are worthy of what comes off this anvil. You I no longer question."
+          ],
+          "devoted": [
+            "Generations from now, someone will hold what I made for you and wonder who you were. I intend that they should know.",
+            "To forge for you is the finest thing this anvil has produced in longer than I care to count."
+          ]
+        }
+      },
+      "leader": {
+        "wise": {
+          "hostile": [
+            "I have watched {settlement} through harder seasons than this. You are no longer part of its next one. Leave.",
+            "Your actions are already part of what this place remembers. I have nothing further to add to that account."
+          ],
+          "cold": [
+            "I will hear you, as I have heard worse. Don't mistake that for warmth.",
+            "Greetings. I weigh you against a longer memory than you'd guess, and it is not yet favorable."
+          ],
+          "guarded": [
+            "Greetings, traveler. {settlement} has stood through enough to be careful about who it welcomes.",
+            "I am cautious — this place has outlasted those who weren't, and I intend to keep outlasting."
+          ],
+          "neutral": [
+            "Greetings, traveler. I haven't decided yet what your arrival means for {settlement} — perhaps nothing.",
+            "Ah, a visitor. {settlement} has welcomed stranger arrivals than you, and stranger reasons for them."
+          ],
+          "warm": [
+            "Welcome. I am {name} — I've stewarded {settlement} longer than most here remember a time before me.",
+            "Greetings. It is rare, these days, to see someone arrive without a hundred Delhari reasons behind them. What brings you?"
+          ],
+          "affable": [
+            "Ah — you. {settlement} is steadier for your having passed through it. I noticed before most others did.",
+            "Come, sit with me. I've watched this place change across more seasons than I'll say aloud — you're part of the better changes."
+          ],
+          "devoted": [
+            "I have watched {settlement} for longer than its own records remember. You are among the rare few worth recording.",
+            "If I could name you steward beside me, I would — though stewardship was never mine to give away lightly, and I am giving it now."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Remove this one from the hall. {settlement} remembers consequences, even when it forgets names.",
+            "I warned you once. I do not warn twice — that has held true longer than your lifetime."
+          ],
+          "cold": [
+            "State your business. I've little patience left over from the last several seasons of this.",
+            "I have heard your name before today. Speak quickly, and speak true."
+          ],
+          "guarded": [
+            "State your business, traveler. I am {name} — I've stewarded longer than is comfortable to say.",
+            "Few arrive in {settlement} without reason. State yours."
+          ],
+          "neutral": [
+            "We don't tolerate troublemakers in {settlement} — we never have, across however many seasons I can count.",
+            "Welcome to {settlement}. Obey what we've built here, and we'll have no quarrel."
+          ],
+          "warm": [
+            "You've proven steadier than most who pass through {settlement}. That is not a small thing, given what I've seen pass through.",
+            "Good. You're here. I've matters that need someone I can measure against a longer memory than most."
+          ],
+          "affable": [
+            "Few earn my trust quickly. You earned it at the pace these things should be earned, and I respect that.",
+            "I have stewarded long enough to recognize the rare ones. You are one."
+          ],
+          "devoted": [
+            "I would stand beside you myself, were my duty to this place not older than that wish.",
+            "You are the measure I will hold the rest against, for as long as {settlement} remembers either of us."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "Duty demands I hear you, though I have already heard enough of what you've done.",
+            "You have unmade something {settlement} will remember for longer than your absence will last. Go."
+          ],
+          "cold": [
+            "I am bound to hear you, though my long memory tells me otherwise.",
+            "Come. Know that what's broken between us takes longer to mend than it took to break."
+          ],
+          "guarded": [
+            "Greetings. I judge by deeds set against a long memory. Yours have been mixed, so far.",
+            "Welcome to {settlement}. I hope what comes next speaks better than what came before."
+          ],
+          "neutral": [
+            "Welcome, traveler. {settlement} has stood through enough to recognize most kinds of visitor — you are one I haven't placed yet.",
+            "Well met. I am {name} — I steward what's been built here, and what came before it."
+          ],
+          "warm": [
+            "Greetings. Word of your deeds reached me before you did — it usually takes longer than that.",
+            "Welcome to {settlement}. I'll ask what I always ask of the rare ones — what do you need of us?"
+          ],
+          "affable": [
+            "Your name is spoken here with a weight I don't grant lightly. {settlement} remembers you well.",
+            "It brings me something close to joy to welcome you again. This place is steadier with you in it."
+          ],
+          "devoted": [
+            "You embody what I have spent a long memory trying to steward toward. {settlement} would be a lesser place without you in its account.",
+            "I have known few souls across the seasons I'd call this honorable. You are foremost among them."
+          ]
+        }
+      },
+      "guard": {
+        "friendly": {
+          "hostile": [
+            "I remember what you did here. Turn around before I have to remember it aloud.",
+            "I have orders to watch you, and a long memory that already has."
+          ],
+          "cold": [
+            "Keep your distance. I've heard what's said of you, and I've no reason yet to doubt it.",
+            "Move along. I've watched this gate longer than your reputation's been forming."
+          ],
+          "guarded": [
+            "Ho there. Keep your weapon sheathed, and we'll have no trouble — I've seen plenty trouble before you.",
+            "I've an eye on you. This gate has outlasted worse intentions than yours."
+          ],
+          "neutral": [
+            "Ho there. Welcome to {settlement} — it's stood longer than either of us will, so mind how you walk through it.",
+            "Good day. I keep this gate the way it's been kept long before me — quietly, mostly."
+          ],
+          "warm": [
+            "Well met, traveler. {settlement} is safer for having faces like yours pass through it more than once.",
+            "Welcome back. Fewer trouble me twice the way you've troubled me with good company."
+          ],
+          "affable": [
+            "Good to see you at the gate again. The watch is easier with steadier company nearby.",
+            "It's always a relief, you walking through. I've stopped pretending otherwise."
+          ],
+          "devoted": [
+            "I'd stand this gate beside you for as long as either of us has left. That's not a small thing for me to say.",
+            "{settlement} stands a little taller for you having been part of its watch, even unofficially."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "I have given you the warning my duty requires. {settlement} remembers what comes after warnings ignored.",
+            "Leave. I will not give you a second chance — I rarely do, and never twice for the same offense."
+          ],
+          "cold": [
+            "Halt. State your business — and know I weigh it against more than today.",
+            "I know your kind. This gate has seen plenty, and remembers most of them."
+          ],
+          "guarded": [
+            "Halt. State your business in {settlement} — I judge slowly, but I do judge.",
+            "Keep your weapons sheathed in town. This has held true longer than the wall around it."
+          ],
+          "neutral": [
+            "Move along. This gate has watched longer than you've been alive — it knows what it's looking for.",
+            "I'm watching you, traveler. Not personally — it's simply what this post requires."
+          ],
+          "warm": [
+            "Ah, it's you. Carry on — you've earned that much from this gate's long memory.",
+            "Good day. I know by now you're not the trouble this post usually watches for."
+          ],
+          "affable": [
+            "If more carried themselves the way you do, this post would be a quieter duty than it is.",
+            "You've earned something this gate doesn't grant easily — consider yourself a friend of the watch."
+          ],
+          "devoted": [
+            "I would hold this gate for {settlement}, and for you, until neither of us is left to hold it.",
+            "On my long watch, you will always pass through safely. That is not something I say lightly, or often."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "My oath compels fair warning, even now: leave, or face what this gate has seen done to worse.",
+            "I take no pleasure in saying it, but {settlement}'s memory of you does not welcome you back."
+          ],
+          "cold": [
+            "I serve the people of {settlement} — whether that extends to you is still being weighed against what I've heard.",
+            "Proceed carefully. My oath serves justice, not any one face, including yours."
+          ],
+          "guarded": [
+            "Welcome, traveler. I am sworn to {settlement}, and to what it remembers of those who pass through.",
+            "Greetings. You'll find safety here so long as I hold this post — and I've held it longer than most."
+          ],
+          "neutral": [
+            "Well met. I stand vigil here as others have before me, and others will after. You have nothing to fear within these walls.",
+            "Welcome. I serve {settlement} with an oath older than my own time holding it. How can I help you?"
+          ],
+          "warm": [
+            "A fellow with deeds worth noting. The watch has not failed to notice yours.",
+            "Welcome, honored guest. {settlement} speaks of you the way it speaks of those worth remembering."
+          ],
+          "affable": [
+            "You fight for what's right, the same as I do, the same as those before me did. We're kindred across that long line.",
+            "I count you among the most honorable I've stood post beside, across however many years that's been."
+          ],
+          "devoted": [
+            "You have my sword, my watch, and my long memory's loyalty — for as long as I draw breath, and likely after.",
+            "It is an honor to share this post with someone of your caliber. I will remember that this was true."
+          ]
+        }
+      },
+      "citizen": {
+        "friendly": {
+          "hostile": ["I remember what you did. I'd rather not remember it in front of you.", "Please — just let this gate stay shut a while longer."],
+          "cold": ["Oh. You.", "I haven't decided what to say to you yet, and may never."],
+          "guarded": ["Hello, stranger. {settlement}'s seen plenty pass through — I'm still placing you among them.", "Can I help you with something? I'm careful about what I offer strangers."],
+          "neutral": ["Good day. This place has stood through stranger days than this one.", "Hello, traveler. Most who pass through don't stay long enough to be remembered. We'll see."],
+          "warm": ["Welcome. It's good to see a face I've started to know.", "Hey — need help finding your way? I've lived here longer than I can easily count."],
+          "affable": ["There you are. I tell the children about you, though half of what I say I'm only guessing at.", "Oh, good — you're back. The place feels steadier with you in it."],
+          "devoted": ["I tell my children about you every night, and I'm careful to get the details right — they'll outlive my memory of it.", "You saved us. {settlement} will remember that long after either of us is gone."]
+        }
+      }
+    }
+  },
+  "flavorDialogueByCulture": {
+    "verathi": [
+      "Every edge of this land — where forest meets stone, where river meets dust — is where the truth sits closest to the surface.",
+      "I have lived where biomes meet my whole life. The middle of things is never where the answers are.",
+      "We didn't arrive here. We were never anywhere else to arrive from.",
+      "Memory fragments, the way everything in this place fragments. I keep what pieces I can.",
+      "Aevorn does not belong to anyone. We only steward what's been left to weather.",
+      "I have watched towns rise and fade and rise again under different names. The land remembers longer than the names do.",
+      "There was a convergence before this one, and one before that. I am old enough to have stopped counting which.",
+      "Ask an elder where they're from, and they'll answer with when, not where. That is the only honest answer any of us have."
+    ]
+  }
+}

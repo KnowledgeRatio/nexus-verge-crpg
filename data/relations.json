@@ -1,0 +1,100 @@
+{
+    "version": "1.0.0",
+    "defaults": {
+        "startingScore": 0,
+        "historyMaxLength": 20,
+        "influencePercentPerPoint": 0.01
+    },
+    "tiers": [
+        { "id": "hostile",    "label": "Hostile",    "min": -100, "max": -51, "color": "#ff3333" },
+        { "id": "unfriendly", "label": "Unfriendly", "min": -50,  "max": -21, "color": "#ff8844" },
+        { "id": "wary",       "label": "Wary",       "min": -20,  "max": -1,  "color": "#ccaa44" },
+        { "id": "neutral",    "label": "Neutral",    "min": 0,    "max": 19,  "color": "#aaaaaa" },
+        { "id": "friendly",   "label": "Friendly",   "min": 20,   "max": 39,  "color": "#44bb44" },
+        { "id": "trusted",    "label": "Trusted",    "min": 40,   "max": 69,  "color": "#4488ff" },
+        { "id": "allied",     "label": "Allied",     "min": 70,   "max": 100, "color": "#aa44ff" }
+    ],
+    "thresholds": {
+        "questMinimumTier": "friendly",
+        "greatHallQuestMinimumTier": "unfriendly",
+        "tradingBlockedTier": "hostile",
+        "dialogueBlockedTier": "hostile"
+    },
+    "modifiers": {
+        "questCompleteForNPC":        { "min": 10, "max": 20, "description": "Completed quest for this NPC" },
+        "questCompleteInSettlement":  { "min": 3,  "max": 5,  "description": "Completed quest in same settlement" },
+        "dialogueSkillCheckPass":     { "min": 5,  "max": 10, "description": "Passed dialogue skill check" },
+        "dialogueSkillCheckFail":     { "min": -10, "max": -5, "description": "Failed dialogue skill check" },
+        "successfulTrade":            { "min": 1,  "max": 1,  "description": "Completed a trade" },
+        "questAbandoned":             { "min": -10, "max": -10, "description": "Abandoned a quest" },
+        "questFailed":                { "min": -10, "max": -10, "description": "Failed a quest" },
+        "intimidationUsed":           { "min": -5,  "max": -5,  "description": "Player used intimidation (even on success)" }
+    },
+    "pricingByTier": {
+        "hostile":    { "buyMultiplier": 0,    "sellMultiplier": 0 },
+        "unfriendly": { "buyMultiplier": 1.15, "sellMultiplier": 0.35 },
+        "wary":       { "buyMultiplier": 1.05, "sellMultiplier": 0.42 },
+        "neutral":    { "buyMultiplier": 1.00, "sellMultiplier": 0.50 },
+        "friendly":   { "buyMultiplier": 0.95, "sellMultiplier": 0.55 },
+        "trusted":    { "buyMultiplier": 0.88, "sellMultiplier": 0.62 },
+        "allied":     { "buyMultiplier": 0.80, "sellMultiplier": 0.70 }
+    },
+    "factionModifier": {
+        "maxBonus": 15,
+        "maxPenalty": -15,
+        "scalingPerPoint": 0.15
+    },
+    "dialogueToneByTier": {
+        "hostile":    "hostile",
+        "unfriendly": "cold",
+        "wary":       "guarded",
+        "neutral":    "neutral",
+        "friendly":   "warm",
+        "trusted":    "affable",
+        "allied":     "devoted"
+    },
+    "intel": {
+        "passiveEmpathyBaseDC": 12,
+        "activeInfluenceBaseDC": 14,
+        "dcModifierByTier": {
+            "hostile":    99,
+            "unfriendly": 4,
+            "wary":       2,
+            "neutral":    0,
+            "friendly":   -2,
+            "trusted":    -4,
+            "allied":     -6
+        },
+        "intelChanceByRole": {
+            "leader":     0.80,
+            "guard":      0.70,
+            "innkeeper":  0.50,
+            "merchant":   0.40,
+            "blacksmith": 0.30,
+            "patron":     0.15,
+            "citizen":    0.10
+        },
+        "maxIntelNPCsPerSettlement": 3,
+        "relationChangeOnActivePass": "dialogueSkillCheckPass",
+        "relationChangeOnActiveFail": "dialogueSkillCheckFail"
+    },
+    "passiveApproachChecks": {
+        "innkeeper": [
+            { "skill": "empathy",      "dc": 12, "flag": "innkeeperWorried",  "setsIntel": true },
+            { "skill": "perception",   "dc": 11, "flag": "atmosphereRead" }
+        ],
+        "merchant": [
+            { "skill": "investigation","dc": 12, "flag": "goodsOverpriced" },
+            { "skill": "academia",     "dc": 13, "flag": "raritySpotted" }
+        ],
+        "blacksmith": [
+            { "skill": "academia",     "dc": 12, "flag": "qualityRead" }
+        ],
+        "guard": [
+            { "skill": "perception",   "dc": 12, "flag": "guardDistracted" }
+        ],
+        "leader": [
+            { "skill": "empathy",      "dc": 14, "flag": "leaderStressed" }
+        ]
+    }
+}

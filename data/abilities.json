@@ -1,0 +1,303 @@
+{
+  "abilities": {
+    "description": "Active abilities that cost resources or have limited uses. Organized by calling. Effect schemas use handler keys (heal, dodge, extraAction, weapon_attack, etc.) for generic dispatch.",
+    "dedication": [
+      {
+        "id": "steadyNerve",
+        "name": "Steady Nerve",
+        "callings": ["dedication"],
+        "levelRequired": 1,
+        "subtype": "ability",
+        "actionType": "bonusAction",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "usableOutOfCombat": true,
+        "description": "You have a well of inner resolve to draw upon. As a bonus action, choose one: Heal (regain 1d8 + your level + CON modifier HP) or Dodge (attackers have disadvantage until start of your next turn).",
+        "effects": {
+          "choice": true,
+          "options": [
+            {
+              "id": "heal",
+              "name": "Heal",
+              "description": "Regain 1d8 + level + CON modifier hit points",
+              "usableOutOfCombat": true,
+              "effects": { "heal": "1d8 + level + con" }
+            },
+            {
+              "id": "dodge",
+              "name": "Dodge",
+              "description": "Until the start of your next turn, attack rolls against you have disadvantage",
+              "usableOutOfCombat": false,
+              "effects": { "dodge": true }
+            }
+          ]
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "actionSurge",
+        "name": "Action Surge",
+        "callings": ["dedication"],
+        "levelRequired": 2,
+        "subtype": "ability",
+        "actionType": "free",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "usableOutOfCombat": false,
+        "description": "You can push yourself beyond normal limits. On your turn, take one additional action. Once per short rest. Exemplar capstone (level 10) grants a second use per short rest.",
+        "effects": {
+          "extraAction": 1
+        },
+        "scaling": {
+          "10": {
+            "usesPerShortRest": 2,
+            "requiresSpecialization": "exemplar"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "precisionStrike",
+        "name": "Precision Strike",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "beforeAttack",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "Before making an attack roll, spend 1 Resolve to add your maneuver die to the roll. Declare before the attack roll is made.",
+        "effects": {
+          "precisionAttackBonus": {
+            "dice": "maneuverDie",
+            "timing": "beforeAttack"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "tripAttack",
+        "name": "Trip Attack",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "onHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or be knocked Prone.",
+        "effects": {
+          "onHitSaveOrCondition": {
+            "bonusDice": "maneuverDie",
+            "saveType": "str",
+            "condition": "prone",
+            "conditionDuration": "combat",
+            "conditionIcon": "🔻"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "riposte",
+        "name": "Riposte",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "reaction",
+        "reactionTrigger": "afterMiss",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "When an enemy misses you with a melee attack, use your reaction to make a weapon attack against them. Add your maneuver die to the damage.",
+        "effects": {
+          "reactionAttack": {
+            "bonusDice": "maneuverDie",
+            "trigger": "enemyMissesMelee"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "menacingAttack",
+        "name": "Menacing Attack",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "onHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "On a hit, add your maneuver die to the damage. The target must succeed on a WIS saving throw or be Frightened of you until the end of their next turn.",
+        "effects": {
+          "onHitSaveOrCondition": {
+            "bonusDice": "maneuverDie",
+            "saveType": "wis",
+            "condition": "frightened",
+            "conditionDuration": "untilEndOfTurn",
+            "conditionIcon": "😱"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "pushingAttack",
+        "name": "Pushing Attack",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "onHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or be Pushed — they cannot make melee attacks against you next turn.",
+        "effects": {
+          "onHitPush": {
+            "bonusDice": "maneuverDie",
+            "saveType": "str",
+            "condition": "pushed",
+            "conditionDuration": "untilEndOfTurn"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "rally",
+        "name": "Rally",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "bonusAction",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "As a bonus action, spend 1 Resolve to bolster your resolve. Gain temporary HP equal to your maneuver die roll + your CON modifier.",
+        "effects": {
+          "selfTempHP": {
+            "dice": "maneuverDie",
+            "bonus": "conMod"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "parry",
+        "name": "Parry",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "reaction",
+        "reactionTrigger": "afterHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "When you are hit by a melee attack, use your reaction to reduce the damage by your maneuver die roll + your CON modifier.",
+        "effects": {
+          "reactionDamageReduction": {
+            "reductionDice": "maneuverDie",
+            "reductionBonus": "conMod"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "disarmingAttack",
+        "name": "Disarming Attack",
+        "callings": ["dedication"],
+        "specialization": "exemplar",
+        "levelRequired": 3,
+        "subtype": "maneuver",
+        "actionType": "onHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or suffer -2 to attack rolls until the start of their next turn.",
+        "effects": {
+          "onHitCondition": {
+            "bonusDice": "maneuverDie",
+            "saveType": "str",
+            "condition": "disarmed",
+            "conditionDuration": "untilStartOfTurn",
+            "conditionIcon": "🗡️",
+            "conditionValue": -2
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "swornStrike",
+        "name": "Sworn Strike",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 3,
+        "subtype": "ability",
+        "actionType": "onHit",
+        "resourceType": "resolve",
+        "resolveCost": "variable",
+        "maxResolveCost": 3,
+        "usableOutOfCombat": false,
+        "description": "On a melee hit, spend 1–3 Resolve. Deal 1d8 radiant damage per Resolve spent (+1d8 bonus vs undead or fiends). Once per attack.",
+        "effects": {
+          "variableCostDamage": {
+            "damageFormula": "1d8",
+            "damageType": "resonant",
+            "bonusVsCreatureTypes": ["undead", "fiend"],
+            "bonusDice": "1d8",
+            "trigger": "onHit",
+            "rangeType": "melee"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "aidTheVulnerable",
+        "name": "Aid the Vulnerable",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 3,
+        "subtype": "ability",
+        "actionType": "bonusAction",
+        "resourceType": "resolve",
+        "resolveCost": "variable",
+        "maxResolveCost": 3,
+        "usableOutOfCombat": true,
+        "description": "Spend 1–3 Resolve to heal a target for (Resolve spent × CON modifier) + level HP. Alternatively, spend 1 Resolve to cure one curable condition.",
+        "effects": {
+          "choice": true,
+          "options": [
+            {
+              "id": "heal",
+              "name": "Heal",
+              "description": "Heal self for (Resolve spent × CON modifier) + level HP",
+              "usableOutOfCombat": true,
+              "effects": {
+                "variableCostHeal": {
+                  "formula": "resolveCost * conMod + level"
+                }
+              }
+            },
+            {
+              "id": "cure",
+              "name": "Cure Condition",
+              "description": "Cure one curable condition (costs 1 Resolve)",
+              "fixedCost": 1,
+              "usableOutOfCombat": true,
+              "effects": {
+                "cureCondition": { "count": 1 }
+              }
+            }
+          ]
+        },
+        "campaignIds": ["core"]
+      }
+    ],
+    "wanderlust": [],
+    "scholar": []
+  }
+}

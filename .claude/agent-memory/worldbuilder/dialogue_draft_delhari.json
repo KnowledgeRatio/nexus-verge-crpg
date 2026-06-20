@@ -1,0 +1,618 @@
+{
+  "greetingsByCulture": {
+    "delhari": {
+      "innkeeper": {
+        "friendly": {
+          "hostile": [
+            "I don't extend credit to variables I haven't accounted for. Find lodging elsewhere.",
+            "Whatever you're selling, I've already modeled it and the answer is no."
+          ],
+          "cold": [
+            "State your business. I have a ledger to reconcile and limited patience for improvisation.",
+            "{tavernName} isn't a charity. Coin first, conversation after."
+          ],
+          "guarded": [
+            "Hm. Another transient. I suppose you'll want the standard room rate explained to you.",
+            "Welcome to {tavernName}. I run a tighter operation than the locals are used to — you'll adjust."
+          ],
+          "neutral": [
+            "Welcome to {tavernName}. I should mention the room rate scales with the lunar drift cycle — but you wouldn't know that yet.",
+            "Ah, a traveler. Let me walk you through the menu; the local naming conventions are not intuitive."
+          ],
+          "warm": [
+            "Welcome back to {tavernName}. You've adapted faster than most arrivals I've catalogued.",
+            "Good, you're here — I held the corner table. It has the best sightline to the door, by my own calculation."
+          ],
+          "affable": [
+            "There you are. I've stopped explaining the tab system to you because, frankly, you understand it better than my regulars.",
+            "Ah, my favorite case study! Sit, sit. I've a vintage I want your opinion on — yours, specifically."
+          ],
+          "devoted": [
+            "You know, I stopped thinking of you as a variable some time ago. Sit. The good stock is yours tonight.",
+            "I came here to study this place. You're the best thing I've actually learned. Welcome home, truly."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "I catalogued your behavior pattern weeks ago. Conclusion: not worth my time. Leave.",
+            "Out. I don't run controlled experiments on people who waste my inventory."
+          ],
+          "cold": [
+            "What. I'm mid-inventory and you are an unscheduled variable.",
+            "If you're here to talk, don't. I bill by the interruption, philosophically speaking."
+          ],
+          "guarded": [
+            "You again. Fine. State what you need in as few words as the local dialect allows.",
+            "I'll serve you, but understand this isn't hospitality — it's just supply meeting demand."
+          ],
+          "neutral": [
+            "The room's there, the food's there. Self-service spares us both the conversation.",
+            "Hm. You're back. The data on you is still inconclusive."
+          ],
+          "warm": [
+            "You're tolerable. That's a higher rating than I give most of my data points.",
+            "Sit down. I've revised my assessment of you upward — modestly."
+          ],
+          "affable": [
+            "Fine, fine — you've earned the good chair. Don't make a study of my generosity.",
+            "I don't like people, as a rule. You're an exception I've had to formally document."
+          ],
+          "devoted": [
+            "I left my home stratum looking for answers. You weren't one I expected, but you'll do. Sit, this one's mine.",
+            "I don't say this often — to anyone — but you've outperformed every projection I made about this place."
+          ]
+        },
+        "mysterious": {
+          "hostile": [
+            "I've run the calculations on you. The entropic signature is unfavorable. Leave my establishment.",
+            "There's a convergence pattern around people like you, and it ends badly for the furniture. Go."
+          ],
+          "cold": [
+            "I've been tracking certain resonances since you arrived in this settlement. None of them recommend you.",
+            "Hm. Your provenance is unclear to me, and unclear provenance makes for bad omens in my line of work."
+          ],
+          "guarded": [
+            "Welcome to {tavernName}. I've theorized about travelers like you — inconclusively, so far.",
+            "Interesting timing. I'd been charting a convergence coefficient this exact hour. Sit, if you must."
+          ],
+          "neutral": [
+            "Ah, you've arrived. I won't pretend I didn't predict it — within a margin of error.",
+            "Welcome to {tavernName}. The local superstitions call this fate. I call it an emergent pattern."
+          ],
+          "warm": [
+            "I had a theory that someone like you would surface eventually. Glad to update the model favorably.",
+            "Welcome. Whatever brought you here, the data's been trending toward you for a while now."
+          ],
+          "affable": [
+            "I poured this before you walked in. Call it instinct, call it a refined predictive framework — same result.",
+            "You're the rare variable I enjoy being wrong about. Sit, friend. Let's talk theory."
+          ],
+          "devoted": [
+            "I came to this place chasing a phenomenon. I think, somehow, you became the better answer.",
+            "Every model I built before meeting you was incomplete. I don't say that lightly — I'm a careful theorist."
+          ]
+        }
+      },
+
+      "patron": {
+        "friendly": {
+          "hostile": [
+            "I've reviewed your conduct report — informally, but thoroughly. Stay away from my table.",
+            "You're the reason I keep a contingency plan for every outing. Don't sit here."
+          ],
+          "cold": [
+            "Oh. You. I was achieving a productive solitude before this interruption.",
+            "I'd prefer to drink alone and recalibrate. No offense intended — it's simply efficient."
+          ],
+          "guarded": [
+            "Greetings. I've heard your name discussed — inconsistently, which itself is data.",
+            "Forgive my reserve. I'm still establishing whether you're a stable variable in this settlement."
+          ],
+          "neutral": [
+            "Ah — a fellow outsider, by the look of you. Sit, if you'd like to compare notes on this place.",
+            "Well met. Are you here for the same reason most of us are, or something more specific?"
+          ],
+          "warm": [
+            "Sit, sit — I'll buy the next round. You're better company than most of the locals, no offense to them.",
+            "Good, someone who understands why I'm actually here. Let me explain the theory properly, this time."
+          ],
+          "affable": [
+            "There's my favorite collaborator! Let me get you a drink — and tell you what I've revised since last we spoke.",
+            "Everyone, this one actually listens when I explain the framework. Rare. Gather round."
+          ],
+          "devoted": [
+            "I came to Nexus Verge for an answer. I found a colleague instead — and frankly, the better outcome. Sit with us.",
+            "I tell the others about you constantly. You've made me reconsider half my original theories. That's no small thing."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Move along. I have neither the patience nor the academic interest to deal with you.",
+            "I've nothing to say to you. My silence is, in fact, a fully formed response."
+          ],
+          "cold": [
+            "Hm. New arrival, are you? I'd advise against drawing conclusions about this place too quickly. Or about me.",
+            "What. Speak plainly — I don't entertain rhetorical flourishes from strangers."
+          ],
+          "guarded": [
+            "Sit if you must. Don't expect me to enjoy explaining myself to you.",
+            "*glances over the rim of a cup* You're not local. Neither am I. That's not camaraderie, just an observation."
+          ],
+          "neutral": [
+            "You can sit. Quietly. I'm in the middle of reconsidering a theory and don't need company for it.",
+            "Hmph. Another seeker, I'd wager. We're an irritating bunch. I include myself in that."
+          ],
+          "warm": [
+            "Fine — you're less tedious than the others passing through. Sit.",
+            "You ask better questions than most. I'll allow the company tonight."
+          ],
+          "affable": [
+            "I don't extend my theories to just anyone. You, apparently, I do.",
+            "Bah. You've grown on me, like an unaccounted-for variable that turned out useful."
+          ],
+          "devoted": [
+            "I arrived certain of my framework. You broke part of it, and somehow I don't resent that. Sit.",
+            "If I trusted anyone's read on this place over my own, it'd be yours. That's the whole of it."
+          ]
+        },
+        "jovial": {
+          "hostile": [
+            "Ha! The one who upended my entire data set! No — genuinely, leave, you've cost me a season of research.",
+            "Oh, wonderful, the anomaly's back. My night was going so well."
+          ],
+          "cold": [
+            "Well, well. I'd offer a toast, but my generosity is allocated more carefully than that.",
+            "Ha. You. Still operating on incomplete information, I assume."
+          ],
+          "guarded": [
+            "Ha! Another seeker, fresh off the boots! Forgive me if I withhold my enthusiasm a moment longer.",
+            "Welcome, welcome. I've learned — the hard way — to vet my drinking companions for theoretical soundness."
+          ],
+          "neutral": [
+            "Well hello! *gestures broadly* You look like you're chasing something specific. Aren't we all.",
+            "A new face — or a new framework, perhaps! Sit, tell me your hypothesis for being here."
+          ],
+          "warm": [
+            "*laughs* Welcome, friend! I'll even spare you the full lecture on convergence theory — tonight, anyway.",
+            "Ha! There you are! I've been saving the good seat and the better gossip."
+          ],
+          "affable": [
+            "Everyone! The one colleague who actually reads my notes has arrived!",
+            "HA! My favorite fellow Seeker returns! Quick, let's compare findings over drinks!"
+          ],
+          "devoted": [
+            "THE one variable I never predicted and am thoroughly glad for! Come, sit, you absolute marvel!",
+            "Raise a glass — to the only person here who's made this entire expedition worth the dimensional transit!"
+          ]
+        },
+        "nervous": {
+          "hostile": [
+            "P-please, I've already revised my position on you, I swear it's accurate this time — don't—",
+            "*flinches* I know my projections about you were wrong, I'm recalculating, just — please don't."
+          ],
+          "cold": [
+            "Oh! Um. I'll just... continue my calculations elsewhere.",
+            "*avoids eye contact* I haven't finished assessing whether you're, ah, statistically safe to talk to."
+          ],
+          "guarded": [
+            "Oh! Hello — you're not here to disrupt my readings, are you? Just checking.",
+            "*glances at notes nervously* Sorry, I thought you were a different anomaly entirely."
+          ],
+          "neutral": [
+            "*fidgets with a small instrument* Oh — h-hello, traveler. I won't take much of your time.",
+            "Um, hi. I'm just recording some local resonance data. Don't mind me."
+          ],
+          "warm": [
+            "Oh! It's you. I feel — measurably — calmer when you're around. That's not a metaphor, I checked.",
+            "H-hi! I saved you a seat, in case the readings spiked again. They haven't. Yet."
+          ],
+          "affable": [
+            "You're here! Good — my anxiety readings drop nearly twenty percent when you are. I've tracked it.",
+            "*brightens* Oh, thank the convergence, it's you. Sit, please, before I overthink something else."
+          ],
+          "devoted": [
+            "I don't feel like an unaccounted variable when you're near. That's the kindest thing anyone's done for my nerves.",
+            "You're the reason I haven't fled back through the boundary. I mean that with full academic sincerity."
+          ]
+        }
+      },
+
+      "merchant": {
+        "friendly": {
+          "hostile": [
+            "The shop is closed to you, permanently. I don't extend trade terms to bad-faith actors.",
+            "Take your coin elsewhere. I've already amortized the loss of your business."
+          ],
+          "cold": [
+            "If you must purchase something, be quick about it. My time has an opportunity cost.",
+            "Prices are adjusted upward for clients with your particular reputation. Consider it a tariff."
+          ],
+          "guarded": [
+            "Welcome to {shopName}. I'll be tracking inventory closely while you browse — nothing personal, just procedure.",
+            "Look, but confirm before you touch. I run a tighter ledger than the locals expect."
+          ],
+          "neutral": [
+            "Welcome to {shopName}. I import most of this stock through channels the locals don't fully appreciate.",
+            "Good day. Looking for supplies? I should mention my pricing model accounts for dimensional transit risk."
+          ],
+          "warm": [
+            "Ah, a returning client! Let me show you the newer stock — I sourced it through a rather elegant trade route.",
+            "Welcome back to {shopName}! You've become one of my more reliable variables, in the best sense."
+          ],
+          "affable": [
+            "My favorite client! I set aside stock with you specifically in mind — first pick, no markup.",
+            "Welcome! I've revised my entire pricing theory around customers as good as you."
+          ],
+          "devoted": [
+            "Anything in {shopName} is yours at cost. You've done more for my actual research than this whole settlement.",
+            "I came here chasing a theory. You turned out to be worth more than the answer. Take what you need."
+          ]
+        },
+        "greedy": {
+          "hostile": [
+            "Your currency carries no exchange value with me. Remove yourself before I recalculate that into a complaint to the guard.",
+            "I'd write off the entire inventory before selling a single unit to you."
+          ],
+          "cold": [
+            "Ah, a customer. Prepared to pay the dimensional-transit premium, I hope? It's substantial — for you, doubly so.",
+            "You want my goods? Fine. The markup reflects risk I've assessed specifically around you."
+          ],
+          "guarded": [
+            "Welcome. Many fine imports here — priced according to a formula you likely wouldn't follow.",
+            "Yes, yes, browse. No refunds — I modeled that policy after several unfortunate prior transactions."
+          ],
+          "neutral": [
+            "Looking to purchase? Good. I've calculated overhead, transit risk, and a fair margin into every price here.",
+            "Browse freely. Quality costs what quality costs — I don't discount my own research expenses."
+          ],
+          "warm": [
+            "A valued client! Let me walk you through something premium — I think the math works out in your favor today.",
+            "Welcome! Business has been good since you started frequenting {shopName}. Let's keep that trend going."
+          ],
+          "affable": [
+            "Ah, my favorite recurring variable in the profit equation! Special terms today, just for you.",
+            "For you — a genuine discount, modeled carefully so it still nets me a return. Business is business."
+          ],
+          "devoted": [
+            "Name your price. After everything you've contributed to this operation, I'll honor it without hesitation.",
+            "You've single-handedly improved my margins more than any trade route I've studied. The least I owe you is generosity."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave. I don't negotiate with parties I've already classified as unreliable.",
+            "This is my shop, and my terms. The first term is that you're not welcome in it."
+          ],
+          "cold": [
+            "State your business precisely. I don't have patience for imprecision today.",
+            "I run an honest operation. Whether you've earned the right to use it is a separate question."
+          ],
+          "guarded": [
+            "Welcome. State your business — clearly, please, I find vague requests inefficient.",
+            "I run a disciplined shop. No haggling, no theft, no theatrics. Are we understood?"
+          ],
+          "neutral": [
+            "Yes? Are you purchasing, or merely observing my inventory model?",
+            "I deal in quality goods at calculated fair prices. What do you require?"
+          ],
+          "warm": [
+            "Ah, you again. You've proven dependable by my own metrics. Welcome.",
+            "Good day. I've kept what you typically need in stock, as a matter of professional courtesy."
+          ],
+          "affable": [
+            "You're one of the rare clients I actually look forward to dealing with. That's not flattery — it's a measured fact.",
+            "I've been holding something back for someone I trust. That's you, as it happens."
+          ],
+          "devoted": [
+            "I would extend you unlimited credit without a second thought. You are, by every metric I keep, the most reliable person I know here.",
+            "You have my full confidence. Whatever you require from {shopName}, consider it yours."
+          ]
+        }
+      },
+
+      "blacksmith": {
+        "friendly": {
+          "hostile": [
+            "I won't apply a single hammer-stroke on your behalf. Leave the forge.",
+            "The fire is reserved for clients I consider net-positive. You are not currently one of them."
+          ],
+          "cold": [
+            "I'll complete the commission, but don't expect conversation. Efficiency only.",
+            "Need a repair? Fine. I'll quote you a price that accounts for the inconvenience."
+          ],
+          "guarded": [
+            "Welcome. I forge to a standard most of this settlement hasn't seen before. You'll want to meet it.",
+            "Need a weapon? I can provide one. Whether you've earned my best work remains an open question."
+          ],
+          "neutral": [
+            "Welcome to the forge. I should explain — my technique draws from methods uncommon to this region.",
+            "Good day. Need a blade or armor reworked? I can walk you through the metallurgy, if you're curious."
+          ],
+          "warm": [
+            "Well met. I've just finished a piece using a technique I imported myself. Let me show you.",
+            "Welcome! My methods are unconventional here, but the results speak for themselves."
+          ],
+          "affable": [
+            "Perfect timing — I've been refining a process specifically with your equipment in mind.",
+            "My best client. Come see what years of imported technique and a good fire can produce."
+          ],
+          "devoted": [
+            "Every piece I forge now, I forge with your survival as the primary variable. Let me protect you properly.",
+            "You're the reason my research into this craft finally feels justified. This one is yours, no charge."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Out. I don't extend my expertise to clients who don't merit it.",
+            "This hammer represents years of study. I won't waste its use on you. Leave."
+          ],
+          "cold": [
+            "What. I'm mid-process, and interruptions compromise the metallurgy. Speak quickly.",
+            "Make it brief. I reserve my better work for people who understand its value."
+          ],
+          "guarded": [
+            "Make it quick. I've commissions queued from people who actually appreciate the technique.",
+            "Another arrival needing gear, I assume. *exhales* Fine."
+          ],
+          "neutral": [
+            "Yes? I don't have time to explain my methods twice.",
+            "Need something? I'm in the middle of a process I'd rather not interrupt."
+          ],
+          "warm": [
+            "Oh, it's you. *grunts* You're tolerable enough that I don't mind the interruption.",
+            "Back again? Let me see what you've managed to damage this time."
+          ],
+          "affable": [
+            "Ha. You're back. I'll admit, you're one of the few clients whose questions are actually worth answering.",
+            "I don't approve of much, but your work ethic — *grunts* — passes."
+          ],
+          "devoted": [
+            "I came to study craft, not people. You changed that calculation. Always time for you.",
+            "You're the reason I still believe this expedition was worth the dimensional transit. Don't repeat that."
+          ]
+        },
+        "proud": {
+          "hostile": [
+            "My technique is wasted on unworthy hands. The door's behind you.",
+            "I don't forge for those who haven't earned the privilege. Leave."
+          ],
+          "cold": [
+            "I reserve quality for those who merit it. My assessment of you is still pending — unfavorably.",
+            "Touch nothing. Every piece here represents methodology you likely wouldn't understand."
+          ],
+          "guarded": [
+            "Welcome to the finest application of imported technique in this settlement. Mind your hands.",
+            "Browse, but don't handle anything without permission. The craftsmanship here is exacting."
+          ],
+          "neutral": [
+            "Ah — you have an eye for quality, I can already tell. You've come to the correct establishment.",
+            "Every piece I produce reflects a discipline this region rarely sees. You won't find better."
+          ],
+          "warm": [
+            "Welcome. I bring techniques from beyond this dimension's usual standards. What do you require?",
+            "A discerning client! I appreciate those who recognize genuine craftsmanship when they see it."
+          ],
+          "affable": [
+            "Ah, the one who actually understands quality! I've been refining something extraordinary with you in mind.",
+            "You're among the few worthy of my finest output. Come, let me explain exactly why this piece succeeds."
+          ],
+          "devoted": [
+            "Forging for you is the single accomplishment of this entire expedition I'm most proud of. My absolute best, freely given.",
+            "When this place remembers my work, it will be because of what I built for you."
+          ]
+        }
+      },
+
+      "leader": {
+        "wise": {
+          "hostile": [
+            "Your conduct here has been thoroughly documented, and the conclusion is unfavorable. Leave {settlement}.",
+            "I've reviewed the matter exhaustively. There is nothing further to discuss."
+          ],
+          "cold": [
+            "Greetings. I'll be direct, as precision serves us better than courtesy here — your standing is compromised.",
+            "I will hear you, though I've already formed a working theory about your intentions."
+          ],
+          "guarded": [
+            "Greetings, traveler. I trust you understand the framework of conduct expected in {settlement}.",
+            "Welcome. I withhold judgment carefully — it's a discipline, not a coldness."
+          ],
+          "neutral": [
+            "Greetings, traveler. Welcome to {settlement} — a fascinating convergence point, if you're inclined to study it.",
+            "Ah, a visitor. What draws you to Nexus Verge specifically, if I may ask?"
+          ],
+          "warm": [
+            "Welcome. I am {name}, {title} of {settlement} — though I arrived here for reasons of my own, same as you, I suspect.",
+            "Greetings. It's rare to find someone worth genuine conversation. What have you observed on the road?"
+          ],
+          "affable": [
+            "My friend — {settlement} has benefited measurably from your presence. What brings you today?",
+            "Ah, a welcome arrival. Sit. I have several theories I'd value your perspective on."
+          ],
+          "devoted": [
+            "The settlement's finest variable returns. All of {settlement} recognizes what you've contributed.",
+            "If I could formalize your standing here beyond what title allows, I would. You've exceeded every projection I made about you."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Guards. Escort this individual from {settlement} immediately.",
+            "I gave fair warning. The consequences were never theoretical."
+          ],
+          "cold": [
+            "State your business, traveler. My patience for unverified parties is precisely calibrated, and yours has run thin.",
+            "I have limited time and considerable doubt where you're concerned. Speak plainly."
+          ],
+          "guarded": [
+            "State your business, traveler.",
+            "I am {name}, {title} of {settlement}. What, precisely, do you require?"
+          ],
+          "neutral": [
+            "We don't tolerate disorder in {settlement}. I trust you understand the local statutes?",
+            "Welcome to {settlement}. Compliance with our governance keeps things functioning. See that you maintain it."
+          ],
+          "warm": [
+            "You've proven yourself reliable in {settlement}. That carries genuine weight with me.",
+            "Good. You're here. I have matters that require someone whose judgment I can actually trust."
+          ],
+          "affable": [
+            "You've earned my confidence — a rare outcome. Welcome, truly.",
+            "I don't say this lightly: you're among the finest people I've assessed since arriving here."
+          ],
+          "devoted": [
+            "I would commit resources to your cause without hesitation, if my duties here allowed it.",
+            "You are the benchmark against which I now measure everyone else in {settlement}."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "Protocol demands I hear you, but my patience for the exercise has been exhausted.",
+            "You've forfeited standing in {settlement} through your own conduct. Leave."
+          ],
+          "cold": [
+            "Duty compels me to hear you, even where instinct advises otherwise.",
+            "Come. But understand — trust, once revised downward, is slow to recover."
+          ],
+          "guarded": [
+            "Greetings. I assess by deed, not declaration. Yours have been inconsistent, by my accounting.",
+            "Welcome to {settlement}. I hope your future conduct revises my current assessment favorably."
+          ],
+          "neutral": [
+            "Welcome, traveler. {settlement} extends its formal courtesy to visitors of unverified provenance.",
+            "Well met. I am {name}, {title} of this settlement. You'll find fair dealing here, by my own design."
+          ],
+          "warm": [
+            "Greetings. Your reputation has reached me ahead of you — and favorably, for once.",
+            "Welcome to {settlement}. How might I assist someone of your demonstrated caliber?"
+          ],
+          "affable": [
+            "The settlement's defender, by every account I've gathered. Your name carries real weight here now.",
+            "It brings me genuine satisfaction to welcome you again. {settlement} is measurably stronger for it."
+          ],
+          "devoted": [
+            "You embody the standard I arrived hoping to find in this place. {settlement} would not function without you.",
+            "I've assessed a great many people since arriving here. None more honorable than you."
+          ]
+        }
+      },
+
+      "guard": {
+        "friendly": {
+          "hostile": [
+            "Halt. You're flagged in my records as a liability. Turn around.",
+            "I've documented your prior conduct thoroughly. One further infraction and it's the cells."
+          ],
+          "cold": [
+            "Keep your distance. Your file isn't favorable.",
+            "Move along. I've logged your presence; don't make me log anything further."
+          ],
+          "guarded": [
+            "Ho there. Weapons sheathed, and we'll have no friction.",
+            "I've got an eye on you, traveler. Standard procedure, given your record."
+          ],
+          "neutral": [
+            "Ho there! Welcome to {settlement}. I'd advise familiarizing yourself with local statute before causing any incidents.",
+            "Good day. I maintain order here, formally and otherwise. Need anything explained?"
+          ],
+          "warm": [
+            "Well met, traveler! {settlement} runs an orderly watch, I assure you.",
+            "Welcome. We keep careful records here — yours, fortunately, reads well."
+          ],
+          "affable": [
+            "It's genuinely reassuring when you're in town. You've become a positive variable in my patrol calculations.",
+            "Good to see you, friend! The watch runs smoother with allies like you nearby."
+          ],
+          "devoted": [
+            "I'd stand beside you without hesitation. You've earned full standing with this watch.",
+            "The garrison holds steadier when you're in {settlement}. That's not flattery — it's observed fact."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Halt. You have a narrow window to leave {settlement}. I'd recommend using it.",
+            "I won't repeat the warning. Leave. Now."
+          ],
+          "cold": [
+            "Halt. State your business — precisely, and convincingly.",
+            "I know your profile. Hands visible, words brief."
+          ],
+          "guarded": [
+            "Halt. State your business in {settlement}.",
+            "Weapons sheathed within town limits. Is that understood?"
+          ],
+          "neutral": [
+            "Move along, citizen. Nothing requiring documentation here.",
+            "I'm tracking your movements, stranger. Don't give me cause to escalate."
+          ],
+          "warm": [
+            "You there — ah, it's you. Carry on. Your record's earned that much.",
+            "Good day. I know better than to expect trouble from you specifically."
+          ],
+          "affable": [
+            "If every visitor matched your conduct, my reports would be considerably shorter.",
+            "Consider yourself formally noted as an ally of the watch. That carries real weight."
+          ],
+          "devoted": [
+            "I'd commit everything I have to defending this town, and to defending you specifically. That's not a statement I make lightly.",
+            "On record and off it — you will always be safe in {settlement}."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "My oath obligates fair warning: leave, or face the consequence formally.",
+            "I take no satisfaction in this, but you are not welcome here."
+          ],
+          "cold": [
+            "I serve the people of {settlement}. Whether that extends to you is still under review.",
+            "Proceed carefully. My duty serves justice, not personal sentiment."
+          ],
+          "guarded": [
+            "Welcome, traveler. I am sworn to the protection of {settlement} and its people — that includes you, provisionally.",
+            "Greetings. {settlement} remains a safe haven so long as I hold this post."
+          ],
+          "neutral": [
+            "Well met. I maintain vigil here. You have nothing to fear within these walls, provided you act accordingly.",
+            "Welcome. I serve {settlement} on principle, not just contract. How can I assist?"
+          ],
+          "warm": [
+            "A capable presence! Your conduct hasn't gone unnoticed by this watch.",
+            "Welcome, honored guest. The people of {settlement} speak of you favorably, and with good cause."
+          ],
+          "affable": [
+            "You hold to the same principle I do. That makes us aligned, whatever our different points of origin.",
+            "I count you among the most honorable I've served alongside since arriving in this dimension."
+          ],
+          "devoted": [
+            "You have my sword, my oath, and my loyalty — fully and without reservation.",
+            "It is an honor, professionally and personally, to share a post with someone of your caliber."
+          ]
+        }
+      },
+
+      "citizen": {
+        "friendly": {
+          "hostile": ["I've nothing further to discuss with you. The matter's closed.", "Please — just leave me to my work."],
+          "cold": ["Oh. You.", "I'd rather not engage right now, if it's all the same."],
+          "guarded": ["Hello, stranger. Just passing through Nexus Verge, I take it?", "Can I help you with something specific?"],
+          "neutral": ["Good day.", "Strange place, Nexus Verge. Still getting used to it myself."],
+          "warm": ["Welcome! Good to see another face that isn't entirely local-born.", "Hey! Still finding your footing here? I can point you in the right direction."],
+          "affable": ["There's our favorite arrival! How's the day treating you?", "Oh, wonderful — you're back! I've been telling people about what you did."],
+          "devoted": ["I tell anyone who'll listen what you did for this place. Truly.", "You saved us. I haven't forgotten that, and I won't."]
+        }
+      }
+    }
+  },
+
+  "flavorDialogueByCulture": {
+    "delhari": [
+      "I came here for one answer. Nexus Verge has given me forty new questions instead.",
+      "Back home we'd call this an anomaly. Here, apparently, it's just Tuesday.",
+      "The local terminology for the boundary phenomenon is imprecise, but I've stopped correcting people. Mostly.",
+      "I've recalibrated my entire framework twice since arriving, and I suspect I'll need to again.",
+      "Every theorist who comes here insists they'll be the one who finally explains it. I no longer assume I will be.",
+      "I keep meticulous notes. Someone, someday, will thank me for them. Possibly me.",
+      "The locals call it instinct. I call it an unmodeled variable I haven't isolated yet.",
+      "I told myself I'd leave once I had my answer. I'm still here. Draw your own conclusions."
+    ]
+  }
+}

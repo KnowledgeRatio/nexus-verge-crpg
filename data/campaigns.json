@@ -1,0 +1,155 @@
+{
+  "description": "Campaign definitions and configuration for Nexus Verge",
+  "version": "1.0.0",
+
+  "campaigns": [
+    {
+      "id": "core",
+      "name": "Core Rules",
+      "description": "Standard D&D 5e SRD content that appears in all campaigns",
+      "isBase": true,
+      "inherits": [],
+      "mapSize": "medium",
+      "settings": {
+        "allowAllContent": true
+      }
+    },
+    {
+      "id": "nexus-verge",
+      "name": "Nexus Verge",
+      "nativeName": "Aevorn",
+      "description": "A procedural D&D 5e roguelike set in Aevorn — a dimension where the edges of countless worlds have folded into one. Explore an infinite frontier, build your reputation across five distinct cultures, and confront the Void that is quietly erasing everything at the edges. You arrive the way most do — unexpectedly, and without a satisfying explanation.",
+      "isBase": false,
+      "inherits": ["core"],
+      "settings": {
+        "proceduralWorld": true,
+        "reputationSystem": true,
+        "urbanSprawl": true
+      },
+      "worldGenOverrides": {
+        "biomeScale": "continental",
+        "settlementDensity": "normal"
+      },
+      "featureGeneration": {
+        "startingRelation": 0
+      }
+    },
+    {
+      "id": "defeatLichKing",
+      "disabled": true,
+      "name": "Defeat the Lich King",
+      "description": "A dark threat rises - the Lich King amasses an undead army. Hunt down his phylactery and end his reign.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Locate the Lich King's phylactery and destroy it before his undead army consumes the realm.",
+      "featureGeneration": {
+        "baseDungeons": 250,
+        "baseSanctuaries": 80,
+        "startingRelation": -5
+      }
+    },
+    {
+      "id": "uniteKingdoms",
+      "disabled": true,
+      "name": "Unite the Kingdoms",
+      "description": "War threatens to tear the land apart. Forge alliances, broker peace, and unite the fractured kingdoms.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Earn the trust of all major factions and unite them against a common threat.",
+      "featureGeneration": {
+        "baseSettlements": 200,
+        "settlementDistribution": {
+          "village": 0.50,
+          "town": 0.35,
+          "city": 0.15
+        },
+        "baseDungeons": 150,
+        "startingRelation": 10
+      }
+    },
+    {
+      "id": "recoverArtifact",
+      "disabled": true,
+      "name": "Recover the Lost Artifact",
+      "description": "An ancient artifact of immense power has been lost. Explore forgotten ruins and dangerous dungeons to recover it.",
+      "isBase": false,
+      "inherits": ["nexus-verge"],
+      "objective": "Explore the world's dungeons and ruins to find the Lost Artifact before it falls into the wrong hands.",
+      "featureGeneration": {
+        "baseDungeons": 350,
+        "basePOIs": 400,
+        "baseSettlements": 100
+      }
+    }
+  ],
+
+  "defaultCampaignId": "nexus-verge",
+
+  "filteringRules": {
+    "missingCampaignIds": "core",
+    "inheritanceMode": "additive",
+    "strictMode": false
+  },
+
+  "templateCampaigns": [
+    {
+      "id": "desert-wasteland",
+      "name": "Desert Wasteland (Template)",
+      "description": "Post-apocalyptic desert world - scarce resources, harsh survival, no divine magic",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "harshEnvironment": true,
+        "limitedResources": true,
+        "noGods": true
+      },
+      "restrictions": {
+        "excludeSpellSchools": ["conjuration"],
+        "metalItemsRare": true
+      },
+      "worldGenOverrides": {
+        "primaryBiome": "desert",
+        "waterScarcity": 0.9,
+        "settlementDensity": "sparse"
+      }
+    },
+    {
+      "id": "gothic-horror",
+      "name": "Gothic Horror (Template)",
+      "description": "Domains of dread shrouded in mist - dark powers, cursed lands, and despair",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "darkPowers": true,
+        "cursedLands": true,
+        "horrorChecks": true
+      },
+      "worldGenOverrides": {
+        "primaryBiome": "temperateForest",
+        "atmosphereModifier": "dark",
+        "undeadFrequency": 2.0
+      }
+    },
+    {
+      "id": "nautical",
+      "name": "Nautical Campaign (Template)",
+      "description": "Seafaring adventure - ships, islands, pirates, and sea monsters",
+      "isBase": false,
+      "inherits": ["core"],
+      "disabled": true,
+      "settings": {
+        "shipCombat": true,
+        "islandHopping": true,
+        "navalFactions": true
+      },
+      "additionalSkills": ["sailing", "navigation"],
+      "worldGenOverrides": {
+        "waterCoverage": 0.7,
+        "islandFrequency": "high",
+        "coastalSettlements": true
+      }
+    }
+  ]
+}

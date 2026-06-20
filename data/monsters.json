@@ -1,0 +1,4143 @@
+{
+  "monsters": [
+    {
+      "id": "goblin",
+      "name": "Goblin",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 15,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 10,
+        "int": 10,
+        "wis": 8,
+        "cha": 8
+      },
+      "skills": {
+        "cunning": 6
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "goblin"
+      ],
+      "traits": [
+        {
+          "name": "Nimble Escape",
+          "description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "scimitar",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "dagger",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.1
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2,
+        "denseForest": 1.2
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "goblinWarren",
+        "dragonLair"
+      ],
+      "description": "Quick-fingered scavengers who arrived through a dozen convergence events and never left. They work the margins between settlements, picking through what expeditions abandon. Underestimated consistently. Dangerous consistently.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Knee-high bipeds with yellow-green skin, oversized ears, and wide-set amber eyes with no whites. Wiry limbs disproportionately long relative to torso. They wear scavenged gear layered from at least two source-worlds — a boiled leather bracer beside a metal ring of entirely different alloy and craft tradition — crouched low, weight always forward."
+    },
+    {
+      "id": "wolf",
+      "name": "Wolf",
+      "size": "medium",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 13,
+      "hitPoints": "2d8+2",
+      "speed": 40,
+      "abilities": {
+        "str": 12,
+        "dex": 15,
+        "con": 12,
+        "int": 3,
+        "wis": 12,
+        "cha": 6
+      },
+      "skills": {
+        "perception": 3,
+        "cunning": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Hearing and Smell",
+          "description": "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d4",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "grassland",
+          "tundra"
+        ],
+        "occasional": [
+          "plains",
+          "hills",
+          "snowyPlains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "jungle",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "grassland": 1.3,
+        "tundra": 1.2,
+        "hills": 1.1
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "banditHideout",
+        "goblinWarren",
+        "orcStronghold",
+        "beastDen",
+        "frozenCavern"
+      ],
+      "description": "Pack predators that arrived with a temperate forest convergence and found the Verge's biome variety suited them. They hunt the same way they always have. There is something reassuring about that.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Grey-brown timber wolf, shoulder-height to a human hip. Coat runs two distinct textures: fine temperate undercoat and a coarser outer layer in a slightly different shade, as though two coat types from two biomes failed to fully integrate. Eyes reflective green-gold. Stance low and deliberate, tail carried straight behind."
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "lawful evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 13,
+      "hitPoints": "2d8+4",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 14,
+        "con": 15,
+        "int": 6,
+        "wis": 8,
+        "cha": 5
+      },
+      "damageResistances": ["blood"],
+      "damageImmunities": [
+        "poison"
+      ],
+      "damageVulnerabilities": ["bone"],
+      "conditionImmunities": [
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "understands Common but can't speak"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "shortsword",
+          "reach": 5
+        },
+        {
+          "name": "Shortbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "shortbow",
+          "range": {
+            "normal": 80,
+            "long": 320
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "shortbow",
+            "chance": 0.2
+          }
+        ]
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins",
+        "wizardTower"
+      ],
+      "description": "What remains when death gets interrupted. Old magic, mostly — the Verge is ancient enough that its graveyards have had time to become complicated.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A humanoid figure composed entirely of bare yellowed bone, standing upright. Joints articulated beyond biological range — elbows facing the wrong way, neck rotated slightly too far. Several ribs replaced with segments from an anatomically different species. Carries a shortsword in one hand, posture rigid and attentive."
+    },
+    {
+      "id": "orc",
+      "name": "Orc",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 13,
+      "hitPoints": "2d8+6",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 12,
+        "con": 16,
+        "int": 7,
+        "wis": 11,
+        "cha": 10
+      },
+      "skills": {
+        "influence": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "orc"
+      ],
+      "traits": [
+        {
+          "name": "Aggressive",
+          "description": "As a bonus action, the orc can move up to its speed toward a hostile creature it can see."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "weaponId": "greataxe",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.4
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "orcStronghold"
+      ],
+      "description": "Survivors of a shattered convergence zone who arrived with nothing and rebuilt a warrior culture from the wreckage. Their aggression reads as cruelty to outsiders. To the orcs, it is memory.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Broad-shouldered, barrel-chested humanoid, grey-green skin, standing a full head taller than a typical human. Jaw heavy with pronounced lower canines, brow ridge thick. Scarring overlaps older scarring. Armour is functional hide and hammered iron — components from multiple traditions assembled without aesthetic concern, all of it used hard."
+    },
+    {
+      "id": "bandit",
+      "name": "Bandit",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any non-lawful",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d8+2",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 12,
+        "con": 12,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "scimitar",
+          "reach": 5
+        },
+        {
+          "name": "Light Crossbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "lightCrossbow",
+          "range": {
+            "normal": 80,
+            "long": 320
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "dagger",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.1
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "road",
+          "plains",
+          "savanna",
+          "grassland",
+          "residential",
+          "industrial"
+        ],
+        "occasional": [
+          "forest",
+          "hills",
+          "desert",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "swamp",
+          "tundra",
+          "snowyPlains",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "road": 2,
+        "residential": 1.8,
+        "industrial": 1.6,
+        "plains": 1.4,
+        "savanna": 1.3,
+        "grassland": 1.2,
+        "farmland": 1.1
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "banditHideout",
+        "abandonedMine",
+        "thievesGuild"
+      ],
+      "description": "The Verge draws people chasing things, and some run out of legitimate options. Bandits are usually failed Delhari arrivals, Kethara settlers who chose a faster route to survival, or Vaethori deserters who decided the legion's roads weren't worth the march.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Human-framed figure in mismatched travel gear — leather over a padded gambeson that belongs to a different era than the belt hardware. Face weather-cut and watchful, posture neither aggressive nor relaxed. Weapons visible but not drawn, carried as tools not trophies."
+    },
+    {
+      "id": "zombie",
+      "name": "Zombie",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 8,
+      "hitPoints": "3d8+9",
+      "speed": 20,
+      "abilities": {
+        "str": 13,
+        "dex": 6,
+        "con": 16,
+        "int": 3,
+        "wis": 6,
+        "cha": 5
+      },
+      "savingThrows": {
+        "wis": 0
+      },
+      "damageResistances": [],
+      "damageImmunities": [
+        "poison"
+      ],
+      "damageVulnerabilities": ["fire"],
+      "conditionImmunities": [
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "understands languages it knew in life but can't speak"
+      ],
+      "traits": [
+        {
+          "name": "Undead Fortitude",
+          "description": "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Slam",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d6",
+          "damageType": "bone"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3,
+        "denseForest": 1.2
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion"
+      ],
+      "description": "Someone's last act of spite or desperation or failed theory. Zombies are isolated incidents on the Verge. Usually.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A shambling humanoid figure in tattered clothing — a coat, a belt — still recognisable as someone. Skin greyed and weathered, posture collapsed forward, arms trailing at unnatural angles. Moves with a forward lean the body was never designed for. Dull unfocused eyes. The clothing and figure carry evidence of a long journey here."
+    },
+    {
+      "id": "giantRat",
+      "name": "Giant Rat",
+      "size": "small",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 7,
+        "dex": 15,
+        "con": 11,
+        "int": 2,
+        "wis": 10,
+        "cha": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Smell",
+          "description": "The rat has advantage on Wisdom (Perception) checks that rely on smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The rat has advantage on attack rolls against a creature if at least one of the rat's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d4",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "residential",
+          "industrial",
+          "town"
+        ],
+        "occasional": [
+          "farmland",
+          "grassland",
+          "forest",
+          "swamp"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains",
+          "glacier",
+          "mountainPeak"
+        ]
+      },
+      "spawnChanceModifier": {
+        "residential": 2.5,
+        "industrial": 2,
+        "town": 1.8,
+        "farmland": 1.2,
+        "swamp": 1.1
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "banditHideout",
+        "abandonedMine",
+        "spiderNest",
+        "sunkenRuins",
+        "volcanicCave",
+        "thievesGuild"
+      ],
+      "description": "They came with the first settlements. They are everywhere. They will outlast most things on this frontier.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Rat the size of a large dog, dark grey-brown fur matted and scarred at the shoulders. Hindquarters larger than forequarters, giving an odd hunched profile. Fur along the spine runs two distinct textures — short and coarse on the left flank, longer and finer on the right — not mange, a different kind of wrong. Incisors yellow-orange, each one slightly different in length."
+    },
+    {
+      "id": "bugbear",
+      "name": "Bugbear",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 16,
+      "hitPoints": "5d8+5",
+      "speed": 30,
+      "abilities": {
+        "str": 15,
+        "dex": 14,
+        "con": 13,
+        "int": 8,
+        "wis": 11,
+        "cha": 9
+      },
+      "skills": {
+        "cunning": 6,
+        "survival": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "goblin"
+      ],
+      "traits": [
+        {
+          "name": "Brute",
+          "description": "A melee weapon deals one extra die of its damage when the bugbear hits with it (included in the attack)."
+        },
+        {
+          "name": "Surprise Attack",
+          "description": "If the bugbear surprises a creature and hits it with an attack during the first round of combat, the target takes an extra 7 (2d6) damage from the attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Morningstar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "morningstar",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "chainShirt",
+            "chance": 0.4
+          },
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "banditHideout",
+        "goblinWarren",
+        "orcStronghold",
+        "abandonedMine",
+        "dragonLair",
+        "beastDen",
+        "frozenCavern",
+        "thievesGuild"
+      ],
+      "description": "Apex ambush predators that arrived with a woodland convergence and stayed because the Verge's chaos suits their method. They don't raid for territory. They raid because they are efficient.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Large and barrel-shaped, covered in coarse brown-black fur that sits wrong over muscle that doesn't belong to anything that size. Face somewhere between ursine and primate — wide nose, deep-set yellow eyes, heavy brow. Wears armour assembled from components two sizes too large for anyone else; carries a morningstar with easy familiarity. Moves quietly for its mass."
+    },
+    {
+      "id": "commoner",
+      "name": "Commoner",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 0,
+      "xpValue": 10,
+      "armorClass": 10,
+      "hitPoints": "1d8",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 10,
+        "con": 10,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Club",
+          "type": "meleeWeaponAttack",
+          "weaponId": "club",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "farmland",
+          "residential"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "mountain",
+          "desert",
+          "tundra",
+          "jungle"
+        ]
+      },
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "description": "Everyone on the Verge is from somewhere else, or descended from someone who was. Commoners here carry more history than they show.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human figure in layered working clothes — coarse wool over linen, boots repaired multiple times with different materials. Face shows weather and labour. Posture of someone accustomed to weight and distance. Carries a walking staff."
+    },
+    {
+      "id": "kobold",
+      "name": "Kobold",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "lawful evil",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d6-2",
+      "speed": 30,
+      "abilities": {
+        "str": 7,
+        "dex": 15,
+        "con": 9,
+        "int": 8,
+        "wis": 7,
+        "cha": 8
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Pack Tactics",
+          "description": "The kobold has advantage on attack rolls against a creature if at least one of the kobold's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the kobold has disadvantage on attack rolls and Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Dagger",
+          "type": "meleeWeaponAttack",
+          "weaponId": "dagger",
+          "reach": 5
+        },
+        {
+          "name": "Sling",
+          "type": "rangedWeaponAttack",
+          "weaponId": "sling",
+          "range": {
+            "normal": 30,
+            "long": 120
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": [
+          {
+            "id": "dagger",
+            "chance": 0.4
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills",
+          "denseForest"
+        ],
+        "occasional": [
+          "forest",
+          "desert"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "goblinWarren",
+        "dragonLair",
+        "abandonedMine"
+      ],
+      "description": "Kobolds claim descent from the first dragons to enter Nexus Verge — whether that is true, they have been here longer than most settlers admit. They dig deep, remember everything, and hold grudges across generations.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Small reptilian humanoid, waist-height, with rust-red to dark grey scales and a long whip-thin tail held low for balance. Snout narrow, eyes large and forward-facing with vertical pupils — bright copper or pale gold. Posture low and angled, head forward. Carries a dagger and a sling of leather and bone cord."
+    },
+    {
+      "id": "stirge",
+      "name": "Stirge",
+      "size": "tiny",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 14,
+      "hitPoints": "1d4+1",
+      "speed": 10,
+      "abilities": {
+        "str": 4,
+        "dex": 16,
+        "con": 11,
+        "int": 2,
+        "wis": 8,
+        "cha": 6
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Blood Drain",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d4",
+          "damageType": "blood",
+          "description": "On hit, the stirge attaches to the target and drains 1d4+3 hit points at the start of each of its turns until detached."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.05,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "hills",
+          "grassland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "abandonedMine",
+        "spiderNest",
+        "volcanicCave"
+      ],
+      "description": "Arrived through a swamp convergence and spread fast — they find warm blood wherever life has taken root. The Vethri note they were present before recorded Verathi settlement, which the Verathi dispute.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A flying creature the size of a large bat, built like an oversized insect — translucent rust-red abdomen, six articulated legs ending in curved hooks, two membranous wings veined dark purple. Proboscis longer than its head, hollow and needle-tipped. Hovers with a high-frequency wing-beat that blurs the wing edges."
+    },
+    {
+      "id": "giantSpider",
+      "name": "Giant Spider",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 14,
+      "hitPoints": "4d10+4",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 16,
+        "con": 12,
+        "int": 2,
+        "wis": 11,
+        "cha": 4
+      },
+      "skills": {
+        "cunning": 7
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "blindsight 10 ft., darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Spider Climb",
+          "description": "The spider can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+        },
+        {
+          "name": "Web Sense",
+          "description": "While in contact with a web, the spider knows the exact location of any other creature in contact with the same web."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d8",
+          "damageType": "blood",
+          "description": "The target must make a DC 11 Constitution saving throw, taking 2d8 poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "swamp"
+        ],
+        "occasional": [
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "snowyPlains",
+          "grassland"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "denseForest": 1.8,
+        "swamp": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "spiderNest",
+        "abandonedMine",
+        "goblinWarren"
+      ],
+      "description": "Colony hunters native to multiple biomes that merged in the Verge. Their webs don't just catch prey — they map the spaces between things with a precision that makes certain Delhari theorists uncomfortable.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A spider the size of a draught horse, abdomen deep charcoal with irregular pale banding that doesn't match across its body segments — two distinct pattern sets from two different spider species fused at the thorax join. Eight eyes arranged in two uneven rows, four reflective green, four matte black. Legs barbed at mid-joint, moves with deliberate precision."
+    },
+    {
+      "id": "direWolf",
+      "name": "Dire Wolf",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 14,
+      "hitPoints": "5d10+10",
+      "speed": 50,
+      "abilities": {
+        "str": 17,
+        "dex": 15,
+        "con": 15,
+        "int": 3,
+        "wis": 12,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 3,
+        "cunning": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Hearing and Smell",
+          "description": "The dire wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+        },
+        {
+          "name": "Pack Tactics",
+          "description": "The dire wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood",
+          "description": "If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "tundra",
+          "snowyPlains"
+        ],
+        "occasional": [
+          "grassland",
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "jungle",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.5,
+        "tundra": 1.8,
+        "snowyPlains": 1.5
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "beastDen",
+        "frozenCavern",
+        "goblinWarren"
+      ],
+      "description": "The larger variant that arrived through a northern convergence. Pack hierarchies so complex that scholars who study them tend to stop at a certain point and change fields.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Wolf standing at chest height to a human, with a chest cavity almost too deep for the frame, each rib visible under the short-haired winter coat. Fur is two-toned: grey-white along the spine, deep charcoal at the flanks — two coats that don't match. Eyes pale ice-blue with a horizontal pupil. Carries its head low and steady."
+    },
+    {
+      "id": "gnoll",
+      "name": "Gnoll",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 15,
+      "hitPoints": "5d8",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 12,
+        "con": 11,
+        "int": 6,
+        "wis": 10,
+        "cha": 7
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "gnoll"
+      ],
+      "traits": [
+        {
+          "name": "Rampage",
+          "description": "When the gnoll reduces a creature to 0 hit points with a melee attack on its turn, the gnoll can take a bonus action to move up to half its speed and make a bite attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d4",
+          "damageType": "blood"
+        },
+        {
+          "name": "Spear",
+          "type": "meleeWeaponAttack",
+          "weaponId": "spear",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "spear",
+            "chance": 0.4
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "savanna",
+          "desert"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "tundra",
+          "snowyPlains",
+          "swamp",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "grassland": 1.5,
+        "plains": 1.3,
+        "desert": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "orcStronghold",
+        "beastDen"
+      ],
+      "description": "Gnolls follow the scent of conflict across the Verge. Where there is war, they arrive. Where there is carrion, they feed. Some Sirathi communities hire them as boundary guards. Nobody asks too many questions.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Hyena-headed biped, rangy and forward-leaning, with spotted fur from waist up transitioning to smooth close-cropped hide at the lower limbs — as though two body plans were assembled at the hip. Eyes pale yellow, pupils dark and fixed. Carries a spear with a wrapped haft of leather cord over different-grained wood. Standing posture is a barely-controlled lean forward.",
+      "imagePromptName": "Hyena Warrior"
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 12,
+      "hitPoints": "3d8+3",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "cunning": 4
+      },
+      "damageResistances": ["blood", "bone"],
+      "damageImmunities": ["poison", "necrotic"],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "exhaustion",
+        "frightened",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Amorphous",
+          "description": "The shadow can move through a space as narrow as 1 inch wide without squeezing."
+        },
+        {
+          "name": "Shadow Stealth",
+          "description": "While in dim light or darkness, the shadow can take the Hide action as a bonus action."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Strength Drain",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "necrotic",
+          "description": "The target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.15,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "denseForest",
+          "swamp"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "denseForest": 1.8,
+        "swamp": 1.5
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple",
+        "sunkenRuins",
+        "wizardTower"
+      ],
+      "description": "Not all things that pass through convergence rifts are visible. The shadow remembers being solid and hasn't stopped reaching.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A silhouette standing upright in full light, man-height, with no surface behind the darkness — not a cast shadow, but an object that is shadow. Edges bleed and sharpen depending on the angle, never settling. Where it reaches, the floor below shows no shadow of its own. No face. Where eyes would be: two slightly darker regions."
+    },
+    {
+      "id": "scout",
+      "name": "Scout",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 13,
+      "hitPoints": "3d8+3",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 14,
+        "con": 12,
+        "int": 11,
+        "wis": 13,
+        "cha": 11
+      },
+      "skills": {
+        "perception": 5,
+        "cunning": 6,
+        "athletics": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Keen Hearing and Sight",
+          "description": "The scout has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+        }
+      ],
+      "multiattack": "The scout makes two melee attacks or two ranged attacks.",
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "shortsword",
+          "reach": 5
+        },
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "longbow",
+          "range": {
+            "normal": 150,
+            "long": 600
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "grassland",
+          "plains",
+          "hills"
+        ],
+        "occasional": [
+          "mountain",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "swamp",
+          "jungle",
+          "desert"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.3,
+        "grassland": 1.2
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "banditHideout",
+        "thievesGuild"
+      ],
+      "description": "Paid to know things first. The Verge's frontier economy runs on information as much as goods, and scouts are the ones who move it.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Human-built figure in layered practical gear — leather over padded cloth, nothing decorative. Longbow carried across the body. Posture in constant low-level alertness: weight balanced, head slightly forward. Terrain-specific kit visible: wrapped boots, a rolled cloak in mismatched fabric, a belt hung with multiple small tool-pouches."
+    },
+    {
+      "id": "ghoul",
+      "name": "Ghoul",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "5d8",
+      "speed": 30,
+      "abilities": [],
+      "damageResistances": [],
+      "damageImmunities": [
+        "poison"
+      ],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "multiattack": "The ghoul makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d4",
+          "damageType": "blood",
+          "finesse": true,
+          "description": "If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "denseForest"
+        ],
+        "occasional": [
+          "forest",
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "grassland",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.5,
+        "denseForest": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins"
+      ],
+      "description": "The hunger that does not stop when the body does. Some Vethri scholars believe ghouls represent a crude entropy-propagation pattern — biological void-state in early form. The mainstream dismisses this.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human figure long past recovery — skin grey-white and waxy, stretched at the joints and split at the knuckles. Claws extended and dark at the tips. Crouch-forward posture, weight forward on fingertips. Face still recognisably human in structure, expression fixed."
+    },
+    {
+      "id": "giantHyena",
+      "name": "Giant Hyena",
+      "size": "large",
+      "type": "beast",
+      "alignment": "unaligned",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "6d10+6",
+      "speed": 50,
+      "abilities": {
+        "str": 16,
+        "dex": 14,
+        "con": 14,
+        "int": 2,
+        "wis": 12,
+        "cha": 7
+      },
+      "skills": {
+        "perception": 3
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Rampage",
+          "description": "When the hyena reduces a creature to 0 hit points with a melee attack on its turn, the hyena can take a bonus action to move up to half its speed and make a bite attack."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.15,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "grassland",
+          "plains",
+          "savanna",
+          "desert"
+        ],
+        "occasional": [
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "forest",
+          "tundra",
+          "snowyPlains",
+          "swamp",
+          "jungle",
+          "mountain"
+        ]
+      },
+      "spawnChanceModifier": {
+        "grassland": 1.5,
+        "savanna": 1.8,
+        "desert": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "beastDen"
+      ],
+      "description": "Arrived with a savanna convergence. They produce the laughing sound because they have no concept of what is funny. The distinction stops mattering when they are running at you.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large spotted hyena scaled to the size of a horse, with the characteristic sloping back and overdeveloped forequarters. Coat is pale sand with dark rosette spots that fade to solid black at the muzzle and feet — two colour patterns that don't transition cleanly. Shoulders higher than the haunches by a full hand-span. Eyes amber with dark vertical pupils."
+    },
+    {
+      "id": "specter",
+      "name": "Specter",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "5d8",
+      "speed": 0,
+      "abilities": [],
+      "damageResistances": ["blood", "bone"],
+      "damageImmunities": ["poison", "necrotic"],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained",
+        "unconscious"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "understands languages it knew in life but can't speak"
+      ],
+      "traits": [
+        {
+          "name": "Incorporeal Movement",
+          "description": "The specter can move through other creatures and objects as if they were difficult terrain. It takes 5 (1d10) force damage if it ends its turn inside an object."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the specter has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "3d6",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 10 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.1,
+        "items": []
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple",
+        "wizardTower"
+      ],
+      "description": "The part of a person that refused to leave. Specters form where trauma was concentrated enough to leave a mark on the fabric of the dimension.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A translucent human figure standing upright, visible as a faint distortion more than a shape — silhouette readable at the edges but interior details absent, as though the light that should show its surface is passing through instead. Face region visible as a slightly denser area. Position static; it does not sway or drift."
+    },
+    {
+      "id": "spy",
+      "name": "Spy",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 1,
+      "xpValue": 200,
+      "armorClass": 12,
+      "hitPoints": "6d8+6",
+      "speed": 30,
+      "abilities": {
+        "str": 10,
+        "dex": 15,
+        "con": 10,
+        "int": 12,
+        "wis": 14,
+        "cha": 16
+      },
+      "skills": {
+        "deception": 5,
+        "perception": 4,
+        "cunning": 4,
+        "sleightOfHand": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common",
+        "thieves' cant"
+      ],
+      "traits": [
+        {
+          "name": "Cunning Action",
+          "description": "On each of its turns, the spy can use a bonus action to take the Dash, Disengage, or Hide action."
+        },
+        {
+          "name": "Sneak Attack",
+          "description": "Once per turn, the spy deals an extra 2d6 damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the spy that isn't incapacitated and the spy doesn't have disadvantage on the attack roll."
+        }
+      ],
+      "multiattack": "The spy makes two melee attacks.",
+      "actions": [
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "shortsword",
+          "reach": 5
+        },
+        {
+          "name": "Hand Crossbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "handCrossbow",
+          "range": {
+            "normal": 30,
+            "long": 120
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "shortsword",
+            "chance": 0.3
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "residential",
+          "town",
+          "road"
+        ],
+        "occasional": [
+          "forest",
+          "grassland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "jungle",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "residential": 1.8,
+        "town": 1.5,
+        "road": 1.3
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "thievesGuild",
+        "banditHideout"
+      ],
+      "description": "Information is the primary currency after reputation. Someone is always watching. This one got close.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Human-framed figure in dark, unremarkable travel clothes layered for access not warmth — multiple small pockets visible at hip and chest. Face non-distinctive by training: neutral expression, no unusual features. Carries a shortsword at the hip and a hand crossbow held casually. Stands with their back near a surface."
+    },
+    {
+      "id": "ogre",
+      "name": "Ogre",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 11,
+      "hitPoints": "7d10+21",
+      "speed": 40,
+      "abilities": {
+        "str": 19,
+        "dex": 8,
+        "con": 16,
+        "int": 5,
+        "wis": 7,
+        "cha": 7
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "giant"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Greatclub",
+          "type": "meleeWeaponAttack",
+          "weaponId": "greatclub",
+          "reach": 5
+        },
+        {
+          "name": "Javelin",
+          "type": "rangedWeaponAttack",
+          "weaponId": "javelin",
+          "range": {
+            "normal": 30,
+            "long": 120
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "potionOfHealing",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.1
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest"
+        ],
+        "occasional": [
+          "grassland",
+          "swamp"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "goblinWarren",
+        "orcStronghold",
+        "abandonedMine",
+        "beastDen"
+      ],
+      "description": "Arrived through a giant-kin convergence and never adapted to the Verge's frontier pace. They operate on older, slower logic. That logic involves hitting things.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A humanoid giant, ten feet tall, with a body shaped like a human's but proportions compressed wrong — arms too long, neck too short, jaw too wide. Skin mottled grey-green over bulk that looks dense rather than soft. Wears rough hide layered over fabric that came from somewhere considerably warmer — still bearing the loose weave of a hot-climate textile, thoroughly out of place. Holds a greatclub with one hand."
+    },
+    {
+      "id": "ghast",
+      "name": "Ghast",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "8d8",
+      "speed": 30,
+      "abilities": [],
+      "damageResistances": ["cold"],
+      "damageImmunities": [
+        "poison"
+      ],
+      "damageVulnerabilities": ["fire"],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Stench",
+          "description": "Any creature that starts its turn within 5 feet of the ghast must succeed on a DC 10 Constitution saving throw or be poisoned until the start of its next turn. On a successful saving throw, the creature is immune to the ghast's Stench for 24 hours."
+        },
+        {
+          "name": "Turning Defiance",
+          "description": "The ghast and any ghouls within 30 feet of it have advantage on saving throws against effects that turn undead."
+        }
+      ],
+      "multiattack": "The ghast makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d8",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood",
+          "finesse": true,
+          "description": "If the target is a creature other than an undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.35,
+        "items": []
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "forgottenTemple",
+        "hauntedMansion",
+        "sunkenRuins"
+      ],
+      "description": "A ghoul that found a way to keep feeding. The smell tells you everything you need to know about its recent history.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A gaunt, fast-moving undead figure — skin drawn tight and ashen, proportions slightly wrong: too-long fingers curling inward, head tilted forward on a rigid neck. Moves faster than its withered frame suggests. Hollow, sunken eyes. The figure reads as speed held in something barely holding together."
+    },
+    {
+      "id": "berserker",
+      "name": "Berserker",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any chaotic",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "9d8+18",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 12,
+        "con": 17,
+        "int": 9,
+        "wis": 11,
+        "cha": 9
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Reckless",
+          "description": "At the start of its turn, the berserker can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "weaponId": "greataxe",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "hideArmor",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.3,
+        "mountain": 1.2
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "orcStronghold",
+        "banditHideout"
+      ],
+      "description": "Not a culture — a condition. The Verge produces people who have lost enough that fury is the only remaining currency.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human figure of heavy build in worn hide armour, carrying an axe in a two-handed grip. Face weathered, eyes forward and fixed. No helmet — expression set to a controlled stillness that is one decision away from forward movement. Posture rigid, weight balanced for momentum. The armour is layered from at least two craft traditions: different buckle hardware on each strap."
+    },
+    {
+      "id": "gargoyle",
+      "name": "Gargoyle",
+      "size": "medium",
+      "type": "elemental",
+      "alignment": "chaotic evil",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 15,
+      "hitPoints": "7d8+21",
+      "speed": 30,
+      "abilities": [],
+      "damageResistances": ["blood"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "exhaustion",
+        "petrified",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "terran"
+      ],
+      "traits": [
+        {
+          "name": "False Appearance",
+          "description": "While the gargoyle remains motionless, it is indistinguishable from an inanimate statue."
+        }
+      ],
+      "multiattack": "The gargoyle makes two attacks: one with its bite and one with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d4",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.2,
+        "items": []
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "wizardTower",
+        "forgottenTemple",
+        "sunkenRuins",
+        "dragonLair"
+      ],
+      "description": "Stone that learned to wait. They arrived with the architecture of a dead civilization through an old convergence, and when the buildings came, the guardians came with them.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A stone figure crouching on all fours at roof-cornice proportions — human torso, bat-like wings folded flat, clawed hands gripping the edge. Surface is pitted granite with a veining pattern that runs against the carved grain: the stone is geological, not sculpted. Face pushed forward into a predatory configuration. Stillness absolute; only the eyes register as not-stone."
+    },
+    {
+      "id": "minotaur",
+      "name": "Minotaur",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "chaotic evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "9d10+27",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 7
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "abyssal"
+      ],
+      "traits": [
+        {
+          "name": "Charge",
+          "description": "If the minotaur moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 2d8 piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
+        },
+        {
+          "name": "Labyrinthine Recall",
+          "description": "The minotaur can perfectly recall any path it has traveled."
+        },
+        {
+          "name": "Reckless",
+          "description": "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
+        }
+      ],
+      "multiattack": "The minotaur makes two attacks: one with its greataxe and one with its gore.",
+      "actions": [
+        {
+          "name": "Greataxe",
+          "type": "meleeWeaponAttack",
+          "weaponId": "greataxe",
+          "reach": 5
+        },
+        {
+          "name": "Gore",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d8",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills"
+        ],
+        "occasional": [
+          "forest",
+          "denseForest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "forgottenTemple",
+        "abandonedMine"
+      ],
+      "description": "Not a single species — a convergence artifact. Every world that arrived with a labyrinth brought its guardian. The minotaurs of the Verge remember the maze. The Verge has no maze for them.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A seven-foot humanoid with a bull's head — horns swept wide and forward, eyes set at the sides of the skull — on a human body with a chest and shoulders built for that skull's weight. Fur on the head is deep black fading to dark brown at the collarbone. Hooves on human legs. Movement forward-leaning, as though the weight always wants to advance."
+    },
+    {
+      "id": "wight",
+      "name": "Wight",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "6d8+18",
+      "speed": 30,
+      "abilities": [],
+      "skills": {
+        "perception": 3,
+        "cunning": 4
+      },
+      "damageResistances": ["necrotic"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "exhaustion",
+        "poisoned"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "languages it knew in life"
+      ],
+      "traits": [
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the wight has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "multiattack": "The wight makes two longsword attacks or two longbow attacks. It can use its Life Drain in place of one longsword attack.",
+      "actions": [
+        {
+          "name": "Longsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "longsword",
+          "reach": 5
+        },
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "longbow",
+          "range": {
+            "normal": 150,
+            "long": 600
+          }
+        },
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d6",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 13 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "longsword",
+            "chance": 0.3
+          },
+          {
+            "id": "chainShirt",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.15
+          }
+        ]
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple"
+      ],
+      "description": "An act of will so strong it survived death. Wights remember who they were. That is the horror — they still are, partly.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A preserved humanoid figure — intact but stopped: skin grey-white with a waxy cast, face still recognisable, eyes pale as frost-glass and fully open. Dressed in the gear it was last wearing — chain over a gambeson, a longsword sheathed at the hip — all of it intact and still functional, some components from an older era than its surroundings. Posture upright and deliberate, as though it never stopped being a person."
+    },
+    {
+      "id": "owlbear",
+      "name": "Owlbear",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "unaligned",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 13,
+      "hitPoints": "7d10+21",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 3
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [],
+      "traits": [
+        {
+          "name": "Keen Sight and Smell",
+          "description": "The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell."
+        }
+      ],
+      "multiattack": "The owlbear makes two attacks: one with its beak and one with its claws.",
+      "actions": [
+        {
+          "name": "Beak",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d10",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claws",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d8",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.25,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "hills",
+          "mountain"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.8,
+        "denseForest": 1.5
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "beastDen"
+      ],
+      "description": "Nobody designed this. It arrived through a convergence zone that had been experimenting with life in ways that weren't careful. It is angry at the result.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large predator with a bear's body — heavy, plantigrade, deep-chested — and an owl's head scaled up to match. Plumage at the neck and shoulders is dense brown-grey, transitioning abruptly to bear fur at the shoulders with no gradient. Eyes enormous, forward-facing, yellow-gold. Beak heavy and downward-curved."
+    },
+    {
+      "id": "veteran",
+      "name": "Veteran",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 17,
+      "hitPoints": "9d8+18",
+      "speed": 30,
+      "abilities": {
+        "str": 16,
+        "dex": 13,
+        "con": 14,
+        "int": 10,
+        "wis": 11,
+        "cha": 10
+      },
+      "skills": {
+        "athletics": 5,
+        "perception": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "multiattack": "The veteran makes two longsword attacks. If it has a shortsword drawn, it can also make a shortsword attack.",
+      "actions": [
+        {
+          "name": "Longsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "longsword",
+          "reach": 5
+        },
+        {
+          "name": "Shortsword",
+          "type": "meleeWeaponAttack",
+          "weaponId": "shortsword",
+          "reach": 5
+        },
+        {
+          "name": "Heavy Crossbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "heavyCrossbow",
+          "range": {
+            "normal": 100,
+            "long": 400
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "longsword",
+            "chance": 0.3
+          },
+          {
+            "id": "chainMail",
+            "chance": 0.2
+          },
+          {
+            "id": "shield",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.15
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "road",
+          "plains",
+          "grassland",
+          "residential"
+        ],
+        "occasional": [
+          "forest",
+          "hills",
+          "farmland"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "swamp",
+          "jungle",
+          "tundra"
+        ]
+      },
+      "spawnChanceModifier": {
+        "road": 1.5,
+        "residential": 1.3
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "orcStronghold",
+        "banditHideout",
+        "thievesGuild"
+      ],
+      "description": "The Verge produces survivors. Many wear the cut-down leather and steel of a Vaethoran legion that mustered them out, or never paid them at all. Enough battles and the wars stop mattering — only staying alive through the next one does.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human in well-worn but complete combat kit — chainmail with a dented pauldron replaced with one from a different set, longsword at the hip, shortsword at the back. Face older than it should be for the body's fitness level. Expression sealed. Stance of someone who has stood in formations long enough that the posture is involuntary."
+    },
+    {
+      "id": "flameskull",
+      "name": "Flameskull",
+      "size": "tiny",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 13,
+      "hitPoints": "9d4+9",
+      "speed": 0,
+      "abilities": [],
+      "skills": {
+        "arcana": 5,
+        "perception": 2
+      },
+      "damageResistances": ["fire"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["cold"],
+      "conditionImmunities": [
+        "charmed",
+        "frightened",
+        "paralyzed",
+        "poisoned",
+        "prone"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Illumination",
+          "description": "The flameskull sheds either dim light in a 15-foot radius, or bright light in a 15-foot radius and dim light for an additional 15 feet. It can switch between the options as an action."
+        },
+        {
+          "name": "Magic Resistance",
+          "description": "The flameskull has advantage on saving throws against spells and other magical effects."
+        },
+        {
+          "name": "Rejuvenation",
+          "description": "If the flameskull is destroyed, it regains all its hit points in 1 hour unless holy water is sprinkled on its remains or a dispel magic or remove curse spell is cast on them."
+        }
+      ],
+      "multiattack": "The flameskull uses Fire Ray twice.",
+      "actions": [
+        {
+          "name": "Fire Ray",
+          "type": "rangedWeaponAttack",
+          "range": {
+            "normal": 30,
+            "long": 30
+          },
+          "damage": "3d6",
+          "damageType": "fire"
+        },
+        {
+          "name": "Fireball",
+          "type": "special",
+          "description": "Recharge 5-6. The flameskull casts fireball. Each creature in a 20-foot-radius sphere centered on a point within 120 feet must make a DC 13 Dexterity saving throw, taking 8d6 fire damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "attackType": "ranged",
+      "dungeonTypes": [
+        "wizardTower",
+        "forgottenTemple"
+      ],
+      "description": "The concentrated spite of a mage who refused to accept the conclusion. The fire is not metaphorical.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human skull, roughly hand-sized, floating at eye level, jaw intact. Every surface of bone is scorched to matte black except along the orbital ridges and forehead, where the original ivory shows. Two points of orange-white fire in the eye sockets, steady, no flicker. A faint heat shimmer distorts the air around it. No body."
+    },
+    {
+      "id": "ettin",
+      "name": "Ettin",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 12,
+      "hitPoints": "10d10+40",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "giant",
+        "orc"
+      ],
+      "traits": [
+        {
+          "name": "Two Heads",
+          "description": "The ettin has advantage on Wisdom (Perception) checks and on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious."
+        },
+        {
+          "name": "Wakeful",
+          "description": "When one of the ettin's heads is asleep, its other head is awake."
+        }
+      ],
+      "multiattack": "The ettin makes two attacks: one with its battleaxe and one with its morningstar.",
+      "actions": [
+        {
+          "name": "Battleaxe",
+          "type": "meleeWeaponAttack",
+          "weaponId": "battleaxe",
+          "reach": 5
+        },
+        {
+          "name": "Morningstar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "morningstar",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "battleaxe",
+            "chance": 0.3
+          },
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.2
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills"
+        ],
+        "occasional": [
+          "forest",
+          "denseForest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.3
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "abandonedMine",
+        "orcStronghold"
+      ],
+      "description": "Two heads, one body, constant argument. The argument is about everything. The consensus they reach is that you are in the way.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A giant-sized humanoid, twelve feet tall, with two heads on a single set of shoulders — one slightly forward of the other, both facing roughly the same direction but never quite aligned. Face on each head distinct: different jaw shape, different brow, as though each head came from a different source. Right hand carries a battleaxe; left carries a morningstar."
+    },
+    {
+      "id": "troll",
+      "name": "Troll",
+      "size": "large",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 15,
+      "hitPoints": "8d10+40",
+      "speed": 30,
+      "abilities": [],
+      "skills": {
+        "perception": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": ["fire"],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "giant"
+      ],
+      "traits": [
+        {
+          "name": "Keen Smell",
+          "description": "The troll has advantage on Wisdom (Perception) checks that rely on smell."
+        },
+        {
+          "name": "Regeneration",
+          "description": "The troll regains 10 hit points at the start of its turn. If the troll takes acid or fire damage, this trait doesn't function at the start of the troll's next turn. The troll dies only if it starts its turn with 0 hit points and doesn't regenerate."
+        }
+      ],
+      "multiattack": "The troll makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.5,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "swamp",
+          "forest",
+          "denseForest",
+          "mountain"
+        ],
+        "occasional": [
+          "hills"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "grassland",
+          "plains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "swamp": 1.8,
+        "forest": 1.3,
+        "mountain": 1.2
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "frozenCavern",
+        "volcanicCave",
+        "beastDen"
+      ],
+      "description": "Regenerative tissue that predates any biome the Verge has absorbed. Nobody knows where trolls are originally from. The trolls do not know either.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large, lean humanoid taller than an ogre but less broad — proportions stretched, arms overlong, hunched forward. Skin a pale grey-green with visible fibrous subcutaneous texture, like muscle fibres slightly too close to the surface. Fingers end in heavy flat claws. Old wounds visible as silver-white scar traces with slightly different surface texture than the surrounding skin."
+    },
+    {
+      "id": "wraith",
+      "name": "Wraith",
+      "size": "medium",
+      "type": "undead",
+      "alignment": "neutral evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 13,
+      "hitPoints": "9d8+27",
+      "speed": 0,
+      "abilities": [],
+      "damageResistances": ["blood", "bone"],
+      "damageImmunities": ["poison", "necrotic"],
+      "damageVulnerabilities": [],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "grappled",
+        "paralyzed",
+        "petrified",
+        "poisoned",
+        "prone",
+        "restrained"
+      ],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "languages it knew in life"
+      ],
+      "traits": [
+        {
+          "name": "Incorporeal Movement",
+          "description": "The wraith can move through other creatures and objects as if they were difficult terrain. It takes 5 (1d10) force damage if it ends its turn inside an object."
+        },
+        {
+          "name": "Sunlight Sensitivity",
+          "description": "While in sunlight, the wraith has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Life Drain",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "4d8",
+          "damageType": "necrotic",
+          "description": "The target must succeed on a DC 14 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.3,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "attackType": "melee",
+      "dungeonTypes": [
+        "undeadCrypt",
+        "hauntedMansion",
+        "forgottenTemple"
+      ],
+      "description": "At a certain point the line between concentrated will and void-state begins to blur. Wraiths exist at that boundary. The Vethri have not agreed on which side they fall.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A vertical smear of darkness against available light — human in approximate shape but inconsistent in boundary. The lower half trails into nothing; the upper half has a suggestion of a head and torso but no readable face. Edges are not sharp but not soft either: they are uncertain. Cold visible in the air within two feet of its surface."
+    },
+    {
+      "id": "hillGiant",
+      "name": "Hill Giant",
+      "size": "huge",
+      "type": "giant",
+      "alignment": "chaotic evil",
+      "challengeRating": 5,
+      "xpValue": 1800,
+      "armorClass": 13,
+      "hitPoints": "10d12+40",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 2
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "normal",
+      "languages": [
+        "giant"
+      ],
+      "traits": [],
+      "multiattack": "The giant makes two greatclub attacks.",
+      "actions": [
+        {
+          "name": "Greatclub",
+          "type": "meleeWeaponAttack",
+          "reach": 10,
+          "damage": "3d8",
+          "damageType": "bone"
+        },
+        {
+          "name": "Rock",
+          "type": "rangedWeaponAttack",
+          "range": {
+            "normal": 60,
+            "long": 240
+          },
+          "damage": "3d10",
+          "damageType": "bone"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "grassland"
+        ],
+        "occasional": [
+          "forest"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "desert",
+          "tundra",
+          "swamp",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.8,
+        "mountain": 1.5,
+        "grassland": 1.2
+      },
+      "attackType": "both",
+      "dungeonTypes": [],
+      "description": "The accumulated weight of a dozen converged worlds compressed into one creature. Hill giants are not stupid — they are operating on a timescale that does not include you.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A humanoid standing twenty feet tall, built with human proportions but scaled by material weight — bone visible at wrist and knee through the skin, massive jaw, brow ridge that overhangs the eyes. Clothing is whatever survived being this large: hides and canvas sourced from at least three different biomes, none of it quite the right texture for the others, all of it enormous."
+    },
+    {
+      "id": "youngWhiteDragon",
+      "name": "Young White Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "chaotic evil",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 17,
+      "hitPoints": "14d10+42",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 4,
+        "cunning": 3
+      },
+      "savingThrows": {
+        "dex": 3,
+        "con": 7,
+        "wis": 3,
+        "cha": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": ["cold"],
+      "damageVulnerabilities": ["fire"],
+      "senses": "blindsight 10 ft., darkvision 60 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Ice Walk",
+          "description": "The dragon can move across and climb icy surfaces without needing to make an ability check. Additionally, difficult terrain composed of ice or snow doesn't cost it extra movement."
+        }
+      ],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 10,
+          "damage": "2d10",
+          "damageType": "blood",
+          "description": "Plus 1d8 cold damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Cold Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 15 Constitution saving throw, taking 10d8 cold damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "damage": "2d8",
+            "damageType": "bone"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 15 DEX saving throw or take 2d6+4 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.5
+          }
+        ]
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "dragonLair",
+        "frozenCavern"
+      ],
+      "description": "Cold-biome convergences brought them. White dragons are the least patient of their kind — they want territory now, and the Verge's frontier chaos gives them justification.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large dragon with ice-white scales that show subtle iridescence at the edges of each scale plate — pale blue under cold light. Horns swept back and ridged, jaw elongated, neck proportionally shorter than other dragon lineages. Eyes pale ice-blue, pupils vertical and narrow. Wing membranes translucent grey-white with visible vein structure. Frost clings to the jaw and chest scales."
+    },
+    {
+      "id": "youngGreenDragon",
+      "name": "Young Green Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "lawful evil",
+      "challengeRating": 8,
+      "xpValue": 3900,
+      "armorClass": 18,
+      "hitPoints": "16d10+48",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "deception": 5,
+        "perception": 7,
+        "cunning": 4
+      },
+      "savingThrows": {
+        "dex": 4,
+        "con": 6,
+        "wis": 4,
+        "cha": 5
+      },
+      "damageResistances": [],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["acid"],
+      "conditionImmunities": [
+        "poisoned"
+      ],
+      "senses": "blindsight 30 ft., darkvision 120 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [
+        {
+          "name": "Amphibious",
+          "description": "The dragon can breathe air and water."
+        }
+      ],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 10,
+          "damage": "2d10",
+          "damageType": "blood",
+          "description": "Plus 2d6 poison damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Poison Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales poisonous gas in a 30-foot cone. Each creature in that area must make a DC 14 Constitution saving throw, taking 12d6 poison damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "damage": "2d8",
+            "damageType": "bone"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 15 DEX saving throw or take 2d6+4 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.6
+          }
+        ]
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "dragonLair"
+      ],
+      "description": "Poison and patience. Green dragons understand the Verge better than most arrivals — they know information is the real currency, and they have been collecting it since they arrived.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large dragon with deep forest-green scales that grade to yellow-green at the underbelly and wing membrane edges. Head finned with backward-swept frills rather than horns. Eyes amber-gold with a horizontal slit pupil. Scale surface has a slight iridescent sheen that shifts between green and dark teal. Posture still and watchful; head held high, neck curved."
+    },
+    {
+      "id": "youngRedDragon",
+      "name": "Young Red Dragon",
+      "size": "large",
+      "type": "dragon",
+      "alignment": "chaotic evil",
+      "challengeRating": 10,
+      "xpValue": 5900,
+      "armorClass": 18,
+      "hitPoints": "17d10+68",
+      "speed": 40,
+      "abilities": [],
+      "skills": {
+        "perception": 8,
+        "cunning": 4
+      },
+      "savingThrows": {
+        "dex": 4,
+        "con": 9,
+        "wis": 4,
+        "cha": 8
+      },
+      "damageResistances": [],
+      "damageImmunities": ["fire"],
+      "damageVulnerabilities": ["cold"],
+      "senses": "blindsight 30 ft., darkvision 120 ft.",
+      "languages": [
+        "common",
+        "draconic"
+      ],
+      "traits": [],
+      "multiattack": "The dragon makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 10,
+          "damage": "2d10",
+          "damageType": "blood",
+          "description": "Plus 1d6 fire damage."
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "2d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Fire Breath",
+          "type": "special",
+          "description": "Recharge 5-6. The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 16d6 fire damage on a failed save, or half as much damage on a successful one."
+        }
+      ],
+      "legendaryActions": {
+        "count": 3,
+        "actions": [
+          {
+            "name": "Detect",
+            "cost": 1,
+            "description": "The dragon makes a Wisdom (Perception) check."
+          },
+          {
+            "name": "Tail Attack",
+            "cost": 1,
+            "type": "meleeWeaponAttack",
+            "damage": "2d8",
+            "damageType": "bone"
+          },
+          {
+            "name": "Wing Attack",
+            "cost": 2,
+            "description": "Each creature within 10 ft. must succeed on a DC 17 DEX saving throw or take 2d6+6 bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+          }
+        ]
+      },
+      "lootTable": {
+        "dropChance": 1,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.7
+          }
+        ]
+      },
+      "attackType": "both",
+      "dungeonTypes": [
+        "dragonLair"
+      ],
+      "description": "The fire-convergence zones are theirs, as far as they are concerned. Red dragons do not negotiate the Verge's frontier politics. They set the terms.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large dragon with deep crimson scales that grade to near-black along the spine and bright ember-orange on the underbelly. Horns swept back and jagged, twin ridges running the full neck length. Eyes pale gold with a vertical pupil. Heat shimmer faintly visible around the jaw and chest scales. Wings wide and membranous, the leading edge darkening to black."
+    },
+    {
+      "id": "goblinArcher",
+      "name": "Goblin Archer",
+      "size": "small",
+      "type": "humanoid",
+      "alignment": "neutral evil",
+      "challengeRating": 0.25,
+      "xpValue": 50,
+      "armorClass": 15,
+      "hitPoints": "2d6",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 10,
+        "int": 10,
+        "wis": 8,
+        "cha": 8
+      },
+      "skills": {
+        "cunning": 6
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common",
+        "goblin"
+      ],
+      "traits": [
+        {
+          "name": "Nimble Escape",
+          "description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Shortbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "shortbow",
+          "range": {
+            "normal": 80,
+            "long": 320
+          }
+        },
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "scimitar",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {
+            "id": "shortbow",
+            "chance": 0.3
+          },
+          {
+            "id": "dagger",
+            "chance": 0.2
+          },
+          {
+            "id": "potionOfHealing",
+            "chance": 0.1
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "hills",
+          "mountain",
+          "forest",
+          "denseForest"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "jungle"
+        ]
+      },
+      "spawnChanceModifier": {
+        "hills": 1.5,
+        "mountain": 1.3,
+        "forest": 1.2,
+        "denseForest": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": [
+        "goblinWarren",
+        "dragonLair"
+      ],
+      "description": "A goblin who learned that distance is the difference between surviving a fight and not. The arrows come from somewhere you weren't watching.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Same lean yellow-green build as a goblin but holding a shortbow at chest height, arrow already nocked. Ears canted back, wide amber eyes tracking at distance. The bow is mismatched — a cord of braided material tight over a recurve limb of two different woods spliced at the centre. Crouched in a half-squat, weight on the balls of the feet."
+    },
+    {
+      "id": "banditCrossbowman",
+      "name": "Bandit Crossbowman",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any non-lawful alignment",
+      "challengeRating": 0.125,
+      "xpValue": 25,
+      "armorClass": 12,
+      "hitPoints": "2d8+2",
+      "speed": 30,
+      "abilities": {
+        "str": 11,
+        "dex": 12,
+        "con": 12,
+        "int": 10,
+        "wis": 10,
+        "cha": 10
+      },
+      "skills": {},
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "passive Perception 10",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "actions": [
+        {
+          "name": "Light Crossbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "lightCrossbow",
+          "range": {
+            "normal": 80,
+            "long": 320
+          }
+        },
+        {
+          "name": "Scimitar",
+          "type": "meleeWeaponAttack",
+          "weaponId": "scimitar",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.4,
+        "items": [
+          {
+            "id": "lightCrossbow",
+            "chance": 0.25
+          },
+          {
+            "id": "leatherArmor",
+            "chance": 0.15
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "hills"
+        ],
+        "occasional": [
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "desert",
+          "tundra",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.4,
+        "hills": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": [
+        "banditHideout"
+      ],
+      "description": "The Verge's terrain rewards patience. A crossbow and high ground turns an ambush into a guarantee.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "Human figure in dull earth-toned clothing, crossbow at shoulder height and half-drawn. Positioning is elevated — they have chosen their ground. Gear is functional and minimal: a leather jack, belt with bolts in a horizontal row. Face obscured under a pulled-up hood collar. Still."
+    },
+    {
+      "id": "manticore",
+      "name": "Manticore",
+      "size": "large",
+      "type": "monstrosity",
+      "alignment": "lawful evil",
+      "challengeRating": 3,
+      "xpValue": 700,
+      "armorClass": 14,
+      "hitPoints": "8d10+24",
+      "speed": 30,
+      "abilities": [],
+      "skills": {},
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Tail Spike Regrowth",
+          "description": "The manticore has twenty-four tail spikes. Used spikes regrow when the manticore finishes a long rest."
+        }
+      ],
+      "multiattack": "The manticore makes three attacks: one with its bite and two with its claws.",
+      "actions": [
+        {
+          "name": "Tail Spike",
+          "type": "rangedWeaponAttack",
+          "range": {
+            "normal": 100,
+            "long": 200
+          },
+          "damage": "2d8",
+          "damageType": "blood"
+        },
+        {
+          "name": "Claw",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d6",
+          "damageType": "blood"
+        },
+        {
+          "name": "Bite",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "1d8",
+          "damageType": "blood"
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.6,
+        "items": [
+          {
+            "id": "potionOfHealing",
+            "chance": 0.3
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills",
+          "grassland"
+        ],
+        "occasional": [
+          "forest",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "swamp"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.6,
+        "hills": 1.3,
+        "grassland": 1.1
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": [
+        "beastDen"
+      ],
+      "description": "Arrived through a predator-rich convergence and immediately established dominance in its biome. The manticore does not see the Verge's other apex predators as competition. It sees them as variables in its territory.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A large predator with a lion's body, bat-like membranous wings folded at rest, and a human-like face with forward-set golden eyes and heavy brow. The tail is thick and ends in a cluster of backward-curved bone spikes. Coat is tawny at the main body, darkening to reddish-brown at the mane and face. Wing membrane is dark grey-purple."
+    },
+    {
+      "id": "mage",
+      "name": "Mage",
+      "size": "medium",
+      "type": "humanoid",
+      "alignment": "any alignment",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 12,
+      "hitPoints": "9d8",
+      "speed": 30,
+      "abilities": [],
+      "savingThrows": {
+        "int": 6,
+        "wis": 4
+      },
+      "skills": {
+        "arcana": 6,
+        "academia": 4
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "passive Perception 11",
+      "languages": [
+        "common"
+      ],
+      "traits": [],
+      "multiattack": "The mage casts Fire Bolt twice.",
+      "actions": [
+        {
+          "name": "Fire Bolt",
+          "type": "rangedWeaponAttack",
+          "range": {
+            "normal": 120,
+            "long": 120
+          },
+          "damage": "2d10",
+          "damageType": "fire",
+          "description": "Ranged spell attack."
+        },
+        {
+          "name": "Dagger",
+          "type": "meleeWeaponAttack",
+          "weaponId": "dagger",
+          "reach": 5
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.7,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.35
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "forest",
+          "denseForest",
+          "mountain"
+        ],
+        "occasional": [
+          "hills",
+          "grassland",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater"
+        ]
+      },
+      "spawnChanceModifier": {
+        "forest": 1.3,
+        "mountain": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": [
+        "wizardTower",
+        "forgottenTemple"
+      ],
+      "description": "Delhari mostly — came for dimensional theory, stayed because riftborn materials make their work here unlike anything possible elsewhere. The power that accumulates is a side effect.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A slight human figure in layered dark robes over practical travel clothes, no ceremonial elements. One hand held open at chest height, faintly glowing above the palm. Around the belt: leather pouches of varied shape and material, some clasped with hardware from clearly different craft traditions. Face shows long hours indoors but eyes are sharp."
+    },
+    {
+      "id": "medusa",
+      "name": "Medusa",
+      "size": "medium",
+      "type": "monstrosity",
+      "alignment": "lawful evil",
+      "challengeRating": 6,
+      "xpValue": 2300,
+      "armorClass": 15,
+      "hitPoints": "17d8+51",
+      "speed": 30,
+      "abilities": [],
+      "skills": {
+        "deception": 5,
+        "empathy": 4,
+        "perception": 4,
+        "cunning": 5
+      },
+      "damageResistances": [],
+      "damageImmunities": [],
+      "damageVulnerabilities": [],
+      "senses": "darkvision 60 ft.",
+      "languages": [
+        "common"
+      ],
+      "traits": [
+        {
+          "name": "Petrifying Gaze",
+          "description": "When a creature that can see the medusa's eyes starts its turn within 30 ft. of the medusa, the medusa can force it to make a DC 14 CON saving throw if the medusa isn't incapacitated and can see the creature. On a failure, the creature is restrained until the start of its next turn, and risks being petrified permanently if it fails again while restrained."
+        }
+      ],
+      "multiattack": "The medusa makes either three melee attacks — one with its snake hair and two with its shortsword — or two ranged attacks with its longbow.",
+      "actions": [
+        {
+          "name": "Longbow",
+          "type": "rangedWeaponAttack",
+          "weaponId": "longbow",
+          "range": {
+            "normal": 150,
+            "long": 600
+          }
+        },
+        {
+          "name": "Snake Hair",
+          "type": "meleeWeaponAttack",
+          "reach": 5,
+          "damage": "4d4",
+          "damageType": "blood",
+          "description": "Plus 14 (4d6) poison damage on a failed DC 14 CON saving throw."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0.8,
+        "items": [
+          {
+            "id": "potionOfGreaterHealing",
+            "chance": 0.4
+          }
+        ]
+      },
+      "habitats": {
+        "preferred": [
+          "mountain",
+          "hills",
+          "denseForest"
+        ],
+        "occasional": [
+          "forest",
+          "plains"
+        ],
+        "never": [
+          "ocean",
+          "deepWater",
+          "shallowWater",
+          "tundra",
+          "snowyPlains"
+        ]
+      },
+      "spawnChanceModifier": {
+        "mountain": 1.5,
+        "hills": 1.2,
+        "denseForest": 1.2
+      },
+      "preferRanged": true,
+      "attackType": "both",
+      "dungeonTypes": [
+        "forgottenTemple",
+        "sunkenRuins"
+      ],
+      "description": "A curse that became a species, or a species that became a curse. In the Verge, the distinction matters less than eye contact.",
+      "campaignIds": [
+        "core"
+      ],
+      "imageDescription": "A human-proportioned figure with a crown of live serpents in place of hair — each one distinct in colouring, none of them matching, ranging from pale gold to dark olive to black. Eyes are human in shape but the iris occupies most of the visible eye surface, pale gold-green, pupil a vertical slot. Posture controlled and forward-facing."
+    },
+    {
+      "id": "voidTrace",
+      "name": "Void Trace",
+      "description": "A marginal void-state concentration — barely present, which makes it no less dangerous. Where Void Traces drift, sound diminishes before they arrive. They don't seek you. Complexity draws them, the way water finds gradient. You are complex enough.",
+      "size": "tiny",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 0.25,
+      "xpValue": 10,
+      "armorClass": 11,
+      "hitPoints": "1d4",
+      "speed": 30,
+      "abilities": {
+        "str": 6,
+        "dex": 12,
+        "con": 10,
+        "int": 1,
+        "wis": 8,
+        "cha": 2
+      },
+      "skills": {},
+      "senses": "lifesense 30 ft.",
+      "languages": [],
+      "damageResistances": [],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["fire", "cold", "lightning"],
+      "conditionImmunities": [
+        "charmed",
+        "frightened",
+        "poisoned"
+      ],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 2,
+            "damageOnTurnStart": {
+              "type": "necrotic"
+            },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Touch",
+          "type": "meleeSpellAttack",
+          "attackBonus": 3,
+          "reach": 5,
+          "damage": {
+            "dice": "1d4",
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "imageDescription": "A wisp of dense black smoke the size of a cat — irregular and asymmetric, hovering just above the dungeon floor. Solid black at the core, fraying into dark tendrils at the edges. No face, no eyes, no features anywhere in the smoke. A ring of frost spreads outward across the floor beneath it. A torch flame visible in the background leans visibly away. Thin cold pale light at the boundary between the smoke and the warm-lit surrounding air. Stone walls and floor fully rendered and warm-lit; the creature is the small dark mass everything around it is reacting to."
+    },
+    {
+      "id": "voidSpawn",
+      "name": "Void Spawn",
+      "description": "A void-state concentration with enough density to sustain propagation. The Kethara call them Void Spawn because the name helped people run from them; the Vethri have other words. They don't hunt. They move toward ordered matter because that is what void-state does. The distinction stops mattering quickly.",
+      "size": "small",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 0.5,
+      "xpValue": 100,
+      "armorClass": 12,
+      "hitPoints": "2d6+2",
+      "speed": 30,
+      "abilities": {
+        "str": 8,
+        "dex": 14,
+        "con": 12,
+        "int": 2,
+        "wis": 10,
+        "cha": 4
+      },
+      "skills": {},
+      "senses": "lifesense 30 ft.",
+      "languages": [],
+      "damageResistances": ["psychic"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["fire", "cold", "lightning"],
+      "conditionImmunities": [
+        "charmed",
+        "frightened",
+        "poisoned"
+      ],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Spawn can sense living creatures within 30 feet."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 3,
+            "damageOnTurnStart": {
+              "type": "necrotic"
+            },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Touch",
+          "type": "meleeSpellAttack",
+          "attackBonus": 4,
+          "reach": 5,
+          "damage": {
+            "dice": "1d8",
+            "bonus": 2,
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "imageDescription": "A dense column of black smoke holding a roughly upright form — solid black at the core, wisping into dark tendrils at the edges. Frost spreads outward across the dungeon floor in crystalline patterns from where it stands. A torch flame visible in the background leans visibly away from the shape. Thin cold pale light at the boundary between the smoke and the surrounding air. The stone walls and floor are fully rendered and warm-lit; the creature is the dark mass everything around it is reacting to."
+    },
+    {
+      "id": "voidHunter",
+      "name": "Void Hunter",
+      "description": "A coherent void-state concentration — not intelligent, but consistent in direction. The Vethri named these before they understood what they were looking at. The name stuck because it helped people survive. A Void Hunter is not hunting. It is a gradient finding its lowest point, and you are in the way.",
+      "size": "medium",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 2,
+      "xpValue": 450,
+      "armorClass": 13,
+      "hitPoints": "4d8+8",
+      "speed": 40,
+      "abilities": {
+        "str": 10,
+        "dex": 16,
+        "con": 14,
+        "int": 3,
+        "wis": 12,
+        "cha": 4
+      },
+      "skills": {},
+      "senses": "lifesense 60 ft.",
+      "languages": [],
+      "damageResistances": ["psychic", "blood"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["fire", "cold", "lightning"],
+      "conditionImmunities": [
+        "charmed",
+        "frightened",
+        "poisoned"
+      ],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Hunter can sense living creatures within 60 feet."
+        },
+        {
+          "name": "Phase Drift",
+          "description": "Once per turn the Void Hunter can pass through solid objects as difficult terrain."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 5,
+            "damageOnTurnStart": {
+              "type": "necrotic"
+            },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Void Claw",
+          "type": "meleeSpellAttack",
+          "attackBonus": 5,
+          "reach": 5,
+          "damage": {
+            "dice": "2d6",
+            "bonus": 3,
+            "type": "necrotic"
+          }
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "imageDescription": "A full human-height figure of dense black smoke — upright, humanoid in silhouette, arms trailing loosely at the sides. No face, no eyes, no features anywhere — the head is a featureless dark volume of smoke. Frost covers the floor within five feet. Torch flames in the background lean away. The environment is warm and fully rendered; the smoke figure is a dark mass that light does not enter."
+    },
+    {
+      "id": "voidShaper",
+      "name": "Void Shaper",
+      "description": "At sufficient density, void-state concentrations begin to distort local matter-space. The Shaper designation comes from the Vethri observation that space bends around these as void-state replaces ordered matter. This is not intentional. It is physics. Looking directly at a Void Shaper produces the sensation that the ground beneath you is a proposal, not a fact.",
+      "size": "large",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 4,
+      "xpValue": 1100,
+      "armorClass": 15,
+      "hitPoints": "8d10+24",
+      "speed": 30,
+      "abilities": {
+        "str": 14,
+        "dex": 10,
+        "con": 16,
+        "int": 4,
+        "wis": 14,
+        "cha": 6
+      },
+      "skills": {},
+      "senses": "lifesense 60 ft.",
+      "languages": [],
+      "damageResistances": ["psychic", "blood"],
+      "damageImmunities": ["poison"],
+      "damageVulnerabilities": ["fire", "cold", "lightning"],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "frightened",
+        "poisoned"
+      ],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Shaper can sense living creatures within 60 feet."
+        },
+        {
+          "name": "Void Distortion",
+          "description": "Ranged attacks against the Void Shaper from more than 30 feet are made with disadvantage."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 8,
+            "damageOnTurnStart": {
+              "type": "necrotic"
+            },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "type": "multiattack",
+          "attacks": 2,
+          "attackName": "Void Strike"
+        },
+        {
+          "name": "Void Strike",
+          "type": "meleeSpellAttack",
+          "attackBonus": 6,
+          "reach": 10,
+          "damage": {
+            "dice": "2d8",
+            "bonus": 4,
+            "type": "necrotic"
+          }
+        },
+        {
+          "name": "Entropy Pulse",
+          "type": "special",
+          "recharge": "5-6",
+          "saveDC": 14,
+          "saveAbility": "con",
+          "range": 15,
+          "damage": {
+            "dice": "4d8",
+            "type": "necrotic"
+          },
+          "description": "All creatures within 15 feet must make a DC 14 CON save or take 4d8 necrotic damage, half on success."
+        }
+      ],
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "imageDescription": "A hulking smoke figure, broader and taller than a human — thick torso, heavy implied shoulders, no neck. No face, no eyes, no features — the upper mass is solid featureless black smoke. Tendrils of dark smoke trail from the lower body into the floor. Floor seams in the dungeon stone curve toward the figure. Thick frost covers the floor within ten feet. Background torches bent away."
+    },
+    {
+      "id": "voidTitan",
+      "name": "Void Titan",
+      "description": "A massive void-state concentration that forms near major rifts after sustained propagation. Void Titans do not move quickly. They do not need to — the area they occupy is already mid-conversion. The Sirathi have a name for the sound they make, which translates approximately as 'the last thing.'",
+      "size": "huge",
+      "type": "aberration",
+      "alignment": "unaligned",
+      "challengeRating": 10,
+      "xpValue": 5900,
+      "armorClass": 17,
+      "hitPoints": "16d12+96",
+      "speed": 30,
+      "abilities": {
+        "str": 22,
+        "dex": 10,
+        "con": 22,
+        "int": 6,
+        "wis": 14,
+        "cha": 8
+      },
+      "skills": {},
+      "senses": "lifesense 120 ft.",
+      "languages": [],
+      "damageResistances": ["psychic"],
+      "damageImmunities": ["poison", "bone"],
+      "damageVulnerabilities": ["fire", "cold", "lightning"],
+      "conditionImmunities": [
+        "charmed",
+        "exhaustion",
+        "frightened",
+        "poisoned"
+      ],
+      "traits": [
+        {
+          "name": "Void Nature",
+          "description": "Does not require air, food, drink, or sleep."
+        },
+        {
+          "name": "Life Sense",
+          "description": "The Void Titan can sense living creatures within 120 feet."
+        },
+        {
+          "name": "Legendary Resistance",
+          "description": "3/Day. If the Void Titan fails a saving throw, it can choose to succeed instead."
+        },
+        {
+          "name": "Void Presence",
+          "effectType": "applyConditionOnTurnStart",
+          "condition": {
+            "type": "voidPresence",
+            "duration": "combat",
+            "value": 15,
+            "damageOnTurnStart": {
+              "type": "necrotic"
+            },
+            "stackable": true,
+            "stackBehavior": "addValue",
+            "isBuff": false,
+            "curable": false,
+            "icon": "🌑"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "type": "multiattack",
+          "attacks": 2,
+          "attackName": "Void Slam"
+        },
+        {
+          "name": "Void Slam",
+          "type": "meleeSpellAttack",
+          "attackBonus": 11,
+          "reach": 10,
+          "damage": {
+            "dice": "3d10",
+            "bonus": 6,
+            "type": "necrotic"
+          }
+        },
+        {
+          "name": "Void Pulse",
+          "type": "special",
+          "recharge": "5-6",
+          "saveDC": 18,
+          "saveAbility": "con",
+          "range": 30,
+          "damage": {
+            "dice": "6d10",
+            "type": "necrotic"
+          },
+          "description": "All creatures within 30 feet must make a DC 18 CON save or take 6d10 necrotic damage and have their speed halved until the end of their next turn. Half damage on success."
+        }
+      ],
+      "legendaryActions": 3,
+      "lootTable": {
+        "dropChance": 0,
+        "items": []
+      },
+      "habitats": {
+        "preferred": [],
+        "occasional": [],
+        "never": []
+      },
+      "spawnChanceModifier": {},
+      "attackType": "melee",
+      "dungeonTypes": [],
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "imageDescription": "A massive humanoid smoke figure filling most of the frame — twenty feet tall, dense black smoke in a rough giant's silhouette. No face, no eyes, no features of any kind — the head is a vast featureless dark volume. Every torch in the scene extinguished; the only light is cold blue-white bouncing off heavy frost covering the foreground floor. The frost-covered stone floor is sharply rendered; the smoke figure rises from it into the ceiling."
+    }
+  ]
+}

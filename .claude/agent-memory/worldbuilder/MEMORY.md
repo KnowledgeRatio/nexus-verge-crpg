@@ -1,0 +1,38 @@
+# Worldbuilder Agent Memory
+
+## Tone Rulings
+
+- [Visual tone and art direction](tone_visual_style.md) — Desaturated earth tones, desperate-wonder mood (not grim-hopeful), worn equipment, culture-based portrait backgrounds, per-asset lighting rules
+- [Riftborn materials visual language](riftborn_materials.md) — Six canonical substances (Vethsteel, Meridian Amber, Splitstone, Thrennwood, Coldcast Bronze, Weftglass); render as impossible physical facts, not as glow/distortion
+
+## Race Descriptions
+
+- [Race visual descriptions canon](race_descriptions_canon.md) — Canonical painter's-eye anchors for all five races; written for image gen prompts; no personality language; convergence evidence required per race
+
+## Item Writing
+
+- [Item description conventions](item_description_conventions.md) — Per-category prose rules; rift-firearm repair vocabulary; Coldcast Bronze precedent in mundane items; shot ammo as nexus-verge-only
+
+## Naming Conventions
+
+<!-- Record established patterns for NPC names, location names, item names per campaign/region -->
+
+## Dialogue Voice
+
+- [Vethri dialogue voice patterns](vethri_dialogue_voice.md) — Full greetingsByCulture/flavorDialogueByCulture draft for Vethri; solves the "no greeting" mechanical paradox; tone-ladder shape for a minimal-voice culture
+- [Kethara dialogue voice precedent](kethara_dialogue_voice.md) — Full greetingsByCulture/flavorDialogueByCulture draft for Kethara at dialogue_draft_kethara.json; technique notes + two flags re: overlap with Verathi (mysterious) and Vaethori (honorable) voices for merge-pass review
+- [Verathi dialogue voice precedent](verathi_dialogue_voice.md) — Full greetingsByCulture/flavorDialogueByCulture draft for Verathi at dialogue_draft_verathi.json; "long-memory-as-warmth" device, room/object-remembers mysterious device confirmed Verathi-exclusive vs Kethara draft
+- [Delhari dialogue voice precedent](delhari_dialogue_voice.md) — Full greetingsByCulture/flavorDialogueByCulture draft for Delhari at dialogue_draft_delhari.json; "classification-as-hostility" + "framework-bends-around-a-person" devoted device; academic/mercantile jargon as core marker
+- [Vaethori dialogue voice precedent](vaethori_dialogue_voice.md) — Full greetingsByCulture/flavorDialogueByCulture draft for Vaethori at dialogue_draft_vaethori.json; "procedure-as-emotional-container" device; resolves Kethara's duty/oath overlap flag (expected, Vaethori owns that register); caught unsupported `{familyName}` placeholder in self-review
+
+## Established Canon
+
+- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); five cultures; no Fracture event exists
+
+## Campaign Themes
+
+<!-- Record the agreed aesthetic lens and key creative decisions for each campaign -->
+
+## Coverage Notes
+
+- [Canon docs audit 2026-06](canon_docs_audit_2026-06.md) — Read-only audit of monsters/items/quests/dialogue against docs/world/*.md; Voidborn block already compliant; "Corrupted" wordlist entry and "kingdoms/realm" dialogue lines are the only real contradictions found; dialogue culture-voicing is the biggest gap

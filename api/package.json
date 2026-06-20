@@ -1,0 +1,13 @@
+{
+  "name": "nexus-verge-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for Nexus Verge",
+  "main": "index.js",
+  "scripts": {
+    "start": "func start"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {}
+}

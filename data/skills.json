@@ -1,0 +1,133 @@
+{
+  "skills": [
+    {
+      "id": "athletics",
+      "campaignIds": ["core"],
+      "name": "Athletics",
+      "ability": "str",
+      "description": "Your Strength (Athletics) check covers difficult situations you encounter while climbing, jumping, swimming, grappling, and other feats of physical prowess."
+    },
+    {
+      "id": "acrobatics",
+      "campaignIds": ["core"],
+      "name": "Acrobatics",
+      "ability": "dex",
+      "description": "Your Dexterity (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, balance on precarious surfaces, move silently, and perform acrobatic maneuvers. Also used for stealth (moving silently)."
+    },
+    {
+      "id": "sleightOfHand",
+      "campaignIds": ["core"],
+      "name": "Sleight of Hand",
+      "ability": "dex",
+      "description": "Whenever you attempt an act of legerdemain or manual trickery, such as planting something on someone else, concealing an object on your person, lockpicking, or disarming traps, make a Dexterity (Sleight of Hand) check."
+    },
+    {
+      "id": "endurance",
+      "campaignIds": ["core"],
+      "name": "Endurance",
+      "ability": "con",
+      "description": "Your Constitution (Endurance) check measures your ability to push through harsh environments, endure sustained activity, resist fatigue, and maintain concentration during physically demanding tasks."
+    },
+    {
+      "id": "academia",
+      "campaignIds": ["core"],
+      "name": "Academia",
+      "ability": "int",
+      "description": "Your Intelligence (Academia) check measures your ability to recall lore about historical events, natural phenomena (terrain, plants, animals, weather), religious knowledge (deities, rites, prayers), and scholarly theory. Merges History, Nature, and Religion."
+    },
+    {
+      "id": "arcana",
+      "campaignIds": ["core"],
+      "name": "Arcana",
+      "ability": "int",
+      "description": "Your Intelligence (Arcana) check measures your ability to recall lore about spells, magic items, eldritch symbols, magical traditions, the planes of existence, and the inhabitants of those planes."
+    },
+    {
+      "id": "investigation",
+      "campaignIds": ["core"],
+      "name": "Investigation",
+      "ability": "int",
+      "description": "When you look around for clues and make deductions based on those clues, conduct forensic analysis, follow evidence chains, or piece together logical inferences, you make an Intelligence (Investigation) check."
+    },
+    {
+      "id": "perception",
+      "campaignIds": ["core"],
+      "name": "Perception",
+      "ability": "wis",
+      "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your awareness of detail, danger, motion, and the keenness of your senses."
+    },
+    {
+      "id": "cunning",
+      "campaignIds": ["core"],
+      "name": "Cunning",
+      "ability": "wis",
+      "description": "Your Wisdom (Cunning) check represents the subtle brother of creativity, focusing on stealth (hiding, blending into shadows), tactical thinking, and practical problem-solving in the moment."
+    },
+    {
+      "id": "creativity",
+      "campaignIds": ["core"],
+      "name": "Creativity",
+      "ability": "wis",
+      "description": "Your Wisdom (Creativity) check measures improvisational problem solving, artistic expression, and thinking outside the box. Used when conventional approaches fail and innovation is required."
+    },
+    {
+      "id": "empathy",
+      "campaignIds": ["core"],
+      "name": "Empathy",
+      "ability": "wis",
+      "description": "Your Wisdom (Empathy) check determines whether you can understand the true intentions and emotions of a creature, sense when someone is lying, predict their next move, or connect with them emotionally. Replaces Insight."
+    },
+    {
+      "id": "influence",
+      "campaignIds": ["core"],
+      "name": "Influence",
+      "ability": "cha",
+      "description": "Your Charisma (Influence) check covers all forms of social persuasion, from gentle diplomacy and inspiring speeches to overt threats and intimidation. Merges Persuasion and Intimidation."
+    },
+    {
+      "id": "deception",
+      "campaignIds": ["core"],
+      "name": "Deception",
+      "ability": "cha",
+      "description": "Your Charisma (Deception) check determines whether you can convincingly hide the truth, either verbally or through your actions, bluff your way past guards, or maintain a false identity."
+    }
+  ],
+
+  "campaignSpecificSkills": {
+    "description": "Skills that only appear in specific campaigns. These serve as examples for future campaign-specific content.",
+
+    "nautical": [
+      {
+        "id": "sailing",
+        "campaignIds": ["nautical"],
+        "name": "Sailing",
+        "ability": "wis",
+        "description": "Your Wisdom (Sailing) check measures your ability to navigate ships, read wind and weather patterns, manage crew during maneuvers, and handle maritime emergencies."
+      },
+      {
+        "id": "navigation",
+        "campaignIds": ["nautical"],
+        "name": "Navigation",
+        "ability": "int",
+        "description": "Your Intelligence (Navigation) check measures your ability to chart courses using stars and maps, determine position at sea, and plot efficient travel routes."
+      }
+    ],
+
+    "darkSun": [
+      {
+        "id": "defiling",
+        "campaignIds": ["dark-sun"],
+        "name": "Defiling",
+        "ability": "int",
+        "description": "Your Intelligence (Defiling) check measures your ability to draw life force from the land to power arcane magic, leaving destruction in your wake. Higher checks cause more environmental damage but yield more power."
+      },
+      {
+        "id": "psionics",
+        "campaignIds": ["dark-sun"],
+        "name": "Psionics",
+        "ability": "int",
+        "description": "Your Intelligence (Psionics) check measures your mental discipline for using psionic abilities - mind-to-mind communication, telekinesis, and psychic attacks that are common on Athas."
+      }
+    ]
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "abilities": [
+    {
+      "_comment": "This is an example ability schema. Actual abilities will be added later.",
+      "id": "second_wind",
+      "type": "ability",
+      "name": "Second Wind",
+      "tier": 1,
+      "calling": "dedication",
+      "specialization": null,
+      "description": "You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.",
+      "actionType": "bonusAction",
+      "usableIn": ["combat"],
+      "resourceCost": {
+        "type": "shortRest",
+        "amount": 1,
+        "maxUses": 1
+      },
+      "targeting": {
+        "type": "self"
+      },
+      "effects": [
+        {
+          "type": "heal",
+          "formula": "1d10 + @level",
+          "target": "self"
+        }
+      ],
+      "visualFeedback": {
+        "icon": "💪",
+        "message": "{casterName} takes a deep breath and recovers {amount} HP!",
+        "animation": "greenGlow"
+      }
+    },
+    {
+      "_comment": "Another example - action surge",
+      "id": "action_surge",
+      "type": "ability",
+      "name": "Action Surge",
+      "tier": 2,
+      "calling": "dedication",
+      "specialization": null,
+      "description": "On your turn, you can take one additional action on top of your regular action and possible bonus action.",
+      "actionType": "free",
+      "usableIn": ["combat"],
+      "resourceCost": {
+        "type": "shortRest",
+        "amount": 1,
+        "maxUses": 1
+      },
+      "targeting": {
+        "type": "self"
+      },
+      "effects": [
+        {
+          "type": "grantAction",
+          "actionType": "action",
+          "amount": 1,
+          "duration": "thisTurn"
+        }
+      ],
+      "visualFeedback": {
+        "icon": "⚡",
+        "message": "{casterName} surges with energy and gains an extra action!",
+        "animation": "blueGlow"
+      }
+    },
+    {
+      "_comment": "Specialization-specific example",
+      "id": "whirling_defense",
+      "type": "ability",
+      "name": "Whirling Defense",
+      "tier": 2,
+      "calling": "dedication",
+      "specialization": "bladedancer",
+      "description": "As a reaction when you are hit by an attack, you can spin away, adding your proficiency bonus to your AC against that attack, potentially causing it to miss.",
+      "actionType": "reaction",
+      "usableIn": ["combat"],
+      "resourceCost": {
+        "type": "ki",
+        "amount": 1
+      },
+      "targeting": {
+        "type": "self"
+      },
+      "triggers": {
+        "when": "onBeingHit"
+      },
+      "effects": [
+        {
+          "type": "acBonus",
+          "amount": "@proficiencyBonus",
+          "duration": "againstThisAttack"
+        }
+      ],
+      "visualFeedback": {
+        "icon": "🌀",
+        "message": "{casterName} whirls away from the attack!",
+        "animation": "spinDodge"
+      }
+    }
+  ],
+
+  "_schema": {
+    "description": "Schema definition for abilities.json",
+    "required_fields": ["id", "type", "name", "tier", "calling", "description", "actionType", "usableIn", "effects"],
+    "optional_fields": ["specialization", "prerequisite", "resourceCost", "targeting", "triggers", "visualFeedback"],
+    "field_descriptions": {
+      "id": "Unique identifier (lowercase, underscores)",
+      "type": "Must be 'ability'",
+      "name": "Display name",
+      "tier": "Minimum tier required (1-4: Adventurer, Master, Legend, Myth)",
+      "calling": "Required calling ID or null for any",
+      "specialization": "Required specialization ID or null for any",
+      "prerequisite": "ID of required ability to learn this one",
+      "description": "Full text description",
+      "actionType": "action | bonusAction | reaction | free | passive",
+      "usableIn": "Array of contexts: combat, exploration, dialogue, skillCheck",
+      "resourceCost": {
+        "type": "spellSlot | ki | rage | superiorityDice | stamina | shortRest | longRest",
+        "amount": "Number of resources consumed",
+        "level": "For spell slots only, the slot level"
+      },
+      "targeting": {
+        "type": "self | singleEnemy | singleAlly | multiTarget | allEnemies | allAllies | areaOfEffect",
+        "count": "For multiTarget",
+        "range": "In feet",
+        "allowSameTarget": "For multiTarget"
+      },
+      "effects": "Array of effect objects (see effect schema below)"
+    },
+    "effect_types": {
+      "damage": "Deals damage to target(s)",
+      "heal": "Restores HP to target(s)",
+      "tempHP": "Grants temporary HP",
+      "applyCondition": "Applies a condition (blessed, prone, etc.)",
+      "removeCondition": "Removes a condition",
+      "grantAction": "Grants extra action",
+      "skillBonus": "Adds bonus to skill check",
+      "skillAdvantage": "Grants advantage on skill check",
+      "attackBonus": "Adds bonus to attack rolls",
+      "damageBonus": "Adds bonus to damage rolls",
+      "acBonus": "Adds bonus to AC",
+      "saveBonus": "Adds bonus to saving throws",
+      "attributeBonus": "Adds bonus to attribute"
+    }
+  }
+}

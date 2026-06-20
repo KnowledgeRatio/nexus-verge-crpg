@@ -1,0 +1,565 @@
+{
+  "id": "bandit_negotiation",
+  "name": "Negotiate with Bandits",
+  "template": "social-encounter",
+  "initialTension": 50,
+  "tensionThreshold": 80,
+  "initialNode": "opening",
+
+  "nodes": {
+    "opening": {
+      "speaker": "bandit_leader",
+      "text": "{openingLine}",
+      "passiveChecks": [
+        {
+          "skill": "empathy",
+          "dc": 13,
+          "reveal": "{motivation}_motivation",
+          "unlockChoices": ["sympathize", "acknowledge_grievance", "appeal_humanity"]
+        },
+        {
+          "skill": "perception",
+          "dc": 14,
+          "reveal": "count_enemies",
+          "unlockChoices": ["assess_strength"]
+        }
+      ],
+      "choices": [
+        {
+          "id": "peaceful_approach",
+          "text": "I'm here to talk, not fight. Let's find a way that works for everyone.",
+          "tensionChange": -5,
+          "nextNode": "assess_situation"
+        },
+        {
+          "id": "threat_light",
+          "text": "Leave now and no one gets hurt. That's the best deal you'll get.",
+          "tensionChange": 5,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 15,
+            "onSuccess": {
+              "text": "The leader's eyes narrow, weighing your words against the risks.",
+              "nextNode": "threat_response"
+            },
+            "onFailure": {
+              "text": "The leader scoffs. 'Big words from someone outnumbered.'",
+              "tensionChange": 10,
+              "nextNode": "escalation"
+            }
+          }
+        },
+        {
+          "id": "aggressive_threat",
+          "text": "I'll give you one chance. Run, or I'll make you regret it.",
+          "tensionChange": 15,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 18,
+            "onSuccess": {
+              "text": "Something in your eyes convinces them you're serious. The leader hesitates.",
+              "tensionChange": -10,
+              "nextNode": "intimidated"
+            },
+            "onFailure": {
+              "text": "'You've got guts, I'll give you that. Stupid guts.' Weapons are drawn.",
+              "tensionChange": 20,
+              "nextNode": "near_combat"
+            },
+            "onCriticalFailure": {
+              "text": "Your threat comes off as desperate bluster. They smell weakness.",
+              "tensionChange": 30,
+              "forceCombat": true
+            }
+          }
+        },
+        {
+          "id": "sympathize",
+          "text": "I can see you're in a difficult situation. Tell me what drove you to this.",
+          "requiresReveal": "{motivation}_motivation",
+          "tensionChange": -10,
+          "nextNode": "motivation_revealed"
+        },
+        {
+          "id": "assess_strength",
+          "text": "[Assess their numbers and readiness]",
+          "requiresReveal": "count_enemies",
+          "skillCheck": {
+            "skill": "perception",
+            "dc": 13,
+            "onSuccess": {
+              "text": "You count {enemyCount} bandits. Some look nervous - this isn't a hardened warband.",
+              "reveal": "weakening_resolve",
+              "nextNode": "assess_situation"
+            },
+            "onFailure": {
+              "text": "They notice you sizing them up. The leader glares at you.",
+              "tensionChange": 5,
+              "nextNode": "assess_situation"
+            }
+          }
+        }
+      ]
+    },
+
+    "assess_situation": {
+      "speaker": "bandit_leader",
+      "text": "'Talk, you say? What's there to talk about? {settlementName} won't listen to us.'",
+      "choices": [
+        {
+          "id": "investigate_demands",
+          "text": "What exactly do you want from {settlementName}?",
+          "nextNode": "demands_explained"
+        },
+        {
+          "id": "offer_mediation",
+          "text": "Maybe I can help mediate. What would it take for you to move on?",
+          "tensionChange": -5,
+          "nextNode": "consider_offer"
+        },
+        {
+          "id": "dismiss_complaint",
+          "text": "Doesn't matter what they did. Extortion isn't the answer.",
+          "tensionChange": 10,
+          "nextNode": "escalation"
+        }
+      ]
+    },
+
+    "demands_explained": {
+      "speaker": "bandit_leader",
+      "text": "{demandsText}",
+      "choices": [
+        {
+          "id": "sympathetic_response",
+          "text": "That's... actually reasonable. Let me see what I can do.",
+          "tensionChange": -15,
+          "nextNode": "promise_help"
+        },
+        {
+          "id": "challenge_demands",
+          "text": "You're asking for too much. Be realistic.",
+          "tensionChange": 5,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 14,
+            "onSuccess": {
+              "text": "The leader grudgingly nods. 'Fine. What do YOU think is fair?'",
+              "nextNode": "negotiate_terms"
+            },
+            "onFailure": {
+              "text": "'Realistic? We're STARVING. Don't talk to me about realistic!'",
+              "tensionChange": 10,
+              "nextNode": "escalation"
+            }
+          }
+        },
+        {
+          "id": "refuse_demands",
+          "text": "I can't help with that. You need to leave, one way or another.",
+          "tensionChange": 15,
+          "nextNode": "last_chance"
+        }
+      ]
+    },
+
+    "motivation_revealed": {
+      "speaker": "bandit_leader",
+      "text": "{motivationStory}",
+      "passiveChecks": [
+        {
+          "skill": "empathy",
+          "dc": 15,
+          "reveal": "genuine_emotion",
+          "unlockChoices": ["heartfelt_appeal"]
+        }
+      ],
+      "choices": [
+        {
+          "id": "acknowledge_pain",
+          "text": "I hear you. What you've been through isn't fair.",
+          "tensionChange": -15,
+          "nextNode": "opening_up"
+        },
+        {
+          "id": "offer_alternative",
+          "text": "There are better ways to handle this. Let me help you find one.",
+          "tensionChange": -10,
+          "nextNode": "consider_offer"
+        },
+        {
+          "id": "heartfelt_appeal",
+          "text": "I understand your pain. But this path will only bring more suffering.",
+          "requiresReveal": "genuine_emotion",
+          "skillCheck": {
+            "skill": "empathy",
+            "dc": 16,
+            "onSuccess": {
+              "text": "The leader's eyes glisten. 'You... you actually care.' Their voice cracks.",
+              "tensionChange": -25,
+              "nextNode": "peaceful_desperate"
+            },
+            "onFailure": {
+              "text": "The leader looks away, jaw tight. 'Spare me the pity.'",
+              "tensionChange": 5,
+              "nextNode": "consider_offer"
+            },
+            "onCriticalSuccess": {
+              "text": "The emotional breakthrough is immediate and profound.",
+              "reveal": "complete_trust"
+            }
+          }
+        },
+        {
+          "id": "dismiss_story",
+          "text": "Everyone has a sad story. Doesn't justify robbery.",
+          "tensionChange": 20,
+          "nextNode": "escalation"
+        }
+      ]
+    },
+
+    "opening_up": {
+      "speaker": "bandit_leader",
+      "text": "'You're the first person who's actually listened. Not just come to run us off.'",
+      "choices": [
+        {
+          "id": "promise_help",
+          "text": "I'll go back to {settlementName} and speak on your behalf. You have my word.",
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 13,
+            "onSuccess": {
+              "text": "The leader nods slowly. 'Your word, huh? Alright. We'll give you three days.'",
+              "endConversation": "peaceful_desperate"
+            },
+            "onFailure": {
+              "text": "'Words are cheap. We've heard promises before.'",
+              "tensionChange": 10,
+              "nextNode": "need_proof"
+            }
+          }
+        },
+        {
+          "id": "offer_gold",
+          "text": "I have some gold. Take it, buy supplies, and move on to better prospects.",
+          "effects": {
+            "goldChange": -50
+          },
+          "nextNode": "bribe_offer"
+        },
+        {
+          "id": "suggest_work",
+          "text": "Come with me to {settlementName}. I'll vouch for you - get you honest work.",
+          "tensionChange": -10,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 14,
+            "onSuccess": {
+              "text": "The leader considers this. 'Honest work... been a while. You'd really vouch for us?'",
+              "endConversation": "peaceful_desperate"
+            },
+            "onFailure": {
+              "text": "'They'd spit on us. We're marked as bandits now. There's no going back.'",
+              "nextNode": "consider_offer"
+            }
+          }
+        }
+      ]
+    },
+
+    "consider_offer": {
+      "speaker": "bandit_leader",
+      "text": "'What exactly are you offering?'",
+      "choices": [
+        {
+          "id": "promise_mediation",
+          "text": "Let me talk to {settlementName}. I'll get them to negotiate fairly.",
+          "nextNode": "promise_help"
+        },
+        {
+          "id": "bribe_direct",
+          "text": "Gold. Enough to get you somewhere you can start over.",
+          "effects": {
+            "goldChange": -75
+          },
+          "nextNode": "bribe_offer"
+        },
+        {
+          "id": "deception_guards",
+          "text": "I happen to know the town guard is mobilizing. You don't want to be here.",
+          "skillCheck": {
+            "skill": "deception",
+            "dc": 15,
+            "onSuccess": {
+              "text": "Their eyes widen. 'The guard? Damn. We're out of here.' They start packing camp.",
+              "endConversation": "peaceful"
+            },
+            "onFailure": {
+              "text": "'Liar. The guard hasn't left that town in months. You think we're fools?'",
+              "tensionChange": 15,
+              "nextNode": "escalation"
+            }
+          }
+        },
+        {
+          "id": "nothing_concrete",
+          "text": "I... don't have anything concrete to offer yet.",
+          "tensionChange": 10,
+          "nextNode": "last_chance"
+        }
+      ]
+    },
+
+    "promise_help": {
+      "speaker": "bandit_leader",
+      "text": "'Alright. We'll give you a chance. But if {settlementName} refuses to help, we're done talking.'",
+      "endConversation": "peaceful_desperate"
+    },
+
+    "bribe_offer": {
+      "speaker": "bandit_leader",
+      "text": "The leader counts the gold carefully, then nods. 'This'll get us to the next region. You've bought our departure.'",
+      "endConversation": "bribe_accepted"
+    },
+
+    "negotiate_terms": {
+      "speaker": "bandit_leader",
+      "text": "'Fine. We'll negotiate. What's your counter-offer?'",
+      "choices": [
+        {
+          "id": "lower_amount",
+          "text": "Half what you're asking. {settlementName} can't afford more.",
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 16,
+            "onSuccess": {
+              "text": "'Half... alright. Half. But they pay by week's end.'",
+              "endConversation": "peaceful_opportunists"
+            },
+            "onFailure": {
+              "text": "'Half? We're not running a charity. Full amount or we stay put.'",
+              "tensionChange": 5,
+              "nextNode": "last_chance"
+            }
+          }
+        },
+        {
+          "id": "alternative_payment",
+          "text": "Not gold - supplies. Food, tools, blankets. Things you actually need.",
+          "tensionChange": -5,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 14,
+            "onSuccess": {
+              "text": "The leader considers. 'Supplies we can use... yeah, that works.'",
+              "endConversation": "peaceful_opportunists"
+            },
+            "onFailure": {
+              "text": "'We need coin, not charity handouts.'",
+              "nextNode": "last_chance"
+            }
+          }
+        }
+      ]
+    },
+
+    "threat_response": {
+      "speaker": "bandit_leader",
+      "text": "'You've got nerve. But nerve won't save you if this goes bad.'",
+      "passiveChecks": [
+        {
+          "skill": "empathy",
+          "dc": 14,
+          "reveal": "bluffing",
+          "unlockChoices": ["call_bluff"]
+        }
+      ],
+      "choices": [
+        {
+          "id": "double_down",
+          "text": "I'm not here to negotiate. Leave, or face the consequences.",
+          "tensionChange": 10,
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 17,
+            "onSuccess": {
+              "text": "Your unwavering confidence shakes them. 'Fine. This territory isn't worth dying over.'",
+              "endConversation": "peaceful"
+            },
+            "onFailure": {
+              "text": "'Big talk. Let's see you back it up!'",
+              "tensionChange": 20,
+              "endConversation": "combat"
+            }
+          }
+        },
+        {
+          "id": "call_bluff",
+          "text": "You don't want this fight any more than I do. Let's find another way.",
+          "requiresReveal": "bluffing",
+          "tensionChange": -10,
+          "nextNode": "consider_offer"
+        },
+        {
+          "id": "soften_threat",
+          "text": "Look, I'd rather not fight. But I will if I have to. Can we talk first?",
+          "tensionChange": -5,
+          "nextNode": "assess_situation"
+        }
+      ]
+    },
+
+    "intimidated": {
+      "speaker": "bandit_leader",
+      "text": "The leader swallows hard. 'Alright, alright. We're leaving. Just... give us an hour to pack up.'",
+      "endConversation": "peaceful"
+    },
+
+    "near_combat": {
+      "speaker": "bandit_leader",
+      "text": "'Last chance, friend. Walk away, or we end this right here.'",
+      "choices": [
+        {
+          "id": "back_down",
+          "text": "Fine. I'm leaving. But this isn't over.",
+          "endConversation": "walked_away"
+        },
+        {
+          "id": "final_push",
+          "text": "No. YOU walk away. Now.",
+          "tensionChange": 20,
+          "endConversation": "combat"
+        },
+        {
+          "id": "desperate_offer",
+          "text": "Wait! I have gold. Take it and go. Please.",
+          "effects": {
+            "goldChange": -100
+          },
+          "tensionChange": -20,
+          "nextNode": "bribe_offer"
+        }
+      ]
+    },
+
+    "escalation": {
+      "speaker": "bandit_leader",
+      "text": "'You're not making this easy. Last chance - what's it going to be?'",
+      "choices": [
+        {
+          "id": "deescalate_quickly",
+          "text": "I'm sorry. Let's start over. What do you need from {settlementName}?",
+          "tensionChange": -15,
+          "nextNode": "assess_situation"
+        },
+        {
+          "id": "stand_firm",
+          "text": "I'm not backing down. Make your choice.",
+          "tensionChange": 15,
+          "nextNode": "near_combat"
+        },
+        {
+          "id": "offer_bribe_desperation",
+          "text": "Here - take this gold. Just leave peacefully.",
+          "effects": {
+            "goldChange": -75
+          },
+          "tensionChange": -20,
+          "nextNode": "bribe_offer"
+        }
+      ]
+    },
+
+    "last_chance": {
+      "speaker": "bandit_leader",
+      "text": "'This is getting us nowhere. One last time - give us a reason not to fight you.'",
+      "choices": [
+        {
+          "id": "final_appeal",
+          "text": "Because bloodshed helps no one. Let me find a solution that works for everyone.",
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 16,
+            "onSuccess": {
+              "text": "The leader sighs deeply. 'Fine. One day. Find us a solution or we're back to this.'",
+              "endConversation": "peaceful"
+            },
+            "onFailure": {
+              "text": "'Words. Always just words. We're done here.'",
+              "endConversation": "combat"
+            }
+          }
+        },
+        {
+          "id": "bribe_last_resort",
+          "text": "I'll pay you. Name your price.",
+          "effects": {
+            "goldChange": -100
+          },
+          "nextNode": "bribe_offer"
+        },
+        {
+          "id": "give_up_talking",
+          "text": "I've tried. If you won't listen, then so be it.",
+          "endConversation": "combat"
+        },
+        {
+          "id": "walk_away_last",
+          "text": "This is pointless. I'm leaving.",
+          "endConversation": "walked_away"
+        }
+      ]
+    },
+
+    "need_proof": {
+      "speaker": "bandit_leader",
+      "text": "'Why should we trust you? What proof do we have you'll keep your word?'",
+      "choices": [
+        {
+          "id": "offer_collateral",
+          "text": "Here - take this. I'll return with an answer from {settlementName}, or you keep it.",
+          "effects": {
+            "goldChange": -50
+          },
+          "endConversation": "peaceful_desperate"
+        },
+        {
+          "id": "swear_oath",
+          "text": "I swear on my honor. If I fail, I'll come back and help you myself.",
+          "skillCheck": {
+            "skill": "influence",
+            "dc": 15,
+            "onSuccess": {
+              "text": "The leader studies your face, then nods. 'Your honor it is. Don't disappoint us.'",
+              "endConversation": "peaceful_desperate"
+            },
+            "onFailure": {
+              "text": "'Honor? That's worth nothing to us.'",
+              "tensionChange": 10,
+              "nextNode": "last_chance"
+            }
+          }
+        }
+      ]
+    },
+
+    "peaceful_desperate": {
+      "speaker": "bandit_leader",
+      "text": "'Thank you. For listening. For trying. We'll wait to hear from you.'",
+      "endConversation": "peaceful_desperate"
+    },
+
+    "peaceful_wronged": {
+      "speaker": "bandit_leader",
+      "text": "'We'll give the settlement one more chance. But this is their last opportunity to make this right.'",
+      "endConversation": "peaceful_wronged"
+    },
+
+    "peaceful_opportunists": {
+      "speaker": "bandit_leader",
+      "text": "'Business is business. We have an agreement. We'll keep our end if they keep theirs.'",
+      "endConversation": "peaceful_opportunists"
+    }
+  }
+}

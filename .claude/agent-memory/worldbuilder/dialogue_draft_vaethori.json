@@ -1,0 +1,632 @@
+{
+  "greetingsByCulture": {
+    "vaethori": {
+      "innkeeper": {
+        "friendly": {
+          "hostile": [
+            "Your custom is no longer welcome at {tavernName}. The decision is recorded.",
+            "Leave now. I will not be filing a complaint, but I will not be serving you either."
+          ],
+          "cold": [
+            "State what you require. I have a ledger to close.",
+            "{tavernName} extends service to all paying guests. That is the extent of what I owe you."
+          ],
+          "guarded": [
+            "Welcome to {tavernName}. I keep a clean house and an orderly one — mind both.",
+            "A room, a meal, or both? I'll need to see coin before either."
+          ],
+          "neutral": [
+            "Welcome to {tavernName}. What will you have?",
+            "Good evening. I am {name}, keeper of {tavernName}. State your needs."
+          ],
+          "warm": [
+            "Welcome back to {tavernName}. Your usual room is prepared.",
+            "Good to see you again. Sit — I'll have something brought out."
+          ],
+          "affable": [
+            "{name}, at your service again. {tavernName} keeps your tab lighter than most.",
+            "You've made this house better company for it. Sit, eat, the fire's already lit for you."
+          ],
+          "devoted": [
+            "{tavernName} is, in every practical sense, yours as much as the empire's deed says it's mine.",
+            "I have set aside the good vintage. It is the least owed to someone who has done this much for this town."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Out. The garrison will hear of this if you return.",
+            "I've nothing for you. Not a room, not a word."
+          ],
+          "cold": [
+            "What. I've inventory to log.",
+            "You'll pay in full and up front. No exceptions made for you."
+          ],
+          "guarded": [
+            "Hmph. {tavernName}. State your business and keep it short.",
+            "I run a quiet house. See that you keep it that way."
+          ],
+          "neutral": [
+            "Yes, yes. Room or meal — pick one and let me get back to work.",
+            "{tavernName}'s open. Don't expect conversation with it."
+          ],
+          "warm": [
+            "You again. Fine. Sit somewhere that doesn't need cleaning twice.",
+            "Hmph. You've not caused trouble yet. That's worth something here."
+          ],
+          "affable": [
+            "I keep your corner table clear without being asked anymore. Don't read into it.",
+            "You're tolerable. I don't say that often, and I won't repeat it."
+          ],
+          "devoted": [
+            "I've stopped charging you for the second round. Don't make a ceremony of it.",
+            "This house owes you more than its ledger will ever show. I keep that in mind, quietly."
+          ]
+        },
+        "mysterious": {
+          "hostile": [
+            "Some guests darken a room before they speak. The door remains, however, open in the other direction.",
+            "I have hosted worse omens than you and survived them. I am less certain about you."
+          ],
+          "cold": [
+            "There is a particular quiet that follows people like you into a room. I've noticed it.",
+            "I'll serve you. I won't pretend the air hasn't changed since you walked in."
+          ],
+          "guarded": [
+            "Welcome to {tavernName}. I knew someone of your bearing would come through eventually.",
+            "Sit where you like. I find I already know which seat you'll choose."
+          ],
+          "neutral": [
+            "Welcome to {tavernName}. The roads bring strange company some seasons more than others.",
+            "I am {name}. I keep this house, and I keep its quieter observations to myself, mostly."
+          ],
+          "warm": [
+            "You've a settled look about you tonight. I'll have the good cup brought out.",
+            "Welcome back. The fire seems to burn steadier when you're under this roof."
+          ],
+          "affable": [
+            "I had your table cleared before you reached the door. Call it instinct, or just good bookkeeping.",
+            "There are guests, and there are presences. You have become the second, and {tavernName} is better for it."
+          ],
+          "devoted": [
+            "I have hosted four generations of travelers through this house. None have left it as changed as I have, since knowing you.",
+            "Whatever it is you carry, {name} of {tavernName} will keep your seat by the fire for as long as the roof stands."
+          ]
+        }
+      },
+      "patron": {
+        "friendly": {
+          "hostile": [
+            "I'd rather not share a table with you. Find another.",
+            "I know your record. Sit elsewhere."
+          ],
+          "cold": [
+            "Oh. You. I was enjoying a quiet evening.",
+            "I'd prefer to drink without company tonight, if it's the same to you."
+          ],
+          "guarded": [
+            "Evening. I've heard your name mentioned around the garrison. Mixed reports.",
+            "You may sit. I reserve judgment until I know more."
+          ],
+          "neutral": [
+            "Evening, traveler. There's room at this table if you'd care to take it.",
+            "Well met. I am {name}, off duty for the night. What brings you through?"
+          ],
+          "warm": [
+            "Sit, please. I'll stand the next round.",
+            "Good to see a familiar face. The roads have been busy this season — what news?"
+          ],
+          "affable": [
+            "{name}, at your service, and gladly. Sit — this table's been waiting for you.",
+            "I've told the garrison about you. Favorably, for once. Sit and have something on me."
+          ],
+          "devoted": [
+            "I would call this a privilege, and I do not use that word loosely.",
+            "Pax Vaethora has few enough true champions. I count you among them, plainly and without exaggeration."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Find another table. This one's spoken for, and not by you.",
+            "I've nothing civil to say to you tonight."
+          ],
+          "cold": [
+            "New face. Wonderful. Just what the evening needed.",
+            "I'm off duty. That doesn't mean I'm obligated to talk to you."
+          ],
+          "guarded": [
+            "Sit if you must. Don't expect conversation.",
+            "*glances over once, says nothing, returns to the cup*"
+          ],
+          "neutral": [
+            "Sit if there's room. Keep it quiet, I'm thinking.",
+            "Another traveler. The garrison logs you all eventually."
+          ],
+          "warm": [
+            "You can sit. You're less tiresome than most who pass through.",
+            "Fine. Sit. I won't complain about the company, this once."
+          ],
+          "affable": [
+            "I don't extend this to many — sit, and I'll buy the round.",
+            "You're tolerable enough that I've stopped minding the interruption."
+          ],
+          "devoted": [
+            "If the empire produced more like you, half my complaints would go unspoken.",
+            "I don't say this lightly, and I won't repeat it — I'm glad you're here."
+          ]
+        },
+        "jovial": {
+          "hostile": [
+            "Ha! Of all the tables in this house, you chose mine. Reconsider.",
+            "Oh, wonderful. You've arrived. My evening was going so well."
+          ],
+          "cold": [
+            "Well. I'd offer you a seat, but my hospitality has limits, even off duty.",
+            "Ha. You. The garrison's records on you make for interesting reading."
+          ],
+          "guarded": [
+            "Ha! Another traveler. Forgive me if I don't celebrate yet.",
+            "Sit, sit. I've learned to be careful who I share a drink with, though."
+          ],
+          "neutral": [
+            "Ha! Well met, traveler — pull up a chair, the night's young and the ale's local.",
+            "A new face! Sit, sit. The garrison sees enough dull faces as it is."
+          ],
+          "warm": [
+            "*laughs* Sit, friend! Off duty means off duty — let's enjoy it.",
+            "Ha! There you are. I've been saving this seat, believe it or not."
+          ],
+          "affable": [
+            "Everyone — this is the finest company on the entire road between here and Caestum!",
+            "HA! My favorite arrival of the season. Sit, drink, tell me everything."
+          ],
+          "devoted": [
+            "THE ROAD'S OWN CHAMPION RETURNS — sit, sit, I insist, the whole table insists!",
+            "Raise a glass! To the one person in this province who's actually earned the title 'friend of the garrison.'"
+          ]
+        },
+        "nervous": {
+          "hostile": [
+            "P-please, I don't want trouble. I'll report nothing, I swear it.",
+            "*sits very still* I know my place. Please don't make this difficult."
+          ],
+          "cold": [
+            "Oh. Um. I'll just... finish my drink quietly over here.",
+            "*avoids eye contact* I didn't mean to draw attention."
+          ],
+          "guarded": [
+            "Oh — hello. You're not here on official business, are you?",
+            "*glances toward the door* Sorry. I get nervous around anyone the garrison talks about."
+          ],
+          "neutral": [
+            "*fidgets* Evening. I don't usually talk to strangers, but — evening.",
+            "Oh, um. Hello. I'm just passing the evening quietly, that's all."
+          ],
+          "warm": [
+            "Oh! It's you. I feel — steadier, somehow, when you're around.",
+            "H-hello again. I saved a seat. Not that I assumed, just — in case."
+          ],
+          "affable": [
+            "You're here. Good. I always feel like the rules apply more fairly when you're nearby.",
+            "*relaxes slightly* Oh — thank goodness. Sit, please, I mean it."
+          ],
+          "devoted": [
+            "I don't worry the way I used to, since I started knowing you'd be around. That matters more than I can properly say.",
+            "You gave this province something to hope for. I haven't forgotten that, and I won't."
+          ]
+        }
+      },
+      "merchant": {
+        "friendly": {
+          "hostile": [
+            "{shopName} is closed to you. Permanently, and on record.",
+            "I'll not extend credit, goods, or courtesy to someone with your standing."
+          ],
+          "cold": [
+            "State what you require. I have inventory to reconcile before the census audit.",
+            "Goods are priced as posted. There is no negotiation for someone in your position."
+          ],
+          "guarded": [
+            "Welcome to {shopName}. I keep careful accounts — handle nothing you don't intend to purchase.",
+            "You may browse. I'll be noting what you touch, as a matter of practice."
+          ],
+          "neutral": [
+            "Welcome to {shopName}. How may I assist you today?",
+            "Good day. I am {name}. State what you require and I'll see it provided."
+          ],
+          "warm": [
+            "Welcome back to {shopName}. I've set aside a few items I thought you'd find useful.",
+            "Good to see you again. {settlement}'s trade is steadier for people like you passing through."
+          ],
+          "affable": [
+            "{name}, glad to see you again. I've held back first pick of the new shipment, just for you.",
+            "Welcome — I've adjusted the price on this for you. Not officially, you understand, but adjusted."
+          ],
+          "devoted": [
+            "Anything in {shopName} is yours at cost. You've done more for this settlement's trade than the census will ever record.",
+            "I extend you the full courtesy of the house, {name}. Take what you need; we'll settle the accounting later, if at all."
+          ]
+        },
+        "greedy": {
+          "hostile": [
+            "Your coin is no good here. I'd sooner write off the stock than sell to you.",
+            "Leave. I won't be filing a tax exemption to cover what I'd lose dealing with you."
+          ],
+          "cold": [
+            "A customer. Good. Prepared to pay the listed rate, plus a premium for the inconvenience?",
+            "You want my goods? They cost more than you'd like. Considerably more, in your case."
+          ],
+          "guarded": [
+            "Welcome to {shopName}. Fine goods, fair prices — for those who've earned fair prices.",
+            "Browse freely. Buy carefully. I keep precise records of every transaction."
+          ],
+          "neutral": [
+            "Looking to purchase? Good — the tribute assessment doesn't pay itself.",
+            "Browse away. Quality costs, as it should."
+          ],
+          "warm": [
+            "A reliable customer. Let me show you something premium — appropriately priced, of course.",
+            "Welcome. Trade's good when you're in town. Let's keep it that way."
+          ],
+          "affable": [
+            "Ah, my most dependable patron! A modest discount today, in the spirit of good standing.",
+            "For you — a genuine concession on price. Don't expect it as a habit, but you've earned it once."
+          ],
+          "devoted": [
+            "Name the price you consider fair. After everything, I'll honor it without complaint.",
+            "You've made {shopName} the most solvent house in {settlement}. That debt is not one I take lightly."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Leave this shop. I will not repeat myself.",
+            "My goods are not for sale to you. That is final, and recorded as such."
+          ],
+          "cold": [
+            "State your business. I do not have patience to spare for you today.",
+            "I run an honest house. Whether you're entitled to its honesty is a separate question."
+          ],
+          "guarded": [
+            "Welcome. State your business plainly.",
+            "I run a lawful shop — fair weights, fair prices, no exceptions. Understood?"
+          ],
+          "neutral": [
+            "Yes? What do you require?",
+            "I deal in quality goods at fair prices, in accordance with the trade law. What do you need?"
+          ],
+          "warm": [
+            "You've conducted yourself properly here. That is noted, and it is respected.",
+            "Good day. I have what you need, as I generally do."
+          ],
+          "affable": [
+            "You are among the few patrons I genuinely look forward to dealing with.",
+            "I have set aside something I think will suit you. You've earned that consideration."
+          ],
+          "devoted": [
+            "I would extend you my full trust without reservation. Few earn that. You have.",
+            "Whatever this house can provide, it is yours, fully and without condition."
+          ]
+        }
+      },
+      "blacksmith": {
+        "friendly": {
+          "hostile": [
+            "I will forge nothing for you. Leave the smithy.",
+            "This fire serves the law-abiding. You are not presently counted among them."
+          ],
+          "cold": [
+            "I'll complete the work. I won't pretend to enjoy your company while I do.",
+            "State what needs fixing. I'll see it done, and quickly, so you can be gone."
+          ],
+          "guarded": [
+            "Welcome. I forge to a standard. Whether you meet mine is your business to prove.",
+            "Need steel? I make good steel. I make no promises beyond that."
+          ],
+          "neutral": [
+            "Welcome to the forge. What do you require — repair, or something new?",
+            "Good day. I am {name}. State your needs and I'll quote you fairly."
+          ],
+          "warm": [
+            "Good to see you again. I've a few finished pieces that might suit you.",
+            "Welcome back. {settlement}'s smithwork is in good standing, in part thanks to steady custom like yours."
+          ],
+          "affable": [
+            "Good timing — I've been working on something with you specifically in mind.",
+            "Ah, you. Come see what the forge has produced since your last visit."
+          ],
+          "devoted": [
+            "Every piece I forge for you, I forge with particular care. You stand where the law alone cannot hold.",
+            "For someone who has done this much for this province — let me ensure you are properly protected."
+          ]
+        },
+        "grumpy": {
+          "hostile": [
+            "Out. This hammer doesn't swing for people like you.",
+            "I shoe garrison horses and forge garrison steel. Neither for you."
+          ],
+          "cold": [
+            "What. I've orders ahead of yours, and more deserving of my time.",
+            "Make it quick. The forge doesn't wait, and neither do I."
+          ],
+          "guarded": [
+            "Make it quick. I've a backlog of orders to fill.",
+            "Another traveler needing gear. *sighs and reaches for the ledger*"
+          ],
+          "neutral": [
+            "Yes? State your need. I've work waiting.",
+            "Need something? Speak plainly, I haven't the patience for circling."
+          ],
+          "warm": [
+            "Oh, it's you. *nods once* You're one of the few I don't mind being interrupted by.",
+            "Back again. Fine. Let's see what's broken this time."
+          ],
+          "affable": [
+            "Hmph. Your custom keeps this forge lit longer than most. I won't say I'm pleased. I am, though.",
+            "*grunts approvingly* You're back. Good. The work's better when someone worthwhile's waiting on it."
+          ],
+          "devoted": [
+            "I'm not a soft man, but I'll always make time for you. Always.",
+            "You're the reason I still believe the empire's worth the forging. Don't repeat that."
+          ]
+        },
+        "proud": {
+          "hostile": [
+            "My work is wasted on the unworthy. The door is behind you.",
+            "I forge for those who uphold the peace, not those who undermine it. Leave."
+          ],
+          "cold": [
+            "I forge for those who've earned quality. You have not yet demonstrated that you have.",
+            "Touch nothing without my leave. These are not common wares."
+          ],
+          "guarded": [
+            "Welcome to the finest forge this province has produced. Mind your hands.",
+            "You may look. You may not handle, without my say."
+          ],
+          "neutral": [
+            "You have an eye for craftsmanship, I'll grant you that. You've come to the right forge.",
+            "Every piece here is built to outlast its owner. You won't find better in any province."
+          ],
+          "warm": [
+            "Welcome. I am {name}, master of this forge. What do you require?",
+            "A discerning customer. I respect those who recognize true work when they see it."
+          ],
+          "affable": [
+            "Ah — the one who actually understands the craft. I've been perfecting something with you in mind.",
+            "You are among the few I consider worthy of my finest work. Come, see it."
+          ],
+          "devoted": [
+            "To forge for you is the highest honor this career has offered me. You receive my absolute best, without exception.",
+            "When the census archives record this province's defenders, my steel will be in their hands. That is no small legacy."
+          ]
+        }
+      },
+      "leader": {
+        "wise": {
+          "hostile": [
+            "You are no longer welcome within {settlement}'s boundary. I will summon the garrison if needed.",
+            "Your conduct has cost you any standing here. I have nothing further to discuss with you."
+          ],
+          "cold": [
+            "Greetings. I will be direct — your record in this province is complicated, and I have not forgotten it.",
+            "I will hear you, as procedure requires. Do not mistake that for warmth."
+          ],
+          "guarded": [
+            "Greetings, traveler. I trust you bring no disorder to {settlement}.",
+            "Welcome. My caution is a matter of policy, not personal feeling — you'll forgive it."
+          ],
+          "neutral": [
+            "Greetings. Welcome to {settlement}, under the law of the Compact.",
+            "A visitor. State your purpose here, if you have one."
+          ],
+          "warm": [
+            "Welcome. I am {name}, {title} of {settlement}. How may the office assist you?",
+            "Greetings. Word of you has reached even this far province. What brings you to us?"
+          ],
+          "affable": [
+            "{name}, glad to see you again, in full and by name — {settlement} prospers in no small part because of you.",
+            "A welcome sight indeed. Join me; there is much worth discussing, and little time wasted on ceremony with you."
+          ],
+          "devoted": [
+            "{settlement} is better governed for having you in it. I say that not as flattery, but as administrative fact.",
+            "If the Compact permitted naming a citizen co-administrator, I would put your name forward without hesitation."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Garrison! Escort this individual from the administrative hall.",
+            "You were warned. The consequences proceed as recorded."
+          ],
+          "cold": [
+            "State your business, traveler. My patience for your case is thin and well-documented.",
+            "I have little time and less trust where you are concerned. Speak plainly."
+          ],
+          "guarded": [
+            "State your business, traveler.",
+            "I am {name}, {title} of {settlement}, appointed under the Compact. What is your purpose here?"
+          ],
+          "neutral": [
+            "We do not tolerate disorder in {settlement}. See that you observe the law while you remain.",
+            "Welcome to {settlement}. Compliance with the trade law is expected, not requested."
+          ],
+          "warm": [
+            "You have demonstrated reliability in {settlement}. That is noted, and it is respected.",
+            "Good. You're here. I have matters that require someone I can actually depend on."
+          ],
+          "affable": [
+            "You have earned my trust — that is a rare administrative achievement. Welcome.",
+            "I do not say this lightly: you are among the most capable people this province has produced."
+          ],
+          "devoted": [
+            "I would stand the line myself, beside you, if duty here did not require otherwise.",
+            "You are the standard against which I measure every officer under my command. {settlement} is fortunate to claim you."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "Duty requires I hear you out. It does not require I extend patience I no longer have.",
+            "You have dishonored your standing in {settlement}. I have nothing further to offer you."
+          ],
+          "cold": [
+            "I am bound by duty to receive you, though my judgment of you remains unchanged.",
+            "Come. Understand that trust, once forfeited, is not easily restored under the Compact or otherwise."
+          ],
+          "guarded": [
+            "Greetings. I judge by record of conduct. Yours has been... mixed, by the account I've kept.",
+            "Welcome to {settlement}. I hope your next actions speak more favorably than your last."
+          ],
+          "neutral": [
+            "Welcome, traveler. {settlement} receives you under the protection of Pax Vaethora.",
+            "Well met. I am {name}, {title} of this settlement. You stand among those who keep their word here."
+          ],
+          "warm": [
+            "Greetings. Your conduct precedes you, and favorably.",
+            "Welcome to {settlement}. How may this office serve someone of your standing?"
+          ],
+          "affable": [
+            "The defender of this province. Your name is spoken with genuine respect in this hall.",
+            "It brings me real satisfaction to receive you again. {settlement} stands stronger for your continued goodwill."
+          ],
+          "devoted": [
+            "You embody what this office is meant to protect. {settlement} would be lesser without you, and I do not say that as ceremony.",
+            "If there is a more dutiful soul under the Compact, I have not had the honor of governing alongside them."
+          ]
+        }
+      },
+      "guard": {
+        "friendly": {
+          "hostile": [
+            "Halt. You are not welcome within {settlement}'s walls. Turn back.",
+            "I have standing orders regarding you. One infraction and it's the garrison cells."
+          ],
+          "cold": [
+            "Keep your distance. Your record has reached this post.",
+            "Move along, and stay within the bounds of the law while you do."
+          ],
+          "guarded": [
+            "Halt there. Keep your weapon sheathed and we'll have no trouble.",
+            "I've been briefed on you, traveler. Mind yourself."
+          ],
+          "neutral": [
+            "Welcome to {settlement}, under the protection of the garrison. State your business if you have any.",
+            "Good day. The peace is kept here. Let me know if you require assistance."
+          ],
+          "warm": [
+            "Well met, traveler. {settlement} stands secure — that's the garrison's work, and I'm glad of it.",
+            "Welcome. We keep good order here. You'll find no trouble within these walls."
+          ],
+          "affable": [
+            "Good to have you in {settlement} again. An extra capable hand makes the watch easier.",
+            "Glad to see you, friend. The post feels less thankless when allies like you pass through."
+          ],
+          "devoted": [
+            "I would stand a post beside you without a second thought. You are, in every practical sense, one of ours now.",
+            "The garrison holds its head higher when you're within these walls. That is not exaggeration — it's morale, plainly recorded."
+          ]
+        },
+        "stern": {
+          "hostile": [
+            "Halt. You have until the count of ten to clear {settlement}'s boundary.",
+            "I will not issue a second warning. Leave, now."
+          ],
+          "cold": [
+            "Halt. State your business, and make it convincing.",
+            "I know your standing here. Keep your hands visible."
+          ],
+          "guarded": [
+            "Halt. State your business in {settlement}.",
+            "Weapons remain sheathed within the walls. Is that understood?"
+          ],
+          "neutral": [
+            "Move along, citizen. There is nothing here requiring your attention.",
+            "I am watching. See that you give me no reason to do more than that."
+          ],
+          "warm": [
+            "You — ah. Carry on. You've earned the latitude.",
+            "Good day. I know better than to expect trouble from you."
+          ],
+          "affable": [
+            "If more of {settlement}'s visitors conducted themselves as you do, this post would be far less work.",
+            "Consider yourself a friend of the watch. That designation is not handed out freely."
+          ],
+          "devoted": [
+            "I would hold this gate alone before I let harm reach you. That is not something I say to most people.",
+            "On my oath under the Compact, you will always find safety within {settlement}'s walls."
+          ]
+        },
+        "honorable": {
+          "hostile": [
+            "My oath requires I give fair warning. You are not welcome here — leave, or face the law.",
+            "I take no satisfaction in this, but you are not permitted within {settlement}."
+          ],
+          "cold": [
+            "I serve the people of {settlement}, under the law of the Compact. Whether that extends to you remains uncertain.",
+            "Proceed carefully. My duty is to the peace, not to any one individual — yourself included."
+          ],
+          "guarded": [
+            "Welcome, traveler. I am sworn to the protection of {settlement} and its people.",
+            "Greetings. You will find {settlement} secure, so long as I hold this post."
+          ],
+          "neutral": [
+            "Well met. I stand this post under oath. You have nothing to fear within these walls.",
+            "Welcome. I serve {settlement} as the Compact requires. How may I assist you?"
+          ],
+          "warm": [
+            "A fellow upholder of order. Your conduct has not gone unnoticed by this garrison.",
+            "Welcome, honored guest. The people of {settlement} speak of you with genuine regard."
+          ],
+          "affable": [
+            "You serve what is right, as I do. There is a kinship in that, whatever our stations.",
+            "I count you among the most honorable I have had the privilege of serving alongside."
+          ],
+          "devoted": [
+            "You have my blade, my post, and my loyalty, for as long as I draw breath under this oath.",
+            "It is an honor, recorded plainly in my own conscience, to share this province with someone of your conduct."
+          ]
+        }
+      },
+      "citizen": {
+        "friendly": {
+          "hostile": [
+            "I have nothing further to say to you.",
+            "Please — leave me to my business."
+          ],
+          "cold": [
+            "Oh. It's you.",
+            "I'd rather not speak just now, if it's the same to you."
+          ],
+          "guarded": [
+            "Good day, traveler. Just passing through {settlement}, I hope?",
+            "Can I assist you with something?"
+          ],
+          "neutral": [
+            "Good day. Fine weather for the road, isn't it?",
+            "Greetings, traveler."
+          ],
+          "warm": [
+            "Welcome. It's good to see a friendly face in {settlement}.",
+            "Hello! Do you need help finding your way around?"
+          ],
+          "affable": [
+            "There's our champion! How are you keeping?",
+            "Oh, wonderful — you're back! The children will want to hear everything."
+          ],
+          "devoted": [
+            "I tell my children about you, properly, by full name and deed.",
+            "You kept this settlement standing. The province does not forget that, and neither do I."
+          ]
+        }
+      }
+    }
+  },
+  "flavorDialogueByCulture": {
+    "vaethori": [
+      "The road crews finished the eastern stretch ahead of schedule. Small mercy, these days.",
+      "Every settlement in this province is logged at Caestum. If it stands, it's recorded. If it falls, that's recorded too.",
+      "Pax Vaethora was never meant to be loved. It was meant to hold. So far, it holds.",
+      "The census takers come through twice a year, whether anyone likes it or not. Someone has to count what's left.",
+      "My grandfather crossed over with the first expedition. He used to say the empire builds because stopping feels like admitting something.",
+      "The garrison reassigned three units from the boundary line last season. No one says where the people went. Just where the unit did.",
+      "Duty is simple, in the end. You do the part that's yours, and you accept the part that isn't.",
+      "They'll write all of this down eventually. Every road, every fort, every name. It's the only kind of permanence we get to choose."
+    ]
+  }
+}

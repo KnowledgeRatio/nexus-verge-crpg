@@ -1,0 +1,496 @@
+{
+  "description": "NPC name generation tables for procedural NPC creation",
+  "version": "1.0.0",
+  "humanFirstNames": {
+    "male": [
+      "Aldric",
+      "Brennan",
+      "Cedric",
+      "Donovan",
+      "Edmund",
+      "Finnegan",
+      "Gareth",
+      "Harold",
+      "Ivan",
+      "Jasper",
+      "Kieran",
+      "Leofric",
+      "Magnus",
+      "Norbert",
+      "Oswald",
+      "Percival",
+      "Quincy",
+      "Roderick",
+      "Silas",
+      "Thaddeus",
+      "Ulric",
+      "Vincent",
+      "Wallace",
+      "Xavier",
+      "Yorick",
+      "Zachary",
+      "Arthur",
+      "Benedict",
+      "Conrad",
+      "Desmond",
+      "Edgar",
+      "Frederick",
+      "Gilbert",
+      "Henry",
+      "Isaac",
+      "Jonathan",
+      "Kenneth",
+      "Lawrence",
+      "Martin",
+      "Nicholas",
+      "Oliver",
+      "Patrick",
+      "Quentin",
+      "Raymond",
+      "Samuel",
+      "Thomas",
+      "Victor",
+      "William"
+    ],
+    "female": [
+      "Adeline",
+      "Beatrice",
+      "Cecilia",
+      "Delilah",
+      "Eleanor",
+      "Fiona",
+      "Gwendolyn",
+      "Helena",
+      "Isolde",
+      "Josephine",
+      "Katherine",
+      "Lydia",
+      "Margaret",
+      "Natalia",
+      "Ophelia",
+      "Penelope",
+      "Quinn",
+      "Rosalind",
+      "Sophia",
+      "Tabitha",
+      "Ursula",
+      "Victoria",
+      "Winifred",
+      "Yvonne",
+      "Zara",
+      "Amelia",
+      "Bridget",
+      "Charlotte",
+      "Diana",
+      "Elizabeth",
+      "Florence",
+      "Grace",
+      "Hannah",
+      "Iris",
+      "Jane",
+      "Lillian",
+      "Madeline",
+      "Nora",
+      "Olivia",
+      "Priscilla",
+      "Rebecca",
+      "Sarah",
+      "Theresa",
+      "Violet",
+      "Wendy",
+      "Adelaide",
+      "Clara",
+      "Evelyn"
+    ],
+    "campaignIds": [
+      "core"
+    ]
+  },
+  "elfFirstNames": {
+    "male": [
+      "Aelrindel",
+      "Balaeron",
+      "Caerthynna",
+      "Daemion",
+      "Erevan",
+      "Faelor",
+      "Galadhorn",
+      "Hadarai",
+      "Iliphar",
+      "Jorildyn",
+      "Kelvhan",
+      "Laeroth",
+      "Mindartis",
+      "Nuada",
+      "Olaurae",
+      "Pharom",
+      "Quarion",
+      "Rhistel",
+      "Silvyr",
+      "Therrion",
+      "Uthemar",
+      "Vaeril",
+      "Writhran",
+      "Xhalth",
+      "Yalathanil",
+      "Zelphar"
+    ],
+    "female": [
+      "Aerith",
+      "Bellas",
+      "Caelynn",
+      "Drusilia",
+      "Elanor",
+      "Faelyn",
+      "Gweyir",
+      "Holimion",
+      "Ilmadia",
+      "Jelenneth",
+      "Keyleth",
+      "Leshanna",
+      "Meriele",
+      "Naivara",
+      "Oluevaera",
+      "Pharadyth",
+      "Quillathe",
+      "Rathiain",
+      "Sariel",
+      "Theirastra",
+      "Ualair",
+      "Valanthe",
+      "Wynneth",
+      "Xanaphia",
+      "Yaereene",
+      "Zinzerena"
+    ],
+    "campaignIds": [
+      "core"
+    ]
+  },
+  "dwarfFirstNames": {
+    "male": [
+      "Adrik",
+      "Baern",
+      "Crag",
+      "Dorn",
+      "Eberk",
+      "Fargrim",
+      "Gardain",
+      "Harbek",
+      "Ironfoot",
+      "Jotun",
+      "Kildrak",
+      "Logrosh",
+      "Morgran",
+      "Nundro",
+      "Oskar",
+      "Pethro",
+      "Quarval",
+      "Rurik",
+      "Stokkul",
+      "Thoradin",
+      "Ulfgar",
+      "Vondal",
+      "Wharton",
+      "Yurgunn"
+    ],
+    "female": [
+      "Amber",
+      "Bardryn",
+      "Criena",
+      "Diesa",
+      "Eldeth",
+      "Falkrunn",
+      "Gunnloda",
+      "Helja",
+      "Ilde",
+      "Jarana",
+      "Kathra",
+      "Liftrasa",
+      "Mardred",
+      "Nalaed",
+      "Olga",
+      "Riswynn",
+      "Sannl",
+      "Torbera",
+      "Urshar",
+      "Vistra",
+      "Whurdred",
+      "Yurgunn",
+      "Ziza"
+    ],
+    "campaignIds": [
+      "core"
+    ]
+  },
+  "halflingFirstNames": {
+    "male": [
+      "Pip", "Renn", "Dav", "Cael", "Wix", "Brim", "Sorn", "Tock", "Oll", "Finn",
+      "Jak", "Mori", "Sev", "Tav", "Wick", "Bren", "Cade", "Dorn", "Elto", "Goss"
+    ],
+    "female": [
+      "Vell", "Bree", "Lissa", "Mira", "Pell", "Nessa", "Wren", "Calla", "Sori", "Trix",
+      "Fenn", "Jori", "Kael", "Lari", "Mell", "Nori", "Perri", "Rella", "Saba", "Della"
+    ],
+    "campaignIds": ["core"]
+  },
+  "dragonbornFirstNames": {
+    "male": [
+      "Vorn", "Kraith", "Dossek", "Balar", "Thurek", "Navarr", "Osseth", "Korrak", "Gharret", "Messen",
+      "Torrath", "Varesh", "Durrek", "Harkan", "Orreth", "Rathek", "Soran", "Terryn", "Vorath", "Zarak"
+    ],
+    "female": [
+      "Akara", "Dhavar", "Lirreth", "Navaress", "Ossaril", "Thariva", "Dorveth", "Vethara", "Mirrak", "Kessara",
+      "Braveth", "Dorrith", "Haressa", "Korrath", "Lissavel", "Nariveth", "Ossavel", "Raveth", "Therrak", "Vorreth"
+    ],
+    "campaignIds": ["core"]
+  },
+  "lastNames": [
+    "Ashford",
+    "Blackwood",
+    "Copper",
+    "Darkwater",
+    "Eastwood",
+    "Fairweather",
+    "Goldleaf",
+    "Hawthorne",
+    "Ironforge",
+    "Justicebringer",
+    "Kindlewood",
+    "Lightfoot",
+    "Moonwhisper",
+    "Northwind",
+    "Oakenshield",
+    "Proudfoot",
+    "Quicksilver",
+    "Ravenscroft",
+    "Silverhand",
+    "Thornhill",
+    "Underhill",
+    "Valor",
+    "Westbrook",
+    "Yellowstone",
+    "Stonefist",
+    "Brightblade",
+    "Deepdelver",
+    "Flamebeard",
+    "Frostbeard",
+    "Greymantle",
+    "Hammerfell",
+    "Steelstrike",
+    "Bronzebeard",
+    "Crystalforge",
+    "Earthshaker",
+    "Fireheart",
+    "Goldhammer",
+    "Stormhammer",
+    "Swiftarrow",
+    "Nightshade",
+    "Starweaver",
+    "Windrunner",
+    "Shadowstep",
+    "Dawnbringer",
+    "Wildheart",
+    "Trueblade",
+    "Strongarm",
+    "Keenblade"
+  ],
+  "tavernNames": [
+    "The Prancing Pony",
+    "The Golden Griffin",
+    "The Rusty Nail",
+    "The Dragon's Rest",
+    "The Broken Shield",
+    "The Silver Tankard",
+    "The Laughing Bard",
+    "The Weary Traveler",
+    "The Stone Hearth",
+    "The Merry Maiden",
+    "The Iron Anvil",
+    "The Copper Coin",
+    "The Wandering Minstrel",
+    "The Lucky Dice",
+    "The Foaming Flagon",
+    "The Red Dragon Inn",
+    "The White Hart",
+    "The Black Rose",
+    "The Green Dragon",
+    "The Blue Moon",
+    "The Sleeping Giant",
+    "The Dancing Bear",
+    "The Roaring Lion",
+    "The Soaring Eagle"
+  ],
+  "merchantShopNames": [
+    "General Goods",
+    "Sundries & Supplies",
+    "The Trading Post",
+    "Merchant's Emporium",
+    "The Corner Store",
+    "Goods & Wares",
+    "The Supply Shop",
+    "The Market Stall",
+    "Provisions & More",
+    "The Trader's Stock",
+    "Quality Goods",
+    "The General Store"
+  ],
+  "blacksmithShopNames": [
+    "The Forge",
+    "Ironworks",
+    "The Anvil",
+    "Steel & Stone",
+    "The Smithy",
+    "Hammer & Tongs",
+    "The Weaponsmith",
+    "The Armoury",
+    "Master Smith's",
+    "The Forge & Furnace",
+    "The Blacksmith's Workshop",
+    "Fire & Steel"
+  ],
+  "titles": {
+    "village": {
+      "leader": [
+        "Village Elder",
+        "Headman",
+        "Chief"
+      ],
+      "guard": [
+        "Watchman",
+        "Town Guard",
+        "Constable"
+      ]
+    },
+    "town": {
+      "leader": [
+        "Mayor",
+        "Burgomaster",
+        "Magistrate"
+      ],
+      "guard": [
+        "Captain of the Guard",
+        "Sheriff",
+        "Town Marshal"
+      ]
+    },
+    "city": {
+      "leader": [
+        "Lord",
+        "Lady",
+        "High Council Member"
+      ],
+      "guard": [
+        "Guard Captain",
+        "City Watch Commander",
+        "Lord Commander"
+      ]
+    },
+    "campaignIds": [
+      "core"
+    ]
+  },
+
+  "verathiFirstNames": {
+    "description": "Verathi — oldest inhabitants, flowing compound names, soft consonants and open vowels. Names are not gendered.",
+    "names": [
+      "Aerindel", "Carveth", "Osílen", "Marath", "Silven", "Cael",
+      "Erevorn", "Caelindra", "Ondavel", "Silvareth", "Aethon", "Liravel",
+      "Caeris", "Marevil", "Silorn", "Aelindra", "Carvil", "Eresil"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "verathiPlaceNames": {
+    "names": [
+      "Aethenmoor", "Ondavel", "Caelindra", "Silvareth", "Erevorn"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+
+  "ketharaFirstNames": {
+    "description": "Kethara — 2-5 generations settled, short clipped names, mixed phonetics, functional. Names are not gendered.",
+    "names": [
+      "Dren", "Sova", "Torric", "Kael", "Rythe", "Ash", "Marro",
+      "Brek", "Tova", "Cors", "Rynn", "Dav", "Mase", "Torr",
+      "Kel", "Sarn", "Bryn", "Corra", "Reth", "Dara"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "ketharaPlaceNames": {
+    "names": [
+      "Karath Crossing", "Dyreth Hold", "Sova's Rest", "Ember Post"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+
+  "vethriFirstNames": {
+    "description": "Vethri — void-adjacent, monosyllabic, worn down to minimum. Names are not gendered.",
+    "names": [
+      "Vec", "Ren", "Os", "Sil", "Nam", "Vel", "Nun",
+      "Tor", "Rem", "Sal", "Ver", "Nas", "Olt", "Sem"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "vethriPlaceNames": {
+    "names": [
+      "Null", "The Between", "Thin", "The Shelf", "Near"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+
+  "delhariFirstNames": {
+    "description": "Delhari — recent deliberate arrivals, formal names varied in origin, often academic in flavour. Names are not gendered.",
+    "names": [
+      "Thaddeus", "Lyris", "Orvek", "Cassia", "Maren", "Aldric", "Voss",
+      "Brennan", "Elara", "Korvin", "Thessaly", "Aldous", "Varis", "Cessa",
+      "Dorvek", "Lirath", "Marven", "Ossian", "Tessaly", "Vorn"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+
+  "sirathiFirstNames": {
+    "description": "Sirathi — void refugees, short names cut off like their history. Names are not gendered.",
+    "names": [
+      "Kel", "Tyn", "Moru", "Asha", "Var", "Seren", "Onn",
+      "Brin", "Tav", "Morn", "Ash", "Vel", "Sorn", "Ren",
+      "Keth", "Tara", "Mav", "Sorrel", "Orn", "Bren"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "sirathiPlaceNames": {
+    "names": [
+      "Old Moru", "First Town", "The Before"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+
+  "vaethoriFirstNames": {
+    "description": "Vaethori — colonial imperial culture, Latin phonemes, open vowels, -us/-a endings",
+    "male": [
+      "Maeren", "Valus", "Caston", "Dorian", "Luvar", "Servian",
+      "Corvin", "Malius", "Aethan", "Caerus", "Toran", "Quinthar",
+      "Vaelen", "Dorvus", "Castorian", "Luvaen", "Maeron", "Corvian"
+    ],
+    "female": [
+      "Vaelia", "Cassara", "Maeris", "Doriva", "Servana", "Corvela",
+      "Tasia", "Liova", "Caelia", "Aethis", "Vaelira", "Cassoria",
+      "Maeria", "Dorival", "Servela", "Corvia", "Tasian", "Liovara"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "vaethoriLastNames": {
+    "description": "Vaethori formal family names — 'Maeren of House Caetor', 'Servana Dorvath'",
+    "names": [
+      "Vaelen", "Caetor", "Maethos", "Dorvath", "Servani", "Corvath",
+      "Caelvath", "Toranel", "Quinthari", "Luvari", "Maeroth", "Castorel"
+    ],
+    "campaignIds": ["nexus-verge"]
+  },
+  "vaethoriPlaceNames": {
+    "names": [
+      "Caestum", "Nova Vaethora", "Dorium", "Aethaneum", "Maeris Station",
+      "Fort Corvel", "Fort Vaelen", "Fort Maethos"
+    ],
+    "campaignIds": ["nexus-verge"]
+  }
+}

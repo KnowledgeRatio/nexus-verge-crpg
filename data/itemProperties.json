@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "description": "Canonical magic item property catalog. droppable controls whether a property can appear on naturally dropped items. forgecraftEligible controls whether it appears in the Forgecraft menu. weight controls relative selection probability within the eligible pool.",
+  "properties": [
+    {
+      "id": "tailored",
+      "name": "Tailored",
+      "appliesTo": ["armor"],
+      "effect": { "type": "modifyArmor", "property": "maxDexBonus", "bonus": 1 },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Expertly fitted to the wearer. The maximum DEX modifier that contributes to AC increases by 1."
+    },
+    {
+      "id": "adaptive",
+      "name": "Adaptive",
+      "appliesTo": ["armor"],
+      "effect": { "type": "modifyDefense", "property": "critImmunity", "value": true },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Layered and angled to deflect devastating blows. Critical hits against you count as normal hits for damage calculation."
+    },
+    {
+      "id": "reinforced",
+      "name": "Reinforced",
+      "appliesTo": ["armor"],
+      "effect": { "type": "modifyArmor", "property": "acBonus", "bonus": 1 },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 0.7,
+      "description": "Structurally strengthened at key stress points. Grants +1 to AC."
+    },
+    {
+      "id": "optimised",
+      "name": "Optimised",
+      "appliesTo": ["shield"],
+      "effect": { "type": "modifyShield", "property": "acBonus", "bonus": 1 },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Lighter, harder, and tuned to its wielder. Grants an additional +1 AC."
+    },
+    {
+      "id": "deflecting",
+      "name": "Deflecting",
+      "appliesTo": ["shield"],
+      "effect": { "type": "modifyShield", "property": "savingThrowReaction", "uses": 1, "recharge": "shortRest" },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Shaped to redirect incoming energy. Once per short rest, use your reaction to add your shield's AC bonus to a saving throw."
+    },
+    {
+      "id": "keen",
+      "name": "Keen",
+      "appliesTo": ["weapon"],
+      "effect": { "type": "modifyWeapon", "property": "critRange", "value": [19, 20] },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Honed to a razor edge that finds the gaps. Critical hit range expands to 19-20."
+    },
+    {
+      "id": "tempered",
+      "name": "Tempered",
+      "appliesTo": ["weapon"],
+      "effect": { "type": "modifyWeapon", "property": "damageBonus", "bonus": 1 },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 1.0,
+      "description": "Strengthened through expert heat treatment. Grants +1 to damage rolls."
+    },
+    {
+      "id": "balanced",
+      "name": "Balanced",
+      "appliesTo": ["weapon"],
+      "effect": { "type": "modifyWeapon", "property": "attackBonus", "bonus": 1 },
+      "droppable": true,
+      "forgecraftEligible": true,
+      "weight": 0.7,
+      "description": "Perfectly weighted for precision. Grants +1 to attack rolls."
+    }
+  ]
+}

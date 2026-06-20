@@ -1,0 +1,465 @@
+{
+  "description": "Merchant and Blacksmith inventory pools for procedural generation",
+  "version": "1.0.0",
+  "merchantItems": [
+    {
+      "id": "rations",
+      "name": "Rations (1 day)",
+      "type": "consumable",
+      "description": "One day's worth of dried food",
+      "weight": 2,
+      "value": 5,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "waterskin",
+      "name": "Waterskin",
+      "type": "misc",
+      "description": "Holds 4 pints of liquid",
+      "weight": 5,
+      "value": 2,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potion-healing",
+      "name": "Potion of Healing",
+      "type": "consumable",
+      "description": "Restores 2d4+2 hit points",
+      "weight": 0.5,
+      "value": 50,
+      "rarity": "common",
+      "effect": {
+        "healing": "2d4+2"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potion-greater-healing",
+      "name": "Potion of Greater Healing",
+      "type": "consumable",
+      "description": "Restores 4d4+4 hit points",
+      "weight": 0.5,
+      "value": 150,
+      "rarity": "uncommon",
+      "effect": {
+        "healing": "4d4+4"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "torch",
+      "name": "Torch",
+      "type": "misc",
+      "description": "Provides bright light for 1 hour",
+      "weight": 1,
+      "value": 1,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "rope-hempen",
+      "name": "Hempen Rope (50 ft)",
+      "type": "misc",
+      "description": "Strong rope for climbing",
+      "weight": 10,
+      "value": 10,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "backpack",
+      "name": "Backpack",
+      "type": "misc",
+      "description": "Holds 30 lbs of gear",
+      "weight": 5,
+      "value": 20,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "bedroll",
+      "name": "Bedroll",
+      "type": "misc",
+      "description": "For sleeping outdoors",
+      "weight": 7,
+      "value": 10,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "tinderbox",
+      "name": "Tinderbox",
+      "type": "misc",
+      "description": "For starting fires",
+      "weight": 1,
+      "value": 5,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "healers-kit",
+      "name": "Healer's Kit",
+      "type": "misc",
+      "description": "10 uses for stabilizing dying creatures",
+      "weight": 3,
+      "value": 50,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "antitoxin",
+      "name": "Antitoxin",
+      "type": "consumable",
+      "description": "Advantage on saves vs poison for 1 hour",
+      "weight": 0.5,
+      "value": 50,
+      "rarity": "common",
+      "effect": {
+        "buff": "advantage_poison_1h"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "holy-water",
+      "name": "Holy Water",
+      "type": "consumable",
+      "description": "2d6 radiant damage to fiends/undead",
+      "weight": 1,
+      "value": 25,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potion-climbing",
+      "name": "Potion of Climbing",
+      "type": "consumable",
+      "description": "Gain climbing speed for 1 hour",
+      "weight": 0.5,
+      "value": 75,
+      "rarity": "uncommon",
+      "effect": {
+        "buff": "climb_speed_1h"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potion-heroism",
+      "name": "Potion of Heroism",
+      "type": "consumable",
+      "description": "10 temp HP and bless effect for 1 hour",
+      "weight": 0.5,
+      "value": 180,
+      "rarity": "rare",
+      "effect": {
+        "tempHP": "10",
+        "buff": "bless_1h"
+      },
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "blacksmithItems": [
+    {
+      "id": "longsword",
+      "name": "Longsword",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d8",
+        "type": "slashing"
+      },
+      "properties": [
+        "versatile"
+      ],
+      "versatileDamage": "1d10",
+      "weight": 3,
+      "value": 150,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shortsword",
+      "name": "Shortsword",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d6",
+        "type": "piercing"
+      },
+      "properties": [
+        "light",
+        "finesse"
+      ],
+      "weight": 2,
+      "value": 100,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "greataxe",
+      "name": "Greataxe",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d12",
+        "type": "slashing"
+      },
+      "properties": [
+        "heavy",
+        "two-handed"
+      ],
+      "weight": 7,
+      "value": 300,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dagger",
+      "name": "Dagger",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d4",
+        "type": "piercing"
+      },
+      "properties": [
+        "light",
+        "finesse",
+        "thrown"
+      ],
+      "weight": 1,
+      "value": 20,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "handaxe",
+      "name": "Handaxe",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d6",
+        "type": "slashing"
+      },
+      "properties": [
+        "light",
+        "thrown"
+      ],
+      "weight": 2,
+      "value": 50,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "longbow",
+      "name": "Longbow",
+      "type": "weapon",
+      "weaponType": "ranged",
+      "damage": {
+        "dice": "1d8",
+        "type": "piercing"
+      },
+      "properties": [
+        "ammunition",
+        "heavy",
+        "two-handed"
+      ],
+      "range": "150/600",
+      "weight": 2,
+      "value": 500,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shortbow",
+      "name": "Shortbow",
+      "type": "weapon",
+      "weaponType": "ranged",
+      "damage": {
+        "dice": "1d6",
+        "type": "piercing"
+      },
+      "properties": [
+        "ammunition",
+        "two-handed"
+      ],
+      "range": "80/320",
+      "weight": 2,
+      "value": 250,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "leather-armor",
+      "name": "Leather Armor",
+      "type": "armor",
+      "armorType": "light",
+      "ac": 11,
+      "dexModifier": "full",
+      "weight": 10,
+      "value": 100,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "studded-leather",
+      "name": "Studded Leather Armor",
+      "type": "armor",
+      "armorType": "light",
+      "ac": 12,
+      "dexModifier": "full",
+      "weight": 13,
+      "value": 450,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "chain-mail",
+      "name": "Chain Mail",
+      "type": "armor",
+      "armorType": "heavy",
+      "ac": 16,
+      "dexModifier": "none",
+      "weight": 55,
+      "value": 750,
+      "rarity": "common",
+      "cunningDisadvantage": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "plate-armor",
+      "name": "Plate Armor",
+      "type": "armor",
+      "armorType": "heavy",
+      "ac": 18,
+      "dexModifier": "none",
+      "weight": 65,
+      "value": 15000,
+      "rarity": "uncommon",
+      "cunningDisadvantage": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shield",
+      "name": "Shield",
+      "type": "shield",
+      "acBonus": 2,
+      "weight": 6,
+      "value": 100,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "longsword-plus-1",
+      "name": "Longsword +1",
+      "type": "weapon",
+      "weaponType": "melee",
+      "damage": {
+        "dice": "1d8",
+        "type": "slashing"
+      },
+      "properties": [
+        "versatile",
+        "magic"
+      ],
+      "versatileDamage": "1d10",
+      "attackBonus": 1,
+      "damageBonus": 1,
+      "weight": 3,
+      "value": 1500,
+      "rarity": "uncommon",
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "chain-mail-plus-1",
+      "name": "Chain Mail +1",
+      "type": "armor",
+      "armorType": "heavy",
+      "ac": 17,
+      "dexModifier": "none",
+      "weight": 55,
+      "value": 3000,
+      "rarity": "rare",
+      "cunningDisadvantage": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "arrows",
+      "name": "Arrows (20)",
+      "type": "misc",
+      "description": "Ammunition for bows",
+      "weight": 1,
+      "value": 10,
+      "rarity": "common",
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ]
+}

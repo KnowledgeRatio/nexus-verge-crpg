@@ -1,0 +1,1396 @@
+{
+  "weapons": [
+    {
+      "id": "dagger",
+      "name": "Dagger",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "blood",
+      "properties": [
+        "finesse",
+        "light",
+        "thrown"
+      ],
+      "weight": 1,
+      "description": "A short narrow blade from a world that favoured close work — the riveted grip wrap has been replaced twice, once with oiled cord, once with a strip cut from a saddle.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "mace",
+      "name": "Mace",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "bone",
+      "properties": [],
+      "weight": 4,
+      "description": "The flanged head is cast iron from a Kethara foundry, the haft spliced from two lengths of ash where the original snapped and was joined rather than replaced.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "morningstar",
+      "name": "Morningstar",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [],
+      "weight": 4,
+      "description": "A broad iron head fitted with eight square-section spikes; the pommel cap is a different alloy, a later replacement that doesn't quite match in colour.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "quarterstaff",
+      "name": "Quarterstaff",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "bone",
+      "properties": [
+        "versatile"
+      ],
+      "versatileDamage": "1d8",
+      "weight": 4,
+      "description": "A dense foreign hardwood, one end charred where someone used it to stir a fire and decided the grip was serviceable anyway.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "sling",
+      "name": "Sling",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "ranged",
+      "damage": "1d4",
+      "damageType": "bone",
+      "properties": [
+        "ammunition"
+      ],
+      "weight": 0,
+      "description": "Braided cord worn smooth at the pouch from use; the leather cup has been cut from a larger hide and folded twice, stitched with something that isn't quite thread.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "spear",
+      "name": "Spear",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "thrown",
+        "versatile"
+      ],
+      "versatileDamage": "1d8",
+      "weight": 3,
+      "description": "The socket is old Verathi ironwork; the shaft is a replacement of pale foreign wood, and the two materials meet at a winding of raw copper wire.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "handaxe",
+      "name": "Handaxe",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "light",
+        "thrown"
+      ],
+      "weight": 2,
+      "description": "The head is punched and stamped in a style no Verge smith recognises; the haft is new, fitted here, still pale where it hasn't been touched by weather.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scimitar",
+      "name": "Scimitar",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "finesse",
+        "light"
+      ],
+      "weight": 3,
+      "description": "The curve of the blade follows a geometry that suggests a culture that fought on horseback; traded or carried through a rift, now living a second life on the Verge.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shortbow",
+      "name": "Shortbow",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "ranged",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "twoHanded"
+      ],
+      "weight": 2,
+      "description": "A self bow shaped from a single dense stave, one face perpetually slightly damp and the other dry — the maker has accounted for this in the tiller.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "range": {
+        "normal": 80,
+        "long": 320
+      },
+      "ammunition": "arrow",
+      "ammoCapacity": 20,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "javelin",
+      "name": "Javelin",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "thrown"
+      ],
+      "weight": 2,
+      "description": "An ash-shafted throwing spear, the head socketed and pinned with two iron rivets; the pinning is Verge work, the head is not.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "lightCrossbow",
+      "name": "Carbine",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "ranged",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "loading",
+        "twoHanded"
+      ],
+      "weight": 5,
+      "description": "A long-barrelled firearm common enough on the Verge to be standard issue; the mechanism arrived through a rift and has been reproduced badly a dozen times since, which is why no two look quite alike.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "range": {
+        "normal": 80,
+        "long": 320
+      },
+      "ammunition": "shot",
+      "ammoCapacity": 15,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "handCrossbow",
+      "name": "Sidearm",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "light",
+        "loading"
+      ],
+      "weight": 3,
+      "description": "A compact one-handed firearm, short enough to draw from the hip; the grip plate is stamped with a maker's mark in an alphabet no one has translated, and the barrel shows thirty years of use.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 30,
+        "long": 120
+      },
+      "ammunition": "shot",
+      "ammoCapacity": 15,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "heavyCrossbow",
+      "name": "Longarm",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1d10",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "heavy",
+        "loading",
+        "twoHanded"
+      ],
+      "weight": 18,
+      "description": "A heavy two-handed firearm built for distance; the stock is reinforced with an iron spine older than the Verge settlement that sold it, and the barrel has been relined once with a sleeve that doesn't quite match.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "range": {
+        "normal": 100,
+        "long": 400
+      },
+      "ammunition": "shot",
+      "ammoCapacity": 10,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shortsword",
+      "name": "Shortsword",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "finesse",
+        "light"
+      ],
+      "weight": 2,
+      "description": "A narrow double-edged blade, the grind lines still visible near the spine; the grip panels are bone, pinned through the tang, replacing whatever was there before.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "longsword",
+      "name": "Longsword",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [
+        "versatile"
+      ],
+      "versatileDamage": "1d10",
+      "weight": 3,
+      "description": "The blade is good steel from somewhere colder — the cross-guard is Verge iron, fitted later, proportioned slightly wrong for the blade it carries.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "greataxe",
+      "name": "Greataxe",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d12",
+      "damageType": "blood",
+      "properties": [
+        "heavy",
+        "twoHanded"
+      ],
+      "weight": 7,
+      "description": "A wide single-bit blade broad enough to serve as a butchering tool; the eye is cracked and relined with a copper sleeve, which has held longer than anyone expected.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "greatclub",
+      "name": "Greatclub",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "bone",
+      "properties": [
+        "twoHanded"
+      ],
+      "weight": 10,
+      "description": "A dense foreign timber, gnarled and close-grained and heavier than its size suggests; the grip end is wrapped in raw hide that dried hard on the Verge's cold nights.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "greatsword",
+      "name": "Greatsword",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "2d6",
+      "damageType": "blood",
+      "properties": [
+        "heavy",
+        "twoHanded"
+      ],
+      "weight": 6,
+      "description": "A long blade with a short unsharpened ricasso suggesting it was designed to be half-swarded; the original pommel weight has been replaced with a river stone wrapped in iron wire.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "glaive",
+      "name": "Glaive",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d10",
+      "damageType": "blood",
+      "properties": [
+        "heavy",
+        "reach",
+        "twoHanded"
+      ],
+      "weight": 6,
+      "description": "A single-edged blade on a long pole, the socket bound with three rings of Coldcast Bronze — cold on one face, warm on the other — a repair that cost more than the weapon.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "halberd",
+      "name": "Halberd",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d10",
+      "damageType": "blood",
+      "properties": [
+        "heavy",
+        "reach",
+        "twoHanded"
+      ],
+      "weight": 6,
+      "description": "A composite polearm head combining axe blade, back spike, and upper point; the poll spike is a replacement in slightly darker steel, welded on the Verge by someone who knew the work.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "battleaxe",
+      "name": "Battleaxe",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [
+        "versatile"
+      ],
+      "versatileDamage": "1d10",
+      "weight": 4,
+      "description": "One cheek of the head is stamped with a radial pattern, the other plain — either two different cultures made the halves, or one culture's die broke mid-run.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "club",
+      "name": "Club",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "bone",
+      "properties": [
+        "light"
+      ],
+      "weight": 2,
+      "description": "A dense length of foreign hardwood, the bark stripped and the surface worn smooth by use; the weight sits in the head naturally, without artificial loading.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "longbow",
+      "name": "Longbow",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "heavy",
+        "twoHanded"
+      ],
+      "weight": 2,
+      "description": "A war bow from a taller culture — the stave is longer than most Verge archers are built for, and the grip has been built up with leather padding to compensate.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "range": {
+        "normal": 150,
+        "long": 600
+      },
+      "ammunition": "arrow",
+      "ammoCapacity": 20,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "rapier",
+      "name": "Rapier",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [
+        "finesse"
+      ],
+      "weight": 2,
+      "description": "A slender thrusting blade with a swept hilt suggesting formal dueling culture; the blade is clean, but the knuckle bow shows two old repairs in different wire gauges.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 5,
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "armor": [
+    {
+      "id": "halfPlate",
+      "name": "Half Plate",
+      "type": "armor",
+      "armorType": "medium",
+      "armorClass": 15,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "cunningDisadvantage": true,
+      "strengthRequirement": null,
+      "weight": 40,
+      "value": 750,
+      "rarity": "common",
+      "description": "Shaped pauldrons, vambraces, and a breastplate in mixed origin — the chest is one culture's work, the arm pieces another's, the gaps bridged with riveted mail from a Verge armorer.",
+      "equipSlot": "armor",
+      "reputationRequirement": 25,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "clothes",
+      "name": "Common Clothes",
+      "type": "armor",
+      "armorClass": 10,
+      "addDexModifier": true,
+      "maxDexBonus": null,
+      "armorType": "light",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 3,
+      "description": "Layered garments in the Varathi fashion — mismatched weaves and dye lots, everything washed to near-uniform grey by road dust and rain.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "leatherArmor",
+      "name": "Leather Armor",
+      "type": "armor",
+      "armorClass": 11,
+      "addDexModifier": true,
+      "maxDexBonus": null,
+      "armorType": "light",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 10,
+      "description": "Boiled hide cut from two different tannages and laced together where the sizes didn't meet; the shoulder patches are a third material, stiff and dark.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "studdedLeather",
+      "name": "Studded Leather",
+      "type": "armor",
+      "armorClass": 12,
+      "addDexModifier": true,
+      "maxDexBonus": null,
+      "armorType": "light",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 13,
+      "description": "The backing is Verge-tanned leather; the studs are punched from a sheet of imported metal, their heads a slightly different colour than the iron rivets holding the straps.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "hideArmor",
+      "name": "Hide Armor",
+      "type": "armor",
+      "armorClass": 12,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "armorType": "medium",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 12,
+      "description": "Pelts from at least three different creatures, stitched together with gut and rawhide; one hide has a texture no one on the Verge has named yet.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "chainShirt",
+      "name": "Chain Shirt",
+      "type": "armor",
+      "armorClass": 13,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "armorType": "medium",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 20,
+      "description": "Interlocked rings in two gauges — the torso section is finer work, the sleeves a rougher repair in thicker wire that clinks differently when walked.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 10,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scaleMail",
+      "name": "Scale Mail",
+      "type": "armor",
+      "armorClass": 14,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "armorType": "medium",
+      "strengthRequirement": null,
+      "cunningDisadvantage": true,
+      "weight": 45,
+      "description": "Overlapping scales riveted to a leather backing in three different metals and at least two different shapes, all sourced from whatever was available when the backing needed filling.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 15,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "breastplate",
+      "name": "Breastplate",
+      "type": "armor",
+      "armorClass": 14,
+      "addDexModifier": true,
+      "maxDexBonus": 2,
+      "armorType": "medium",
+      "strengthRequirement": null,
+      "cunningDisadvantage": false,
+      "weight": 20,
+      "description": "A single-piece chest and back plate shaped for a body that wasn't quite this one; the inside is padded with folded linen and rough cord ties where the original buckles were.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 20,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ringMail",
+      "name": "Ring Mail",
+      "type": "armor",
+      "armorClass": 14,
+      "addDexModifier": false,
+      "maxDexBonus": 0,
+      "armorType": "heavy",
+      "strengthRequirement": null,
+      "cunningDisadvantage": true,
+      "weight": 40,
+      "description": "A leather coat with heavy iron rings sewn through it in rows; the rings on the left side are smaller and closer-spaced, salvaged from a different garment.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 15,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "chainMail",
+      "name": "Chain Mail",
+      "type": "armor",
+      "armorClass": 16,
+      "addDexModifier": false,
+      "maxDexBonus": 0,
+      "armorType": "heavy",
+      "strengthRequirement": 13,
+      "cunningDisadvantage": true,
+      "weight": 55,
+      "description": "Full interlocked mail, heavy and tight-linked; the coif is a separate piece tied on, and the rings at the neck are a slightly different temper — they catch the light differently.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 20,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "plateMail",
+      "name": "Plate Mail",
+      "type": "armor",
+      "armorClass": 18,
+      "addDexModifier": false,
+      "maxDexBonus": 0,
+      "armorType": "heavy",
+      "strengthRequirement": 15,
+      "cunningDisadvantage": true,
+      "weight": 65,
+      "description": "Full articulated plate in matched steel, the closest thing to manufacture-consistent equipment on the Verge; it arrived through a rift already fitted for someone else, and has been adjusted in seven places.",
+      "equipSlot": "armor",
+      "rarity": "uncommon",
+      "reputationRequirement": 40,
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "shields": [
+    {
+      "id": "shield",
+      "name": "Shield",
+      "type": "shield",
+      "armorClassBonus": 2,
+      "weight": 6,
+      "description": "Planked or faced wood with an iron boss; the boards are from two different trees, and the grip has been replaced with leather cord wound over a carved wooden core.",
+      "equipSlot": "offHand",
+      "rarity": "common",
+      "reputationRequirement": 0
+    }
+  ],
+  "consumables": [
+    {
+      "id": "quiverOfArrows",
+      "name": "Quiver of Arrows",
+      "type": "consumable",
+      "subtype": "ammo",
+      "ammoType": "arrow",
+      "description": "A cylindrical leather quiver, the stitching done twice where it split along the seam; the arrows inside are mixed — three different fletching patterns, two point styles, all matched to the same shaft diameter.",
+      "charges": 20,
+      "effect": "refillAmmo",
+      "weight": 1,
+      "value": 5,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "boltCase",
+      "name": "Shot Cartridge",
+      "type": "consumable",
+      "subtype": "ammo",
+      "ammoType": "shot",
+      "description": "A small leather pouch of cast shot — lead balls or something close to it, uniform enough to load clean but clearly poured by hand on the Verge.",
+      "charges": 15,
+      "effect": "refillAmmo",
+      "weight": 1.5,
+      "value": 5,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfHealing",
+      "name": "Potion of Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healAmount": "2d4+2",
+      "weight": 0.5,
+      "description": "A stoppered glass vial, the glass thick and slightly green; inside, a liquid the colour of old copper that smells of iron and warm stone.",
+      "rarity": "common",
+      "reputationRequirement": 10,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfGreaterHealing",
+      "name": "Potion of Greater Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healAmount": "4d4+4",
+      "weight": 0.5,
+      "description": "A squat clay bottle sealed with wax; the liquid inside moves slowly when tilted, dark red with a faint iridescence at the surface.",
+      "rarity": "uncommon",
+      "reputationRequirement": 30,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfSuperiorHealing",
+      "name": "Potion of Superior Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healDice": "8d4",
+      "healBonus": 8,
+      "healAmount": "8d4+8",
+      "weight": 0.5,
+      "value": 450,
+      "description": "A frosted glass cylinder with a metal-wire bail closure; the liquid is nearly black and smells of deep water and something faintly resinous.",
+      "rarity": "rare",
+      "reputationRequirement": 50,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "potionOfSupremeHealing",
+      "name": "Potion of Supreme Healing",
+      "type": "consumable",
+      "effect": "heal",
+      "healDice": "10d4",
+      "healBonus": 20,
+      "healAmount": "10d4+20",
+      "weight": 0.5,
+      "value": 1350,
+      "description": "A heavy flat-sided vessel in pale blue-green glass, sealed with a gasketed stopper; the liquid inside has no smell at all, which is more unsettling than any odour would be.",
+      "rarity": "veryRare",
+      "reputationRequirement": 70,
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfIdentify",
+      "name": "Scroll of Identify",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "identify",
+      "weight": 0.1,
+      "value": 25,
+      "description": "A tight-rolled scroll on pale vellum, the ink a warm brown-black; the script is too small to read without holding it close to light, and the letters have no serifs.",
+      "rarity": "common",
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfFireball",
+      "name": "Scroll of Fireball",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "fireball",
+      "weight": 0.1,
+      "value": 150,
+      "description": "A scroll cased in a blackened iron tube, the cap fixed with a half-turn; the parchment inside is warm to the touch and smells of char and dry air.",
+      "rarity": "uncommon",
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scrollOfDispelMagic",
+      "name": "Scroll of Dispel Magic",
+      "type": "scroll",
+      "effect": "spell",
+      "spellId": "dispelMagic",
+      "weight": 0.1,
+      "value": 100,
+      "description": "A folded sheet of stiff paper rather than rolled vellum; the marks on it are geometric rather than written, intersecting lines that seem to cancel each other out.",
+      "rarity": "uncommon",
+      "consumable": true,
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "ammunition": [],
+  "gear": [
+    {
+      "id": "dungeoneersPack",
+      "name": "Dungeoneer's Pack",
+      "type": "gear",
+      "weight": 61.5,
+      "description": "A battered canvas pack carried by someone who has been underground before — the straps are reinforced with salvaged leather, and the crowbar head is wrapped in rag to stop it rattling.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "explorersPack",
+      "name": "Explorer's Pack",
+      "type": "gear",
+      "weight": 59,
+      "description": "A wide-mouthed pack loaded for open country; the bedroll lashes on in the Kethara fashion, and the waterskin is double-bladdered against the risk of a seam failure.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "scholarsPack",
+      "name": "Scholar's Pack",
+      "type": "gear",
+      "weight": 22,
+      "description": "A soft-sided leather case worn by someone who moves often but carefully; the ink bottle is nested in its own stitched compartment, and the parchment is wrapped in oilcloth.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "priestsPack",
+      "name": "Priest's Pack",
+      "type": "gear",
+      "weight": 24,
+      "description": "A worn pack smelling of incense and cold stone; the censer nestles inside the vestments, and the alms box has been repaired with a strip of tin over the cracked corner.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "burglarsPack",
+      "name": "Burglar's Pack",
+      "type": "gear",
+      "weight": 46.5,
+      "description": "A low-profile pack with everything sorted for access in the dark; the ball bearings are in a drawstring bag inside a bag, and the lantern is wrapped in dark cloth.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "componentPouch",
+      "name": "Component Pouch",
+      "type": "gear",
+      "weight": 2,
+      "description": "A small belt-mounted pouch in stiff Verge-tanned leather, each pocket sized for a different material; the clasp is a bone toggle worn smooth.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "holySymbol",
+      "name": "Holy Symbol",
+      "type": "gear",
+      "weight": 1,
+      "description": "Cast or carved from whatever material was available when the maker needed it; the Verge has no universal pantheon, so the symbol's design tells you which world it came from.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "spellbook",
+      "name": "Spellbook",
+      "type": "gear",
+      "weight": 3,
+      "description": "A compact bound volume in dark leather, the spine reinforced with iron wire; the blank pages are vellum from at least two different tanneries, slightly different in weight.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "thievesTools",
+      "name": "Thieves' Tools",
+      "type": "gear",
+      "weight": 1,
+      "description": "A roll of oiled cloth holding small iron instruments, each custom-filed for specific lock geometries; one pick has a replacement tip soldered on in a different metal.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "healersKit",
+      "name": "Healer's Kit",
+      "type": "gear",
+      "weight": 3,
+      "description": "A flat leather pouch opening to reveal rolled bandages, a stoppered salve pot, and thin splint wood tied in a bundle; the bandages are clean but have been washed more than once.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "travelersClothes",
+      "name": "Traveler's Clothes",
+      "type": "gear",
+      "weight": 4,
+      "description": "Layered garments in mixed-climate weights — a light linen beneath a heavier outer layer — worn by anyone who has learned that the Verge's weather doesn't negotiate.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "commonClothes",
+      "name": "Common Clothes",
+      "type": "gear",
+      "weight": 3,
+      "description": "Undyed or once-dyed garments in whatever cloth was available; the Verge's textile trade is patchwork, and it shows.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "prayerBook",
+      "name": "Prayer Book",
+      "type": "gear",
+      "weight": 2,
+      "description": "A small sewn-signature volume, the cover board warped slightly from moisture; the prayers inside are from a world the reader may not have come from.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "incense",
+      "name": "Incense",
+      "type": "gear",
+      "weight": 0.1,
+      "description": "A stick of resin and aromatic wood that burns with a pale smoke; the scent is unfamiliar on the Verge, which is often the point.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "vestments",
+      "name": "Vestments",
+      "type": "gear",
+      "weight": 4,
+      "description": "Formal layered cloth in colours that meant something in a specific ritual context; worn by someone who carried them across a rift and hasn't stopped wearing them.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "crowbar",
+      "name": "Crowbar",
+      "type": "gear",
+      "weight": 5,
+      "description": "A length of Verge-forged iron, the bend slightly off-true, which doesn't affect its utility; one end is worn bright from use, the other still shows mill scale.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "pouch",
+      "name": "Pouch",
+      "type": "gear",
+      "weight": 1,
+      "description": "A small drawstring bag in rough Verge leather, sized for coins or shot or small trade goods; the drawstring has been replaced with cord.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "darkClothes",
+      "name": "Dark Clothes",
+      "type": "gear",
+      "weight": 3,
+      "description": "Close-woven cloth in deep brown or grey rather than true black — true black dye is an import on the Verge, and expensive.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "book",
+      "name": "Book",
+      "type": "gear",
+      "weight": 5,
+      "description": "A bound volume in whatever hide was available for the cover; the spine tells you roughly how old the stitching is.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "parchment",
+      "name": "Parchment",
+      "type": "gear",
+      "weight": 0.1,
+      "description": "A single sheet of prepared hide, scraped thin and dried flat; the Verge produces it in irregular sizes depending on what animal was available.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ink",
+      "name": "Ink",
+      "type": "gear",
+      "weight": 0.5,
+      "description": "A small stoppered bottle of carbon-and-gum ink, dark enough to be black when it dries; the stopper is wax-sealed against the Verge's variable humidity.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "inkPen",
+      "name": "Ink Pen",
+      "type": "gear",
+      "weight": 0.1,
+      "description": "A cut quill or turned wooden pen, the nib trimmed for a fine line; feather quills on the Verge come from birds no one has named.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "robes",
+      "name": "Robes",
+      "type": "gear",
+      "weight": 4,
+      "description": "Long outer garments in whatever weave was available — scholar, traveler, or someone who arrived wearing them and has nothing else.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "shovel",
+      "name": "Shovel",
+      "type": "gear",
+      "weight": 5,
+      "description": "A square-bladed iron shovel with a hardwood haft; the blade is stamped with a foundry mark in a script no one reads anymore.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "ironPot",
+      "name": "Iron Pot",
+      "type": "gear",
+      "weight": 10,
+      "description": "A heavy-walled iron pot, the handle riveted through the rim; the inside is seasoned black from years of use on varied fires.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "artisansTools",
+      "name": "Artisan's Tools",
+      "type": "gear",
+      "weight": 5,
+      "description": "A roll of tools specific to one craft — the metal instruments are a mix of local and rift-origin manufacture, and the maker's preferences are legible in the wear patterns.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "gamingSet",
+      "name": "Gaming Set",
+      "type": "gear",
+      "weight": 1,
+      "description": "Dice, tokens, or cards in a drawstring bag; the symbols on the dice are not all from the same counting system, which creates interesting debates about which face is which number.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "rope",
+      "name": "Rope (50 ft)",
+      "type": "gear",
+      "weight": 10,
+      "value": 1,
+      "description": "Fifty feet of twisted hemp, the surface weathered but the core still tight; spliced at one end where it broke and was joined rather than replaced.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "rations",
+      "name": "Rations (1 day)",
+      "type": "gear",
+      "weight": 2,
+      "value": 1,
+      "description": "A day's compressed and preserved food, wrapped in cloth or packed in a small tin; the ingredients are whatever the Verge had available, which changes by region.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "torch",
+      "name": "Torch",
+      "type": "gear",
+      "weight": 1,
+      "value": 1,
+      "description": "A dense timber handle wrapped in tallow-soaked fibre; the wood burns the fat more than itself, which is why it lasts.",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
+  "materials": [
+    { "id": "animalPelt", "name": "Animal Pelt", "type": "material", "weight": 2, "value": 5, "rarity": "common", "description": "A rough pelt from one of the Verge's unnamed beasts, the fur dense and two-toned in a pattern that suggests a climate no longer accessible.", "campaignIds": ["core"] },
+    { "id": "animalBone", "name": "Animal Bone", "type": "material", "weight": 1, "value": 2, "rarity": "common", "description": "Dense and slightly heavier than expected for its size; the marrow has a faint iridescence not present in bones from source-world animals.", "campaignIds": ["core"] },
+    { "id": "rawMeat", "name": "Raw Meat", "type": "material", "weight": 2, "value": 3, "rarity": "common", "description": "Muscle tissue from a Verge creature — darker than familiar meats, with a grain that runs in unusual directions.", "campaignIds": ["core"] },
+    { "id": "rareHide", "name": "Rare Hide", "type": "material", "weight": 3, "value": 25, "rarity": "uncommon", "description": "A pelt from a creature that exists only in the convergence — the follicle pattern has no analogue in any taxonomist's record, and the hide cures differently from either of its apparent source species.", "campaignIds": ["core"] },
+    { "id": "exoticMeat", "name": "Exotic Meat", "type": "material", "weight": 2, "value": 15, "rarity": "uncommon", "description": "Meat from a creature that arrived through a rift and adapted; the flavour is edible but disorienting to anyone who recognises one of the parent species.", "campaignIds": ["core"] },
+    { "id": "magicalBone", "name": "Magical Bone", "type": "material", "weight": 1, "value": 40, "rarity": "uncommon", "description": "A bone that holds a faint interior warmth and a residual resonance — not enchanted deliberately, but saturated by proximity to a convergence event.", "campaignIds": ["core"] },
+    { "id": "enchantedPelt", "name": "Enchanted Pelt", "type": "material", "weight": 2, "value": 80, "rarity": "rare", "description": "A pelt whose fur changes orientation slowly against any wind, responding to something in the air that has nothing to do with weather.", "campaignIds": ["core"] },
+    { "id": "boneDust", "name": "Bone Dust", "type": "material", "weight": 0.5, "value": 3, "rarity": "common", "description": "Fine grey powder ground from the calcified remains of undead that persisted long enough to lose biological form; smells of cold stone.", "campaignIds": ["core"] },
+    { "id": "tarnishedCoin", "name": "Tarnished Coin", "type": "material", "weight": 0.1, "value": 1, "rarity": "common", "description": "A coin from some prior settlement or source world, the face worn to near-nothing; the alloy is consistent and probably not Verge-origin.", "campaignIds": ["core"] },
+    { "id": "rottenCloth", "name": "Rotted Cloth", "type": "material", "weight": 0.5, "value": 1, "rarity": "common", "description": "Degraded fibre from something that was once garment; the weave is still partially legible if held to light, which suggests it was once finely made.", "campaignIds": ["core"] },
+    { "id": "cursedBone", "name": "Cursed Bone", "type": "material", "weight": 1, "value": 15, "rarity": "uncommon", "description": "A bone whose surface is cold regardless of ambient temperature; the cold is uniform and doesn't radiate — it simply is.", "campaignIds": ["core"] },
+    { "id": "graveDirt", "name": "Grave Dirt", "type": "material", "weight": 1, "value": 5, "rarity": "common", "description": "Soil saturated with the residue of deliberate burial — the Verge's rituals vary, but the earth remembers something was put there.", "campaignIds": ["core"] },
+    { "id": "necroticEssence", "name": "Necrotic Essence", "type": "material", "weight": 0.5, "value": 50, "rarity": "rare", "description": "A sealed vial of dark liquid that absorbs light at its surface; the glass is slightly warm where the contents are cold.", "campaignIds": ["core"] },
+    { "id": "ancientCoin", "name": "Ancient Coin", "type": "material", "weight": 0.1, "value": 8, "rarity": "common", "description": "A struck coin from before the current settlement era, the stamp clear enough to show it was official currency somewhere that no longer sends people here.", "campaignIds": ["core"] },
+    { "id": "soulGem", "name": "Soul Gem", "type": "material", "weight": 0.5, "value": 150, "rarity": "rare", "description": "A dense mineral vessel containing something that shifts faintly in low light; the gem itself is unremarkable, but what is inside it isn't mineral.", "campaignIds": ["core"] }
+  ]
+}
