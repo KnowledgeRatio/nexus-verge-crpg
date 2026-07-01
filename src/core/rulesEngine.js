@@ -140,22 +140,26 @@ export const RULES = {
     // ====================
     magicItems: {
         // qualityScore = d6 + levelBonus + encounterBonus + bossBonus + questBonus
-        // score → rarity → property count
+        // score → rarity → bonus + property count
         qualityScoreToRarity: [
             { maxScore: 2, rarity: 'common' },
-            { maxScore: 4, rarity: 'uncommon' },
-            { maxScore: 6, rarity: 'rare' },
-            { maxScore: 8, rarity: 'veryRare' },
-            { minScore: 9, rarity: 'legendary' }
+            { maxScore: 4, rarity: 'fine' },
+            { maxScore: 6, rarity: 'great' },
+            { maxScore: 8, rarity: 'heroic' },
+            { maxScore: 10, rarity: 'legendary' },
+            { minScore: 11, rarity: 'mythic' }
         ],
 
-        // property count per rarity; eitherOr = +1 bonus XOR 1 property (not both)
+        // bonus + propertyCount assigned per rarity. `variants` = randomly choose one of several
+        // {bonus, propertyCount} pairs instead of a single fixed pair.
+        // itemProperties.json entries can set `minRarity: "mythic"` to only roll at this tier.
         rarityDefinitions: {
-            common:    { propertyCount: 0, eitherOr: true },
-            uncommon:  { propertyCount: 1 },
-            rare:      { propertyCount: 2 },
-            veryRare:  { propertyCount: 3 },
-            legendary: { propertyCount: 3 }
+            common:    { bonus: 0, propertyCount: 0 },
+            fine:      { variants: [{ bonus: 1, propertyCount: 0 }, { bonus: 0, propertyCount: 1 }] },
+            great:     { bonus: 1, propertyCount: 1 },
+            heroic:    { bonus: 2, propertyCount: 2 },
+            legendary: { variants: [{ bonus: 2, propertyCount: 3 }, { bonus: 3, propertyCount: 2 }] },
+            mythic:    { bonus: 3, propertyCount: 3 }
         },
 
         // added to d6 based on player level bracket

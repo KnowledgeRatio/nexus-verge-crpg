@@ -272,8 +272,8 @@ class QuestManager {
             if (baseItem) {
                 const item = { ...baseItem, quantity: 1 };
 
-                // Apply magic properties to magic item rewards, scaled by quest difficulty
-                if (window.lootManager?._isMagicItem(item) && quest.id) {
+                // Apply magic properties to item rewards, scaled by quest difficulty
+                if (window.lootManager && quest.id) {
                     const questQualityScore = window.lootManager.computeQuestQualityScore(
                         character.level,
                         quest.difficulty || 'normal',

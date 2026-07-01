@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "Canonical magic item property catalog. droppable controls whether a property can appear on naturally dropped items. forgecraftEligible controls whether it appears in the Forgecraft menu. weight controls relative selection probability within the eligible pool.",
+  "description": "Canonical magic item property catalog. droppable controls whether a property can appear on naturally dropped items. forgecraftEligible controls whether it appears in the Forgecraft menu. weight controls relative selection probability within the eligible pool. Optional minRarity (e.g. \"mythic\") restricts a property to only roll when the item's generated rarity matches exactly.",
   "properties": [
     {
       "id": "tailored",

@@ -15,6 +15,8 @@ Anachronistic technology should read as **an event, not a setting.** It intrudes
 - **Wrong:** A market stall casually selling parts for three different eras of firearm.
 - **Right:** One merchant, once, has a single component nobody can identify, and won't say where she got it.
 
+**Exception — one normalized tier vs. casual variety:** the "event, not a setting" rule governs *variety*, not existence. A single tech tier that arrived once and has since been crudely reproduced into a recognized (if inconsistent) local weapon or tool category is the reproduction model working as intended — it's baseline-common precisely because that one thing diffused, and every copy still shows the seams (badly-relined barrels, mismatched maker's marks, "no two look quite alike"). That's different from the market-stall case, which fails because *multiple distinct eras/tiers* of anachronistic tech are sitting side by side as ordinary stock. One recognized outlier reads as frontier; a spread of them reads as a tech tree.
+
 ## Cultural Takes
 
 **Delhari** — Most likely to arrive *with* working tech from their origin-world, and the most likely to over-explain it — the same reflex they apply to the Void. A Delhari doesn't say "that's a strange lantern." They say "output is consistent with a cold-fusion derivative, though the housing predates any fusion theory I can place it in."

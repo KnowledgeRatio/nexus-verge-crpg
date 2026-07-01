@@ -40,7 +40,7 @@
         "description": "If you hit a creature with this weapon, that creature has disadvantage on its next attack roll before the start of your next turn.",
         "type": "onHit",
         "duration": "1 round",
-        "weaponTypes": ["flail", "longsword", "mace", "morningstar", "spear", "warpick"]
+        "weaponTypes": ["flail", "longsword", "mace", "morningstar", "spear", "warPick"]
       },
 
       "slow": {
@@ -105,7 +105,7 @@
         "shortsword": "vex",
         "trident": "topple",
         "warhammer": "push",
-        "warpick": "sap",
+        "warPick": "sap",
         "whip": "slow",
 
         "blowgun": "vex",

@@ -304,7 +304,7 @@
       ],
       "actions": [
         {
-          "name": "Greataxe",
+          "name": "Battleaxe",
           "type": "meleeWeaponAttack",
           "weaponId": "greataxe",
           "reach": 5
@@ -1953,7 +1953,7 @@
       ],
       "actions": [
         {
-          "name": "Greataxe",
+          "name": "Battleaxe",
           "type": "meleeWeaponAttack",
           "weaponId": "greataxe",
           "reach": 5
@@ -2108,10 +2108,10 @@
           "description": "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
         }
       ],
-      "multiattack": "The minotaur makes two attacks: one with its greataxe and one with its gore.",
+      "multiattack": "The minotaur makes two attacks: one with its battleaxe and one with its gore.",
       "actions": [
         {
-          "name": "Greataxe",
+          "name": "Battleaxe",
           "type": "meleeWeaponAttack",
           "weaponId": "greataxe",
           "reach": 5
@@ -2203,10 +2203,10 @@
           "description": "While in sunlight, the wight has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
         }
       ],
-      "multiattack": "The wight makes two longsword attacks or two longbow attacks. It can use its Life Drain in place of one longsword attack.",
+      "multiattack": "The wight makes two sword attacks or two longbow attacks. It can use its Life Drain in place of one sword attack.",
       "actions": [
         {
-          "name": "Longsword",
+          "name": "Sword",
           "type": "meleeWeaponAttack",
           "weaponId": "longsword",
           "reach": 5
@@ -2369,10 +2369,10 @@
         "common"
       ],
       "traits": [],
-      "multiattack": "The veteran makes two longsword attacks. If it has a shortsword drawn, it can also make a shortsword attack.",
+      "multiattack": "The veteran makes two sword attacks. If it has a shortsword drawn, it can also make a shortsword attack.",
       "actions": [
         {
-          "name": "Longsword",
+          "name": "Sword",
           "type": "meleeWeaponAttack",
           "weaponId": "longsword",
           "reach": 5
@@ -2565,10 +2565,10 @@
           "description": "When one of the ettin's heads is asleep, its other head is awake."
         }
       ],
-      "multiattack": "The ettin makes two attacks: one with its battleaxe and one with its morningstar.",
+      "multiattack": "The ettin makes two attacks: one with its axe and one with its morningstar.",
       "actions": [
         {
-          "name": "Battleaxe",
+          "name": "Axe",
           "type": "meleeWeaponAttack",
           "weaponId": "battleaxe",
           "reach": 5
@@ -2623,7 +2623,7 @@
       "campaignIds": [
         "core"
       ],
-      "imageDescription": "A giant-sized humanoid, twelve feet tall, with two heads on a single set of shoulders — one slightly forward of the other, both facing roughly the same direction but never quite aligned. Face on each head distinct: different jaw shape, different brow, as though each head came from a different source. Right hand carries a battleaxe; left carries a morningstar."
+      "imageDescription": "A giant-sized humanoid, twelve feet tall, with two heads on a single set of shoulders — one slightly forward of the other, both facing roughly the same direction but never quite aligned. Face on each head distinct: different jaw shape, different brow, as though each head came from a different source. Right hand carries an axe; left carries a morningstar."
     },
     {
       "id": "troll",

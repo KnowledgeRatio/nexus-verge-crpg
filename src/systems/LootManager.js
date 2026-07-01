@@ -383,8 +383,8 @@ class LootManager {
             item.quantity = this.rollDiceString(entry.count, rng);
         }
 
-        // Apply magic properties if this is a magic item and quality score is provided
-        if (qualityScore > 0 && this._isMagicItem(item)) {
+        // Assign bonus + properties generically based on the rolled rarity (weapon/armor/shield only)
+        if (qualityScore > 0) {
             this.applyMagicProperties(item, qualityScore, rng);
         }
 
@@ -561,19 +561,21 @@ class LootManager {
     /**
      * Map a quality score to a rarity string.
      * @param {number} score
-     * @returns {string} Rarity ('common'|'uncommon'|'rare'|'veryRare'|'legendary')
+     * @returns {string} Rarity ('common'|'fine'|'great'|'heroic'|'legendary'|'mythic')
      */
     qualityScoreToRarity(score) {
         for (const entry of RULES.magicItems.qualityScoreToRarity) {
             if (entry.maxScore !== undefined && score <= entry.maxScore) return entry.rarity;
         }
-        return 'legendary';
+        return 'mythic';
     }
 
     /**
-     * Apply magic properties to an item in-place based on a quality score.
-     * Sets item.magicProperties (array of property IDs) and item.effectiveRarity.
-     * Forgecraft wipe flow: call with magicProperties=[] preserved bonus, then set 1 new property.
+     * Assign bonus + properties to an item in-place based on a quality score.
+     * Sets item.bonus, item.magicProperties, and item.effectiveRarity generically —
+     * overrides any static bonus the item's template carried, so a single rarity roll
+     * governs both axes instead of leaving them independently determined.
+     * Weapon/armor/shield only; no-op on other item types.
      *
      * @param {Object} item - Item object (mutated in place)
      * @param {number} qualityScore - From computeCombatQualityScore / computeQuestQualityScore
@@ -582,29 +584,35 @@ class LootManager {
      */
     applyMagicProperties(item, qualityScore, rng) {
         const rarity = this.qualityScoreToRarity(qualityScore);
-        const rarityDef = RULES.magicItems.rarityDefinitions[rarity];
         item.effectiveRarity = rarity;
 
-        let propertyCount = rarityDef.propertyCount;
-
-        // Common eitherOr rule: +1 bonus XOR 1 property, not both
-        if (rarityDef.eitherOr) {
-            propertyCount = (item.bonus > 0) ? 0 : 1;
-        }
-
-        if (propertyCount === 0 || !this.itemProperties) {
-            item.magicProperties = item.magicProperties || [];
+        if (!['weapon', 'armor', 'shield'].includes(item.type)) {
             return item;
         }
 
-        // Build droppable pool filtered by item type
+        const rarityDef = RULES.magicItems.rarityDefinitions[rarity];
+        const { bonus, propertyCount } = rarityDef.variants
+            ? rarityDef.variants[rng.nextInt(0, rarityDef.variants.length - 1)]
+            : rarityDef;
+
+        item.bonus = bonus;
+
+        if (propertyCount === 0 || !this.itemProperties) {
+            item.magicProperties = [];
+            return item;
+        }
+
+        // Build droppable pool filtered by item type, gated to mythic-exclusive
+        // properties only when this roll actually landed on mythic.
         const itemType = item.type;
         const pool = this.itemProperties.filter(p =>
-            p.droppable && p.appliesTo.includes(itemType)
+            p.droppable &&
+            p.appliesTo.includes(itemType) &&
+            (!p.minRarity || p.minRarity === rarity)
         );
 
         if (pool.length === 0) {
-            item.magicProperties = item.magicProperties || [];
+            item.magicProperties = [];
             return item;
         }
 
@@ -663,18 +671,8 @@ class LootManager {
     }
 
     /**
-     * Check if an item is a magic item (eligible for property application).
-     * Base items from items.json have no rarity field.
-     * @param {Object} item
-     * @returns {boolean}
-     */
-    _isMagicItem(item) {
-        return !!item.rarity;
-    }
-
-    /**
      * Get all items matching a rarity level
-     * @param {string} rarity - Rarity ("common", "uncommon", "rare", "veryRare", "legendary")
+     * @param {string} rarity - Rarity ("common", "fine", "great", "heroic", "legendary", "mythic")
      * @returns {Array} Array of item IDs
      */
     getItemsByRarity(rarity) {

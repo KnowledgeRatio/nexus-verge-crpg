@@ -388,7 +388,7 @@
     },
     {
       "id": "longsword",
-      "name": "Longsword",
+      "name": "Sword",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -413,7 +413,7 @@
     },
     {
       "id": "greataxe",
-      "name": "Greataxe",
+      "name": "Battleaxe",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -460,7 +460,7 @@
     },
     {
       "id": "greatsword",
-      "name": "Greatsword",
+      "name": "Longsword",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -534,7 +534,7 @@
     },
     {
       "id": "battleaxe",
-      "name": "Battleaxe",
+      "name": "Axe",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -631,6 +631,292 @@
       "twoHanded": false,
       "rarity": "common",
       "reputationRequirement": 5,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "lightHammer",
+      "name": "Light Hammer",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "bone",
+      "properties": [
+        "light",
+        "thrown"
+      ],
+      "weight": 2,
+      "description": "A short-hafted hammer meant to be thrown in pairs; the head is Verge-cast, but the balance was copied from a foreign original nobody local could explain.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "sickle",
+      "name": "Sickle",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "blood",
+      "properties": [
+        "light"
+      ],
+      "weight": 2,
+      "description": "A tight-curved blade built for harvest work before someone decided it did other work just as well; the edge is honed past what any field needs.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "dart",
+      "name": "Dart",
+      "type": "weapon",
+      "category": "simple",
+      "weaponType": "ranged",
+      "damage": "1d4",
+      "damageType": "blood",
+      "properties": [
+        "finesse",
+        "thrown"
+      ],
+      "weight": 0,
+      "description": "A weighted needle of a thing, fletched with scrap leather; a dozen ride loose in a belt pouch and nobody remembers where the first one came from.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "flail",
+      "name": "Flail",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "bone",
+      "properties": [],
+      "weight": 2,
+      "description": "A hinged length of chain between haft and head, the join a Kethara design nobody local has fully reproduced; the weight arrives a half-beat after the swing looks finished.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "maul",
+      "name": "Warhammer",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "2d6",
+      "damageType": "bone",
+      "properties": [
+        "heavy",
+        "twoHanded"
+      ],
+      "weight": 10,
+      "description": "A two-handed hammer with a head too large for its haft by local proportions; whatever alloy it's cast from is denser than it looks, and it never seems to chip.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "warPick",
+      "name": "War Pick",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "blood",
+      "properties": [],
+      "weight": 2,
+      "description": "A hooked spike balanced opposite a hammer face, built to punch through plate rather than cut it; the spike is a later graft, welded on in a style that doesn't match the rest.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "warhammer",
+      "name": "Hammer",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d8",
+      "damageType": "bone",
+      "properties": [
+        "versatile"
+      ],
+      "versatileDamage": "1d10",
+      "weight": 2,
+      "description": "A flat-faced hammer on a haft long enough to swing two-handed when the grip demands it; the poll is stamped with a foreign maker's mark half worn away.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "whip",
+      "name": "Whip",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d4",
+      "damageType": "blood",
+      "properties": [
+        "finesse",
+        "reach"
+      ],
+      "weight": 3,
+      "description": "Braided cord over a wire core, the tip weighted with a bead of Coldcast Bronze; it reaches further than its length should allow.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "trident",
+      "name": "Trident",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d6",
+      "damageType": "blood",
+      "properties": [
+        "thrown",
+        "versatile"
+      ],
+      "versatileDamage": "1d8",
+      "weight": 4,
+      "description": "A three-tined spear balanced for throwing as readily as thrusting; the tines are cold-worked steel, riveted to a haft that's seen saltwater nowhere near the Verge.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 20,
+        "long": 60
+      },
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "pike",
+      "name": "Pike",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "melee",
+      "damage": "1d10",
+      "damageType": "blood",
+      "properties": [
+        "heavy",
+        "reach",
+        "twoHanded"
+      ],
+      "weight": 18,
+      "description": "A spearhead on a haft twice the length a single hand could manage; unwieldy anywhere but a line, and useless anywhere but a line.",
+      "equipSlots": [
+        "mainHand"
+      ],
+      "twoHanded": true,
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "blowgun",
+      "name": "Blowgun",
+      "type": "weapon",
+      "category": "martial",
+      "weaponType": "ranged",
+      "damage": "1",
+      "damageType": "blood",
+      "properties": [
+        "ammunition",
+        "loading"
+      ],
+      "weight": 5,
+      "description": "A hollow reed reinforced with a foreign lacquer; the needles it fires barely mark flesh unless something's been done to the tip.",
+      "equipSlots": [
+        "mainHand",
+        "offHand"
+      ],
+      "twoHanded": false,
+      "range": {
+        "normal": 25,
+        "long": 100
+      },
+      "ammunition": "needle",
+      "ammoCapacity": 20,
+      "rarity": "common",
+      "reputationRequirement": 0,
       "campaignIds": [
         "core"
       ]
@@ -843,6 +1129,44 @@
       "equipSlot": "armor",
       "rarity": "uncommon",
       "reputationRequirement": 40,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "paddedArmor",
+      "name": "Padded Armor",
+      "type": "armor",
+      "armorClass": 11,
+      "addDexModifier": true,
+      "maxDexBonus": null,
+      "armorType": "light",
+      "strengthRequirement": null,
+      "cunningDisadvantage": true,
+      "weight": 8,
+      "description": "Quilted layers stitched over scavenged batting; better than nothing, and loud enough to prove it.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 0,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "splintArmor",
+      "name": "Splint Armor",
+      "type": "armor",
+      "armorClass": 17,
+      "addDexModifier": false,
+      "maxDexBonus": 0,
+      "armorType": "heavy",
+      "strengthRequirement": 15,
+      "cunningDisadvantage": true,
+      "weight": 60,
+      "description": "Overlapping vertical strips riveted to a leather backing, half of them a mismatched foreign alloy; heavier than plate and half as elegant.",
+      "equipSlot": "armor",
+      "rarity": "common",
+      "reputationRequirement": 30,
       "campaignIds": [
         "core"
       ]

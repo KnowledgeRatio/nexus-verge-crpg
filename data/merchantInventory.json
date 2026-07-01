@@ -199,7 +199,7 @@
   "blacksmithItems": [
     {
       "id": "longsword",
-      "name": "Longsword",
+      "name": "Sword",
       "type": "weapon",
       "weaponType": "melee",
       "damage": {
@@ -239,7 +239,7 @@
     },
     {
       "id": "greataxe",
-      "name": "Greataxe",
+      "name": "Battleaxe",
       "type": "weapon",
       "weaponType": "melee",
       "damage": {
@@ -413,7 +413,7 @@
     },
     {
       "id": "longsword-plus-1",
-      "name": "Longsword +1",
+      "name": "Sword +1",
       "type": "weapon",
       "weaponType": "melee",
       "damage": {

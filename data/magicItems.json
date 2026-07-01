@@ -45,7 +45,7 @@
     {
       "id": "longsword-plus-1",
       "baseItemId": "longsword",
-      "name": "Longsword +1",
+      "name": "Sword +1",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -65,7 +65,7 @@
     {
       "id": "greatsword-plus-1",
       "baseItemId": "greatsword",
-      "name": "Greatsword +1",
+      "name": "Longsword +1",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -84,7 +84,7 @@
     {
       "id": "battleaxe-plus-1",
       "baseItemId": "battleaxe",
-      "name": "Battleaxe +1",
+      "name": "Axe +1",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -163,7 +163,7 @@
     {
       "id": "longsword-plus-2",
       "baseItemId": "longsword",
-      "name": "Longsword +2",
+      "name": "Sword +2",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -183,7 +183,7 @@
     {
       "id": "greatsword-plus-2",
       "baseItemId": "greatsword",
-      "name": "Greatsword +2",
+      "name": "Longsword +2",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -202,7 +202,7 @@
     {
       "id": "battleaxe-plus-2",
       "baseItemId": "battleaxe",
-      "name": "Battleaxe +2",
+      "name": "Axe +2",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -241,7 +241,7 @@
     {
       "id": "longsword-plus-3",
       "baseItemId": "longsword",
-      "name": "Longsword +3",
+      "name": "Sword +3",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
@@ -261,7 +261,7 @@
     {
       "id": "greatsword-plus-3",
       "baseItemId": "greatsword",
-      "name": "Greatsword +3",
+      "name": "Longsword +3",
       "type": "weapon",
       "category": "martial",
       "weaponType": "melee",
