@@ -1,253 +1,322 @@
 # Nexus Verge
 ## Procedural D&D 5e Roguelike CRPG
 
-A procedurally generated, top-down roguelike CRPG built on D&D 5e 2024 SRD rules. Explore infinite worlds with shareable seeds, engage in turn-based tactical combat, and experience deep character progression across levels 1–10.
+Nexus Verge is a browser-based, procedurally generated CRPG inspired by D&D 5e SRD 5.2.1.
+
+This README is dual-purpose:
+- Deployment and sharing guide (Azure Static Web Apps)
+- Player manual (how to play, controls, progression, and strategy)
 
 ---
 
-## 🎮 Core Features
+## Deploy The Game (Azure Static Web Apps)
 
-### Procedural Generation
-- **Shareable Seeds:** Generate and share unique worlds
-- **Infinite Exploration:** Regions generate on demand, 18+ coherent biome types with climate-coherent terrain
-- **Persistent World:** Return to previously explored areas exactly as you left them
-- **Dynamic Settlements:** Villages, towns, and cities with procedural NPCs, merchants, and quest givers
+This project is deployed via GitHub Actions to Azure Static Web Apps.
 
-### D&D 5e 2024 Rules
-- **Authentic Implementation:** Combat, skills, and progression follow SRD 5.2.1 rules
-- **3 Callings:** Custom fusion classes compressing D&D archetypes to levels 1–10
-  - **Dedication** (martial): STR + CON build. Focus resource (CON-based, recharges on short rest)
-  - **Scholar** (caster): INT + CON build. Mana pool (recharges on long rest) + Arcane Recovery
-  - **Wanderlust** (hybrid): DEX + CHA build. Mana pool (recharges on long rest)
-- **Specializations** branch at level 3; capstone at level 10
-- **5 Cultures:** Human, Elf, Dwarf, Halfling, Dragonborn
-- **13-Skill System:** Streamlined from the standard 18 D&D 5e skills
-- **8 Weapon Masteries:** All official 2024 masteries implemented
-- **Data-Driven Rules Engine:** All balance values in `src/core/rulesEngine.js`
+### Current Deployment Model
 
-### Turn-Based Tactical Combat
-- **D&D Initiative:** d20 + DEX modifier; individual initiative per combatant
-- **Action Economy:** Action, Bonus Action, Reaction — no movement grid
-- **8 Weapon Masteries fully implemented:**
-  - Cleave, Graze, Nick, Push, Sap, Slow (→ –1 AC substitute), Topple, Vex
-- **Two-Weapon Fighting:** Dual-wield light weapons with off-hand bonus action
-- **Conditions System:** Object-based conditions with typed durations (rounds, combat, turn-end, permanent)
-- **Flee Mechanic:** d20 + max(DEX, WIS) + prof vs dynamic DC (base 10, +2 per engaged enemy)
-- **Floating Combat Text:** Damage, crits, heals, conditions over combatant cards
-- **Ranged Enemies:** Distinct AI behaviour with `preferRanged` flag; 5 ranged monster types
-- **Void Creatures:** Void enemy type with turn-damage aura
+- Hosting: Azure Static Web Apps
+- Branch: `main-beta-quests`
+- Workflow: `.github/workflows/azure-static-web-apps-victorious-stone-02afeaa03.yml`
+- Deployment token secret: `AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03`
+- App location: `/`
+- API location: `api`
+- Build: skipped (`skip_app_build: true`)
 
-### Rich Non-Combat Gameplay
-- **Skill Challenges:** Sequential, choice-based, and contested checks with terrain modifiers
-- **Social Encounters:** Multi-turn NPC conversations with tension meter; combat triggers at threshold
-- **Dungeon System:** Procedurally generated dungeons with dedicated DungeonManager
-- **NPC Relations:** Relationship scoring system per NPC
-- **Rest System:** Short rests (hit dice recovery, 2/long rest) and long rests (full HP, tavern/sanctuary required)
-- **Fatigue System:** FatigueManager tracking exhaustion over time
+### One-Time Setup
 
-### Economy & Quests
-- **Trading:** Buy/sell with gold; CHA-modified pricing (1% per modifier point)
-- **Settlement Tiers:** Villages (common) → Towns (uncommon) → Cities (rare/magical)
-- **Campaign Quests:** 4-stage main storyline (Monster Threat → Ancient Corruption → Enemy Stronghold → BBEG)
-- **Side Quests:** Kill, retrieve, deliver, explore, and skill challenge types
-- **Quest Tracking:** Objectives with progress bars, XP/gold/item rewards
+1. In Azure Portal, create Static Web App:
+   - Name: `swa-nexus-verge-prod`
+   - Source: GitHub
+   - Repo: `KnowledgeRatio/nexus-verge-crpg`
+   - Branch: `main-beta-quests`
+   - Build preset: Custom
+   - App location: `/`
+   - API location: `api`
+   - Output location: empty
+2. Let Azure auto-create the workflow and secret.
+3. Verify workflow exists in `.github/workflows/`.
 
-### Audio
-- **AudioManager:** Pooled audio (3 instances/sound), three-tier volume (master/sfx/music)
-- **Combat Sounds:** Melee/ranged × hit/miss/critical, floating text integration
-- **13 Audio Assets** by Thomas Devlin ([tommusic.itch.io](https://tommusic.itch.io/))
+### Deploy Updates
+
+```bash
+git add .
+git commit -m "Update Nexus Verge"
+git push origin main-beta-quests
+```
+
+A push to `main-beta-quests` triggers deployment automatically.
+
+### Verify Deployment
+
+1. Open GitHub Actions and confirm latest workflow run is green.
+2. Open production URL.
+3. Verify:
+   - Main menu loads
+   - New Game flow works
+   - Data files load (no `/data/*.json` 404 errors)
+
+### PR Preview Deployments
+
+Opening a PR to `main-beta-quests` creates a preview environment automatically.
+
+Use preview URLs for QA before merge.
+
+### Common Deployment Issues
+
+#### Invalid API token
+- Regenerate token in Azure Static Web App -> Manage deployment token.
+- Update GitHub secret.
+- Re-run failed workflow.
+
+#### Data files return 404
+- Ensure all `data/*.json` files are committed.
+- Confirm no incorrect exclusions in deployment steps.
+- Trigger redeploy:
+
+```bash
+git commit --allow-empty -m "Force redeploy"
+git push origin main-beta-quests
+```
 
 ---
 
-## 🚀 Getting Started
+## Share The Game
 
-### Requirements
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- No installation needed — runs 100% in browser
-- Works offline after initial load
+### Public URL
 
-### How to Run
+Set this once and keep it current:
+
+- Production URL: `https://<your-app>.azurestaticapps.net`
+
+If you do not know the current URL:
+1. Open Azure Portal.
+2. Go to Static Web App resource `swa-nexus-verge-prod`.
+3. Copy the `URL` value from Overview.
+4. Update the line above in this README.
+
+### Fast Share Text
+
+Use this message when sharing with testers or players:
+
+```text
+Play Nexus Verge in your browser:
+https://<your-app>.azurestaticapps.net
+
+No install needed. Create a character, explore, fight, and survive.
+Press H in-game for quick help.
+```
+
+---
+
+## Local Run (Development)
+
+Requirements:
+- Modern browser (Chrome, Edge, Firefox, Safari)
+- Optional local server for best behavior
+
+Run locally:
+
 ```bash
 git clone <repository-url>
-cd nexus-verge-crpg-5e
-
-# Open index.html directly, or use a local server:
+cd nexus-verge-crpg
 python -m http.server 8000
-# Then visit http://localhost:8000
 ```
 
-### Quick Start
-1. **New Game:** Enter a seed (or generate random), select map size and difficulty
-2. **Create Character:** Choose culture, background, calling; assign ability scores (Point Buy or Standard Array); select skills and weapon masteries
-3. **Explore:** WASD / arrow keys to move
-4. **Combat:** Encounters trigger automatically (1% base chance per move, terrain-modified)
-5. **Settlements:** Press E near settlement tiles to enter, trade, rest, and accept quests
-6. **Rest:** Press R for rest menu (short rests anywhere; long rests in taverns/sanctuaries)
-7. **Help:** Press H for full in-game manual
-8. **Save:** Press ESC (5 save slots)
+Open `http://localhost:8000`.
 
 ---
 
-## 🎯 Controls
+## Player Manual
+
+## 1. Core Loop
+
+1. Start a new run with a seed.
+2. Create a character.
+3. Explore regions.
+4. Fight encounters.
+5. Loot, quest, trade, and level up.
+6. Manage rests and resources.
+7. Survive and progress campaign quests.
+
+## 2. New Game Setup
+
+At game start:
+- Enter a seed (or use random)
+- Choose map size and difficulty
+- Proceed to character creation
+
+Seed-based generation means the same seed produces the same world layout.
+
+## 3. Character Creation
+
+Choose:
+- Culture
+- Background
+- Calling
+- Ability score method
+- Skills and proficiencies
+
+### Cultures In The Game
+
+- Kethara
+- Vaethori
+- Verathi
+- Delhari
+- Sirathi
+- Vethri
+
+### Callings
+
+- Dedication: martial, STR + CON, uses Focus
+- Scholar: caster, INT + CON, uses Mana + Arcane Recovery
+- Wanderlust: hybrid, DEX + CHA, uses Mana
+
+### Classes In The Game
+
+The game uses callings as classes:
+
+- Dedication
+- Scholar (coming soon label shown in class data)
+- Wanderlust (coming soon label shown in class data)
+
+### Ability Scores
+
+- Uses D&D-style modifiers: `floor((score - 10) / 2)`
+- Stats affect hit chance, damage, defenses, and checks
+
+## 4. Controls
 
 ### Exploration
-| Key | Action |
-|---|---|
-| WASD / Arrow Keys | Move |
-| I | Inventory |
-| C | Character sheet |
-| Q | Quest log |
-| R | Rest menu |
-| E | Enter settlement |
-| H | Help manual |
-| +/− | Zoom in/out |
-| ESC | Save menu |
+
+- Move: `WASD` or arrow keys
+- Inventory: `I`
+- Character sheet: `C`
+- Quest log: `Q`
+- Rest menu: `R`
+- Enter settlement: `E`
+- Help: `H`
+- Zoom: `+` / `-`
+- Save menu: `ESC`
 
 ### Combat
-- Click buttons to select action (Attack, Attack Off-Hand, End Turn, Flee)
-- Click an enemy card to target
-- Initiative order displayed in turn tracker
+
+- Click action buttons (Attack, Off-Hand, End Turn, Flee)
+- Click target enemy card
+- Follow initiative order shown in the tracker
+
+## 5. Combat Basics
+
+- Turn order uses individual initiative rolls.
+- Action economy uses Action, Bonus Action, and Reaction concepts.
+- Two-weapon fighting uses off-hand attacks as bonus actions.
+- Weapon masteries are active when proficient with the weapon.
+- Flee check scales with danger.
+
+### Weapon Mastery Note
+
+The game is non-grid combat. Movement-only tabletop effects are adapted to meaningful non-grid effects.
+
+## 6. Exploration, Settlements, and Quests
+
+### Exploration
+
+- Move across procedural terrain
+- Trigger encounters while traveling
+- Reveal and revisit generated regions
+
+### Settlements
+
+At settlements you can:
+- Rest (especially long rest in safe locations)
+- Buy and sell gear
+- Accept quests
+- Interact with NPCs
+
+### Quests
+
+- Main campaign quests progress major story beats
+- Side quests offer XP, gold, and item rewards
+- Track objectives and progress in Quest Log (`Q`)
+
+## 7. Resources, Rest, and Survival
+
+- HP and resources are limited between fights.
+- Short rest supports tactical sustain.
+- Long rest restores more, but depends on safe context.
+- Poor rest and repeated strain can lead to fatigue pressure.
+
+Use rests proactively, not only at crisis.
+
+## 8. Progression
+
+- Gain XP from combat and quest completion.
+- Level progression is tuned for a 1-10 campaign arc.
+- Callings branch into specializations after early levels.
+
+## 9. Practical Starter Tips
+
+- Prioritize accuracy and survivability early.
+- Do not hoard healing options too long.
+- Use settlements regularly to stabilize runs.
+- Pick fights based on current HP/resources, not only reward.
+- If a run turns risky, disengage and reset position rather than forcing every encounter.
 
 ---
 
-## 🗺️ Development Roadmap
+## Architecture Snapshot
 
-### ✅ Phase 1 — Vertical Slice (Complete)
-- [x] Procedural world generation with seeds (18+ terrain types, climate-coherent biomes)
-- [x] Character creation (3 Callings, Point Buy + Standard Array)
-- [x] Exploration with fog of war persistence
-- [x] Turn-based combat with initiative system
-- [x] XP and leveling (1–10 framework)
-- [x] Equipment system with proficiency checks
-- [x] Save/Load system (5 slots)
-
-### ✅ Phase 2 — Core Systems (Complete)
-- [x] 3 Callings with unique features (Dedication, Scholar, Wanderlust)
-- [x] 5 Cultures (Human, Elf, Dwarf, Halfling, Dragonborn)
-- [x] 13-skill system
-- [x] 8 Weapon masteries fully implemented in combat
-- [x] Two-weapon fighting
-- [x] Rest system (hit dice / long rest)
-- [x] Settlement system with procedural NPCs
-- [x] Trading with CHA-modified pricing
-- [x] Quest system (campaign + side quests)
-- [x] Conditions system (typed durations)
-- [x] AudioManager (pooled audio, three-tier volume)
-- [x] Floating combat text
-
-### 🚧 Phase 3 — Combat & Content Expansion (In Progress)
-- [x] Ranged enemy AI (`preferRanged` flag, 5 ranged monsters)
-- [x] Terrain movement costs + encounter rate accumulator
-- [x] Flee mechanic redesign (DEX/WIS + prof vs dynamic DC)
-- [x] Biome generation fixes (inland beaches, climate coherence, hydrology)
-- [x] Skill challenges with terrain modifiers
-- [x] Social encounter system (multi-turn NPC conversations, tension meter)
-- [x] Campaign content filtering system (`campaignIds`)
-- [x] Tile graphics + 4-level zoom system
-- [x] Dungeon system (DungeonGenerator + DungeonManager)
-- [x] NPC Relations system (RelationManager)
-- [x] Void creatures + turn-damage aura
-- [x] ConsequenceManager + effect dispatcher
-- [x] FatigueManager
-- [ ] Calling abilities fully implemented (Action Surge, Rage, Arcane Recovery, etc.)
-- [ ] Spell casting system (cantrips + levels 1–5, Mana pool UI)
-- [ ] Levelling 6–10 + specialization branches
-
-### 📋 Phase 4 — Party & Polish (Next)
-- [ ] Companion/party system (design locked — up to 3 companions, BG3-style direct control, permanent death, relationship scoring)
-- [ ] Advanced skill challenges and NPC dialogue trees
-- [ ] Faction reputation
-- [ ] Loot system overhaul
-- [ ] Visual polish and animations
-- [ ] Music tracks
+- Frontend: Vanilla JavaScript (ES modules)
+- Rendering: HTML5 Canvas + DOM UI
+- Data source: JSON files in `data/`
+- Rules and tunables: `src/core/rulesEngine.js`
+- State model: Observer pattern through game state subscriptions
+- World generation: Seeded deterministic generation for map content
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
+```text
+nexus-verge-crpg/
+|- index.html
+|- styles.css
+|- src/
+|  |- main.js
+|  |- core/
+|  |- systems/
+|  |- rendering/
+|  |- ui/
+|  |- utils/
+|- data/
+|- docs/
+|- legal/
+|- api/
 ```
-nexus-verge-crpg-5e/
-├── index.html              # Main entry point
-├── styles.css              # Global styles
-├── src/
-│   ├── main.js             # App entry, UI wiring
-│   ├── core/               # rulesEngine.js, gameState.js
-│   ├── systems/            # Game systems (see below)
-│   ├── rendering/          # Canvas renderer
-│   ├── ui/                 # UI components
-│   └── utils/              # Helpers, campaignFilter.js
-├── data/                   # JSON game data (single source of truth)
-│   ├── callings.json
-│   ├── cultures.json
-│   ├── items.json / magicItems.json
-│   ├── monsters.json
-│   ├── spells.json
-│   ├── weaponMasteries.json
-│   ├── skillChallenges.json
-│   ├── terrains.json
-│   ├── campaigns.json
-│   └── ...
-├── legal/                  # SRD attribution, SBOM, third-party notices
-└── docs/                   # Architecture, PRD, changelog, plans
-```
-
-**Key systems (`src/systems/`):** `CombatManager`, `WorldGenerator`, `QuestManager`, `QuestGenerator`, `SettlementManager`, `NPCGenerator`, `MerchantManager`, `LootManager`, `AudioManager`, `SkillChallengeManager`, `DialogueManager`, `RelationManager`, `CompanionManager`, `DungeonGenerator`, `DungeonManager`, `EffectDispatcher`, `ConsequenceManager`, `FatigueManager`, `PassiveModifierRegistry`, `LevelUpManager`, `RestManager`, `SaveManager`, `Player`, `Character`, `EncounterBuilder`
 
 ---
 
-## 🛠️ Technical Stack
+## Legal
 
-- **Frontend:** Vanilla JavaScript (ES6 modules), no framework
-- **Rendering:** HTML5 Canvas (game view) + DOM (UI)
-- **Storage:** LocalStorage (saves), JSON (game data)
-- **Architecture:** 100% client-side, no backend
-- **RNG:** Mulberry32 seeded PRNG for deterministic world generation; `Math.random()` for live combat rolls (prevents save-scumming)
-- **World Gen:** Simplex noise with latitude/elevation-based climate coherence
-- **State:** Observer pattern via `gameState.subscribe()` / `gameState.set()`
+- License: MIT (`LICENSE`)
+- Rules content basis: D&D SRD 5.2 (CC BY 4.0)
+- SRD attribution: `legal/SRD_ATTRIBUTION.md`
+- Third-party notices: `legal/THIRD_PARTY_NOTICES.md`
+- Asset attributions: `legal/ASSET_ATTRIBUTIONS.md`
 
----
-
-## 📚 Documentation
-
-| Doc | Purpose |
-|---|---|
-| [PRD](docs/PRD.md) | Product requirements and design pillars |
-| [Architecture](docs/ARCHITECTURE.md) | ADRs, system design, known gaps |
-| [Changelog](docs/CHANGELOG.md) | Session-by-session history |
-| [plans/](docs/plans/) | Design jam notes and implementation plans |
-| [legal/](legal/) | SRD attribution, asset credits, SBOM |
-
----
-
-## 📜 License & Legal
-
-**Nexus Verge** is licensed under the **MIT License** — see [LICENSE](LICENSE).
-
-This project uses content from the **System Reference Document 5.2** (SRD 5.2) by Wizards of the Coast LLC, licensed under **CC BY 4.0**.
-
-Full attribution: [legal/SRD_ATTRIBUTION.md](legal/SRD_ATTRIBUTION.md)
-
-*Wizards of the Coast, Dungeons & Dragons, D&D, and their respective logos are trademarks of Wizards of the Coast LLC. © Wizards of the Coast LLC.*
-
-**Third-party notices:** [legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md)  
-**Asset attributions:** [legal/ASSET_ATTRIBUTIONS.md](legal/ASSET_ATTRIBUTIONS.md)  
-**SBOM:** [legal/sbom/](legal/sbom/)
+Compliance commands:
 
 ```bash
-npm run legal:verify    # check compliance
-npm run legal:generate  # regenerate legal artifacts
+npm run legal:verify
+npm run legal:generate
 ```
 
 ---
 
-## 🌟 Project Status
+## Supporting Docs
 
-**Phase:** 3 — Combat & Content Expansion (in progress)  
-**Branch:** `main-beta-quests`  
-**Last Updated:** 2026-06-20  
-**Playable:** Yes — core gameplay loop functional  
-**Production Ready:** No (alpha)
-
----
-
-**Made for D&D fans and roguelike enthusiasts**
+- Deployment quick start: `docs/AZURE_DEPLOYMENT_QUICK_START.md`
+- Deployment runbook: `docs/AZURE_DEPLOYMENT_RUNBOOK.md`
+- Architecture: `docs/ARCHITECTURE.md`
+- Product requirements: `docs/PRD.md`
+- Changelog: `docs/CHANGELOG.md`

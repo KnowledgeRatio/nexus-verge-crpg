@@ -258,18 +258,18 @@ export default class CompanionManager {
         // ---- Ability scores: sensible defaults per calling ----
         const baseAbilities = this._defaultAbilitiesForCalling(callingId);
 
-        // ---- Load a minimal race (human — no stat changes) ----
-        let raceData = null;
+        // ---- Load a minimal species (human — no stat changes) ----
+        let speciesData = null;
         try {
             const resp = await fetch('data/races.json');
             const json = await resp.json();
-            raceData = json.races?.find(r => r.id === 'human') || json.races?.[0] || null;
+            speciesData = json.races?.find(r => r.id === 'human') || json.races?.[0] || null;
         } catch (err) {
-            console.warn('CompanionManager: could not load races.json, using null race', err);
+            console.warn('CompanionManager: could not load races.json, using null species', err);
         }
-        if (!raceData) {
-            // Minimal race stub to satisfy Character constructor
-            raceData = { id: 'human', name: 'Human', speed: 30, abilityScoreIncrease: {}, traits: [], languages: ['Common'] };
+        if (!speciesData) {
+            // Minimal species stub to satisfy Character constructor
+            speciesData = { id: 'human', name: 'Human', speed: 30, abilityScoreIncrease: {}, traits: [], languages: ['Common'] };
         }
 
         // ---- Background: minimal stub ----
@@ -286,7 +286,7 @@ export default class CompanionManager {
         // ---- Construct Character ----
         const character = new Character({
             name,
-            race:           raceData,
+            species:        speciesData,
             class:          classData,
             background:     backgroundData,
             level,

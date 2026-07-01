@@ -89,10 +89,10 @@ class CombatManager {
         this.companionCombatants = [];
         // Create player combatant
         this.playerCombatant = new Combatant(player, 'player');
-        // Merge race-level resistances (race is an object on the character; may have resistance fields in future)
-        const raceData = player.race || null;
-        this.playerCombatant.damageResistances    = raceData?.damageResistances    ?? this.playerCombatant.damageResistances;
-        this.playerCombatant.damageVulnerabilities = raceData?.damageVulnerabilities ?? this.playerCombatant.damageVulnerabilities;
+        // Merge species-level resistances (species is an object on the character; may have resistance fields in future)
+        const speciesData = player.species || null;
+        this.playerCombatant.damageResistances    = speciesData?.damageResistances    ?? this.playerCombatant.damageResistances;
+        this.playerCombatant.damageVulnerabilities = speciesData?.damageVulnerabilities ?? this.playerCombatant.damageVulnerabilities;
         this.combatants.push(this.playerCombatant);
 
         // Create companion combatants (skip downed companions)
@@ -2250,8 +2250,8 @@ class CombatManager {
                 const playerPos = gameState.get('player.position');
                 this.enemyCombatants.forEach(enemy => {
                     if (enemy.hp <= 0) {
-                        // Get creature type ID (race.id or monster type)
-                        const creatureId = enemy.character.race?.id || enemy.character.type || 'unknown';
+                        // Get creature type ID (species.id or monster type)
+                        const creatureId = enemy.character.species?.id || enemy.character.type || 'unknown';
                         window.questManager.onCreatureKilled(creatureId, playerPos);
                     }
                 });

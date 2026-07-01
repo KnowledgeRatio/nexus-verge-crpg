@@ -14,7 +14,7 @@ export class Character {
         this.id = data.id || generateUUID();
         this.name = data.name;
         this.avatar = data.avatar || null;
-        this.race = data.race;           // Race object from races.json
+        this.species = data.species ?? data.race; // Species object from races.json — data.race is the pre-rename save key
         this.class = data.class;         // Class object from classes.json
         this.background = data.background; // Background object from backgrounds.json
         this.fightingStyle = data.fightingStyle || null; // Fighting style choice (if applicable)
@@ -109,8 +109,8 @@ export class Character {
         // Class features
         this.features = this.getClassFeatures();
 
-        // Racial traits
-        this.racialTraits = this.race.traits || [];
+        // Species traits
+        this.speciesTraits = this.species.traits || [];
 
         // Background feature
         this.backgroundFeature = this.background?.feature || null;
@@ -177,13 +177,13 @@ export class Character {
     }
 
     /**
-     * Calculate final ability scores with racial bonuses
+     * Calculate final ability scores with species bonuses
      */
     calculateAbilities() {
         const abilities = { ...this.baseAbilities };
 
-        if (this.race?.abilityScoreIncrease) {
-            for (const [ability, bonus] of Object.entries(this.race.abilityScoreIncrease)) {
+        if (this.species?.abilityScoreIncrease) {
+            for (const [ability, bonus] of Object.entries(this.species.abilityScoreIncrease)) {
                 abilities[ability] = (abilities[ability] || 10) + bonus;
             }
         }
@@ -269,7 +269,7 @@ export class Character {
      * Calculate speed
      */
     calculateSpeed() {
-        return this.race?.speed || 30;
+        return this.species?.speed || 30;
     }
 
     /**
@@ -303,7 +303,7 @@ export class Character {
             armor: this.class.armorProficiencies || [],
             weapons: this.class.weaponProficiencies || [],
             tools: this.class.toolProficiencies || [],
-            languages: this.race?.languages || []
+            languages: this.species?.languages || []
         };
     }
 
@@ -344,9 +344,9 @@ export class Character {
             }
         }
 
-        // Apply racial skill proficiencies from race data
-        if (this.race?.skillProficiencies) {
-            for (const skill of this.race.skillProficiencies) {
+        // Apply species skill proficiencies from species data
+        if (this.species?.skillProficiencies) {
+            for (const skill of this.species.skillProficiencies) {
                 if (skills[skill]) skills[skill].proficient = true;
             }
         }
@@ -1503,7 +1503,7 @@ export class Character {
             id: this.id,
             name: this.name,
             avatar: this.avatar,
-            race: this.race,
+            species: this.species,
             class: this.class,
             background: this.background,
             fightingStyle: this.fightingStyle,

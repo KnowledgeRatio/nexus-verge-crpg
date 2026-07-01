@@ -5981,8 +5981,8 @@ class Game {
                     <span class="char-value">${character.name}</span>
                 </div>
                 <div class="char-row">
-                    <span class="char-label">Race:</span>
-                    <span class="char-value">${character.race.name}</span>
+                    <span class="char-label">Species:</span>
+                    <span class="char-value">${character.species.name}</span>
                 </div>
                 <div class="char-row">
                     <span class="char-label">Class:</span>
@@ -6140,7 +6140,7 @@ class Game {
             <div class="char-section full-width">
                 <h3>Racial Traits</h3>
                 <ul class="features-list">
-                    ${this.renderRacialTraits(character)}
+                    ${this.renderSpeciesTraits(character)}
                 </ul>
             </div>
 
@@ -6331,13 +6331,13 @@ class Game {
     }
 
     /**
-     * Render Racial Traits
+     * Render Species Traits
      */
-    renderRacialTraits(character) {
-        const traits = character.race.traits || [];
+    renderSpeciesTraits(character) {
+        const traits = character.species.traits || [];
 
         if (traits.length === 0) {
-            return '<li class="feature-item"><div class="feature-description">No racial traits.</div></li>';
+            return '<li class="feature-item"><div class="feature-description">No species traits.</div></li>';
         }
 
         return traits.map(trait => `

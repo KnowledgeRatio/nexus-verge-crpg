@@ -171,7 +171,7 @@ function createEnemyFromMonster(monster, options = {}) {
     return {
         name,
         monsterId: monster.id,
-        race: { id: monster.id, name: monster.type },
+        species: { id: monster.id, name: monster.type },
         class: { name: isBoss ? 'Boss' : 'Monster' },
         level: 1,
         cr,

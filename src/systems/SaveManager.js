@@ -437,7 +437,7 @@ class SaveManager {
             id: character.id,
             name: character.name,
             avatar: character.avatar || null,
-            race: character.race,
+            species: character.species,
             class: character.class,
             background: character.background,
             fightingStyle: character.fightingStyle || null,

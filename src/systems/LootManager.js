@@ -121,7 +121,7 @@ class LootManager {
         };
 
         // Get monster type and CR
-        const monsterType = monster.type || monster.race?.name || 'humanoid';
+        const monsterType = monster.type || monster.species?.name || 'humanoid';
         const monsterCR = monster.challengeRating || monster.cr || 0;
         const isBoss = monster.isBoss || false;
 

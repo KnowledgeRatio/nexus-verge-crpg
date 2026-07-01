@@ -1281,13 +1281,13 @@ body {
     font-size: 1.1rem;
 }
 
-.race-grid, .class-grid, .background-grid, .fighting-style-grid, .kit-grid {
+.species-grid, .class-grid, .background-grid, .fighting-style-grid, .kit-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 15px;
 }
 
-.race-card, .class-card, .background-card, .fighting-style-card, .kit-card {
+.species-card, .class-card, .background-card, .fighting-style-card, .kit-card {
     background: var(--bg-tertiary);
     border: 2px solid var(--border-color);
     padding: 15px;
@@ -1296,22 +1296,22 @@ body {
     transition: all 0.2s;
 }
 
-.race-card:hover, .class-card:hover, .background-card:hover, .fighting-style-card:hover, .kit-card:hover {
+.species-card:hover, .class-card:hover, .background-card:hover, .fighting-style-card:hover, .kit-card:hover {
     border-color: var(--accent-color);
     transform: translateY(-2px);
 }
 
-.race-card.selected, .class-card.selected, .background-card.selected, .fighting-style-card.selected, .kit-card.selected {
+.species-card.selected, .class-card.selected, .background-card.selected, .fighting-style-card.selected, .kit-card.selected {
     border-color: var(--success-color);
     background: var(--bg-primary);
 }
 
-.race-card h4, .class-card h4, .background-card h4, .fighting-style-card h4, .kit-card h4 {
+.species-card h4, .class-card h4, .background-card h4, .fighting-style-card h4, .kit-card h4 {
     margin-bottom: 8px;
     color: var(--text-highlight);
 }
 
-.race-description, .class-description, .background-description, .style-description, .kit-description {
+.species-description, .class-description, .background-description, .style-description, .kit-description {
     font-size: 0.9rem;
     color: var(--text-secondary);
     margin-bottom: 10px;
@@ -1408,22 +1408,22 @@ body {
     color: var(--text-highlight);
 }
 
-.race-stats, .class-stats, .background-stats {
+.species-stats, .class-stats, .background-stats {
     font-size: 0.85rem;
     margin-top: 10px;
 }
 
-.race-stats > div, .class-stats > div, .background-stats > div {
+.species-stats > div, .class-stats > div, .background-stats > div {
     margin-bottom: 4px;
 }
 
-.race-traits ul, .background-stats ul {
+.species-traits ul, .background-stats ul {
     margin-left: 20px;
     font-size: 0.8rem;
     color: var(--text-secondary);
 }
 
-.race-traits li, .background-stats li {
+.species-traits li, .background-stats li {
     margin-bottom: 4px;
 }
 

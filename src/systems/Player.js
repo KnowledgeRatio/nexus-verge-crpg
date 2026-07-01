@@ -1666,7 +1666,7 @@ class Player {
 
         return {
             name: monster.name,
-            race: { name: monster.type },
+            species: { name: monster.type },
             class: { name: 'Monster' },
             level: playerLevel,
             cr: monster.challengeRating || monster.cr,

@@ -13,7 +13,7 @@ class NPCGenerator {
         this.campaignId = campaignId;
         this.nameData = null;
         this.dialogueData = null;
-        this.racesData = null;
+        this.speciesData = null;
         this.culturesData = null;
     }
 
@@ -29,7 +29,7 @@ class NPCGenerator {
    * Load NPC name and dialogue data files
    */
     async loadData() {
-        if (this.nameData && this.dialogueData && this.racesData && this.culturesData) {
+        if (this.nameData && this.dialogueData && this.speciesData && this.culturesData) {
             return;
         }
 
@@ -37,7 +37,7 @@ class NPCGenerator {
             // Load campaign data for filtering
             await loadCampaigns();
 
-            const [nameResponse, dialogueResponse, racesResponse, culturesResponse] = await Promise.all([
+            const [nameResponse, dialogueResponse, speciesResponse, culturesResponse] = await Promise.all([
                 fetch('data/npcNames.json'),
                 fetch('data/dialogueTemplates.json'),
                 fetch('data/races.json'),
@@ -46,12 +46,12 @@ class NPCGenerator {
 
             const rawNameData = await nameResponse.json();
             this.dialogueData = await dialogueResponse.json();
-            const rawRaces = await racesResponse.json();
+            const rawSpecies = await speciesResponse.json();
             const rawCultures = await culturesResponse.json();
 
             const campaignId = this.campaignId || getDefaultCampaignId();
 
-            this.racesData = (rawRaces.races || rawRaces)
+            this.speciesData = (rawSpecies.races || rawSpecies)
                 .filter(r => r.npcWeight > 0 && isAvailableForCampaign(r, campaignId));
             this.culturesData = (rawCultures.cultures || rawCultures)
                 .filter(c => c.npcWeight > 0 && isAvailableForCampaign(c, campaignId));
@@ -255,7 +255,7 @@ class NPCGenerator {
         const culture = this.culturesData.length > 0
             ? this.weightedPick(this.culturesData, rng)
             : null;
-        const namePool = culture ? culture.namePool : this.weightedPick(this.racesData, rng).namePool;
+        const namePool = culture ? culture.namePool : this.weightedPick(this.speciesData, rng).namePool;
 
         // Generate name
         const name = this.generateName(role, settlementType, rng, namePool);

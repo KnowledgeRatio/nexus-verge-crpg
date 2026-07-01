@@ -18,7 +18,7 @@ export class CharacterCreationUI {
         this.characterData = {
             name: '',
             avatar: null,
-            race: null,
+            species: null,
             class: null,
             kit: null, // New: selected kit (custom or preset)
             customClassName: '', // New: custom class name (if using custom kit)
@@ -39,14 +39,14 @@ export class CharacterCreationUI {
 
 
         // Loaded data (raw, before filtering)
-        this.rawRacesData = null;
+        this.rawSpeciesData = null;
         this.rawClassesData = null;
         this.rawBackgroundsData = null;
         this.rawWeaponMasteriesData = null;
         this.rawKitsData = null;
 
         // Filtered data (based on campaign)
-        this.racesData = null;
+        this.speciesData = null;
         this.classesData = null;
         this.backgroundsData = null;
         this.weaponMasteriesData = null;
@@ -63,7 +63,7 @@ export class CharacterCreationUI {
 
             // Add cache-busting parameter to force reload of updated data
             const cacheBust = Date.now();
-            const [races, classes, backgrounds, weaponMasteries, kits] = await Promise.all([
+            const [species, classes, backgrounds, weaponMasteries, kits] = await Promise.all([
                 fetch(`data/races.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/classes.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/backgrounds.json?v=${cacheBust}`).then(r => r.json()),
@@ -72,7 +72,7 @@ export class CharacterCreationUI {
             ]);
 
             // Store raw data
-            this.rawRacesData = races.races;
+            this.rawSpeciesData = species.races;
             this.rawClassesData = classes.classes;
             this.rawBackgroundsData = backgrounds.backgrounds;
             this.rawWeaponMasteriesData = weaponMasteries.weaponMasteries;
@@ -93,7 +93,7 @@ export class CharacterCreationUI {
         const campaignId = this.campaignId || getDefaultCampaignId();
         console.log(`🎯 Filtering character creation data for campaign: ${campaignId}`);
 
-        this.racesData = filterByCampaign(this.rawRacesData, campaignId);
+        this.speciesData = filterByCampaign(this.rawSpeciesData, campaignId);
         this.classesData = filterByCampaign(this.rawClassesData, campaignId);
         this.backgroundsData = filterByCampaign(this.rawBackgroundsData, campaignId);
         this.weaponMasteriesData = filterByCampaign(this.rawWeaponMasteriesData, campaignId);
@@ -108,7 +108,7 @@ export class CharacterCreationUI {
             this.kitsData = this.rawKitsData;
         }
 
-        console.log(`📊 Filtered: ${this.racesData?.length || 0} races, ${this.classesData?.length || 0} classes, ${this.backgroundsData?.length || 0} backgrounds`);
+        console.log(`📊 Filtered: ${this.speciesData?.length || 0} species, ${this.classesData?.length || 0} classes, ${this.backgroundsData?.length || 0} backgrounds`);
     }
 
     /**
@@ -117,7 +117,7 @@ export class CharacterCreationUI {
      */
     setCampaignId(campaignId) {
         this.campaignId = campaignId;
-        if (this.rawRacesData) {
+        if (this.rawSpeciesData) {
             // Data already loaded, re-filter
             this.applyFiltering();
         }
@@ -166,8 +166,8 @@ export class CharacterCreationUI {
             case 'Avatar':
                 this.renderAvatarStep(content);
                 break;
-            case 'Culture':
-                this.renderRaceStep(content);
+            case 'Species':
+                this.renderSpeciesStep(content);
                 break;
             case 'Background':
                 this.renderBackgroundStep(content);
@@ -222,7 +222,7 @@ export class CharacterCreationUI {
      * Get dynamic step list based on selected class and kit
      */
     getSteps() {
-        const baseSteps = ['Name', 'Avatar', 'Culture', 'Calling'];
+        const baseSteps = ['Name', 'Avatar', 'Species', 'Calling'];
 
         // Always add Kit step after Calling
         if (this.characterData.class) {
@@ -339,25 +339,25 @@ export class CharacterCreationUI {
 
 
     /**
-     * Step 2: Culture
+     * Step 2: Species
      */
-    renderRaceStep(container) {
+    renderSpeciesStep(container) {
         container.innerHTML = `
-            <h3>Choose Your Culture</h3>
-            <p class="step-description">Your culture determines your natural abilities and traits.</p>
-            <div class="race-grid">
-                ${this.racesData.map(race => `
-                    <div class="race-card ${this.characterData.race?.id === race.id ? 'selected' : ''}"
-                         data-race-id="${race.id}">
-                        <h4>${race.name}</h4>
-                        <p class="race-description">${race.description}</p>
-                        <div class="race-stats">
-                            <strong>Ability Increases:</strong> ${this.formatAbilityIncreases(race.abilityScoreIncrease)}
+            <h3>Choose Your Species</h3>
+            <p class="step-description">Your species shapes your body — size, speed, and instinct.</p>
+            <div class="species-grid">
+                ${this.speciesData.map(species => `
+                    <div class="species-card ${this.characterData.species?.id === species.id ? 'selected' : ''}"
+                         data-species-id="${species.id}">
+                        <h4>${species.name}</h4>
+                        <p class="species-description">${species.description}</p>
+                        <div class="species-stats">
+                            <strong>Ability Increases:</strong> ${this.formatAbilityIncreases(species.abilityScoreIncrease)}
                         </div>
-                        <div class="race-traits">
+                        <div class="species-traits">
                             <strong>Traits:</strong>
                             <ul>
-                                ${race.traits.map(trait => `<li><strong>${trait.name}:</strong> ${trait.description}</li>`).join('')}
+                                ${species.traits.map(trait => `<li><strong>${trait.name}:</strong> ${trait.description}</li>`).join('')}
                             </ul>
                         </div>
                     </div>
@@ -365,11 +365,11 @@ export class CharacterCreationUI {
             </div>
         `;
 
-        // Bind race selection
-        container.querySelectorAll('.race-card').forEach(card => {
+        // Bind species selection
+        container.querySelectorAll('.species-card').forEach(card => {
             card.addEventListener('click', () => {
-                const raceId = card.dataset.raceId;
-                this.characterData.race = this.racesData.find(r => r.id === raceId);
+                const speciesId = card.dataset.speciesId;
+                this.characterData.species = this.speciesData.find(s => s.id === speciesId);
                 this.renderStep();
             });
         });
@@ -699,7 +699,7 @@ export class CharacterCreationUI {
                             ${this.formatModifier(this.getAbilityModifier(this.characterData.baseAbilities[ability]))}
                         </span>
                         <span class="racial-bonus" id="racial-${ability}">
-                            ${this.getRacialBonus(ability) > 0 ? `+${this.getRacialBonus(ability)} (racial)` : ''}
+                            ${this.getSpeciesBonus(ability) > 0 ? `+${this.getSpeciesBonus(ability)} (species)` : ''}
                         </span>
                     </div>
                 `).join('')}
@@ -864,10 +864,10 @@ export class CharacterCreationUI {
      * Step 8: Review
      */
     renderReviewStep(container) {
-        // Calculate final abilities with racial bonuses
+        // Calculate final abilities with species bonuses
         const finalAbilities = { ...this.characterData.baseAbilities };
-        if (this.characterData.race.abilityScoreIncrease) {
-            for (const [ability, bonus] of Object.entries(this.characterData.race.abilityScoreIncrease)) {
+        if (this.characterData.species.abilityScoreIncrease) {
+            for (const [ability, bonus] of Object.entries(this.characterData.species.abilityScoreIncrease)) {
                 finalAbilities[ability] = (finalAbilities[ability] || 10) + bonus;
             }
         }
@@ -921,7 +921,7 @@ export class CharacterCreationUI {
                     <h4>Identity</h4>
                     <p><strong>Name:</strong> ${this.characterData.name}</p>
                     ${avatarDisplay}
-                    <p><strong>Culture:</strong> ${this.characterData.race.name}</p>
+                    <p><strong>Species:</strong> ${this.characterData.species.name}</p>
                     <p><strong>Calling:</strong> ${this.characterData.class.displayName || this.characterData.class.name}</p>
                     <p><strong>Class:</strong> ${classDisplayName}</p>
                     <p><strong>Background:</strong> ${this.characterData.background.name}</p>
@@ -960,7 +960,7 @@ export class CharacterCreationUI {
                     <h4>Starting Stats</h4>
                     <p><strong>Hit Points:</strong> ${this.characterData.class.hitDie + this.getAbilityModifier(finalAbilities.con)}</p>
                     <p><strong>Armor Class:</strong> ${10 + this.getAbilityModifier(finalAbilities.dex)}</p>
-                    <p><strong>Speed:</strong> ${this.characterData.race.speed} ft</p>
+                    <p><strong>Speed:</strong> ${this.characterData.species.speed} ft</p>
                     <p><strong>Proficiency Bonus:</strong> +2</p>
                 </div>
             </div>
@@ -1030,9 +1030,9 @@ export class CharacterCreationUI {
                     return false;
                 }
                 break;
-            case 'Culture':
-                if (!this.characterData.race) {
-                    alert('Please select a culture.');
+            case 'Species':
+                if (!this.characterData.species) {
+                    alert('Please select a species.');
                     return false;
                 }
                 break;
@@ -1123,7 +1123,7 @@ export class CharacterCreationUI {
             const character = new Character({
                 name: this.characterData.name,
                 avatar: this.characterData.avatar,
-                race: this.characterData.race,
+                species: this.characterData.species,
                 class: classData,
                 background: this.characterData.background,
                 fightingStyle: this.characterData.fightingStyle, // Pass fighting style if selected
@@ -1160,10 +1160,10 @@ export class CharacterCreationUI {
     }
 
     /**
-     * Helper: Get racial bonus for ability
+     * Helper: Get species bonus for ability
      */
-    getRacialBonus(ability) {
-        return this.characterData.race?.abilityScoreIncrease?.[ability] || 0;
+    getSpeciesBonus(ability) {
+        return this.characterData.species?.abilityScoreIncrease?.[ability] || 0;
     }
 
     /**
