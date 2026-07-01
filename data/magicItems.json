@@ -570,7 +570,7 @@
       "minimumLevel": 9,
       "rarity": "legendary",
       "value": 20000,
-      "description": "The edge is wrong — not sharp in a way a whetstone produces, but absent, a boundary where steel ends and something else begins, radiating a deep amber heat that casts no light but feels like standing too close to a forge. It predates the current Verge settlements by an interval no archivist will put a number on."
+      "description": "The edge is wrong — not sharp in a way a whetstone produces, but absent, a boundary where steel ends and something else begins, radiating a deep amber heat that casts no light but feels like standing too close to a forge. No archivist will put a number on its age, no assayer agrees twice on what it's made of, and it has never once needed an edge restored. Close to the Void boundary, the warmth deepens, for reasons nobody has measured."
     },
     {
       "id": "armor-of-invulnerability",
@@ -586,7 +586,7 @@
       "minimumLevel": 10,
       "rarity": "legendary",
       "value": 25000,
-      "description": "Full plate in a metal with a density banding visible in cross-section at every cut edge — dark striations running against the hammer-work grain, as if two materials were resolved into one without either yielding. The deep amber heat distortion that hovers at the surface is faint but continuous, the kind of warmth that has no source and doesn't dissipate."
+      "description": "Full plate in a metal with a density banding visible in cross-section at every cut edge — dark striations running against the hammer-work grain, as if two materials were resolved into one without either yielding. The deep amber heat distortion that hovers at the surface is faint but continuous, warmth with no source that has never dissipated and never let the metal wear, no matter how many owners it has dented. Near the Void boundary, the warmth sharpens instead of fading — for reasons no assayer has explained the same way twice."
     }
   ]
 }

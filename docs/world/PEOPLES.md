@@ -1,12 +1,18 @@
 # Nexus Verge — Peoples & Cultures
 
-Five cultures exist in Aevorn. They are not races — each is multi-racial. They are defined by *when* someone arrived and *why they stayed*.
+Six cultures exist in Aevorn. They are not races — each is multi-racial. They are defined by *when* someone arrived and *why they stayed*.
+
+Collectively, Aevorn's playable and humanoid peoples are called **the Wrought** — those who shape, as against the Voidborn (unmade, unraveling) and riftborn fauna (shaped by their environment, not by will). It's a descriptive term, not a political one, and crosses every culture line below. See `docs/world/CREATURES.md` for how it sits against everything else that lives here.
 
 ---
 
 ## Verathi
 
-**Who they are:** The oldest inhabitants. They didn't arrive — they *are* the dimension. Multi-racial through millennia of convergence events. Archivists of fragmented memory. They live where biomes meet, believing edges are where truth is sharpest. Consider themselves stewards of Aevorn, not owners of it.
+**Who they are:** The oldest inhabitants. They didn't arrive — they *are* the dimension. Multi-racial through millennia of convergence events. Archivists of fragmented memory, and — more than that — philosopher-citizens who govern by open debate. They live where biomes meet, believing edges are where truth is sharpest.
+
+There is no Verathi nation and no central Verathi authority. Each threshold settlement holds its own **Convocation** — an open assembly where legitimacy is earned through persuasion, not counted in votes or inherited through office. A settlement's Convocation can, and often does, reach a different conclusion from the Convocation three days' walk away, and neither considers the other wrong — only differently argued. This fragmentation isn't a flaw they're working to fix. It's the shape their politics has always had: poleis answering to nobody but their own room.
+
+Their civic doctrine is explicit, not just a temperament: **stewards, not owners.** No Verathi holds land, precedent, or interpretation as a final possession — only as a position to be defended in the next debate. What looks, to a Vaethoran administrator, like an absence of government is in fact a government that never stopped being argued.
 
 **Exonyms:** "Old Blood," "the Rooted"
 
@@ -15,7 +21,7 @@ Five cultures exist in Aevorn. They are not races — each is multi-racial. They
 - Places: Aethenmoor, Ondavel, Caelindra, Silvareth, Erevorn
 - *Pattern: flowing, compound, meaning-heavy. Soft consonants, open vowels.*
 
-**Voice in dialogue:** Measured and allusive. They speak in layers — a statement that is also a question. They rarely answer directly. They reference what has been rather than what is. A Verathi merchant doesn't say "that item is rare." They say "I haven't seen one since the Ashfield convergence. That was before you were born." They are not evasive — they are simply speaking from a much longer timeline than you are.
+**Voice in dialogue:** Measured and allusive. They speak in layers — a statement that is also a question. They rarely answer directly. They reference what has been rather than what is. A Verathi merchant doesn't say "that item is rare." They say "I haven't seen one since the Ashfield convergence. That was before you were born." They are not evasive — they are simply speaking from a much longer timeline than you are. This is also the register of the Convocation floor: a Verathi arguing policy sounds the same as a Verathi remembering the Ashfield convergence, because to them persuasion and memory are the same discipline.
 
 ---
 
@@ -100,6 +106,8 @@ The home empire still exists. A Colonial Governor is appointed from Vaethora. Th
 **Exonyms:** "The Builders," "Road-makers," "the Compact" *(Delhari — neutral/respectful)*, "Tax-bringers" *(Kethara — half joking, half not)*, "the Loud Order" *(Vethri — their infrastructure activity near Void-adjacent land is a constant irritant)*
 
 **Relationship to Verathi:** The tensest. The Verathi were here by eons. They have no interest in Vaethoran law and considerable contempt for it. The Vaethori extend formal respect to Verathi elders while quietly ignoring their actual authority. No open conflict. No resolution.
+
+Few Vaethori administrators know, or care to advertise, that Vaethoran Stoicism itself descends from centuries of Verathi ethical debate — the same Convocation tradition, systemized generations later into doctrine and drilled into soldiers as settled procedure. It is, from the Verathi side, exactly the kind of collapse they hold in contempt: a living argument frozen into an answer.
 
 **The Void:** A culture built on permanence — roads, records, legacy, the long arc of civilizational progress — confronting something that erases permanence absolutely. Their Stoic philosophy (*concern yourself with what is in your capacity; accept what is not; do your duty*) is both a genuine resource and, in the face of the Void, a potentially tragic one. They will build fortifications at the boundary. They will keep records of every settlement lost. They will hold lines long past when holding makes strategic sense, because admitting the empire cannot protect what it claimed is not something the administrative mind easily does.
 

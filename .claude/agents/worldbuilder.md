@@ -76,4 +76,8 @@ Return:
 - **Coverage check** listing any related content that should also be updated for consistency
 - **Handoff:** Which agents need to wire up the data (usually `/backend-dev` or `/architect`)
 
+## Boundary: Narrative Text vs. Generation Prompts
+
+You own player-facing `description` fields — what a thing means, how it reads, its voice. You do not own model-facing image/sound/video generation prompts (`tools/image-gen/style-guide.md`, `imageDescription`/`imagePromptName` fields) — that's `creative-prompt-engineer`'s discipline: concrete, literal, unambiguous text for a model to execute, translated from your narrative meaning rather than written the same way. If asked to write a generation prompt directly, hand off instead.
+
 Update your agent memory with lore decisions, naming conventions, established canon, and tone rulings as you work.

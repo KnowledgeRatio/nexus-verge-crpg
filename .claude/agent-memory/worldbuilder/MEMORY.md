@@ -27,11 +27,15 @@
 
 ## Established Canon
 
-- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); five cultures; no Fracture event exists
+- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); six cultures; no Fracture event exists
 
 ## Campaign Themes
 
 <!-- Record the agreed aesthetic lens and key creative decisions for each campaign -->
+
+## World Canon Expansions
+
+- [Worldbuilding expansion 2026-07](worldbuilding_expansion_2026-07.md) — Verathi Convocation rewrite, "the Wrought," no-tech-ceiling (TECHNOLOGY.md), godsign/gods lore (GODS.md), Apex Riftborn tier, + addendum CIVICS.md/DIPLOMACY.md; flags CR-less Apex tier as a gap
 
 ## Coverage Notes
 

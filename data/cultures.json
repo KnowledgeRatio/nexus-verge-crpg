@@ -1,5 +1,5 @@
 {
-  "description": "Nexus Verge cultures — defined by when someone arrived and why they stayed, not by race (see docs/world/PEOPLES.md). Used by NPCGenerator to pick a culture-flavoured name pool for procedural NPCs, independent of mechanical race in races.json. npcWeight reflects PEOPLES.md 'Writing Across Cultures': Kethara are the majority in any mixed settlement; Vaethori hold a significant administrative/military presence; Verathi, Delhari, and Sirathi are minorities; Vethri are rare outside void-adjacent settlements.",
+  "description": "Nexus Verge cultures — defined by when someone arrived and why they stayed, not by race (see docs/world/PEOPLES.md). Collectively these peoples are called 'the Wrought' (see docs/world/PEOPLES.md and docs/world/CREATURES.md). Used by NPCGenerator to pick a culture-flavoured name pool for procedural NPCs, independent of mechanical race in races.json. npcWeight reflects PEOPLES.md 'Writing Across Cultures': Kethara are the majority in any mixed settlement; Vaethori hold a significant administrative/military presence; Verathi, Delhari, and Sirathi are minorities; Vethri are rare outside void-adjacent settlements.",
   "version": "1.0.0",
   "cultures": [
     {
@@ -27,7 +27,7 @@
       "namePool": "verathi",
       "name": "Verathi",
       "namePlural": "Verathi",
-      "etymology": "Old Blood — the oldest inhabitants, who didn't arrive but rather are the dimension"
+      "etymology": "Old Blood — the oldest inhabitants; philosopher-citizens who govern each threshold settlement by its own Convocation, stewards of Aevorn rather than owners of it"
     },
     {
       "id": "delhari",

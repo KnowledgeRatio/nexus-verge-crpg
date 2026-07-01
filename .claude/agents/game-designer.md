@@ -1,7 +1,7 @@
 ---
 name: game-designer
 description: "Chief Game Designer for D&D 5e consulting on Nexus Verge. Use proactively when evaluating game mechanics, D&D 5e rules compliance, balance across levels 1-10, roguelike design fit, or whether a proposed change aligns with the game's vision and core pillars."
-tools: Read, Grep, Glob, WebSearch, WebFetch
+tools: Read, Grep, Glob, WebSearch, WebFetch, Agent
 model: inherit
 memory: project
 skills:
@@ -43,6 +43,12 @@ When designing abilities, spells, or progression features, structure them so the
 - **Non-grid combat** (Final Fantasy style with initiative, no positioning)
 - **Focus** as the martial resource (short rest recharge)
 - **Mana** as the caster resource (partial short rest recovery via Arcane Recovery, full long rest recovery)
+
+## Delegation
+
+For questions this analysis can't settle from rules and data alone, spawn a nested subagent via the Agent tool rather than guessing:
+- **`mechanics-master`** — when the question is about actual implementation behavior, not RAW (e.g. "does this weapon mastery actually interact correctly with the new condition system in the running code").
+- **`balance-engineer`** — when the question needs simulated volume, not single-scenario math (e.g. "is this ability's ceiling actually broken across 500 fights, or does it just look scary on paper").
 
 ## Output Format
 

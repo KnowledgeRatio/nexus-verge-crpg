@@ -41,5 +41,8 @@
       "Bash(node tools/image-gen/generate.js --type terrain --id dungeonBones --suffix mai-2)",
       "mcp__claude_ai_MS_Learn__microsoft_code_sample_search"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "mslearn"
+  ]
 }

@@ -1,6 +1,6 @@
 ---
 name: established-canon-nexus-verge-world
-description: Canonical world identity for Nexus Verge — convergence dimension, the Void, five cultures, no Fracture event
+description: Canonical world identity for Nexus Verge — convergence dimension, the Void, six cultures, no Fracture event
 metadata:
   type: project
 ---
@@ -23,15 +23,18 @@ Tone: **Desperate wonder. Survival on a living frontier.** Not grim-hopeful. Not
 
 You cannot kill them. You disrupt, scatter, or seal the rift they propagate through.
 
-## The Five Cultures
+## The Six Cultures
 
 | Culture | Who | Voice pattern |
 |---|---|---|
-| Verathi | Oldest inhabitants; consider themselves stewards of Aevorn | Measured, allusive |
+| Verathi | Oldest inhabitants; philosopher-citizens governing per-settlement by Convocation; consider themselves stewards of Aevorn, not owners | Measured, allusive |
 | Kethara | 2–5 generations settled; built the towns | Direct, pragmatic |
 | Vethri | Settled near the Void boundary by choice or drift; not corrupted, calibrated | Minimal, precise |
 | Delhari | Active arrivals with a specific objective; have not settled | Precise, often condescending |
 | Sirathi | Void refugees; their home regions were consumed | Weight in everything they say |
+| Vaethori | Colonial empire, ~4 generations in; roads, census, tribute, garrisons | Formal but not cold |
+
+Collectively, all six are called **"the Wrought"** (docs/world/PEOPLES.md) — contrasted with Voidborn (unmade) and riftborn fauna (shaped by environment, not will). See also `docs/world/CIVICS.md` (governance per culture) and `docs/world/DIPLOMACY.md` (all 15 pairwise relationships).
 
 ## Naming
 

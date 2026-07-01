@@ -14,6 +14,8 @@ Aevorn formed over uncounted ages as fragments of countless dimensions fell in a
 
 What survives from this era is fragments — a few Verathi oral records, none of them complete, several of them disagreeing on basic details. One persistent fragment: that Aevorn was not empty before the convergence began, that something was already here, and that the convergence happened *around* it rather than *into* a void. The Verathi treat this as significant. Nobody else treats it as more than a story.
 
+A minority reading of that fragment — controversial even among the Verathi who hold it — goes further: that gods passed through Aevorn during this era the same way everything else did, arrived and took root, and then, unlike everything else, *left*. Nobody can say where, or why a divine departure would look different from any other dimension losing interest in this one. What the theory has going for it isn't evidence — it's shape: it fits the same convergence logic already true of riftborn materials, technology, and peoples, all of which arrive from elsewhere and either stay or move on. Godsign relics, a handful of objects nobody can date, classify, or wear down, are the closest thing to physical evidence — and even they only prove that something passed through, not what it was. See `docs/world/GODS.md`.
+
 ---
 
 ## II. The Long Calibration (centuries)
@@ -68,3 +70,4 @@ Left deliberately unresolved, for future quest and campaign content to take a po
 - What actually caused the Unmooring's acceleration — if anything did, rather than it being an inherent property of the boundary.
 - Whether the Void's advance can be stopped, slowed, or only ever outlived region by region.
 - Whether the Verathi fragment about "something already here" before the Convergence has any bearing on the Void's nature now.
+- Whether godsign relics are evidence of departed gods, an unusually old convergence of otherwise ordinary origin, or something no culture has proposed yet.

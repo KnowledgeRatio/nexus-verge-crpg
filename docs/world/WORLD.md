@@ -70,6 +70,18 @@ Never describe the Void or Voidborn with emotional language. No rage, no hunger,
 
 ---
 
+## Technology
+
+Aevorn has no tech ceiling and no linear progress bar. Convergence pulls in fragments from countless origin-worlds at every level of development — a flint hand-axe and a working reactor core can fall through the same generation of rifts. Nothing about the dimension assumes anyone should be capped at swords and torches; medieval-fantasy-frontier is simply what the majority of what's landed here looks like, not a rule the setting enforces.
+
+Technology follows the same logic as riftborn materials: arrival, not invention. Almost nothing here was built on Aevorn from first principles. It was made somewhere else, for a world that made sense of it, and now sits in the Verge half-understood — scavenged, jury-rigged, studied, or shelved because nobody can get it to work twice.
+
+**Writing rule:** Anachronistic technology intrudes — rarely, and it should read as startling every time it appears. A working power source humming in a three-century-old ruin. A device in a Delhari's coat that clearly isn't a crossbow. These are events, not scenery. If a region's baseline texture starts to feel modern rather than frontier, the anachronism has stopped intruding and started saturating — pull back.
+
+See `docs/world/TECHNOLOGY.md` for the full framework and per-culture takes.
+
+---
+
 ## The Hero
 
 Arrives from outside Nexus Verge or from within it — **player-defined**. No cultural background is assumed. The Calling carries the identity work.

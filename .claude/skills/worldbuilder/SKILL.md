@@ -107,6 +107,7 @@ For each: create a new JSON entry with the campaign's `campaignId`. The worldbui
 - Write implementation code (defer to `/backend-dev`)
 - Design UI layouts for how text is displayed (defer to `/frontend-dev`)
 - Invent new game systems — only narrative content within what exists
+- Write model-facing image/sound/video generation prompts (`style-guide.md`, `imageDescription`) — that's `/creative-prompt-engineer`'s discipline; you supply the narrative meaning it translates from
 
 ## Key Knowledge Areas
 
