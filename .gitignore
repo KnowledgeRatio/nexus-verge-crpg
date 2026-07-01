@@ -290,3 +290,8 @@ dist
 
 # macOS folder attributes
 .DS_Store
+
+# ==================== Local Audit Reports ====================
+
+# Security/history audit reports (document sensitive findings) - never commit
+GIT_HISTORY_SECURITY_AUDIT.md
