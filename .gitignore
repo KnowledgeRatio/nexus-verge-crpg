@@ -53,6 +53,9 @@ $RECYCLE.BIN/
 *.code-workspace
 .history/
 
+# Claude Code local settings (machine-specific overrides)
+.claude/settings.local.json
+
 # JetBrains IDEs (WebStorm, IntelliJ, etc.)
 .idea/
 *.iml
@@ -163,8 +166,9 @@ lib-cov/
 # Azure Functions local settings (contains secrets)
 local.settings.json
 
-# Azure Static Web Apps config (contains tenant ID)
-staticwebapp.config.json
+# staticwebapp.config.json is intentionally tracked (NOT gitignored) - required by
+# the Azure Static Web Apps GitHub Action at deploy time for routing/auth/header config.
+# It contains a non-secret Azure AD tenant ID (an identifier, not a credential).
 
 # Config files with secrets
 config.local.js
@@ -284,6 +288,7 @@ dist
 # Backup files
 *.backup
 *.old
+*-backup.txt
 
 # Git conflict markers (should be resolved, not committed)
 *.orig
