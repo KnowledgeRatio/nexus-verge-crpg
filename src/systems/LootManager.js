@@ -561,6 +561,34 @@ class LootManager {
     }
 
     /**
+     * Compute a quality score for a skill challenge reward.
+     * Uses the challenge's balance.riskLevel to add a bonus on top of a seeded d6 roll.
+     * Seeded per-attempt (includes attemptSeed, typically Date.now()) since challenges
+     * are repeatable via cooldown, unlike quests which complete once.
+     *
+     * @param {number} playerLevel - Player's current level
+     * @param {string} riskLevel - Challenge's balance.riskLevel ('low'|'medium'|'high'|'deadly')
+     * @param {string} challengeId - Challenge ID for seeding
+     * @param {number|string} attemptSeed - Per-attempt uniqueness (e.g. Date.now())
+     * @returns {number} Quality score
+     */
+    computeSkillChallengeQualityScore(playerLevel, riskLevel, challengeId, attemptSeed) {
+        const rules = RULES.magicItems;
+        const rng = new SeededRandom(`${this.worldSeed}_skillchallenge_${challengeId}_${attemptSeed}`);
+
+        let levelBonus = 0;
+        if (playerLevel <= 3) levelBonus = rules.levelBonus['1-3'];
+        else if (playerLevel <= 6) levelBonus = rules.levelBonus['4-6'];
+        else if (playerLevel <= 9) levelBonus = rules.levelBonus['7-9'];
+        else levelBonus = rules.levelBonus['10'];
+
+        const riskBonus = rules.skillChallengeBonus[riskLevel] ?? 0;
+        const d6 = rng.nextInt(1, 6);
+
+        return d6 + levelBonus + riskBonus;
+    }
+
+    /**
      * Map a quality score to a rarity string.
      * @param {number} score
      * @returns {string} Rarity ('common'|'fine'|'great'|'heroic'|'legendary'|'mythic')

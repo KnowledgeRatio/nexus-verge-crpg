@@ -10,6 +10,7 @@ import { gameState } from '../core/GameState.js';
 import { rollD20, roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue } from './FatigueManager.js';
+import { SeededRandom } from '../utils/rng.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -887,6 +888,16 @@ class SkillChallengeManager {
                         rarityFilter
                     );
 
+                    // rollOnTableWithRarityFilter only selects which base item template drops
+                    // (table-selection axis). Bonus/properties/name still need the same generic
+                    // qualityScore roll combat and quest rewards use — same format across the board.
+                    const attemptSeed = Date.now();
+                    const riskLevel = challenge.balance?.riskLevel || 'medium';
+                    const challengeQualityScore = lootManager.computeSkillChallengeQualityScore(
+                        playerLevel, riskLevel, challenge.id, attemptSeed
+                    );
+                    const propertyRng = new SeededRandom(`${lootManager.worldSeed}_skillchallengereward_${challenge.id}_${attemptSeed}`);
+
                     for (const entry of lootResults) {
                         if (entry.isGold) {
                             // Gold pseudo-item — roll dice and award directly
@@ -895,6 +906,7 @@ class SkillChallengeManager {
                             result.goldAwarded += goldAmount;
                         } else {
                             // Physical item — push to inventory
+                            lootManager.applyMagicProperties(entry, challengeQualityScore, propertyRng);
                             if (!Array.isArray(character.inventory)) {
                                 character.inventory = [];
                             }

@@ -195,6 +195,14 @@ export const RULES = {
             normal: 0,
             hard:   1,
             deadly: 2
+        },
+
+        // added to d6 based on the skill challenge's balance.riskLevel
+        skillChallengeBonus: {
+            low:    -1,
+            medium:  0,
+            high:    1,
+            deadly:  2
         }
     },
 
