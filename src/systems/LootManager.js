@@ -47,11 +47,12 @@ class LootManager {
             await loadCampaigns();
             const campaignId = this.campaignId || getDefaultCampaignId();
 
-            const [lootResponse, magicResponse, itemsResponse, propertiesResponse] = await Promise.all([
+            const [lootResponse, magicResponse, itemsResponse, propertiesResponse, mythicEpithetsResponse] = await Promise.all([
                 fetch('data/lootTables.json'),
                 fetch('data/magicItems.json'),
                 fetch('data/items.json'),
-                fetch('data/itemProperties.json')
+                fetch('data/itemProperties.json'),
+                fetch('data/mythicEpithets.json')
             ]);
 
             this.lootTables = await lootResponse.json();
@@ -59,6 +60,7 @@ class LootManager {
             const itemsData = await itemsResponse.json();
             const propertiesData = await propertiesResponse.json();
             this.itemProperties = propertiesData.properties || [];
+            this.mythicEpithets = await mythicEpithetsResponse.json();
 
             // Filter magic items by campaign
             this.magicItems = {};
@@ -383,10 +385,10 @@ class LootManager {
             item.quantity = this.rollDiceString(entry.count, rng);
         }
 
-        // Assign bonus + properties generically based on the rolled rarity (weapon/armor/shield only)
-        if (qualityScore > 0) {
-            this.applyMagicProperties(item, qualityScore, rng);
-        }
+        // Assign bonus + properties generically based on the rolled rarity (weapon/armor/shield only).
+        // Always call — qualityScore 0 is a legitimate roll (easy fight, low level, bad d6) that must
+        // still resolve to Common tier and strip any stale static bonus/name off a magicItems.json template.
+        this.applyMagicProperties(item, qualityScore, rng);
 
         return item;
     }
@@ -596,45 +598,87 @@ class LootManager {
             : rarityDef;
 
         item.bonus = bonus;
+        item.magicProperties = [];
 
-        if (propertyCount === 0 || !this.itemProperties) {
-            item.magicProperties = [];
-            return item;
-        }
+        if (propertyCount > 0 && this.itemProperties) {
+            // Build droppable pool filtered by item type, gated to mythic-exclusive
+            // properties only when this roll actually landed on mythic.
+            const itemType = item.type;
+            const pool = this.itemProperties.filter(p =>
+                p.droppable &&
+                p.appliesTo.includes(itemType) &&
+                (!p.minRarity || p.minRarity === rarity)
+            );
 
-        // Build droppable pool filtered by item type, gated to mythic-exclusive
-        // properties only when this roll actually landed on mythic.
-        const itemType = item.type;
-        const pool = this.itemProperties.filter(p =>
-            p.droppable &&
-            p.appliesTo.includes(itemType) &&
-            (!p.minRarity || p.minRarity === rarity)
-        );
-
-        if (pool.length === 0) {
-            item.magicProperties = [];
-            return item;
-        }
-
-        // Weighted selection without replacement
-        const selected = [];
-        const remaining = [...pool];
-
-        for (let i = 0; i < Math.min(propertyCount, remaining.length); i++) {
-            const totalWeight = remaining.reduce((sum, p) => sum + p.weight, 0);
-            let roll = rng.next() * totalWeight;
-            for (let j = 0; j < remaining.length; j++) {
-                roll -= remaining[j].weight;
-                if (roll <= 0) {
-                    selected.push(remaining[j].id);
-                    remaining.splice(j, 1);
-                    break;
+            // Weighted selection without replacement — push order is preserved and
+            // consumed by composeItemName() as the adjective/epithet/fragment slot order.
+            const remaining = [...pool];
+            const targetCount = Math.min(propertyCount, remaining.length);
+            for (let i = 0; i < targetCount; i++) {
+                const totalWeight = remaining.reduce((sum, p) => sum + p.weight, 0);
+                let roll = rng.next() * totalWeight;
+                for (let j = 0; j < remaining.length; j++) {
+                    roll -= remaining[j].weight;
+                    if (roll <= 0) {
+                        item.magicProperties.push(remaining[j].id);
+                        remaining.splice(j, 1);
+                        break;
+                    }
                 }
             }
         }
 
-        item.magicProperties = selected;
+        item.name = this.composeItemName(item, rng);
         return item;
+    }
+
+    /**
+     * Compose a procedural display name from an item's rolled bonus/properties.
+     * Overwrites item.name — the base item's own template name (or its baseItemId's
+     * mundane name, for magicItems.json-sourced templates) is recovered first so the
+     * stale static "+N" baked into e.g. "Sword +1" doesn't leak into the new name.
+     *
+     * Grammar (branches on how many properties actually resolved, not the requested
+     * propertyCount — a shield capped by a small property pool still names correctly):
+     *   0 props, bonus 0  → "{Base}"                              (common — not magic)
+     *   0 props, bonus >0 → "{Base} +{bonus}"                     (fine's +1/0-prop variant)
+     *   1 prop            → "{Adjective} {Base}"
+     *   2 props           → "{Adjective} {Base} of {Epithet}"
+     *   3 props           → "{Adjective} {Base}, the {Fragment} {Fragment}"
+     * Mythic rarity additionally appends " — {TrueName}" from data/mythicEpithets.json,
+     * picked by the same seeded rng — a true name, not a further description.
+     *
+     * @param {Object} item - Item with bonus/magicProperties/effectiveRarity already set
+     * @param {SeededRandom} rng - Seeded RNG instance (same one used to roll properties)
+     * @returns {string} Composed display name
+     */
+    composeItemName(item, rng) {
+        const baseName = (item.baseItemId && this.allItems?.[item.baseItemId]?.name)
+            || item.name.replace(/\s*\+\d+$/, '');
+
+        const props = (item.magicProperties || [])
+            .map(id => this.itemProperties?.find(p => p.id === id))
+            .filter(Boolean);
+
+        let composed;
+        if (props.length === 0) {
+            composed = item.bonus > 0 ? `${baseName} +${item.bonus}` : baseName;
+        } else if (props.length === 1) {
+            composed = `${props[0].adjective} ${baseName}`;
+        } else if (props.length === 2) {
+            composed = `${props[0].adjective} ${baseName} of ${props[1].epithet}`;
+        } else {
+            composed = `${props[0].adjective} ${baseName}, the ${props[1].fragment} ${props[2].fragment}`;
+        }
+
+        if (item.effectiveRarity === 'mythic' && this.mythicEpithets) {
+            const pool = item.type === 'weapon' ? this.mythicEpithets.weapon : this.mythicEpithets.armorShield;
+            if (pool?.length > 0) {
+                composed += ` — ${pool[rng.nextInt(0, pool.length - 1)]}`;
+            }
+        }
+
+        return composed;
     }
 
     /**

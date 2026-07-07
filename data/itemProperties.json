@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "description": "Canonical magic item property catalog. droppable controls whether a property can appear on naturally dropped items. forgecraftEligible controls whether it appears in the Forgecraft menu. weight controls relative selection probability within the eligible pool. Optional minRarity (e.g. \"mythic\") restricts a property to only roll when the item's generated rarity matches exactly.",
+  "version": "2.0.0",
+  "description": "Canonical magic item property catalog. droppable controls whether a property can appear on naturally dropped items. forgecraftEligible controls whether it appears in the Forgecraft menu. weight controls relative selection probability within the eligible pool. Optional minRarity (e.g. \"mythic\") restricts a property to only roll when the item's generated rarity matches exactly. adjective/epithet/fragment feed the procedural name composer in LootManager.composeItemName(): adjective is used when this property is the first one rolled, epithet when it's the sole second property (2-property items), fragment when it's one of two non-lead properties (3-property items).",
   "properties": [
     {
       "id": "tailored",
@@ -10,6 +10,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Tailored",
+      "epithet": "the Fitted Seam",
+      "fragment": "Seam",
       "description": "Expertly fitted to the wearer. The maximum DEX modifier that contributes to AC increases by 1."
     },
     {
@@ -20,6 +23,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Adaptive",
+      "epithet": "the Turned Blade",
+      "fragment": "Ward",
       "description": "Layered and angled to deflect devastating blows. Critical hits against you count as normal hits for damage calculation."
     },
     {
@@ -30,6 +36,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 0.7,
+      "adjective": "Reinforced",
+      "epithet": "the Unbroken Line",
+      "fragment": "Bulwark",
       "description": "Structurally strengthened at key stress points. Grants +1 to AC."
     },
     {
@@ -40,6 +49,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Optimised",
+      "epithet": "the Steady Hand",
+      "fragment": "Guard",
       "description": "Lighter, harder, and tuned to its wielder. Grants an additional +1 AC."
     },
     {
@@ -50,6 +62,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Deflecting",
+      "epithet": "the Turned Blow",
+      "fragment": "Turn",
       "description": "Shaped to redirect incoming energy. Once per short rest, use your reaction to add your shield's AC bonus to a saving throw."
     },
     {
@@ -60,6 +75,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Keen",
+      "epithet": "the Honed Line",
+      "fragment": "Edge",
       "description": "Honed to a razor edge that finds the gaps. Critical hit range expands to 19-20."
     },
     {
@@ -70,6 +88,9 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
+      "adjective": "Tempered",
+      "epithet": "the Forge-Kissed Steel",
+      "fragment": "Ember",
       "description": "Strengthened through expert heat treatment. Grants +1 to damage rolls."
     },
     {
@@ -80,7 +101,52 @@
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 0.7,
+      "adjective": "Balanced",
+      "epithet": "the Sure Strike",
+      "fragment": "Poise",
       "description": "Perfectly weighted for precision. Grants +1 to attack rolls."
+    },
+    {
+      "id": "voidwoven",
+      "name": "Voidwoven",
+      "appliesTo": ["weapon"],
+      "effect": { "type": "modifyWeapon", "property": "damageBonus", "bonus": 2 },
+      "droppable": true,
+      "forgecraftEligible": false,
+      "weight": 0.4,
+      "minRarity": "mythic",
+      "adjective": "Voidwoven",
+      "epithet": "the Hollow Edge",
+      "fragment": "Hollow",
+      "description": "Threaded through with something that isn't quite metal. The edge doesn't reflect light so much as decline it."
+    },
+    {
+      "id": "wardbound",
+      "name": "Wardbound",
+      "appliesTo": ["armor"],
+      "effect": { "type": "modifyArmor", "property": "acBonus", "bonus": 2 },
+      "droppable": true,
+      "forgecraftEligible": false,
+      "weight": 0.4,
+      "minRarity": "mythic",
+      "adjective": "Wardbound",
+      "epithet": "the Undying Ward",
+      "fragment": "Undying",
+      "description": "Bound to its wearer by something that doesn't wear out. No one has explained why, and no one who owns one seems eager to ask."
+    },
+    {
+      "id": "absolute",
+      "name": "Absolute",
+      "appliesTo": ["shield"],
+      "effect": { "type": "modifyShield", "property": "acBonus", "bonus": 2 },
+      "droppable": true,
+      "forgecraftEligible": false,
+      "weight": 0.4,
+      "minRarity": "mythic",
+      "adjective": "Absolute",
+      "epithet": "the Final Guard",
+      "fragment": "Final",
+      "description": "Doesn't bend, doesn't dent, doesn't explain itself. Whoever forged it wasn't working from any metallurgy the Verge recognises."
     }
   ]
 }
