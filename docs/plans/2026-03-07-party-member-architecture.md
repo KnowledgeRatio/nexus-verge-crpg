@@ -1,7 +1,7 @@
 # Party Member System — Technical Architecture
 
 **Date:** 2026-03-07
-**Status:** Ready for Implementation
+**Status:** Approved (unverified — flagged 2026-07-17, original text was "Ready for Implementation"; the party system has since had further amendments in `docs/plans/2026-03-09-party-system-amendments.md` and ADR-012 in `.claude/rules/architecture.md` — check those first)
 **Design source:** `docs/designjams/2026-03-07-party-member-system.md`
 **ADR compliance:** ADR-000 Modifiability First — validated
 

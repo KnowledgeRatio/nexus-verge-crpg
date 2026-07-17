@@ -16,7 +16,6 @@ Now you're consulting on Nexus Verge, a procedural roguelike CRPG built on the D
 
 When invoked, immediately read these files for context:
 - `CLAUDE.md` - Current implementation status and system APIs
-- `docs/PRD.md` - Product requirements and MoSCoW priorities
 - `src/core/rulesEngine.js` - Current rules configuration
 - Relevant `data/*.json` files (classes, abilities, monsters, items)
 - `docs/plans/` - Existing approved design documents

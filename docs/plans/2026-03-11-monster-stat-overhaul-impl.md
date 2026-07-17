@@ -1,5 +1,7 @@
 # Monster Stat Overhaul Implementation Plan
 
+**Status:** Approved (unverified — flagged 2026-07-17; no status line existed before this pass; this is a companion doc to `docs/plans/2026-03-11-monster-stat-overhaul.md`, check both together against `data/monsters.json` and the combat code)
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Replace hardcoded monster attack bonuses and HP with values calculated from ability scores, CR-based proficiency, and proper hit dice rolling — matching how player attacks are calculated.

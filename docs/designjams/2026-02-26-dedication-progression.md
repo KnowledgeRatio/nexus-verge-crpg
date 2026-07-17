@@ -195,7 +195,7 @@ Equipment modification. Apply mods to weapons, armor, and shields during long re
 **Sworn Strike** — On melee hit, spend 1-3 Resolve:
 - 1d8 radiant per Resolve spent
 - +1d8 bonus vs undead/fiend
-- Limit: once per attack
+- Limit: once per turn (not once per attack — Focus is short-rest, not long-rest like tabletop spell slots, so an unlimited per-attack cap would let Extra Attack double-nova every encounter)
 
 | Resolve | Damage | vs Undead | Avg |
 |---------|--------|-----------|-----|

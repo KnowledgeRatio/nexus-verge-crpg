@@ -17,7 +17,7 @@ When invoked, immediately read for context:
 - `src/core/GameState.js` — state shape and the observer pattern
 - The specific system files implicated in the interaction under question (`CombatManager.js`, `EffectDispatcher.js`, resource/condition systems, etc.)
 - The relevant `data/*.json` entries driving the interaction
-- `docs/ARCHITECTURE.md` — ADR log, especially ADR-010 (data drives code) and ADR-011 (save/load contract)
+- `.claude/rules/architecture.md` — ADR log, especially ADR-010 (data drives code) and ADR-011 (save/load contract)
 
 Then trace the actual execution path — don't reason from the rules in the abstract. Run the existing test suite (`npm test`, or a targeted `vitest` file) to confirm current behavior empirically where a test already covers it. Where no test covers it, trace the code path by hand and state your confidence level explicitly.
 

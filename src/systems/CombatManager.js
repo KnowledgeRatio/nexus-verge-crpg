@@ -1261,10 +1261,12 @@ class CombatManager {
                 attacker.pendingManeuver = null;
             }
 
-            // SWORN STRIKE: Oath specialization — prompt Resolve spend for bonus radiant damage
-            if (!isRanged && attacker.team === 'player' && window.game?.promptSwornStrike) {
+            // SWORN STRIKE: Oath specialization — prompt Resolve spend for bonus radiant damage.
+            // Once per turn (not per attack) — see swornStrikeUsedThisTurn comment in Combatant constructor.
+            if (!isRanged && attacker.team === 'player' && !attacker.swornStrikeUsedThisTurn && window.game?.promptSwornStrike) {
                 const resolveSpent = await window.game.promptSwornStrike(attacker, defender);
                 if (resolveSpent > 0 && defender.hp > 0) {
+                    attacker.swornStrikeUsedThisTurn = true;
                     const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
                     const dieCnt = resolveSpent + (isUndead ? 1 : 0);
                     let smiteDmg = 0;
@@ -2683,6 +2685,10 @@ class Combatant {
         // e.g., 'precisionStrike' | 'tripAttack' | 'menacingAttack' | etc.
         this.pendingManeuver = null;
 
+        // Sworn Strike (Oath): once per turn, not once per attack — Focus recharges on
+        // short rest, so an unlimited per-attack cap would let Extra Attack double-nova every fight.
+        this.swornStrikeUsedThisTurn = false;
+
         // Weapon mastery effects (legacy - kept for backwards compatibility)
         this.masteryEffects = {
             sapped: false,          // DEPRECATED: Use conditions system. Has disadvantage on next attack (Sap mastery)
@@ -2948,6 +2954,7 @@ class Combatant {
             bonusAction: this.maxActions.bonusAction,
             reaction: this.maxActions.reaction
         };
+        this.swornStrikeUsedThisTurn = false;
     }
 
     /**

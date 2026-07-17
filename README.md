@@ -317,6 +317,5 @@ npm run legal:generate
 
 - Deployment quick start: `docs/AZURE_DEPLOYMENT_QUICK_START.md`
 - Deployment runbook: `docs/AZURE_DEPLOYMENT_RUNBOOK.md`
-- Architecture: `docs/ARCHITECTURE.md`
-- Product requirements: `docs/PRD.md`
+- Architecture: `.claude/rules/architecture.md`
 - Changelog: `docs/CHANGELOG.md`

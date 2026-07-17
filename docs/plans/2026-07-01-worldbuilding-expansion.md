@@ -1,6 +1,8 @@
 # Worldbuilding Expansion — Cultures, Technology, Gods, Apex Competition
 *Captured: 2026-07-01*
 
+**Status:** Implemented (unverified — flagged 2026-07-17; this is a lore/canon document, not an implementation plan in the usual sense — the text says these threads were "added to existing canon," so "Implemented" here means "adopted as canon" — check against `docs/world/` before treating any specific detail as settled)
+
 Four threads added to existing canon (`docs/world/`). None are net-new cultures except where noted — priority was folding into what's already written.
 
 ---

@@ -242,7 +242,7 @@
         "resolveCost": "variable",
         "maxResolveCost": 3,
         "usableOutOfCombat": false,
-        "description": "On a melee hit, spend 1–3 Resolve. Deal 1d8 radiant damage per Resolve spent (+1d8 bonus vs undead or fiends). Once per attack.",
+        "description": "On a melee hit, spend 1–3 Resolve. Deal 1d8 radiant damage per Resolve spent (+1d8 bonus vs undead or fiends). Once per turn.",
         "effects": {
           "variableCostDamage": {
             "damageFormula": "1d8",

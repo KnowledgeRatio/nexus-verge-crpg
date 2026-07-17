@@ -7,8 +7,7 @@
 - **Next up:** Party system implementation (design locked, see plan below)
 
 ## Docs
-- Architecture & ADR log: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- PRD: [`docs/PRD.md`](docs/PRD.md)
+- Architecture & ADR log: [`.claude/rules/architecture.md`](.claude/rules/architecture.md)
 - Session history: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 
 @.claude/rules/workflow.md

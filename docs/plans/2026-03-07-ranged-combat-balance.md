@@ -1,6 +1,6 @@
 # Ranged Combat Balance Plan
 **Date:** 2026-03-07
-**Status:** Design approved, pending implementation
+**Status:** Approved (unverified — flagged 2026-07-17, original text was "Design approved, pending implementation"; check against `src/core/rulesEngine.js` and combat code before treating as current)
 **Authors:** Game Designer + Devil's Advocate review
 
 ---

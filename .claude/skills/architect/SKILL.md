@@ -28,7 +28,7 @@ Every system you design or review MUST satisfy:
 ## Before You Design
 
 Read these files for architectural context:
-- `docs/ARCHITECTURE.md` - ADRs, especially ADR-000
+- `.claude/rules/architecture.md` - ADRs, especially ADR-000
 - `docs/DATA_SCHEMA.md` - Data structure reference
 - `src/core/rulesEngine.js` - Centralized rules configuration
 - `src/core/GameState.js` - State management (observer pattern, dot-notation access)

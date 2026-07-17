@@ -11,6 +11,12 @@
 ## Design Capture
 After a design conversation reaches conclusions, summarize decisions into `docs/plans/YYYY-MM-DD-topic.md`. Ask the user if they want capture before writing the file. Plans are a reference library — not every plan becomes a decision, not every plan moves forward. Don't surface plan files in CLAUDE.md; let them be looked up when relevant.
 
+Every plan file starts with a `**Status:**` line using one of these values: `Proposed`, `Approved`, `Implemented`, `Superseded`, `Abandoned`. Include the date the status was last set.
+
+**Plans are not authoritative for current state.** A plan records what was decided on the date it was written. It does not update itself when implementation changes. The only authoritative sources for what currently exists are `.claude/rules/architecture.md` (the ADR log) and the actual code and data files. Treat any specific claim in a plan as something to verify against the code, not as settled fact.
+
+**Update on contact.** If you read a plan file to inform a decision and find that the actual code has diverged from what it says, update that plan's status line and add a short note describing what actually happened, before using the plan or moving on. Do not leave a plan showing a stale status once you know it is wrong. Fix it at the moment you notice, not in a separate cleanup pass — a cleanup pass nobody is assigned to run will not happen.
+
 ## Agent Infrastructure
 
 ### Decision Record: Skill/Subagent Mirroring

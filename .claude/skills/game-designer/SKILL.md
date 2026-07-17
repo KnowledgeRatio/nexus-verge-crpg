@@ -47,8 +47,7 @@ Every recommendation must serve at least one:
 
 Read these files for current context:
 - `CLAUDE.md` - Current implementation status, what systems exist, recent changes
-- `docs/PRD.md` - Product requirements, MoSCoW priorities, user stories
-- `docs/ARCHITECTURE.md` - ADR-000 modifiability principle
+- `.claude/rules/architecture.md` - ADR-000 modifiability principle
 - `src/core/rulesEngine.js` - Current rules configuration
 - Relevant `data/*.json` files for balance context (classes, monsters, items)
 - `docs/plans/` - Any existing approved design documents

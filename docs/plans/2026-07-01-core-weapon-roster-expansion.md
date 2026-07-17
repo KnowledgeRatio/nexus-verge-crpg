@@ -1,7 +1,7 @@
 # Core Weapon Roster Expansion (SRD Parity)
 
 **Date:** 2026-07-01
-**Status:** Executed (11 weapons + 2 armors; Lance/Net still deferred)
+**Status:** Implemented (11 weapons + 2 armors; Lance/Net still deferred)
 
 ## Execution notes (2026-07-01)
 

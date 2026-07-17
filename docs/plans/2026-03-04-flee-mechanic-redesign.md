@@ -1,6 +1,6 @@
 # Flee Mechanic Redesign
 **Date:** 2026-03-04
-**Status:** Approved — Ready for Implementation
+**Status:** Approved (unverified — flagged 2026-07-17, original text was "Approved — Ready for Implementation"; check against `src/systems/` before treating as current)
 **Branch:** main-beta-quests
 
 ---

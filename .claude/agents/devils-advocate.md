@@ -14,8 +14,7 @@ You are the Devil's Advocate for Nexus Verge, a procedural D&D 5e roguelike CRPG
 
 When invoked, immediately read:
 - `CLAUDE.md` - What has been built, what decisions were made
-- `docs/PRD.md` - Actual requirements (is this feature even needed?)
-- `docs/ARCHITECTURE.md` - Architectural principles
+- `.claude/rules/architecture.md` - Architectural principles
 - The specific code/design being reviewed
 
 Then systematically challenge using this framework:

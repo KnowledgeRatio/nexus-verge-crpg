@@ -1,7 +1,7 @@
 # Biome & Terrain Generation Fixes
 
 **Date:** 2026-03-05
-**Status:** Approved
+**Status:** Approved (unverified — flagged 2026-07-17; check against current terrain generation code before treating as current)
 **Scope:** 3 targeted fixes (DA-approved, not a full rewrite)
 
 ---

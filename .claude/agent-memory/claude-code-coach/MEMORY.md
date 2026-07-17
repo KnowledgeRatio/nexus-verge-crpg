@@ -1,0 +1,3 @@
+- [User profile](user_profile.md) — advanced Claude Code user; skip beginner explanations, lead with verified mechanics and file:line evidence
+- [Nexus Verge audit 2026-07-17](nexus-verge-audit-2026-07-17.md) — open items to re-check: memory staleness since 2026-07-01, legal-reviewer memory gap, 4 roles w/ zero subagent-memory footprint, stale docs/ARCHITECTURE.md refs, possible redundant CLAUDE.md @-imports
+- [Skill/subagent mirroring tradeoff](skill-subagent-mirroring-tradeoff.md) — how to judge whether the 12-role mirroring bet is still earning its cost; test is actual invocation evidence, not uniform pruning

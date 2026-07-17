@@ -1,5 +1,7 @@
 # Fatigue System Implementation Plan
 
+**Status:** Approved (unverified — flagged 2026-07-17; no status line existed before this pass; check whether a fatigue system exists in `src/systems/` before treating this as current)
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Implement a travel fatigue system that drains on movement/combat/skill challenges, applies escalating penalties, and is toggled per-campaign via a Worldbuilder setting.

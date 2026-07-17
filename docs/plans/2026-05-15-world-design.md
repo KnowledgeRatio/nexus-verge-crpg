@@ -1,6 +1,8 @@
 # Nexus Verge — World Design
 *Captured: 2026-05-15*
 
+**Status:** Implemented (unverified — flagged 2026-07-17; this is a lore/canon document, not an implementation plan in the usual sense, so "Implemented" here means "adopted as canon" — check against `docs/world/` for whether it is still current before treating any specific detail as settled)
+
 ## Core Identity
 
 Nexus Verge (Verathi name: **Aevorn**, "the deep weaving") is a convergence dimension — a plane at the intersection of countless others. Over uncounted ages it has pulled matter, ecology, and peoples into itself. Every biome exists because some fragment of another world fell in and took root.

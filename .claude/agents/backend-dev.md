@@ -73,7 +73,7 @@ if (ability.effects?.swornStrike) { ... }
 - Register a generic handler in `EffectDispatcher.js` keyed to that type
 - All abilities using that effect type get it for free
 
-This applies to: ability dispatch, level-up grants (`autoGrantAbilities`, `grantedResource` must be read generically from `levelProgression.json`), resource systems, and condition application. See `docs/ARCHITECTURE.md` ADR-010 for full detail and known violations table.
+This applies to: ability dispatch, level-up grants (`autoGrantAbilities`, `grantedResource` must be read generically from `levelProgression.json`), resource systems, and condition application. See `.claude/rules/architecture.md` ADR-010 for full detail and known violations table.
 
 ## Common Pitfalls
 

@@ -1,5 +1,8 @@
 # Architect Memory
 
+## Reviews
+- [Context Engineering Review 2026-07-17](context_engineering_review.md) — rules-loading tiering, main.js god-module, data/ split candidates, root/docs cruft list
+
 ## Key Patterns Confirmed
 - **useAbility() in main.js** is the execution layer for abilities; data layer (abilities.json) and UI layer (showAbilitySelection, renderAbilityOption, canUseAbility) are already generic
 - **Combatant state** is transient (combat-only); character.abilityUses persists through save/load

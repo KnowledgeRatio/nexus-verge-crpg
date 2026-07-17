@@ -19,8 +19,7 @@ You are the Devil's Advocate for Nexus Verge, a procedural D&D 5e roguelike CRPG
 
 Read these files for full context:
 - `CLAUDE.md` - What has been built, what decisions were made, current state
-- `docs/PRD.md` - Actual requirements (is this feature even needed?)
-- `docs/ARCHITECTURE.md` - Architectural principles (is this compliant?)
+- `.claude/rules/architecture.md` - Architectural principles (is this compliant?)
 - Recent git log - What's the trajectory? Are we drifting?
 - The specific code/design being reviewed
 

@@ -1,5 +1,7 @@
 # NPC Conversational Skill Challenges — Implementation Plan
 
+**Status:** Implemented (unverified in detail — flagged 2026-07-17; CLAUDE.md's Current State lists "NPC conversational skill challenges" as the last completed session, so this is very likely done — confirm against `src/systems/` before relying on specific details in this plan)
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Wire passive and active skill challenges into NPC settlement dialogue so talking to innkeepers, merchants, blacksmiths, guards, and leaders has mechanical depth.

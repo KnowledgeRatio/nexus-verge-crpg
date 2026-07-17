@@ -1,6 +1,6 @@
 # Development Changelog
 
-Archived session notes. For active work see `docs/plans/` and `docs/ARCHITECTURE.md`.
+Archived session notes. For active work see `docs/plans/` and `.claude/rules/architecture.md`.
 
 ---
 
