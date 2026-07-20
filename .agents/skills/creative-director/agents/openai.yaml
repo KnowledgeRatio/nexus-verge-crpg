@@ -1,0 +1,7 @@
+interface:
+  display_name: "Creative Director"
+  short_description: "Guard the game’s experiential vision"
+  default_prompt: "Use $creative-director to review whether this experience feels unmistakably like Nexus Verge."
+
+policy:
+  allow_implicit_invocation: true

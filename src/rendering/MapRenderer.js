@@ -4,6 +4,12 @@
  * Supports hybrid ASCII/pixel art tile rendering
  */
 import { RULES } from '../core/rulesEngine.js';
+import {
+    getAtlasSampleRect,
+    shouldOverlayTerrainTransition,
+    TERRAIN_RENDER_MODES,
+    transitionNoise
+} from './terrainAtlas.js';
 
 class MapRenderer {
     constructor(canvasId, config = {}) {
@@ -43,6 +49,7 @@ class MapRenderer {
         this.tileImages = new Map(); // Cache of loaded tile images
         this.tilesLoading = new Set(); // Currently loading tiles
         this.failedTiles = new Set(); // Tiles that failed to load (404s)
+        this.invalidAtlasTerrains = new Set(); // Invalid atlas configuration warnings already emitted
         this.pixelArtPath = 'data/graphics/';
 
         // Zoom system - from centralized config
@@ -438,33 +445,172 @@ class MapRenderer {
     }
 
     /**
-     * Draw a pixel art tile
+     * Draw an image tile, optionally sampling one world-sized region from a
+     * larger continuous atlas.
      * @param {number} screenX - Screen X coordinate (tile)
      * @param {number} screenY - Screen Y coordinate (tile)
      * @param {HTMLImageElement} image - Tile image to draw
      * @param {number} opacity - Opacity (0-1), used for fog of war dimming
+     * @param {Object} options - Source rectangle and smoothing configuration
      */
-    drawImageTile(screenX, screenY, image, opacity = 1.0) {
+    drawImageTile(screenX, screenY, image, opacity = 1.0, options = {}) {
         const pixelX = screenX * this.config.tileWidth;
         const pixelY = screenY * this.config.tileHeight;
+        const { sourceRect = null, smoothing = false } = options;
 
-        // Save context state if we need to change opacity
-        if (opacity < 1.0) {
-            this.ctx.save();
-            this.ctx.globalAlpha = opacity;
+        this.ctx.save();
+        this.ctx.globalAlpha = opacity;
+        this.ctx.imageSmoothingEnabled = smoothing;
+
+        if (sourceRect) {
+            const flipX = sourceRect.flipX === true;
+            const flipY = sourceRect.flipY === true;
+            if (flipX || flipY) {
+                this.ctx.translate(
+                    pixelX + (flipX ? this.config.tileWidth : 0),
+                    pixelY + (flipY ? this.config.tileHeight : 0)
+                );
+                this.ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+            }
+            this.ctx.drawImage(
+                image,
+                sourceRect.sourceX,
+                sourceRect.sourceY,
+                sourceRect.sourceWidth,
+                sourceRect.sourceHeight,
+                flipX || flipY ? 0 : pixelX,
+                flipX || flipY ? 0 : pixelY,
+                this.config.tileWidth,
+                this.config.tileHeight
+            );
+        } else {
+            this.ctx.drawImage(
+                image,
+                pixelX,
+                pixelY,
+                this.config.tileWidth,
+                this.config.tileHeight
+            );
         }
 
-        // Draw the tile image, scaled to fit our tile size
-        this.ctx.drawImage(
-            image,
-            pixelX,
-            pixelY,
-            this.config.tileWidth,
-            this.config.tileHeight
-        );
+        this.ctx.restore();
+    }
 
-        // Restore context state
-        if (opacity < 1.0) {
+    /**
+     * Resolve data-driven rendering options for a terrain image.
+     * Unconfigured terrains retain the legacy one-image-per-tile behavior.
+     */
+    getTerrainImageOptions(terrain, tileImage, worldX, worldY) {
+        const atlasRules = RULES.terrainRendering.continuousAtlas;
+        const visual = terrain.visual;
+        if (!atlasRules.enabled || visual?.mode !== TERRAIN_RENDER_MODES.CONTINUOUS_ATLAS) {
+            return { smoothing: false };
+        }
+
+        const tilesPerSide = visual.atlasTilesPerSide || atlasRules.defaultTilesPerSide;
+        const sourceRect = getAtlasSampleRect({
+            imageWidth: tileImage.naturalWidth || tileImage.width,
+            imageHeight: tileImage.naturalHeight || tileImage.height,
+            worldX,
+            worldY,
+            atlasTilesAcross: visual.atlasTilesAcross || tilesPerSide,
+            atlasTilesDown: visual.atlasTilesDown || tilesPerSide,
+            wrapMode: visual.atlasWrapMode || atlasRules.defaultWrapMode
+        });
+
+        if (!sourceRect && !this.invalidAtlasTerrains.has(terrain.id)) {
+            this.invalidAtlasTerrains.add(terrain.id);
+            console.warn(`Invalid continuous atlas configuration for terrain: ${terrain.id}`);
+        }
+
+        return {
+            sourceRect,
+            smoothing: atlasRules.imageSmoothingEnabled
+        };
+    }
+
+    getTerrainNeighbors(worldData, tile) {
+        return [
+            { side: 'top', tile: this.getTileAt(worldData, tile.x, tile.y - 1) },
+            { side: 'right', tile: this.getTileAt(worldData, tile.x + 1, tile.y) },
+            { side: 'bottom', tile: this.getTileAt(worldData, tile.x, tile.y + 1) },
+            { side: 'left', tile: this.getTileAt(worldData, tile.x - 1, tile.y) }
+        ];
+    }
+
+    clipOrganicTransition(screenX, screenY, worldX, worldY, side) {
+        const rules = RULES.terrainRendering.organicTransitions;
+        const left = screenX * this.config.tileWidth;
+        const top = screenY * this.config.tileHeight;
+        const width = this.config.tileWidth;
+        const height = this.config.tileHeight;
+        const segments = Math.max(2, rules.boundarySegments);
+        const depth = (side === 'left' || side === 'right' ? width : height) * rules.edgeDepthRatio;
+
+        const points = [];
+        for (let index = 0; index <= segments; index++) {
+            const progress = index / segments;
+            const variation = rules.minDepthRatio +
+                transitionNoise(worldX, worldY, side, index, segments) *
+                (rules.maxDepthRatio - rules.minDepthRatio);
+            if (side === 'left') {
+                points.push([left + depth * variation, top + height * progress]);
+            } else if (side === 'right') {
+                points.push([left + width - depth * variation, top + height * progress]);
+            } else if (side === 'top') {
+                points.push([left + width * progress, top + depth * variation]);
+            } else {
+                points.push([left + width * progress, top + height - depth * variation]);
+            }
+        }
+
+        if (side === 'left') {
+            points.push([left, top + height], [left, top]);
+        } else if (side === 'right') {
+            points.push([left + width, top + height], [left + width, top]);
+        } else if (side === 'top') {
+            points.push([left + width, top], [left, top]);
+        } else {
+            points.push([left + width, top + height], [left, top + height]);
+        }
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(points[0][0], points[0][1]);
+        for (let index = 1; index < points.length; index++) {
+            this.ctx.lineTo(points[index][0], points[index][1]);
+        }
+        this.ctx.closePath();
+        this.ctx.clip();
+    }
+
+    drawTerrainTransitions(screenX, screenY, tile, terrain, worldData, opacity) {
+        const transitionRules = RULES.terrainRendering.organicTransitions;
+        if (!transitionRules.enabled) {
+            return;
+        }
+
+        for (const neighbor of this.getTerrainNeighbors(worldData, tile)) {
+            if (!neighbor.tile) {
+                continue;
+            }
+            const neighborTerrain = this.terrainMap.get(neighbor.tile.terrain);
+            if (!shouldOverlayTerrainTransition(terrain, neighborTerrain)) {
+                continue;
+            }
+            const neighborImage = this.getTileImage(neighborTerrain.id);
+            if (!neighborImage) {
+                continue;
+            }
+
+            const imageOptions = this.getTerrainImageOptions(
+                neighborTerrain,
+                neighborImage,
+                tile.x,
+                tile.y
+            );
+            this.ctx.save();
+            this.clipOrganicTransition(screenX, screenY, tile.x, tile.y, neighbor.side);
+            this.drawImageTile(screenX, screenY, neighborImage, opacity, imageOptions);
             this.ctx.restore();
         }
     }
@@ -489,6 +635,13 @@ class MapRenderer {
             }
         }
 
+        // World and transition lookups are coordinate-based. Build the index
+        // once per frame so neighbor-aware rendering remains O(tiles), not O(tiles²).
+        this._worldTileMap = new Map();
+        for (const tile of worldData?.tiles || []) {
+            this._worldTileMap.set(`${tile.x},${tile.y}`, tile);
+        }
+
         // Center camera on player
         this.centerOn(playerPosition.x, playerPosition.y);
 
@@ -502,7 +655,7 @@ class MapRenderer {
                 const tile = this.getTileAt(worldData, worldX, worldY);
 
                 if (tile) {
-                    this.renderTile(screenX, screenY, tile, playerPosition);
+                    this.renderTile(screenX, screenY, tile, playerPosition, worldData);
                 } else {
                     // Unexplored/unknown
                     this.drawTile(screenX, screenY, ' ', '#333333', '#000000');
@@ -528,7 +681,7 @@ class MapRenderer {
      * Render a single tile
      * Uses pixel art if available and enabled, falls back to ASCII
      */
-    renderTile(screenX, screenY, tile, playerPosition) {
+    renderTile(screenX, screenY, tile, playerPosition, worldData) {
         // Check if tile is visible (fog of war) FIRST
         const visible = tile.visible || this.isNearPlayer(tile, playerPosition, 10);
 
@@ -563,9 +716,15 @@ class MapRenderer {
             const tileImage = this.getTileImage(tile.terrain);
 
             if (tileImage) {
-                // Use pixel art tile
                 const opacity = visible ? 1.0 : 0.4; // Dim for fog of war
-                this.drawImageTile(screenX, screenY, tileImage, opacity);
+                const imageOptions = this.getTerrainImageOptions(
+                    terrain,
+                    tileImage,
+                    tile.x,
+                    tile.y
+                );
+                this.drawImageTile(screenX, screenY, tileImage, opacity, imageOptions);
+                this.drawTerrainTransitions(screenX, screenY, tile, terrain, worldData, opacity);
             } else if (visible) {
                 // ASCII fallback - currently visible - full color
                 this.drawTile(screenX, screenY, terrain.symbol, terrain.color, null);
@@ -701,7 +860,9 @@ class MapRenderer {
             return null;
         }
 
-        return worldData.tiles.find(t => t.x === worldX && t.y === worldY) || null;
+        return this._worldTileMap?.get(`${worldX},${worldY}`) ||
+            worldData.tiles.find(t => t.x === worldX && t.y === worldY) ||
+            null;
     }
 
     /**

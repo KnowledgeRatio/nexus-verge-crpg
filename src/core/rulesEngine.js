@@ -1227,6 +1227,25 @@ export const RULES = {
         storageKey: 'nexusVerge_zoomIndex'
     },
 
+    terrainRendering: {
+        continuousAtlas: {
+            enabled: true,
+            // A square atlas represents this many world tiles on each axis unless data overrides it.
+            defaultTilesPerSide: 16,
+            // Mirror wrapping guarantees a continuous outer atlas boundary even before seam repair.
+            defaultWrapMode: 'mirror',
+            // Painterly atlases need filtered downsampling; legacy pixel-art tiles remain crisp.
+            imageSmoothingEnabled: true
+        },
+        organicTransitions: {
+            enabled: true,
+            edgeDepthRatio: 0.24,
+            boundarySegments: 4,
+            minDepthRatio: 0.45,
+            maxDepthRatio: 1.0
+        }
+    },
+
     // ====================
     // PARTY SYSTEM
     // ====================

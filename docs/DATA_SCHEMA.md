@@ -668,6 +668,16 @@ This document defines the structure of all JSON data files used in the game.
       "name": "Grassland",
       "symbol": ".",
       "color": "#7ec850",
+      "tileImage": "grassland-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous open warm-olive grassland...",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 10,
+        "motifsPerTile": { "min": 3, "max": 6 }
+      },
       "traversable": true,
       "movementCost": 1,
       "description": "Open fields of grass sway gently in the breeze.",
@@ -726,6 +736,17 @@ This document defines the structure of all JSON data files used in the game.
   ]
 }
 ```
+
+### Terrain visual modes
+
+- `legacyTile` or an absent `visual` field draws the complete `tileImage` into each world tile.
+- `continuousAtlas` treats `tileImage` as one continuous painted sheet. Adjacent world coordinates sample adjacent atlas regions. `atlasTilesPerSide` declares how many world tiles the square atlas represents. `atlasWrapMode` may be `repeat` for a verified seamless source or `mirror` for guaranteed continuity at the atlas boundary.
+- `autotile` is reserved for topology-aware roads, bridges, coastlines, walls, and connections.
+- `landmark` is reserved for features that render over base terrain rather than repeating as ground.
+
+`imageDescription` is model-facing art direction and must not replace the player-facing `description`. `motifsPerTile` calibrates prompt density at the final world-tile scale; it does not change gameplay.
+
+Continuous materials in the same `transitionGroup` can form organic visual boundaries. When unlike materials meet, the higher `transitionPriority` extends a small deterministic edge into the lower-priority material. This affects presentation only; the underlying terrain ID and mechanics do not change.
 
 ---
 

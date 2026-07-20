@@ -7,7 +7,10 @@ export function buildPrompt(styleGuide, assetType, asset) {
     : '';
 
   switch (assetType) {
-    case 'terrain':   return terrainPrompt(asset, terrainStyle, sections['Terrain Tiles'] || '', negativeClause);
+    case 'terrain': {
+      const guideName = asset.visual?.mode === 'continuousAtlas' ? 'Terrain Atlases' : 'Terrain Tiles';
+      return terrainPrompt(asset, terrainStyle, sections[guideName] || '', negativeClause);
+    }
     case 'monsters':  return monsterPrompt(asset, baseStyle, sections['Monster Art'] || '', negativeClause);
     case 'items':     return itemPrompt(asset, baseStyle, sections['Item Icons'] || '', negativeClause);
     case 'portraits': return portraitPrompt(asset, baseStyle, sections['Character Portraits'] || '', negativeClause);
@@ -26,14 +29,25 @@ export function buildNegativePrompt(styleGuide, assetType) {
   return base;
 }
 
-const TERRAIN_HARD_OPEN = 'SEAMLESS TILEABLE TEXTURE. Fills entire canvas edge-to-edge. No border, no margin, no padding, no vignette, no fade at any edge. Texture continues to every pixel of every edge. Right edge continues into left. Top continues into bottom.';
+const TERRAIN_HARD_OPEN = 'BORDERLESS CONTINUOUS TERRAIN ART. Fills the entire canvas edge-to-edge. No border, margin, padding, vignette, or fade. Texture continues to every pixel of every edge. Right edge continues into left. Top continues into bottom.';
 const TERRAIN_HARD_NEGATIVE = 'border, bezel, frame, vignette, margin, padding, dark edge, light edge, edge fade, white edge, black edge, scene, landscape, horizon, focal point, subject, character, creature, sky';
 
 function terrainPrompt(terrain, baseStyle, typeGuide, negativeClause) {
+  const tilesPerSide = terrain.visual?.atlasTilesPerSide;
+  const motifRange = terrain.visual?.motifsPerTile;
+  const atlasScale = tilesPerSide
+    ? `This square atlas represents ${tilesPerSide} by ${tilesPerSide} world tiles. Every notional world-tile region must read as a continuation of its neighbours.`
+    : '';
+  const motifScale = motifRange?.min != null && motifRange?.max != null
+    ? `Use ${motifRange.min} to ${motifRange.max} broad terrain motifs per notional world tile. Avoid dense micro-detail that disappears when reduced to 16 pixels.`
+    : '';
   const parts = [
     TERRAIN_HARD_OPEN,
+    baseStyle,
     `${terrain.name} terrain.`,
-    terrain.description,
+    terrain.imageDescription || terrain.description,
+    atlasScale,
+    motifScale,
     typeGuide,
     `DO NOT INCLUDE: ${TERRAIN_HARD_NEGATIVE}.`,
   ];

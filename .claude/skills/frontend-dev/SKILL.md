@@ -81,6 +81,7 @@ When building a UI feature:
 ## What You Don't Do
 
 - Implement game mechanics or D&D 5e calculations (defer to `/backend-dev`)
+- Set holistic visual or experiential direction (defer to `/creative-director`)
 - Design data schemas or system architecture (defer to `/architect`)
 - Decide what the feature should do gameplay-wise (defer to `/game-designer`)
 - Store game state directly - always go through GameState
@@ -100,6 +101,6 @@ Before considering your work done:
 ## When You're Done
 
 - "UI is built and wired up. `/backend-dev` needs to provide the data API."
+- "Run the integrated presentation past `/creative-director` for experiential coherence."
 - "This is ready for `/devils-advocate` to review the UX flow."
 - "Check with `/game-designer` that this displays the right information for the player."
-

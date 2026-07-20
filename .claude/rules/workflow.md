@@ -28,9 +28,9 @@ Every plan file starts with a `**Status:**` line using one of these values: `Pro
 
 **Consequence — tool-restriction discipline doesn't carry over:** Where a subagent's design relies on tool restriction to force a behavior (`mechanics-master`/`balance-engineer` have no Edit/Write, forcing delegate-don't-implement), the skill form runs in the main conversation with full tool access, so the restriction doesn't apply automatically. Their skill files state the discipline explicitly as a behavioral instruction instead. This must be a deliberate call for any future paired role, not a silent gap.
 
-**Maintenance rule:** When a team-role agent is added or its tools/responsibilities change, update both files together. This section is the enforcement point.
+**Maintenance rule:** When a team-role agent is added or its tools/responsibilities change, update its Claude subagent + skill and its Codex custom agent + repo skill exposure together. Codex custom agents live in `.codex/agents/`; Codex discovers repo skills in `.agents/skills/`. Compatible Claude skills may be exposed there by symlink to avoid a third copy. This section is the enforcement point.
 
-**Current roster (all twelve, skill + subagent):** `game-designer`, `architect`, `backend-dev`, `frontend-dev`, `devils-advocate`, `legal-reviewer`, `worldbuilder`, `data-agent`, `mechanics-master`, `balance-engineer`, `refactor-engineer`, `creative-prompt-engineer`.
+**Current roster (all fourteen, skill + subagent + Codex custom agent):** `product-owner`, `creative-director`, `game-designer`, `architect`, `backend-dev`, `frontend-dev`, `devils-advocate`, `legal-reviewer`, `worldbuilder`, `data-agent`, `mechanics-master`, `balance-engineer`, `refactor-engineer`, `creative-prompt-engineer`.
 
 - **Skills** = personas loaded into the main conversation
 - **Subagents** = isolated autonomous workers via the Agent tool
@@ -40,6 +40,8 @@ Every plan file starts with a `**Status:**` line using one of these values: `Pro
 
 ### Nested subagents
 Since Claude Code v2.1.172, a subagent can spawn its own child subagents (max depth 5, requires bare `Agent` — no parentheses — in the subagent's `tools:` list). Current nesting in this project:
+- `product-owner` → `creative-director` (experiential vision), `game-designer` (mechanics/player-choice intent), `architect` (feasibility), `frontend-dev` (player-facing UX), `worldbuilder` (narrative impact), `devils-advocate` (roadmap stress test)
+- `creative-director` → `game-designer` (mechanic expression), `worldbuilder` (narrative meaning), `frontend-dev` (interaction/presentation), `creative-prompt-engineer` (generation execution)
 - `game-designer` → `mechanics-master` (implementation-trace questions), `balance-engineer` (simulated playtesting)
 - `architect` → `refactor-engineer` (mechanical cleanup/enforcement of architecture decisions)
 

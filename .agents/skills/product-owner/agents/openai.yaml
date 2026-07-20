@@ -1,0 +1,13 @@
+interface:
+  display_name: "Product Owner"
+  short_description: "Own the roadmap and player value"
+  default_prompt: "Use $product-owner to review and prioritize the Nexus Verge roadmap."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "github"
+      description: "GitHub repository and issue management"
+
+policy:
+  allow_implicit_invocation: true

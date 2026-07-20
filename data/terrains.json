@@ -5,7 +5,19 @@
       "name": "Grassland",
       "symbol": ".",
       "color": "#7ec850",
-      "tileImage": "grassland-mai-2.png",
+      "tileImage": "grassland-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous open warm olive and sage-green grassland, expressed with three to six broad clusters of short grass hatching per notional world square and restrained pale seed-head marks. No trees, rocks, paths, water, clearings, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1,
       "description": "Lush green grasses of at least three distinct species grow together in dense, living midsummer growth.",
@@ -21,7 +33,19 @@
       "name": "Forest",
       "symbol": "T",
       "color": "#2d5016",
-      "tileImage": "forest-mai-2.png",
+      "tileImage": "forest-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous closed forest canopy, expressed with three to six broad overlapping deep teal canopy masses per notional world square, restrained moss-green highlights, and small glimpses of iron-brown forest floor. No clearing, path, water, mountain, or landmark.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Dense trees provide shade and cover.",

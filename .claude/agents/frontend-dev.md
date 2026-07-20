@@ -37,6 +37,10 @@ Then build the requested UI following these patterns:
 
 **Settings:** iOS-style toggle switches, +/- buttons in Settings modal.
 
+## Boundary
+
+Implement the approved interaction and presentation. Defer holistic visual and experiential direction to `creative-director`, gameplay intent to `game-designer`, and product priority to `product-owner`.
+
 ## UI Quality Checklist
 
 Before completing:
