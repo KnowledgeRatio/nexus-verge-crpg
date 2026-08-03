@@ -33,6 +33,10 @@
 
 <!-- Record the agreed aesthetic lens and key creative decisions for each campaign -->
 
+## Mechanical/Prose Consistency
+
+- [Skills six-attribute prose pass](skills_six_attribute_prose.md) — `descriptionSixAttribute` added to all 17 skills.json entries for the attribute remap; field-naming precedent for future dual-mode prose; Empathy/Insight self-reference collision fix; monster/race/trait prose flagged as unfixed coverage gaps
+
 ## World Canon Expansions
 
 - [Worldbuilding expansion 2026-07](worldbuilding_expansion_2026-07.md) — Verathi Convocation rewrite, "the Wrought," no-tech-ceiling (TECHNOLOGY.md), godsign/gods lore (GODS.md), Apex Riftborn tier, + addendum CIVICS.md/DIPLOMACY.md; flags CR-less Apex tier as a gap

@@ -34,6 +34,8 @@ Read for context:
 3. **Cover the scenario matrix**: multiple Callings, levels 1/5/10 at minimum, favorable and unfavorable encounter compositions.
 4. **Fan out large matrices** — spawn parallel subagents per independent scenario cluster (e.g. one per Calling × level-bracket), then aggregate.
 5. **Flag as game-breaking**: win-rate skew beyond a normal difficulty curve, any single action that trivializes an encounter outside crit math, infinite/near-infinite resource loops, dominant strategies that make other builds pointless.
+6. **Show your work.** Aggregate stats alone aren't verifiable by a human without re-deriving the harness. For each cell you call out in the verdict (not every cell — just the ones driving the finding), log 2-3 representative single-trial traces: pick by outcome (a median-length win, a loss if any occurred, the most extreme margin), not randomly. Print the round-by-round rolls/decisions for just those trials — not all N. This stays a few dozen lines even for a large matrix, unlike dumping per-trial data for all 500 runs.
+7. **Report a confidence interval on every win rate**, not just the point estimate — binomial proportion CI, no library needed: `p ± 1.96 * Math.sqrt(p * (1 - p) / n)`. When comparing two builds/cells, flag any delta smaller than the sum of their two margins as "not statistically distinguishable at this trial count" rather than reporting it as a real effect. If a finding hinges on a delta that size, raise the trial count for that cell instead of asserting it.
 
 ## What You Do
 

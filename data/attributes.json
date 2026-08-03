@@ -1,0 +1,58 @@
+{
+  "attributes": [
+    {
+      "id": "prowess",
+      "name": "Prowess",
+      "abbr": "PRO",
+      "domain": "physical",
+      "direction": "outward",
+      "description": "Physical, outward attribute. Governs melee/ranged/finesse attack rolls and damage.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "vitality",
+      "name": "Vitality",
+      "abbr": "VIT",
+      "domain": "physical",
+      "direction": "inward",
+      "description": "Physical, inward attribute. Governs HP, AC soak/armour, and Vitality saves.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "intellect",
+      "name": "Intellect",
+      "abbr": "INT",
+      "domain": "mental",
+      "direction": "outward",
+      "description": "Mental, outward attribute. Reserved for future caster (Scholar) mechanics — out of scope until that calling is implemented.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "insight",
+      "name": "Insight",
+      "abbr": "INS",
+      "domain": "mental",
+      "direction": "inward",
+      "description": "Mental, inward attribute. Governs AC evasion, initiative, passive perception, and Insight saves.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "presence",
+      "name": "Presence",
+      "abbr": "PRE",
+      "domain": "social",
+      "direction": "outward",
+      "description": "Social, outward attribute. Governs Influence and converges with Prowess on Menacing Attack's DC.",
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "composure",
+      "name": "Composure",
+      "abbr": "COM",
+      "domain": "social",
+      "direction": "inward",
+      "description": "Social, inward attribute. Governs Composure saves (fear/charm/compulsion, consolidated) and converges with Vitality on concentration.",
+      "campaignIds": ["core"]
+    }
+  ]
+}

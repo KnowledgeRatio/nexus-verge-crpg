@@ -7,6 +7,8 @@ import { generateUUID } from '../utils/helpers.js';
 import { getAbilityModifier, getProficiencyBonus, rollHitPoints, roll } from '../utils/dice.js';
 import { getProficiencyBonus as getRulesProfBonus, getLevelFromXP, isASILevel, RULES } from '../core/rulesEngine.js';
 import { getPassiveACBonus } from './PassiveModifierRegistry.js';
+import { getAttributeModifierFor } from '../utils/attributeResolver.js';
+import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
 
 export class Character {
     constructor(data) {
@@ -86,7 +88,7 @@ export class Character {
         this.speed = data.speed || this.calculateSpeed();
 
         // Initiative
-        this.initiative = this.abilityModifiers.dex;
+        this.initiative = getAttributeModifierFor(this, 'initiative');
 
         // Proficiencies
         this.proficiencies = this.initializeProficiencies();
@@ -193,6 +195,15 @@ export class Character {
             abilities[ability] = Math.min(20, abilities[ability]);
         }
 
+        // 'NVSystem' mode: attributeResolver.js's resolver is a pass-through expecting
+        // character.abilities.prowess/.vitality/etc. to already exist — populate them here
+        // via the locked legacy->new bijection (see src/utils/attributeConversion.js). Bug 2
+        // fix (2026-08-01): without this, every resolver call for a real Character silently
+        // returned 0 regardless of the character's actual scores.
+        if (RULES.attributes.system === 'NVSystem') {
+            Object.assign(abilities, convertLegacyAbilitiesToSixAttribute(abilities));
+        }
+
         return abilities;
     }
 
@@ -200,14 +211,9 @@ export class Character {
      * Calculate ability modifiers from ability scores
      */
     calculateAbilityModifiers() {
-        return {
-            str: getAbilityModifier(this.abilities.str),
-            dex: getAbilityModifier(this.abilities.dex),
-            con: getAbilityModifier(this.abilities.con),
-            int: getAbilityModifier(this.abilities.int),
-            wis: getAbilityModifier(this.abilities.wis),
-            cha: getAbilityModifier(this.abilities.cha)
-        };
+        return Object.fromEntries(
+            Object.entries(this.abilities).map(([key, score]) => [key, getAbilityModifier(score)])
+        );
     }
 
     /**
@@ -238,14 +244,15 @@ export class Character {
 
             // Add DEX modifier if allowed
             if (armor.addDexModifier) {
+                const evasionMod = getAttributeModifierFor(this, 'acEvasion');
                 const dexBonus = armor.maxDexBonus !== null
-                    ? Math.min(this.abilityModifiers.dex, armor.maxDexBonus)
-                    : this.abilityModifiers.dex;
+                    ? Math.min(evasionMod, armor.maxDexBonus)
+                    : evasionMod;
                 ac += dexBonus;
             }
         } else {
             // No armor: 10 + DEX modifier
-            ac = 10 + this.abilityModifiers.dex;
+            ac = 10 + getAttributeModifierFor(this, 'acEvasion');
         }
 
         // Shield (shields are equipped in offHand slot)
@@ -284,15 +291,6 @@ export class Character {
             return 8;
         }
         return 6;
-    }
-
-    /**
-     * Maneuver save DC = 8 + proficiency + max(STR, DEX)
-     */
-    getManeuverSaveDC() {
-        const strMod = this.abilityModifiers.str || 0;
-        const dexMod = this.abilityModifiers.dex || 0;
-        return 8 + this.proficiencyBonus + Math.max(strMod, dexMod);
     }
 
     /**
@@ -361,21 +359,43 @@ export class Character {
      * Update skill bonuses based on proficiency and ability modifiers
      */
     updateSkillBonuses(skills = this.skills) {
-        const skillAbilities = {
-            athletics: 'str',
-            acrobatics: 'dex',
-            sleightOfHand: 'dex',
-            endurance: 'con',
-            academia: 'int',
-            arcana: 'int',
-            investigation: 'int',
-            perception: 'wis',
-            cunning: 'wis',
-            creativity: 'wis',
-            empathy: 'wis',
-            influence: 'cha',
-            deception: 'cha'
-        };
+        // Skill -> attribute mapping mirrors data/skills.json's `ability` / `attributeNVSystem`
+        // fields (same dual-mode pattern as SkillChallengeManager.getSkillModifier() and
+        // SettlementUI._skillToAbility()). This is a synchronous constructor path (Character
+        // objects are built without an async init step), so unlike those two call sites it
+        // can't fetch() skills.json at runtime — the map below must stay in sync with
+        // data/skills.json's per-skill `ability`/`attributeNVSystem` fields by hand.
+        const skillAbilities = RULES.attributes.system === 'NVSystem'
+            ? {
+                athletics: 'prowess',
+                acrobatics: 'prowess',
+                sleightOfHand: 'prowess',
+                endurance: 'vitality',
+                academia: 'intellect',
+                arcana: 'intellect',
+                investigation: 'intellect',
+                perception: 'insight',
+                cunning: 'insight',
+                creativity: 'composure',
+                empathy: 'insight',
+                influence: 'presence',
+                deception: 'composure'
+            }
+            : {
+                athletics: 'str',
+                acrobatics: 'dex',
+                sleightOfHand: 'dex',
+                endurance: 'con',
+                academia: 'int',
+                arcana: 'int',
+                investigation: 'int',
+                perception: 'wis',
+                cunning: 'wis',
+                creativity: 'wis',
+                empathy: 'wis',
+                influence: 'cha',
+                deception: 'cha'
+            };
 
         for (const [skill, data] of Object.entries(skills)) {
             const ability = skillAbilities[skill];
@@ -463,9 +483,10 @@ export class Character {
 
         for (const ability of abilities) {
             const proficient = this.class.savingThrowProficiencies?.includes(ability) || false;
+            const contextKey = RULES.attributes.legacySaveAbilityToContext[ability];
             saves[ability] = {
                 proficient: proficient,
-                bonus: this.abilityModifiers[ability] + (proficient ? this.proficiencyBonus : 0)
+                bonus: getAttributeModifierFor(this, contextKey) + (proficient ? this.proficiencyBonus : 0)
             };
         }
 
@@ -900,7 +921,7 @@ export class Character {
     updateCalculatedStats() {
         this.ac = this.calculateAC();
         this.speed = this.calculateSpeed();
-        this.initiative = this.abilityModifiers.dex;
+        this.initiative = getAttributeModifierFor(this, 'initiative');
 
         // Recalculate Resolve pool (CON mod or level may have changed)
         const newMax = this.calculateMaxResolve();
@@ -1158,17 +1179,13 @@ export class Character {
      * Get attack bonus for a weapon
      */
     getAttackBonus(weapon) {
-        // Determine which ability modifier to use
-        let abilityMod;
-
-        if (weapon.properties?.includes('finesse')) {
-            // Finesse weapons can use DEX or STR (whichever is higher)
-            abilityMod = Math.max(this.abilityModifiers.str, this.abilityModifiers.dex);
-        } else if (weapon.weaponType === 'ranged') {
-            abilityMod = this.abilityModifiers.dex;
-        } else {
-            abilityMod = this.abilityModifiers.str;
-        }
+        // Determine which ability modifier to use. Ranged and finesse both resolve
+        // through the same 'rangedFinesseAttack' context (Prowess) — under 5EClassic mode
+        // this drops the old DEX-only ranged bonus and the max(STR,DEX) finesse bonus
+        // in favor of pure Prowess (STR). Intentional per the attribute-remap plan:
+        // finesse fidelity is explicitly not required (tracked separately, issue #21).
+        const isFinesseOrRanged = weapon.properties?.includes('finesse') || weapon.weaponType === 'ranged';
+        const abilityMod = getAttributeModifierFor(this, isFinesseOrRanged ? 'rangedFinesseAttack' : 'meleeAttack');
 
         // Check weapon proficiency
         const proficient = this.isProficientWithWeapon(weapon);

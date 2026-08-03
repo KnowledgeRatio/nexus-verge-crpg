@@ -3,6 +3,11 @@
 ## Commits
 **Never auto-commit.** Do not run `git commit` automatically. Let the user decide. Applies to the main agent and all subagents.
 
+## Git Safety for Subagents
+**Never run `git checkout`, `git reset`, `git stash`, `git clean`, or any other command that discards uncommitted changes on any file — including to self-correct your own mistake.** This project routinely carries substantial uncommitted work across many files at once (nothing gets committed until the user says so, per the rule above). A `git checkout`/`reset` on "just the file I'm fixing" reverts *everything* uncommitted on that file, not just your own change — including other agents' work you don't know about. This has already happened once this session and destroyed real, unrelated work.
+
+If you make an editing mistake: fix it with a targeted `Edit` back to the correct state, never a git revert. If you need to compare against the pre-edit state, read the diff (`git diff <file>`) or keep a copy of the old content in context before editing — don't stash or checkout to get there. If you're ever unsure whether a file has other uncommitted work you might destroy, run `git diff --stat <file>` first and treat any output as a hard stop on git-revert-style commands for that file.
+
 ## Response Style
 - Super brief. Tables over prose.
 - No trailing summaries ("I just did X") — the diff speaks for itself.

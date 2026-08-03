@@ -19,6 +19,14 @@
         "wis": 8,
         "cha": 8
       },
+      "abilitiesNVSystem": {
+        "prowess": 8,
+        "insight": 14,
+        "vitality": 10,
+        "intellect": 10,
+        "composure": 8,
+        "presence": 8
+      },
       "skills": {
         "cunning": 6
       },
@@ -116,6 +124,14 @@
         "wis": 12,
         "cha": 6
       },
+      "abilitiesNVSystem": {
+        "prowess": 12,
+        "insight": 15,
+        "vitality": 12,
+        "intellect": 3,
+        "composure": 12,
+        "presence": 6
+      },
       "skills": {
         "perception": 3,
         "cunning": 4
@@ -208,6 +224,14 @@
         "wis": 8,
         "cha": 5
       },
+      "abilitiesNVSystem": {
+        "prowess": 10,
+        "insight": 14,
+        "vitality": 15,
+        "intellect": 6,
+        "composure": 8,
+        "presence": 5
+      },
       "damageResistances": ["blood"],
       "damageImmunities": [
         "poison"
@@ -285,6 +309,14 @@
         "wis": 11,
         "cha": 10
       },
+      "abilitiesNVSystem": {
+        "prowess": 16,
+        "insight": 12,
+        "vitality": 16,
+        "intellect": 7,
+        "composure": 11,
+        "presence": 10
+      },
       "skills": {
         "influence": 2
       },
@@ -355,6 +387,14 @@
         "int": 10,
         "wis": 10,
         "cha": 10
+      },
+      "abilitiesNVSystem": {
+        "prowess": 11,
+        "insight": 12,
+        "vitality": 12,
+        "intellect": 10,
+        "composure": 10,
+        "presence": 10
       },
       "damageResistances": [],
       "damageImmunities": [],
@@ -463,8 +503,19 @@
         "wis": 6,
         "cha": 5
       },
+      "abilitiesNVSystem": {
+        "prowess": 13,
+        "insight": 6,
+        "vitality": 16,
+        "intellect": 3,
+        "composure": 6,
+        "presence": 5
+      },
       "savingThrows": {
         "wis": 0
+      },
+      "savingThrowsNVSystem": {
+        "composure": 0
       },
       "damageResistances": [],
       "damageImmunities": [
@@ -551,6 +602,14 @@
         "int": 2,
         "wis": 10,
         "cha": 4
+      },
+      "abilitiesNVSystem": {
+        "prowess": 7,
+        "insight": 15,
+        "vitality": 11,
+        "intellect": 2,
+        "composure": 10,
+        "presence": 4
       },
       "damageResistances": [],
       "damageImmunities": [],
@@ -643,6 +702,14 @@
         "wis": 11,
         "cha": 9
       },
+      "abilitiesNVSystem": {
+        "prowess": 15,
+        "insight": 14,
+        "vitality": 13,
+        "intellect": 8,
+        "composure": 11,
+        "presence": 9
+      },
       "skills": {
         "cunning": 6,
         "survival": 2
@@ -726,6 +793,14 @@
         "wis": 10,
         "cha": 10
       },
+      "abilitiesNVSystem": {
+        "prowess": 10,
+        "insight": 10,
+        "vitality": 10,
+        "intellect": 10,
+        "composure": 10,
+        "presence": 10
+      },
       "damageResistances": [],
       "damageImmunities": [],
       "damageVulnerabilities": [],
@@ -792,6 +867,14 @@
         "int": 8,
         "wis": 7,
         "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 7,
+        "insight": 15,
+        "vitality": 9,
+        "intellect": 8,
+        "composure": 7,
+        "presence": 8
       },
       "damageResistances": [],
       "damageImmunities": [],
@@ -890,6 +973,14 @@
         "wis": 8,
         "cha": 6
       },
+      "abilitiesNVSystem": {
+        "prowess": 4,
+        "insight": 16,
+        "vitality": 11,
+        "intellect": 2,
+        "composure": 8,
+        "presence": 6
+      },
       "damageResistances": [],
       "damageImmunities": [],
       "damageVulnerabilities": [],
@@ -962,6 +1053,14 @@
         "int": 2,
         "wis": 11,
         "cha": 4
+      },
+      "abilitiesNVSystem": {
+        "prowess": 14,
+        "insight": 16,
+        "vitality": 12,
+        "intellect": 2,
+        "composure": 11,
+        "presence": 4
       },
       "skills": {
         "cunning": 7
@@ -1049,6 +1148,14 @@
         "int": 3,
         "wis": 12,
         "cha": 7
+      },
+      "abilitiesNVSystem": {
+        "prowess": 17,
+        "insight": 15,
+        "vitality": 15,
+        "intellect": 3,
+        "composure": 12,
+        "presence": 7
       },
       "skills": {
         "perception": 3,
@@ -1139,6 +1246,14 @@
         "wis": 10,
         "cha": 7
       },
+      "abilitiesNVSystem": {
+        "prowess": 14,
+        "insight": 12,
+        "vitality": 11,
+        "intellect": 6,
+        "composure": 10,
+        "presence": 7
+      },
       "damageResistances": [],
       "damageImmunities": [],
       "damageVulnerabilities": [],
@@ -1228,7 +1343,22 @@
       "armorClass": 12,
       "hitPoints": "3d8+3",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 6,
+        "dex": 14,
+        "con": 13,
+        "int": 6,
+        "wis": 14,
+        "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 6,
+        "insight": 14,
+        "vitality": 13,
+        "intellect": 6,
+        "composure": 14,
+        "presence": 8
+      },
       "skills": {
         "cunning": 4
       },
@@ -1325,6 +1455,14 @@
         "wis": 13,
         "cha": 11
       },
+      "abilitiesNVSystem": {
+        "prowess": 11,
+        "insight": 14,
+        "vitality": 12,
+        "intellect": 11,
+        "composure": 13,
+        "presence": 11
+      },
       "skills": {
         "perception": 5,
         "cunning": 6,
@@ -1419,7 +1557,22 @@
       "armorClass": 12,
       "hitPoints": "5d8",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 13,
+        "dex": 15,
+        "con": 10,
+        "int": 7,
+        "wis": 10,
+        "cha": 6
+      },
+      "abilitiesNVSystem": {
+        "prowess": 13,
+        "insight": 15,
+        "vitality": 10,
+        "intellect": 7,
+        "composure": 10,
+        "presence": 6
+      },
       "damageResistances": [],
       "damageImmunities": [
         "poison"
@@ -1511,6 +1664,14 @@
         "wis": 12,
         "cha": 7
       },
+      "abilitiesNVSystem": {
+        "prowess": 16,
+        "insight": 14,
+        "vitality": 14,
+        "intellect": 2,
+        "composure": 12,
+        "presence": 7
+      },
       "skills": {
         "perception": 3
       },
@@ -1585,7 +1746,22 @@
       "armorClass": 12,
       "hitPoints": "5d8",
       "speed": 0,
-      "abilities": [],
+      "abilities": {
+        "str": 1,
+        "dex": 14,
+        "con": 11,
+        "int": 10,
+        "wis": 10,
+        "cha": 11
+      },
+      "abilitiesNVSystem": {
+        "prowess": 1,
+        "insight": 14,
+        "vitality": 11,
+        "intellect": 10,
+        "composure": 10,
+        "presence": 11
+      },
       "damageResistances": ["blood", "bone"],
       "damageImmunities": ["poison", "necrotic"],
       "damageVulnerabilities": [],
@@ -1659,6 +1835,14 @@
         "int": 12,
         "wis": 14,
         "cha": 16
+      },
+      "abilitiesNVSystem": {
+        "prowess": 10,
+        "insight": 15,
+        "vitality": 10,
+        "intellect": 12,
+        "composure": 14,
+        "presence": 16
       },
       "skills": {
         "deception": 5,
@@ -1773,6 +1957,14 @@
         "wis": 7,
         "cha": 7
       },
+      "abilitiesNVSystem": {
+        "prowess": 19,
+        "insight": 8,
+        "vitality": 16,
+        "intellect": 5,
+        "composure": 7,
+        "presence": 7
+      },
       "damageResistances": [],
       "damageImmunities": [],
       "damageVulnerabilities": [],
@@ -1858,7 +2050,22 @@
       "armorClass": 13,
       "hitPoints": "8d8",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 16,
+        "dex": 17,
+        "con": 10,
+        "int": 11,
+        "wis": 10,
+        "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 16,
+        "insight": 17,
+        "vitality": 10,
+        "intellect": 11,
+        "composure": 10,
+        "presence": 8
+      },
       "damageResistances": ["cold"],
       "damageImmunities": [
         "poison"
@@ -1937,6 +2144,14 @@
         "int": 9,
         "wis": 11,
         "cha": 9
+      },
+      "abilitiesNVSystem": {
+        "prowess": 16,
+        "insight": 12,
+        "vitality": 17,
+        "intellect": 9,
+        "composure": 11,
+        "presence": 9
       },
       "damageResistances": [],
       "damageImmunities": [],
@@ -2019,7 +2234,22 @@
       "armorClass": 15,
       "hitPoints": "7d8+21",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 15,
+        "dex": 11,
+        "con": 16,
+        "int": 6,
+        "wis": 11,
+        "cha": 7
+      },
+      "abilitiesNVSystem": {
+        "prowess": 15,
+        "insight": 11,
+        "vitality": 16,
+        "intellect": 6,
+        "composure": 11,
+        "presence": 7
+      },
       "damageResistances": ["blood"],
       "damageImmunities": ["poison"],
       "damageVulnerabilities": [],
@@ -2083,7 +2313,22 @@
       "armorClass": 14,
       "hitPoints": "9d10+27",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 18,
+        "dex": 11,
+        "con": 16,
+        "int": 6,
+        "wis": 20,
+        "cha": 9
+      },
+      "abilitiesNVSystem": {
+        "prowess": 18,
+        "insight": 11,
+        "vitality": 16,
+        "intellect": 6,
+        "composure": 20,
+        "presence": 9
+      },
       "skills": {
         "perception": 7
       },
@@ -2181,7 +2426,22 @@
       "armorClass": 14,
       "hitPoints": "6d8+18",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 15,
+        "dex": 14,
+        "con": 16,
+        "int": 10,
+        "wis": 13,
+        "cha": 15
+      },
+      "abilitiesNVSystem": {
+        "prowess": 15,
+        "insight": 14,
+        "vitality": 16,
+        "intellect": 10,
+        "composure": 13,
+        "presence": 15
+      },
       "skills": {
         "perception": 3,
         "cunning": 4
@@ -2269,7 +2529,22 @@
       "armorClass": 13,
       "hitPoints": "7d10+21",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 20,
+        "dex": 12,
+        "con": 17,
+        "int": 3,
+        "wis": 12,
+        "cha": 7
+      },
+      "abilitiesNVSystem": {
+        "prowess": 20,
+        "insight": 12,
+        "vitality": 17,
+        "intellect": 3,
+        "composure": 12,
+        "presence": 7
+      },
       "skills": {
         "perception": 3
       },
@@ -2356,6 +2631,14 @@
         "int": 10,
         "wis": 11,
         "cha": 10
+      },
+      "abilitiesNVSystem": {
+        "prowess": 16,
+        "insight": 13,
+        "vitality": 14,
+        "intellect": 10,
+        "composure": 11,
+        "presence": 10
       },
       "skills": {
         "athletics": 5,
@@ -2461,7 +2744,22 @@
       "armorClass": 13,
       "hitPoints": "9d4+9",
       "speed": 0,
-      "abilities": [],
+      "abilities": {
+        "str": 1,
+        "dex": 17,
+        "con": 12,
+        "int": 16,
+        "wis": 10,
+        "cha": 10
+      },
+      "abilitiesNVSystem": {
+        "prowess": 1,
+        "insight": 17,
+        "vitality": 12,
+        "intellect": 16,
+        "composure": 10,
+        "presence": 10
+      },
       "skills": {
         "arcana": 5,
         "perception": 2
@@ -2543,7 +2841,22 @@
       "armorClass": 12,
       "hitPoints": "10d10+40",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 21,
+        "dex": 8,
+        "con": 19,
+        "int": 6,
+        "wis": 14,
+        "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 21,
+        "insight": 8,
+        "vitality": 19,
+        "intellect": 6,
+        "composure": 14,
+        "presence": 8
+      },
       "skills": {
         "perception": 4
       },
@@ -2636,7 +2949,22 @@
       "armorClass": 15,
       "hitPoints": "8d10+40",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 18,
+        "dex": 13,
+        "con": 20,
+        "int": 7,
+        "wis": 9,
+        "cha": 7
+      },
+      "abilitiesNVSystem": {
+        "prowess": 18,
+        "insight": 13,
+        "vitality": 20,
+        "intellect": 7,
+        "composure": 9,
+        "presence": 7
+      },
       "skills": {
         "perception": 2
       },
@@ -2730,7 +3058,22 @@
       "armorClass": 13,
       "hitPoints": "9d8+27",
       "speed": 0,
-      "abilities": [],
+      "abilities": {
+        "str": 6,
+        "dex": 16,
+        "con": 16,
+        "int": 12,
+        "wis": 14,
+        "cha": 15
+      },
+      "abilitiesNVSystem": {
+        "prowess": 6,
+        "insight": 16,
+        "vitality": 16,
+        "intellect": 12,
+        "composure": 14,
+        "presence": 15
+      },
       "damageResistances": ["blood", "bone"],
       "damageImmunities": ["poison", "necrotic"],
       "damageVulnerabilities": [],
@@ -2800,7 +3143,22 @@
       "armorClass": 13,
       "hitPoints": "10d12+40",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 21,
+        "dex": 8,
+        "con": 19,
+        "int": 3,
+        "wis": 9,
+        "cha": 6
+      },
+      "abilitiesNVSystem": {
+        "prowess": 21,
+        "insight": 8,
+        "vitality": 19,
+        "intellect": 3,
+        "composure": 9,
+        "presence": 6
+      },
       "skills": {
         "perception": 2
       },
@@ -2883,7 +3241,22 @@
       "armorClass": 17,
       "hitPoints": "14d10+42",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 18,
+        "dex": 10,
+        "con": 18,
+        "int": 6,
+        "wis": 11,
+        "cha": 12
+      },
+      "abilitiesNVSystem": {
+        "prowess": 18,
+        "insight": 10,
+        "vitality": 18,
+        "intellect": 6,
+        "composure": 11,
+        "presence": 12
+      },
       "skills": {
         "perception": 4,
         "cunning": 3
@@ -2984,7 +3357,22 @@
       "armorClass": 18,
       "hitPoints": "16d10+48",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 19,
+        "dex": 12,
+        "con": 16,
+        "int": 16,
+        "wis": 13,
+        "cha": 15
+      },
+      "abilitiesNVSystem": {
+        "prowess": 19,
+        "insight": 12,
+        "vitality": 16,
+        "intellect": 16,
+        "composure": 13,
+        "presence": 15
+      },
       "skills": {
         "deception": 5,
         "perception": 7,
@@ -3088,7 +3476,22 @@
       "armorClass": 18,
       "hitPoints": "17d10+68",
       "speed": 40,
-      "abilities": [],
+      "abilities": {
+        "str": 23,
+        "dex": 10,
+        "con": 21,
+        "int": 14,
+        "wis": 11,
+        "cha": 19
+      },
+      "abilitiesNVSystem": {
+        "prowess": 23,
+        "insight": 10,
+        "vitality": 21,
+        "intellect": 14,
+        "composure": 11,
+        "presence": 19
+      },
       "skills": {
         "perception": 8,
         "cunning": 4
@@ -3190,6 +3593,14 @@
         "int": 10,
         "wis": 8,
         "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 8,
+        "insight": 14,
+        "vitality": 10,
+        "intellect": 10,
+        "composure": 8,
+        "presence": 8
       },
       "skills": {
         "cunning": 6
@@ -3298,6 +3709,14 @@
         "wis": 10,
         "cha": 10
       },
+      "abilitiesNVSystem": {
+        "prowess": 11,
+        "insight": 12,
+        "vitality": 12,
+        "intellect": 10,
+        "composure": 10,
+        "presence": 10
+      },
       "skills": {},
       "damageResistances": [],
       "damageImmunities": [],
@@ -3382,7 +3801,22 @@
       "armorClass": 14,
       "hitPoints": "8d10+24",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 17,
+        "dex": 16,
+        "con": 17,
+        "int": 7,
+        "wis": 12,
+        "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 17,
+        "insight": 16,
+        "vitality": 17,
+        "intellect": 7,
+        "composure": 12,
+        "presence": 8
+      },
       "skills": {},
       "damageResistances": [],
       "damageImmunities": [],
@@ -3477,10 +3911,28 @@
       "armorClass": 12,
       "hitPoints": "9d8",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 9,
+        "dex": 14,
+        "con": 11,
+        "int": 17,
+        "wis": 12,
+        "cha": 11
+      },
+      "abilitiesNVSystem": {
+        "prowess": 9,
+        "insight": 14,
+        "vitality": 11,
+        "intellect": 17,
+        "composure": 12,
+        "presence": 11
+      },
       "savingThrows": {
         "int": 6,
         "wis": 4
+      },
+      "savingThrowsNVSystem": {
+        "composure": 4
       },
       "skills": {
         "arcana": 6,
@@ -3567,7 +4019,22 @@
       "armorClass": 15,
       "hitPoints": "17d8+51",
       "speed": 30,
-      "abilities": [],
+      "abilities": {
+        "str": 10,
+        "dex": 15,
+        "con": 16,
+        "int": 12,
+        "wis": 13,
+        "cha": 15
+      },
+      "abilitiesNVSystem": {
+        "prowess": 10,
+        "insight": 15,
+        "vitality": 16,
+        "intellect": 12,
+        "composure": 13,
+        "presence": 15
+      },
       "skills": {
         "deception": 5,
         "empathy": 4,
@@ -3671,6 +4138,14 @@
         "wis": 8,
         "cha": 2
       },
+      "abilitiesNVSystem": {
+        "prowess": 6,
+        "insight": 12,
+        "vitality": 10,
+        "intellect": 1,
+        "composure": 8,
+        "presence": 2
+      },
       "skills": {},
       "senses": "lifesense 30 ft.",
       "languages": [],
@@ -3753,6 +4228,14 @@
         "int": 2,
         "wis": 10,
         "cha": 4
+      },
+      "abilitiesNVSystem": {
+        "prowess": 8,
+        "insight": 14,
+        "vitality": 12,
+        "intellect": 2,
+        "composure": 10,
+        "presence": 4
       },
       "skills": {},
       "senses": "lifesense 30 ft.",
@@ -3841,6 +4324,14 @@
         "int": 3,
         "wis": 12,
         "cha": 4
+      },
+      "abilitiesNVSystem": {
+        "prowess": 10,
+        "insight": 16,
+        "vitality": 14,
+        "intellect": 3,
+        "composure": 12,
+        "presence": 4
       },
       "skills": {},
       "senses": "lifesense 60 ft.",
@@ -3933,6 +4424,14 @@
         "int": 4,
         "wis": 14,
         "cha": 6
+      },
+      "abilitiesNVSystem": {
+        "prowess": 14,
+        "insight": 10,
+        "vitality": 16,
+        "intellect": 4,
+        "composure": 14,
+        "presence": 6
       },
       "skills": {},
       "senses": "lifesense 60 ft.",
@@ -4045,6 +4544,14 @@
         "int": 6,
         "wis": 14,
         "cha": 8
+      },
+      "abilitiesNVSystem": {
+        "prowess": 22,
+        "insight": 10,
+        "vitality": 22,
+        "intellect": 6,
+        "composure": 14,
+        "presence": 8
       },
       "skills": {},
       "senses": "lifesense 120 ft.",

@@ -9,6 +9,8 @@
 
 import { evaluateFormula, buildFormulaContext } from '../utils/formulaEvaluator.js';
 import { gameState } from '../core/GameState.js';
+import { RULES } from '../core/rulesEngine.js';
+import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
 
 // ---------------------------------------------------------------------------
 // Handler Registry
@@ -420,25 +422,67 @@ function rollManeuverDie(character) {
 
 /**
  * Compute maneuver save DC for the attacker.
- * Formula: 8 + proficiency + max(STR mod, DEX mod)
+ *
+ * Default formula: 8 + proficiency + Prowess modifier (resolver 'meleeAttack' context,
+ * 5EClassic mode redirects to STR). Legacy behavior was 8 + proficiency + max(STR mod, DEX
+ * mod); dropping the DEX comparison is an accepted 5EClassic-mode approximation under the
+ * attribute-remap plan's relaxed fidelity rule — these maneuvers (Trip/Push/Disarm) are
+ * melee-only STR abilities, matching the same simplification as attack-bonus resolution.
+ *
+ * 'NVSystem'-mode override (ADR-010 compliant, no ability.id branching): if the effect
+ * config carries a `dcContext` field (e.g. Menacing Attack's "menacingAttackDC"), and
+ * RULES.attributes.system is 'NVSystem', the DC blends the attributes named by that
+ * context instead — 8 + proficiency + getBlendedAttributeModifier(character, dcContext).
+ * Absent `dcContext`, or in '5EClassic' mode, this is a no-op and the default formula above
+ * applies — Trip/Pushing/Disarming Attack have no `dcContext` and are unaffected either way.
+ * See docs/plans/2026-07-30-attribute-system-remap.md, decision #5.
  * @param {Object} character - attacker's plain character object
+ * @param {Object} [config] - the effect config passed to the calling handler; only
+ *   `config.dcContext` is consulted here
  * @returns {number}
  */
-function maneuverSaveDC(character) {
-    const strMod = character?.abilityModifiers?.str ?? 0;
-    const dexMod = character?.abilityModifiers?.dex ?? 0;
-    const prof   = character?.proficiencyBonus ?? 2;
-    return 8 + prof + Math.max(strMod, dexMod);
+function maneuverSaveDC(character, config) {
+    const prof = character?.proficiencyBonus ?? 2;
+    if (RULES.attributes.system === 'NVSystem' && config?.dcContext) {
+        return 8 + prof + getBlendedAttributeModifier(character, config.dcContext);
+    }
+    return 8 + prof + getAttributeModifierFor(character, 'meleeAttack');
 }
 
 /**
  * Roll a saving throw for the defender.
+ *
+ * `saveAbility` (abilities.json's `saveType` field) may be either a legacy ability key
+ * ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha' — resolved via
+ * RULES.attributes.legacySaveAbilityToContext) or, since the attribute-system remap
+ * (docs/plans/2026-07-30-attribute-system-remap.md, decision #5), a new-system attribute
+ * name directly (e.g. "vitality" for Trip/Pushing/Disarming Attack's retargeted save) —
+ * matched against derivedStatMap's `${attr}Save` naming convention. Works unchanged in
+ * both '5EClassic' and 'NVSystem' mode: the resulting context still resolves through
+ * getAttributeModifierFor(), which redirects new-system keys to their legacy source
+ * under '5EClassic' mode same as any other context.
+ *
+ * Explicit-override-beats-derived-default (Bug 3 fix, 2026-08-01): a small number of
+ * monsters (zombie, mage) have hand-authored wis/cha save bonuses that don't perfectly
+ * match their ability modifier — decision #2's monster-loader shim
+ * (`monsterAttributeConversion.js`'s `convertMonsterSavingThrows`) attaches those as
+ * `character.savingThrows.{vitality|insight|composure}` plain-number overrides. If one
+ * exists for this context's attribute, it wins outright; every other character (including
+ * every player character, whose own `character.savingThrows` is a differently-shaped
+ * {proficient, bonus} object keyed by legacy ability abbreviations — the `typeof === 'number'`
+ * check is what excludes that shape here) falls through to the ability-modifier-derived
+ * default, unaffected.
  * @param {Object} defender   - Combatant
- * @param {string} saveAbility - 'str' | 'wis' | 'dex' | 'con' | 'int' | 'cha'
+ * @param {string} saveAbility - legacy ability key or new-system attribute name
  * @returns {number} total roll
  */
 function rollDefenderSave(defender, saveAbility) {
-    const mod = defender.character?.abilityModifiers?.[saveAbility] ?? 0;
+    const contextKey = RULES.attributes.legacySaveAbilityToContext[saveAbility] ?? `${saveAbility}Save`;
+    const overrideAttrKey = RULES.attributes.derivedStatMap[contextKey]?.attributes?.[0];
+    const override = defender.character?.savingThrows?.[overrideAttrKey];
+    const mod = typeof override === 'number'
+        ? override
+        : getAttributeModifierFor(defender.character, contextKey);
     return Math.floor(Math.random() * 20) + 1 + mod;
 }
 
@@ -452,6 +496,8 @@ function rollDefenderSave(defender, saveAbility) {
  *   condition        {string} condition type to apply on failed save
  *   conditionDuration {string} duration string
  *   conditionIcon    {string} emoji icon
+ *   dcContext        {string} optional — derivedStatMap blend context overriding the DC
+ *                    formula in 'NVSystem' mode only (see maneuverSaveDC())
  *
  * Context must supply ctx.attacker and ctx.defender (injected by CombatManager on-hit path).
  */
@@ -464,7 +510,7 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     }
 
     const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character);
+    const saveDC  = maneuverSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
@@ -519,7 +565,7 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     }
 
     const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character);
+    const saveDC  = maneuverSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
@@ -554,10 +600,10 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
 });
 
 /**
- * onHitPush — bonus damage + STR save or apply 'pushed' condition (Pushing Attack).
+ * onHitPush — bonus damage + save or apply 'pushed' condition (Pushing Attack).
  * Effect config:
  *   bonusDice        {string} "maneuverDie"
- *   saveType         {string} 'str'
+ *   saveType         {string} ability score for the save, default 'str' if omitted
  *   condition        {string} 'pushed'
  *   conditionDuration {string} 'untilEndOfTurn'
  *
@@ -572,14 +618,16 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     }
 
     const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character);
+    const saveDC  = maneuverSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
-    // STR save or pushed
-    const saveRoll = rollDefenderSave(defender, config.saveType ?? 'str');
+    // Save (config.saveType, default 'str' for backward compatibility) or pushed
+    const saveType = config.saveType ?? 'str';
+    const saveRoll = rollDefenderSave(defender, saveType);
+    const saveLabel = saveType.toUpperCase();
 
     if (saveRoll < saveDC) {
         defender.addCondition(
@@ -589,13 +637,13 @@ registerHandler('onHitPush', (config, ability, ctx) => {
             { isBuff: false, curable: false, icon: '💨' }
         );
         ctx.addMessage(
-            `💨 ${defender.name} is PUSHED back! (STR save ${saveRoll} vs DC ${saveDC})`,
+            `💨 ${defender.name} is PUSHED back! (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
         );
         ctx.showFloatingText(defender.id, 'PUSHED! 💨', 'condition');
     } else {
         ctx.addMessage(
-            `${defender.name} resists being pushed (STR save ${saveRoll} vs DC ${saveDC})`,
+            `${defender.name} resists being pushed (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
             'info'
         );
     }

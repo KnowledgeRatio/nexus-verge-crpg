@@ -91,7 +91,7 @@
         "effects": {
           "onHitSaveOrCondition": {
             "bonusDice": "maneuverDie",
-            "saveType": "str",
+            "saveType": "vitality",
             "condition": "prone",
             "conditionDuration": "combat",
             "conditionIcon": "🔻"
@@ -138,7 +138,8 @@
             "saveType": "wis",
             "condition": "frightened",
             "conditionDuration": "untilEndOfTurn",
-            "conditionIcon": "😱"
+            "conditionIcon": "😱",
+            "dcContext": "menacingAttackDC"
           }
         },
         "campaignIds": ["core"]
@@ -158,7 +159,7 @@
         "effects": {
           "onHitPush": {
             "bonusDice": "maneuverDie",
-            "saveType": "str",
+            "saveType": "vitality",
             "condition": "pushed",
             "conditionDuration": "untilEndOfTurn"
           }
@@ -221,7 +222,7 @@
         "effects": {
           "onHitCondition": {
             "bonusDice": "maneuverDie",
-            "saveType": "str",
+            "saveType": "vitality",
             "condition": "disarmed",
             "conditionDuration": "untilStartOfTurn",
             "conditionIcon": "🗡️",
@@ -242,7 +243,7 @@
         "resolveCost": "variable",
         "maxResolveCost": 3,
         "usableOutOfCombat": false,
-        "description": "On a melee hit, spend 1–3 Resolve. Deal 1d8 radiant damage per Resolve spent (+1d8 bonus vs undead or fiends). Once per turn.",
+        "description": "On a melee hit, spend 1–3 Resolve. Deal 1d8 resonant damage per Resolve spent (+1d8 bonus vs undead or fiends). Once per turn.",
         "effects": {
           "variableCostDamage": {
             "damageFormula": "1d8",

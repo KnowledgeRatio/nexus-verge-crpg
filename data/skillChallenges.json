@@ -68,7 +68,7 @@
           "onFailure": {
             "message": "You trigger the trap!",
             "damage": "2d6",
-            "damageType": "piercing"
+            "damageType": "blood"
           }
         },
         {
@@ -102,7 +102,7 @@
           "onFailure": {
             "message": "Your hand slips...",
             "damage": "1d6",
-            "damageType": "piercing"
+            "damageType": "blood"
           }
         }
       ],
@@ -118,7 +118,7 @@
       },
       "criticalFailure": {
         "damage": "3d6",
-        "damageType": "piercing",
+        "damageType": "blood",
         "message": "The trap was more deadly than you thought..."
       },
       "contextualTriggers": {
@@ -186,7 +186,7 @@
           "onFailure": {
             "message": "You hurt your shoulder trying to break down the door.",
             "damage": "1d4",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         },
         {
@@ -372,7 +372,7 @@
           "onFailure": {
             "message": "Your boot finds nothing. Three seconds of silence, then stone.",
             "damage": "3d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1046,7 +1046,7 @@
           "onFailure": {
             "message": "The ledge crumbles under your foot. Stone and then air.",
             "damage": "2d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1107,7 +1107,7 @@
           "onFailure": {
             "message": "The conditions overwhelm you.",
             "damage": "2d4",
-            "damageType": "environmental"
+            "damageType": "elemental"
           }
         }
       ],
@@ -1157,7 +1157,7 @@
       "onFailure": {
         "message": "You strain your muscles but the boulder won't budge.",
         "damage": "1d4",
-        "damageType": "bludgeoning"
+        "damageType": "bone"
       },
       "contextualTriggers": {
         "exploration": {
@@ -1214,7 +1214,7 @@
           "onFailure": {
             "message": "You slip and fall!",
             "damage": "2d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1273,7 +1273,7 @@
           "onFailure": {
             "message": "The heat overwhelms you.",
             "damage": "1d6",
-            "damageType": "fire",
+            "damageType": "elemental",
             "condition": "exhaustion_1"
           }
         }
@@ -1315,7 +1315,7 @@
           "onFailure": {
             "message": "You step into quicksand!",
             "damage": "1d6",
-            "damageType": "environmental"
+            "damageType": "bone"
           }
         },
         {
@@ -1330,7 +1330,7 @@
           "onFailure": {
             "message": "You lose your footing and sink!",
             "damage": "1d6",
-            "damageType": "environmental"
+            "damageType": "bone"
           }
         },
         {
@@ -1345,7 +1345,7 @@
           "onFailure": {
             "message": "The swamp is more treacherous than expected.",
             "damage": "1d4",
-            "damageType": "environmental"
+            "damageType": "bone"
           }
         }
       ],
@@ -1384,7 +1384,7 @@
       "onFailure": {
         "message": "Thorny vines tear at your skin.",
         "damage": "1d4",
-        "damageType": "piercing"
+        "damageType": "blood"
       },
       "contextualTriggers": {
         "exploration": {
@@ -1440,7 +1440,7 @@
           "onFailure": {
             "message": "You lose your grip and plummet!",
             "damage": "4d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1498,7 +1498,7 @@
           "onFailure": {
             "message": "Your grip breaks. The wall rushes past you.",
             "damage": "3d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1540,7 +1540,7 @@
           "onFailure": {
             "message": "The current sweeps you downstream!",
             "damage": "2d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         },
         {
@@ -1555,7 +1555,7 @@
           "onFailure": {
             "message": "You slip on a wet stone and fall in!",
             "damage": "1d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         },
         {
@@ -1570,7 +1570,7 @@
           "onFailure": {
             "message": "You misjudge the depth and get swept away!",
             "damage": "1d6",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],
@@ -1856,7 +1856,7 @@
           "onFailure": {
             "message": "The heat is too intense!",
             "damage": "1d6",
-            "damageType": "fire"
+            "damageType": "elemental"
           }
         },
         {
@@ -1985,7 +1985,7 @@
           "onFailure": {
             "message": "The sun shifts. So do your footprints. You've been walking in a slow arc for the last hour.",
             "damage": "1d6",
-            "damageType": "environmental",
+            "damageType": "elemental",
             "condition": "exhaustion_1"
           }
         }
@@ -2046,7 +2046,7 @@
           "onFailure": {
             "message": "The surf takes it. You watch it go under.",
             "damage": "1d4",
-            "damageType": "bludgeoning"
+            "damageType": "bone"
           }
         }
       ],

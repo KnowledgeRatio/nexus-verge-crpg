@@ -5,10 +5,11 @@
 
 import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
-import { rollDice } from '../utils/dice.js';
+import { rollDice, getAbilityModifier } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue, calcMovementFatigue, getFatigueState, removeFatigue } from './FatigueManager.js';
+import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -1674,15 +1675,21 @@ class Player {
             currentHP: hp,
             ac: monster.armorClass,
             speed: monster.speed || 30,
-            abilities: monster.abilities,
-            abilityModifiers: {
-                str: Math.floor((monster.abilities.str - 10) / 2),
-                dex: Math.floor((monster.abilities.dex - 10) / 2),
-                con: Math.floor((monster.abilities.con - 10) / 2),
-                int: Math.floor((monster.abilities.int - 10) / 2),
-                wis: Math.floor((monster.abilities.wis - 10) / 2),
-                cha: Math.floor((monster.abilities.cha - 10) / 2)
+            // 'NVSystem' mode: monster.abilities is still legacy-keyed (46-monster batch
+            // convert is deferred to M2) — attributeResolver.js's resolver is a pass-through
+            // there and needs .prowess/.vitality/etc. to already exist. Same shim as
+            // Character.js's calculateAbilities() / EncounterBuilder.js's createEnemyFromMonster();
+            // see src/utils/attributeConversion.js.
+            abilities: {
+                ...monster.abilities,
+                ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
             },
+            abilityModifiers: Object.fromEntries(
+                Object.entries({
+                    ...monster.abilities,
+                    ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
+                }).map(([key, score]) => [key, getAbilityModifier(score)])
+            ),
             proficiencyBonus: RULES.combat.monsterProficiencyByCR[monster.challengeRating] ?? 2,
             skills: monster.skills || {},
             equipment: {

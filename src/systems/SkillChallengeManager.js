@@ -30,6 +30,10 @@ class SkillChallengeManager {
         // Cooldown timestamps: { [challengeId]: timestampMs }
         this.lastAttemptTimes = {};
 
+        // Skill definitions (id -> ability) loaded from data/skills.json.
+        // Used by getSkillModifier() to resolve which attribute backs a skill.
+        this.skillsData = [];
+
         this.currentChallenge = null; // Active challenge state
         this.challengeHistory = []; // Track all exchanges
         this.tension = 0; // 0-100 tension meter
@@ -53,6 +57,21 @@ class SkillChallengeManager {
         } catch (error) {
             console.error('❌ Failed to load terrain challenges:', error);
             this.terrainChallengesData = { challenges: {}, balancing: { triggerFrequencyModifiers: { terrain_base: 0.1 } } };
+        }
+    }
+
+    /**
+     * Load skill definitions (id -> ability / attributeNVSystem) from data/skills.json.
+     * Populates this.skillsData, consumed by getSkillModifier().
+     */
+    async loadSkillsData() {
+        try {
+            const response = await fetch(`data/skills.json?v=${Date.now()}`);
+            const skillsJson = await response.json();
+            this.skillsData = skillsJson.skills || [];
+        } catch (error) {
+            console.error('❌ Failed to load skills.json:', error);
+            this.skillsData = [];
         }
     }
 
@@ -493,14 +512,24 @@ class SkillChallengeManager {
      * @returns {number} Total skill modifier
      */
     getSkillModifier(character, skillId, companions = []) {
-        // --- Player base calculation (unchanged) ---
-        const skillData = character.skills.find(s => s.id === skillId);
+        // --- Player base calculation ---
+        // Skill -> attribute mapping comes from data/skills.json (this.skillsData), never
+        // hardcoded here (see data-integrity.md's Skills rule). In NVSystem mode, read
+        // the skill's attributeNVSystem field (decision #1's locked mapping); 5EClassic
+        // mode keeps reading the original `ability` field.
+        const skillData = this.skillsData.find(s => s.id === skillId);
         if (!skillData) {
             return 0;
         }
 
-        const abilityMod = character.abilityModifiers[skillData.ability];
-        const profBonus = character.skillProficiencies.includes(skillId) ? character.proficiencyBonus : 0;
+        const attributeKey = RULES.attributes.system === 'NVSystem'
+            ? (skillData.attributeNVSystem || skillData.ability)
+            : skillData.ability;
+
+        // character.skills is keyed by skill id (Character.js's initializeSkills() shape),
+        // not an array — { [skillId]: { proficient, expertise, bonus } }.
+        const abilityMod = character.abilityModifiers?.[attributeKey] ?? 0;
+        const profBonus = character.skills?.[skillId]?.proficient ? character.proficiencyBonus : 0;
         const playerBase = abilityMod + profBonus;
 
         // --- Party disabled or no companions: return unchanged ---

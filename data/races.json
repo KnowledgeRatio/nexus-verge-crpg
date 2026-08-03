@@ -18,6 +18,14 @@
         "wis": 1,
         "cha": 1
       },
+      "abilityScoreIncreaseNVSystem": {
+        "prowess": 1,
+        "insight": 1,
+        "vitality": 1,
+        "intellect": 1,
+        "composure": 1,
+        "presence": 1
+      },
       "size": "medium",
       "speed": 30,
       "languages": ["common"],
@@ -42,6 +50,10 @@
       "abilityScoreIncrease": {
         "dex": 2,
         "int": 1
+      },
+      "abilityScoreIncreaseNVSystem": {
+        "insight": 2,
+        "intellect": 1
       },
       "size": "medium",
       "speed": 30,
@@ -79,6 +91,10 @@
         "con": 2,
         "wis": 1
       },
+      "abilityScoreIncreaseNVSystem": {
+        "vitality": 2,
+        "composure": 1
+      },
       "size": "medium",
       "speed": 25,
       "languages": ["common", "dwarvish"],
@@ -115,6 +131,10 @@
         "dex": 2,
         "cha": 1
       },
+      "abilityScoreIncreaseNVSystem": {
+        "insight": 2,
+        "presence": 1
+      },
       "size": "small",
       "speed": 25,
       "languages": ["common", "halfling"],
@@ -146,6 +166,10 @@
       "abilityScoreIncrease": {
         "str": 2,
         "cha": 1
+      },
+      "abilityScoreIncreaseNVSystem": {
+        "prowess": 2,
+        "presence": 1
       },
       "size": "medium",
       "speed": 30,

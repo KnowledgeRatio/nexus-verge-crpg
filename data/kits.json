@@ -24,6 +24,14 @@
           "wis": 12,
           "cha": 13
         },
+        "abilitiesNVSystem": {
+          "prowess": 15,
+          "insight": 10,
+          "vitality": 14,
+          "intellect": 8,
+          "composure": 12,
+          "presence": 13
+        },
         "background": "soldier",
         "skills": [
           "empathy",

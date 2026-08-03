@@ -973,7 +973,8 @@ class Game {
             this.skillChallengeManager = new SkillChallengeManager();
             await Promise.all([
                 this.skillChallengeManager.loadChallenges(),
-                this.skillChallengeManager.loadTerrainChallenges()
+                this.skillChallengeManager.loadTerrainChallenges(),
+                this.skillChallengeManager.loadSkillsData()
             ]);
             // Make globally accessible for UI and quest integration
             window.skillChallengeManager = this.skillChallengeManager;
@@ -6210,13 +6211,31 @@ class Game {
         return Object.entries(skills).map(([skillId, skillData]) => {
             const bonusStr = skillData.bonus >= 0 ? `+${skillData.bonus}` : skillData.bonus;
             const skillName = skillId.charAt(0).toUpperCase() + skillId.slice(1).replace(/([A-Z])/g, ' $1');
+            const description = this.getSkillDescription(skillId);
+            const titleAttr = description ? ` title="${description.replace(/"/g, '&quot;')}"` : '';
             return `
-                <div class="skill-row ${skillData.proficient ? 'proficient' : ''}">
+                <div class="skill-row ${skillData.proficient ? 'proficient' : ''}"${titleAttr}>
                     <span class="skill-name">${skillName}</span>
                     <span class="skill-bonus">${bonusStr}</span>
                 </div>
             `;
         }).join('');
+    }
+
+    /**
+     * Look up a skill's flavor description from data/skills.json, honoring the
+     * 5EClassic/NVSystem dual-field convention (`description` / `descriptionNVSystem`).
+     * @param {string} skillId
+     * @returns {string} Description text, or '' if unavailable
+     */
+    getSkillDescription(skillId) {
+        if (!this.skillsData) return '';
+        const skill = this.skillsData.find(s => s.id === skillId);
+        if (!skill) return '';
+        if (RULES.attributes.system === 'NVSystem') {
+            return skill.descriptionNVSystem || skill.description || '';
+        }
+        return skill.description || '';
     }
 
     /**

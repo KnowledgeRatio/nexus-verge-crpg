@@ -1,5 +1,9 @@
 # Frontend Developer Memory - Nexus Verge
 
+## Index
+- [skills.json description field wired to a UI consumer](skills_json_description_field_wired.md) — was a pre-existing orphaned field; now a `title` tooltip on skill rows
+- [main.js cannot be unit-imported in vitest](testing_main_js_not_importable.md) — AudioManager singleton side effect blocks it; don't retry this
+
 ## Key File Locations
 - `index.html` - 1432 lines (as of Roger feature). All modals live inside `#app` div, before the `<footer>` tag.
 - `styles.css` - 7731 lines (as of Roger feature). New sections append at the very end.

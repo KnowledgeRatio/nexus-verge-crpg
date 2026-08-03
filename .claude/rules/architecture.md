@@ -90,3 +90,22 @@ Design is locked (2026-03-09). Key constraints:
 - Fled/TPK outcomes = permanent companion death. Victory = auto-stabilize to 1 HP.
 - `CompanionManager` does not touch the DOM. All UI wiring is in `main.js`.
 
+## Forking a Live System (ADR-015)
+
+*Established 2026-08-03, from the six-attribute system remap.*
+
+When replacing a live, load-bearing system (a whole stat system, a combat formula set, anything ADR-000's "changes don't break other systems" clause is really worried about), fork it behind a single config flag rather than migrating in place. The old path must stay byte-identical and fully functional for the entire time the new one is being built — verified by characterization tests written *before* any refactoring starts, not after.
+
+**Sub-rules, each earned by a real bug this session:**
+- **Data must actually flow, not just be structurally correct.** A resolver/handler that's generically correct is worthless if nothing populates the data it reads. Every "the code handles this generically" claim needs a paired "and something real feeds it data" check.
+- **Test through real construction, not hand-built fixtures.** Fixtures encode what the author *expected* the data to look like, which is exactly where production drift hides. Build the object through its real constructor/factory in tests, not a synthetic stand-in — this is how multiple critical bugs shipped past isolated unit tests in this remap.
+- **One instance of a hardcoded-pattern bug means there are more.** When a hardcoded-legacy-keys or hand-copied-mapping bug is found and fixed in one place, grep the whole codebase for the same pattern before moving on — it recurred 3-4 times in this remap alone.
+- **Stack independent verification layers.** Design-stage math review, implementation architecture review, balance simulation, adversarial stress-test, and a real end-to-end integration run each caught something the previous layer missed. None of them alone was sufficient.
+- **Uncommitted parallel work is still real work.** Never run `git checkout`/`reset`/`stash`/`clean` on a file with uncommitted changes, even to self-correct — see workflow.md's "Git Safety for Subagents." A fork process routinely has substantial uncommitted state across many files at once.
+- **The cutover is a human decision, not a milestone.** Flipping the flag to make the fork live is gated on real hands-on playtesting with a defined rollback window — "tests are green" is necessary, never sufficient.
+
+**Maintaining a fork while both paths are active:** the dual-field data pattern (an old-path field plus a sibling new-path field on the same entry) is temporary scaffolding with an end date, not a new permanent authoring style — it retires once the fork is proven and the old path is deleted. While it's active:
+- **New content is authored in both shapes, always, in the same change.** A new data entry with only the old-path field populated works today (the old path is what's exercised) and silently breaks the new path the moment anyone checks it — this was a repeated failure mode in this remap.
+- **New code never reads the old path's raw fields directly.** Route through the generic resolver/dispatch layer the fork introduced, not the legacy field names — that's what makes new code automatically correct on both paths instead of needing to be written twice.
+- **Test coverage must exercise the inactive path deliberately.** Whichever path isn't the current default is invisible to normal testing unless a test explicitly switches to it — every test added for a fork-affected feature needs a variant on the other path, or regressions there go undetected until the flip.
+

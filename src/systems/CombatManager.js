@@ -9,8 +9,9 @@ import { rollDice, rollD20, roll } from '../utils/dice.js';
 import { SeededRandom } from '../utils/rng.js';
 import audioManager from './AudioManager.js';
 import { addFatigue, getFatigueModifiers } from './FatigueManager.js';
-import { execute as dispatchAbilityEffects } from './EffectDispatcher.js';
+import { execute as dispatchAbilityEffects, buildContext as buildAbilityContext } from './EffectDispatcher.js';
 import { getPassiveAttackBonus, getPassiveDamageBonus, getPassiveUnarmedDie, passiveAddsOffHandAbilityMod, passiveShouldRerollDamage } from './PassiveModifierRegistry.js';
+import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
 
 function resolveDamageModifier(combatant, damageType, isMagical = false) {
     if (!RULES.combat.damageReductionSystem.enabled) return 'normal';
@@ -26,6 +27,21 @@ function resolveDamageModifier(combatant, damageType, isMagical = false) {
     if (matches(vulns))       return 'vulnerable';
     if (matches(resistances)) return 'resistant';
     return 'normal';
+}
+
+/**
+ * Weapon `damage` is stored as a plain dice string in items.json (e.g. "1d8"),
+ * not an object. This normalizes reads so a stray legacy/monster-style
+ * `{ dice, type }` shape (if one ever appears) still resolves correctly.
+ */
+function getWeaponDamageDiceString(weapon) {
+    if (!weapon) return null;
+    return typeof weapon.damage === 'string' ? weapon.damage : weapon.damage?.dice ?? null;
+}
+
+function getWeaponDamageType(weapon) {
+    if (!weapon) return null;
+    return weapon.damageType ?? weapon.damage?.type ?? null;
 }
 
 function applyDamage(target, amount, damageType, isMagical = false) {
@@ -206,7 +222,7 @@ class CombatManager {
         this.combatants.forEach(combatant => {
             const rollObj = rollD20();
             const roll = rollObj.result;
-            const modifier = combatant.character.abilityModifiers.dex;
+            const modifier = getAttributeModifierFor(combatant.character, 'initiative');
             combatant.initiative = roll + modifier;
 
             gameState.addMessage(
@@ -221,7 +237,7 @@ class CombatManager {
                 return b.initiative - a.initiative;
             }
             // Tiebreaker: higher DEX wins
-            return b.character.abilityModifiers.dex - a.character.abilityModifiers.dex;
+            return getAttributeModifierFor(b.character, 'initiative') - getAttributeModifierFor(a.character, 'initiative');
         });
 
         this.currentTurnIndex = 0;
@@ -495,12 +511,19 @@ class CombatManager {
      * @returns {{ attackBonus: number, damageBonus: number, damageDice: string, damageType: string }}
      */
     calculateMonsterAttackStats(combatant, action) {
-        const mods = combatant.character.abilityModifiers;
         const proficiency = combatant.character.proficiencyBonus || 2;
         let abilityMod;
         let damageDice;
         let damageType;
+        let damageBonusOverride;
 
+        // Weapon-type branch shape preserved from legacy code (finesse / ranged-not-thrown /
+        // everything else), but both leaves now resolve through the attribute resolver.
+        // 'meleeAttack' and 'rangedFinesseAttack' both map to Prowess in derivedStatMap
+        // (attack is deliberately single-stat, not converged by weapon type — see the
+        // attribute-remap plan), so under 5EClassic mode both branches redirect to the same
+        // STR modifier; the old DEX-only ranged bonus and max(STR,DEX) finesse bonus are
+        // dropped. Accepted per the plan's relaxed 5EClassic-mode fidelity rule.
         if (action.weaponId) {
             const weapon = this.getWeaponById(action.weaponId);
             if (weapon) {
@@ -509,40 +532,47 @@ class CombatManager {
                 const isThrown = props.includes('thrown');
                 const isRanged = weapon.weaponType === 'ranged';
 
-                if (isFinesse) {
-                    abilityMod = Math.max(mods.str, mods.dex);
-                } else if (isRanged && !isThrown) {
-                    abilityMod = mods.dex;
-                } else {
-                    abilityMod = mods.str;
-                }
+                abilityMod = getAttributeModifierFor(
+                    combatant.character,
+                    (isFinesse || (isRanged && !isThrown)) ? 'rangedFinesseAttack' : 'meleeAttack'
+                );
 
                 damageDice = weapon.damage;
                 damageType = weapon.damageType;
             } else {
                 console.warn(`[CombatManager] weaponId "${action.weaponId}" not found in items data`);
-                abilityMod = mods.str;
+                abilityMod = getAttributeModifierFor(combatant.character, 'meleeAttack');
                 damageDice = '1d4';
                 damageType = 'bone';
             }
         } else {
             const isRangedAction = action.type === 'rangedWeaponAttack';
-            if (action.finesse) {
-                abilityMod = Math.max(mods.str, mods.dex);
-            } else if (isRangedAction && !action.thrown) {
-                abilityMod = mods.dex;
-            } else {
-                abilityMod = mods.str;
-            }
+            abilityMod = getAttributeModifierFor(
+                combatant.character,
+                (action.finesse || (isRangedAction && !action.thrown)) ? 'rangedFinesseAttack' : 'meleeAttack'
+            );
 
-            const diceMatch = (action.damage || '1d4').match(/^(\d+d\d+)/);
-            damageDice = diceMatch ? diceMatch[1] : (action.damage || '1d4');
-            damageType = action.damageType || 'bone';
+            // action.damage is normally a plain dice string ("1d4"), but some stat blocks
+            // (the void-family monsters) use an object shape { dice, bonus, type } instead —
+            // handle both rather than assuming a string.
+            const isDamageObject = action.damage && typeof action.damage === 'object';
+            const rawDamage = isDamageObject ? action.damage.dice : (action.damage || '1d4');
+            const diceMatch = (rawDamage || '1d4').match(/^(\d+d\d+)/);
+            damageDice = diceMatch ? diceMatch[1] : (rawDamage || '1d4');
+            damageType = (isDamageObject ? action.damage.type : action.damageType) || 'bone';
+
+            // When the stat block bakes an explicit flat bonus into the damage object, that
+            // bonus is the complete damage modifier for this attack (per SRD stat block
+            // convention) and replaces the generically-derived ability modifier for damage
+            // only — the to-hit attackBonus below still derives from the real ability mod.
+            if (isDamageObject && action.damage.bonus !== undefined) {
+                damageBonusOverride = action.damage.bonus;
+            }
         }
 
         return {
             attackBonus: abilityMod + proficiency,
-            damageBonus: abilityMod,
+            damageBonus: damageBonusOverride !== undefined ? damageBonusOverride : abilityMod,
             damageDice,
             damageType
         };
@@ -870,25 +900,15 @@ class CombatManager {
         const handLabel = isOffHandAttack ? ' (off-hand)' : '';
         gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
 
-        let attackBonus = 0;
-
-        // Determine which ability modifier to use
-        if (isRanged) {
-            // Ranged weapons use DEX
-            attackBonus = attacker.character.abilityModifiers.dex;
-        } else if (isFinesse) {
-            // Finesse weapons use higher of STR or DEX
-            attackBonus = Math.max(
-                attacker.character.abilityModifiers.str,
-                attacker.character.abilityModifiers.dex
-            );
-        } else if (weapon) {
-            // Melee weapons use STR
-            attackBonus = attacker.character.abilityModifiers.str;
-        } else {
-            // Unarmed uses STR
-            attackBonus = attacker.character.abilityModifiers.str;
-        }
+        // Determine which ability modifier to use. Ranged and finesse both resolve
+        // through 'rangedFinesseAttack' (Prowess) — 5EClassic mode drops the old DEX-only
+        // ranged bonus and max(STR,DEX) finesse bonus in favor of pure Prowess (STR).
+        // Accepted per the attribute-remap plan's relaxed 5EClassic-mode fidelity rule;
+        // finesse fidelity specifically is tracked separately (issue #21).
+        const attackBonus = getAttributeModifierFor(
+            attacker.character,
+            (isRanged || isFinesse) ? 'rangedFinesseAttack' : 'meleeAttack'
+        );
 
         // Add proficiency bonus
         const proficiency = attacker.character.proficiencyBonus;
@@ -1108,8 +1128,9 @@ class CombatManager {
 
             // Hit! Roll damage
             let damageDice = 4; // Default unarmed d4
-            if (weapon?.damage?.dice) {
-                damageDice = parseInt(weapon.damage.dice.split('d')[1]) || 8;
+            const weaponDamageDiceString = getWeaponDamageDiceString(weapon);
+            if (weaponDamageDiceString) {
+                damageDice = parseInt(weaponDamageDiceString.split('d')[1]) || 8;
             } else if (!weapon) {
                 const mainHandFree = !attacker.character.equipment?.mainHand;
                 const offHandFree = !attacker.character.equipment?.offHand || attacker.character.equipment.offHand.type === 'shield';
@@ -1218,7 +1239,7 @@ class CombatManager {
             if (!isRanged && window.game?.promptReaction) {
                 const reactionResult = await window.game.promptReaction('afterHit', attacker, defender, {
                     damage: damageTotal,
-                    damageType: weapon?.damage?.type || 'bone',
+                    damageType: getWeaponDamageType(weapon) || 'bone',
                     isMelee: true
                 });
                 // If Parry was used: reduce damage by maneuver die + CON mod (handled by caller returning reduction)
@@ -1229,7 +1250,7 @@ class CombatManager {
             }
 
             // Apply damage (routes through resistance/vulnerability/immunity if system is enabled)
-            const weaponDamageType = weapon?.damage?.type || 'bone';
+            const weaponDamageType = getWeaponDamageType(weapon) || 'bone';
             applyDamage(defender, finalDamage, weaponDamageType);
 
             // Check if defender is defeated
@@ -1245,47 +1266,44 @@ class CombatManager {
             }
 
             // MANEUVER: On-hit effects — dispatched through EffectDispatcher by effect type, not ability ID
-            const pendingAbility = attacker.character.abilities?.find(ab => ab.id === attacker.pendingManeuver);
+            const pendingAbility = this._findKnownAbility(attacker.character, attacker.pendingManeuver);
             if (pendingAbility?.actionType === 'onHit' && attacker.team === 'player' && defender.hp > 0) {
-                await dispatchAbilityEffects(pendingAbility, pendingAbility.effects, {
-                    attacker,
-                    defender,
-                    character: attacker.character,
-                    combatant: attacker,
-                    combatManager: this,
-                    resolveSpent: 0,
-                });
+                const maneuverContext = buildAbilityContext(attacker.character, attacker, this);
+                maneuverContext.attacker = attacker;
+                maneuverContext.defender = defender;
+                maneuverContext.resolveSpent = 0;
+                await dispatchAbilityEffects(pendingAbility, pendingAbility.effects, maneuverContext);
             }
             // Always clear pending maneuver after a hit
             if (attacker.team === 'player') {
                 attacker.pendingManeuver = null;
             }
 
-            // SWORN STRIKE: Oath specialization — prompt Resolve spend for bonus radiant damage.
-            // Once per turn (not per attack) — see swornStrikeUsedThisTurn comment in Combatant constructor.
-            if (!isRanged && attacker.team === 'player' && !attacker.swornStrikeUsedThisTurn && window.game?.promptSwornStrike) {
-                const resolveSpent = await window.game.promptSwornStrike(attacker, defender);
-                if (resolveSpent > 0 && defender.hp > 0) {
-                    attacker.swornStrikeUsedThisTurn = true;
-                    const isUndead = ['undead', 'fiend'].includes(defender.character?.type);
-                    const dieCnt = resolveSpent + (isUndead ? 1 : 0);
-                    let smiteDmg = 0;
-                    for (let i = 0; i < dieCnt; i++) {
-                        smiteDmg += rollDice(1, 8);
-                    }
-                    const swornStrikeAbility = attacker.character.abilities?.find(ab => ab.id === 'swornStrike');
-                    const smiteDamageType = swornStrikeAbility?.effects?.variableCostDamage?.damageType ?? 'radiant';
-                    gameState.addMessage(`✨ Sworn Strike! ${attacker.name} spends ${resolveSpent} Resolve — ${smiteDmg} ${smiteDamageType} damage!${isUndead ? ' (bonus vs undead/fiend)' : ''}`, 'success');
-                    applyDamage(defender, smiteDmg, smiteDamageType);
-                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: `✨ ${smiteDmg}`, type: 'buff' });
-                    // Deduct Resolve from character
-                    const char = gameState.get('character');
-                    char.resolvePoints = Math.max(0, (char.resolvePoints ?? 0) - resolveSpent);
-                    gameState.set('character', char);
-                    // Check defeat again after smite damage
-                    if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
-                        gameState.addMessage(`💀 ${defender.name} is defeated by Sworn Strike!`, 'warning');
-                        this.handleDefeat(defender);
+            // VARIABLE-COST ON-HIT DAMAGE (e.g. Sworn Strike): dispatched by effect type, not
+            // ability ID (ADR-010) — any known ability with effects.variableCostDamage.trigger
+            // === 'onHit' prompts a Resolve spend after a confirmed hit. "Once per turn" reuses
+            // swornStrikeUsedThisTurn since Sworn Strike is the only such ability today.
+            if (attacker.team === 'player' && !attacker.swornStrikeUsedThisTurn && defender.hp > 0 && window.game?.promptVariableCostDamage) {
+                const callingAbilities = window.game.abilitiesData?.abilities?.[attacker.character.class?.id] || [];
+                const onHitDamageAbility = callingAbilities.find(ab =>
+                    ab.effects?.variableCostDamage?.trigger === 'onHit'
+                    && (ab.effects.variableCostDamage.rangeType !== 'melee' || !isRanged)
+                    && attacker.character.selectedAbilities?.includes(ab.id)
+                );
+                if (onHitDamageAbility) {
+                    const resolveSpent = await window.game.promptVariableCostDamage(attacker, defender, onHitDamageAbility);
+                    if (resolveSpent > 0 && defender.hp > 0) {
+                        attacker.swornStrikeUsedThisTurn = true;
+                        const abilityContext = buildAbilityContext(attacker.character, attacker, this);
+                        abilityContext.defender = defender;
+                        abilityContext.resolveSpent = resolveSpent;
+                        await dispatchAbilityEffects(onHitDamageAbility, onHitDamageAbility.effects, abilityContext);
+                        this.updateGameState();
+                        // Check defeat again after variable-cost damage
+                        if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
+                            gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+                            this.handleDefeat(defender);
+                        }
                     }
                 }
             }
@@ -1337,7 +1355,7 @@ class CombatManager {
 
                         gameState.notify('combat.floatingText', { combatantId: adjacentEnemy.id, text: `-${cleaveDamage} CLEAVE`, type: 'damage' });
 
-                        applyDamage(adjacentEnemy, cleaveDamage, weapon?.damage?.type || 'bone');
+                        applyDamage(adjacentEnemy, cleaveDamage, getWeaponDamageType(weapon) || 'bone');
 
                         if (adjacentEnemy.hp <= 0) {
                             gameState.addMessage(`💀 ${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
@@ -1380,8 +1398,9 @@ class CombatManager {
 
                     if (nickAttackTotal >= defender.ac) {
                         let nickDamageDice = 8; // Default d8
-                        if (offHandWeapon?.damage?.dice) {
-                            nickDamageDice = parseInt(offHandWeapon.damage.dice.split('d')[1]) || 8;
+                        const offHandDamageDiceString = getWeaponDamageDiceString(offHandWeapon);
+                        if (offHandDamageDiceString) {
+                            nickDamageDice = parseInt(offHandDamageDiceString.split('d')[1]) || 8;
                         }
 
                         const nickDamageRoll = rollDice(1, nickDamageDice);
@@ -1404,7 +1423,7 @@ class CombatManager {
 
                         gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${nickDamageTotal} NICK`, type: 'damage' });
 
-                        applyDamage(defender, nickDamageTotal, offHandWeapon?.damage?.type || 'bone');
+                        applyDamage(defender, nickDamageTotal, getWeaponDamageType(offHandWeapon) || 'bone');
 
                         if (defender.hp <= 0) {
                             gameState.addMessage(`💀 ${defender.name} is defeated by Nick!`, 'warning');
@@ -1458,7 +1477,7 @@ class CombatManager {
 
                     gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${grazeDamage} GRAZE`, type: 'damage' });
 
-                    applyDamage(defender, grazeDamage, weapon?.damage?.type || 'bone');
+                    applyDamage(defender, grazeDamage, getWeaponDamageType(weapon) || 'bone');
 
                     if (defender.hp <= 0) {
                         gameState.addMessage(`💀 ${defender.name} is defeated by Graze!`, 'warning');
@@ -1705,7 +1724,9 @@ class CombatManager {
 
     /**
      * Attempt to flee from combat
-     * New design: d20 + max(DEX, WIS) + proficiency vs DC (10 + 2 * engaged_enemies - 1)
+     * 5EClassic mode: d20 + max(DEX, WIS) + proficiency vs DC (10 + 2 * engaged_enemies - 1)
+     * NVSystem mode: d20 + floor((Prowess_mod + Insight_mod) / 2) + proficiency vs
+     * the same DC (docs/plans/2026-07-30-attribute-system-remap.md, decision #4).
      * Opportunity attacks from engaged melee enemies resolve before the flee check.
      */
     flee(combatant) {
@@ -1781,11 +1802,23 @@ class CombatManager {
 
         dc = Math.min(dc, fleeRules.dcCapMax);
 
-        // --- Flee roll modifier: max(DEX, WIS) + proficiency ---
-        // IMPORTANT: use abilityModifiers directly — NOT combatant.initiative (that is d20 + DEX already rolled)
-        const dexMod = combatant.character.abilityModifiers?.dex ?? 0;
-        const wisMod = combatant.character.abilityModifiers?.wis ?? 0;
-        const statMod = Math.max(dexMod, wisMod);
+        // --- Flee roll modifier ---
+        // 'NVSystem' mode (docs/plans/2026-07-30-attribute-system-remap.md, decision #4):
+        // floor((Prowess_mod + Insight_mod) / 2) via the resolver's blended 'flee' context,
+        // replacing the legacy max(DEX, WIS) pattern entirely — not a mechanical port.
+        // '5EClassic' mode keeps today's behavior unchanged.
+        let statMod;
+        let statLabel;
+        if (RULES.attributes.system === 'NVSystem') {
+            statMod = getBlendedAttributeModifier(combatant.character, 'flee');
+            statLabel = 'Prowess+Insight blend';
+        } else {
+            // IMPORTANT: use abilityModifiers directly — NOT combatant.initiative (that is d20 + DEX already rolled)
+            const dexMod = combatant.character.abilityModifiers?.dex ?? 0;
+            const wisMod = combatant.character.abilityModifiers?.wis ?? 0;
+            statMod = Math.max(dexMod, wisMod);
+            statLabel = 'max DEX/WIS';
+        }
         const profBonus = fleeRules.addProficiency ? (combatant.character.proficiencyBonus ?? 2) : 0;
         const totalMod = statMod + profBonus;
 
@@ -1834,7 +1867,7 @@ class CombatManager {
         const fleeTotal = fleeRoll + totalMod;
 
         gameState.addMessage(
-            `🏃 Flee check: ${fleeRollDisplay} + ${totalMod} (max DEX/WIS + prof) = ${fleeTotal} vs DC ${dc} (${engagedCount} engaged ${engagedCount === 1 ? 'enemy' : 'enemies'})`,
+            `🏃 Flee check: ${fleeRollDisplay} + ${totalMod} (${statLabel} + prof) = ${fleeTotal} vs DC ${dc} (${engagedCount} engaged ${engagedCount === 1 ? 'enemy' : 'enemies'})`,
             'info'
         );
 
@@ -2436,6 +2469,22 @@ class CombatManager {
     }
 
     /**
+     * Find a full ability definition (from abilities.json) that the given character
+     * actually knows, by ID. `character.abilities` is the ability-SCORE bag
+     * ({str, dex, con, int, wis, cha}) — the array of known ability definitions lives
+     * in the abilities.json data, keyed by calling, and is only reachable through
+     * `character.selectedAbilities` (known ability IDs) + `window.game.abilitiesData`.
+     * @returns {Object|null}
+     */
+    _findKnownAbility(character, abilityId) {
+        if (!abilityId || !character?.selectedAbilities?.includes(abilityId)) {
+            return null;
+        }
+        const callingAbilities = window.game?.abilitiesData?.abilities?.[character.class?.id] || [];
+        return callingAbilities.find(ab => ab.id === abilityId) || null;
+    }
+
+    /**
      * Get adjacent enemy for Cleave mastery
      * @param {Combatant} defender - The enemy that was just hit
      * @returns {Combatant|null} - The adjacent enemy (next in enemy list)
@@ -2455,17 +2504,6 @@ class CombatManager {
         const adjacentEnemy = this.enemyCombatants.find(c => c.id === nextId);
 
         return adjacentEnemy || null;
-    }
-
-    /**
-     * Maneuver save DC = 8 + proficiency + max(STR, DEX) for a player combatant
-     */
-    getManeuverSaveDC(attacker) {
-        const char = attacker.character;
-        const strMod = char.abilityModifiers?.str || 0;
-        const dexMod = char.abilityModifiers?.dex || 0;
-        const profBonus = char.proficiencyBonus || 2;
-        return 8 + profBonus + Math.max(strMod, dexMod);
     }
 
     /**

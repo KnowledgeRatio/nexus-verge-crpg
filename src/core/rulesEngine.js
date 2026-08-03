@@ -1297,6 +1297,80 @@ export const RULES = {
 
         // Gold cost to hire a companion from the Great Hall. Index = player level (index 0 unused).
         recruitmentCostByLevel: [0, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600]
+    },
+
+    // ====================
+    // ATTRIBUTE SYSTEM (six-attribute remap — docs/plans/2026-07-30-attribute-system-remap.md)
+    // ====================
+    attributes: {
+        // Feature flag. '5EClassic' = original str/dex/con/int/wis/cha behaviour.
+        // 'NVSystem' = Nexus Verge Prowess/Vitality/Intellect/Insight/Presence/Composure system.
+        // Default flipped to 'NVSystem' 2026-08-03 (M1.5) — see plan for context; '5EClassic'
+        // remains live as rollback for one release cycle.
+        system: 'NVSystem',
+
+        // Maps every derived-stat context to the attribute(s) that feed it.
+        // type: 'single' -> resolver floors once via getAttributeModifierFor().
+        // type: 'blend'  -> resolver sums raw (unfloored) modifiers across `attributes`,
+        //                   then floors once on the total, via getBlendedAttributeModifier().
+        // `attributes` is always an array so both types are consumed identically by callers.
+        derivedStatMap: {
+            meleeAttack:          { type: 'single', attributes: ['prowess'] },
+            rangedFinesseAttack:  { type: 'single', attributes: ['prowess'] },
+            damage:                { type: 'single', attributes: ['prowess'] },
+            acEvasion:             { type: 'single', attributes: ['insight'] },
+            acSoak:                { type: 'single', attributes: ['vitality'] },
+            hp:                    { type: 'single', attributes: ['vitality'] },
+            initiative:            { type: 'single', attributes: ['insight'] },
+            passivePerception:     { type: 'single', attributes: ['insight'] },
+
+            // Saves live only on the three Inward attributes in the target design
+            // (locked 2026-07-30) — Prowess-save and Intellect-save are retired there.
+            // The two entries below (prowessSave/intellectSave) are 5EClassic-mode-only
+            // scaffolding: today's code still computes all 6 legacy saves (str/dex/con/
+            // int/wis/cha), so str-save and int-save need a context to redirect through
+            // while RULES.attributes.system === '5EClassic'. Delete both at M2 shim retirement
+            // once 5EClassic mode is gone — they have no target-system meaning.
+            prowessSave:           { type: 'single', attributes: ['prowess'] },
+            intellectSave:         { type: 'single', attributes: ['intellect'] },
+            vitalitySave:          { type: 'single', attributes: ['vitality'] },
+            insightSave:           { type: 'single', attributes: ['insight'] },
+            composureSave:         { type: 'single', attributes: ['composure'] },
+
+            // Blended contexts — sum raw modifiers, floor once (see Engine rule in the plan).
+            concentration:         { type: 'blend', attributes: ['vitality', 'composure'] },
+            flee:                  { type: 'blend', attributes: ['prowess', 'insight'] },
+            menacingAttackDC:      { type: 'blend', attributes: ['prowess', 'presence'] }
+        },
+
+        // Save-file/monster upconversion only (ADR-011). Each legacy base score copies onto
+        // exactly one new attribute — a forced bijection, not a weighted split. See
+        // "Legacy split-attribute conversion" in the plan for why each pairing is forced.
+        legacyToNew: {
+            str: 'prowess',
+            con: 'vitality',
+            int: 'intellect',
+            dex: 'insight',
+            wis: 'composure',
+            cha: 'presence'
+        },
+
+        // Legacy save-ability key (from savingThrowProficiencies / abilities.json's
+        // saveType field) -> derivedStatMap save context. Not the same mapping as
+        // legacyToNew above: saves collapse WIS+CHA onto one Composure context (per the
+        // plan's locked "Saving throws" table), whereas legacyToNew sends CHA's base
+        // score to Presence for a different purpose (ability-score upconversion, no
+        // save on Presence at all). CHA routing to composureSave here is the documented
+        // imperfect legacy approximation (drops the separate CHA value) — see the plan's
+        // decision #2, full WIS+CHA averaging is a later backend-dev formula job.
+        legacySaveAbilityToContext: {
+            str: 'prowessSave',
+            dex: 'insightSave',
+            con: 'vitalitySave',
+            int: 'intellectSave',
+            wis: 'composureSave',
+            cha: 'composureSave'
+        }
     }
 };
 

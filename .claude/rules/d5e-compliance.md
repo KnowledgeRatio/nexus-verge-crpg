@@ -18,6 +18,7 @@ This project uses a **13-skill system**, not the standard 18. Never reference re
 ## Core Formulas
 - **Proficiency bonus**: `RULES.core.proficiencyBonusByLevel[level]` — never hardcode
 - **Ability modifier**: `Math.floor((score - 10) / 2)`
+- **Multi-attribute rounding**: when a derived stat sums modifiers from more than one attribute (e.g. a blended save, a split AC formula), do not floor each attribute's contribution before combining. Sum the raw fractional values (`(score - 10) / 2`, not pre-floored) and floor exactly once, on the total. Single-attribute stats are unaffected — this only applies when two or more attributes combine into one number. Floor-per-attribute-then-sum silently loses up to 1 point whenever more than one contributing modifier is odd.
 - **Attack roll**: `d20 + ability modifier + proficiency bonus (if proficient)`
 - **Passive check**: `10 + modifier` (no dice)
 - **Critical hit**: natural 20 = double dice (not double total)

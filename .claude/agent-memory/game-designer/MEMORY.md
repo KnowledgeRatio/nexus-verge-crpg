@@ -53,6 +53,9 @@
 - Two code gaps: `LootManager` needs dual-namespace lookup; `SkillChallengeManager` needs `applyLootReward()` wired
 - Design doc: `docs/designjams/2026-04-14-skill-challenge-loot-wiring.md`
 
+## Open Proposals
+- [Attribute system replacement (Prowess/Insight/Vitality/Intellect/Composure/Presence)](project_attribute_system_proposal.md) — Proposed, decisions locked 2026-07-30; saving-throw gap recommendation given, awaiting design-lead sign-off
+
 ## User Preferences
 - Brevity preferred: tables over prose, "super brief" responses
 - Design docs go to docs/designjams/ (not docs/plans/ - that dir doesn't exist)

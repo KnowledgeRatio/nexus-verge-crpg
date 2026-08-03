@@ -10,8 +10,10 @@
  */
 
 import { RULES } from '../core/rulesEngine.js';
-import { roll } from '../utils/dice.js';
+import { roll, getAbilityModifier } from '../utils/dice.js';
 import { filterByCampaign } from '../utils/campaignFilter.js';
+import { convertMonsterSavingThrows } from '../utils/monsterAttributeConversion.js';
+import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
 
 // Cache loaded monster data to avoid repeated fetches
 let cachedMonsterData = null;
@@ -179,17 +181,28 @@ function createEnemyFromMonster(monster, options = {}) {
         currentHP: hp,
         ac,
         speed: monster.speed || 30,
-        abilities: { ...monster.abilities },
-        abilityModifiers: {
-            str: Math.floor((monster.abilities.str - 10) / 2),
-            dex: Math.floor((monster.abilities.dex - 10) / 2),
-            con: Math.floor((monster.abilities.con - 10) / 2),
-            int: Math.floor((monster.abilities.int - 10) / 2),
-            wis: Math.floor((monster.abilities.wis - 10) / 2),
-            cha: Math.floor((monster.abilities.cha - 10) / 2)
+        // 'NVSystem' mode: monster.abilities is still legacy-keyed (46-monster batch
+        // convert is deferred to M2) — attributeResolver.js's resolver is a pass-through
+        // there and needs .prowess/.vitality/etc. to already exist. Bug 2 fix (2026-08-01),
+        // same shim as Character.js's calculateAbilities(); see src/utils/attributeConversion.js.
+        abilities: {
+            ...monster.abilities,
+            ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
         },
+        abilityModifiers: Object.fromEntries(
+            Object.entries({
+                ...monster.abilities,
+                ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
+            }).map(([key, score]) => [key, getAbilityModifier(score)])
+        ),
         proficiencyBonus: profBonus,
         skills: monster.skills || {},
+        // Monster-loader shim (docs/plans/2026-07-30-attribute-system-remap.md, decision #2)
+        // — only attached in 'NVSystem' mode. 5EClassic mode carries no `savingThrows` on
+        // the enemy object today (zero behavior change). See src/utils/monsterAttributeConversion.js.
+        ...(RULES.attributes.system === 'NVSystem' && {
+            savingThrows: convertMonsterSavingThrows(monster.savingThrows)
+        }),
         senses: monster.senses || {},
         traits: monster.traits || [],
         equipment: {

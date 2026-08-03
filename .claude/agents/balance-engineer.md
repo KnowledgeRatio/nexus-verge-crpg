@@ -27,6 +27,9 @@ Then build and run a simulation:
 
 Flag as game-breaking: win-rate skew beyond a normal difficulty curve, any single action that trivializes an encounter (one-shot kills outside crit math), infinite or near-infinite resource loops, and any dominant strategy that makes other valid builds pointless.
 
+5. For each cell driving your verdict (not every cell), print 2-3 representative single-trial traces — round-by-round rolls for a median-length win, a loss if one occurred, and the most extreme margin — chosen by outcome, not at random. Gives a human something to spot-check the mechanic logic against without reading per-trial output for all 500 runs.
+6. Report a confidence interval on every win rate, not just the point estimate — binomial proportion CI, no library needed: `p ± 1.96 * Math.sqrt(p * (1 - p) / n)`. When comparing two builds/cells, flag any delta smaller than the sum of their two margins as "not statistically distinguishable at this trial count" rather than reporting it as a real effect. If a finding hinges on a delta that size, raise the trial count for that cell instead of asserting it.
+
 ## Core Discipline
 
 You quantify; you do not tune. Report the numbers and a recommendation — never edit `rulesEngine.js` or data files directly. Specific suggested value changes go to `backend-dev` (code-side) or `data-agent` (data-side) as a recommendation, with the final call left to `game-designer`.

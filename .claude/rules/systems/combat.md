@@ -28,9 +28,11 @@ Each `Combatant` has:
 
 ## Flee Formula
 ```
-d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC
+d20 + floor((Prowess_mod + Insight_mod) / 2) + proficiency bonus >= DC   (RULES.attributes.system === 'NVSystem', current default)
+d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC   (RULES.attributes.system === '5EClassic')
 DC = 10 + 2 × (engaged_enemies - 1) + situational modifiers
 ```
+See `docs/plans/2026-07-30-attribute-system-remap.md` decision #4 for the NVSystem-mode formula's rationale.
 - Boss encounter: +5 DC. Ambush (round 1): +3 DC. DC cap: 25.
 - Restrained/Grappled/Stunned/Paralyzed/Unconscious: blocks flee entirely.
 - Prone: disadvantage on flee check. Frightened: advantage.

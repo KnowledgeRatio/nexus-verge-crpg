@@ -3,6 +3,8 @@
  * Handles all settlement and building UI rendering
  */
 
+import { RULES } from '../core/rulesEngine.js';
+
 class SettlementUI {
     constructor(settlementManager, merchantManager = null) {
         this.settlementManager = settlementManager;
@@ -724,13 +726,33 @@ class SettlementUI {
     }
 
     _skillToAbility(skillId) {
-        const map = {
+        // Prefer delegating to data/skills.json (already loaded by SkillChallengeManager at
+        // game init — window.skillChallengeManager.skillsData) instead of maintaining a second
+        // hardcoded copy. This is only a fallback path anyway (see the caller at
+        // _runPassiveApproachChecks — it's used only when window.skillChallengeManager itself
+        // is unavailable), so the static map below exists purely as a last-resort safety net
+        // for that edge case, not as the primary source of truth.
+        const skillData = window.skillChallengeManager?.skillsData?.find(s => s.id === skillId);
+        if (skillData) {
+            return RULES.attributes.system === 'NVSystem'
+                ? (skillData.attributeNVSystem || skillData.ability)
+                : skillData.ability;
+        }
+
+        const legacyMap = {
             athletics: 'str', acrobatics: 'dex', sleightOfHand: 'dex',
             endurance: 'con', academia: 'int', arcana: 'int', investigation: 'int',
             perception: 'wis', cunning: 'wis', creativity: 'wis', empathy: 'wis',
             influence: 'cha', deception: 'cha'
         };
-        return map[skillId] || 'wis';
+        const sixAttributeMap = {
+            athletics: 'prowess', acrobatics: 'prowess', sleightOfHand: 'prowess',
+            endurance: 'vitality', academia: 'intellect', arcana: 'intellect', investigation: 'intellect',
+            perception: 'insight', cunning: 'insight', creativity: 'composure', empathy: 'insight',
+            influence: 'presence', deception: 'composure'
+        };
+        const map = RULES.attributes.system === 'NVSystem' ? sixAttributeMap : legacyMap;
+        return map[skillId] || (RULES.attributes.system === 'NVSystem' ? 'insight' : 'wis');
     }
 
     /**
