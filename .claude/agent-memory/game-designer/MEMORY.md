@@ -30,15 +30,16 @@
 - Disengage vs Flee distinction: Disengage = safe repositioning, stays in combat. Flee = exit attempt, has OAs + check.
 
 ### Resource System (from design docs)
-- Focus (was Stamina): CON mod + (level-2), full recharge short rest. Dedication only.
+- Resolve (Dedication's martial resource): Vitality mod + level, min 1, full recharge short rest, unlocks L3. NOTE: `rulesEngine.js` and Rally/Parry's effects still literally say `con_mod`/`conMod` — un-migrated legacy field names, flagged for data-agent/backend-dev, not yet fixed as of 2026-08-04.
 - Mana: Pool-based (DMG Spell Points variant). Full LR, Scholar gets Arcane Recovery on SR.
-- All callings are two-stat: Dedication=STR+CON, Scholar=INT+CON, Wanderlust=DEX+CHA.
+- Attribute identity post-remap (see [[project_attribute_system_proposal]]): Dedication=Prowess+Vitality (only calling live/in-scope for the remap). Scholar/Wanderlust's old STR+CON/DEX+CHA-style two-stat identities are not yet redesigned under the new six-attribute system — don't assume a mapping for them until that work happens.
 
 ### Core Architecture
 - 3 Callings: Dedication (d10, martial), Scholar (d6, caster), Wanderlust (d8, hybrid)
 - Level 10 capstone, 13-skill system, non-grid combat
 - Specializations branch at level 3 (Dedication: Exemplar/Oath)
 - RULES object in rulesEngine.js is single source of truth for all balance values (ADR-000)
+- Six-attribute system (Prowess/Vitality/Intellect/Insight/Presence/Composure) is LIVE DEFAULT as of 2026-08-03 (`RULES.attributes.system === 'NVSystem'`), not a proposal. `.claude/rules/d5e-compliance.md` and this file's own older notes below still describe STR/DEX/CON/INT/WIS/CHA in places — treat those as stale until someone updates the rule file itself.
 
 ## Balance Benchmarks
 - Bounded accuracy: player attack bonus ranges +4 (L1) to +9 (L10). DC ceiling ~25.
@@ -54,7 +55,7 @@
 - Design doc: `docs/designjams/2026-04-14-skill-challenge-loot-wiring.md`
 
 ## Open Proposals
-- [Attribute system replacement (Prowess/Insight/Vitality/Intellect/Composure/Presence)](project_attribute_system_proposal.md) — Proposed, decisions locked 2026-07-30; saving-throw gap recommendation given, awaiting design-lead sign-off
+- ~~Attribute system replacement~~ — **no longer a proposal.** Approved 2026-07-31, default flipped to live (`NVSystem`) 2026-08-03 ahead of the original M1.5 playtest gate (playtest still expected to run, just after the flip). Saving-throw gap resolved: saves live only on the three Inward attributes (Vitality/Insight/Composure); Presence has no save, by design, consistently with Prowess/Intellect. See [[project_attribute_system_proposal]] for the full decision trail — that file's own header still says "Proposed," which is now stale too.
 
 ## User Preferences
 - Brevity preferred: tables over prose, "super brief" responses

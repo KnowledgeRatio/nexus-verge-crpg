@@ -109,3 +109,15 @@ When replacing a live, load-bearing system (a whole stat system, a combat formul
 - **New code never reads the old path's raw fields directly.** Route through the generic resolver/dispatch layer the fork introduced, not the legacy field names — that's what makes new code automatically correct on both paths instead of needing to be written twice.
 - **Test coverage must exercise the inactive path deliberately.** Whichever path isn't the current default is invisible to normal testing unless a test explicitly switches to it — every test added for a fork-affected feature needs a variant on the other path, or regressions there go undetected until the flip.
 
+## NVSystem Balance Baseline (ADR-016)
+
+*Established 2026-08-04.*
+
+All new game balance is set against the NVSystem attribute model, not `5EClassic`.
+
+- Balance targets, encounter math, item and ability tuning, and simulation baselines use the NV canonical attribute names and modifiers.
+- `5EClassic` remains a compatibility and rollback path only; it is not a tuning reference.
+- When NVSystem and classic numbers disagree, NVSystem wins for all new balance decisions.
+
+This does not remove or disable `5EClassic`. It only defines the baseline used for future tuning and verification.
+
