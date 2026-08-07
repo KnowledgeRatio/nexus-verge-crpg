@@ -1500,9 +1500,16 @@
                         </div>
                     </div>
 
-                    <div id="maneuverChoiceSection" class="level-up-section" style="display: none;">
-                        <h3>Combat Maneuvers (<span id="maneuverChoiceCount">Choose 3 — Required</span>)</h3>
-                        <div id="maneuverChoiceList" class="choice-list">
+                    <div id="tacticChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Combat Tactics (<span id="tacticChoiceCount">Choose 3 — Required</span>)</h3>
+                        <div id="tacticChoiceList" class="choice-list">
+                            <!-- Dynamically populated with checkboxes -->
+                        </div>
+                    </div>
+
+                    <div id="vowChoiceSection" class="level-up-section" style="display: none;">
+                        <h3>Learn a Vow (<span id="vowChoiceCount">Choose 1 (optional)</span>)</h3>
+                        <div id="vowChoiceList" class="choice-list">
                             <!-- Dynamically populated with checkboxes -->
                         </div>
                     </div>
@@ -1522,6 +1529,12 @@
                 <p id="reactionModalContext" class="reaction-context"></p>
                 <div id="reactionAbilityList" class="reaction-ability-list">
                     <!-- Reaction ability buttons rendered dynamically -->
+                </div>
+                <div id="reactionResolvePicker" class="reaction-resolve-picker">
+                    <p id="reactionResolveInfo" class="reaction-resolve-info"></p>
+                    <div id="reactionResolveButtons" class="reaction-resolve-buttons">
+                        <!-- Resolve spend buttons rendered dynamically -->
+                    </div>
                 </div>
                 <button id="reactionSkipBtn" class="btn btn-secondary">Skip</button>
             </div>

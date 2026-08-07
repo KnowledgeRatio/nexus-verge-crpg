@@ -3,7 +3,9 @@
     "defaults": {
         "startingScore": 0,
         "historyMaxLength": 20,
-        "influencePercentPerPoint": 0.01
+        "influencePercentPerPoint": 0.01,
+        "tradingDiscountPercent": 0.05,
+        "tradingDiscountPercentRank2": 0.10
     },
     "tiers": [
         { "id": "hostile",    "label": "Hostile",    "min": -100, "max": -51, "color": "#ff3333" },
@@ -43,6 +45,10 @@
         "maxBonus": 15,
         "maxPenalty": -15,
         "scalingPerPoint": 0.15
+    },
+    "factionContribution": {
+        "baseRate": 0.20,
+        "wordcraftMultiplierByRank": { "1": 2, "2": 3 }
     },
     "dialogueToneByTier": {
         "hostile":    "hostile",

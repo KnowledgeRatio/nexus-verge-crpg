@@ -8,7 +8,7 @@
 - [Party / CompanionManager](party_companion_system.md) — companion API, Phase 4a combat integration, Phase 4b skill/level-up hooks
 - [Terrain lookup pattern](terrain_lookup_pattern.md) — `worldGenerator.getCachedTile` / `terrainTypes` usage in combat and HUD code
 - [Fatigue system](fatigue_system.md) — `FatigueManager` pure-function API, long-rest HP recovery multiplier
-- [ADR-010 ability dispatch](adr010_ability_dispatch.md) — EffectDispatcher Resolve gate, effect-type handler catalog, Exemplar maneuver migration
+- [ADR-010 ability dispatch](adr010_ability_dispatch.md) — EffectDispatcher Resolve gate, effect-type handlers; **2026-08-05**: "maneuver"→"tactic" rename + real bug found (`knownTactics` vs `selectedAbilities` — on-hit tactics were dead in prod), Indomitable/Exposed/Vanguard's Charge/Rally-ally added; **2026-08-06**: CRITICAL live bug — `promptReaction()` crashes for every real character, Riposte/Parry/Indomitable dead in prod, characterized not fixed
 - [ConsequenceManager](consequence_manager.md) — world-tag-driven delayed settlement consequence events
 - [PassiveModifierRegistry](passive_modifier_registry.md) — fighting-style bonuses, never check `fightingStyle === 'X'` directly
 - [CombatManager DOM decoupling](combat_dom_decoupling.md) — floating text/victory/game-over now go through `gameState.notify`
@@ -17,3 +17,5 @@
 - [Attribute remap M2-readiness sweep](attribute_remap_m2_readiness_sweep.md) — 2026-08-01: generic `calculateAbilityModifiers` fix, `skills.json` dual-attribute field, 4 hardcoded skill->ability copies found; all 4 now fixed (last 2, `SettlementUI`/`Character.updateSkillBonuses`, closed same-day follow-up)
 - [Attribute remap M1 gate — real end-to-end verification](attribute_remap_m1_gate_e2e_verification.md) — 2026-08-01: real chargen→Character, real monster spawns (all 3 paths), real live combat, 0 new bugs, system judged genuinely functional; found non-blocking `.con`-hardcode debt + `initializeSavingThrows()` still 6-key not 3-key
 - [Weapon/monster damage shape bugs fixed](combat_weapon_damage_shape_bugs.md) — 2026-08-01: `weapon.damage` string-vs-object mismatch (every weapon fell back to 1d4), void-monster `action.damage` object crash; saving-throws sixAttribute gap found but not fixed (design call)
+- [Practices expansion (Hearthcraft buff resolver, ranks, trading, foraging)](practices_expansion_2026-08-07.md) — 2026-08-07: file/line locations, 3 brief-vs-real-code mismatches (getPropertyEffect return shape, buff match asymmetry, sibling SkillChallengeManager staleness bug found+fixed)
+- [RelationManager characterization (ADR-015 prep)](relation_manager_characterization.md) — 2026-08-07: coverage map, `window` node-env polyfill gotcha; `generatedRegions` Map-vs-Object NPC lookup bug (RelationManager/QuestManager/DialogueManager) found and FIXED same week, e2e test added

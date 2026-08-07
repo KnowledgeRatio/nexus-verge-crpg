@@ -140,6 +140,14 @@ export default class RelationManager {
         const oldScore = npc.relations.score;
         npc.relations.score = Math.max(-100, Math.min(100, oldScore + points));
 
+        // Faction contribution — stored unrounded to avoid a rounding cliff on small changes
+        if (npc.culture) {
+            const rate = this._getFactionContributionRate();
+            const oldFactionScore = gameState.get(`factions.${npc.culture}`) || 0;
+            const newFactionScore = Math.max(-100, Math.min(100, oldFactionScore + points * rate));
+            gameState.set(`factions.${npc.culture}`, newFactionScore);
+        }
+
         // Record history
         npc.relations.history.push({
             type: modifierKey,
@@ -177,8 +185,7 @@ export default class RelationManager {
         }
 
         // Find settlement NPCs across all regions
-        for (const regionKey of Object.keys(world.generatedRegions)) {
-            const region = world.generatedRegions[regionKey];
+        for (const region of world.generatedRegions.values()) {
             if (!region?.features) {
                 continue;
             }
@@ -292,7 +299,10 @@ export default class RelationManager {
         const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
         const influenceEffect = influenceBonus * this.config.defaults.influencePercentPerPoint;
 
-        const finalPrice = basePrice * tierPricing.buyMultiplier * (1.0 - influenceEffect);
+        // Trading practice — permanent passive discount, additive alongside Influence
+        const tradingEffect = this._getTradingDiscount(character);
+
+        const finalPrice = basePrice * tierPricing.buyMultiplier * (1.0 - influenceEffect) * (1.0 - tradingEffect);
         return Math.max(1, Math.round(finalPrice));
     }
 
@@ -321,15 +331,37 @@ export default class RelationManager {
         const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
         const influenceEffect = influenceBonus * this.config.defaults.influencePercentPerPoint;
 
-        const finalPrice = basePrice * tierPricing.sellMultiplier * (1.0 + influenceEffect);
+        // Trading practice — permanent passive bonus, additive alongside Influence
+        const tradingEffect = this._getTradingDiscount(character);
+
+        const finalPrice = basePrice * tierPricing.sellMultiplier * (1.0 + influenceEffect) * (1.0 + tradingEffect);
         return Math.max(1, Math.round(finalPrice));
+    }
+
+    /**
+     * Trading practice's passive pricing effect. Rank is occurrence count in
+     * character.practices (a flat string[], no separate rank field). Rank 2's
+     * tradingDiscountPercentRank2 is the total effect at rank 2, not additive on top
+     * of rank 1 — relations.json's values are already written as absolutes per rank.
+     * @param {Object} character
+     * @returns {number} 0, or the rank's discount percent (e.g. 0.05)
+     */
+    _getTradingDiscount(character) {
+        const rank = (character.practices || []).filter(id => id === 'trading').length;
+        if (rank >= 2) {
+            return this.config.defaults.tradingDiscountPercentRank2 ?? 0;
+        }
+        if (rank === 1) {
+            return this.config.defaults.tradingDiscountPercent ?? 0;
+        }
+        return 0;
     }
 
     /**
      * Get pricing summary for UI display
      * @param {Object} npc - NPC object
      * @param {Object} character - Player character
-     * @returns {{ tierLabel: string, tierEffect: string, influenceBonus: number, influenceEffect: string }}
+     * @returns {{ tierLabel: string, tierEffect: string, influenceBonus: number, influenceEffect: string, tradingEffect: string }}
      */
     getPricingSummary(npc, character) {
         const { tier, tierLabel } = this.getRelation(npc);
@@ -351,11 +383,17 @@ export default class RelationManager {
             influenceEffect = `${influencePercent}% negotiation penalty`;
         }
 
+        const tradingDiscount = this._getTradingDiscount(character);
+        const tradingEffect = tradingDiscount > 0
+            ? `${Math.round(tradingDiscount * 100)}% trading discount`
+            : 'no trading discount';
+
         return {
             tierLabel,
             tierEffect,
             influenceBonus,
-            influenceEffect
+            influenceEffect,
+            tradingEffect
         };
     }
 
@@ -384,14 +422,39 @@ export default class RelationManager {
     }
 
     /**
-     * Get faction modifier for an NPC (placeholder until faction system is implemented)
+     * Get faction modifier for an NPC, derived from standing with npc.culture
      */
     _getFactionModifier(npc) {
-        // TODO: When faction system is implemented, calculate from:
-        // const factionScore = gameState.get(`factions.${npc.factionId}`) || 0;
-        // return Math.max(config.factionModifier.maxPenalty,
-        //        Math.min(config.factionModifier.maxBonus,
-        //        factionScore * config.factionModifier.scalingPerPoint));
-        return 0;
+        if (!npc.culture) {
+            return 0;
+        }
+        const factionScore = gameState.get(`factions.${npc.culture}`) || 0;
+        const { maxPenalty, maxBonus, scalingPerPoint } = this.config.factionModifier;
+        return Math.max(maxPenalty, Math.min(maxBonus, factionScore * scalingPerPoint));
+    }
+
+    /**
+     * Faction contribution rate: how much of a personal relation change also moves
+     * faction standing. Wordcraft practice multiplies the base rate by rank (rank 1
+     * makes the rate itself baseRate * multiplier, not additive).
+     * @returns {number}
+     */
+    _getFactionContributionRate() {
+        const baseRate = this.config.factionContribution.baseRate;
+        const character = gameState.get('character');
+        const rank = (character?.practices || []).filter(id => id === 'wordcraft').length;
+        const multiplier = this.config.factionContribution.wordcraftMultiplierByRank[String(rank)];
+        return multiplier ? baseRate * multiplier : baseRate;
+    }
+
+    /**
+     * Get faction standing for display (character sheet faction panel)
+     * @param {string} cultureId
+     * @returns {{ score: number, tier: Object, tierLabel: string, color: string }}
+     */
+    getFactionStanding(cultureId) {
+        const score = gameState.get(`factions.${cultureId}`) || 0;
+        const tier = this._getTierForScore(Math.round(score));
+        return { score, tier, tierLabel: tier.label, color: tier.color };
     }
 }

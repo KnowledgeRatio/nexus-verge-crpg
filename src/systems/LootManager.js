@@ -23,6 +23,7 @@ class LootManager {
         this.magicItems = null;
         this.allItems = null; // Cache of all items (from items.json + magicItems.json)
         this.itemProperties = null; // Canonical property catalog from itemProperties.json
+        this.practices = null; // Practice catalog from practices.json (e.g. Foraging's bonusLoot config)
     }
 
     /**
@@ -47,12 +48,13 @@ class LootManager {
             await loadCampaigns();
             const campaignId = this.campaignId || getDefaultCampaignId();
 
-            const [lootResponse, magicResponse, itemsResponse, propertiesResponse, mythicEpithetsResponse] = await Promise.all([
+            const [lootResponse, magicResponse, itemsResponse, propertiesResponse, mythicEpithetsResponse, practicesResponse] = await Promise.all([
                 fetch('data/lootTables.json'),
                 fetch('data/magicItems.json'),
                 fetch('data/items.json'),
                 fetch('data/itemProperties.json'),
-                fetch('data/mythicEpithets.json')
+                fetch('data/mythicEpithets.json'),
+                fetch('data/practices.json')
             ]);
 
             this.lootTables = await lootResponse.json();
@@ -61,6 +63,8 @@ class LootManager {
             const propertiesData = await propertiesResponse.json();
             this.itemProperties = propertiesData.properties || [];
             this.mythicEpithets = await mythicEpithetsResponse.json();
+            const practicesData = await practicesResponse.json();
+            this.practices = practicesData.practices || [];
 
             // Filter magic items by campaign
             this.magicItems = {};
@@ -740,6 +744,15 @@ class LootManager {
      */
     getPropertyName(propId) {
         return this.itemProperties?.find(p => p.id === propId)?.name ?? propId;
+    }
+
+    /**
+     * Foraging practice's banked bonus loot table config, read from practices.json.
+     * @returns {{ tableId: string, rarityFilter: Object|null }|null}
+     */
+    getForagingBonusLootConfig() {
+        const foraging = this.practices?.find(p => p.id === 'foraging');
+        return foraging?.bank?.bonusLoot ?? null;
     }
 
     /**

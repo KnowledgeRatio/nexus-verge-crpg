@@ -5,8 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-    resolveLevelKeyedValue,
-    getBuffedAbility
+    resolveLevelKeyedValue
 } from '../../src/utils/practiceUtils.js';
 
 // ---------------------------------------------------------------------------
@@ -52,65 +51,5 @@ describe('resolveLevelKeyedValue', () => {
     it('handles a single-tier map', () => {
         expect(resolveLevelKeyedValue({ '3': 'unlocked' }, 3)).toBe('unlocked');
         expect(resolveLevelKeyedValue({ '3': 'unlocked' }, 2)).toBeNull();
-    });
-});
-
-// ---------------------------------------------------------------------------
-// getBuffedAbility
-// ---------------------------------------------------------------------------
-describe('getBuffedAbility', () => {
-    it('returns base ability score when no buff is active', () => {
-        const char = { abilities: { str: 10 } };
-        expect(getBuffedAbility(char, 'str')).toBe(10);
-    });
-
-    it('adds buff when activeMealBuff matches the ability key', () => {
-        const char = {
-            abilities: { str: 10 },
-            activeMealBuff: { abilityScore: 'str', bonusMagnitude: 2 }
-        };
-        expect(getBuffedAbility(char, 'str')).toBe(12);
-    });
-
-    it('does NOT add buff when activeMealBuff targets a different ability', () => {
-        const char = {
-            abilities: { str: 10 },
-            activeMealBuff: { abilityScore: 'dex', bonusMagnitude: 2 }
-        };
-        expect(getBuffedAbility(char, 'str')).toBe(10);
-    });
-
-    it('returns 10 (default) when character has no abilities object', () => {
-        expect(getBuffedAbility({}, 'str')).toBe(10);
-    });
-
-    it('returns 10 (default) when ability key is missing from abilities', () => {
-        const char = { abilities: { dex: 14 } };
-        expect(getBuffedAbility(char, 'str')).toBe(10);
-    });
-
-    it('handles bonusMagnitude of 1 when field is undefined (defaults to 1)', () => {
-        // The implementation uses `buff.bonusMagnitude ?? 1`
-        const char = {
-            abilities: { wis: 12 },
-            activeMealBuff: { abilityScore: 'wis' }  // bonusMagnitude omitted
-        };
-        expect(getBuffedAbility(char, 'wis')).toBe(13);
-    });
-
-    it('works for all six ability keys', () => {
-        const abilityKeys = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-        abilityKeys.forEach(key => {
-            const char = { abilities: { [key]: 14 } };
-            expect(getBuffedAbility(char, key)).toBe(14);
-        });
-    });
-
-    it('applies buff to a low ability score', () => {
-        const char = {
-            abilities: { cha: 8 },
-            activeMealBuff: { abilityScore: 'cha', bonusMagnitude: 4 }
-        };
-        expect(getBuffedAbility(char, 'cha')).toBe(12);
     });
 });

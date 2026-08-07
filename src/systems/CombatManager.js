@@ -10,7 +10,7 @@ import { SeededRandom } from '../utils/rng.js';
 import audioManager from './AudioManager.js';
 import { addFatigue, getFatigueModifiers } from './FatigueManager.js';
 import { execute as dispatchAbilityEffects, buildContext as buildAbilityContext } from './EffectDispatcher.js';
-import { getPassiveAttackBonus, getPassiveDamageBonus, getPassiveUnarmedDie, passiveAddsOffHandAbilityMod, passiveShouldRerollDamage } from './PassiveModifierRegistry.js';
+import { getPassiveAttackBonus, getPassiveDamageBonus, getPassiveUnarmedDie, passiveAddsOffHandAbilityMod, passiveShouldRerollDamage, getAuraACBonus, getAuraSaveBonus } from './PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
 
 function resolveDamageModifier(combatant, damageType, isMagical = false) {
@@ -42,6 +42,24 @@ function getWeaponDamageDiceString(weapon) {
 function getWeaponDamageType(weapon) {
     if (!weapon) return null;
     return weapon.damageType ?? weapon.damage?.type ?? null;
+}
+
+/**
+ * Generic uses/recharge gate for equipment mod effects (e.g. Deflecting's
+ * savingThrowReaction), keyed on propertyId via character.equipmentModCharges. Reused
+ * by both CombatManager and Combatant so any future itemProperties.json entry with
+ * `uses`/`recharge` gets real rate-limiting for free — no per-mod code needed.
+ */
+function canUseEquipmentModEffect(character, propId, effect) {
+    if (!effect?.uses) return true;
+    const used = character?.equipmentModCharges?.[propId] || 0;
+    return used < effect.uses;
+}
+
+function consumeEquipmentModEffect(character, propId, effect) {
+    if (!effect?.uses || !character) return;
+    if (!character.equipmentModCharges) character.equipmentModCharges = {};
+    character.equipmentModCharges[propId] = (character.equipmentModCharges[propId] || 0) + 1;
 }
 
 function applyDamage(target, amount, damageType, isMagical = false) {
@@ -132,6 +150,10 @@ class CombatManager {
             this.combatants.push(combatant);
             return combatant;
         });
+
+        // Back-reference so a Combatant can look up its own combatManager (needed by
+        // concentration-break to find and clear a condition on another combatant).
+        this.combatants.forEach(c => { c.combatManager = this; });
 
         // Roll initiative
         this.rollInitiative();
@@ -302,10 +324,11 @@ class CombatManager {
             );
 
             conditionsToRemove.forEach(condition => {
-                // Restore AC if slowed
-                if (condition.type === 'slowed') {
+                // Restore AC for any AC-affecting condition (generic — not keyed to 'slowed'
+                // by name; Taunt's tauntBacklash condition reuses this same mechanism)
+                if (condition.affectsAC) {
                     target.ac -= condition.value; // value is -1, so -= -1 = +1
-                    gameState.addMessage(`${target.name}'s Slow effect ends (AC restored)`, 'info');
+                    gameState.addMessage(`${target.name}'s ${condition.type} effect ends (AC restored)`, 'info');
                 }
 
                 // Remove the condition
@@ -779,16 +802,21 @@ class CombatManager {
 
         // Target makes saving throw
         const saveMod = target.character.abilityModifiers?.[saveAbility] || 0;
+        const auraSaveBonus = getAuraSaveBonus(this, target);
         const saveRoll = rollD20();
-        let saveTotal = saveRoll.natural + saveMod;
+        let saveTotal = saveRoll.natural + saveMod + auraSaveBonus;
 
-        // savingThrowReaction effect (e.g. Deflecting) — reaction adds shield AC to save
+        // savingThrowReaction effect (e.g. Deflecting) — reaction adds shield AC to save.
+        // Gated by canUseEquipmentModEffect (generic uses/recharge tracker), not just
+        // reaction availability — Deflecting is 1/short rest, not every round.
         let deflectBonus = 0;
-        if (this.getActiveEffect(target, 'modifyShield', 'savingThrowReaction') && target.actions?.reaction > 0) {
+        const deflectSource = this.getActiveEffectSource(target, 'modifyShield', 'savingThrowReaction');
+        if (deflectSource && target.actions?.reaction > 0 && canUseEquipmentModEffect(target.character, deflectSource.propId, deflectSource.effect)) {
             const shield = target.character.equipment?.offHand;
             if (shield?.type === 'shield' && shield?.armorClassBonus) {
                 deflectBonus = shield.armorClassBonus;
                 target.actions.reaction -= 1;
+                consumeEquipmentModEffect(target.character, deflectSource.propId, deflectSource.effect);
                 saveTotal += deflectBonus;
                 gameState.addMessage(
                     `🛡️ ${target.name} uses reaction to add +${deflectBonus} (shield) to saving throw!`,
@@ -797,14 +825,36 @@ class CombatManager {
                 }
             }
 
-        const saved = saveTotal >= saveDC;
+        let saved = saveTotal >= saveDC;
 
         let saveMsg = `🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod}`;
         if (deflectBonus > 0) {
             saveMsg += ` + ${deflectBonus} (deflecting)`;
         }
+        if (auraSaveBonus > 0) {
+            saveMsg += ` + ${auraSaveBonus} (Aura of Mercy)`;
+        }
         saveMsg += ` = ${saveTotal} vs DC ${saveDC}`;
         gameState.addMessage(saveMsg, 'info');
+
+        // REACTION HOOK: afterFailedSave — e.g., Indomitable lets the target reroll a
+        // failed save. Dispatched generically via effects.rerollSavingThrow (ADR-010),
+        // not an ability.id check. Must resolve before damage is rolled/halved below.
+        if (!saved && target.team === 'player' && window.game?.promptReaction) {
+            const reactionResult = await window.game.promptReaction('afterFailedSave', combatant, target, {
+                saveType: saveAbility,
+                saveDC,
+                saveRoll: saveTotal
+            });
+            if (reactionResult?.newTotal !== undefined) {
+                saveTotal = reactionResult.newTotal;
+                saved = saveTotal >= saveDC;
+                gameState.addMessage(
+                    `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${saved ? 'Success!' : 'Still fails.'}`,
+                    saved ? 'success' : 'warning'
+                );
+            }
+        }
 
         // Roll damage
         let damageRoll = 0;
@@ -953,6 +1003,13 @@ class CombatManager {
             gameState.addMessage(`⚔️ ${attacker.name} has advantage (Vex)! [LEGACY]`, 'success');
         }
 
+        // INSPIRED (Bolster vow): consume for advantage on this attack (one-time use, then cleared)
+        if (attacker.hasCondition('inspired')) {
+            hasAdvantage = true;
+            attacker.removeCondition('inspired', true);
+            gameState.addMessage(`✨ ${attacker.name} has advantage (Inspired)! ✨`, 'success');
+        }
+
         // Prone condition: Melee attackers have advantage vs prone targets
         if (defender.hasCondition('prone') && !isRanged) {
             hasAdvantage = true;
@@ -975,6 +1032,30 @@ class CombatManager {
         if (attacker.hasCondition('frightened')) {
             hasDisadvantage = true;
             gameState.addMessage(`😱 ${attacker.name} has disadvantage (Frightened)! 😱`, 'warning');
+        }
+
+        // TAUNTED (Challenge vow): disadvantage vs anyone but the Challenge source. If the
+        // taunted creature attacks the Challenge source anyway, it takes -1 AC until the
+        // start of its own next turn (tauntBacklash reuses the same untilStartOfTurn +
+        // affectsAC restoration mechanism Slow mastery already uses).
+        const tauntedCondition = attacker.getCondition('taunted');
+        if (tauntedCondition) {
+            if (defender.id !== tauntedCondition.appliedBy) {
+                hasDisadvantage = true;
+                gameState.addMessage(`😤 ${attacker.name} has disadvantage (Taunted)!`, 'warning');
+            } else {
+                const backlashAdded = attacker.addCondition('tauntBacklash', 'untilStartOfTurn', attacker.id, {
+                    value: -1,
+                    isBuff: false,
+                    curable: false,
+                    icon: '💢',
+                    affectsAC: true
+                });
+                if (backlashAdded) {
+                    attacker.ac -= 1;
+                    gameState.addMessage(`💢 ${attacker.name} attacks their Challenger anyway! (-1 AC)`, 'warning');
+                }
+            }
         }
 
         // FATIGUE: player attacker only — staggering threshold imposes disadvantage on attacks
@@ -1034,8 +1115,8 @@ class CombatManager {
 
         // MANEUVER: Precision Strike — adds maneuver die to attack roll (beforeAttack, spend 1 Resolve)
         let maneuverAttackBonus = 0;
-        if (attacker.pendingManeuver === 'precisionStrike' && attacker.team === 'player') {
-            const dieSides = attacker.character.getManeuverDie?.() || 6;
+        if (attacker.pendingTactic === 'precisionStrike' && attacker.team === 'player') {
+            const dieSides = attacker.character.getTacticDie?.() || 6;
             maneuverAttackBonus = rollDice(1, dieSides);
             gameState.addMessage(`⚔️ Precision Strike! +${maneuverAttackBonus} to attack roll (d${dieSides})`, 'success');
         }
@@ -1048,8 +1129,26 @@ class CombatManager {
             gameState.addMessage(`🗡️ ${attacker.name} is disarmed! (${disarmedPenalty} to attack)`, 'warning');
         }
 
-        const attackTotal = attackRoll + attackBonus + proficiency + fightingStyleAttackBonus + maneuverAttackBonus + disarmedPenalty + fatigueAttackMod;
-        const effectiveAC = defender.ac + coverACBonus;
+        // VANGUARD'S CHARGE (Exemplar passive, ADR-010: checked via selectedAbilities, not
+        // ability.id branching): the first tactic used against a target that wasn't engaged
+        // with anyone gets +1 to the attack roll and +1d4 bonus damage. `targetWasUnengaged`
+        // must be read here — before the melee-engagement mutation block below adds this very
+        // attack's engagement — so it reflects pre-attack state, not the engagement this
+        // attack itself is about to form.
+        const targetWasUnengaged = defender.engagedWith.size === 0;
+        const vanguardsChargeActive = !isRanged && targetWasUnengaged && attacker.team === 'player' &&
+            !!attacker.pendingTactic && !!attacker.character?.selectedTraits?.includes('vanguard');
+        const vanguardsChargeAttackBonus = vanguardsChargeActive ? 1 : 0;
+        const vanguardsChargeDamageRoll = vanguardsChargeActive ? rollDice(1, 4) : 0;
+        if (vanguardsChargeActive) {
+            gameState.addMessage(`🐎 Vanguard's Charge! +1 to attack, +${vanguardsChargeDamageRoll} bonus damage (unengaged target)`, 'success');
+        }
+
+        const attackTotal = attackRoll + attackBonus + proficiency + fightingStyleAttackBonus + maneuverAttackBonus + disarmedPenalty + fatigueAttackMod + vanguardsChargeAttackBonus;
+        // Aura of Sanctuary (+1 defender/allies engaged with the same enemy) and Aura of
+        // Exposure (-1 enemies engaged with the source) — additive, applies to any defender.
+        const auraACBonus = getAuraACBonus(this, defender);
+        const effectiveAC = defender.ac + coverACBonus + auraACBonus;
 
         // critRange effect expands the crit range (e.g. Keen property reads [19,20] from JSON)
         const critRange = [...RULES.combat.criticalHitRange];
@@ -1083,6 +1182,9 @@ class CombatManager {
         if (fatigueAttackMod !== 0) {
             attackMsg += ` ${fatigueAttackMod > 0 ? '+' : ''}${fatigueAttackMod} (fatigue)`;
         }
+        if (vanguardsChargeAttackBonus !== 0) {
+            attackMsg += ` + ${vanguardsChargeAttackBonus} (Vanguard's Charge)`;
+        }
         attackMsg += ` = ${attackTotal} vs AC ${effectiveAC}${coverACBonus > 0 ? ` (+${coverACBonus} cover)` : ''}`;
 
         gameState.addMessage(attackMsg, 'info');
@@ -1114,7 +1216,7 @@ class CombatManager {
 
             // Clear pending maneuver on critical miss
             if (attacker.team === 'player') {
-                attacker.pendingManeuver = null;
+                attacker.pendingTactic = null;
             }
 
             if (shouldConsumeAction) {
@@ -1191,8 +1293,9 @@ class CombatManager {
             const damageEffect = this.getActiveSlotEffect(attacker, weaponSlot, 'modifyWeapon', 'damageBonus');
             const forgecraftDamageBonus = damageEffect ? (damageEffect.bonus || 0) : 0;
 
-            // Extra damage from special sources (e.g., Riposte maneuver die added in promptReaction)
-            const extraDamage = options.extraDamage || 0;
+            // Extra damage from special sources (e.g., Riposte maneuver die added in
+            // promptReaction; Vanguard's Charge bonus die rolled above)
+            const extraDamage = (options.extraDamage || 0) + vanguardsChargeDamageRoll;
             const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus + extraDamage;
 
             // Build detailed damage message
@@ -1251,6 +1354,39 @@ class CombatManager {
 
             // Apply damage (routes through resistance/vulnerability/immunity if system is enabled)
             const weaponDamageType = getWeaponDamageType(weapon) || 'bone';
+
+            // REACTION HOOKS: Reprisal / Intervene — fire when an ally (not the player) is
+            // hit, on behalf of the player-controlled Oath. reactor defaults to defender
+            // inside promptReaction, so these calls explicitly pass the Oath as reactor.
+            if (defender.team === 'companion' && window.game?.promptReaction) {
+                await window.game.promptReaction('allyAttacked', attacker, defender, {
+                    damage: finalDamage,
+                    damageType: weaponDamageType,
+                    isMelee: !isRanged
+                }, this.playerCombatant);
+
+                // Intervene: only offered when this hit would drop the ally to 0 HP
+                if (finalDamage >= defender.hp) {
+                    const interveneResult = await window.game.promptReaction('allyWouldDrop0', attacker, defender, {
+                        damage: finalDamage,
+                        damageType: weaponDamageType,
+                        isMelee: !isRanged
+                    }, this.playerCombatant);
+                    if (interveneResult?.redirectAmount > 0) {
+                        finalDamage = Math.max(0, finalDamage - interveneResult.redirectAmount);
+                        applyDamage(this.playerCombatant, interveneResult.redirectAmount, weaponDamageType);
+                        gameState.addMessage(
+                            `🛡️ Intervene! ${this.playerCombatant.name} takes ${interveneResult.redirectAmount} damage meant for ${defender.name}!`,
+                            'success'
+                        );
+                        if (this.playerCombatant.hp <= 0) {
+                            gameState.addMessage(`💀 ${this.playerCombatant.name} is defeated!`, 'warning');
+                            this.handleDefeat(this.playerCombatant);
+                        }
+                    }
+                }
+            }
+
             applyDamage(defender, finalDamage, weaponDamageType);
 
             // Check if defender is defeated
@@ -1266,7 +1402,7 @@ class CombatManager {
             }
 
             // MANEUVER: On-hit effects — dispatched through EffectDispatcher by effect type, not ability ID
-            const pendingAbility = this._findKnownAbility(attacker.character, attacker.pendingManeuver);
+            const pendingAbility = this._findKnownAbility(attacker.character, attacker.pendingTactic);
             if (pendingAbility?.actionType === 'onHit' && attacker.team === 'player' && defender.hp > 0) {
                 const maneuverContext = buildAbilityContext(attacker.character, attacker, this);
                 maneuverContext.attacker = attacker;
@@ -1276,7 +1412,7 @@ class CombatManager {
             }
             // Always clear pending maneuver after a hit
             if (attacker.team === 'player') {
-                attacker.pendingManeuver = null;
+                attacker.pendingTactic = null;
             }
 
             // VARIABLE-COST ON-HIT DAMAGE (e.g. Sworn Strike): dispatched by effect type, not
@@ -1303,6 +1439,20 @@ class CombatManager {
                         if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
                             gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
                             this.handleDefeat(defender);
+                        }
+                        // CONVICTION (Oath trait): refund 1 Resolve when this on-hit damage
+                        // (Sworn Strike) finishes the target. ADR-010: checked via
+                        // selectedTraits, not an ability.id branch.
+                        if (defender.hp <= 0 && attacker.character?.selectedTraits?.includes('conviction')) {
+                            const character = attacker.character;
+                            const before = character.resolvePoints ?? 0;
+                            character.resolvePoints = Math.min(character.maxResolvePoints ?? before, before + 1);
+                            if (character.resolvePoints > before) {
+                                gameState.addMessage(`❤️ Conviction! ${attacker.name} regains 1 Resolve.`, 'success');
+                                if (attacker.team === 'player') {
+                                    gameState.set('character', character);
+                                }
+                            }
                         }
                     }
                 }
@@ -1456,7 +1606,7 @@ class CombatManager {
 
             // Clear pending maneuver on miss (maneuvers are wasted if the attack misses)
             if (attacker.team === 'player') {
-                attacker.pendingManeuver = null;
+                attacker.pendingTactic = null;
             }
 
             // REACTION HOOK: afterMiss — e.g., Riposte fires when attacker misses defender
@@ -1519,7 +1669,8 @@ class CombatManager {
                 value: -1,
                 isBuff: false,
                 curable: false,
-                icon: '🐌'
+                icon: '🐌',
+                affectsAC: true
             });
 
             if (added) {
@@ -1537,7 +1688,8 @@ class CombatManager {
         if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'topple')) {
             const saveDC = 8 + proficiency + attackBonus;
             const saveRoll = rollD20().result;
-            const saveTotal = saveRoll + defender.character.abilityModifiers.con;
+            let saveTotal = saveRoll + defender.character.abilityModifiers.con + getAuraSaveBonus(this, defender);
+            let toppleSaved = saveTotal >= saveDC;
 
             gameState.addMessage(
                 `⚔️ Topple! ${defender.name} must make CON save DC ${saveDC}...`,
@@ -1548,7 +1700,25 @@ class CombatManager {
                 'info'
             );
 
-            if (saveTotal < saveDC) {
+            // REACTION HOOK: afterFailedSave — same Indomitable-reroll opportunity as
+            // executeSpecialMonsterAction()'s save (ADR-010, generic dispatch).
+            if (!toppleSaved && defender.team === 'player' && window.game?.promptReaction) {
+                const reactionResult = await window.game.promptReaction('afterFailedSave', attacker, defender, {
+                    saveType: 'con',
+                    saveDC,
+                    saveRoll: saveTotal
+                });
+                if (reactionResult?.newTotal !== undefined) {
+                    saveTotal = reactionResult.newTotal;
+                    toppleSaved = saveTotal >= saveDC;
+                    gameState.addMessage(
+                        `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${toppleSaved ? 'Success!' : 'Still fails.'}`,
+                        toppleSaved ? 'success' : 'warning'
+                    );
+                }
+            }
+
+            if (!toppleSaved) {
                 const added = defender.addCondition('prone', 'rounds', attacker.id, {
                     value: null,
                     roundsRemaining: 1,
@@ -2019,6 +2189,7 @@ class CombatManager {
     handleDefeat(combatant) {
         // Clear engagement for the defeated combatant
         this.clearEngagement(combatant);
+        combatant.concentratingOn = null;
 
         // Check for combat end
         if (combatant.team === 'player') {
@@ -2182,8 +2353,8 @@ class CombatManager {
             );
 
             conditionsToRemove.forEach(condition => {
-                // Restore AC if slowed
-                if (condition.type === 'slowed') {
+                // Restore AC for any AC-affecting condition (generic — see startTurn())
+                if (condition.affectsAC) {
                     combatant.ac -= condition.value; // value is -1, so -= -1 = +1
                 }
 
@@ -2266,6 +2437,30 @@ class CombatManager {
                             lootMessages.push(lootMessage);
                         }
                     }
+                }
+
+                // FORAGING PRACTICE: consume banked bonus loot roll(s) on victory
+                if (character.bankedForagingRolls > 0) {
+                    const foragingConfig = window.lootManager.getForagingBonusLootConfig();
+                    if (foragingConfig?.tableId) {
+                        const foragingResults = window.lootManager.rollOnTableWithRarityFilter(
+                            foragingConfig.tableId,
+                            character.bankedForagingRolls,
+                            character.level,
+                            foragingConfig.rarityFilter
+                        );
+                        for (const entry of foragingResults) {
+                            if (entry.isGold) {
+                                totalGold += roll(entry.amount || '1d6');
+                            } else {
+                                allLootItems.push(entry);
+                            }
+                        }
+                        if (foragingResults.length > 0) {
+                            lootMessages.push('🌲 Foraging turned up some extra supplies!');
+                        }
+                    }
+                    character.bankedForagingRolls = 0;
                 }
 
                 // Add loot to character
@@ -2455,6 +2650,23 @@ class CombatManager {
     }
 
     /**
+     * Like getActiveEffect, but also returns which propertyId provided the effect —
+     * needed to key the generic equipmentModCharges charge tracker (canUseEquipmentModEffect).
+     * @returns {{ propId: string, effect: Object }|null}
+     */
+    getActiveEffectSource(combatant, effectType, effectProperty) {
+        for (const slot of ['mainHand', 'offHand', 'armor']) {
+            for (const propId of this._getSlotPropertyIds(combatant, slot)) {
+                const effect = window.lootManager?.getPropertyEffect(propId);
+                if (effect?.type === effectType && effect?.property === effectProperty) {
+                    return { propId, effect };
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Find the display name of the property providing an active effect on a slot.
      * Used for combat log messages.
      */
@@ -2473,11 +2685,25 @@ class CombatManager {
      * actually knows, by ID. `character.abilities` is the ability-SCORE bag
      * ({str, dex, con, int, wis, cha}) — the array of known ability definitions lives
      * in the abilities.json data, keyed by calling, and is only reachable through
-     * `character.selectedAbilities` (known ability IDs) + `window.game.abilitiesData`.
+     * `character.selectedAbilities` / `character.knownTactics` (known ability IDs) +
+     * `window.game.abilitiesData`.
+     *
+     * Checks both id lists: this is the only caller (the on-hit tactic-dispatch path,
+     * called with `attacker.pendingTactic`) and Exemplar tactics are stored exclusively
+     * in `knownTactics` (Character.applyLevelUpSelections), never in `selectedAbilities`
+     * — a `selectedAbilities`-only check here silently no-ops every tactic's on-hit effect
+     * (bonus damage, condition) for every real character, since the two lists are
+     * populated by entirely separate level-up choice paths.
      * @returns {Object|null}
      */
     _findKnownAbility(character, abilityId) {
-        if (!abilityId || !character?.selectedAbilities?.includes(abilityId)) {
+        if (!abilityId) {
+            return null;
+        }
+        const known = character?.selectedAbilities?.includes(abilityId)
+            || character?.knownTactics?.includes(abilityId)
+            || character?.knownVows?.includes(abilityId);
+        if (!known) {
             return null;
         }
         const callingAbilities = window.game?.abilitiesData?.abilities?.[character.class?.id] || [];
@@ -2719,13 +2945,18 @@ class Combatant {
         // }
         this.conditions = [];
 
-        // Queued maneuver: set before attacking, consumed on attack resolution
+        // Queued tactic: set before attacking, consumed on attack resolution
         // e.g., 'precisionStrike' | 'tripAttack' | 'menacingAttack' | etc.
-        this.pendingManeuver = null;
+        this.pendingTactic = null;
 
         // Sworn Strike (Oath): once per turn, not once per attack — Focus recharges on
         // short rest, so an unlimited per-attack cap would let Extra Attack double-nova every fight.
         this.swornStrikeUsedThisTurn = false;
+
+        // Concentration (Oath's Challenge): { abilityId, targetId } | null. Combat-only,
+        // transient — never serialized (matches engagedWith/pendingTactic precedent, no
+        // save/load work needed since combat state doesn't survive a save).
+        this.concentratingOn = null;
 
         // Weapon mastery effects (legacy - kept for backwards compatibility)
         this.masteryEffects = {
@@ -2789,7 +3020,16 @@ class Combatant {
             icon = isBuff ? '✨' : '💢',
             stackable = false,
             stackBehavior = 'addValue',
-            damageOnTurnStart = null
+            damageOnTurnStart = null,
+            // Generic marker (ADR-010): true when this condition was applied by a
+            // save-or-condition tactic effect (onHitSaveOrCondition/onHitCondition/onHitPush),
+            // not tied to any specific tactic name. Consumed by the Exposed passive to find a
+            // "condition I inflicted via my own tactic" on the target for its next tactic.
+            inflictedByTactic = false,
+            // Generic marker: true when this condition's `value` represents an AC delta that
+            // should be un-applied on cleanup (see startTurn()/endCombat()'s untilStartOfTurn
+            // restoration loops). Not keyed to a specific condition type by name.
+            affectsAC = false
         } = options;
 
         const existing = this.conditions.find(c => c.type === type);
@@ -2815,7 +3055,7 @@ class Combatant {
 
         this.conditions.push({
             type, duration, appliedBy, value, roundsRemaining,
-            isBuff, curable, icon, damageOnTurnStart
+            isBuff, curable, icon, damageOnTurnStart, inflictedByTactic, affectsAC
         });
         return true;
     }
@@ -2937,24 +3177,28 @@ class Combatant {
         const profBonus = isProficient ? this.character.proficiencyBonus : 0;
         let total = roll + abilityMod + profBonus;
 
-        // savingThrowReaction effect on offHand slot (e.g. Deflecting) — reads effect type from catalog
+        // savingThrowReaction effect on offHand slot (e.g. Deflecting) — reads effect type from
+        // catalog. Gated by canUseEquipmentModEffect (generic uses/recharge tracker), not just
+        // reaction availability — Deflecting is 1/short rest, not every round.
         let deflectingBonus = 0;
-        const hasDeflect = (() => {
+        const deflectSource = (() => {
             const modId = this.character?.equipmentMods?.offHand?.modId;
             if (modId) {
                 const eff = window.lootManager?.getPropertyEffect(modId);
-                if (eff?.type === 'modifyShield' && eff?.property === 'savingThrowReaction') return true;
+                if (eff?.type === 'modifyShield' && eff?.property === 'savingThrowReaction') return { propId: modId, effect: eff };
             }
-            return this.character?.equipment?.offHand?.magicProperties?.some(propId => {
+            for (const propId of this.character?.equipment?.offHand?.magicProperties || []) {
                 const eff = window.lootManager?.getPropertyEffect(propId);
-                return eff?.type === 'modifyShield' && eff?.property === 'savingThrowReaction';
-            }) ?? false;
+                if (eff?.type === 'modifyShield' && eff?.property === 'savingThrowReaction') return { propId, effect: eff };
+            }
+            return null;
         })();
-        if (hasDeflect && this.actions?.reaction > 0) {
+        if (deflectSource && this.actions?.reaction > 0 && canUseEquipmentModEffect(this.character, deflectSource.propId, deflectSource.effect)) {
             const shield = this.character.equipment?.offHand;
             if (shield?.type === 'shield' && shield?.armorClassBonus) {
                 deflectingBonus = shield.armorClassBonus;
                 this.actions.reaction -= 1;
+                consumeEquipmentModEffect(this.character, deflectSource.propId, deflectSource.effect);
                 total += deflectingBonus;
                 gameState.addMessage(
                     `🛡️ ${this.name} uses reaction to add +${deflectingBonus} (shield) to saving throw!`,
@@ -3055,6 +3299,44 @@ class Combatant {
         // Update character
         if (this.team === 'player') {
             gameState.set('character.currentHP', this.hp);
+        }
+
+        // Concentration break check — synchronous, right here, since this is the single
+        // true choke point for "this combatant took damage" (hit even by paths that bypass
+        // applyDamage()'s resistance system).
+        if (remaining > 0 && this.concentratingOn) {
+            this._checkConcentration(remaining);
+        }
+    }
+
+    /**
+     * Roll a concentration save (d20 + concentration modifier) vs DC = max(10, floor(damage/2)).
+     * On failure, clears concentratingOn and — if it was Challenge — removes the 'taunted'
+     * condition from the target (found via the back-reference set in startCombat()).
+     * @param {number} damageAmount
+     */
+    _checkConcentration(damageAmount) {
+        const dc = Math.max(RULES.spellcasting.concentrationCheckDC, Math.floor(damageAmount / 2));
+        const roll = Math.floor(Math.random() * 20) + 1;
+        const mod = getBlendedAttributeModifier(this.character, 'concentration');
+        const total = roll + mod;
+        const success = total >= dc;
+
+        gameState.addMessage(
+            `🎯 ${this.name} concentration check: ${roll} + ${mod} = ${total} vs DC ${dc} — ${success ? 'maintained!' : 'broken!'}`,
+            success ? 'info' : 'warning'
+        );
+
+        if (!success) {
+            const broken = this.concentratingOn;
+            this.concentratingOn = null;
+            if (broken?.abilityId === 'challenge' && broken.targetId) {
+                const target = this.combatManager?.combatants?.find(c => c.id === broken.targetId);
+                if (target?.hasCondition('taunted')) {
+                    target.removeCondition('taunted', true);
+                    gameState.addMessage(`😤 ${target.name} is no longer Taunted (concentration broken).`, 'info');
+                }
+            }
         }
     }
 

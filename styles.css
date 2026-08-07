@@ -8218,8 +8218,51 @@ body {
     color: var(--bg-secondary);
 }
 
-/* Maneuver cost badge in level-up modal choice list */
-.maneuver-cost {
+/* Intervene resolve-spend sub-picker, nested inside the reaction prompt modal */
+.reaction-resolve-picker {
+    display: none;
+}
+
+.reaction-resolve-picker.active {
+    display: block;
+}
+
+.reaction-resolve-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+}
+
+.reaction-resolve-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.reaction-resolve-buttons .btn-primary {
+    flex: 1;
+    min-width: 100px;
+}
+
+.reaction-resolve-buttons .btn-primary small {
+    display: block;
+    font-weight: normal;
+    opacity: 0.85;
+}
+
+.reaction-resolve-buttons .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    background: var(--bg-tertiary);
+    border-color: var(--text-secondary);
+}
+
+/* Tactic cost badge in level-up modal choice list */
+.tactic-cost {
     font-size: 0.7rem;
     color: var(--warning-color);
     background: rgba(255, 165, 0, 0.15);

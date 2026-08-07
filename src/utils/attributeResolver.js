@@ -70,10 +70,21 @@ function resolveAbilityKey(attrKey) {
  */
 export function getRawAttributeModifier(character, attrKey) {
     const resolvedKey = resolveAbilityKey(attrKey);
-    const score = character?.abilities?.[resolvedKey];
+    let score = character?.abilities?.[resolvedKey];
     if (typeof score !== 'number') {
         return 0;
     }
+
+    // Hearthcraft meal buff — `activeMealBuff.abilityScore` is always authored in
+    // NVSystem-shaped keys (see data/practices.json's scoreChoices), but this function
+    // gets called under both `system` modes and with old-save buffs that may have been
+    // persisted with a legacy key before that data migration. Match either shape against
+    // the key we actually resolved against.
+    const buff = character?.activeMealBuff;
+    if (buff?.abilityScore && (buff.abilityScore === resolvedKey || RULES.attributes.legacyToNew[buff.abilityScore] === resolvedKey)) {
+        score += buff.bonusMagnitude ?? 1;
+    }
+
     return (score - 10) / 2;
 }
 

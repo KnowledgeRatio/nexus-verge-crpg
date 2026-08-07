@@ -18,9 +18,22 @@ After a design conversation reaches conclusions, summarize decisions into `docs/
 
 Every plan file starts with a `**Status:**` line using one of these values: `Proposed`, `Approved`, `Implemented`, `Superseded`, `Abandoned`. Include the date the status was last set.
 
-**Plans are not authoritative for current state.** A plan records what was decided on the date it was written. It does not update itself when implementation changes. The only authoritative sources for what currently exists are `.claude/rules/architecture.md` (the ADR log) and the actual code and data files. Treat any specific claim in a plan as something to verify against the code, not as settled fact.
+**Plans are not authoritative for current state.** A plan records what was decided on the date it was written. It does not update itself when implementation changes. The authoritative sources for what currently exists are `.claude/rules/architecture.md` (the ADR log), `docs/callings/*.md` (per-calling reference docs, see below) for anything calling-specific, and the actual code and data files. Treat any specific claim in a plan as something to verify against the code, not as settled fact.
 
 **Update on contact.** If you read a plan file to inform a decision and find that the actual code has diverged from what it says, update that plan's status line and add a short note describing what actually happened, before using the plan or moving on. Do not leave a plan showing a stale status once you know it is wrong. Fix it at the moment you notice, not in a separate cleanup pass — a cleanup pass nobody is assigned to run will not happen.
+
+## Calling Reference Docs
+*Decided: 2026-08-05*
+
+One living reference doc per calling at `docs/callings/{calling}.md` (e.g. `docs/callings/dedication.md`), covering that calling's identity/narrative and its **currently implemented** mechanics — not a plan, not future state.
+
+**How this differs from a plan:** a plan is frozen at the date it was written and may never ship. A calling doc describes only what is live in the code and data *right now*, and is authoritative for that — same standing as `architecture.md`'s ADR log, not "a reference to verify against the code." If a calling doc and the code disagree, that's a bug in the doc, not an acceptable staleness.
+
+**Update discipline — stricter than a plan's "update on contact":** any change that touches a calling's implemented mechanics (new ability, changed formula, new level content, renamed system) updates that calling's doc **in the same change**, not as a follow-up. A design conversation that reaches conclusions but isn't implemented yet stays in a `docs/plans/` file until it actually ships — only promote it into the calling doc once real. Don't write proposed/unimplemented content into a calling doc; that defeats the reason it exists.
+
+**Structure:** Identity & Narrative (the fiction — what they are, why, tone) → Mechanical Identity Pillars (how the fiction translates to systems) → Progression table (implemented levels only) → Full ability roster (implemented abilities only, with data-file IDs) → Specializations (same structure, nested) → Known Implementation Gaps (places where the doc's own description reveals something documented elsewhere — like a rules file — isn't actually wired up in code; call these out rather than silently matching the aspirational description).
+
+Not auto-loaded into every session via `CLAUDE.md` — same as plans, read on demand when working on that calling, so unrelated conversations don't carry the weight of every calling's full narrative.
 
 ## Agent Infrastructure
 

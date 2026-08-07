@@ -13,7 +13,15 @@
  * melee hit. That's now fixed: ability lookups go through
  * `CombatManager._findKnownAbility(character, abilityId)`, which reads the full ability
  * definition from `window.game.abilitiesData.abilities[character.class.id]`, gated on
- * `character.selectedAbilities`. The "hit path is safe now" tests below exercise that.
+ * `character.selectedAbilities` OR `character.knownTactics`. The "hit path is safe now"
+ * tests below exercise that.
+ *
+ * Tactic/maneuver rename (2026-08-05): `Combatant.pendingManeuver` -> `pendingTactic`.
+ * Also fixed a real bug found during the rename: Exemplar tactics are stored exclusively
+ * in `character.knownTactics` by `Character.applyLevelUpSelections` (never in
+ * `selectedAbilities` — those are two separate level-up choice paths), so a
+ * `selectedAbilities`-only lookup here silently no-opped every on-hit tactic effect for
+ * every real character. `_findKnownAbility` now checks both lists.
  *
  * AudioManager is mocked because its real constructor calls `new Audio(...)`, which
  * doesn't exist in the Node test environment.
@@ -226,6 +234,66 @@ describe('CombatManager.attack — to-hit roll resolution (legacy ability keys)'
 });
 
 // ---------------------------------------------------------------------------
+// Attack roll resolution — 'NVSystem' mode (ADR-015 characterization prerequisite,
+// 2026-08-07, ahead of the Hearthcraft buff-aware branch landing in
+// getRawAttributeModifier()). 'NVSystem' is the live default (flipped at M1.5,
+// 2026-08-03) — every 5EClassic-mode test above pins the rollback path, but until now
+// nothing pinned the to-hit roll (the single hottest consumer of the resolver) under the
+// mode actually running in production. Mirrors the 5EClassic block's assertions/message
+// format, with 'prowess'/'insight' fixture keys instead of legacy 'str'/'dex' — meleeAttack
+// and rangedFinesseAttack both resolve to Prowess only in this mode (no dropped-DEX
+// nuance to characterize, unlike 5EClassic), so melee + ranged is sufficient to lock the
+// formula and message shape without redundant near-duplicate finesse/unarmed variants.
+// ---------------------------------------------------------------------------
+describe('CombatManager.attack — to-hit roll resolution (NVSystem mode)', () => {
+    const originalSystem = RULES.attributes.system;
+    beforeEach(() => {
+        RULES.attributes.system = 'NVSystem';
+    });
+    afterEach(() => {
+        RULES.attributes.system = originalSystem;
+    });
+
+    it('melee weapon uses Prowess modifier + proficiency', async () => {
+        const cm = new CombatManager();
+        const attacker = new Combatant(
+            makeCharacter({
+                abilities: { prowess: 16 }, // +3
+                equipment: { mainHand: { id: 'sword', weaponType: 'melee', properties: [], damage: { dice: '1d8' }, damageType: 'bone' }, offHand: null, armor: null }
+            }),
+            'enemy', 'atk'
+        );
+        const defender = new Combatant(makeCharacter({ ac: 999 }), 'enemy', 'def');
+
+        mockD20(10); // avoids crit (20) and crit-miss (1)
+        await cm.attack(attacker, defender);
+
+        expect(lastMessageStartingWith('Attack roll:')).toBe(
+            'Attack roll: 10 + 3 (ability) + 3 (prof) = 16 vs AC 999'
+        );
+    });
+
+    it('ranged weapon also resolves through Prowess, ignoring Insight', async () => {
+        const cm = new CombatManager();
+        const attacker = new Combatant(
+            makeCharacter({
+                abilities: { prowess: 14, insight: 20 }, // Insight must be ignored
+                equipment: { mainHand: { id: 'bow', weaponType: 'ranged', properties: [], damage: { dice: '1d8' }, damageType: 'bone', ammoCapacity: 20 }, offHand: null, armor: null }
+            }),
+            'enemy', 'atk'
+        );
+        const defender = new Combatant(makeCharacter({ ac: 999 }), 'enemy', 'def');
+
+        mockD20(10);
+        await cm.attack(attacker, defender);
+
+        expect(lastMessageStartingWith('Attack roll:')).toBe(
+            'Attack roll: 10 + 2 (ability) + 3 (prof) = 15 vs AC 999'
+        );
+    });
+});
+
+// ---------------------------------------------------------------------------
 // Hit path — on-hit ability dispatch (regression coverage for the
 // `attacker.character.abilities?.find(...)` TypeError fixed via
 // CombatManager._findKnownAbility; `character.abilities` is the ability-SCORE
@@ -246,18 +314,18 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         expect(attacker.actions.action).toBe(0);
     });
 
-    it('a confirmed player hit with an unknown pendingManeuver value does not throw', async () => {
+    it('a confirmed player hit with an unknown pendingTactic value does not throw', async () => {
         const cm = new CombatManager();
         const attacker = new Combatant(makeCharacter(), 'player', 'atk');
         const defender = new Combatant(makeCharacter({ ac: 1 }), 'enemy', 'def');
-        attacker.pendingManeuver = 'notARealAbility';
+        attacker.pendingTactic = 'notARealAbility';
 
         mockD20(15);
         await expect(cm.attack(attacker, defender)).resolves.not.toThrow();
-        expect(attacker.pendingManeuver).toBeNull(); // still cleared after the hit
+        expect(attacker.pendingTactic).toBeNull(); // still cleared after the hit
     });
 
-    it('_findKnownAbility only returns abilities the character actually knows', () => {
+    it('_findKnownAbility returns abilities known via selectedAbilities', () => {
         const cm = new CombatManager();
         window.game = {
             abilitiesData: {
@@ -275,15 +343,32 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         expect(cm._findKnownAbility(known, undefined)).toBeNull();
     });
 
-    it('a confirmed hit dispatches a known queued onHit maneuver via EffectDispatcher', async () => {
+    it('_findKnownAbility also returns tactics known only via knownTactics (the real Character.applyLevelUpSelections path — tactics are never added to selectedAbilities)', () => {
+        const cm = new CombatManager();
+        window.game = {
+            abilitiesData: {
+                abilities: {
+                    dedication: [{ id: 'testTrip', name: 'Test Trip', actionType: 'onHit', effects: {} }]
+                }
+            }
+        };
+        const knownByTactic = makeCharacter({ class: { id: 'dedication' }, selectedAbilities: [], knownTactics: ['testTrip'] });
+        const knowsNeither = makeCharacter({ class: { id: 'dedication' }, selectedAbilities: [], knownTactics: [] });
+
+        expect(cm._findKnownAbility(knownByTactic, 'testTrip')?.id).toBe('testTrip');
+        expect(cm._findKnownAbility(knowsNeither, 'testTrip')).toBeNull();
+    });
+
+    it('a confirmed hit dispatches a known queued onHit tactic via EffectDispatcher (real construction path — knownTactics, not selectedAbilities)', async () => {
         const cm = new CombatManager();
         const attackerChar = makeCharacter({
             class: { id: 'dedication' },
-            selectedAbilities: ['testTrip']
+            selectedAbilities: [],
+            knownTactics: ['testTrip']
         });
         const attacker = new Combatant(attackerChar, 'player', 'atk');
         const defender = new Combatant(makeCharacter({ ac: 1 }), 'enemy', 'def');
-        attacker.pendingManeuver = 'testTrip';
+        attacker.pendingTactic = 'testTrip';
 
         window.game = {
             abilitiesData: {
@@ -307,7 +392,7 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         mockD20(15);
         await expect(cm.attack(attacker, defender)).resolves.not.toThrow();
 
-        expect(attacker.pendingManeuver).toBeNull();
+        expect(attacker.pendingTactic).toBeNull();
         expect(lastMessageStartingWith('⚔️ Test Trip!')).toContain('extra damage');
     });
 });
@@ -514,5 +599,81 @@ describe('CombatManager.flee (NVSystem mode)', () => {
         // 10 + (1 blend + 3 prof) = 14 — even fully dumping Prowess, Insight alone still
         // produces a real (non-zero) modifier, not a total dump.
         expect(lastMessageStartingWith('🏃 Flee check:')).toContain('10 + 4 (Prowess+Insight blend + prof) = 14');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Topple weapon mastery — afterFailedSave reaction hook (Indomitable-reroll gap fix).
+// Site 3 of the three separate save implementations (see architect scoping pass,
+// 2026-08-06): this inline CON-save-vs-DC check previously had no reaction hook at all,
+// unlike executeSpecialMonsterAction()'s save. Confirms the hook actually fires, not just
+// that the code compiles.
+// ---------------------------------------------------------------------------
+describe('CombatManager.attack — Topple weapon mastery afterFailedSave reaction hook', () => {
+    afterEach(() => {
+        window.game = null;
+    });
+
+    it('prompts the afterFailedSave reaction hook (Indomitable) on a failed Topple save', async () => {
+        const cm = new CombatManager();
+        cm.weaponMasteryProficiencyRequired = false; // bypass isProficientWithWeapon() on the plain fixture
+
+        const attacker = new Combatant(
+            makeCharacter({
+                equipment: {
+                    mainHand: { id: 'quarterstaff', weaponType: 'melee', properties: [], damage: { dice: '1d6' }, damageType: 'bludgeoning' },
+                    offHand: null,
+                    armor: null
+                },
+                weaponMasteries: ['topple']
+            }),
+            'enemy', 'atk'
+        );
+        const defender = new Combatant(makeCharacter({ ac: 1 }), 'player', 'def');
+
+        window.game = { promptReaction: vi.fn().mockResolvedValue(null) };
+
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce(0.7) // attack roll -> 15: guaranteed hit, not a crit/crit-miss
+            .mockReturnValue(0);      // every roll after (damage, Topple's own CON save) -> minimum, guarantees the save fails
+
+        await cm.attack(attacker, defender);
+
+        expect(window.game.promptReaction).toHaveBeenCalledWith(
+            'afterFailedSave',
+            attacker,
+            defender,
+            expect.objectContaining({ saveType: 'con', saveDC: expect.any(Number), saveRoll: expect.any(Number) })
+        );
+    });
+
+    it('does not prompt the reaction hook when the Topple save succeeds', async () => {
+        const cm = new CombatManager();
+        cm.weaponMasteryProficiencyRequired = false;
+
+        const attacker = new Combatant(
+            makeCharacter({
+                equipment: {
+                    mainHand: { id: 'quarterstaff', weaponType: 'melee', properties: [], damage: { dice: '1d6' }, damageType: 'bludgeoning' },
+                    offHand: null,
+                    armor: null
+                },
+                weaponMasteries: ['topple']
+            }),
+            'enemy', 'atk'
+        );
+        const defender = new Combatant(makeCharacter({ ac: 1, abilityModifiers: { str: 0, dex: 0, con: 5, int: 0, wis: 0, cha: 0 } }), 'player', 'def');
+
+        window.game = { promptReaction: vi.fn().mockResolvedValue(null) };
+
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce(0.7)  // attack roll -> 15: guaranteed hit
+            .mockReturnValueOnce(0.5)  // damage roll (1d6), value irrelevant to this assertion
+            .mockReturnValueOnce(0.95); // Topple's CON save roll -> 20 + 5 con easily clears DC
+
+        await cm.attack(attacker, defender);
+
+        const failedSaveCalls = window.game.promptReaction.mock.calls.filter(call => call[0] === 'afterFailedSave');
+        expect(failedSaveCalls).toHaveLength(0);
     });
 });

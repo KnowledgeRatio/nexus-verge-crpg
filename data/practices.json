@@ -145,7 +145,7 @@
           {
             "type": "abilityScoreBonus",
             "bonusMagnitude": 1,
-            "scoreChoices": ["str", "dex", "con", "int", "wis", "cha"],
+            "scoreChoices": ["prowess", "vitality", "intellect", "insight", "presence", "composure"],
             "bonusApplication": {
               "mode": {
                 "1": "uniformChoice",
@@ -159,6 +159,41 @@
             "levelRequired": 1
           }
         ]
+      }
+    },
+    {
+      "id": "trading",
+      "name": "Trading",
+      "campaignIds": ["core"],
+      "callings": null,
+      "description": "You've learned to read a merchant's actual margins, not just their asking price. Permanently improves your buy and sell prices, on top of whatever your standing with them already gets you.",
+      "maxRank": 2,
+      "passive": true
+    },
+    {
+      "id": "wordcraft",
+      "name": "Wordcraft",
+      "campaignIds": ["core"],
+      "callings": null,
+      "description": "Letters sent ahead, favors traded for favors, a running ledger of who owes whom. What you actually do with a people still matters most — this just makes sure it's remembered and carries further.",
+      "maxRank": 2,
+      "passive": true
+    },
+    {
+      "id": "foraging",
+      "name": "Foraging",
+      "campaignIds": ["core"],
+      "callings": null,
+      "description": "During a long rest, you spend time reading the ground around camp — old caches, overlooked veins, what the last travelers left behind. What you bank pays off on your next real find.",
+      "maxRank": 2,
+      "bank": {
+        "applyDuring": "longRest",
+        "rollsPerRank": { "1": 1, "2": 2 },
+        "expiresOn": "nextLongRest",
+        "bonusLoot": {
+          "tableId": "wildernessReward_common",
+          "rarityFilter": null
+        }
       }
     }
   ]

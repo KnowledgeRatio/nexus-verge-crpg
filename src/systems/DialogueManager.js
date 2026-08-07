@@ -268,8 +268,7 @@ export default class DialogueManager {
         const nearbySettlements = [];
         const dominantTerrains = {};
 
-        for (const regionKey of Object.keys(world.generatedRegions)) {
-            const region = world.generatedRegions[regionKey];
+        for (const region of world.generatedRegions.values()) {
             if (!region?.features) {
                 continue;
             }

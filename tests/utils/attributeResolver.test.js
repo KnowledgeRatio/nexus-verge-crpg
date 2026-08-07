@@ -119,6 +119,70 @@ describe('getRawAttributeModifier (NVSystem mode — reads new key directly)', (
 });
 
 // ---------------------------------------------------------------------------
+// getRawAttributeModifier — Hearthcraft activeMealBuff branch. scoreChoices in
+// data/practices.json are always authored as NVSystem keys (prowess/vitality/...),
+// so buff.abilityScore is always NVSystem-shaped even under 5EClassic mode.
+// ---------------------------------------------------------------------------
+describe('getRawAttributeModifier (activeMealBuff)', () => {
+    const originalSystem = RULES.attributes.system;
+    afterEach(() => {
+        RULES.attributes.system = originalSystem;
+    });
+
+    it('adds the buff bonus to the score before computing the modifier (NVSystem mode)', () => {
+        RULES.attributes.system = 'NVSystem';
+        const character = {
+            abilities: { vitality: 10 },
+            activeMealBuff: { abilityScore: 'vitality', bonusMagnitude: 1 }
+        };
+        // (10 + 1 - 10) / 2 = 0.5, not (10 - 10) / 2 = 0
+        expect(getRawAttributeModifier(character, 'vitality')).toBe(0.5);
+    });
+
+    it('does not apply the buff to a non-matching attribute', () => {
+        RULES.attributes.system = 'NVSystem';
+        const character = {
+            abilities: { vitality: 10, insight: 10 },
+            activeMealBuff: { abilityScore: 'vitality', bonusMagnitude: 1 }
+        };
+        expect(getRawAttributeModifier(character, 'insight')).toBe(0);
+    });
+
+    it('defaults bonusMagnitude to 1 when omitted', () => {
+        RULES.attributes.system = 'NVSystem';
+        const character = {
+            abilities: { prowess: 12 },
+            activeMealBuff: { abilityScore: 'prowess' }
+        };
+        expect(getRawAttributeModifier(character, 'prowess')).toBe(1.5); // (12+1-10)/2
+    });
+
+    it('applies under 5EClassic mode when the buff is also legacy-shaped (same-shape direct match)', () => {
+        RULES.attributes.system = '5EClassic';
+        const character = {
+            abilities: { str: 10 },
+            activeMealBuff: { abilityScore: 'str', bonusMagnitude: 1 }
+        };
+        expect(getRawAttributeModifier(character, 'prowess')).toBe(0.5);
+    });
+
+    it('bridges an old-save legacy-keyed buff (pre scoreChoices migration) under current NVSystem mode', () => {
+        RULES.attributes.system = 'NVSystem';
+        const character = {
+            abilities: { prowess: 10 },
+            activeMealBuff: { abilityScore: 'str', bonusMagnitude: 1 } // legacy key from an old save
+        };
+        expect(getRawAttributeModifier(character, 'prowess')).toBe(0.5);
+    });
+
+    it('is a no-op when there is no active meal buff', () => {
+        RULES.attributes.system = 'NVSystem';
+        const character = { abilities: { vitality: 10 } };
+        expect(getRawAttributeModifier(character, 'vitality')).toBe(0);
+    });
+});
+
+// ---------------------------------------------------------------------------
 // getBlendedAttributeModifier (NVSystem mode) — the real target-system formulas
 // (docs/plans/2026-07-30-attribute-system-remap.md, M1 step 6). These are the "real,
 // intended behavior once the system flips to 'NVSystem'" formulas — concentration

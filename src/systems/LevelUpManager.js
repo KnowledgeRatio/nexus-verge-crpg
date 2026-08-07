@@ -29,7 +29,8 @@ export default class LevelUpManager {
             traits: [],
             practices: [],
             specialization: null,
-            maneuvers: []
+            tactics: [],
+            vows: []
         };
 
         this.availableChoices = [];
@@ -231,6 +232,14 @@ export default class LevelUpManager {
             traits = traits.filter(trait => trait.category === filter.category);
         }
 
+        // Filter by specialization/tier if specified (e.g. the level-3 Oath aura choice)
+        if (filter.specialization) {
+            traits = traits.filter(trait => trait.specialization === filter.specialization);
+        }
+        if (filter.tier !== undefined) {
+            traits = traits.filter(trait => trait.tier === filter.tier);
+        }
+
         return traits;
     }
 
@@ -245,13 +254,19 @@ export default class LevelUpManager {
         }
 
         // Reset selections
+        // NOTE: `tactics: []` must be present here — toggleChoiceSelection's checkbox branch
+        // does `this.currentSelections.tactics.push(...)` with no optional chaining. Omitting
+        // this key (as the pre-rename code did for `maneuvers`) throws the instant a player
+        // checks a level-3 tactic box.
         this.currentSelections = {
             asiChoice: null,
             abilities: [],
             spells: [],
             traits: [],
             practices: [],
-            specialization: null
+            specialization: null,
+            tactics: [],
+            vows: []
         };
 
         // Get available choices for this level
@@ -366,10 +381,17 @@ export default class LevelUpManager {
         // Filter by calling restriction (null = available to all)
         practices = practices.filter(p => !p.callings || p.callings.includes(classId));
 
-        // Exclude already-known practices
+        // Exclude practices already known at their max rank. Rank is just occurrence
+        // count in character.practices (a flat string[]) — no separate rank field.
+        // maxRank defaults to 1, so Forgecraft/Hearthcraft (no maxRank) keep today's
+        // exclude-if-known behavior unchanged.
         const character = gameState.get('character');
         const knownPractices = character?.practices || [];
-        practices = practices.filter(p => !knownPractices.includes(p.id));
+        practices = practices.filter(p => {
+            const maxRank = p.maxRank || 1;
+            const currentRank = knownPractices.filter(id => id === p.id).length;
+            return currentRank < maxRank;
+        });
 
         return practices;
     }
@@ -396,8 +418,11 @@ export default class LevelUpManager {
                 case 'specialization':
                     this.renderSpecializationChoice(character, choice);
                     break;
-                case 'maneuver':
-                    this.renderManeuverChoice(character, choice);
+                case 'tactic':
+                    this.renderTacticChoice(character, choice);
+                    break;
+                case 'vow':
+                    this.renderVowChoice(character, choice);
                     break;
             }
         });
@@ -418,10 +443,45 @@ export default class LevelUpManager {
         if (this.availableChoices.length === 0 || !this.availableChoices.some(c => c.type === 'specialization')) {
             document.getElementById('specializationSection').style.display = 'none';
         }
-        // Maneuver section: always hidden initially — shown dynamically when Exemplar spec is selected
-        const maneuverSection = document.getElementById('maneuverChoiceSection');
-        if (maneuverSection) {
-            maneuverSection.style.display = 'none';
+        if (this.availableChoices.length === 0 || !this.availableChoices.some(c => c.type === 'vow')) {
+            const vowSection = document.getElementById('vowChoiceSection');
+            if (vowSection) {
+                vowSection.style.display = 'none';
+            }
+        }
+        // Tactic section: shown immediately if the character already has the required
+        // persisted specialization (levels 7/9 growth choices — no specialization choice
+        // appears that level, so there's nothing to click to reveal it). Otherwise hidden
+        // until the player picks the matching specialization in this same modal (level 3 —
+        // toggleChoiceSelection's specialization branch handles that reveal).
+        const tacticSection = document.getElementById('tacticChoiceSection');
+        if (tacticSection) {
+            const tacticChoice = this.availableChoices.find(c => c.type === 'tactic');
+            const alreadyHasSpec = !!tacticChoice && character.specialization === (tacticChoice.requiresSpecialization || 'exemplar');
+            tacticSection.style.display = alreadyHasSpec ? 'block' : 'none';
+        }
+        // Trait section: same specialization gate as tactic, for choices that declare
+        // requiresSpecialization (currently only the level-3 Oath Aura pick). Without this,
+        // renderTraitChoice's unconditional 'block' above would show the Aura choice to
+        // Exemplar characters too, and its required:true would block their confirm button.
+        // Hidden by default; toggleChoiceSelection's specialization branch reveals it on pick.
+        const traitSection = document.getElementById('traitChoiceSection');
+        if (traitSection) {
+            const traitChoice = this.availableChoices.find(c => c.type === 'trait' && c.requiresSpecialization);
+            if (traitChoice) {
+                const alreadyHasSpec = character.specialization === traitChoice.requiresSpecialization;
+                traitSection.style.display = alreadyHasSpec ? 'block' : 'none';
+            }
+        }
+        // Vow section: same gate, but no specialization choice occurs at these levels
+        // (5/7/9 — spec was already chosen at level 3), so this is the only gate needed.
+        const vowSection = document.getElementById('vowChoiceSection');
+        if (vowSection) {
+            const vowChoice = this.availableChoices.find(c => c.type === 'vow' && c.requiresSpecialization);
+            if (vowChoice) {
+                const alreadyHasSpec = character.specialization === vowChoice.requiresSpecialization;
+                vowSection.style.display = alreadyHasSpec ? 'block' : 'none';
+            }
         }
     }
 
@@ -490,10 +550,45 @@ export default class LevelUpManager {
         list.innerHTML = traits.map(trait => `
       <div class="choice-item" data-choice-type="trait" data-choice-id="${trait.id}">
         <div class="choice-item-header">
-          <input type="checkbox" class="choice-checkbox">
+          <input type="${choice.count === 1 ? 'radio' : 'checkbox'}" name="trait" class="choice-${choice.count === 1 ? 'radio' : 'checkbox'}">
           <span class="choice-name">${trait.name}</span>
         </div>
         <div class="choice-description">${trait.description}</div>
+      </div>
+    `).join('');
+    }
+
+    /**
+   * Render vow choice section (Oath only — levels 5/7/9). Candidate pool merges
+   * abilities.dedication (specialization: 'oath', tags includes 'vow') and traits (same
+   * filter, e.g. Conviction), excluding vows the character already knows.
+   */
+    renderVowChoice(character, choice) {
+        const section = document.getElementById('vowChoiceSection');
+        const list = document.getElementById('vowChoiceList');
+        const countSpan = document.getElementById('vowChoiceCount');
+        if (!section || !list) {
+            return;
+        }
+
+        section.style.display = 'block';
+        countSpan.textContent = `Choose ${choice.count}${choice.required ? ' — Required' : ' (optional)'}`;
+
+        const abilityPool = (this.abilitiesData?.abilities?.dedication || []).filter(ab =>
+            ab.specialization === 'oath' && ab.tags?.includes('vow')
+        );
+        const traitPool = (this.traitsData?.traits || []).filter(t =>
+            t.specialization === 'oath' && t.tags?.includes('vow')
+        );
+        const vows = [...abilityPool, ...traitPool].filter(v => !character.knownVows?.includes(v.id));
+
+        list.innerHTML = vows.map(v => `
+      <div class="choice-item" data-choice-type="vow" data-choice-id="${v.id}">
+        <div class="choice-item-header">
+          <input type="checkbox" class="choice-checkbox">
+          <span class="choice-name">${v.name}</span>
+        </div>
+        <div class="choice-description">${v.description}</div>
       </div>
     `).join('');
     }
@@ -510,16 +605,21 @@ export default class LevelUpManager {
         countSpan.textContent = `Choose ${choice.count}${choice.required ? ' - Required' : ''}`;
 
         const practices = this.getFilteredPractices(character.class.id);
+        const knownPractices = character.practices || [];
 
-        list.innerHTML = practices.map(practice => `
+        list.innerHTML = practices.map(practice => {
+            const currentRank = knownPractices.filter(id => id === practice.id).length;
+            const displayName = currentRank > 0 ? `${practice.name} (Rank ${currentRank + 1})` : practice.name;
+            return `
       <div class="choice-item practice-choice" data-choice-type="practice" data-choice-id="${practice.id}">
         <div class="choice-item-header">
           <input type="${choice.count === 1 ? 'radio' : 'checkbox'}" name="practice" class="choice-${choice.count === 1 ? 'radio' : 'checkbox'}">
-          <span class="choice-name">${practice.name}</span>
+          <span class="choice-name">${displayName}</span>
         </div>
         <div class="choice-description">${practice.description}</div>
       </div>
-    `).join('');
+    `;
+        }).join('');
     }
 
     /**
@@ -545,34 +645,41 @@ export default class LevelUpManager {
     }
 
     /**
-   * Render maneuver choice section (Exemplar only — shown after spec selection)
+   * Render tactic choice section (Exemplar only — shown after spec selection, or
+   * immediately at levels with no spec choice but a persisted Exemplar specialization)
    */
-    renderManeuverChoice(character, choice) {
-        const section = document.getElementById('maneuverChoiceSection');
-        const list = document.getElementById('maneuverChoiceList');
-        const countSpan = document.getElementById('maneuverChoiceCount');
+    renderTacticChoice(character, choice) {
+        const section = document.getElementById('tacticChoiceSection');
+        const list = document.getElementById('tacticChoiceList');
+        const countSpan = document.getElementById('tacticChoiceCount');
         if (!section || !list) {
             return;
         }
 
-        countSpan.textContent = `Choose ${choice.count} — Required`;
+        countSpan.textContent = `Choose ${choice.count}${choice.required ? ' — Required' : ' (optional)'}`;
 
-        // Gather all Exemplar maneuvers from loaded abilities
+        // Gather all Exemplar tactics from loaded abilities, excluding ones already known
+        // (relevant at levels 7/9, where the character already knows tactics from level 3+)
         const allAbilities = this.abilitiesData?.abilities?.dedication || [];
-        const maneuvers = allAbilities.filter(ab => ab.specialization === 'exemplar' && ab.levelRequired <= (character.pendingLevelUp?.newLevel || character.level));
+        const tactics = allAbilities.filter(ab =>
+            ab.specialization === 'exemplar' &&
+            ab.tags?.includes('tactic') &&
+            ab.levelRequired <= (character.pendingLevelUp?.newLevel || character.level) &&
+            !character.knownTactics?.includes(ab.id)
+        );
 
-        list.innerHTML = maneuvers.map(m => `
-      <div class="choice-item maneuver-choice" data-choice-type="maneuver" data-choice-id="${m.id}">
+        list.innerHTML = tactics.map(t => `
+      <div class="choice-item maneuver-choice" data-choice-type="tactic" data-choice-id="${t.id}">
         <div class="choice-item-header">
           <input type="checkbox" class="choice-checkbox">
-          <span class="choice-name">${m.name}</span>
+          <span class="choice-name">${t.name}</span>
           <span class="maneuver-cost">1 Resolve</span>
         </div>
-        <div class="choice-description">${m.description}</div>
+        <div class="choice-description">${t.description}</div>
       </div>
     `).join('');
 
-    // Section visibility is controlled by spec selection — don't show yet
+    // Section visibility is controlled by renderChoiceSections/toggleChoiceSelection
     }
 
     /**
@@ -624,15 +731,15 @@ export default class LevelUpManager {
             checkbox.checked = true;
             this.currentSelections.specialization = choiceId;
 
-            // Show/hide maneuver section depending on spec choice
-            const maneuverSection = document.getElementById('maneuverChoiceSection');
-            const maneuverChoice = this.availableChoices.find(c => c.type === 'maneuver');
-            if (maneuverSection && maneuverChoice) {
-                const shouldShow = choiceId === (maneuverChoice.requiresSpecialization || 'exemplar');
+            // Show/hide tactic section depending on spec choice
+            const maneuverSection = document.getElementById('tacticChoiceSection');
+            const tacticChoice = this.availableChoices.find(c => c.type === 'tactic');
+            if (maneuverSection && tacticChoice) {
+                const shouldShow = choiceId === (tacticChoice.requiresSpecialization || 'exemplar');
                 maneuverSection.style.display = shouldShow ? 'block' : 'none';
                 if (!shouldShow) {
-                    // Clear maneuver selections if switching away from Exemplar
-                    this.currentSelections.maneuvers = [];
+                    // Clear tactic selections if switching away from Exemplar
+                    this.currentSelections.tactics = [];
                     document.querySelectorAll('.maneuver-choice').forEach(el => {
                         el.classList.remove('selected');
                         const cb = el.querySelector('.choice-checkbox');
@@ -642,10 +749,46 @@ export default class LevelUpManager {
                     });
                 }
             }
+
+            // Show/hide trait section depending on spec choice (e.g. Oath's level-3 Aura pick)
+            const traitSection = document.getElementById('traitChoiceSection');
+            const traitChoice = this.availableChoices.find(c => c.type === 'trait' && c.requiresSpecialization);
+            if (traitSection && traitChoice) {
+                const shouldShowTrait = choiceId === traitChoice.requiresSpecialization;
+                traitSection.style.display = shouldShowTrait ? 'block' : 'none';
+                if (!shouldShowTrait) {
+                    // Clear trait selections if switching away from the specialization that requires them
+                    this.currentSelections.traits = [];
+                    traitSection.querySelectorAll('.choice-item').forEach(el => {
+                        el.classList.remove('selected');
+                        const cb = el.querySelector('.choice-checkbox, .choice-radio');
+                        if (cb) {
+                            cb.checked = false;
+                        }
+                    });
+                }
+            }
         } else {
+            const maxCount = this.getMaxCountForChoiceType(choiceType);
+
+            if (maxCount === 1) {
+                // Radio - single selection, always replaces any prior pick in this group
+                document.querySelectorAll(`.choice-item[data-choice-type="${choiceType}"]`).forEach(el => {
+                    el.classList.remove('selected');
+                    const cb = el.querySelector('.choice-checkbox, .choice-radio');
+                    if (cb) {
+                        cb.checked = false;
+                    }
+                });
+                choiceElement.classList.add('selected');
+                checkbox.checked = true;
+                this.currentSelections[`${choiceType}s`] = [choiceId];
+                this.validateAndUpdateUI();
+                return;
+            }
+
             // Checkbox - multiple selections possible
             const isSelected = choiceElement.classList.contains('selected');
-            const maxCount = this.getMaxCountForChoiceType(choiceType);
             const currentCount = this.currentSelections[`${choiceType}s`]?.length || 0;
 
             if (isSelected) {
@@ -700,14 +843,32 @@ export default class LevelUpManager {
                     return;
                 }
 
-                // Maneuver choice: only required when the matching spec is selected
-                if (choice.type === 'maneuver') {
+                // Tactic choice: only required when the matching spec is selected in THIS
+                // modal (level 3 — the only level where a specialization choice coexists
+                // with a required tactic choice). At levels 7/9 the tactic choice is
+                // required: false, so it never reaches this branch.
+                if (choice.type === 'tactic') {
                     const specRequired = choice.requiresSpecialization;
                     if (specRequired && this.currentSelections.specialization === specRequired) {
-                        const selected = this.currentSelections.maneuvers?.length || 0;
+                        const selected = this.currentSelections.tactics?.length || 0;
                         if (selected < choice.count) {
                             confirmBtn.disabled = true;
-                            hint.textContent = `Choose ${choice.count} maneuvers (${selected}/${choice.count} selected)`;
+                            hint.textContent = `Choose ${choice.count} tactics (${selected}/${choice.count} selected)`;
+                            return;
+                        }
+                    }
+                    continue;
+                }
+
+                // Trait choice with requiresSpecialization (e.g. Oath's level-3 Aura pick):
+                // same shape as the tactic case above — only required once the matching
+                // specialization is actually selected in this modal.
+                if (choice.type === 'trait' && choice.requiresSpecialization) {
+                    if (this.currentSelections.specialization === choice.requiresSpecialization) {
+                        const selected = this.currentSelections.traits?.length || 0;
+                        if (selected < choice.count) {
+                            confirmBtn.disabled = true;
+                            hint.textContent = `Select ${choice.count} ${choice.label || 'trait'}(s)`;
                             return;
                         }
                     }
@@ -749,11 +910,16 @@ export default class LevelUpManager {
         character.applyLevelUpSelections(this.currentSelections);
 
         // --- Process autoGrantAbilities from specializationFeatures ---
-        // When a specialization was chosen, auto-grant the abilities listed in its data
-        if (this.currentSelections.specialization && this.progressionData) {
+        // When a specialization was chosen THIS level (level 3), currentSelections carries
+        // it. At later levels with their own specializationFeatures entries (e.g. level 5's
+        // Vanguard's Charge, or future exemplar/oath growth) there is no specialization
+        // *choice* that level — currentSelections.specialization stays null — so fall back
+        // to the character's already-persisted specialization.
+        const specKey = this.currentSelections.specialization || character.specialization;
+        if (specKey && this.progressionData) {
             const classProgression = this.progressionData.progressionByClass[character.class?.id];
             const levelData = classProgression?.[newLevel];
-            const specFeatures = levelData?.specializationFeatures?.[this.currentSelections.specialization];
+            const specFeatures = levelData?.specializationFeatures?.[specKey];
             const autoGrant = specFeatures?.autoGrantAbilities;
 
             if (Array.isArray(autoGrant) && autoGrant.length > 0) {
@@ -764,6 +930,20 @@ export default class LevelUpManager {
                     if (!character.selectedAbilities.includes(abilityId)) {
                         character.selectedAbilities.push(abilityId);
                         console.log(`  ✨ Auto-granted ability: ${abilityId}`);
+                    }
+                }
+            }
+
+            const autoGrantTraits = specFeatures?.autoGrantTraits;
+
+            if (Array.isArray(autoGrantTraits) && autoGrantTraits.length > 0) {
+                if (!character.selectedTraits) {
+                    character.selectedTraits = [];
+                }
+                for (const traitId of autoGrantTraits) {
+                    if (!character.selectedTraits.includes(traitId)) {
+                        character.selectedTraits.push(traitId);
+                        console.log(`  ✨ Auto-granted trait: ${traitId}`);
                     }
                 }
             }
@@ -882,7 +1062,9 @@ export default class LevelUpManager {
             spells: [],
             traits: [],
             practices: [],
-            specialization: null
+            specialization: null,
+            tactics: [],
+            vows: []
         };
     }
 }

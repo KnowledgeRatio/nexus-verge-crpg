@@ -41,6 +41,7 @@ Current substitutions:
 | RAW mechanic | This game's substitute | Rationale |
 |---|---|---|
 | Slow mastery: -10 ft speed | -1 AC until start of your next turn | Speed is N/A; AC reduction preserves the "slowing" tactical feel |
+| Pushing Attack: push target away | Target cannot make melee attacks against the attacker until the start of their next turn | Distance/positioning is N/A in this game; disabling their retaliation preserves the "pushed away" tactical feel |
 
 Document any future substitutions in this table.
 

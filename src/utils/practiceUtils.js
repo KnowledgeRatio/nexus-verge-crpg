@@ -18,20 +18,3 @@ export function resolveLevelKeyedValue(levelKeyedObj, level) {
     }
     return resolved;
 }
-
-/**
- * Returns the effective ability score for a character, including any active meal buff.
- * Use this instead of character.abilities[key] in systems that should respect Hearthcraft buffs.
- *
- * @param {Object} character
- * @param {string} abilityKey  'str'|'dex'|'con'|'int'|'wis'|'cha'
- * @returns {number}
- */
-export function getBuffedAbility(character, abilityKey) {
-    const base = character.abilities?.[abilityKey] ?? 10;
-    const buff = character.activeMealBuff;
-    if (buff && buff.abilityScore === abilityKey) {
-        return base + (buff.bonusMagnitude ?? 1);
-    }
-    return base;
-}

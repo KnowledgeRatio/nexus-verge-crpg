@@ -405,26 +405,6 @@ export class GameState {
     }
 
     /**
-     * Modify faction reputation
-     */
-    modifyReputation(factionId, amount) {
-        if (!this.data.factions[factionId]) {
-            this.data.factions[factionId] = 0;
-        }
-
-        const oldRep = this.data.factions[factionId];
-        this.data.factions[factionId] = Math.max(0, Math.min(100, oldRep + amount));
-
-        this.notify(`factions.${factionId}`, this.data.factions[factionId]);
-
-        if (amount > 0) {
-            this.addMessage(`Reputation with ${factionId} increased by ${amount}`, 'success');
-        } else {
-            this.addMessage(`Reputation with ${factionId} decreased by ${Math.abs(amount)}`, 'warning');
-        }
-    }
-
-    /**
      * Returns [player, ...living companions] as one array.
      * Safe to call before party is initialized (returns [player]).
      * @returns {Array} Full party member list
@@ -588,6 +568,7 @@ export class GameState {
         }
 
         this.data.fallenCompanions = savedData.fallenCompanions || [];
+        this.data.factions = savedData.factions || {};
 
         // Notify all observers of full state reload
         this.notify('*', this.data);

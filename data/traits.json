@@ -349,6 +349,127 @@
       "campaignIds": [
         "core"
       ]
+    },
+    {
+      "id": "grace_under_pressure",
+      "type": "trait",
+      "name": "Grace Under Pressure",
+      "tier": 3,
+      "calling": "dedication",
+      "specialization": "exemplar",
+      "category": "exemplarPassive",
+      "description": "A target already suffering a condition from one of your tactics has disadvantage on its save against the next tactic you use on it.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "🎯",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "vanguard",
+      "type": "trait",
+      "name": "Vanguard",
+      "tier": 5,
+      "calling": "dedication",
+      "specialization": "exemplar",
+      "category": "exemplarPassive",
+      "description": "The first tactic you use against a target that wasn't engaged with anyone gains +1 to the attack roll and +1d4 damage.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "⚡",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "aura_of_exposure",
+      "type": "trait",
+      "name": "Aura of Exposure",
+      "tier": 3,
+      "calling": "dedication",
+      "specialization": "oath",
+      "category": "oathAura",
+      "description": "Enemies engaged with you are Exposed: -1 AC, for as long as the engagement lasts.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "⚠️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "aura_of_sanctuary",
+      "type": "trait",
+      "name": "Aura of Sanctuary",
+      "tier": 3,
+      "calling": "dedication",
+      "specialization": "oath",
+      "category": "oathAura",
+      "description": "You and allies engaged with the same enemy as you gain +1 AC.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "🛡️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "aura_of_mercy",
+      "type": "trait",
+      "name": "Aura of Mercy",
+      "tier": 3,
+      "calling": "dedication",
+      "specialization": "oath",
+      "category": "oathAura",
+      "description": "You and allies gain +1 to saving throws.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "🙏",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "conviction",
+      "type": "trait",
+      "name": "Conviction",
+      "tier": 5,
+      "calling": "dedication",
+      "specialization": "oath",
+      "category": "oathAura",
+      "tags": ["vow"],
+      "description": "When Sworn Strike reduces a target to 0 HP, you regain 1 Resolve.",
+      "passive": true,
+      "permanent": true,
+      "effects": [],
+      "visualFeedback": {
+        "icon": "❤️",
+        "message": null
+      },
+      "campaignIds": [
+        "core"
+      ]
     }
   ]
 }

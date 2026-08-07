@@ -26,3 +26,4 @@
 
 - [Attribute remap staging recommendation](project_attribute_remap_staging.md) — proposed (not yet accepted) milestone/flag/soak plan for the six-attribute system migration
 - [Attribute remap deferred-item issues](project_attribute_remap_issues.md) — GitHub issues #13-#20 filed 2026-07-31 for every deferred item in the remap plan doc, with links
+- [Practices system rank-3 constraint](project_practices_system.md) — practices expanding beyond Forgecraft/Hearthcraft, rank 2 = second pick, rank 3 must be step-change not scale-up (issue #22)

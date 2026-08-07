@@ -338,3 +338,134 @@ describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
         expect(character.skills.athletics.bonus).toBe(6);
     });
 });
+
+// ---------------------------------------------------------------------------
+// shortRest()/longRest() abilityUses reset — resourceType-aware (bug fix,
+// architect scoping pass 2026-08-06). Previously shortRest() unconditionally wiped
+// abilityUses for every ability, and longRest() never touched it at all, so a
+// longRest-gated ability would be wiped by a short rest and never restored by a long
+// one. No real 'longRest' ability exists in abilities.json yet, so this constructs a
+// hypothetical one via the same abilitiesData shape CombatManager._findKnownAbility()
+// reads (window.game.abilitiesData.abilities[classId]).
+// ---------------------------------------------------------------------------
+describe('Character shortRest()/longRest() — abilityUses reset respects resourceType', () => {
+    const abilitiesData = {
+        abilities: {
+            testClass: [
+                { id: 'quickStrike', name: 'Quick Strike', resourceType: 'shortRest', usesPerShortRest: 1 },
+                { id: 'lastStand', name: 'Last Stand', resourceType: 'longRest', usesPerLongRest: 1 }
+            ]
+        }
+    };
+
+    it('shortRest() clears shortRest-resourceType uses but leaves longRest-resourceType uses untouched', () => {
+        const character = makeCharacter({
+            selectedAbilities: ['quickStrike', 'lastStand'],
+            abilityUses: { quickStrike: 1, lastStand: 1 }
+        });
+
+        character.shortRest(abilitiesData);
+
+        expect(character.abilityUses.quickStrike).toBeUndefined();
+        expect(character.abilityUses.lastStand).toBe(1); // survives the short rest
+    });
+
+    it('longRest() clears both shortRest- and longRest-resourceType uses', () => {
+        const character = makeCharacter({
+            selectedAbilities: ['quickStrike', 'lastStand'],
+            abilityUses: { quickStrike: 1, lastStand: 1 }
+        });
+
+        character.longRest(abilitiesData);
+
+        expect(character.abilityUses.quickStrike).toBeUndefined();
+        expect(character.abilityUses.lastStand).toBeUndefined();
+    });
+
+    it('round trip: a longRest-gated use survives a short rest, then clears on a long rest', () => {
+        const character = makeCharacter({
+            selectedAbilities: ['lastStand'],
+            abilityUses: { lastStand: 1 }
+        });
+
+        character.shortRest(abilitiesData);
+        expect(character.abilityUses.lastStand).toBe(1);
+
+        character.longRest(abilitiesData);
+        expect(character.abilityUses.lastStand).toBeUndefined();
+    });
+});
+
+// ---------------------------------------------------------------------------
+// longRest() clears activeMealBuff (bug fix — a stale Hearthcraft buff previously
+// survived past its stated "persists": "untilNextLongRest" if the meal-prep modal
+// was skipped).
+// ---------------------------------------------------------------------------
+describe('Character.longRest() clears activeMealBuff', () => {
+    it('resets activeMealBuff to null even if no new meal was prepared', () => {
+        const character = makeCharacter({
+            activeMealBuff: { practiceId: 'hearthcraft', abilityScore: 'prowess', bonusMagnitude: 1, fatigueRateMultiplier: 0.75 }
+        });
+
+        character.longRest();
+
+        expect(character.activeMealBuff).toBeNull();
+    });
+});
+
+// ---------------------------------------------------------------------------
+// equipmentModCharges — generic uses/recharge tracker for equipment mod effects
+// (e.g. Deflecting), keyed by propertyId via itemProperties.json's effect.recharge.
+// ---------------------------------------------------------------------------
+describe('Character equipmentModCharges reset on rest', () => {
+    const originalWindow = globalThis.window;
+
+    afterEach(() => {
+        globalThis.window = originalWindow;
+    });
+
+    it('shortRest() clears charges for propertyIds whose effect.recharge is shortRest', () => {
+        globalThis.window = globalThis.window || {};
+        window.lootManager = {
+            getPropertyEffect: (propId) => propId === 'deflecting'
+                ? { type: 'modifyShield', property: 'savingThrowReaction', uses: 1, recharge: 'shortRest' }
+                : null
+        };
+
+        const character = makeCharacter({ equipmentModCharges: { deflecting: 1 } });
+        character.shortRest();
+
+        expect(character.equipmentModCharges.deflecting).toBeUndefined();
+    });
+
+    it('leaves charges for propertyIds whose effect.recharge does not match the reset type', () => {
+        globalThis.window = globalThis.window || {};
+        window.lootManager = {
+            getPropertyEffect: (propId) => propId === 'someLongRestMod'
+                ? { type: 'modifyWeapon', property: 'someEffect', uses: 1, recharge: 'longRest' }
+                : null
+        };
+
+        const character = makeCharacter({ equipmentModCharges: { someLongRestMod: 1 } });
+        character.shortRest();
+
+        expect(character.equipmentModCharges.someLongRestMod).toBe(1); // untouched by a short rest
+    });
+
+    it('longRest() clears both shortRest- and longRest-recharge charges', () => {
+        globalThis.window = globalThis.window || {};
+        window.lootManager = {
+            getPropertyEffect: (propId) => {
+                if (propId === 'deflecting') return { type: 'modifyShield', property: 'savingThrowReaction', uses: 1, recharge: 'shortRest' };
+                if (propId === 'someLongRestMod') return { type: 'modifyWeapon', property: 'someEffect', uses: 1, recharge: 'longRest' };
+                return null;
+            }
+        };
+
+        const character = makeCharacter({ equipmentModCharges: { deflecting: 1, someLongRestMod: 1 } });
+        character.longRest();
+
+        expect(character.equipmentModCharges.deflecting).toBeUndefined();
+        expect(character.equipmentModCharges.someLongRestMod).toBeUndefined();
+    });
+});

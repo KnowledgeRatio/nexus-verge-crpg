@@ -1340,7 +1340,8 @@ export const RULES = {
             // Blended contexts — sum raw modifiers, floor once (see Engine rule in the plan).
             concentration:         { type: 'blend', attributes: ['vitality', 'composure'] },
             flee:                  { type: 'blend', attributes: ['prowess', 'insight'] },
-            menacingAttackDC:      { type: 'blend', attributes: ['prowess', 'presence'] }
+            menacingAttackDC:      { type: 'blend', attributes: ['prowess', 'presence'] },
+            challengeDC:           { type: 'blend', attributes: ['prowess', 'presence'] }
         },
 
         // Save-file/monster upconversion only (ADR-011). Each legacy base score copies onto

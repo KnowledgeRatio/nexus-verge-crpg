@@ -62,7 +62,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "beforeAttack",
         "resourceType": "resolve",
         "resolveCost": 1,
@@ -70,7 +71,7 @@
         "description": "Before making an attack roll, spend 1 Resolve to add your maneuver die to the roll. Declare before the attack roll is made.",
         "effects": {
           "precisionAttackBonus": {
-            "dice": "maneuverDie",
+            "dice": "tacticDie",
             "timing": "beforeAttack"
           }
         },
@@ -82,7 +83,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "onHit",
         "resourceType": "resolve",
         "resolveCost": 1,
@@ -90,7 +92,7 @@
         "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or be knocked Prone.",
         "effects": {
           "onHitSaveOrCondition": {
-            "bonusDice": "maneuverDie",
+            "bonusDice": "tacticDie",
             "saveType": "vitality",
             "condition": "prone",
             "conditionDuration": "combat",
@@ -105,7 +107,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "reaction",
         "reactionTrigger": "afterMiss",
         "resourceType": "resolve",
@@ -114,7 +117,7 @@
         "description": "When an enemy misses you with a melee attack, use your reaction to make a weapon attack against them. Add your maneuver die to the damage.",
         "effects": {
           "reactionAttack": {
-            "bonusDice": "maneuverDie",
+            "bonusDice": "tacticDie",
             "trigger": "enemyMissesMelee"
           }
         },
@@ -126,7 +129,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "onHit",
         "resourceType": "resolve",
         "resolveCost": 1,
@@ -134,8 +138,8 @@
         "description": "On a hit, add your maneuver die to the damage. The target must succeed on a WIS saving throw or be Frightened of you until the end of their next turn.",
         "effects": {
           "onHitSaveOrCondition": {
-            "bonusDice": "maneuverDie",
-            "saveType": "wis",
+            "bonusDice": "tacticDie",
+            "saveType": "composure",
             "condition": "frightened",
             "conditionDuration": "untilEndOfTurn",
             "conditionIcon": "😱",
@@ -150,7 +154,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "onHit",
         "resourceType": "resolve",
         "resolveCost": 1,
@@ -158,7 +163,7 @@
         "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or be Pushed — they cannot make melee attacks against you next turn.",
         "effects": {
           "onHitPush": {
-            "bonusDice": "maneuverDie",
+            "bonusDice": "tacticDie",
             "saveType": "vitality",
             "condition": "pushed",
             "conditionDuration": "untilEndOfTurn"
@@ -172,17 +177,41 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "bonusAction",
         "resourceType": "resolve",
         "resolveCost": 1,
         "usableOutOfCombat": false,
-        "description": "As a bonus action, spend 1 Resolve to bolster your resolve. Gain temporary HP equal to your maneuver die roll + your CON modifier.",
+        "description": "As a bonus action, spend 1 Resolve to bolster your resolve. Choose one: gain temporary HP equal to your tactic die roll + your CON modifier, or grant that temporary HP to an ally you are engaged alongside.",
         "effects": {
-          "selfTempHP": {
-            "dice": "maneuverDie",
-            "bonus": "conMod"
-          }
+          "choice": true,
+          "options": [
+            {
+              "id": "self",
+              "name": "Self",
+              "description": "Gain temporary HP equal to your tactic die roll + your CON modifier",
+              "usableOutOfCombat": false,
+              "effects": {
+                "selfTempHP": {
+                  "dice": "tacticDie",
+                  "bonus": "conMod"
+                }
+              }
+            },
+            {
+              "id": "ally",
+              "name": "Ally",
+              "description": "Grant temporary HP to an ally you are engaged alongside, equal to the tactic die roll + your CON modifier",
+              "usableOutOfCombat": false,
+              "effects": {
+                "allyTempHP": {
+                  "dice": "tacticDie",
+                  "bonus": "conMod"
+                }
+              }
+            }
+          ]
         },
         "campaignIds": ["core"]
       },
@@ -192,7 +221,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "reaction",
         "reactionTrigger": "afterHit",
         "resourceType": "resolve",
@@ -201,7 +231,7 @@
         "description": "When you are hit by a melee attack, use your reaction to reduce the damage by your maneuver die roll + your CON modifier.",
         "effects": {
           "reactionDamageReduction": {
-            "reductionDice": "maneuverDie",
+            "reductionDice": "tacticDie",
             "reductionBonus": "conMod"
           }
         },
@@ -213,7 +243,8 @@
         "callings": ["dedication"],
         "specialization": "exemplar",
         "levelRequired": 3,
-        "subtype": "maneuver",
+        "subtype": "tactic",
+        "tags": ["tactic"],
         "actionType": "onHit",
         "resourceType": "resolve",
         "resolveCost": 1,
@@ -221,7 +252,7 @@
         "description": "On a hit, add your maneuver die to the damage. The target must succeed on a STR saving throw or suffer -2 to attack rolls until the start of their next turn.",
         "effects": {
           "onHitCondition": {
-            "bonusDice": "maneuverDie",
+            "bonusDice": "tacticDie",
             "saveType": "vitality",
             "condition": "disarmed",
             "conditionDuration": "untilStartOfTurn",
@@ -295,6 +326,111 @@
             }
           ]
         },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "challenge",
+        "name": "Challenge",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 5,
+        "subtype": "vow",
+        "tags": ["vow"],
+        "actionType": "bonusAction",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "Target one enemy. It must succeed on a Composure save or become Taunted (a concentration effect — lasts until you lose concentration). While Taunted, if the target attacks anyone but you, that attack has disadvantage. If it attacks you anyway, it takes -1 AC until its next turn.",
+        "effects": {
+          "targetedSaveOrCondition": {
+            "saveType": "composure",
+            "dcContext": "challengeDC",
+            "condition": "taunted",
+            "concentration": true,
+            "conditionIcon": "😤"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "reprisal",
+        "name": "Reprisal",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 5,
+        "subtype": "vow",
+        "tags": ["vow"],
+        "actionType": "reaction",
+        "reactionTrigger": "afterHit",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "When an enemy hits an ally other than you, use your reaction to make a weapon attack against it.",
+        "effects": {
+          "reactionAttack": {
+            "trigger": "allyHit"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "intervene",
+        "name": "Intervene",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 5,
+        "subtype": "vow",
+        "tags": ["vow"],
+        "actionType": "reaction",
+        "reactionTrigger": "afterHit",
+        "resourceType": "resolve",
+        "resolveCost": "variable",
+        "maxResolveCost": 3,
+        "usableOutOfCombat": false,
+        "description": "When an ally near you would be dropped to 0 HP by a hit, spend 1-3 Resolve. Reduce their damage from this hit by (Resolve spent) x 1d8, and take that same amount yourself instead — neither of you can take more than the hit's original damage.",
+        "effects": {
+          "variableCostDamageRedirect": {
+            "damageFormula": "1d8",
+            "trigger": "allyWouldDrop"
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "bolster",
+        "name": "Bolster",
+        "callings": ["dedication"],
+        "specialization": "oath",
+        "levelRequired": 5,
+        "subtype": "vow",
+        "tags": ["vow"],
+        "actionType": "bonusAction",
+        "resourceType": "resolve",
+        "resolveCost": 1,
+        "usableOutOfCombat": false,
+        "description": "Grant an ally you're engaged alongside advantage on their next attack roll, before the start of your next turn.",
+        "effects": {
+          "grantCondition": {
+            "condition": "inspired",
+            "duration": "untilStartOfTurn",
+            "isBuff": true
+          }
+        },
+        "campaignIds": ["core"]
+      },
+      {
+        "id": "indomitable",
+        "name": "Indomitable",
+        "callings": ["dedication"],
+        "levelRequired": 2,
+        "subtype": "reaction",
+        "actionType": "reaction",
+        "reactionTrigger": "afterFailedSave",
+        "resourceType": "shortRest",
+        "usesPerShortRest": 1,
+        "usableOutOfCombat": false,
+        "description": "When you fail a saving throw, use your reaction to reroll it. You must use the new result.",
+        "effects": { "rerollSavingThrow": true },
         "campaignIds": ["core"]
       }
     ],

@@ -252,41 +252,89 @@ class Game {
 
     /**
      * Prompt the player to use a reaction ability mid-combat.
-     * Called from CombatManager.attack() at two hook points:
-     *   - 'afterMiss'  : attacker missed (Riposte fires here)
-     *   - 'afterHit'   : hit landed and damage rolled (Parry fires here, before damage applied)
+     * Called from CombatManager.attack() / CombatManager.executeSpecialMonsterAction() at
+     * five hook points:
+     *   - 'afterMiss'      : attacker missed the reactor (Riposte fires here)
+     *   - 'afterHit'       : reactor was hit and damage rolled (Parry fires here, before damage applied)
+     *   - 'afterFailedSave': reactor failed a saving throw (Indomitable fires here)
+     *   - 'allyAttacked'   : an ally (not the reactor) was hit (Reprisal fires here)
+     *   - 'allyWouldDrop0' : a hit on an ally (not the reactor) would drop them to 0 HP (Intervene fires here)
      *
-     * @param {string} hookPoint        - 'afterMiss' or 'afterHit'
+     * `reactor` defaults to `defender` — provably inert for Riposte/Parry/Indomitable, where
+     * the reactor and the defender are always the same combatant. For Reprisal/Intervene,
+     * `defender` is the ally being hit and `reactor` is the player-controlled Oath reacting
+     * on their behalf (passed explicitly by the caller).
+     *
+     * @param {string} hookPoint        - 'afterMiss' | 'afterHit' | 'afterFailedSave' | 'allyAttacked' | 'allyWouldDrop0'
      * @param {Object} attacker         - Combatant that attacked
-     * @param {Object} defender         - Combatant that was targeted (the reactor)
-     * @param {Object} [ctx]            - Extra context: { damage, damageType, isMelee }
+     * @param {Object} defender         - Combatant that was targeted
+     * @param {Object} [ctx]            - Extra context: { damage, damageType, isMelee, saveType, saveDC, saveRoll }
+     * @param {Object} [reactor=defender] - Combatant who may react (must be team 'player')
      * @returns {Promise<Object|null>}  - { abilityId, result } or null if skipped / no reaction
      */
-    async promptReaction(hookPoint, attacker, defender, ctx = {}) {
+    async promptReaction(hookPoint, attacker, defender, ctx = {}, reactor = defender) {
         // Only prompt when it's the player's team that can react
-        if (defender.team !== 'player') {
+        if (reactor.team !== 'player') {
             return null;
         }
 
         // Must have reaction available
-        if (!defender.actions || defender.actions.reaction <= 0) {
+        if (!reactor.actions || reactor.actions.reaction <= 0) {
             return null;
         }
 
-        // Gather eligible reaction abilities for this hook point
-        const character = gameState.get('character');
-        const abilities = character?.abilities || [];
-        const eligible = abilities.filter(ab => {
-            if (ab.actionType !== 'reaction') {
-                return false;
+        // Gather eligible reaction abilities for this hook point — resolved the same way
+        // CombatManager._findKnownAbility() does (union of selectedAbilities/knownTactics/
+        // knownVows against abilitiesData), never via character.abilities (the ability-SCORE
+        // bag, not an array of ability definitions).
+        const character = reactor.character;
+        const knownIds = new Set([
+            ...(character?.selectedAbilities || []),
+            ...(character?.knownTactics || []),
+            ...(character?.knownVows || [])
+        ]);
+        const callingAbilities = this.abilitiesData?.abilities?.[character?.class?.id] || [];
+        const knownReactionAbilities = callingAbilities.filter(ab => knownIds.has(ab.id) && ab.actionType === 'reaction');
+
+        const eligible = knownReactionAbilities.filter(ab => {
+            if (hookPoint === 'afterMiss') {
+                return ab.reactionTrigger === 'afterMiss';
             }
-            if (hookPoint === 'afterMiss' && ab.reactionTrigger === 'afterMiss') {
-                return true;
+            if (hookPoint === 'afterHit') {
+                // Excludes Reprisal-shaped abilities (reactionAttack.trigger === 'allyHit'),
+                // which also declare reactionTrigger: 'afterHit' but only fire on 'allyAttacked'.
+                return ab.reactionTrigger === 'afterHit' && ab.effects?.reactionAttack?.trigger !== 'allyHit';
             }
-            if (hookPoint === 'afterHit'  && ab.reactionTrigger === 'afterHit')  {
+            if (hookPoint === 'allyAttacked') {
+                return ab.effects?.reactionAttack?.trigger === 'allyHit';
+            }
+            if (hookPoint === 'allyWouldDrop0') {
+                return !!ab.effects?.variableCostDamageRedirect;
+            }
+            if (hookPoint === 'afterFailedSave' && ab.reactionTrigger === 'afterFailedSave') {
+                // shortRest-resource abilities (e.g. Indomitable) aren't covered by
+                // EffectDispatcher's resolve-gate, so check uses-remaining here — same
+                // check canUseAbility()/getAbilityUsesText() already use elsewhere.
+                if (ab.resourceType === 'shortRest') {
+                    const used = character.abilityUses?.[ab.id] || 0;
+                    const max = ab.usesPerShortRest || 1;
+                    if (used >= max) {
+                        return false;
+                    }
+                }
                 return true;
             }
             return false;
+        }).filter(ab => {
+            // Resolve gate (bug fix): exclude reactions the reactor can't afford BEFORE
+            // they're ever offered. Previously insufficient Resolve was only caught inside
+            // EffectDispatcher's gate, which fired AFTER the Reaction was already consumed —
+            // the reaction still "fired" for zero effect while wasting the reactor's Reaction.
+            if (ab.resourceType === 'resolve') {
+                const cost = typeof ab.resolveCost === 'number' ? ab.resolveCost : 1;
+                return (character?.resolvePoints ?? 0) >= cost;
+            }
+            return true;
         });
 
         if (eligible.length === 0) {
@@ -295,20 +343,38 @@ class Game {
 
         // Show modal and await player choice
         return new Promise(resolve => {
-            const modal    = document.getElementById('reactionModal');
-            const titleEl  = document.getElementById('reactionModalTitle');
-            const ctxEl    = document.getElementById('reactionModalContext');
-            const listEl   = document.getElementById('reactionAbilityList');
-            const skipBtn  = document.getElementById('reactionSkipBtn');
+            const modal          = document.getElementById('reactionModal');
+            const titleEl        = document.getElementById('reactionModalTitle');
+            const ctxEl          = document.getElementById('reactionModalContext');
+            const listEl         = document.getElementById('reactionAbilityList');
+            const resolvePicker  = document.getElementById('reactionResolvePicker');
+            const resolveInfoEl  = document.getElementById('reactionResolveInfo');
+            const resolveBtnsEl  = document.getElementById('reactionResolveButtons');
+            const skipBtn        = document.getElementById('reactionSkipBtn');
 
             if (!modal) {
                 resolve(null); return;
             }
 
+            // Reset to the ability-list view — a prior call may have left the Intervene
+            // resolve sub-picker showing.
+            listEl.style.display = '';
+            resolvePicker.classList.remove('active');
+
             // Build context text
             if (hookPoint === 'afterMiss') {
                 ctxEl.textContent = `${attacker.name} just missed ${defender.name}!`;
                 titleEl.textContent = '⚡ Reaction: Counter-Attack';
+            } else if (hookPoint === 'afterFailedSave') {
+                ctxEl.textContent = `${defender.name} failed a ${ctx.saveType?.toUpperCase() || ''} save (${ctx.saveRoll ?? '?'} vs DC ${ctx.saveDC ?? '?'})!`;
+                titleEl.textContent = '⚡ Reaction: Reroll Save';
+            } else if (hookPoint === 'allyAttacked') {
+                const dmg = ctx.damage ?? '?';
+                ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
+                titleEl.textContent = '⚡ Reaction: Reprisal';
+            } else if (hookPoint === 'allyWouldDrop0') {
+                ctxEl.textContent = `${attacker.name}'s hit would drop ${defender.name}!`;
+                titleEl.textContent = '⚡ Reaction: Intervene';
             } else {
                 const dmg = ctx.damage ?? '?';
                 ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
@@ -323,19 +389,65 @@ class Game {
                 btn.innerHTML = `${ab.name}<span class="reaction-ability-desc">${ab.description || ''}</span>`;
                 btn.addEventListener('click', async () => {
                     modal.classList.remove('active');
-                    defender.actions.reaction -= 1;
+                    reactor.actions.reaction -= 1;
 
-                    if (ab.effects?.reactionAttack) {
-                        // Riposte-style: immediate counter-attack + maneuver die bonus damage
+                    if (ab.effects?.variableCostDamageRedirect) {
+                        // Intervene: resolve-spend sub-picker, styled after promptVariableCostDamage's
+                        // Sworn Strike picker (info line + row of primary buttons) but nested inside
+                        // this reaction modal since Intervene is itself a reaction, not a standalone
+                        // on-hit prompt. Offers 1..maxResolveCost, disabling amounts the reactor can't
+                        // afford rather than omitting them, so the player can see the ability's full
+                        // range even when short on Resolve.
+                        const available = reactor.character?.resolvePoints ?? 0;
+                        const maxCost = ab.maxResolveCost ?? 1;
+                        if (available <= 0) {
+                            resolve(null);
+                            return;
+                        }
+                        const damageFormula = ab.effects.variableCostDamageRedirect.damageFormula || '1d8';
+
+                        listEl.style.display = 'none';
+                        resolveInfoEl.textContent = `Resolve available: ${available} — Spend up to ${Math.min(maxCost, available)}`;
+                        resolveBtnsEl.innerHTML = '';
+                        for (let n = 1; n <= maxCost; n++) {
+                            const affordable = n <= available;
+                            const spendBtn = document.createElement('button');
+                            spendBtn.className = 'btn btn-primary';
+                            spendBtn.innerHTML = `${n} Resolve<br><small>redirect up to ${n}×${damageFormula} damage</small>`;
+                            spendBtn.disabled = !affordable;
+                            if (affordable) {
+                                spendBtn.addEventListener('click', async () => {
+                                    modal.classList.remove('active');
+                                    const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
+                                    const _ctx = _buildCtx(reactor.character, reactor, this.combatManager);
+                                    _ctx.resolveSpent = n;
+                                    _ctx.originalDamage = ctx.damage ?? 0;
+                                    const _results = await _execEffects(ab, { variableCostDamageRedirect: ab.effects.variableCostDamageRedirect }, _ctx);
+                                    const _result = _results.find(r => r.type === 'variableCostDamageRedirect')?.result;
+                                    resolve({
+                                        abilityId: ab.id,
+                                        damageReduction: _result?.damageReduction ?? 0,
+                                        redirectAmount: _result?.redirectAmount ?? 0
+                                    });
+                                }, { once: true });
+                            }
+                            resolveBtnsEl.appendChild(spendBtn);
+                        }
+                        resolvePicker.classList.add('active');
+                        modal.classList.add('active');
+                    } else if (ab.effects?.reactionAttack) {
+                        // Riposte/Reprisal-style: immediate counter-attack (Riposte adds a
+                        // maneuver die bonus; Reprisal's reactionAttack config omits
+                        // bonusDice, so the handler returns bonus 0 — see EffectDispatcher).
                         const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
-                        const _ctx = _buildCtx(gameState.get('character'), defender, this.combatManager);
+                        const _ctx = _buildCtx(reactor.character, reactor, this.combatManager);
                         const _results = await _execEffects(ab, { reactionAttack: ab.effects.reactionAttack }, _ctx);
                         const _result = _results.find(r => r.type === 'reactionAttack');
                         const dieRoll = _result?.result?.bonus ?? 0;
                         const cm = this.combatManager;
                         if (cm) {
-                            await cm.attack(defender, attacker, 'mainHand', {
-                                shouldConsumeAction: false,
+                            await cm.attack(reactor, attacker, 'mainHand', {
+                                consumeAction: false,
                                 extraDamage: dieRoll
                             });
                         }
@@ -343,11 +455,21 @@ class Game {
                     } else if (ab.effects?.reactionDamageReduction) {
                         // Parry-style: roll maneuver die + CON mod for damage reduction
                         const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
-                        const _ctx = _buildCtx(gameState.get('character'), defender, this.combatManager);
+                        const _ctx = _buildCtx(reactor.character, reactor, this.combatManager);
                         const _results = await _execEffects(ab, { reactionDamageReduction: ab.effects.reactionDamageReduction }, _ctx);
                         const _result = _results.find(r => r.type === 'reactionDamageReduction');
                         const reduction = _result?.result?.damageReduction ?? 0;
                         resolve({ abilityId: ab.id, damageReduction: reduction });
+                    } else if (ab.effects?.rerollSavingThrow) {
+                        // Indomitable-style: reroll the failed save with the same modifier
+                        const { buildContext: _buildCtx, execute: _execEffects } = await import('./systems/EffectDispatcher.js');
+                        const currentCharacter = reactor.character;
+                        const _ctx = _buildCtx(currentCharacter, reactor, this.combatManager);
+                        _ctx.saveAbility = ctx.saveType;
+                        const _results = await _execEffects(ab, { rerollSavingThrow: ab.effects.rerollSavingThrow }, _ctx);
+                        const _result = _results.find(r => r.type === 'rerollSavingThrow');
+                        this.trackAbilityUsage(ab, currentCharacter);
+                        resolve({ abilityId: ab.id, newRoll: _result?.result?.newRoll, newTotal: _result?.result?.newTotal });
                     } else {
                         resolve({ abilityId: ab.id, ability: ab });
                     }
@@ -905,6 +1027,16 @@ class Game {
                 this.abilitiesData = await response.json();
             } catch (error) {
                 console.warn('Failed to pre-load abilities data:', error);
+            }
+        }
+
+        // Pre-load traits data for character sheet rendering (selected passive traits)
+        if (!this.traitsData) {
+            try {
+                const response = await fetch('data/traits.json');
+                this.traitsData = await response.json();
+            } catch (error) {
+                console.warn('Failed to pre-load traits data:', error);
             }
         }
 
@@ -1552,8 +1684,8 @@ class Game {
         const character = gameState.get('character');
         const hasOffHandWeapon = character?.equipment?.offHand?.type === 'weapon';
 
-        // Show pending maneuver indicator if one is queued
-        const pendingManeuver = currentCombatant.pendingManeuver;
+        // Show pending tactic indicator if one is queued
+        const pendingTactic = currentCombatant.pendingTactic;
 
         // --- Flee button state ---
         // Blocking conditions prevent flee entirely
@@ -1624,7 +1756,7 @@ class Game {
                     <div style="font-size: 18px; font-weight: bold; color: ${currentCombatant.actions.reaction > 0 ? 'var(--success)' : 'var(--text-muted)'};">${currentCombatant.actions.reaction}</div>
                 </div>
             </div>
-            ${pendingManeuver ? `<div style="text-align:center; padding: 4px 8px; margin-bottom: 8px; background: rgba(255,200,0,0.15); border: 1px solid var(--warning-color); border-radius: 4px; font-size: 12px; color: var(--warning-color);">⚔️ Queued: <strong>${pendingManeuver}</strong> — Attack to trigger</div>` : ''}
+            ${pendingTactic ? `<div style="text-align:center; padding: 4px 8px; margin-bottom: 8px; background: rgba(255,200,0,0.15); border: 1px solid var(--warning-color); border-radius: 4px; font-size: 12px; color: var(--warning-color);">⚔️ Queued: <strong>${pendingTactic}</strong> — Attack to trigger</div>` : ''}
             <div class="action-buttons">
                 <button class="action-btn" onclick="window.game.selectAction('attack')"
                         ${!hasAction ? 'disabled' : ''}>
@@ -1750,7 +1882,7 @@ class Game {
     /**
      * Handle target click
      */
-    handleTargetClick(targetId) {
+    async handleTargetClick(targetId) {
         console.log('🎯 Target clicked:', targetId);
 
         if (!this.combatManager || !this.combatManager.active) {
@@ -1846,6 +1978,51 @@ class Game {
                 this.syncCombatState();
 
                 gameState.addMessage(`💪 ${pending.abilityName || 'Ability'} attack complete!`, 'success');
+                this._pendingAction = null;
+                break;
+            }
+            case 'abilityTargetedSave': {
+                // Generic deferred targeted-save ability (e.g. Challenge): no attack roll,
+                // dispatches straight to targetedSaveOrCondition once a target is chosen.
+                const pending = this._pendingAction;
+                if (!pending) {
+                    gameState.addMessage('❌ No pending ability!', 'error');
+                    this.selectedAction = null;
+                    return;
+                }
+
+                const requiredAction = pending.actionType === 'bonusAction' ? 'bonusAction'
+                    : pending.actionType === 'reaction' ? 'reaction' : 'action';
+                if (!attacker.hasAction(requiredAction)) {
+                    gameState.addMessage(`❌ No ${requiredAction} available!`, 'error');
+                    this.selectedAction = null;
+                    this._pendingAction = null;
+                    return;
+                }
+
+                const fullAbility = this.abilitiesData?.abilities?.[character.class?.id]?.find(a => a.id === pending.abilityId);
+                if (!fullAbility?.effects?.targetedSaveOrCondition) {
+                    gameState.addMessage('❌ Ability data not found!', 'error');
+                    this.selectedAction = null;
+                    this._pendingAction = null;
+                    return;
+                }
+
+                const tsContext = buildEffectContext(character, attacker, this.combatManager);
+                tsContext.attacker = attacker;
+                tsContext.defender = target;
+                const tsResults = await dispatchEffects(
+                    fullAbility,
+                    { targetedSaveOrCondition: fullAbility.effects.targetedSaveOrCondition },
+                    tsContext
+                );
+
+                const gated = tsResults.length === 1 && tsResults[0].type === '_resolveGate' && tsResults[0].result?.skipped;
+                if (!gated) {
+                    attacker.consumeAction(requiredAction);
+                    this.trackAbilityUsage(fullAbility, character);
+                }
+                this.syncCombatState();
                 this._pendingAction = null;
                 break;
             }
@@ -3241,12 +3418,21 @@ class Game {
             if (ability.specialization && ability.specialization !== character.specialization) {
                 return false;
             }
-            // Maneuver abilities (typed effect keys): only show if in knownManeuvers
-            if (this._isManeuverAbility(ability) && !character.knownManeuvers?.includes(ability.id)) {
+            // Tactic abilities (typed effect keys): only show if in knownTactics
+            if (this._isTacticAbility(ability) && !character.knownTactics?.includes(ability.id)) {
                 return false;
             }
-            // Reaction maneuvers auto-prompt via promptReaction — hide from active selection
-            if (ability.actionType === 'reaction' && this._isManeuverAbility(ability)) {
+            // Vow abilities (tagged generically, not by ability ID): only show if actually
+            // selected as one of the character's known vows — unlike auto-granted abilities,
+            // vows are individually chosen at level 5/7/9 and not everyone with the Oath
+            // specialization knows every vow.
+            if (ability.tags?.includes('vow') && !character.knownVows?.includes(ability.id)) {
+                return false;
+            }
+            // Reaction abilities auto-prompt via promptReaction — hide from manual selection
+            // (was previously gated on _isTacticAbility(ability) too, which incorrectly left
+            // any non-tactic reaction — e.g. Indomitable, Intervene — selectable here)
+            if (ability.actionType === 'reaction') {
                 return false;
             }
             // onHit variableCostDamage abilities (e.g. Sworn Strike) auto-prompt post-hit — hide from active selection
@@ -3374,7 +3560,7 @@ class Game {
         // Check action economy — does combatant have the required action type?
         // beforeAttack/onHit maneuvers don't consume an action themselves (they modify next attack)
         const combatant = this.combatManager?.playerCombatant;
-        const isQueueManeuver = this._isManeuverAbility(ability) &&
+        const isQueueManeuver = this._isTacticAbility(ability) &&
             (ability.actionType === 'beforeAttack' || ability.actionType === 'onHit');
         if (combatant && ability.actionType !== 'free' && !isQueueManeuver) {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
@@ -3421,14 +3607,14 @@ class Game {
     }
 
     /**
-     * Returns true if an ability uses one of the typed maneuver effect keys (ADR-010).
+     * Returns true if an ability uses one of the typed tactic effect keys (ADR-010).
      * Replaces the old `ability.effects?.maneuver` name-string check.
      * @param {Object} ability - ability definition from abilities.json
      * @returns {boolean}
      */
-    _isManeuverAbility(ability) {
+    _isTacticAbility(ability) {
         if (!ability?.effects) return false;
-        const MANEUVER_EFFECT_TYPES = [
+        const TACTIC_EFFECT_TYPES = [
             'precisionAttackBonus',
             'onHitSaveOrCondition',
             'onHitCondition',
@@ -3437,7 +3623,7 @@ class Game {
             'reactionAttack',
             'reactionDamageReduction'
         ];
-        return MANEUVER_EFFECT_TYPES.some(k => k in ability.effects);
+        return TACTIC_EFFECT_TYPES.some(k => k in ability.effects);
     }
 
     /**
@@ -3474,12 +3660,12 @@ class Game {
             return;
         }
 
-        // MANEUVER dispatch — data-driven via effect type keys (ADR-010).
+        // TACTIC dispatch — data-driven via effect type keys (ADR-010).
         // selfTempHP (Rally) fires immediately on bonus action.
         // precisionAttackBonus / onHitSaveOrCondition / onHitCondition / onHitPush queue for next attack.
         // reactionAttack / reactionDamageReduction are handled by promptReaction and never reach here.
-        if (this._isManeuverAbility(ability)) {
-            const maneuverId = ability.id;
+        if (this._isTacticAbility(ability)) {
+            const tacticId = ability.id;
             if (ability.effects?.selfTempHP) {
                 // Rally-style: immediate bonus action — dispatch via EffectDispatcher
                 if (!combatant.hasAction('bonusAction')) {
@@ -3496,15 +3682,15 @@ class Game {
                 this.combatManager.updateGameState();
             } else {
                 // beforeAttack / onHit: queue for next attack (toggle off if already queued)
-                if (combatant.pendingManeuver === maneuverId) {
-                    combatant.pendingManeuver = null;
+                if (combatant.pendingTactic === tacticId) {
+                    combatant.pendingTactic = null;
                     gameState.addMessage(`${ability.name} cancelled.`, 'info');
                 } else {
                     if ((character.resolvePoints ?? 0) <= 0) {
                         gameState.addMessage('No Resolve points!', 'error');
                         return;
                     }
-                    combatant.pendingManeuver = maneuverId;
+                    combatant.pendingTactic = tacticId;
                     gameState.addMessage(`⚔️ ${ability.name} queued! Resolve spent when it triggers.`, 'success');
                 }
                 this.combatManager.updateGameState();
@@ -3522,18 +3708,36 @@ class Game {
             }
         }
 
-        // Dispatch effects via EffectDispatcher
-        const context = buildEffectContext(character, combatant, this.combatManager);
-        const results = await dispatchEffects(ability, ability.effects, context);
-
-        // Deferred effect (e.g. weapon_attack needs target selection)
-        if (checkDeferred(results)) {
+        // Targeted-save abilities (no attack roll, e.g. Challenge): defer straight to target
+        // selection (ADR-010: keyed by effect type, not ability ID — same pattern as the
+        // `ability.effects?.choice` special case above). Deliberately skips dispatchEffects()
+        // here rather than round-tripping through EffectDispatcher's deferred-handler pattern:
+        // the resolve-gate in execute() fires unconditionally before any handler runs, so a
+        // first "no target yet" dispatch would already spend the Resolve, then a second
+        // dispatch (once a target is chosen) would spend it again.
+        if (ability.effects?.targetedSaveOrCondition) {
             this._pendingAction = {
                 abilityId: ability.id,
                 abilityName: ability.name,
                 actionType: ability.actionType
             };
-            this.selectedAction = 'abilityWeaponAttack';
+            this.selectedAction = 'abilityTargetedSave';
+            return; // Don't consume action, track usage, or spend Resolve yet
+        }
+
+        // Dispatch effects via EffectDispatcher
+        const context = buildEffectContext(character, combatant, this.combatManager);
+        const results = await dispatchEffects(ability, ability.effects, context);
+
+        // Deferred effect (e.g. weapon_attack needs target selection)
+        const deferredType = checkDeferred(results);
+        if (deferredType) {
+            this._pendingAction = {
+                abilityId: ability.id,
+                abilityName: ability.name,
+                actionType: ability.actionType
+            };
+            this.selectedAction = deferredType === 'abilityTargetedSave' ? 'abilityTargetedSave' : 'abilityWeaponAttack';
             return; // Don't consume action or track usage yet
         }
 
@@ -3681,13 +3885,14 @@ class Game {
         const results = await dispatchOption(option, ability, context);
 
         // Deferred effect (e.g. weapon_attack needs target selection)
-        if (checkDeferred(results)) {
+        const deferredType = checkDeferred(results);
+        if (deferredType) {
             this._pendingAction = {
                 abilityId: ability.id,
                 abilityName: ability.name,
                 actionType: ability.actionType
             };
-            this.selectedAction = 'abilityWeaponAttack';
+            this.selectedAction = deferredType === 'abilityTargetedSave' ? 'abilityTargetedSave' : 'abilityWeaponAttack';
             return; // Don't consume action or track usage yet
         }
 
@@ -6003,6 +6208,19 @@ class Game {
                 </div>
             </div>
 
+            <!-- Faction Standing -->
+            <div class="char-section full-width">
+                <h3>Faction Standing</h3>
+                ${(this.relationManager ? (this.npcGenerator?.culturesData || []) : []).map(culture => {
+                    const standing = this.relationManager.getFactionStanding(culture.id);
+                    return `
+                <div class="char-row">
+                    <span class="char-label">${culture.name}:</span>
+                    <span class="char-value" style="color:${standing.color}">${standing.tierLabel}</span>
+                </div>`;
+                }).join('')}
+            </div>
+
             <!-- Ability Scores -->
             <div class="char-section full-width">
                 <h3>Ability Scores</h3>
@@ -6276,6 +6494,21 @@ class Game {
             features.unshift({
                 name: `Fighting Style: ${fightingStyleDetails.name}`,
                 description: fightingStyleDetails.description
+            });
+        }
+
+        // Add selected passive traits (e.g. Exemplar passives) as separate features
+        const selectedTraitIds = character.selectedTraits || [];
+        if (selectedTraitIds.length > 0 && this.traitsData) {
+            const allTraits = this.traitsData.traits || [];
+            selectedTraitIds.forEach(traitId => {
+                const trait = allTraits.find(t => t.id === traitId);
+                if (trait) {
+                    features.unshift({
+                        name: trait.name,
+                        description: trait.description
+                    });
+                }
             });
         }
 
@@ -7804,18 +8037,21 @@ class Game {
             // Update HUD after successful rest
             this.updateHUD(gameState.get('character'));
 
-            // After long rest, offer Forgecraft if character has the practice
+            // After long rest, run each known practice's long-rest hook (if any). A small
+            // map, not an `if` chain — adding practice #6 is a one-line map entry.
             if (type === 'long' && result.success) {
                 const character = gameState.get('character');
-                if (character?.practices?.includes('forgecraft')) {
-                    // Small delay to let rest messages display first
-                    setTimeout(() => this.openForgecraftModal(), 500);
-                }
-                if (character?.practices?.includes('hearthcraft')) {
-                    // Offset after forgecraft if both practices are held
-                    const offset = character.practices.includes('forgecraft') ? 1000 : 500;
-                    setTimeout(() => this.openHearthcraftModal(), offset);
-                }
+                const restHandlers = {
+                    forgecraft: () => this.openForgecraftModal(),
+                    hearthcraft: () => this.openHearthcraftModal(),
+                    foraging: () => this.bankForagingRoll()
+                };
+                const knownHandledPractices = [...new Set(character?.practices || [])].filter(id => restHandlers[id]);
+                // Small delay to let rest messages display first; staggered so multiple
+                // modal-based practices don't stack on top of each other.
+                knownHandledPractices.forEach((id, i) => {
+                    setTimeout(() => restHandlers[id](), 500 * (i + 1));
+                });
 
                 // Check companion ultimata after long rest
                 if (this.companionManager?.checkUltimata) {
@@ -7863,6 +8099,35 @@ class Game {
                 }
             });
         }
+    }
+
+    /**
+     * Foraging practice's long-rest hook. No modal — banks bonus loot rolls (consumed
+     * by the next combat victory / skill challenge reward) and logs a message.
+     * Overwrites (not increments) bankedForagingRolls — "use it or lose it".
+     */
+    async bankForagingRoll() {
+        const character = gameState.get('character');
+        if (!character?.practices?.includes('foraging')) {
+            return;
+        }
+
+        if (!this.practicesData) {
+            const response = await fetch(`data/practices.json?v=${Date.now()}`);
+            this.practicesData = await response.json();
+        }
+        const foraging = this.practicesData.practices.find(p => p.id === 'foraging');
+        if (!foraging) {
+            return;
+        }
+
+        const rank = character.practices.filter(id => id === 'foraging').length;
+        const { resolveLevelKeyedValue } = await import('./utils/practiceUtils.js');
+        const rolls = resolveLevelKeyedValue(foraging.bank.rollsPerRank, rank) ?? 0;
+
+        character.bankedForagingRolls = rolls;
+        gameState.set('character', character);
+        gameState.addMessage(`🌲 Foraging: banked ${rolls} bonus loot roll${rolls === 1 ? '' : 's'} for your next find.`, 'info');
     }
 
     async openForgecraftModal() {
@@ -8325,6 +8590,11 @@ class Game {
             bonusMagnitude: abilityEffect?.bonusMagnitude ?? 1,
             fatigueRateMultiplier: fatigueEffect?.value ?? 1
         };
+        // Skill bonuses are cached (character.skills[id].bonus) — must be re-derived now
+        // or skill checks won't see this buff until the next unrelated recompute.
+        if (typeof member.updateSkillBonuses === 'function') {
+            member.updateSkillBonuses();
+        }
     }
 
     confirmHearthcraft() {

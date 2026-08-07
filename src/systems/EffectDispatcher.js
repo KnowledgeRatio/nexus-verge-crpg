@@ -11,6 +11,7 @@ import { evaluateFormula, buildFormulaContext } from '../utils/formulaEvaluator.
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
+import { getAuraSaveBonus } from './PassiveModifierRegistry.js';
 
 // ---------------------------------------------------------------------------
 // Handler Registry
@@ -102,12 +103,20 @@ export async function executeOption(option, ability, context) {
 }
 
 /**
- * Check if any result is deferred (needs target selection before completing)
+ * Check if any result is deferred (needs target selection before completing).
+ * Returns the deferred result's `type` field (e.g. 'weapon_attack', 'abilityTargetedSave')
+ * so callers can route to the correct follow-up UI state instead of assuming every
+ * deferred ability is a weapon attack.
  * @param {Array} results - From execute()
- * @returns {boolean}
+ * @returns {string|boolean} The deferred type, or `true` if a deferred result has no type,
+ *   or `false` if nothing is deferred.
  */
 export function isDeferred(results) {
-    return results.some(r => r.result?.deferred === true);
+    const deferredResult = results.find(r => r.result?.deferred === true);
+    if (!deferredResult) {
+        return false;
+    }
+    return deferredResult.result.type ?? true;
 }
 
 /**
@@ -391,42 +400,91 @@ registerHandler('cureCondition', async (config, ability, ctx) => {
     return { removed };
 });
 
+/**
+ * rerollSavingThrow — Indomitable (Dedication L2, both specs): reroll a failed saving
+ * throw and use the new result. Called from the 'afterFailedSave' reaction hook
+ * (CombatManager.executeSpecialMonsterAction via main.js's promptReaction).
+ * Effect value: true (boolean flag)
+ *
+ * Context must supply ctx.combatant (the reactor whose save is being rerolled) and
+ * ctx.saveAbility (the ability/attribute key the failed save used — legacy key or
+ * new-system attribute name, same convention as rollDefenderSave below).
+ * Returns { newRoll, newTotal } for the caller to recompute pass/fail against saveDC.
+ */
+registerHandler('rerollSavingThrow', (value, ability, ctx) => {
+    const defender = ctx.combatant;
+    const saveAbility = ctx.saveAbility;
+    const contextKey = RULES.attributes.legacySaveAbilityToContext[saveAbility] ?? `${saveAbility}Save`;
+    const mod = getAttributeModifierFor(defender?.character, contextKey);
+    const newRoll = Math.floor(Math.random() * 20) + 1;
+    const newTotal = newRoll + mod;
+
+    ctx.addMessage(
+        `🔁 ${ability.name}! ${defender?.name || ctx.character?.name} rerolls: ${newRoll} + ${mod} = ${newTotal}`,
+        'info'
+    );
+
+    return { newRoll, newTotal };
+});
+
 // ---------------------------------------------------------------------------
-// Maneuver Handlers (Exemplar specialization — ADR-010 compliant)
+// Tactic Handlers (Exemplar specialization — ADR-010 compliant)
 // All handlers are keyed by effect type, never by ability name.
 // ---------------------------------------------------------------------------
 
 /**
- * Resolve maneuver die size from attacker's character level.
- * L3-6: d6, L7-9: d8, L10+: d10 (mirrors Character.getManeuverDie)
+ * Resolve tactic die size from attacker's character level.
+ * L3-6: d6, L7-8: d8, L9: d10, L10+: d12 (mirrors Character.getTacticDie)
  * @param {Object} character - Plain character object from gameState
  * @returns {number} die sides
  */
-function resolveManeuverDieSides(character) {
+function resolveTacticDieSides(character) {
     const level = character?.level ?? 1;
-    if (level >= 10) return 10;
+    if (level >= 10) return 12;
+    if (level >= 9)  return 10;
     if (level >= 7)  return 8;
     return 6;
 }
 
 /**
- * Roll a maneuver die based on attacker character level.
+ * Roll a tactic die based on attacker character level.
  * @param {Object} character
  * @returns {{ roll: number, sides: number }}
  */
-function rollManeuverDie(character) {
-    const sides = resolveManeuverDieSides(character);
+function rollTacticDie(character) {
+    const sides = resolveTacticDieSides(character);
     const roll = Math.floor(Math.random() * sides) + 1;
     return { roll, sides };
 }
 
 /**
- * Compute maneuver save DC for the attacker.
+ * Exposed passive (Dedication L3, Exemplar-only, ADR-010: checked via
+ * character.selectedAbilities — same convention as other auto-granted passives, not an
+ * ability.id branch): a target with an active condition inflicted by one of the
+ * attacker's own tactics has disadvantage on its save against the attacker's next
+ * tactic. One-shot per triggering use, not a standing aura — see point 3 below.
+ * @param {Object} attacker - Combatant
+ * @param {Object} defender - Combatant
+ * @returns {{ disadvantage: boolean, sourceCondition: Object|null }}
+ */
+function checkExposedDisadvantage(attacker, defender) {
+    const hasExposed = attacker?.character?.selectedTraits?.includes('grace_under_pressure');
+    if (!hasExposed) {
+        return { disadvantage: false, sourceCondition: null };
+    }
+    const sourceCondition = defender?.conditions?.find(
+        c => c.appliedBy === attacker.id && c.inflictedByTactic && !c.exposedConsumed
+    );
+    return { disadvantage: !!sourceCondition, sourceCondition: sourceCondition || null };
+}
+
+/**
+ * Compute tactic save DC for the attacker.
  *
  * Default formula: 8 + proficiency + Prowess modifier (resolver 'meleeAttack' context,
  * 5EClassic mode redirects to STR). Legacy behavior was 8 + proficiency + max(STR mod, DEX
  * mod); dropping the DEX comparison is an accepted 5EClassic-mode approximation under the
- * attribute-remap plan's relaxed fidelity rule — these maneuvers (Trip/Push/Disarm) are
+ * attribute-remap plan's relaxed fidelity rule — these tactics (Trip/Push/Disarm) are
  * melee-only STR abilities, matching the same simplification as attack-bonus resolution.
  *
  * 'NVSystem'-mode override (ADR-010 compliant, no ability.id branching): if the effect
@@ -441,7 +499,7 @@ function rollManeuverDie(character) {
  *   `config.dcContext` is consulted here
  * @returns {number}
  */
-function maneuverSaveDC(character, config) {
+function tacticSaveDC(character, config) {
     const prof = character?.proficiencyBonus ?? 2;
     if (RULES.attributes.system === 'NVSystem' && config?.dcContext) {
         return 8 + prof + getBlendedAttributeModifier(character, config.dcContext);
@@ -472,18 +530,36 @@ function maneuverSaveDC(character, config) {
  * {proficient, bonus} object keyed by legacy ability abbreviations — the `typeof === 'number'`
  * check is what excludes that shape here) falls through to the ability-modifier-derived
  * default, unaffected.
+ * `disadvantage` (Exposed passive, ADR-010-generic — set by the calling handler after
+ * checkExposedDisadvantage(), never a hardcoded ability-name check here): rolls twice,
+ * takes the lower, mirroring the attack-roll disadvantage pattern in
+ * CombatManager.attack() (~line 1029).
+ * `combatManager` (optional): when supplied, adds Aura of Mercy's flat +1 ally-save bonus
+ * via PassiveModifierRegistry.getAuraSaveBonus() — additive, keyed generically off any
+ * ally combatant with `selectedTraits.includes('aura_of_mercy')`, not an ability-name check.
  * @param {Object} defender   - Combatant
  * @param {string} saveAbility - legacy ability key or new-system attribute name
+ * @param {Object} [options]
+ * @param {boolean} [options.disadvantage=false]
+ * @param {Object} [options.combatManager=null]
  * @returns {number} total roll
  */
-function rollDefenderSave(defender, saveAbility) {
+function rollDefenderSave(defender, saveAbility, { disadvantage = false, combatManager = null } = {}) {
     const contextKey = RULES.attributes.legacySaveAbilityToContext[saveAbility] ?? `${saveAbility}Save`;
     const overrideAttrKey = RULES.attributes.derivedStatMap[contextKey]?.attributes?.[0];
     const override = defender.character?.savingThrows?.[overrideAttrKey];
-    const mod = typeof override === 'number'
+    const baseMod = typeof override === 'number'
         ? override
         : getAttributeModifierFor(defender.character, contextKey);
-    return Math.floor(Math.random() * 20) + 1 + mod;
+    const mod = baseMod + (combatManager ? getAuraSaveBonus(combatManager, defender) : 0);
+
+    const rollOnce = () => Math.floor(Math.random() * 20) + 1;
+    if (!disadvantage) {
+        return rollOnce() + mod;
+    }
+    const roll1 = rollOnce();
+    const roll2 = rollOnce();
+    return Math.min(roll1, roll2) + mod;
 }
 
 // ---------------------------------------------------------------------------
@@ -491,13 +567,13 @@ function rollDefenderSave(defender, saveAbility) {
 /**
  * onHitSaveOrCondition — bonus damage + save-or-condition (e.g. Trip Attack, Menacing Attack).
  * Effect config:
- *   bonusDice        {string} "maneuverDie"
+ *   bonusDice        {string} "tacticDie"
  *   saveType         {string} ability score for the save ('str' | 'wis' | ...)
  *   condition        {string} condition type to apply on failed save
  *   conditionDuration {string} duration string
  *   conditionIcon    {string} emoji icon
  *   dcContext        {string} optional — derivedStatMap blend context overriding the DC
- *                    formula in 'NVSystem' mode only (see maneuverSaveDC())
+ *                    formula in 'NVSystem' mode only (see tacticSaveDC())
  *
  * Context must supply ctx.attacker and ctx.defender (injected by CombatManager on-hit path).
  */
@@ -509,15 +585,23 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
         return { skipped: true };
     }
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character, config);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(attacker.character);
+    const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    // EXPOSED: disadvantage on this save if the target is already suffering a condition
+    // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
+    const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
+    if (exposedDisadvantage) {
+        exposedSource.exposedConsumed = true;
+        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+    }
+
     // Save vs condition
-    const saveRoll = rollDefenderSave(defender, config.saveType);
+    const saveRoll = rollDefenderSave(defender, config.saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const condLabel = config.condition.toUpperCase();
     const icon      = config.conditionIcon ?? '💢';
 
@@ -526,7 +610,7 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
             config.condition,
             config.conditionDuration,
             attacker.id,
-            { isBuff: false, curable: false, icon }
+            { isBuff: false, curable: false, icon, inflictedByTactic: true }
         );
         ctx.addMessage(
             `${icon} ${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
@@ -547,7 +631,7 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
  * onHitCondition — bonus damage + save-or-condition with an optional value on the condition
  * (e.g. Disarming Attack applies conditionValue: -2 to attack rolls).
  * Effect config:
- *   bonusDice        {string} "maneuverDie"
+ *   bonusDice        {string} "tacticDie"
  *   saveType         {string} ability score for the save
  *   condition        {string} condition type
  *   conditionDuration {string}
@@ -564,15 +648,23 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
         return { skipped: true };
     }
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character, config);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(attacker.character);
+    const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    // EXPOSED: disadvantage on this save if the target is already suffering a condition
+    // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
+    const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
+    if (exposedDisadvantage) {
+        exposedSource.exposedConsumed = true;
+        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+    }
+
     // Save vs condition
-    const saveRoll = rollDefenderSave(defender, config.saveType);
+    const saveRoll = rollDefenderSave(defender, config.saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const condLabel = config.condition.toUpperCase();
     const icon      = config.conditionIcon ?? '💢';
 
@@ -581,6 +673,7 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
             isBuff: false,
             curable: false,
             icon,
+            inflictedByTactic: true,
             ...(config.conditionValue !== undefined && { value: config.conditionValue })
         };
         defender.addCondition(config.condition, config.conditionDuration, attacker.id, condOpts);
@@ -602,7 +695,7 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
 /**
  * onHitPush — bonus damage + save or apply 'pushed' condition (Pushing Attack).
  * Effect config:
- *   bonusDice        {string} "maneuverDie"
+ *   bonusDice        {string} "tacticDie"
  *   saveType         {string} ability score for the save, default 'str' if omitted
  *   condition        {string} 'pushed'
  *   conditionDuration {string} 'untilEndOfTurn'
@@ -617,16 +710,24 @@ registerHandler('onHitPush', (config, ability, ctx) => {
         return { skipped: true };
     }
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(attacker.character);
-    const saveDC  = maneuverSaveDC(attacker.character, config);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(attacker.character);
+    const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
     defender.takeDamage(dieRoll);
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    // EXPOSED: disadvantage on this save if the target is already suffering a condition
+    // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
+    const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
+    if (exposedDisadvantage) {
+        exposedSource.exposedConsumed = true;
+        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+    }
+
     // Save (config.saveType, default 'str' for backward compatibility) or pushed
     const saveType = config.saveType ?? 'str';
-    const saveRoll = rollDefenderSave(defender, saveType);
+    const saveRoll = rollDefenderSave(defender, saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const saveLabel = saveType.toUpperCase();
 
     if (saveRoll < saveDC) {
@@ -634,7 +735,7 @@ registerHandler('onHitPush', (config, ability, ctx) => {
             config.condition ?? 'pushed',
             config.conditionDuration ?? 'untilEndOfTurn',
             attacker.id,
-            { isBuff: false, curable: false, icon: '💨' }
+            { isBuff: false, curable: false, icon: '💨', inflictedByTactic: true }
         );
         ctx.addMessage(
             `💨 ${defender.name} is PUSHED back! (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
@@ -652,9 +753,9 @@ registerHandler('onHitPush', (config, ability, ctx) => {
 });
 
 /**
- * selfTempHP — Grant temporary HP equal to maneuver die + CON mod (Rally).
+ * selfTempHP — Grant temporary HP equal to tactic die + CON mod (Rally).
  * Effect config:
- *   dice   {string} "maneuverDie"
+ *   dice   {string} "tacticDie"
  *   bonus  {string} "conMod"
  *
  * Spends 1 Resolve and consumes Bonus Action (caller already validated availability).
@@ -668,7 +769,7 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
         return { skipped: true };
     }
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(character);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
     const conMod = character?.abilityModifiers?.con ?? 0;
     const tempHP = Math.max(1, dieRoll + conMod);
 
@@ -692,9 +793,60 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
 });
 
 /**
- * precisionAttackBonus — Add maneuver die to attack roll (Precision Strike).
+ * allyTempHP — Grant temporary HP equal to tactic die + CON mod to an engaged ally
+ * (Rally's ally option). Effect config:
+ *   dice   {string} "tacticDie"
+ *   bonus  {string} "conMod"
+ *
+ * Scope note: no multi-ally target picker exists in this codebase yet (ADR-000 — not
+ * building one speculatively). Minimal behavior: targets one companion combatant that is
+ * currently engaged in melee (`engagedWith.size > 0`), matching the description's "an
+ * ally you are engaged alongside." If no such ally exists, the effect no-ops with a
+ * message instead of silently doing nothing.
+ * Context: ctx.combatant, ctx.character, ctx.combatManager required.
+ */
+registerHandler('allyTempHP', (config, ability, ctx) => {
+    const character = ctx.character;
+    const combatant = ctx.combatant;
+    const combatManager = ctx.combatManager;
+
+    if (!combatant || !combatManager) {
+        return { skipped: true };
+    }
+
+    const ally = (combatManager.companionCombatants || []).find(c => c.hp > 0 && c.engagedWith.size > 0);
+    if (!ally) {
+        ctx.addMessage(`${ability.name}: No engaged ally to target.`, 'info');
+        return { skipped: true, reason: 'noAlly' };
+    }
+
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
+    const conMod = character?.abilityModifiers?.con ?? 0;
+    const tempHP = Math.max(1, dieRoll + conMod);
+
+    ally.addCondition('tempHP', 'combat', combatant.id, {
+        value: tempHP,
+        isBuff: true,
+        curable: false,
+        icon: '✨'
+    });
+
+    // Consume bonus action
+    combatant.actions.bonusAction = Math.max(0, (combatant.actions.bonusAction ?? 1) - 1);
+
+    ctx.addMessage(
+        `⚡ ${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + CON ${conMod})`,
+        'success'
+    );
+    ctx.showFloatingText(ally.id, `+${tempHP} THP ✨`, 'buff');
+
+    return { tempHP, dieRoll, dieSides, allyId: ally.id };
+});
+
+/**
+ * precisionAttackBonus — Add tactic die to attack roll (Precision Strike).
  * Effect config:
- *   dice   {string} "maneuverDie"
+ *   dice   {string} "tacticDie"
  *   timing {string} "beforeAttack"
  *
  * This handler is called from the attack() beforeAttack path.
@@ -709,7 +861,7 @@ registerHandler('precisionAttackBonus', (config, ability, ctx) => {
         return { bonus: 0 };
     }
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(character);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
 
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} to attack roll (d${dieSides})`, 'success');
 
@@ -719,7 +871,7 @@ registerHandler('precisionAttackBonus', (config, ability, ctx) => {
 /**
  * reactionAttack — Counter-attack on enemy miss (Riposte).
  * Effect config:
- *   bonusDice {string} "maneuverDie"
+ *   bonusDice {string} "tacticDie"
  *   trigger   {string} "enemyMissesMelee"
  *
  * Execution is handled inline by main.js promptReaction (it calls cm.attack with extraDamage).
@@ -727,9 +879,15 @@ registerHandler('precisionAttackBonus', (config, ability, ctx) => {
  * Context: ctx.combatant (the reactor) required.
  */
 registerHandler('reactionAttack', (config, ability, ctx) => {
+    // Reprisal reuses this handler but omits bonusDice (config: { trigger: "allyHit" }) —
+    // it's a plain counter-attack with no maneuver-die bonus damage, unlike Riposte.
+    if (!config.bonusDice) {
+        return { bonus: 0 };
+    }
+
     const character = ctx.character;
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(character);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
 
     ctx.addMessage(
         `⚔️ ${ability.name}! +${dieRoll} bonus damage on counter-attack (d${dieSides})`,
@@ -740,9 +898,9 @@ registerHandler('reactionAttack', (config, ability, ctx) => {
 });
 
 /**
- * reactionDamageReduction — Reduce incoming damage by maneuver die + CON mod (Parry).
+ * reactionDamageReduction — Reduce incoming damage by tactic die + CON mod (Parry).
  * Effect config:
- *   reductionDice  {string} "maneuverDie"
+ *   reductionDice  {string} "tacticDie"
  *   reductionBonus {string} "conMod"
  *
  * Execution is handled inline by main.js promptReaction (it returns damageReduction).
@@ -752,7 +910,7 @@ registerHandler('reactionAttack', (config, ability, ctx) => {
 registerHandler('reactionDamageReduction', (config, ability, ctx) => {
     const character = ctx.character;
 
-    const { roll: dieRoll, sides: dieSides } = rollManeuverDie(character);
+    const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
     const conMod    = character?.abilityModifiers?.con ?? 0;
     const reduction = Math.max(0, dieRoll + conMod);
 
@@ -762,4 +920,125 @@ registerHandler('reactionDamageReduction', (config, ability, ctx) => {
     );
 
     return { damageReduction: reduction, dieRoll, dieSides };
+});
+
+// ---------------------------------------------------------------------------
+// Vow Handlers (Oath specialization — ADR-010 compliant, keyed by effect type)
+// ---------------------------------------------------------------------------
+
+/**
+ * targetedSaveOrCondition — target makes a saving throw (no attack roll) or suffers a
+ * condition, optionally starting concentration (Challenge). Effect config:
+ *   saveType      {string} new-system attribute name or legacy key (e.g. "composure")
+ *   dcContext     {string} derivedStatMap blend context for the DC (e.g. "challengeDC")
+ *   condition     {string} condition type applied on a failed save
+ *   concentration {boolean} true — attacker starts concentrating on this ability vs the target
+ *   conditionIcon {string}
+ *
+ * Deferred until a target is chosen: when `ctx.defender` is absent this returns
+ * `{ deferred: true, type: 'abilityTargetedSave' }` (mirrors weapon_attack's deferred
+ * pattern) rather than rolling anything. The actual save/condition only happens once a
+ * caller re-invokes this handler with `ctx.defender` populated.
+ * Context must supply ctx.attacker (the caster's combatant) once resolved.
+ */
+registerHandler('targetedSaveOrCondition', (config, ability, ctx) => {
+    if (!ctx.defender) {
+        return { deferred: true, type: 'abilityTargetedSave' };
+    }
+
+    const attacker = ctx.attacker;
+    const defender = ctx.defender;
+    if (!attacker) {
+        return { skipped: true };
+    }
+
+    const prof = attacker.character?.proficiencyBonus ?? 2;
+    const dc = 8 + prof + getBlendedAttributeModifier(attacker.character, config.dcContext);
+    const saveRoll = rollDefenderSave(defender, config.saveType, { combatManager: ctx.combatManager });
+    const icon = config.conditionIcon ?? '💢';
+    const conditionApplied = saveRoll < dc;
+
+    if (conditionApplied) {
+        defender.addCondition(config.condition, 'combat', attacker.id, { isBuff: false, curable: true, icon });
+        if (config.concentration) {
+            attacker.concentratingOn = { abilityId: ability.id, targetId: defender.id };
+        }
+        ctx.addMessage(
+            `${icon} ${defender.name} is ${config.condition.toUpperCase()}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${dc})`,
+            'warning'
+        );
+        ctx.showFloatingText(defender.id, `${config.condition.toUpperCase()}! ${icon}`, 'condition');
+    } else {
+        ctx.addMessage(
+            `${defender.name} resists ${config.condition} (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${dc})`,
+            'info'
+        );
+    }
+
+    return { dc, saveRoll, conditionApplied };
+});
+
+/**
+ * grantCondition — apply a buff condition to an engaged ally (Bolster). Effect config:
+ *   condition {string} condition type, e.g. "inspired"
+ *   duration  {string} condition duration
+ *   isBuff    {boolean} defaults true
+ *   icon      {string}
+ *
+ * Scope note (matches allyTempHP's documented limitation): no multi-ally target picker
+ * exists yet — targets the first engaged companion combatant.
+ * Context: ctx.combatant, ctx.combatManager required.
+ */
+registerHandler('grantCondition', (config, ability, ctx) => {
+    const combatant = ctx.combatant;
+    const combatManager = ctx.combatManager;
+
+    const ally = (combatManager?.companionCombatants || []).find(c => c.hp > 0 && c.engagedWith.size > 0);
+    if (!ally) {
+        ctx.addMessage(`${ability.name}: No engaged ally to target.`, 'info');
+        return { skipped: true, reason: 'noAlly' };
+    }
+
+    ally.addCondition(config.condition, config.duration, combatant?.id ?? ally.id, {
+        isBuff: config.isBuff ?? true,
+        curable: false,
+        icon: config.icon ?? '✨'
+    });
+
+    ctx.addMessage(`✨ ${ability.name}! ${ally.name} is ${config.condition}!`, 'success');
+    ctx.showFloatingText(ally.id, `${config.condition.toUpperCase()}! ✨`, 'buff');
+
+    return { allyId: ally.id, condition: config.condition };
+});
+
+/**
+ * variableCostDamageRedirect — Intervene: rolls damageFormula per Resolve point spent,
+ * caps the result at the hit's original damage, and returns it as both the damage
+ * reduction to apply to the ally and the amount to redirect onto the caster.
+ * Effect config:
+ *   damageFormula {string} dice formula per Resolve point, e.g. "1d8"
+ *
+ * Context must supply ctx.resolveSpent (number, injected by the reaction UI's resolve-spend
+ * sub-picker) and ctx.originalDamage (the incoming hit's damage against the ally).
+ */
+registerHandler('variableCostDamageRedirect', (config, ability, ctx) => {
+    const resolveSpent = ctx.resolveSpent ?? 0;
+    if (resolveSpent <= 0) {
+        return { skipped: true };
+    }
+
+    const originalDamage = ctx.originalDamage ?? 0;
+    let rolled = 0;
+    for (let i = 0; i < resolveSpent; i++) {
+        const { total } = evaluateFormula(config.damageFormula, buildFormulaContext(ctx.character));
+        rolled += total;
+    }
+    const reduction = Math.min(originalDamage, rolled);
+
+    ctx.addMessage(
+        `🛡️ ${ability.name}! ${ctx.combatant?.name || ctx.character?.name} spends ${resolveSpent} Resolve — redirects ${reduction} damage!`,
+        'success'
+    );
+
+    return { damageReduction: reduction, redirectAmount: reduction, resolveSpent, rolled };
 });

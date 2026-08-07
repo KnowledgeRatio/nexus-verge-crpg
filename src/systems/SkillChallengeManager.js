@@ -11,6 +11,7 @@ import { rollD20, roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue } from './FatigueManager.js';
 import { SeededRandom } from '../utils/rng.js';
+import { getRawAttributeModifier } from '../utils/attributeResolver.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -528,7 +529,10 @@ class SkillChallengeManager {
 
         // character.skills is keyed by skill id (Character.js's initializeSkills() shape),
         // not an array — { [skillId]: { proficient, expertise, bonus } }.
-        const abilityMod = character.abilityModifiers?.[attributeKey] ?? 0;
+        // Reads live through the buff-aware resolver rather than the cached
+        // character.abilityModifiers snapshot, so a Hearthcraft meal buff is reflected here
+        // the same way it is in Character.updateSkillBonuses().
+        const abilityMod = Math.floor(getRawAttributeModifier(character, attributeKey));
         const profBonus = character.skills?.[skillId]?.proficient ? character.proficiencyBonus : 0;
         const playerBase = abilityMod + profBonus;
 
@@ -942,6 +946,33 @@ class SkillChallengeManager {
                             character.inventory.push(entry);
                             result.itemsAwarded.push(entry);
                         }
+                    }
+
+                    // FORAGING PRACTICE: consume banked bonus loot roll(s) on this reward
+                    if (character.bankedForagingRolls > 0) {
+                        const foragingConfig = lootManager.getForagingBonusLootConfig();
+                        if (foragingConfig?.tableId) {
+                            const foragingResults = lootManager.rollOnTableWithRarityFilter(
+                                foragingConfig.tableId,
+                                character.bankedForagingRolls,
+                                playerLevel,
+                                foragingConfig.rarityFilter
+                            );
+                            for (const entry of foragingResults) {
+                                if (entry.isGold) {
+                                    const goldAmount = roll(entry.amount || '1d6');
+                                    character.gold = (character.gold || 0) + goldAmount;
+                                    result.goldAwarded += goldAmount;
+                                } else {
+                                    if (!Array.isArray(character.inventory)) {
+                                        character.inventory = [];
+                                    }
+                                    character.inventory.push(entry);
+                                    result.itemsAwarded.push(entry);
+                                }
+                            }
+                        }
+                        character.bankedForagingRolls = 0;
                     }
                 }
             }

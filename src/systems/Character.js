@@ -7,7 +7,7 @@ import { generateUUID } from '../utils/helpers.js';
 import { getAbilityModifier, getProficiencyBonus, rollHitPoints, roll } from '../utils/dice.js';
 import { getProficiencyBonus as getRulesProfBonus, getLevelFromXP, isASILevel, RULES } from '../core/rulesEngine.js';
 import { getPassiveACBonus } from './PassiveModifierRegistry.js';
-import { getAttributeModifierFor } from '../utils/attributeResolver.js';
+import { getAttributeModifierFor, getRawAttributeModifier } from '../utils/attributeResolver.js';
 import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
 
 export class Character {
@@ -123,8 +123,12 @@ export class Character {
         // Specialization (chosen at level 3 for most callings)
         this.specialization = data.specialization || null;
 
-        // Known Combat Maneuvers (Exemplar specialization)
-        this.knownManeuvers = data.knownManeuvers || [];
+        // Known Combat Tactics (Exemplar specialization). Dual-read fallback (ADR-011):
+        // old saves persisted this under `knownManeuvers`.
+        this.knownTactics = data.knownTactics || data.knownManeuvers || [];
+
+        // Known Vows (Oath specialization) — mirrors knownTactics's storage/lookup pattern.
+        this.knownVows = data.knownVows || [];
 
         // Status conditions
         this.conditions = data.conditions || [];
@@ -173,9 +177,18 @@ export class Character {
         this.selectedTraits = data.selectedTraits || [];
         this.practices = data.practices || [];
         this.equipmentMods = data.equipmentMods || {};
+        // Generic uses/recharge tracker for equipment mod effects (e.g. Deflecting),
+        // keyed by propertyId (data/itemProperties.json id) — not per-mod hardcoding.
+        // Any future mod with `uses`/`recharge` in its effect gets real rate-limiting
+        // for free via _resetEquipmentModChargesByRecharge().
+        this.equipmentModCharges = data.equipmentModCharges || {};
         // Hearthcraft meal buff — null when no active meal, cleared at each long rest.
         // Shape: { practiceId, abilityScore, bonusMagnitude, fatigueRateMultiplier }
         this.activeMealBuff = data.activeMealBuff || null;
+        // Foraging practice — bonus loot rolls banked on long rest, "use it or lose it"
+        // (overwritten, not incremented, on each long rest). Consumed by the next
+        // qualifying loot event (combat victory / skill challenge reward).
+        this.bankedForagingRolls = data.bankedForagingRolls || 0;
     }
 
     /**
@@ -280,11 +293,14 @@ export class Character {
     }
 
     /**
-     * Maneuver die size for Exemplar — scales with level (D&D 5e Battle Master pattern)
-     * L3-6: d6, L7-9: d8, L10: d10
+     * Tactic die size for Exemplar — scales with level (D&D 5e Battle Master pattern)
+     * L3-6: d6, L7-8: d8, L9: d10, L10: d12
      */
-    getManeuverDie() {
+    getTacticDie() {
         if (this.level >= 10) {
+            return 12;
+        }
+        if (this.level >= 9) {
             return 10;
         }
         if (this.level >= 7) {
@@ -399,7 +415,10 @@ export class Character {
 
         for (const [skill, data] of Object.entries(skills)) {
             const ability = skillAbilities[skill];
-            let bonus = this.abilityModifiers[ability];
+            // Read live through the buff-aware resolver rather than the cached
+            // this.abilityModifiers snapshot — otherwise a Hearthcraft meal buff applied
+            // mid-rest never reaches skill checks even after the resolver-level fix.
+            let bonus = Math.floor(getRawAttributeModifier(this, ability));
 
             if (data.proficient) {
                 bonus += this.proficiencyBonus;
@@ -896,13 +915,40 @@ export class Character {
             console.log(`  Specialization: ${selections.specialization}`);
         }
 
-        // Store known maneuvers (Exemplar)
-        if (selections.maneuvers && selections.maneuvers.length > 0) {
-            if (!this.knownManeuvers) {
-                this.knownManeuvers = [];
+        // Store known tactics (Exemplar)
+        if (selections.tactics && selections.tactics.length > 0) {
+            if (!this.knownTactics) {
+                this.knownTactics = [];
             }
-            this.knownManeuvers.push(...selections.maneuvers);
-            console.log(`  Learned ${selections.maneuvers.length} maneuver(s): ${selections.maneuvers.join(', ')}`);
+            this.knownTactics.push(...selections.tactics);
+            console.log(`  Learned ${selections.tactics.length} tactic(s): ${selections.tactics.join(', ')}`);
+        }
+
+        // Store known vows (Oath). Cross-reference each selected vow ID against loaded trait
+        // data — Conviction is a trait wearing a "vow" tag for pool-selection purposes; its
+        // real mechanical check reads `selectedTraits` (same as Vanguard/Grace Under Pressure),
+        // so it needs dual bookkeeping here. This is intentional, not a bug.
+        if (selections.vows && selections.vows.length > 0) {
+            if (!this.knownVows) {
+                this.knownVows = [];
+            }
+            this.knownVows.push(...selections.vows);
+            console.log(`  Learned ${selections.vows.length} vow(s): ${selections.vows.join(', ')}`);
+
+            const traitsData = typeof window !== 'undefined' ? window.game?.traitsData : null;
+            const traitIds = new Set((traitsData?.traits || []).map(t => t.id));
+            for (const vowId of selections.vows) {
+                if (!traitIds.has(vowId)) {
+                    continue;
+                }
+                if (!this.selectedTraits) {
+                    this.selectedTraits = [];
+                }
+                if (!this.selectedTraits.includes(vowId)) {
+                    this.selectedTraits.push(vowId);
+                    console.log(`  Vow "${vowId}" is also a trait — added to selectedTraits`);
+                }
+            }
         }
 
         // Update all calculated stats
@@ -985,9 +1031,67 @@ export class Character {
     }
 
     /**
-     * Take a short rest
+     * Look up this character's known ability definitions (from abilities.json), keyed by
+     * `class.id`. Needed to read each ability's `resourceType` when resetting `abilityUses`
+     * on rest — `selectedAbilities`/`knownTactics` only store IDs (mirrors the lookup
+     * CombatManager._findKnownAbility() does for the same reason).
+     * @param {Object} [abilitiesData] - Full abilities.json data ({ abilities: { [classId]: [...] } }).
+     *   Defaults to `window.game.abilitiesData` when available.
+     * @returns {Array<Object>}
      */
-    shortRest() {
+    _getKnownAbilityDefinitions(abilitiesData) {
+        const data = abilitiesData || (typeof window !== 'undefined' ? window.game?.abilitiesData : null);
+        const callingAbilities = data?.abilities?.[this.class?.id] || [];
+        const knownIds = new Set([...(this.selectedAbilities || []), ...(this.knownTactics || []), ...(this.knownVows || [])]);
+        return callingAbilities.filter(ab => knownIds.has(ab.id));
+    }
+
+    /**
+     * Clear `abilityUses` entries whose ability definition's `resourceType` is in
+     * `resourceTypes`. Leaves entries for other resource types (e.g. `longRest`-gated
+     * abilities untouched by a short rest) and entries whose definition can't be resolved.
+     * @param {string[]} resourceTypes
+     * @param {Object} [abilitiesData]
+     */
+    _resetAbilityUsesByResourceType(resourceTypes, abilitiesData) {
+        if (!this.abilityUses) {
+            return;
+        }
+        const knownAbilities = this._getKnownAbilityDefinitions(abilitiesData);
+        for (const id of Object.keys(this.abilityUses)) {
+            const definition = knownAbilities.find(ab => ab.id === id);
+            if (definition && resourceTypes.includes(definition.resourceType)) {
+                delete this.abilityUses[id];
+            }
+        }
+    }
+
+    /**
+     * Clear equipmentModCharges entries whose property effect's `recharge` (from
+     * itemProperties.json) is in `rechargeTypes`. Generic — any future Forgecraft mod
+     * with `uses`/`recharge` defined in its effect is rate-limited and reset for free,
+     * no per-mod code needed.
+     * @param {string[]} rechargeTypes
+     */
+    _resetEquipmentModChargesByRecharge(rechargeTypes) {
+        if (!this.equipmentModCharges) {
+            return;
+        }
+        const lootManager = typeof window !== 'undefined' ? window.lootManager : null;
+        for (const propId of Object.keys(this.equipmentModCharges)) {
+            const effect = lootManager?.getPropertyEffect(propId);
+            if (effect && rechargeTypes.includes(effect.recharge)) {
+                delete this.equipmentModCharges[propId];
+            }
+        }
+    }
+
+    /**
+     * Take a short rest
+     * @param {Object} [abilitiesData] - Full abilities.json data, for resourceType lookup.
+     *   Defaults to `window.game.abilitiesData`.
+     */
+    shortRest(abilitiesData) {
         // Can only take 2 short rests per long rest
         if (this.shortRestsUsed >= 2) {
             return { success: false, reason: 'Already used all short rests. Need a long rest.' };
@@ -1007,11 +1111,10 @@ export class Character {
 
         this.shortRestsUsed++;
 
-        // Reset short rest abilities (abilities with resourceType: 'shortRest')
-        if (this.abilityUses) {
-            // Reset all ability uses that recharge on short rest
-            this.abilityUses = {};
-        }
+        // Reset only abilities with resourceType: 'shortRest' — longRest-gated abilities
+        // must survive a short rest.
+        this._resetAbilityUsesByResourceType(['shortRest'], abilitiesData);
+        this._resetEquipmentModChargesByRecharge(['shortRest']);
 
         // Restore Resolve on short rest (Dedication)
         this.resolvePoints = this.maxResolvePoints;
@@ -1058,8 +1161,10 @@ export class Character {
 
     /**
      * Take a long rest
+     * @param {Object} [abilitiesData] - Full abilities.json data, for resourceType lookup.
+     *   Defaults to `window.game.abilitiesData`.
      */
-    longRest() {
+    longRest(abilitiesData) {
         // Restore all HP
         this.currentHP = this.maxHP;
 
@@ -1070,6 +1175,11 @@ export class Character {
         // Reset short rests counter
         this.shortRestsUsed = 0;
 
+        // A long rest also resets short-rest resources (standard 5e logic), plus
+        // longRest-gated abilities.
+        this._resetAbilityUsesByResourceType(['shortRest', 'longRest'], abilitiesData);
+        this._resetEquipmentModChargesByRecharge(['shortRest', 'longRest']);
+
         // Recover spell slots
         if (this.spellcasting) {
             for (const level in this.spellcasting.spellSlots) {
@@ -1079,6 +1189,12 @@ export class Character {
 
         // Recover all class features
         // TODO: Implement class feature recovery
+
+        // Hearthcraft meal buff persists "untilNextLongRest" — clear it here so a skipped
+        // meal-prep modal doesn't let a stale buff (including its fatigue-rate effect)
+        // survive past its stated duration.
+        this.activeMealBuff = null;
+        this.updateSkillBonuses();
 
         // FORGECRAFT PRACTICE: refill ammunition during long rest
         // Characters with the forgecraft practice can craft arrows/bolts during a long rest
@@ -1541,7 +1657,8 @@ export class Character {
             spellcasting: this.spellcasting,
             weaponMasteries: this.weaponMasteries,
             specialization: this.specialization,
-            knownManeuvers: this.knownManeuvers,
+            knownTactics: this.knownTactics,
+            knownVows: this.knownVows,
             conditions: this.conditions,
             effects: this.effects,
             position: this.position,
@@ -1551,8 +1668,12 @@ export class Character {
             resolvePoints: this.resolvePoints,
             maxResolvePoints: this.maxResolvePoints,
             practices: this.practices,
+            selectedAbilities: this.selectedAbilities,
+            selectedTraits: this.selectedTraits,
             equipmentMods: this.equipmentMods,
+            equipmentModCharges: this.equipmentModCharges,
             activeMealBuff: this.activeMealBuff,
+            bankedForagingRolls: this.bankedForagingRolls,
             isNPC: this.isNPC,
             isHostile: this.isHostile,
             faction: this.faction

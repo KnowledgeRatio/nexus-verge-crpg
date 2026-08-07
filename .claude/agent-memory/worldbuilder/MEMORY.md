@@ -29,6 +29,10 @@
 
 - [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); six cultures; no Fracture event exists
 
+## Practices System
+
+- [Practices taxonomy](practices_taxonomy.md) — 8-practice domain map for the "-craft" downtime discipline system (Forgecraft/Hearthcraft existing + 6 proposed); Leechcraft/Wardcraft naming+IP notes; no-pantheon constraint applied to Wardcraft
+
 ## Campaign Themes
 
 <!-- Record the agreed aesthetic lens and key creative decisions for each campaign -->

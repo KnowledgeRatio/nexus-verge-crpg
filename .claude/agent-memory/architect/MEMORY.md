@@ -2,6 +2,8 @@
 
 ## Reviews
 - [Context Engineering Review 2026-07-17](context_engineering_review.md) — rules-loading tiering, main.js god-module, data/ split candidates, root/docs cruft list
+- [Effect Architecture Ceiling Audit 2026-08-06](effect_architecture_ceiling_2026-08.md) — conditions=storage-not-effect, saving throws triplicated, no pre-roll conditional-modifier hook, traits.json vocabulary confirmed dead, abilityUses reset bug, fighting styles dual-hardcoded
+- [Oath Scoping Pass 2026-08-06](oath_scoping_2026-08.md) — Auras + Vow pool file-by-file plan; promptReaction reactor/defender conflation (3 branches, not just the entry gate); no generic targeted-save-no-attack-roll dispatch exists; monster NaN bug does not reproduce; PassiveModifierRegistry can't do cross-character aura queries
 
 ## Key Patterns Confirmed
 - **useAbility() in main.js** is the execution layer for abilities; data layer (abilities.json) and UI layer (showAbilitySelection, renderAbilityOption, canUseAbility) are already generic
@@ -12,7 +14,7 @@
 
 ## Architectural Decisions
 - **EffectDispatcher (designed 2026-02-27):** Dispatch table keyed on effect TYPE not ability ID. File: `src/systems/EffectDispatcher.js`. Exports: dispatchEffect(), dispatchChoiceOption(), registerEffectHandler(). No new gameState paths. No save/load impact.
-- **Reactive abilities** (Uncanny Dodge, Indomitable) use `combatant._abilityFlags` -- CombatManager must check these during damage/save resolution. Not yet implemented in CombatManager.
+- **Reactive abilities** (STALE as of 2026-08-06, superseded): Indomitable is actually implemented via `ability.reactionTrigger` + `promptReaction(hookPoint, ...)` in main.js, not `_abilityFlags`. See [[effect-architecture-ceiling-2026-08]] finding #2 — the `afterFailedSave` hookpoint only fires from one call site, not universally.
 - **ADR-010 Continental Biome Generation (proposed 2026-03-04):** World Climate Map pre-pass in generateWorldMetadata(). Low-res per-region overlay (continent mask, latitude temp, rain shadow moisture, resolved biome). Stored in `world.metadata.climateMap`. Old saves regenerate from seed. Beach validation is per-chunk post-processing. River carving filtered by biome. All thresholds in RULES.worldGen.biomeGeneration (already exists, was unused).
 - **Effect Schema (decided 2026-04-09):** HYBRID — source-specific JSON schemas + shared Effect Primitive runtime interface + single EffectDispatcher. See ADR-011 note below.
 
@@ -72,13 +74,13 @@ Added to rulesEngine.js between `flee` and `zoom`:
 - `baseEncounterProbability: 0.10`
 Net rate per tile formula: `encounterModifier × movementCost × baseEncounterProbability / threshold`
 
-## Ability Dispatch Scalability (2026-04-09)
-- **HARD BLOCKER (still open):** `executeOnHitManeuver()` in CombatManager.js (~line 2618) is a `switch(maneuverType)` keyed on maneuver ID strings — NOT dispatched through EffectDispatcher. EffectDispatcher now HAS registered handlers (onHitSaveOrCondition, onHitCondition, onHitPush) but CombatManager still calls its own switch block. Must delete executeOnHitManeuver() and route through EffectDispatcher.
-- **MEDIUM (partially resolved):** `promptReaction()` in main.js now routes by effect type (`ab.effects?.reactionAttack`, `ab.effects?.reactionDamageReduction`) — NOT by ability ID. This is ADR-010 compliant. The old `if (ab.id === 'riposte')` violation is FIXED.
-- `attacker.pendingManeuver === 'precisionStrike'` check at CombatManager.js line 994 is STILL hardcoded by maneuver ID — minor violation but pattern is improving.
-- **Missing file:** `data/specializations.json` does not exist (only `.example`). `getSpecializationDescription()` in LevelUpManager is a hardcoded JS object. Must create file before Scholar/Wanderlust spec UI is needed.
-- **Schema gap:** abilities.json needs `"subtype": "maneuver"` | `"ability"` | `"reaction"` field. `renderManeuverChoice()` currently hardcodes `specialization === 'exemplar'` — must use `subtype` instead.
-- **Safe to scale:** EffectDispatcher handler map (flat, O(1)), `grantedResource` processing (fully generic), `autoGrantAbilities`, `choice + options` pattern, spell/ability file separation.
+## Ability Dispatch Scalability (2026-04-09, updated 2026-08-06)
+- **RESOLVED as of 2026-08-06:** `executeOnHitManeuver()` no longer exists in CombatManager.js — confirmed by grep, zero matches. Tactics now dispatch cleanly through EffectDispatcher's registered handlers (onHitSaveOrCondition, onHitCondition, onHitPush, etc.), gated by `_isTacticAbility()`'s effect-type-set check (main.js ~3467), not ability ID.
+- **RESOLVED:** `promptReaction()` in main.js routes by effect type (`ab.effects?.reactionAttack`, `ab.effects?.reactionDamageReduction`, `ab.effects?.rerollSavingThrow`) — NOT by ability ID. ADR-010 compliant.
+- **RESOLVED as of 2026-08-06 (Oath scoping pass):** `data/specializations.json` now exists for real (dedication.exemplar + dedication.oath entries present) — prior "missing file" note was stale. `subtype` field also now exists and is populated (`"ability"`, `"tactic"` seen) — prior "schema gap" note about the field itself was stale.
+- **Still open:** `renderTacticChoice()`/`renderManeuverChoice()` in LevelUpManager.js (~line 562-580) still hardcodes `ab.specialization === 'exemplar'` rather than reading `subtype` — the picker-logic gap is real even though the field now exists.
+- **New ceiling findings:** see [[effect-architecture-ceiling-2026-08]] — conditions are storage-only not effect-generic, saving throws are implemented three separate times, no generic pre-attack-roll conditional-modifier hook exists (Vanguard trait hardcoded directly into CombatManager.attack()), traits.json's flat-modifier vocabulary is confirmed dead code.
+- **Safe to scale:** EffectDispatcher handler map (flat, O(1)), `grantedResource` processing (fully generic), `autoGrantAbilities`, `choice + options` pattern, spell/ability file separation, Resolve resource gate (execute() lines 49-58), condition storage/duration-expiry (not condition *effects*).
 
 ## Hearthcraft Architecture (2026-04-10)
 - Meal buff lives on `character.activeMealBuff` (plain object, null when inactive). NOT on gameState.

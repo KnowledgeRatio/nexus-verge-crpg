@@ -16,16 +16,13 @@
           {
             "name": "Action Surge",
             "description": "On your turn, you can take one additional action. Once per short rest. (Free action — does not cost an action to activate.)"
+          },
+          {
+            "name": "Indomitable",
+            "description": "When you fail a saving throw, you can use your reaction to reroll it. You must use the new result. Once per short rest."
           }
         ],
-        "choices": [
-          {
-            "type": "practice",
-            "count": 1,
-            "required": true,
-            "label": "Choose a Practice"
-          }
-        ]
+        "choices": []
       },
       "3": {
         "abilityScoreIncrease": 1,
@@ -44,12 +41,13 @@
         "specializationFeatures": {
           "exemplar": {
             "name": "Combat Maneuvers",
-            "description": "You learn three combat maneuvers from the Exemplar list. Each maneuver costs 1 Resolve and may be used once per attack. Your Maneuver Die is 1d6, increasing to 1d8 at level 7 and 1d10 at level 10.",
-            "autoGrantAbilities": [],
-            "maneuverDie": {
+            "description": "You learn three combat maneuvers from the Exemplar list. Each maneuver costs 1 Resolve and may be used once per attack. Your Maneuver Die is 1d6, increasing to 1d8 at level 7, 1d10 at level 9, and 1d12 at level 10.",
+            "autoGrantTraits": ["grace_under_pressure"],
+            "tacticDie": {
               "1": "1d6",
               "7": "1d8",
-              "10": "1d10"
+              "9": "1d10",
+              "10": "1d12"
             }
           },
           "oath": {
@@ -67,37 +65,109 @@
             "options": ["exemplar", "oath"]
           },
           {
-            "type": "maneuver",
+            "type": "tactic",
             "count": 3,
             "required": true,
             "label": "Choose Combat Maneuvers",
             "requiresSpecialization": "exemplar"
+          },
+          {
+            "type": "trait",
+            "count": 1,
+            "required": true,
+            "requiresSpecialization": "oath",
+            "label": "Choose an Aura",
+            "filter": { "specialization": "oath", "tier": 3 }
           }
         ]
       },
       "4": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "5": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "specializationFeatures": {
+          "exemplar": {
+            "autoGrantTraits": ["vanguard"]
+          }
+        },
+        "choices": [
+          {
+            "type": "vow",
+            "count": 1,
+            "required": false,
+            "requiresSpecialization": "oath",
+            "label": "Learn a Vow"
+          }
+        ]
       },
       "6": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "7": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "tactic",
+            "count": 1,
+            "required": false,
+            "requiresSpecialization": "exemplar",
+            "label": "Learn a Combat Tactic"
+          },
+          {
+            "type": "vow",
+            "count": 1,
+            "required": false,
+            "requiresSpecialization": "oath",
+            "label": "Learn a Vow"
+          }
+        ]
       },
       "8": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "9": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "tactic",
+            "count": 1,
+            "required": false,
+            "requiresSpecialization": "exemplar",
+            "label": "Learn a Combat Tactic"
+          },
+          {
+            "type": "vow",
+            "count": 1,
+            "required": false,
+            "requiresSpecialization": "oath",
+            "label": "Learn a Vow"
+          }
+        ]
       },
       "10": {
         "abilityScoreIncrease": 1,
@@ -142,6 +212,12 @@
             "required": false,
             "label": "Learn New Spell",
             "filter": { "level": 2 }
+          },
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
           }
         ]
       },
@@ -159,7 +235,14 @@
       },
       "6": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "7": {
         "abilityScoreIncrease": 1,
@@ -167,7 +250,14 @@
       },
       "8": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "9": {
         "abilityScoreIncrease": 1,
@@ -216,6 +306,12 @@
             "required": false,
             "label": "Learn New Spell",
             "filter": { "level": 1 }
+          },
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
           }
         ]
       },
@@ -225,7 +321,14 @@
       },
       "6": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "7": {
         "abilityScoreIncrease": 1,
@@ -241,7 +344,14 @@
       },
       "8": {
         "abilityScoreIncrease": 1,
-        "choices": []
+        "choices": [
+          {
+            "type": "practice",
+            "count": 1,
+            "required": false,
+            "label": "Choose a Practice"
+          }
+        ]
       },
       "9": {
         "abilityScoreIncrease": 1,
