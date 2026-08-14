@@ -113,7 +113,7 @@ export const RULES = {
             actionCost: 'action',
             preventsOpportunityAttacks: true,
             cunningAction: {
-                callingId: 'wanderlust',
+                callingId: 'audacity',
                 levelRequired: 2,
                 actionCost: 'bonusAction'
             }
@@ -1170,7 +1170,7 @@ export const RULES = {
         disadvantageConditions: ['prone'],
         advantageConditions: ['frightened'],
         cunningAction: {
-            callingId: 'wanderlust',
+            callingId: 'audacity',
             levelRequired: 2,
             actionCost: 'bonusAction'
             // No advantage — bonus action cost is the only differentiator
@@ -1265,7 +1265,7 @@ export const RULES = {
 
         companionTypeSkillCounts: {
             standard:   2,
-            wanderlust: 3
+            audacity: 3
         },
 
         relationshipMin: -100,
@@ -1282,8 +1282,8 @@ export const RULES = {
         synergies: {
             enabled: true,
             vanguard:       { enabled: true, minDedication: 3, attackBonus: 1 },
-            arcaneAssembly: { enabled: true, minScholar: 2,    arcaneRecoveryBonus: 1 },
-            bandOfRogues:   { enabled: true, minWanderlust: 3, inspirationDieUpgrade: true },
+            arcaneAssembly: { enabled: true, minCuriosity: 2,    arcaneRecoveryBonus: 1 },
+            bandOfRogues:   { enabled: true, minAudacity: 3, inspirationDieUpgrade: true },
             trueParty:      { enabled: true, requireAllCallings: true, skillChallengeBonus: 1 }
         },
 

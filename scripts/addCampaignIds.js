@@ -171,7 +171,7 @@ function processNestedArrayFile(filename, config) {
             return;
         }
 
-        // Process each key in the container (e.g., 'dedication', 'scholar', 'cantrips', 'level1')
+        // Process each key in the container (e.g., 'dedication', 'curiosity', 'cantrips', 'level1')
         for (const key of Object.keys(container)) {
             if (key === 'description' || key === 'version') continue;
 

@@ -36,7 +36,7 @@ See `docs/plans/2026-07-30-attribute-system-remap.md` decision #4 for the NVSyst
 - Boss encounter: +5 DC. Ambush (round 1): +3 DC. DC cap: 25.
 - Restrained/Grappled/Stunned/Paralyzed/Unconscious: blocks flee entirely.
 - Prone: disadvantage on flee check. Frightened: advantage.
-- Standard flee costs an Action. Wanderlust Cunning Action (level 2+): flee as Bonus Action.
+- Standard flee costs an Action. Audacity Cunning Action (level 2+): flee as Bonus Action.
 - Opportunity attacks resolve **before** flee check. Only engaged melee enemies attack.
 
 ## Initiative

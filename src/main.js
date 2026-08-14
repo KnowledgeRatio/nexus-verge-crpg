@@ -1708,14 +1708,14 @@ class Game {
             fleeTooltip += ` — WARNING: ${names} ${downedCompanions.length === 1 ? 'is' : 'are'} downed and will be lost`;
         }
 
-        // --- Cunning Action Flee / Disengage (Wanderlust level 2+) ---
-        const isWanderlust = character?.class?.id === 'wanderlust';
+        // --- Cunning Action Flee / Disengage (Audacity level 2+) ---
+        const isAudacity = character?.class?.id === 'audacity';
         const characterLevel = character?.level || 1;
-        const showCunningFlee = isWanderlust && characterLevel >= 2;
+        const showCunningFlee = isAudacity && characterLevel >= 2;
 
         // --- Disengage button state ---
-        // Wanderlust L2+ may disengage as Bonus Action (Cunning Action)
-        const cunningDisengage = isWanderlust && characterLevel >= 2;
+        // Audacity L2+ may disengage as Bonus Action (Cunning Action)
+        const cunningDisengage = isAudacity && characterLevel >= 2;
         const disengageAvailable = cunningDisengage ? hasBonusAction : hasAction;
         const playerEngagedCount = currentCombatant.engagedWith?.size ?? 0;
         const disengageLabel = cunningDisengage ? '🏃 Disengage (Bonus)' : '🏃 Disengage';
@@ -3155,7 +3155,7 @@ class Game {
      * (count/progress) plus new metadata fields (callingArchetype, distanceTiles, etc.)
      */
     renderQuestCard(quest, status) {
-        const archetypeColors = { dedication: '#c0392b', wanderlust: '#16a085', scholar: '#8e44ad' };
+        const archetypeColors = { dedication: '#c0392b', audacity: '#16a085', curiosity: '#8e44ad' };
         const archetypeColor = archetypeColors[quest.callingArchetype] || null;
         const archetypeBadge = quest.callingArchetype
             ? `<span class="quest-archetype-badge" style="background:${archetypeColor}">${quest.callingArchetype.toUpperCase()}</span>`
@@ -3250,7 +3250,7 @@ class Game {
             return;
         }
 
-        const archetypeColors = { dedication: '#c0392b', wanderlust: '#16a085', scholar: '#8e44ad' };
+        const archetypeColors = { dedication: '#c0392b', audacity: '#16a085', curiosity: '#8e44ad' };
         const difficultyColors = { easy: '#27ae60', normal: '#f39c12', hard: '#e67e22', deadly: '#c0392b' };
 
         container.innerHTML = available.map(quest => {

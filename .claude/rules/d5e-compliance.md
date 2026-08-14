@@ -17,7 +17,7 @@ Two ability-score systems exist **side by side**, switched by `RULES.attributes.
 
 **Saves under NVSystem:** only the three Inward attributes carry saves — Vitality, Insight, Composure. Prowess-save and Intellect-save are retired; Presence has no save, by design (all three Outward attributes are save-less, not just Presence). Each calling gets one save proficiency, not two (matches 5e's 33% coverage against a smaller 3-slot pool).
 
-**Scope:** only **Dedication** has been remapped to NVSystem identity (Prowess+Vitality) so far — it's the only implemented calling the remap touched. Scholar and Wanderlust have no live NVSystem-specific identity yet; their old two-stat descriptions (INT+CON, DEX+CHA) are 5EClassic-only until those callings are actually built out under the new system.
+**Scope:** only **Dedication** has been remapped to NVSystem identity (Prowess+Vitality) so far — it's the only implemented calling the remap touched. Curiosity and Audacity have no live NVSystem-specific identity yet; their old two-stat descriptions (INT+CON, DEX+CHA) are 5EClassic-only until those callings are actually built out under the new system.
 
 ## Skill System
 This project uses a **13-skill system**, not the standard 18. Never reference retired skills (History, Nature, Religion, Insight, Persuasion, Intimidation, Performance, Stealth as standalone).
@@ -44,19 +44,19 @@ This skill→attribute table is an explicit stopgap (locked in the remap plan) t
 - **Death saves**: 3 successes = stable, 3 failures = dead
 
 ## Callings (not Classes)
-Three callings only: **Dedication** (martial), **Scholar** (caster), **Wanderlust** (hybrid). Level 3 specialization branches. Level 10 capstone (compressed from D&D 20).
+Three callings only: **Dedication** (martial), **Curiosity** (caster), **Audacity** (hybrid). Level 3 specialization branches. Level 10 capstone (compressed from D&D 20).
 
 Governing attribute pair, by active `RULES.attributes.system` (see Attribute Systems above):
 
 | Calling | 5EClassic | NVSystem |
 |---|---|---|
 | Dedication | STR+CON | **Prowess+Vitality** (only calling actually remapped) |
-| Scholar | INT+CON | not yet designed under NVSystem — treat as undecided, not INT+CON-equivalent by default |
-| Wanderlust | DEX+CHA | not yet designed under NVSystem — treat as undecided, not DEX+CHA-equivalent by default |
+| Curiosity | INT+CON | not yet designed under NVSystem — treat as undecided, not INT+CON-equivalent by default |
+| Audacity | DEX+CHA | not yet designed under NVSystem — treat as undecided, not DEX+CHA-equivalent by default |
 
 ## Resources
 - **Focus** (Dedication): CON-based martial resource, full recharge on short rest
-- **Mana** (Scholar/Wanderlust): Pool-based from D&D 5e Spell Points variant, full recharge on long rest. Scholar gets Arcane Recovery (partial SR).
+- **Mana** (Curiosity/Audacity): Pool-based from D&D 5e Spell Points variant, full recharge on long rest. Curiosity gets Arcane Recovery (partial SR).
 
 ## Weapon Masteries
 All 8 official masteries implemented. Each weapon has exactly one mastery. Character must be proficient with the weapon to use its mastery. See `data/weaponMasteries.json` for assignments.

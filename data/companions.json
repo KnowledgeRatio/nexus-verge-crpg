@@ -5,13 +5,13 @@
   "companionTypes": {
     "standard": {
       "skillContributions": 2,
-      "callings": ["dedication", "scholar"],
+      "callings": ["dedication", "curiosity"],
       "description": "Standard companion with 2 skill proficiencies"
     },
-    "wanderlust": {
+    "audacity": {
       "skillContributions": 3,
-      "callings": ["wanderlust"],
-      "description": "Wanderlust companion with 3 skill proficiencies"
+      "callings": ["audacity"],
+      "description": "Audacity companion with 3 skill proficiencies"
     }
   },
 
@@ -137,7 +137,7 @@
       },
       "devotedPassive": {
         "id": "knowledge_devoted",
-        "name": "Scholar's Foresight",
+        "name": "Forewarned",
         "description": "Companion grants +1 to all Investigation and Academia skill checks for the next dungeon.",
         "trigger": "onDungeonEntry",
         "effect": {
@@ -279,15 +279,15 @@
     },
     "arcaneAssembly": {
       "id": "arcaneAssembly",
-      "description": "2+ Scholar party members: Arcane Recovery recovers 1 additional mana.",
-      "requiredCallings": { "scholar": 2 },
-      "effect": { "arcaneRecoveryBonus": 1, "appliesTo": "scholar" }
+      "description": "2+ Curiosity party members: Arcane Recovery recovers 1 additional mana.",
+      "requiredCallings": { "curiosity": 2 },
+      "effect": { "arcaneRecoveryBonus": 1, "appliesTo": "curiosity" }
     },
     "bandOfRogues": {
       "id": "bandOfRogues",
-      "description": "3+ Wanderlust party members: Bardic Inspiration dice upgrade one step.",
-      "requiredCallings": { "wanderlust": 3 },
-      "effect": { "inspirationDieUpgrade": true, "appliesTo": "wanderlust" }
+      "description": "3+ Audacity party members: Bardic Inspiration dice upgrade one step.",
+      "requiredCallings": { "audacity": 3 },
+      "effect": { "inspirationDieUpgrade": true, "appliesTo": "audacity" }
     },
     "trueParty": {
       "id": "trueParty",

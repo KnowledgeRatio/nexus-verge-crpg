@@ -202,7 +202,7 @@ class QuestGenerator {
     }
 
     /**
-     * Slot 2 (Wanderlust alternate): Negotiate-Bandits quest — world-first social quest.
+     * Slot 2 (Audacity alternate): Negotiate-Bandits quest — world-first social quest.
      * Only generated when a bandit-type dungeon hook exists near the settlement.
      * @param {Object} settlement
      * @param {number} playerLevel
@@ -224,7 +224,7 @@ class QuestGenerator {
         return {
             id: questId,
             type: 'social',
-            callingArchetype: 'wanderlust',
+            callingArchetype: 'audacity',
             name: `The Bandits Threatening ${settlement.name || 'the Settlement'}`,
             description: `Bandits are demanding tribute. Find their camp at ${dungeonName} and make them leave — through words or fear.`,
             objectives: [
@@ -292,7 +292,7 @@ class QuestGenerator {
         return {
             id: questId,
             type: 'retrieve',
-            callingArchetype: 'wanderlust',
+            callingArchetype: 'audacity',
             name: `Recover the ${itemName}`,
             description: `Retrieve the ${itemName} from ${dungeonName}, to the ${direction}.`,
             objectives: [{
@@ -355,7 +355,7 @@ class QuestGenerator {
         return {
             id: questId,
             type: 'investigate',
-            callingArchetype: 'scholar',
+            callingArchetype: 'curiosity',
             name: `Why Are the ${creatureCap} ${descCap}?`,
             description: `Someone needs to understand why the ${subject.creature} have been ${subject.description}. The answer may lie in ${dungeonName}.`,
             objectives: [{

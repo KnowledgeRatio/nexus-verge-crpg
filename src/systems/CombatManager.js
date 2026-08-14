@@ -1829,7 +1829,7 @@ class CombatManager {
     }
 
     /**
-     * Check if a Wanderlust combatant can use Cunning Action for a bonus-action flee.
+     * Check if a Audacity combatant can use Cunning Action for a bonus-action flee.
      * @param {Object} combatant - Combatant instance
      * @returns {boolean}
      */
@@ -2087,7 +2087,7 @@ class CombatManager {
 
     /**
      * Disengage action — clears engagement and prevents opportunity attacks this turn.
-     * Wanderlust (level 2+) can use Cunning Action to disengage as a bonus action.
+     * Audacity (level 2+) can use Cunning Action to disengage as a bonus action.
      * @param {Combatant} combatant - The combatant taking the Disengage action
      * @returns {{ success: boolean, reason?: string, actionCost?: string, clearedEngagement?: string[] }}
      */
@@ -2097,10 +2097,10 @@ class CombatManager {
             return { success: false, reason: 'Disengage is disabled.' };
         }
 
-        // Determine if Wanderlust Cunning Action applies
-        const isWanderlust = combatant.character?.class?.id === disengageRules.cunningAction?.callingId;
+        // Determine if Audacity Cunning Action applies
+        const isAudacity = combatant.character?.class?.id === disengageRules.cunningAction?.callingId;
         const level = combatant.character?.level ?? 1;
-        const cunningActionAvailable = isWanderlust &&
+        const cunningActionAvailable = isAudacity &&
             level >= (disengageRules.cunningAction?.levelRequired ?? 2) &&
             combatant.hasAction('bonusAction');
 

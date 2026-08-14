@@ -210,11 +210,11 @@ export function calcMovementFatigue(movementCost, character) {
     // Terrain cap: never multiply fatigue beyond maxFatigueTerrainMultiplier even in swamp/mountain
     const terrainMult = Math.min(movementCost || 1, r.maxFatigueTerrainMultiplier);
 
-    // CON factor (Wanderlust may use DEX instead)
+    // CON factor (Audacity may use DEX instead)
     const conMod = character.abilityModifiers?.con ?? 0;
     const dexMod = character.abilityModifiers?.dex ?? 0;
-    const isWanderlust = character.class?.id === 'wanderlust';
-    const statMod = isWanderlust ? Math.max(conMod, dexMod) : conMod;
+    const isAudacity = character.class?.id === 'audacity';
+    const statMod = isAudacity ? Math.max(conMod, dexMod) : conMod;
     const conFactor = Math.max(r.minFatigueMultiplier, 1 - statMod * r.conModMultiplier);
 
     const mealMult = character?.activeMealBuff?.fatigueRateMultiplier ?? 1;

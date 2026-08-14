@@ -169,16 +169,16 @@ Choose:
 ### Callings
 
 - Dedication: martial, STR + CON, uses Focus
-- Scholar: caster, INT + CON, uses Mana + Arcane Recovery
-- Wanderlust: hybrid, DEX + CHA, uses Mana
+- Curiosity: caster, INT + CON, uses Mana + Arcane Recovery
+- Audacity: hybrid, DEX + CHA, uses Mana
 
 ### Classes In The Game
 
 The game uses callings as classes:
 
 - Dedication
-- Scholar (coming soon label shown in class data)
-- Wanderlust (coming soon label shown in class data)
+- Curiosity (coming soon label shown in class data)
+- Audacity (coming soon label shown in class data)
 
 ### Ability Scores
 

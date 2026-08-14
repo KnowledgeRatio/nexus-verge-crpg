@@ -47,19 +47,19 @@
       }
     },
 
-    "wanderlust": {
+    "audacity": {
       "automaticGrants": {
         "1": [
           {
             "type": "ability",
             "id": "sneakAttack",
-            "source": "abilities.wanderlust",
+            "source": "abilities.audacity",
             "description": "Automatically granted at level 1"
           },
           {
             "type": "ability",
             "id": "bardicInspiration",
-            "source": "abilities.wanderlust",
+            "source": "abilities.audacity",
             "description": "Automatically granted at level 1"
           }
         ],
@@ -67,7 +67,7 @@
           {
             "type": "ability",
             "id": "cunningAction",
-            "source": "abilities.wanderlust",
+            "source": "abilities.audacity",
             "description": "Automatically granted at level 2"
           }
         ]
@@ -76,13 +76,13 @@
       "automaticChoices": {}
     },
 
-    "scholar": {
+    "curiosity": {
       "automaticGrants": {
         "1": [
           {
             "type": "ability",
             "id": "arcaneRecovery",
-            "source": "abilities.scholar",
+            "source": "abilities.curiosity",
             "description": "Automatically granted at level 1"
           }
         ]
