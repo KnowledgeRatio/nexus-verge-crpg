@@ -266,6 +266,10 @@ export default class DialogueManager {
         // Scan nearby features
         const nearbyDungeons = [];
         const nearbySettlements = [];
+        // Unified POI System (Tier 1 intel, all 7 types, both outcomes): dispatch
+        // generically on feature.resolvedType — never on poiType (ADR-010).
+        const nearbyPoiDungeons = [];
+        const nearbyPoiSanctuaries = [];
         const dominantTerrains = {};
 
         for (const region of world.generatedRegions.values()) {
@@ -287,6 +291,18 @@ export default class DialogueManager {
                     });
                 } else if (feature.type === 'settlement' && feature.name) {
                     nearbySettlements.push({
+                        ...feature,
+                        direction: this._getDirection(sx, sy, feature.x, feature.y),
+                        distanceLabel: this._getDistanceLabel(dist)
+                    });
+                } else if (feature.type === 'poi' && feature.resolvedType === 'dungeon' && feature.name) {
+                    nearbyPoiDungeons.push({
+                        ...feature,
+                        direction: this._getDirection(sx, sy, feature.x, feature.y),
+                        distanceLabel: this._getDistanceLabel(dist)
+                    });
+                } else if (feature.type === 'poi' && feature.resolvedType === 'sanctuary' && feature.name) {
+                    nearbyPoiSanctuaries.push({
                         ...feature,
                         direction: this._getDirection(sx, sy, feature.x, feature.y),
                         distanceLabel: this._getDistanceLabel(dist)
@@ -332,6 +348,39 @@ export default class DialogueManager {
                 const template = templates.settlement[Math.floor(Math.random() * templates.settlement.length)];
                 lines.push(this._fillTemplate(template, {
                     settlementName: s.name,
+                    direction: s.direction,
+                    distance: s.distanceLabel
+                }));
+            }
+        }
+
+        // Generate POI-dungeon lines (Unified POI System, Tier 1 intel)
+        if (templates.poiDungeon && nearbyPoiDungeons.length > 0) {
+            const shuffled = [...nearbyPoiDungeons].sort(() => Math.random() - 0.5);
+            const max = this.config.maxDungeonLines;
+            for (let i = 0; i < Math.min(max, shuffled.length); i++) {
+                const d = shuffled[i];
+                const template = templates.poiDungeon[Math.floor(Math.random() * templates.poiDungeon.length)];
+                lines.push(this._fillTemplate(template, {
+                    poiName: d.name,
+                    direction: d.direction,
+                    distance: d.distanceLabel,
+                    creatureType: d.creatureType || 'monsters'
+                }));
+            }
+        }
+
+        // Generate POI-sanctuary lines (Unified POI System, Tier 1 intel — asymmetric
+        // by design: sanctuary-outcome POIs get Tier 1 dialogue but never a Tier 2
+        // quest hook, see QuestGenerator.getHooksForSettlement)
+        if (templates.poiSanctuary && nearbyPoiSanctuaries.length > 0) {
+            const shuffled = [...nearbyPoiSanctuaries].sort(() => Math.random() - 0.5);
+            const max = this.config.maxSettlementLines;
+            for (let i = 0; i < Math.min(max, shuffled.length); i++) {
+                const s = shuffled[i];
+                const template = templates.poiSanctuary[Math.floor(Math.random() * templates.poiSanctuary.length)];
+                lines.push(this._fillTemplate(template, {
+                    poiName: s.name,
                     direction: s.direction,
                     distance: s.distanceLabel
                 }));

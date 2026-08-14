@@ -27,6 +27,8 @@ Updated 2026-05-25. Corrected mood descriptor and portrait background convention
 
 Terrain textures suggest layered origin — each biome is a fragment of another world that took root. Edges that don't quite match their neighbours. Flora belonging to two climates at once. Not post-apocalyptic ruin.
 
+**Correction (2026-08-07):** the "flora belonging to two climates at once" ambition above was aspirational and is NOT what shipped in the two actually-migrated reference tiles (grassland, forest — see `terrainAtlas.js` continuousAtlas system). Both are single-biome, restrained, no mixed-climate motifs, and tile invisibly. Treat the shipped tiles as the real standard: individual terrain tiles stay neutral/restrained; convergence-weirdness belongs at atlas seams (hard cuts between transitionGroups) and rare landmark tiles, not saturating every biome's per-tile motifs. Full reasoning in [[terrain-atlas-taxonomy]].
+
 **Monster portraits:**
 - Voidborn: absence given shape — geometry that shouldn't cohere, edges bleeding into background, no face, no intent
 - Beasts/humanoid enemies: naturalistic but wrong — out-of-place climate, wrong proportions, dimensional displacement visible

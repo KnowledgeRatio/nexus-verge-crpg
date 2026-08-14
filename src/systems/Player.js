@@ -552,6 +552,18 @@ class Player {
             return;
         }
 
+        // On world map - resolve an ambiguous POI first (Unified POI System).
+        // The reveal is this explicit E-key "enter" action, never passive tile-
+        // stepping — retypes the feature in place so it behaves exactly like a
+        // normal dungeon/sanctuary feature from here on.
+        const revealedPoi = await this._revealPoiAtPlayerPosition();
+        if (revealedPoi && revealedPoi.resolvedType === 'sanctuary') {
+            await this._enterPoiSanctuary(revealedPoi);
+            return;
+        }
+        // resolvedType === 'dungeon': feature.type is now 'dungeon' and falls
+        // through to the dungeon-entrance check below unchanged.
+
         // On world map - check for dungeon entrance first
         if (this.dungeonManager) {
             const dungeonFeature = await this.dungeonManager.getDungeonAtPlayerPosition();
@@ -586,6 +598,42 @@ class Player {
 
         // Nothing to interact with
         gameState.addMessage('There is nothing to interact with here.', 'info');
+    }
+
+    /**
+     * Unified POI System: check for an ambiguous POI feature at the player's
+     * current position and, if found, retype it in place (feature.type =
+     * feature.resolvedType, keeping feature.originalPoiType for flavor text).
+     * resolvedType/theme/creatures were already computed at world-gen time
+     * (WorldGenerator.preGenerateFeatures) — this only exposes what's already
+     * decided, it never rolls anything new.
+     * @returns {Object|null} The retyped feature, or null if nothing to reveal
+     */
+    async _revealPoiAtPlayerPosition() {
+        if (!this.worldGenerator) {
+            return null;
+        }
+        const tile = await this.worldGenerator.getTile(this.x, this.y);
+        const feature = tile?.feature;
+        if (!feature || feature.type !== 'poi' || !feature.resolvedType) {
+            return null;
+        }
+
+        feature.originalPoiType = feature.poiType;
+        feature.type = feature.resolvedType;
+        return feature;
+    }
+
+    /**
+     * Enter Sanctuary — v1 (minimal scope): discovery message + immediately
+     * surface the existing short/long rest choice. No sanctuary-specific
+     * interactions beyond this (NPCs/events are a future initiative).
+     * @param {Object} feature - The just-revealed sanctuary feature
+     */
+    async _enterPoiSanctuary(feature) {
+        const name = feature.name || 'a peaceful place';
+        gameState.addMessage(`✨ You find ${name} — a peaceful place to rest.`, 'success');
+        restManager.openRestMenu();
     }
 
     /**

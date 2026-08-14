@@ -727,7 +727,7 @@ class Game {
         }
 
         // Update summary on input change
-        ['wbSettlements', 'wbDungeons', 'wbSanctuaries', 'wbPOIs', 'wbVillageRatio', 'wbTownRatio', 'wbCityRatio'].forEach(id => {
+        ['wbSettlements', 'wbPOIs', 'wbPoiDungeonChance', 'wbVillageRatio', 'wbTownRatio', 'wbCityRatio'].forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', () => this.updateWorldbuilderSummary());
@@ -805,19 +805,24 @@ class Game {
         const scaleFactor = totalRegions / 10000;
 
         // Get base values (campaign override or default, then scaled)
+        // baseDungeons/baseSanctuaries retired (Unified POI System, 2026-08-09) —
+        // dungeon/sanctuary are resolvedType outcomes of the POI pool now, not
+        // separate standalone counts.
         const baseSettlements = campaignOverrides.baseSettlements || fg.baseSettlements;
-        const baseDungeons = campaignOverrides.baseDungeons || fg.baseDungeons;
-        const baseSanctuaries = campaignOverrides.baseSanctuaries || fg.baseSanctuaries;
         const basePOIs = campaignOverrides.basePOIs || fg.basePOIs;
+        const basePoiDungeonChance = campaignOverrides.poiResolution?.baseDungeonChance
+            ?? fg.poiResolution.baseDungeonChance;
 
         // Get settlement distribution (campaign override or default)
         const distrib = campaignOverrides.settlementDistribution || fg.settlementDistribution;
 
         // If we have user overrides, use those; otherwise use scaled campaign/base defaults
         const settlements = this.worldbuilderOverrides?.baseSettlements ?? Math.round(baseSettlements * scaleFactor);
-        const dungeons = this.worldbuilderOverrides?.baseDungeons ?? Math.round(baseDungeons * scaleFactor);
-        const sanctuaries = this.worldbuilderOverrides?.baseSanctuaries ?? Math.round(baseSanctuaries * scaleFactor);
         const pois = this.worldbuilderOverrides?.basePOIs ?? Math.round(basePOIs * scaleFactor);
+        // Ratio, not a count — never scaled by world size
+        const poiDungeonChancePct = this.worldbuilderOverrides?.poiResolution?.baseDungeonChance !== undefined
+            ? Math.round(this.worldbuilderOverrides.poiResolution.baseDungeonChance * 100)
+            : Math.round(basePoiDungeonChance * 100);
 
         const villageRatio = this.worldbuilderOverrides?.villageRatio ?? Math.round(distrib.village * 100);
         const townRatio = this.worldbuilderOverrides?.townRatio ?? Math.round(distrib.town * 100);
@@ -825,9 +830,9 @@ class Game {
 
         // Set input values
         document.getElementById('wbSettlements').value = settlements;
-        document.getElementById('wbDungeons').value = dungeons;
-        document.getElementById('wbSanctuaries').value = sanctuaries;
         document.getElementById('wbPOIs').value = pois;
+        const poiDungeonChanceInput = document.getElementById('wbPoiDungeonChance');
+        if (poiDungeonChanceInput) poiDungeonChanceInput.value = poiDungeonChancePct;
         document.getElementById('wbVillageRatio').value = villageRatio;
         document.getElementById('wbTownRatio').value = townRatio;
         document.getElementById('wbCityRatio').value = cityRatio;
@@ -840,9 +845,12 @@ class Game {
      */
     updateWorldbuilderSummary() {
         const settlements = parseInt(document.getElementById('wbSettlements').value) || 0;
-        const dungeons = parseInt(document.getElementById('wbDungeons').value) || 0;
-        const sanctuaries = parseInt(document.getElementById('wbSanctuaries').value) || 0;
         const pois = parseInt(document.getElementById('wbPOIs').value) || 0;
+
+        const poiDungeonChancePct = parseInt(document.getElementById('wbPoiDungeonChance')?.value);
+        const poiDungeonPct = Number.isFinite(poiDungeonChancePct) ? poiDungeonChancePct : 60;
+        const poiDungeonEstimate = Math.round(pois * poiDungeonPct / 100);
+        const poiSanctuaryEstimate = pois - poiDungeonEstimate;
 
         const villageRatio = parseInt(document.getElementById('wbVillageRatio').value) || 0;
         const townRatio = parseInt(document.getElementById('wbTownRatio').value) || 0;
@@ -852,16 +860,14 @@ class Game {
         const towns = Math.round(settlements * townRatio / 100);
         const cities = Math.round(settlements * cityRatio / 100);
 
-        const totalFeatures = settlements + dungeons + sanctuaries + pois;
+        const totalFeatures = settlements + pois;
         const ratioSum = villageRatio + townRatio + cityRatio;
 
         const summaryEl = document.getElementById('worldbuilderSummary');
         summaryEl.innerHTML = `
             <strong>World Summary:</strong><br>
             🏘️ ${villages} villages, ${towns} towns, ${cities} cities<br>
-            🏛️ ${dungeons} dungeons to explore<br>
-            ☼ ${sanctuaries} safe rest locations<br>
-            📍 ${pois} points of interest<br>
+            📍 ${pois} points of interest (~${poiDungeonEstimate} resolve to dungeon, ~${poiSanctuaryEstimate} to sanctuary)<br>
             <br>
             <strong>Total: ${totalFeatures} features</strong>
             ${ratioSum !== 100 ? `<br><span style="color: var(--warning-color);">⚠️ Settlement ratios sum to ${ratioSum}% (should be 100%)</span>` : ''}
@@ -873,9 +879,11 @@ class Game {
      */
     applyWorldbuilderSettings() {
         const settlements = parseInt(document.getElementById('wbSettlements').value) || 150;
-        const dungeons = parseInt(document.getElementById('wbDungeons').value) || 200;
-        const sanctuaries = parseInt(document.getElementById('wbSanctuaries').value) || 100;
         const pois = parseInt(document.getElementById('wbPOIs').value) || 300;
+        // poiResolution.baseDungeonChance is a ratio (0-1), not a count — the
+        // preScaled flag below only affects count fields, not this one.
+        const poiDungeonChancePct = parseInt(document.getElementById('wbPoiDungeonChance')?.value);
+        const poiDungeonChance = Number.isFinite(poiDungeonChancePct) ? poiDungeonChancePct / 100 : 0.60;
 
         const villageRatio = (parseInt(document.getElementById('wbVillageRatio').value) || 60) / 100;
         const townRatio = (parseInt(document.getElementById('wbTownRatio').value) || 30) / 100;
@@ -887,9 +895,10 @@ class Game {
         this.worldbuilderOverrides = {
             preScaled: true,
             baseSettlements: settlements,
-            baseDungeons: dungeons,
-            baseSanctuaries: sanctuaries,
             basePOIs: pois,
+            poiResolution: {
+                baseDungeonChance: poiDungeonChance
+            },
             villageRatio: Math.round(villageRatio * 100),
             townRatio: Math.round(townRatio * 100),
             cityRatio: Math.round(cityRatio * 100),

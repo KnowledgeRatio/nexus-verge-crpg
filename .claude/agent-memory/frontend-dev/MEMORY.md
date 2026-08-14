@@ -3,6 +3,9 @@
 ## Index
 - [skills.json description field wired to a UI consumer](skills_json_description_field_wired.md) — was a pre-existing orphaned field; now a `title` tooltip on skill rows
 - [main.js cannot be unit-imported in vitest](testing_main_js_not_importable.md) — AudioManager singleton side effect blocks it; don't retry this
+- [Canvas corner-badge overlay pattern](canvas_corner_badge_overlay_pattern.md) — reusable idiom for stacking independent tile-state indicators in MapRenderer.js corners
+- [POI reveal symmetric art fix](poi_reveal_symmetric_art_fix.md) — dungeon/sanctuary renderFeature() cases must resolve via feature.originalPoiType, never a generic icon
+- [Worldbuilder UI removed dead fixed-count fields](worldbuilder_ui_removed_dead_fixed_count_fields.md) — wbDungeons/wbSanctuaries deleted from index.html 2026-08-09; main.js refs were backend-dev's cleanup, not mine
 
 ## Key File Locations
 - `index.html` - 1432 lines (as of Roger feature). All modals live inside `#app` div, before the `<footer>` tag.

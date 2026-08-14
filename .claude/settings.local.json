@@ -39,7 +39,26 @@
       "Bash(node tools/image-gen/generate.js --type terrain --id grassland --dry-run)",
       "Bash(node tools/image-gen/generate.js --type terrain --id shallowWater --suffix mai-2)",
       "Bash(node tools/image-gen/generate.js --type terrain --id dungeonBones --suffix mai-2)",
-      "mcp__claude_ai_MS_Learn__microsoft_code_sample_search"
+      "mcp__claude_ai_MS_Learn__microsoft_code_sample_search",
+      "Bash(python3 *)",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(npx vitest *)",
+      "Bash(grep *)",
+      "Bash(mv \"hills_2026-08-09T21-30-27.png\" \"hills-cartographic-atlas-v1.png\")",
+      "Bash(mv \"plains_2026-08-09T21-32-46.png\" \"plains-cartographic-atlas-v1.png\")",
+      "Bash(mv \"desert_2026-08-09T21-34-01.png\" \"desert-cartographic-atlas-v1.png\")",
+      "Bash(mv \"swamp_2026-08-09T21-35-19.png\" \"swamp-cartographic-atlas-v1.png\")",
+      "Bash(mv \"tundra_2026-08-09T21-36-31.png\" \"tundra-cartographic-atlas-v1.png\")",
+      "Bash(node tools/image-gen/generate.js --type terrain --id desert)",
+      "Bash(node tools/image-gen/generate.js --type terrain --id snowyPlains)",
+      "Bash(mv \"bridge_2026-08-10T14-33-23.png\" \"bridge-cartographic-v1.png\")",
+      "Bash(mv \"industrial_2026-08-10T14-35-08.png\" \"industrial-cartographic-v1.png\")",
+      "Bash(mv \"farmland_2026-08-10T14-36-34.png\" \"farmland-cartographic-atlas-v1.png\")",
+      "Bash(mv \"ocean_2026-08-10T18-55-14.png\" \"ocean-cartographic-atlas-v1.png\")",
+      "Bash(mv \"deepWater_2026-08-10T18-56-33.png\" \"deepWater-cartographic-atlas-v1.png\")",
+      "Bash(mv \"mountain_2026-08-10T18-57-45.png\" \"mountain-cartographic-atlas-v1.png\")",
+      "Bash(mv \"desertHills_2026-08-10T18-59-01.png\" \"desertHills-cartographic-atlas-v1.png\")",
+      "Bash(mv \"savanna_2026-08-10T19-00-15.png\" \"savanna-cartographic-atlas-v1.png\")"
     ]
   },
   "enabledMcpjsonServers": [

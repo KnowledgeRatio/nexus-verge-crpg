@@ -44,7 +44,9 @@
       "objective": "Locate the Lich King's phylactery and destroy it before his undead army consumes the realm.",
       "featureGeneration": {
         "baseDungeons": 250,
-        "baseSanctuaries": 80,
+        "poiResolution": {
+          "baseDungeonChance": 0.75
+        },
         "startingRelation": -5
       }
     },

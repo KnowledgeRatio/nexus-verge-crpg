@@ -8,6 +8,8 @@ import { SeededRandom, hashString } from '../utils/rng.js';
 import { RULES, getScaledFeatureGeneration } from '../core/rulesEngine.js';
 import { gameState } from '../core/GameState.js';
 import NPCGenerator from './NPCGenerator.js';
+import { clamp } from '../utils/helpers.js';
+import { filterByCampaign } from '../utils/campaignFilter.js';
 
 class WorldGenerator {
     constructor(worldSeed, config = {}) {
@@ -730,6 +732,39 @@ class WorldGenerator {
     }
 
     /**
+     * Generate a sanctuary name for a POI that resolved to 'sanctuary' (Unified POI
+     * System), using that POI type's own name-pattern fields from data/pois.json —
+     * same template shape dungeon themes already use (namePatterns/adjectives/nouns/
+     * concepts), not the generic prefix+type generator above.
+     * Falls back to generateSanctuaryName() if the POI type doesn't define these
+     * fields yet (ADR-000 graceful degradation).
+     * @param {Object} poiTypeData - Entry from data/pois.json's `poiTypes` array
+     * @param {Object} rng - Seeded RNG
+     * @returns {string}
+     */
+    _generatePoiSanctuaryName(poiTypeData, rng) {
+        const naming = poiTypeData?.sanctuaryNaming;
+        const patterns = naming?.namePatterns;
+        const adjectives = naming?.adjectives;
+        const nouns = naming?.nouns;
+        const concepts = naming?.concepts;
+
+        const hasPatternData = Array.isArray(patterns) && patterns.length > 0
+            && Array.isArray(adjectives) && adjectives.length > 0
+            && Array.isArray(nouns) && nouns.length > 0;
+
+        if (!hasPatternData) {
+            return this.generateSanctuaryName(rng);
+        }
+
+        const pattern = rng.choice(patterns);
+        return pattern
+            .replace('{adjective}', rng.choice(adjectives))
+            .replace('{noun}', rng.choice(nouns))
+            .replace('{concept}', Array.isArray(concepts) && concepts.length > 0 ? rng.choice(concepts) : rng.choice(nouns));
+    }
+
+    /**
      * Load dungeon theme data from data/dungeons.json
      */
     async loadDungeonData() {
@@ -742,6 +777,38 @@ class WorldGenerator {
         } catch (e) {
             console.warn('⚠️ Could not load dungeons.json:', e);
             this.dungeonData = null;
+        }
+    }
+
+    /**
+     * Load POI type data from data/pois.json (Unified POI System), campaign-filtered.
+     * Real shape (data-agent, 2026-08-09): { poiTypes: [
+     *   { id, biomeEligibility: string[], generationShare: number,
+     *     dungeonWeightModifier: number, dungeonThemeWeights: { [themeId]: number },
+     *     sanctuaryFlavor: string,
+     *     sanctuaryNaming: { namePatterns, adjectives, nouns, concepts: string[] },
+     *     campaignIds: string[] }
+     * ] }. Normalized onto `this.poiData.types` for internal use.
+     * Degrades gracefully (ADR-000): a missing/malformed file disables POI
+     * generation for this session rather than crashing world-gen.
+     */
+    async loadPoiData() {
+        if (this.poiData) {
+            return;
+        }
+        try {
+            const response = await fetch(`data/pois.json?v=${Date.now()}`);
+            const data = await response.json();
+            const types = filterByCampaign(data?.poiTypes, this.config.campaignId);
+            if (!Array.isArray(types) || types.length === 0) {
+                console.warn('⚠️ data/pois.json has no valid "poiTypes" array for this campaign — POI generation disabled this session.');
+                this.poiData = null;
+                return;
+            }
+            this.poiData = { types };
+        } catch (e) {
+            console.warn('⚠️ Could not load pois.json — POI generation disabled this session:', e);
+            this.poiData = null;
         }
     }
 
@@ -806,7 +873,15 @@ class WorldGenerator {
         return this.selectTerrain(elevation, moisture, temperature, biomeNoise);
     }
 
-    enrichDungeonFeature(dungeon, tiles, rng) {
+    /**
+     * @param {Object} dungeon - Dungeon feature object (mutated in place)
+     * @param {Array} tiles - Region tile array (used for terrain-based theme lookup)
+     * @param {Object} rng - Seeded RNG
+     * @param {Object|null} themeWeightsOverride - When provided (Unified POI System:
+     *   a POI type's own `dungeonThemeWeights`), theme selection uses this table
+     *   instead of terrain. Standalone dungeons never pass this — unchanged behavior.
+     */
+    enrichDungeonFeature(dungeon, tiles, rng, themeWeightsOverride = null) {
         if (!this.dungeonData) {
             // Sync fallback — data not loaded yet, assign minimal defaults
             dungeon.name = 'Unknown Dungeon';
@@ -816,13 +891,16 @@ class WorldGenerator {
             return;
         }
 
-        // Find terrain at dungeon position
-        const tile = tiles.find(t => t.x === dungeon.x && t.y === dungeon.y);
-        const terrain = tile?.terrain || 'grassland';
-
-        // Get theme weights for this terrain (or defaults)
-        const weights = this.dungeonData.terrainThemeWeights[terrain]
-            || this.dungeonData.defaultThemeWeights;
+        // Get theme weights: POI-type override takes priority, else terrain-based (unchanged)
+        let weights = (themeWeightsOverride && Object.keys(themeWeightsOverride).length > 0)
+            ? themeWeightsOverride
+            : null;
+        if (!weights) {
+            const tile = tiles.find(t => t.x === dungeon.x && t.y === dungeon.y);
+            const terrain = tile?.terrain || 'grassland';
+            weights = this.dungeonData.terrainThemeWeights[terrain]
+                || this.dungeonData.defaultThemeWeights;
+        }
 
         // Weighted random theme selection
         const themeId = this._weightedChoice(weights, rng);
@@ -1488,13 +1566,14 @@ class WorldGenerator {
      */
     async preGenerateFeatures() {
         await this.loadDungeonData();
+        await this.loadPoiData();
         const features = [];
         const regionSize = RULES.worldGen.regionSize;
 
         // Get scaled feature counts for this world size
         const featureConfig = getScaledFeatureGeneration(this.config.mapSize, RULES.worldGen.campaignOverrides);
 
-        console.log(`   Target features: ${featureConfig.dungeons} dungeons, ${featureConfig.sanctuaries} sanctuaries, ${featureConfig.pois} POIs`);
+        console.log(`   Target features: ${featureConfig.pois} POIs`);
 
         // Build list of valid regions (excluding those with settlements)
         const validRegions = [];
@@ -1520,9 +1599,6 @@ class WorldGenerator {
 
         // Track what we've placed
         const placedLocations = new Set(); // "x,y" strings to avoid duplicates
-        let dungeonsPlaced = 0;
-        let sanctuariesPlaced = 0;
-        const poisPlaced = { shrine: 0, ruins: 0, cave: 0, camp: 0, landmark: 0 };
 
         // Helper to get a unique position within a region
         const getUniquePosition = (rx, ry, rng) => {
@@ -1538,163 +1614,146 @@ class WorldGenerator {
             return null;
         };
 
-        // Place dungeons first (most important)
-        const dungeonRNG = new SeededRandom(`${this.worldSeed}_dungeons`);
+        // --- Unified POI System (replaces the old standalone-dungeon loop +
+        // sanctuary-loop + POI-loop) — every dungeon on the map is now a
+        // resolvedType outcome of one of the 7 POI types below; there is no
+        // separate standalone dungeon generation pass anymore. ---
+        // Every POI resolves to either 'dungeon' or 'sanctuary' at world-gen time,
+        // deterministically — hidden from the player until an explicit E-key
+        // "enter" reveal (Player.js).
+        const poiTypeIds = (this.poiData?.types || []).map(t => t.id);
+        const poisPlaced = {};
+        for (const id of poiTypeIds) poisPlaced[id] = 0;
 
-        // Helper to place a dungeon at a region
-        const placeDungeon = (rx, ry) => {
-            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_dungeon`);
-            const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) {
-                return false;
+        if (poiTypeIds.length === 0) {
+            console.warn('⚠️ No POI type data available (data/pois.json missing/malformed) — skipping POI generation.');
+        } else {
+            const poiTargetCounts = {};
+            for (const typeData of this.poiData.types) {
+                const share = typeData.generationShare ?? (1 / poiTypeIds.length);
+                poiTargetCounts[typeData.id] = Math.round(featureConfig.pois * share);
             }
 
-            // Determine difficulty based on distribution
-            const diffRoll = regionRNG.next();
-            let difficulty = 1;
-            let cumulative = 0;
-            for (const [diff, chance] of Object.entries(featureConfig.dungeonDifficultyDistribution)) {
-                cumulative += chance;
-                if (diffRoll < cumulative) {
-                    difficulty = parseInt(diff);
+            const baseDungeonChance = featureConfig.poiResolution?.baseDungeonChance ?? 0.60;
+            const poiRNG = new SeededRandom(`${this.worldSeed}_pois`);
+
+            for (const { rx, ry } of validRegions) {
+                const totalPoisPlaced = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
+                if (totalPoisPlaced >= featureConfig.pois) {
                     break;
                 }
-            }
 
-            const dungeonFeature = {
-                id: `${pos.x},${pos.y}`,
-                x: pos.x,
-                y: pos.y,
-                type: 'dungeon',
-                difficulty: difficulty,
-                explored: false
-            };
-            const hook = this._computeQuestHook(dungeonFeature.x, dungeonFeature.y);
-            if (hook) dungeonFeature.questHook = hook;
-            // Enrich dungeon at world-gen time — terrain sampled deterministically from noise
-            const sampledTerrain = this._sampleTerrainAt(dungeonFeature.x, dungeonFeature.y);
-            const syntheticTiles = [{ x: dungeonFeature.x, y: dungeonFeature.y, terrain: sampledTerrain }];
-            this.enrichDungeonFeature(dungeonFeature, syntheticTiles, regionRNG);
-            features.push(dungeonFeature);
-            dungeonsPlaced++;
-            return true;
-        };
+                if (poiRNG.next() > 0.4) {
+                    continue;
+                } // Check ~40% of regions (same cadence as the old POI loop)
 
-        // First pass: spread dungeons across regions (skip some for distribution)
-        const skippedRegions = [];
-        for (const { rx, ry } of validRegions) {
-            if (dungeonsPlaced >= featureConfig.dungeons) {
-                break;
-            }
+                const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_poi`);
 
-            // Skip ~40% of regions for spread - but track skipped ones for second pass
-            if (dungeonRNG.next() > 0.6) {
-                skippedRegions.push({ rx, ry });
-                continue;
-            }
-
-            placeDungeon(rx, ry);
-        }
-
-        // Second pass: fill remaining target from skipped regions
-        if (dungeonsPlaced < featureConfig.dungeons) {
-            for (const { rx, ry } of skippedRegions) {
-                if (dungeonsPlaced >= featureConfig.dungeons) {
-                    break;
+                // Pick POI type based on generationShare, prioritizing under-quota types
+                // (same idiom the old 5-type loop used, generalized to N types)
+                let poiType = null;
+                const typeRoll = regionRNG.next();
+                let cumulative = 0;
+                for (const typeData of this.poiData.types) {
+                    const id = typeData.id;
+                    if (poisPlaced[id] >= poiTargetCounts[id]) {
+                        continue;
+                    }
+                    const share = typeData.generationShare ?? (1 / poiTypeIds.length);
+                    cumulative += share;
+                    if (typeRoll < cumulative || !poiType) {
+                        poiType = id;
+                    }
                 }
-                placeDungeon(rx, ry);
-            }
-        }
+                if (!poiType) {
+                    continue;
+                }
+                const poiTypeData = this.poiData.types.find(t => t.id === poiType);
 
-        console.log(`   Dungeons placed: ${dungeonsPlaced}/${featureConfig.dungeons}`);
-
-        // Place sanctuaries
-        const sanctuaryRNG = new SeededRandom(`${this.worldSeed}_sanctuaries`);
-
-        for (const { rx, ry } of validRegions) {
-            if (sanctuariesPlaced >= featureConfig.sanctuaries) {
-                break;
-            }
-
-            if (sanctuaryRNG.next() > 0.3) {
-                continue;
-            } // Check ~30% of regions
-
-            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_sanctuary`);
-            const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) {
-                continue;
-            }
-
-            features.push({
-                id: `${pos.x},${pos.y}`,
-                x: pos.x,
-                y: pos.y,
-                type: 'sanctuary',
-                name: this.generateSanctuaryName(regionRNG)
-            });
-            sanctuariesPlaced++;
-        }
-
-        // Place POIs by type
-        const poiTypes = ['shrine', 'ruins', 'cave', 'camp', 'landmark'];
-        const poiRNG = new SeededRandom(`${this.worldSeed}_pois`);
-
-        for (const { rx, ry } of validRegions) {
-            const totalPoisPlaced = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
-            if (totalPoisPlaced >= featureConfig.pois) {
-                break;
-            }
-
-            if (poiRNG.next() > 0.4) {
-                continue;
-            } // Check ~40% of regions
-
-            const regionRNG = new SeededRandom(`${this.worldSeed}_${rx}_${ry}_poi`);
-            const pos = getUniquePosition(rx, ry, regionRNG);
-            if (!pos) {
-                continue;
-            }
-
-            // Pick POI type based on distribution, prioritizing under-quota types
-            let poiType = null;
-            const typeRoll = regionRNG.next();
-            let cumulative = 0;
-
-            for (const type of poiTypes) {
-                const targetCount = featureConfig.poiCounts[type];
-                if (poisPlaced[type] >= targetCount) {
+                // New: position pick with biome-eligibility retry (bounded, mirrors
+                // getUniquePosition's own retry-5 pattern). Rejected candidates are
+                // freed back up so they remain available to other features.
+                const eligibleTerrains = poiTypeData.biomeEligibility;
+                let pos = null;
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    const candidate = getUniquePosition(rx, ry, regionRNG);
+                    if (!candidate) {
+                        break;
+                    }
+                    if (!Array.isArray(eligibleTerrains) || eligibleTerrains.length === 0) {
+                        pos = candidate;
+                        break;
+                    }
+                    const terrain = this._sampleTerrainAt(candidate.x, candidate.y);
+                    if (eligibleTerrains.includes(terrain)) {
+                        pos = candidate;
+                        break;
+                    }
+                    placedLocations.delete(`${candidate.x},${candidate.y}`);
+                }
+                if (!pos) {
                     continue;
                 }
 
-                cumulative += featureConfig.poiDistribution[type];
-                if (typeRoll < cumulative || !poiType) {
-                    poiType = type;
+                // Roll resolvedType: an explicit per-type override wins outright;
+                // otherwise fall back to clamp(base + modifier, 0, 1).
+                const typeOverride = featureConfig.poiResolution?.typeOverrides?.[poiType];
+                const finalDungeonChance = typeOverride !== undefined
+                    ? typeOverride
+                    : clamp(baseDungeonChance + (poiTypeData.dungeonWeightModifier || 0), 0, 1);
+                const resolvedType = regionRNG.next() < finalDungeonChance ? 'dungeon' : 'sanctuary';
+
+                const feature = {
+                    id: `${pos.x},${pos.y}`,
+                    x: pos.x,
+                    y: pos.y,
+                    type: 'poi',
+                    poiType,
+                    resolvedType,
+                    discovered: false,
+                    intelKnown: false
+                };
+
+                if (resolvedType === 'dungeon') {
+                    const diffRoll = regionRNG.next();
+                    let difficulty = 1;
+                    let diffCumulative = 0;
+                    for (const [diff, chance] of Object.entries(featureConfig.dungeonDifficultyDistribution)) {
+                        diffCumulative += chance;
+                        if (diffRoll < diffCumulative) {
+                            difficulty = parseInt(diff);
+                            break;
+                        }
+                    }
+                    feature.difficulty = difficulty;
+                    feature.explored = false;
+
+                    const hook = this._computeQuestHook(feature.x, feature.y);
+                    if (hook) feature.questHook = hook;
+
+                    // Theme resolves from the POI type's own weight table, not terrain
+                    const sampledTerrain = this._sampleTerrainAt(feature.x, feature.y);
+                    const syntheticTiles = [{ x: feature.x, y: feature.y, terrain: sampledTerrain }];
+                    this.enrichDungeonFeature(feature, syntheticTiles, regionRNG, poiTypeData.dungeonThemeWeights);
+                } else {
+                    feature.name = this._generatePoiSanctuaryName(poiTypeData, regionRNG);
                 }
-            }
 
-            if (!poiType) {
-                continue;
+                features.push(feature);
+                poisPlaced[poiType]++;
             }
-
-            features.push({
-                id: `${pos.x},${pos.y}`,
-                x: pos.x,
-                y: pos.y,
-                type: 'poi',
-                poiType: poiType,
-                discovered: false
-            });
-            poisPlaced[poiType]++;
         }
 
         this.worldMetadata.features = features;
 
-        const totalPois = Object.values(poisPlaced).reduce((a, b) => a + b, 0);
+        const poiFeatures = features.filter(f => f.type === 'poi');
+        const poiDungeons = poiFeatures.filter(f => f.resolvedType === 'dungeon').length;
+        const poiSanctuaries = poiFeatures.filter(f => f.resolvedType === 'sanctuary').length;
+        const poiBreakdown = poiTypeIds.map(id => `${poisPlaced[id]} ${id}`).join(', ');
+
         console.log(`   Generated ${features.length} features:`);
-        console.log(`     - ${dungeonsPlaced} dungeons`);
-        console.log(`     - ${sanctuariesPlaced} sanctuaries`);
-        console.log(`     - ${totalPois} POIs (${poisPlaced.shrine} shrines, ${poisPlaced.ruins} ruins, ${poisPlaced.cave} caves, ${poisPlaced.camp} camps, ${poisPlaced.landmark} landmarks)`);
+        console.log(`     - ${poiFeatures.length} POIs (${poiDungeons} resolve to dungeon, ${poiSanctuaries} resolve to sanctuary)`);
+        if (poiBreakdown) console.log(`     - POI breakdown: ${poiBreakdown}`);
     }
 
     /**

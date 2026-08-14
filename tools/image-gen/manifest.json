@@ -20,9 +20,9 @@
     "outputPath": "data/graphics/monsters/wolf_2026-06-10T21-52-32.png"
   },
   "terrain/mountain": {
-    "generatedAt": "2026-05-25T21:31:41.436Z",
-    "promptHash": "4cb743b2",
-    "outputPath": "data/graphics/mountain_2026-05-25T21-31-20.png"
+    "generatedAt": "2026-08-10T18:58:29.319Z",
+    "promptHash": "335690f1",
+    "outputPath": "data/graphics/mountain_2026-08-10T18-57-45.png"
   },
   "items/potionOfHealing": {
     "generatedAt": "2026-05-25T21:32:09.093Z",
@@ -55,19 +55,19 @@
     "outputPath": "data/graphics/items/leatherArmor_2026-05-27T21-46-08.png"
   },
   "terrain/swamp": {
-    "generatedAt": "2026-05-27T21:59:28.283Z",
-    "promptHash": "34f7a1ff",
-    "outputPath": "data/graphics/swamp_2026-05-27T21-58-57.png"
+    "generatedAt": "2026-08-09T21:35:59.278Z",
+    "promptHash": "32101f31",
+    "outputPath": "data/graphics/swamp_2026-08-09T21-35-19.png"
   },
   "terrain/mountainPeak": {
-    "generatedAt": "2026-05-27T22:11:05.986Z",
-    "promptHash": "8074b186",
-    "outputPath": "data/graphics/mountainPeak-mai-2.png"
+    "generatedAt": "2026-08-10T14:46:04.801Z",
+    "promptHash": "232047d2",
+    "outputPath": "data/graphics/mountainPeak_2026-08-10T14-45-20.png"
   },
   "terrain/tundra": {
-    "generatedAt": "2026-05-27T22:12:38.475Z",
-    "promptHash": "89d735ee",
-    "outputPath": "data/graphics/tundra-mai-2.png"
+    "generatedAt": "2026-08-09T21:37:16.604Z",
+    "promptHash": "2ee0152a",
+    "outputPath": "data/graphics/tundra_2026-08-09T21-36-31.png"
   },
   "terrain/dungeonTrap": {
     "generatedAt": "2026-05-27T22:14:33.654Z",
@@ -75,19 +75,19 @@
     "outputPath": "data/graphics/dungeonTrap-mai-2.png"
   },
   "terrain/shallowWater": {
-    "generatedAt": "2026-05-27T22:17:59.832Z",
-    "promptHash": "2423eefa",
-    "outputPath": "data/graphics/shallowWater-mai-2.png"
+    "generatedAt": "2026-08-10T14:41:09.833Z",
+    "promptHash": "ee591457",
+    "outputPath": "data/graphics/shallowWater_2026-08-10T14-40-29.png"
   },
   "terrain/sanctuary": {
-    "generatedAt": "2026-05-27T22:18:39.007Z",
-    "promptHash": "9eaab3ca",
-    "outputPath": "data/graphics/sanctuary-mai-2.png"
+    "generatedAt": "2026-08-10T10:34:46.395Z",
+    "promptHash": "547f506a",
+    "outputPath": "data/graphics/sanctuary_2026-08-10T10-34-00.png"
   },
   "terrain/plains": {
-    "generatedAt": "2026-05-27T22:19:00.058Z",
-    "promptHash": "78a7ca7e",
-    "outputPath": "data/graphics/plains-mai-2.png"
+    "generatedAt": "2026-08-09T21:33:29.409Z",
+    "promptHash": "2b8fb176",
+    "outputPath": "data/graphics/plains_2026-08-09T21-32-46.png"
   },
   "terrain/dungeonBones": {
     "generatedAt": "2026-05-27T22:20:44.657Z",
@@ -313,5 +313,95 @@
     "generatedAt": "2026-06-10T22:04:02.935Z",
     "promptHash": "44d18703",
     "outputPath": "data/graphics/monsters/gnoll_2026-06-10T21-52-32.png"
+  },
+  "terrain/hills": {
+    "generatedAt": "2026-08-09T21:31:15.195Z",
+    "promptHash": "551c9f80",
+    "outputPath": "data/graphics/hills_2026-08-09T21-30-27.png"
+  },
+  "terrain/desert": {
+    "generatedAt": "2026-08-09T22:24:25.557Z",
+    "promptHash": "519e875a",
+    "outputPath": "data/graphics/desert_2026-08-09T22-23-45.png"
+  },
+  "terrain/snowyPlains": {
+    "generatedAt": "2026-08-09T22:25:38.864Z",
+    "promptHash": "5c3c4c3d",
+    "outputPath": "data/graphics/snowyPlains_2026-08-09T22-24-57.png"
+  },
+  "terrain/road": {
+    "generatedAt": "2026-08-10T10:36:01.085Z",
+    "promptHash": "2c48cc9d",
+    "outputPath": "data/graphics/road_2026-08-10T10-35-18.png"
+  },
+  "terrain/bridge": {
+    "generatedAt": "2026-08-10T14:34:36.400Z",
+    "promptHash": "b883c260",
+    "outputPath": "data/graphics/bridge_2026-08-10T14-33-23.png"
+  },
+  "terrain/town": {
+    "generatedAt": "2026-08-10T10:38:39.482Z",
+    "promptHash": "ea495723",
+    "outputPath": "data/graphics/town_2026-08-10T10-37-52.png"
+  },
+  "terrain/residential": {
+    "generatedAt": "2026-08-10T11:40:37.687Z",
+    "promptHash": "c9977bb2",
+    "outputPath": "data/graphics/residential_2026-08-10T11-39-55.png"
+  },
+  "terrain/industrial": {
+    "generatedAt": "2026-08-10T14:36:00.274Z",
+    "promptHash": "0df88a9d",
+    "outputPath": "data/graphics/industrial_2026-08-10T14-35-08.png"
+  },
+  "terrain/cave": {
+    "generatedAt": "2026-08-10T10:42:25.830Z",
+    "promptHash": "64478c16",
+    "outputPath": "data/graphics/cave_2026-08-10T10-41-44.png"
+  },
+  "terrain/ruins": {
+    "generatedAt": "2026-08-10T10:43:40.352Z",
+    "promptHash": "9f0657d7",
+    "outputPath": "data/graphics/ruins_2026-08-10T10-42-59.png"
+  },
+  "terrain/farmland": {
+    "generatedAt": "2026-08-10T14:37:21.072Z",
+    "promptHash": "8dc1f97f",
+    "outputPath": "data/graphics/farmland_2026-08-10T14-36-34.png"
+  },
+  "terrain/ocean": {
+    "generatedAt": "2026-08-10T18:56:01.109Z",
+    "promptHash": "b46e5b74",
+    "outputPath": "data/graphics/ocean_2026-08-10T18-55-14.png"
+  },
+  "terrain/deepWater": {
+    "generatedAt": "2026-08-11T06:50:45.966Z",
+    "promptHash": "65668a46",
+    "outputPath": "data/graphics/deepWater_2026-08-11T06-50-02.png"
+  },
+  "terrain/denseForest": {
+    "generatedAt": "2026-08-10T19:02:21.480Z",
+    "promptHash": "a2b23632",
+    "outputPath": "data/graphics/denseForest_2026-08-10T19-01-38.png"
+  },
+  "terrain/snowForest": {
+    "generatedAt": "2026-08-10T14:48:51.223Z",
+    "promptHash": "4ccd2e47",
+    "outputPath": "data/graphics/snowForest_2026-08-10T14-47-54.png"
+  },
+  "terrain/jungle": {
+    "generatedAt": "2026-08-11T06:52:07.263Z",
+    "promptHash": "b396d109",
+    "outputPath": "data/graphics/jungle_2026-08-11T06-51-18.png"
+  },
+  "terrain/desertHills": {
+    "generatedAt": "2026-08-11T06:49:30.778Z",
+    "promptHash": "a60ff1cb",
+    "outputPath": "data/graphics/desertHills_2026-08-11T06-48-48.png"
+  },
+  "terrain/savanna": {
+    "generatedAt": "2026-08-10T19:01:03.758Z",
+    "promptHash": "ad15b4dc",
+    "outputPath": "data/graphics/savanna_2026-08-10T19-00-15.png"
   }
 }

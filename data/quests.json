@@ -469,7 +469,11 @@
           "dungeon",
           "ruins",
           "cave",
-          "landmark"
+          "camp",
+          "temple",
+          "monastery",
+          "watchtower",
+          "villa"
         ],
         "validNPCRoles": [
           "leader",

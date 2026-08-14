@@ -971,6 +971,28 @@
       "You might find better prices in {settlementName}. It's {distance} to the {direction}.",
       "The folk in {settlementName} are good people. You should visit if you get the chance."
     ],
+    "poiDungeon": [
+      "I've heard dark tales of {poiName} to the {direction}. They say {creatureType} lurk within.",
+      "Steer clear of {poiName}, {distance} to the {direction}. Nothing good comes from that place.",
+      "A merchant told me about {poiName}. It's {distance} to the {direction}, crawling with {creatureType}.",
+      "The scouts report {creatureType} near {poiName} to the {direction}.",
+      "If you're brave — or foolish — {poiName} lies {distance} to the {direction}.",
+      "Word has it {poiName} isn't as quiet as it looks. {creatureType} have moved in.",
+      "The patrols won't go near {poiName}. Too many {creatureType} for their liking.",
+      "I pity anyone who stumbles upon {poiName} to the {direction}.",
+      "Last I heard, {poiName} is infested with {creatureType}. Dangerous place.",
+      "Don't let its looks fool you — {poiName}, {distance} to the {direction}, is crawling with {creatureType}."
+    ],
+    "poiSanctuary": [
+      "You'll find good rest at {poiName}, {distance} to the {direction}.",
+      "Travelers speak well of {poiName}. It's {distance} to the {direction}, if you need to catch your breath.",
+      "{poiName} to the {direction} is a peaceful spot — I've stopped there myself.",
+      "If the road's worn you down, {poiName} is {distance} to the {direction}. Safe as anywhere.",
+      "I've heard nothing but good about {poiName}. Worth the walk, {distance} to the {direction}.",
+      "{poiName} welcomes travelers, or so I'm told. It's to the {direction}.",
+      "You could do worse than resting at {poiName}, {distance} to the {direction}.",
+      "They say {poiName} is one of the few quiet places left, {distance} to the {direction}."
+    ],
     "terrain": [
       "Watch yourself if you're heading {direction}. The {terrainType} out there can be treacherous.",
       "The {terrainType} to the {direction} aren't kind to travelers. Be prepared.",

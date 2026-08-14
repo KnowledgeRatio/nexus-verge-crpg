@@ -33,6 +33,10 @@
 
 - [Practices taxonomy](practices_taxonomy.md) — 8-practice domain map for the "-craft" downtime discipline system (Forgecraft/Hearthcraft existing + 6 proposed); Leechcraft/Wardcraft naming+IP notes; no-pantheon constraint applied to Wardcraft
 
+## Terrain Art
+
+- [Terrain atlas taxonomy 2026-08](terrain_atlas_taxonomy.md) — transitionGroup/priority proposal for all 43 terrains; materials-vs-landmark split; corrects tone_visual_style.md's "mixed-flora" line against the shipped grassland/forest precedent
+
 ## Campaign Themes
 
 <!-- Record the agreed aesthetic lens and key creative decisions for each campaign -->

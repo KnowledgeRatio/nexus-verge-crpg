@@ -770,7 +770,9 @@ export const RULES = {
             },
 
             // --- DUNGEONS ---
-            baseDungeons: 200,            // ~200 dungeons in medium world
+            // baseDungeons retired (Unified POI System, 2026-08-09) — dungeon is
+            // purely a resolvedType outcome of the 7 POI types now, no standalone
+            // count or generation loop exists anymore.
 
             // Dungeon difficulty distribution
             dungeonDifficultyDistribution: {
@@ -781,48 +783,34 @@ export const RULES = {
                 5: 0.05                   // 5% deadly (level 13+)
             },
 
-            // --- SANCTUARIES (Safe Rest Locations) ---
-            baseSanctuaries: 100,         // ~100 sanctuaries in medium world
-
             // --- POINTS OF INTEREST (POIs) ---
+            // Unified POI System (docs/plans/2026-08-09-terrain-atlas-overhaul.md):
+            // sanctuaries no longer have their own standalone count — every POI
+            // resolves to either 'dungeon' or 'sanctuary' at world-gen time via
+            // poiResolution below. Type list, biome eligibility, theme weights and
+            // generation-share distribution are data-driven from data/pois.json.
             basePOIs: 300,                // ~300 POIs in medium world
 
-            // POI type distribution
-            poiDistribution: {
-                shrine: 0.20,             // 20% shrines (minor religious sites)
-                ruins: 0.25,              // 25% ruins (explorable areas)
-                cave: 0.20,               // 20% caves (potential lairs)
-                camp: 0.15,               // 15% camps (bandit/creature camps)
-                landmark: 0.20            // 20% landmarks (navigation aids)
+            // Dungeon:Sanctuary resolution ratio for POIs
+            poiResolution: {
+                // finalDungeonChance = typeOverrides[poiType.id] ?? clamp(baseDungeonChance + poiType.dungeonWeightModifier, 0, 1)
+                // Approved default (2026-08-09): dungeon-leaning — POIs mostly carry
+                // risk, sanctuary is the reward for reading type/biome cues (or intel).
+                baseDungeonChance: 0.60,
+                // Optional per-type overrides — an explicit entry here wins outright
+                // over the base+modifier formula, e.g. { cave: 0.70, monastery: 0.20 }.
+                // Unlisted types fall back to the global formula unchanged.
+                typeOverrides: {}
             },
 
             // --- GENERATION CONSTRAINTS ---
             // Minimum distance from world edge (in regions)
-            edgeBuffer: 2,
-
-            // Features avoid spawning on these terrains
-            excludedTerrains: ['deepWater', 'shallowWater', 'mountain', 'peaks'],
-
-            // Dungeons prefer these terrains (weighted)
-            dungeonTerrainWeights: {
-                mountain: 2.0,            // 2x likely in mountains
-                hills: 1.5,               // 1.5x likely in hills
-                forest: 1.2,              // Slightly more in forests
-                default: 1.0              // Base weight for other terrains
-            },
-
-            // Sanctuary terrain preferences
-            sanctuaryTerrainWeights: {
-                forest: 1.5,              // Groves and glades
-                grassland: 1.3,           // Open shrines
-                hills: 1.2,               // Hilltop temples
-                default: 1.0
-            }
+            edgeBuffer: 2
         },
 
         // Campaign-specific overrides (loaded from data/campaigns.json)
         // Example: A "wilderness survival" campaign might have:
-        //   { baseSettlements: 50, baseSanctuaries: 30, baseDungeons: 300 }
+        //   { baseSettlements: 50, poiResolution: { baseDungeonChance: 0.75 } }
         // Example: A "city intrigue" campaign might have:
         //   { baseSettlements: 300, settlementDistribution: { city: 0.40 } }
         campaignOverrides: {},
@@ -1243,6 +1231,11 @@ export const RULES = {
             boundarySegments: 4,
             minDepthRatio: 0.45,
             maxDepthRatio: 1.0
+        },
+        poiMarkers: {
+            // Independent kill switch for painted art on sanctuary/poi feature markers,
+            // separate from the base-terrain pixel-art toggle (ADR-000).
+            usePaintedArt: true
         }
     },
 
@@ -1508,8 +1501,6 @@ export function getScaledFeatureGeneration(worldSize = 'medium', campaignOverrid
     return {
         // Scaled totals
         settlements: Math.round(fg.baseSettlements * sf),
-        dungeons: Math.round(fg.baseDungeons * sf),
-        sanctuaries: Math.round(fg.baseSanctuaries * sf),
         pois: Math.round(fg.basePOIs * sf),
 
         // Breakdowns
@@ -1519,22 +1510,12 @@ export function getScaledFeatureGeneration(worldSize = 'medium', campaignOverrid
             city: Math.round(fg.baseSettlements * sf * fg.settlementDistribution.city)
         },
 
-        poiCounts: {
-            shrine: Math.round(fg.basePOIs * sf * fg.poiDistribution.shrine),
-            ruins: Math.round(fg.basePOIs * sf * fg.poiDistribution.ruins),
-            cave: Math.round(fg.basePOIs * sf * fg.poiDistribution.cave),
-            camp: Math.round(fg.basePOIs * sf * fg.poiDistribution.camp),
-            landmark: Math.round(fg.basePOIs * sf * fg.poiDistribution.landmark)
-        },
-
         // Pass through other settings
         settlementSpacing: fg.settlementSpacing,
         dungeonDifficultyDistribution: fg.dungeonDifficultyDistribution,
-        dungeonTerrainWeights: fg.dungeonTerrainWeights,
-        sanctuaryTerrainWeights: fg.sanctuaryTerrainWeights,
-        excludedTerrains: fg.excludedTerrains,
         edgeBuffer: fg.edgeBuffer,
-        poiDistribution: fg.poiDistribution,
+        // Ratio (not a count) — never scaled by world size
+        poiResolution: fg.poiResolution,
 
         // Metadata for debugging
         _meta: {

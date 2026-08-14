@@ -61,7 +61,19 @@
       "name": "Mountain",
       "symbol": "^",
       "color": "#8b7355",
-      "tileImage": "mountain-mai-2.png",
+      "tileImage": "mountain-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous warm iron-brown and grey rocky ground, expressed purely as flat two-dimensional cartographic ink hatching — clustered angular line-and-dash marks representing rock texture, never small illustrated peak icons or triangular mountain shapes. Each mark is a flat ink line with no shading, no gradient, and no light or dark side of its own — four to seven broad clustered marks per notional world square, at a raised ink density and wider value-contrast band than grassland's calm baseline, achieved through more ink, not through dimensional form. This must read as a painted flat surface, not a miniature relief map or a drawing of individual mountains. No relief shading, elevation gradient, embossed or 3D-looking marks, summit, snow, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "alpine",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 4,
+          "max": 7
+        }
+      },
       "traversable": true,
       "movementCost": 2,
       "description": "Rocky peaks reach toward the sky.",
@@ -77,7 +89,19 @@
       "name": "Mountain Peak",
       "symbol": "^",
       "color": "#7a766f",
-      "tileImage": "mountainPeak-mai-2.png",
+      "tileImage": "mountainPeak-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous cool pale slate-grey sheer summit rock ground with frost-white mineral ink dabs, expressed with five to eight broad tightly clustered fracture-line ink formations per notional world square, at the highest ink density and contrast band in the alpine group. No relief shading, elevation gradient, snowcap gradient, drop shadow, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "alpine",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 5,
+          "max": 8
+        }
+      },
       "traversable": false,
       "movementCost": null,
       "description": "Jagged summits rise above the clouds, too steep to climb.",
@@ -96,7 +120,19 @@
       "name": "Ocean",
       "symbol": "≈",
       "color": "#0047AB",
-      "tileImage": "ocean-mai-2.png",
+      "tileImage": "ocean-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous deep desaturated teal-blue open-ocean water, expressed with two to four broad rolling swell-stroke clusters per notional world square and sparse pale foam-crest dashes. The painted surface must fill the canvas completely edge-to-edge with no border, frame, vignette, paper edge, or edge darkening of any kind — the water texture continues unbroken all the way to every edge of the image. No coastline, land, ships, rocks, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "openWater",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 2,
+          "max": 4
+        }
+      },
       "traversable": false,
       "movementCost": null,
       "description": "Deep ocean waters, impossible to swim across.",
@@ -119,7 +155,19 @@
       "name": "Deep Water",
       "symbol": "~",
       "color": "#1e5ba8",
-      "tileImage": "deepWater-mai-2.png",
+      "tileImage": "deepWater-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous near-black slate-blue deep-water ground, expressed with two to three broad widely spaced long swell-stroke marks per notional world square and minimal dark value variation. This is a flat colour-field swatch, not a framed painting or photograph — there must be no border, frame, vignette, aged-paper edge, deckle edge, or any ring of different colour or darkness around the perimeter. The exact same deep-water colour and texture must reach all four edges and all four corners with zero exception, as if the visible canvas is a cropped sample cut from the middle of a much larger continuous painted surface. No coastline, land, ships, rocks, foam, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "openWater",
+        "transitionPriority": 30,
+        "motifsPerTile": {
+          "min": 2,
+          "max": 3
+        }
+      },
       "traversable": false,
       "movementCost": null,
       "description": "Deep water blocks your path.",
@@ -142,7 +190,8 @@
       "name": "Sanctuary",
       "symbol": "⛩️",
       "color": "#f0e68c",
-      "tileImage": "sanctuary-mai-2.png",
+      "tileImage": "sanctuary-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a small roadside waystation shelter — a simple wood-and-stone lean-to with a modest hearth-ring and bench — set on a small cleared patch of open ground. No people, animals, other structures, roads, or water.",
       "traversable": true,
       "movementCost": 1,
       "description": "A peaceful sanctuary where weary travelers can rest safely.",
@@ -159,7 +208,19 @@
       "name": "Shallow Water",
       "symbol": "≈",
       "color": "#6ab8ff",
-      "tileImage": "shallowWater-mai-2.png",
+      "tileImage": "shallowWater-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous pale desaturated teal-blue shallow-water ground, expressed with three to five broad short current-ripple ink stroke clusters per notional world square and sparse small wave-crest dash accents. No coastline, land, rocks, paths, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "openWater",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 5
+        }
+      },
       "traversable": true,
       "movementCost": 2,
       "description": "Shallow water that can be waded through.",
@@ -191,7 +252,8 @@
       "name": "Road",
       "symbol": "=",
       "color": "#b8a589",
-      "tileImage": "road-mai-2.png",
+      "tileImage": "road-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a well-worn packed-earth trail crossing the tile, edges softened with trampled grass and faint wheel-rut ink lines. No travelers, wagons, buildings, bridges, or water.",
       "traversable": true,
       "movementCost": 0.8,
       "description": "A well-worn path that connects settlements.",
@@ -207,7 +269,8 @@
       "name": "Bridge",
       "symbol": "≡",
       "color": "#8b7355",
-      "tileImage": "bridge-mai-2.png",
+      "tileImage": "bridge-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a sturdy wood-and-stone bridge deck spanning a narrow flat strip of calm water, plank or stone-slab surface with visible support-post accents at each edge, set within flat level ground on both banks. The painted surface must fill the canvas completely edge-to-edge with no border, frame, vignette, paper edge, or edge darkening of any kind — the field texture on both banks must continue unbroken all the way to every edge of the image. No canyon, cliffs, ravine, elevation change, relief shading, or dramatic terrain — the banks are flat and unremarkable, not a scenic valley. No travelers, wagons, boats, additional structures, or converging rivers.",
       "traversable": true,
       "movementCost": 0.8,
       "description": "A sturdy bridge spans the water.",
@@ -223,7 +286,8 @@
       "name": "Town",
       "symbol": "🏘️",
       "color": "#d4af37",
-      "tileImage": "town-mai-2.png",
+      "tileImage": "town-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a dense cluster of medieval stone-and-timber rooftops along narrow winding streets, roof materials varied between thatch and slate. No people, animals, banners, roads leading off the tile, or water.",
       "traversable": true,
       "movementCost": 1,
       "description": "A settlement with buildings and people.",
@@ -240,7 +304,19 @@
       "name": "Hills",
       "symbol": "n",
       "color": "#9aad72",
-      "tileImage": "hills-mai-2.png",
+      "tileImage": "hills-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous uneven sage-olive-brown grass-and-scrub upland ground, expressed with three to six broad clustered tussock and low scrub-brush ink dabs per notional world square and sparse dry pale grass-blade accents. No cliffs, ridgelines, elevation shading, contour lines, rocks, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "uplands",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Rolling hills provide vantage points.",
@@ -256,7 +332,19 @@
       "name": "Desert Hills",
       "symbol": "n",
       "color": "#c4a068",
-      "tileImage": "desertHills-mai-2.png",
+      "tileImage": "desertHills-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous warm rust-ochre ground, deeper in hue than desert, expressed purely as flat two-dimensional cartographic ink hatching — short clustered angular dab-and-dash marks representing broken, eroded rock texture, never a drawn ridge, never a continuous ridgeline, never a landform silhouette. Each mark is a flat ink line with no shading, no gradient, and no light or dark side of its own — four to six broad clustered mark-formations per notional world square, warmer and rounder in silhouette than mountain's hatching, at a raised ink density below full alpine intensity, achieved through more ink marks, not through dimensional form. This must read as a flat painted surface texture, exactly like a hatched fabric pattern, absolutely not a topographic map, not a satellite view, and not a drawing of hills or a mountain range — there must be no continuous line that could be read as a ridge crest, valley, or drainage channel anywhere in the image. No cliffs, elevation shading, contour lines, rock piles, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "uplands",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 4,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Eroded sandstone ridges bake under the sun.",
@@ -272,7 +360,19 @@
       "name": "Swamp",
       "symbol": "m",
       "color": "#4a6838",
-      "tileImage": "swamp-mai-2.png",
+      "tileImage": "swamp-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous murky desaturated olive-brown wetland ground, expressed with three to six broad dark stagnant-water-pool ink patches per notional world square and sparse reed-and-rush tuft clusters. No open river, clear water, paths, trees, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 40,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 2.5,
       "description": "A murky wetland filled with thick vegetation.",
@@ -288,7 +388,19 @@
       "name": "Desert",
       "symbol": ":",
       "color": "#edc9af",
-      "tileImage": "desert-mai-2.png",
+      "tileImage": "desert-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous strongly warm golden ochre-cream sand terrain — never grey, never taupe, never desaturated — painted as a flat even colour wash. Expressed with three to six small thin wind-ripple ink line clusters per notional world square, drawn as flat two-dimensional line marks only, plus sparse small dune-crest dash accents drawn as flat ink marks. The surface must read as perfectly flat with no dune ridges, no rolling bands, no directional highlight or shadow, and no sense of height or depth — a flat painted colour field with fine linework texture only, not a landscape. No rocks, oases, water, paths, vegetation, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "aridTropical",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Endless sands stretch in all directions.",
@@ -304,7 +416,8 @@
       "name": "Cave Entrance",
       "symbol": "🕳️",
       "color": "#3d3d3d",
-      "tileImage": "cave-mai-2.png",
+      "tileImage": "cave-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a rocky outcrop with a single dark cave opening at its centre, bare stone surface with sparse scrub growth at the edges. No light source, glow, bones, carvings, treasure, or creatures — the opening reads as a plain unlit gap in the rock, not clearly safe or clearly dangerous.",
       "traversable": true,
       "movementCost": 1,
       "description": "A dark opening leading underground.",
@@ -321,7 +434,8 @@
       "name": "Ruins",
       "symbol": "🏛️",
       "color": "#7a7a7a",
-      "tileImage": "ruins-mai-2.png",
+      "tileImage": "ruins-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of weathered stone wall fragments and a broken foundation outline scattered with rubble. One small wall fragment carries a single riftborn material-impossibility accent — stone showing the sharp fracture pattern of shattered glass in one patch that flows smoothly into unbroken, liquid-poured continuity in the next, confined to that one fragment. No visible entrance stairway, glow, carvings, bones, or creatures elsewhere in the frame — the ruin reads as simply old, not clearly safe or clearly dangerous.",
       "traversable": true,
       "movementCost": 1.5,
       "description": "Ancient structures crumbling with age.",
@@ -334,11 +448,108 @@
       ]
     },
     {
+      "id": "temple",
+      "name": "Temple",
+      "symbol": "🛕",
+      "color": "#c9a86a",
+      "tileImage": null,
+      "imageDescription": "Directly overhead view of a modest carved-stone shrine structure with a small open-air colonnade and a plain central altar slab. No glow, worshippers, offerings, dark stains, bones, or creatures — the shrine reads as simply old and quiet, not clearly safe or clearly dangerous.",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A modest shrine of carved stone, incense lingering in the air.",
+      "encounterModifier": 0.8,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "monastery",
+      "name": "Monastery",
+      "symbol": "⛪",
+      "color": "#8a8f99",
+      "tileImage": null,
+      "imageDescription": "Directly overhead view of a cloistered arrangement of plain stone hall rooftops enclosing a small terraced garden courtyard with visible planted-row motifs. No glow, monks, bells, banners, or creatures — the structure reads as simply a quiet retreat, not clearly safe or clearly dangerous.",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "A cloistered retreat of quiet stone halls and terraced gardens.",
+      "encounterModifier": 0.6,
+      "coverType": "substantial",
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "camp",
+      "name": "Camp",
+      "symbol": "⛺",
+      "color": "#cd853f",
+      "tileImage": null,
+      "imageDescription": "Directly overhead view of two or three weathered canvas tents clustered around a single cold, ash-grey firepit ring, with gear crates scattered nearby. No visible flame, smoke, banners, bones, or people — the camp reads as simply unoccupied at the moment, not clearly safe or clearly dangerous.",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A cluster of weathered tents and cold firepits, abandoned or not-quite-abandoned.",
+      "encounterModifier": 1.0,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "watchtower",
+      "name": "Watchtower",
+      "symbol": "🗼",
+      "color": "#6b7280",
+      "tileImage": null,
+      "imageDescription": "Directly overhead view of a single fortified stone tower with a crenellated parapet and a small attached courtyard wall, weathered but structurally intact. No banners, guards, fire, glow, or creatures — the tower reads as simply a fortified structure, not clearly safe or clearly dangerous.",
+      "traversable": true,
+      "movementCost": 1.5,
+      "description": "A fortified tower standing watch over the surrounding land.",
+      "encounterModifier": 1.2,
+      "coverType": "substantial",
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "villa",
+      "name": "Villa",
+      "symbol": "🏡",
+      "color": "#c98a5a",
+      "tileImage": null,
+      "imageDescription": "Directly overhead view of a modest countryside manor rooftop with an attached courtyard enclosed by low stone garden walls, small planted-row garden-bed motifs visible within. No people, banners, glow, or creatures — the estate reads as simply a rural dwelling, not clearly safe or clearly dangerous.",
+      "traversable": true,
+      "movementCost": 1,
+      "description": "A sprawling countryside estate behind low garden walls.",
+      "encounterModifier": 0.7,
+      "coverType": "partial",
+      "difficultTerrain": false,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "plains",
       "name": "Plains",
       "symbol": ".",
       "color": "#d4c896",
-      "tileImage": "plains-mai-2.png",
+      "tileImage": "plains-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous wide open dry golden-straw grassland ground, expressed with three to six broad sweeping tall-grass-blade brushstroke clusters per notional world square and sparse small pale flower-dot accents. No trees, rocks, paths, water, clearings, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 12,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1,
       "description": "Wide open lowland, green and alive in full growth, grasses dense and knee-high under a clear sky.",
@@ -354,7 +565,19 @@
       "name": "Dense Forest",
       "symbol": "♣",
       "color": "#1a3a0f",
-      "tileImage": "denseForest-mai-2.png",
+      "tileImage": "denseForest-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous closed dense-forest canopy in cooler near-black teal than open forest. Canopy clusters must touch and overlap edge-to-edge with almost no gaps between them, so the pale ground substrate is barely visible anywhere in the image — this is a noticeably denser, more closed canopy than a normal forest, not a scattering of separated tree clumps with visible ground between them. Expressed with four to seven broad tightly overlapping canopy-mass ink clusters per notional world square, at a contrast band one step above forest's baseline. No clearing, path, water, mountain, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 30,
+        "motifsPerTile": {
+          "min": 4,
+          "max": 7
+        }
+      },
       "traversable": true,
       "movementCost": 2,
       "description": "Thick forest with towering trees and dense undergrowth.",
@@ -370,7 +593,19 @@
       "name": "Tundra",
       "symbol": ".",
       "color": "#c8d8e8",
-      "tileImage": "tundra-mai-2.png",
+      "tileImage": "tundra-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous pale cool blue-grey frozen ground, expressed with three to six broad sparse low scrub-tuft ink dab clusters per notional world square and small dark exposed-ground stipple patches. No snow drifts, ice, rocks, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "coldNatural",
+        "transitionPriority": 10,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Frozen ground with sparse vegetation.",
@@ -386,7 +621,19 @@
       "name": "Snowy Plains",
       "symbol": "*",
       "color": "#f0f8ff",
-      "tileImage": "snowyPlains-mai-2.png",
+      "tileImage": "snowyPlains-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous flat pale blue-white snow-covered ground, painted as an even flat colour wash over a visible warm stone-grey substrate. Expressed with three to six small soft pale brushstroke dashes per notional world square, scattered evenly across the surface as flat two-dimensional marks, plus sparse small dark exposed-scrub or stone accent dabs for value anchoring. The surface must read as perfectly flat with no ridges, no drifts, no dunes, no directional highlight or shadow, and no sense of height or depth — a flat painted colour field with light surface texture only, not a landscape. No trees, mountains, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "coldNatural",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Snow-covered plains glitter in the cold.",
@@ -402,7 +649,19 @@
       "name": "Jungle",
       "symbol": "♠",
       "color": "#2d6b22",
-      "tileImage": "jungle-mai-2.png",
+      "tileImage": "jungle-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous dense tropical-jungle canopy in deep saturated humid green, the most saturated hue in the terrain set. Canopy-mass clusters must touch and overlap edge-to-edge with almost no gaps between them, so the ground substrate is barely visible anywhere in the image — this must read as the single densest, most fully covered canopy in the whole terrain set, denser than denseForest. Expressed with five to eight broad densely overlapping broad-leaf canopy-mass ink clusters per notional world square and trailing vine-stroke accents filling any remaining small gaps, at the highest ink density and contrast band in its terrain group. This is a flat colour-field swatch, not a framed painting — there must be no border, frame, vignette, or aged-paper edge of any kind; canopy clusters must reach and touch all four edges and all four corners with zero exception, as if the visible canvas is a cropped sample cut from the middle of a much larger continuous canopy. No clearing, path, water, mountain, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "aridTropical",
+        "transitionPriority": 20,
+        "motifsPerTile": {
+          "min": 5,
+          "max": 8
+        }
+      },
       "traversable": true,
       "movementCost": 2.5,
       "description": "Dense tropical jungle teeming with life.",
@@ -418,7 +677,19 @@
       "name": "Savanna",
       "symbol": "'",
       "color": "#e8c870",
-      "tileImage": "savanna-mai-2.png",
+      "tileImage": "savanna-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous warm dry gold savanna ground, expressed with four to six broad flat-topped canopy-blob ink clusters per notional world square and sparse dry tall-grass dash accents, at a contrast band raised above plains' baseline. Each canopy-blob is a flat top-down silhouette shape only, viewed directly from above, matching the same flat orthographic motif language as grassland and forest's canopy marks — no visible trunks, no branch structure, no side-on or three-quarter view of any tree, and no illustrated individual trees. No dense forest, rocks, paths, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 45,
+        "motifsPerTile": {
+          "min": 4,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1,
       "description": "Warm-climate grassland, green and dry-season sparse, scattered with flat-topped trees under a high bright sun.",
@@ -434,7 +705,8 @@
       "name": "Residential",
       "symbol": "H",
       "color": "#d2b48c",
-      "tileImage": "residential-mai-2.png",
+      "tileImage": "residential-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a closely clustered residential quarter of modest timber-and-thatch house rooftops lining narrow lanes, matching the same illustrative rooftop-and-street cartographic style as a town centre but smaller in scale and lower in density. More houses than open ground — only occasional small garden patches, never broad cultivated fields or crop rows; this must read as a housing quarter, not farmland. No people, animals, shop signage, roads leading off the tile, or water.",
       "traversable": true,
       "movementCost": 1,
       "description": "Houses and shops line the streets of the settlement outskirts.",
@@ -451,7 +723,19 @@
       "name": "Farmland",
       "symbol": "#",
       "color": "#f5deb3",
-      "tileImage": "farmland-mai-2.png",
+      "tileImage": "farmland-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous warm golden-brown cultivated farmland ground, entirely dry earth-tone in colour with no blue or teal anywhere in the image. Expressed with three to six broad evenly spaced furrow-row and planted-field patch motifs per notional world square, rendered as loose hand-painted brushstrokes with irregular natural variation — never mechanically ruled or grid-straight. No ponds, puddles, irrigation ditches, wet ground, or any water of any kind. No structures, people, animals, paths, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "temperateNatural",
+        "transitionPriority": 50,
+        "motifsPerTile": {
+          "min": 3,
+          "max": 6
+        }
+      },
       "traversable": true,
       "movementCost": 1.2,
       "description": "Cultivated fields and pastures surround the settlement.",
@@ -468,7 +752,8 @@
       "name": "Industrial",
       "symbol": "I",
       "color": "#a0826d",
-      "tileImage": "industrial-mai-2.png",
+      "tileImage": "industrial-cartographic-v1.png",
+      "imageDescription": "Directly overhead view of a cluster of stone-and-timber workshop and warehouse rooftops with small forge-chimney smoke-wisp accents, matching the same illustrative rooftop-and-street cartographic style as a town centre, medieval craft-quarter in character. Every rooftop surface is plain worn wood, thatch, or stone tile only — no glass, no glazing, no glass domes or spheres, no orbs, no reflective or iridescent surfaces, no crystal, and no anomalous or out-of-place objects anywhere on any rooftop. Rendered directly overhead and flat, never at an angle or isometric perspective. No modern machinery, no glowing light, no electricity, no magical effects or energy, no people, roads leading off the tile, or water.",
       "traversable": true,
       "movementCost": 1,
       "description": "Warehouses, workshops, and forges bustle with activity.",
@@ -745,7 +1030,19 @@
       "name": "Snow Forest",
       "symbol": "♣",
       "color": "#4a6741",
-      "tileImage": "snowForest-mai-2.png",
+      "tileImage": "snowForest-cartographic-atlas-v1.png",
+      "imageDescription": "Continuous closed conifer-forest canopy in cold slate-teal-green, expressed with four to seven broad overlapping canopy-mass ink clusters per notional world square and pale snow-load edge-dab accents along each canopy silhouette, at a medium-high contrast band. No clearing, path, open ground, water, or landmarks.",
+      "visual": {
+        "mode": "continuousAtlas",
+        "atlasTilesPerSide": 16,
+        "atlasWrapMode": "mirror",
+        "transitionGroup": "coldNatural",
+        "transitionPriority": 30,
+        "motifsPerTile": {
+          "min": 4,
+          "max": 7
+        }
+      },
       "traversable": true,
       "movementCost": 1.5,
       "description": "Dense conifer forest draped in snow. Wind whispers through dark boughs.",

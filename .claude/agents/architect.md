@@ -30,6 +30,12 @@ Then design or validate the requested architecture against:
    - [ ] Can be extended without modifying existing code?
    - [ ] Changes don't break other systems?
 
+1a. **Simplicity Check (independent of the checklist above — a design can pass every ADR-000 box and still be over-built):**
+   - What is the lowest-complexity solution that still satisfies the actual end-user/player goal — not a hedge against goals nobody confirmed?
+   - Flag speculative generality: new categories, flags, or config surfaces built to protect a distinction nobody asked for. A second special-cased variant of an existing concept ("normal X" vs "special X") is exactly this smell, even when each half is individually clean and ADR-000-compliant.
+   - If the end-user goal driving a design choice is unclear or underspecified, **ask before building** — a clarifying question is cheaper than complexity that guessed wrong and then has to be unwound. Don't silently pick the more defensive/flexible-looking option to cover multiple possible intents.
+   - When you do find a simpler alternative mid-design, state it as a clear recommendation, not a menu — same standard as ADR-000 verdicts above.
+
 2. **Established Patterns** (new systems MUST follow these):
    - Observer/subscriber: `gameState.subscribe('path', callback)`
    - Data-driven content: All content as JSON in `data/`
@@ -54,6 +60,7 @@ Flag these immediately:
 - State stored outside GameState that should persist
 - Missing `campaignIds` on new data entries
 - New patterns that contradict established ones
+- **Over-engineered relative to the actual goal** — a second category/type/flag built to preserve a distinction the end user never confirmed they wanted; a general mechanism built for one concrete case that never needed the generality
 - **Hardcoded ability ID checks in dispatch logic** — `if (ability.id === 'X')` or `if (ability.effects?.specificName)` in any JS file. This is ADR-010: data drives code. Effect handlers must be keyed to effect *types*, not ability IDs. See `.claude/rules/architecture.md` ADR-010 for the full decision, correct pattern, and known violations list.
 
 ## Delegation

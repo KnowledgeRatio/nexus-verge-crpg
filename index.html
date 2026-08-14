@@ -1145,27 +1145,16 @@
                     </div>
 
                     <div class="worldbuilder-section">
-                        <h3>🏛️ Dungeons</h3>
-                        <div class="worldbuilder-row">
-                            <label for="wbDungeons">Total Dungeons:</label>
-                            <input type="number" id="wbDungeons" min="0" max="2000" value="200">
-                        </div>
-                    </div>
-
-                    <div class="worldbuilder-section">
-                        <h3>☼ Sanctuaries</h3>
-                        <div class="worldbuilder-row">
-                            <label for="wbSanctuaries">Total Sanctuaries:</label>
-                            <input type="number" id="wbSanctuaries" min="0" max="500" value="100">
-                        </div>
-                    </div>
-
-                    <div class="worldbuilder-section">
                         <h3>📍 Points of Interest</h3>
                         <div class="worldbuilder-row">
                             <label for="wbPOIs">Total POIs:</label>
                             <input type="number" id="wbPOIs" min="0" max="2000" value="300">
                         </div>
+                        <div class="worldbuilder-row">
+                            <label for="wbPoiDungeonChance">Dungeon Chance %:</label>
+                            <input type="number" id="wbPoiDungeonChance" min="0" max="100" value="60">
+                        </div>
+                        <p class="worldbuilder-hint">Each POI resolves to either a dungeon or a sanctuary when entered. Higher = more dangerous, lower = more safe rest sites.</p>
                     </div>
 
                     <div class="worldbuilder-section">

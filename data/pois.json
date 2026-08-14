@@ -1,0 +1,183 @@
+{
+  "description": "Unified POI System (2026-08-09 design thread) — mechanical identity for the 7 POI types. Each POI resolves at world-gen time to either a dungeon or a sanctuary; this file owns what it CAN resolve to (biome eligibility, dungeon-lean, theme weighting, sanctuary flavor/naming). Visual identity (tileImage/symbol/color) lives on the matching data/terrains.json entry, joined by shared id — see docs/plans/2026-08-09-terrain-atlas-overhaul.md 'Related Design Thread: Unified POI System'.",
+  "version": "1.0.0",
+  "poiTypes": [
+    {
+      "id": "cave",
+      "name": "Cave",
+      "biomeEligibility": ["mountain", "hills", "desertHills", "tundra", "snowyPlains", "forest", "denseForest", "desert"],
+      "generationShare": 0.18,
+      "dungeonWeightModifier": 0.15,
+      "dungeonThemeWeights": {
+        "beast_lair": 0.35,
+        "warren": 0.30,
+        "tomb": 0.25,
+        "dragon_den": 0.10
+      },
+      "sanctuaryFlavor": "hermit's grotto",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Quiet", "Hidden", "Mossy", "Sheltered", "Still", "Deep", "Weathered", "Secluded"],
+        "nouns": ["Grotto", "Hollow", "Refuge", "Hearth", "Retreat", "Alcove"],
+        "concepts": ["the Hermit", "Solitude", "Still Waters", "the Wanderer's Rest", "Quiet Reflection"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "camp",
+      "name": "Camp",
+      "biomeEligibility": ["grassland", "plains", "forest", "hills", "savanna", "desert", "tundra", "snowyPlains"],
+      "generationShare": 0.16,
+      "dungeonWeightModifier": 0.10,
+      "dungeonThemeWeights": {
+        "bandit": 0.40,
+        "warren": 0.30,
+        "beast_lair": 0.30
+      },
+      "sanctuaryFlavor": "wayfarer's camp",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Weary", "Wayfarer's", "Sheltered", "Friendly", "Crossroads", "Traveler's", "Restful"],
+        "nouns": ["Camp", "Waystop", "Fireside", "Rest", "Encampment", "Halt"],
+        "concepts": ["the Open Road", "Fellow Travelers", "the Long Journey", "Warm Fires"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "ruins",
+      "name": "Ruins",
+      "biomeEligibility": ["grassland", "plains", "forest", "denseForest", "hills", "desert", "jungle", "swamp"],
+      "generationShare": 0.20,
+      "dungeonWeightModifier": 0.10,
+      "dungeonThemeWeights": {
+        "tomb": 0.40,
+        "cult": 0.30,
+        "warren": 0.30
+      },
+      "sanctuaryFlavor": "reclaimed shrine",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Reclaimed", "Restored", "Mended", "Sheltering", "Ivy-Grown", "Quiet"],
+        "nouns": ["Shrine", "Sanctum", "Hollow", "Refuge", "Chapel"],
+        "concepts": ["What Remains", "Old Stones", "Second Chances", "Forgotten Grace"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "temple",
+      "name": "Temple",
+      "biomeEligibility": ["grassland", "plains", "forest", "jungle", "hills"],
+      "generationShare": 0.14,
+      "dungeonWeightModifier": -0.20,
+      "dungeonThemeWeights": {
+        "cult": 0.40,
+        "tomb": 0.30,
+        "fey_grove": 0.30
+      },
+      "sanctuaryFlavor": "working shrine",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Blessed", "Tended", "Devoted", "Peaceful", "Sacred", "Faithful"],
+        "nouns": ["Shrine", "Temple", "Chapel", "Sanctuary", "Altar"],
+        "concepts": ["the Faithful", "Quiet Devotion", "the Everflame", "Gentle Grace"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "monastery",
+      "name": "Monastery",
+      "biomeEligibility": ["hills", "mountain", "tundra", "snowyPlains"],
+      "generationShare": 0.10,
+      "dungeonWeightModifier": -0.35,
+      "dungeonThemeWeights": {
+        "cult": 0.35,
+        "tomb": 0.35,
+        "frost_hold": 0.30
+      },
+      "sanctuaryFlavor": "quiet retreat",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Silent", "Contemplative", "Ascetic", "Serene", "Cloistered", "Still"],
+        "nouns": ["Retreat", "Cloister", "Hermitage", "Sanctum", "Refuge"],
+        "concepts": ["Quiet Discipline", "the Silent Order", "Still Mind", "Inner Peace"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "watchtower",
+      "name": "Watchtower",
+      "biomeEligibility": ["hills", "mountain", "grassland", "plains", "desert", "desertHills", "savanna"],
+      "generationShare": 0.12,
+      "dungeonWeightModifier": 0.15,
+      "dungeonThemeWeights": {
+        "bandit": 0.35,
+        "warren": 0.25,
+        "dragon_den": 0.20,
+        "tomb": 0.20
+      },
+      "sanctuaryFlavor": "garrisoned post",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Garrisoned", "Watchful", "Steady", "Fortified", "Manned", "Vigilant"],
+        "nouns": ["Post", "Watch", "Garrison", "Outpost", "Bastion"],
+        "concepts": ["the Steady Watch", "Safe Passage", "the Long Vigil", "Guarded Roads"]
+      },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "villa",
+      "name": "Villa",
+      "biomeEligibility": ["grassland", "plains", "forest"],
+      "generationShare": 0.10,
+      "dungeonWeightModifier": -0.30,
+      "dungeonThemeWeights": {
+        "bandit": 0.40,
+        "cult": 0.35,
+        "warren": 0.25
+      },
+      "sanctuaryFlavor": "noble estate",
+      "sanctuaryNaming": {
+        "namePatterns": [
+          "The {adjective} {noun}",
+          "{noun} of {concept}",
+          "The {adjective} {noun} of {concept}",
+          "{concept}'s {noun}"
+        ],
+        "adjectives": ["Gracious", "Sheltering", "Genteel", "Welcoming", "Noble", "Quiet"],
+        "nouns": ["Estate", "Villa", "Manor", "Retreat", "Household"],
+        "concepts": ["Hospitality", "Old Wealth", "Quiet Comfort", "Gracious Hosts"]
+      },
+      "campaignIds": ["core"]
+    }
+  ]
+}

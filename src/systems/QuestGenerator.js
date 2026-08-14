@@ -85,6 +85,9 @@ class QuestGenerator {
 
     /**
      * Return unbound dungeon hooks that point to a given settlement.
+     * Includes standalone dungeons and Unified-POI-System POIs that resolved to
+     * 'dungeon' — sanctuary-outcome POIs deliberately never enter this path
+     * (approved design: no quest-hook intel for sanctuaries, asymmetric by design).
      * @param {string} settlementId - e.g. "12,34"
      * @returns {Array<Object>} Matching feature objects from world.metadata
      */
@@ -92,7 +95,7 @@ class QuestGenerator {
         const metadata = gameState.get('world.metadata');
         if (!metadata?.features) return [];
         return metadata.features.filter(f =>
-            f.type === 'dungeon' &&
+            (f.type === 'dungeon' || (f.type === 'poi' && f.resolvedType === 'dungeon')) &&
             f.questHook?.nearestSettlementId === settlementId &&
             !f.questBind
         );

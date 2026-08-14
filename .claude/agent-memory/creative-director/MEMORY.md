@@ -23,3 +23,7 @@
 - Illustrative oil-painting concept-art aesthetic with visible impasto, strong value contrast, earth-tone foundation, and restrained focal saturation.
 - Worn, repaired, improvised materials; multiple-origin details and rift-geometry seams.
 - Avoid generic bright fantasy, photorealism, anime, and indiscriminate modern/industrial saturation.
+
+## Subsystem Direction
+
+- [Terrain atlas art direction](terrain_atlas_direction.md) — locked painted-overland-atlas cartography identity for the 42-terrain overworld art overhaul; sequencing and risk notes

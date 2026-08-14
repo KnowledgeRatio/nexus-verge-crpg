@@ -707,9 +707,9 @@ class MapRenderer {
             return;
         }
 
-        // Check for features (settlements, dungeons, etc.) - always use ASCII for features
+        // Check for features (settlements, dungeons, etc.)
         if (tile.feature) {
-            this.renderFeature(screenX, screenY, tile.feature, visible);
+            this.renderFeature(screenX, screenY, tile.feature, visible, tile.x, tile.y);
             // Fall through to tag overlay below (no early return)
         } else {
             // Try to use pixel art tile if enabled
@@ -766,15 +766,36 @@ class MapRenderer {
 
     /**
      * Render a feature (settlement, dungeon, POI)
-     * Looks up symbols from terrains.json for data-driven rendering
+     * Looks up symbols from terrains.json for data-driven rendering.
+     *
+     * `sanctuary`/`dungeon`/`poi` features attempt painted art first (falling
+     * back to ASCII/emoji when no tileImage is authored yet or art is toggled
+     * off). `settlement` remains ASCII-only — out of scope for this change.
+     *
+     * Reveal-art decision (symmetric, Unified POI System design, revised
+     * 2026-08-09): once a `poi` feature has been entered and retyped to
+     * `sanctuary` or `dungeon`, it keeps showing its *original* POI-type art
+     * rather than a generic sanctuary/dungeon icon — the reveal is purely
+     * mechanical/textual, never a visual downgrade. Both branches resolve via
+     * `feature.originalPoiType` first, falling back to the generic
+     * sanctuary/dungeon terrain (or the plain 'D' ASCII marker for dungeon)
+     * only for the dead legacy non-finite-world fallback path, where
+     * `originalPoiType` was never set.
+     *
+     * Rendering keys off `feature.poiType`/`feature.originalPoiType` only,
+     * never `feature.resolvedType` — this is what guarantees the art can
+     * never leak whether an undiscovered POI is secretly a dungeon or a
+     * sanctuary (Unified POI System design).
      */
-    renderFeature(screenX, screenY, feature, visible) {
+    renderFeature(screenX, screenY, feature, visible, worldX, worldY) {
         let symbol, color;
 
         // Helper to get terrain data by ID
         const getTerrain = (terrainId) => {
             return this.terrainTypes?.find(t => t.id === terrainId);
         };
+
+        let imageTerrain = null;
 
         switch (feature.type) {
             case 'settlement': {
@@ -785,60 +806,60 @@ class MapRenderer {
                 break;
             }
 
-            case 'dungeon':
-                // Keep generic dungeon symbol (not tied to specific terrain)
-                symbol = 'D';
-                color = '#8b0000';
-                break;
-
-            case 'sanctuary': {
-                // Look up sanctuary terrain from terrains.json
-                const sanctuaryTerrain = getTerrain('sanctuary');
-                symbol = sanctuaryTerrain?.symbol || '⛩️';
-                color = sanctuaryTerrain?.color || '#f0e68c';
+            case 'dungeon': {
+                // Symmetric reveal art: keep the original POI-type art on
+                // reveal (mirrors the sanctuary branch below). Only the dead
+                // legacy non-finite-world fallback path lacks
+                // originalPoiType, which correctly falls through to the
+                // plain 'D' ASCII marker.
+                imageTerrain = getTerrain(feature.originalPoiType) ?? null;
+                symbol = imageTerrain?.symbol || 'D';
+                color = imageTerrain?.color || '#8b0000';
                 break;
             }
 
-            case 'poi':
-                switch (feature.poiType) {
-                    case 'shrine':
-                        // Keep generic shrine symbol (not in terrains.json)
-                        symbol = '†';
-                        color = '#ffffff';
-                        break;
-                    case 'ruins': {
-                        // Look up ruins terrain from terrains.json
-                        const ruinsTerrain = getTerrain('ruins');
-                        symbol = ruinsTerrain?.symbol || '🏛️';
-                        color = ruinsTerrain?.color || '#7a7a7a';
-                        break;
-                    }
-                    case 'cave': {
-                        // Look up cave terrain from terrains.json
-                        const caveTerrain = getTerrain('cave');
-                        symbol = caveTerrain?.symbol || '🕳️';
-                        color = caveTerrain?.color || '#3d3d3d';
-                        break;
-                    }
-                    case 'camp':
-                        // Keep generic camp symbol (not in terrains.json)
-                        symbol = 'A';
-                        color = '#cd853f';
-                        break;
-                    case 'landmark':
-                        // Keep generic landmark symbol (not in terrains.json)
-                        symbol = '!';
-                        color = '#00ff00';
-                        break;
-                    default:
-                        symbol = '?';
-                        color = '#ffffff';
-                }
+            case 'sanctuary': {
+                // Symmetric reveal art: keep the original POI-type art on
+                // reveal, falling back to the generic sanctuary terrain only
+                // for the dead legacy fallback path (no originalPoiType).
+                imageTerrain = getTerrain(feature.originalPoiType) ?? getTerrain('sanctuary');
+                symbol = imageTerrain?.symbol || '⛩️';
+                color = imageTerrain?.color || '#f0e68c';
                 break;
+            }
+
+            case 'poi': {
+                // Generic dispatch: poiType is the terrain id directly (ADR-010).
+                // Works for all 7 POI types with zero per-type code.
+                imageTerrain = getTerrain(feature.poiType);
+                symbol = imageTerrain?.symbol || '?';
+                color = imageTerrain?.color || '#ffffff';
+                break;
+            }
 
             default:
                 symbol = '?';
                 color = '#ff00ff';
+        }
+
+        // Painted-art path: sanctuary/dungeon/poi only, mirroring
+        // renderTile()'s non-feature terrain branch (getTileImage ->
+        // drawImageTile with the same fog-of-war opacity treatment). Falls
+        // through to the ASCII symbol/color below when no image resolves.
+        if (imageTerrain && RULES.terrainRendering.poiMarkers.usePaintedArt) {
+            const tileImage = this.getTileImage(imageTerrain.id);
+            if (tileImage) {
+                const opacity = visible ? 1.0 : 0.4; // Dim for fog of war
+                const imageOptions = this.getTerrainImageOptions(
+                    imageTerrain,
+                    tileImage,
+                    worldX,
+                    worldY
+                );
+                this.drawImageTile(screenX, screenY, tileImage, opacity, imageOptions);
+                this.drawRevealStateBadge(screenX, screenY, feature);
+                return;
+            }
         }
 
         if (!visible) {
@@ -846,6 +867,51 @@ class MapRenderer {
         }
 
         this.drawTile(screenX, screenY, symbol, color);
+        this.drawRevealStateBadge(screenX, screenY, feature);
+    }
+
+    /**
+     * Reveal-state corner badge (Unified POI System, new 2026-08-09).
+     *
+     * Distinguishes three POI states at a glance, reusing the same
+     * corner-dot idiom as renderTile()'s `_modifiedTilesMap` quest-tag dot —
+     * a second, independent overlay, drawn in the opposite corner
+     * (bottom-right vs. the quest-tag dot's top-right) so the two never
+     * collide on a tile that carries both.
+     *
+     * Gated purely on `feature.type` — generic dispatch, never a per-poiType
+     * or per-resolvedType branch. The undiscovered badge is intentionally
+     * identical regardless of what the POI will resolve to, so it cannot
+     * leak the hidden outcome.
+     *
+     * Always-on: cheap (a single fillRect) and core to the reveal mechanic's
+     * legibility, so this does not gate behind
+     * `RULES.terrainRendering.poiMarkers.usePaintedArt` — that flag only
+     * controls whether painted art vs. ASCII is used for the base tile, and
+     * players need the state distinction in ASCII mode too.
+     */
+    drawRevealStateBadge(screenX, screenY, feature) {
+        const REVEAL_BADGE_COLORS = {
+            poi: 'rgba(180, 180, 180, 0.55)',
+            sanctuary: 'rgba(240, 230, 140, 0.85)',
+            dungeon: 'rgba(139, 0, 0, 0.85)'
+        };
+
+        const badgeColor = REVEAL_BADGE_COLORS[feature.type];
+        if (!badgeColor) {
+            return;
+        }
+
+        const badgeSize = Math.max(3, Math.floor(this.config.tileWidth * 0.18));
+        const pixelX = screenX * this.config.tileWidth;
+        const pixelY = screenY * this.config.tileHeight;
+        this.ctx.fillStyle = badgeColor;
+        this.ctx.fillRect(
+            pixelX + this.config.tileWidth - badgeSize - 1,
+            pixelY + this.config.tileHeight - badgeSize - 1,
+            badgeSize,
+            badgeSize
+        );
     }
 
     /**

@@ -16,6 +16,12 @@ Nexus Verge (called "the Verge" in common speech) is a convergence dimension —
 
 Directly overhead orthographic field-atlas cartography in translucent gouache and fine iron-brown ink on a uniform warm stone-grey painted substrate. Restrained natural pigments: warm olive, weathered straw, iron brown, deep desaturated teal, slate blue-grey, and muted mineral highlights. Use broad readable terrain masses, sparse bold cartographic marks, consistent medium brush size and line weight, low-to-medium local contrast, and flat even illumination. Terrain identity must remain immediately legible when reduced to 16, 32, and 48 pixels. The painted surface fills every pixel edge-to-edge: no border, margin, padding, vignette, paper edge, edge fade, directional shadow, horizon, perspective, or focal centre.
 
+Dramatic terrain (mountain, mountainPeak, jungle, denseForest, snowForest, and similarly intense members of a terrain group) earns visual intensity from increased ink density, tighter motif clustering, and a wider local value-contrast band relative to the calm baseline set by grassland — never from relief shading, elevation gradients, embossed or bevelled terrain, hillshade, drop shadows implying height, or directional dramatic lighting. Distinguish neighbouring terrains within the same transition group by hue family, motif-glyph silhouette, and contrast band only.
+
+Pale or snow-covered terrain must remain a visibly painted surface — retain the warm stone-grey substrate and enough dark ink accent marks to stay legible; never render as a blank or near-white fill.
+
+Cultivated or human-worked ground may use evenly spaced motif strokes (furrow lines, planted rows) rendered as loose hand-painted brushstrokes with irregular natural variation — never as mechanically ruled, perfectly straight, or grid-aligned lines.
+
 ## Terrain Atlases
 
 Create one continuous square painted terrain sheet, not a self-contained tile, scene, diorama, icon, or complete regional map. Depict exactly one terrain material across the entire atlas. The atlas is divided conceptually into many world-tile regions, but no grid or division may appear in the image. Neighbouring regions must be natural continuations of one another. Distribute broad terrain motifs evenly and irregularly at the requested per-world-tile density. Do not render individually dense micro-features that disappear at 16 pixels. Keep motif density, value range, substrate, and detail scale consistent at the centre and every edge. The outer edges must wrap seamlessly. No second biome, transition zone, road, river, coastline, clearing, settlement, isolated landmark, central composition, text, labels, compass rose, legend, map border, characters, or creatures.
@@ -23,6 +29,8 @@ Create one continuous square painted terrain sheet, not a self-contained tile, s
 ## Terrain Tiles
 
 Legacy one-image-per-world-tile mode. Depict exactly one terrain material with a sparse, bold motif language that survives reduction to 16 pixels. Do not place a complete landscape, neighbouring biome, internal convergence boundary, road, river, coastline, clearing, or landmark inside the tile. No characters, creatures, pixel art, isometric view, sprites, grid lines, graph paper, ruled lines, or squared-paper texture.
+
+A landmark tile depicting worn architecture may include no more than one small material-impossibility accent — two incompatible physical properties visible in the same surface, per the Item Icons riftborn-material convention — confined to one small detail within the frame, not distributed across the composition.
 
 ## Monster Art
 
@@ -38,4 +46,4 @@ Bust portrait, subject centred, face occupying top half of frame. Bold illustrat
 
 ## Negative Prompts
 
-white border, bezel, frame, vignette border, border frame, ornate border, decorative frame, margin, padding, edge fade, vignette, dark edges, grid lines, graph paper, grid paper, ruled lines, graph texture, grid overlay, squared paper, pixel art, isometric, pixelated, 8-bit, 16-bit, sprite, game tile, pixel graphics, photorealistic photography, 3D render, CGI, modern technology, modern clothing, industrial equipment, post-apocalyptic, sci-fi, electricity, mechanical devices, watermark, signature, text, UI elements, cartoon, chibi, anime, bright saturated colours, white or light background, duplicate subjects, smiling, lens flare, bloom, clean or pristine equipment
+white border, bezel, frame, vignette border, border frame, ornate border, decorative frame, margin, padding, edge fade, vignette, dark edges, grid lines, graph paper, grid paper, ruled lines, graph texture, grid overlay, squared paper, pixel art, isometric, pixelated, 8-bit, 16-bit, sprite, game tile, pixel graphics, photorealistic photography, 3D render, CGI, modern technology, modern clothing, industrial equipment, post-apocalyptic, sci-fi, electricity, mechanical devices, watermark, signature, text, UI elements, cartoon, chibi, anime, bright saturated colours, white or light background, duplicate subjects, smiling, lens flare, bloom, clean or pristine equipment, relief shading, elevation gradient, embossed, bevelled, hillshade, height shadow, drop shadow implying elevation, directional dramatic lighting
