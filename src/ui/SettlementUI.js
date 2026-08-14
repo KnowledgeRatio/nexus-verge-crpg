@@ -269,8 +269,8 @@ class SettlementUI {
         const costTable = window.RULES?.party?.recruitmentCostByLevel || [];
         const cost = costTable[Math.min(playerLevel, costTable.length - 1)] || 50;
 
-        const callingColors = { dedication: '#c0392b', scholar: '#8e44ad', wanderlust: '#16a085' };
-        const callingLabels = { dedication: 'Dedication', scholar: 'Scholar', wanderlust: 'Wanderlust' };
+        const callingColors = { dedication: '#c0392b', curiosity: '#8e44ad', audacity: '#16a085' };
+        const callingLabels = { dedication: 'Dedication', curiosity: 'Curiosity', audacity: 'Audacity' };
 
         let html = `
         <div class="recruitment-section">

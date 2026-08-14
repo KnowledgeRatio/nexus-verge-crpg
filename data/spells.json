@@ -23,7 +23,7 @@
           "11": { "damage": "3d10" },
           "17": { "damage": "4d10" }
         },
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -47,7 +47,7 @@
           "11": { "damage": "3d8" },
           "17": { "damage": "4d8" }
         },
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -72,7 +72,7 @@
           "11": { "damage": "3d8" },
           "17": { "damage": "4d8" }
         },
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -129,7 +129,7 @@
         "usableOutOfCombat": true,
         "description": "Touch an object no larger than 10 feet. It sheds bright light in a 20-foot radius and dim light for another 20 feet. Lasts 1 hour.",
         "effect": "light_20ft",
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       }
     ],
 
@@ -150,7 +150,7 @@
         "damageType": "resonant",
         "attackType": "autoHit",
         "upcastScaling": "+1 dart per level",
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -170,7 +170,7 @@
         "savingThrow": "dex",
         "areaOfEffect": "15ft_cone",
         "upcastScaling": "+1d6 per level",
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -187,7 +187,7 @@
         "usableOutOfCombat": false,
         "description": "When hit by an attack or Magic Missile, gain +5 AC until the start of your next turn, potentially causing the attack to miss.",
         "effect": "+5_ac_until_next_turn",
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -242,7 +242,7 @@
         "damage": "+1d6",
         "damageType": "blood",
         "upcastScaling": "longer duration at higher levels",
-        "callings": ["wanderlust"]
+        "callings": ["audacity"]
       },
 
       {
@@ -259,7 +259,7 @@
         "description": "A creature you can see within range regains 1d4 + spellcasting modifier hit points.",
         "healing": "1d4 + mod",
         "upcastScaling": "+1d4 per level",
-        "callings": ["wanderlust"]
+        "callings": ["audacity"]
       },
 
       {
@@ -280,7 +280,7 @@
         "areaOfEffect": "15ft_cube",
         "effect": "push_10ft",
         "upcastScaling": "+1d8 per level",
-        "callings": ["scholar", "wanderlust"]
+        "callings": ["curiosity", "audacity"]
       }
     ],
 
@@ -302,7 +302,7 @@
         "attackType": "rangedSpellAttack",
         "rays": 3,
         "upcastScaling": "+1 ray per level",
-        "callings": ["scholar"]
+        "callings": ["curiosity"]
       },
 
       {
@@ -318,7 +318,7 @@
         "usableOutOfCombat": false,
         "description": "Teleport up to 30 feet to an unoccupied space you can see.",
         "effect": "teleport_30ft",
-        "callings": ["scholar", "wanderlust"]
+        "callings": ["curiosity", "audacity"]
       },
 
       {
@@ -337,7 +337,7 @@
         "savingThrow": "wis",
         "effect": "paralyzed",
         "upcastScaling": "+1 target per level",
-        "callings": ["scholar", "wanderlust"]
+        "callings": ["curiosity", "audacity"]
       },
 
       {
@@ -364,13 +364,13 @@
   "spellLists": {
     "description": "Defines which spells each calling has access to",
 
-    "scholar": {
+    "curiosity": {
       "cantrips": ["fireBolt", "rayOfFrost", "shockingGrasp", "light"],
       "level1": ["magicMissile", "burningHands", "shield", "thunderwave"],
       "level2": ["scorchingRay", "mistyStep", "holdPerson"]
     },
 
-    "wanderlust": {
+    "audacity": {
       "cantrips": [],
       "level1": ["huntersMark", "healingWord", "thunderwave"],
       "level2": ["mistyStep", "holdPerson"]

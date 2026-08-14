@@ -48,22 +48,22 @@
       ]
     }
   ],
-  "scholar": [
+  "curiosity": [
     {
       "id": "custom",
       "name": "Custom",
-      "description": "Create your own unique Scholar character with full control over all choices.",
+      "description": "Create your own unique Curiosity character with full control over all choices.",
       "isCustom": true,
       "campaignIds": [
         "core"
       ]
     }
   ],
-  "wanderlust": [
+  "audacity": [
     {
       "id": "custom",
       "name": "Custom",
-      "description": "Create your own unique Wanderlust character with full control over all choices.",
+      "description": "Create your own unique Audacity character with full control over all choices.",
       "isCustom": true,
       "campaignIds": [
         "core"

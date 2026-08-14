@@ -533,7 +533,7 @@
       "id": "negotiate-bandits",
       "name": "The Bandits Threatening {settlementName}",
       "type": "social",
-      "callingArchetype": "wanderlust",
+      "callingArchetype": "audacity",
       "description": "Bandits are demanding tribute from {settlement}. {npcName} wants them gone — whether through words or fear.",
       "objectives": [
         {
@@ -750,7 +750,7 @@
       "id": "retrieve-heirloom",
       "name": "Recover the {itemType} of {familyName}",
       "type": "retrieve",
-      "callingArchetype": "wanderlust",
+      "callingArchetype": "audacity",
       "description": "A grieving noble wants their family heirloom back — a {itemType} lost when {dungeonName} was overrun. It's on a body inside.",
       "objectives": [
         {
@@ -784,7 +784,7 @@
       "id": "retrieve-contraband",
       "name": "Don't Ask What It Is — Just Bring It Back",
       "type": "retrieve",
-      "callingArchetype": "wanderlust",
+      "callingArchetype": "audacity",
       "description": "A sketchy merchant won't say what's in the crate. Only that it's theirs, it's in {dungeonName}, and they're paying well.",
       "objectives": [
         {
@@ -822,7 +822,7 @@
       "id": "retrieve-relic",
       "name": "The {dungeonName} Held Our People's {relicName}",
       "type": "retrieve",
-      "callingArchetype": "wanderlust",
+      "callingArchetype": "audacity",
       "description": "A cultural elder says an artifact looted generations ago is in {dungeonName}. Returning it would mean much to the settlement.",
       "objectives": [
         {
@@ -831,8 +831,8 @@
           "requirement": {
             "itemId": "{itemId}",
             "callingHint": {
-              "wanderlust": "proximity_ping",
-              "scholar": "clue_scroll",
+              "audacity": "proximity_ping",
+              "curiosity": "clue_scroll",
               "dedication": null
             }
           }
@@ -860,8 +860,8 @@
       "id": "retrieve-trophy",
       "name": "Bring Me Proof It's Dead",
       "type": "retrieve",
-      "callingArchetype": "wanderlust",
-      "description": "A mercenary captain needs confirmation of kill. The trophy drops from the creature — a Wanderlust can grab it without a full clear.",
+      "callingArchetype": "audacity",
+      "description": "A mercenary captain needs confirmation of kill. The trophy drops from the creature — a Audacity can grab it without a full clear.",
       "objectives": [
         {
           "type": "retrieve",
@@ -895,7 +895,7 @@
       "id": "investigate-outbreak",
       "name": "Why Are the {creaturePlural} Acting Strange?",
       "type": "investigate",
-      "callingArchetype": "scholar",
+      "callingArchetype": "curiosity",
       "description": "A healer has noticed {creaturePlural} behaving abnormally — attacking outside their normal range and season. The cause is in room one of {dungeonName}.",
       "objectives": [
         {
@@ -930,7 +930,7 @@
       "id": "investigate-disappearance",
       "name": "{count} {npcType} Vanished on the {roadName} Road",
       "type": "investigate",
-      "callingArchetype": "scholar",
+      "callingArchetype": "curiosity",
       "description": "The guard captain found bodies but no witnesses. Evidence of what happened is in {dungeonName}. A partial report earns partial reward.",
       "objectives": [
         {
@@ -970,7 +970,7 @@
       "id": "investigate-conspiracy",
       "name": "The {factionName} Are Hiding Something in {dungeonName}",
       "type": "investigate",
-      "callingArchetype": "scholar",
+      "callingArchetype": "curiosity",
       "description": "A rival faction wants leverage. Evidence is in {dungeonName}. What the player does with the evidence after is their choice.",
       "objectives": [
         {
@@ -1008,8 +1008,8 @@
       "id": "investigate-awakening",
       "name": "That {dungeonName} Didn't Used to Be Dangerous",
       "type": "investigate",
-      "callingArchetype": "scholar",
-      "description": "An old farmer says the dungeon used to be safe. Something changed. A Scholar understands why — others only see that it did.",
+      "callingArchetype": "curiosity",
+      "description": "An old farmer says the dungeon used to be safe. Something changed. Someone driven by Curiosity understands why — others only see that it did.",
       "objectives": [
         {
           "type": "investigate",

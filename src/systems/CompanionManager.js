@@ -187,8 +187,8 @@ export default class CompanionManager {
      *
      * @param {object} opts
      * @param {string}   [opts.name]             - Companion name (generated if omitted)
-     * @param {string}   opts.callingId           - Class id ('dedication'|'scholar'|'wanderlust')
-     * @param {'standard'|'wanderlust'} [opts.companionType] - Derived from callingId if omitted
+     * @param {string}   opts.callingId           - Class id ('dedication'|'curiosity'|'audacity')
+     * @param {'standard'|'audacity'} [opts.companionType] - Derived from callingId if omitted
      * @param {string}   [opts.motivationId]      - One of the 5 archetypes (random if omitted)
      * @param {number}   [opts.level]             - Character level (default 1)
      * @param {string}   [opts.source]            - Acquisition source
@@ -323,8 +323,8 @@ export default class CompanionManager {
     _defaultAbilitiesForCalling(callingId) {
         const defaults = {
             dedication: { str: 16, dex: 12, con: 14, int: 8, wis: 13, cha: 10 },
-            scholar:    { str: 8,  dex: 12, con: 13, int: 16, wis: 14, cha: 10 },
-            wanderlust: { str: 10, dex: 16, con: 12, int: 13, wis: 10, cha: 14 }
+            curiosity:    { str: 8,  dex: 12, con: 13, int: 16, wis: 14, cha: 10 },
+            audacity: { str: 10, dex: 16, con: 12, int: 13, wis: 10, cha: 14 }
         };
         return defaults[callingId] || { str: 12, dex: 12, con: 12, int: 12, wis: 12, cha: 12 };
     }
@@ -632,22 +632,22 @@ export default class CompanionManager {
             synergies.vanguard = (callingCounts['dedication'] || 0) >= (syn.vanguard.minDedication ?? 3);
         }
 
-        // Arcane Assembly: 2+ Scholar
+        // Arcane Assembly: 2+ Curiosity
         if (syn.arcaneAssembly?.enabled) {
-            synergies.arcaneAssembly = (callingCounts['scholar'] || 0) >= (syn.arcaneAssembly.minScholar ?? 2);
+            synergies.arcaneAssembly = (callingCounts['curiosity'] || 0) >= (syn.arcaneAssembly.minCuriosity ?? 2);
         }
 
-        // Band of Rogues: 3+ Wanderlust
+        // Band of Rogues: 3+ Audacity
         if (syn.bandOfRogues?.enabled) {
-            synergies.bandOfRogues = (callingCounts['wanderlust'] || 0) >= (syn.bandOfRogues.minWanderlust ?? 3);
+            synergies.bandOfRogues = (callingCounts['audacity'] || 0) >= (syn.bandOfRogues.minAudacity ?? 3);
         }
 
-        // True Party: one of each calling (dedication + scholar + wanderlust in party of any size)
+        // True Party: one of each calling (dedication + curiosity + audacity in party of any size)
         if (syn.trueParty?.enabled) {
             synergies.trueParty = (
                 (callingCounts['dedication'] || 0) >= 1 &&
-                (callingCounts['scholar']    || 0) >= 1 &&
-                (callingCounts['wanderlust'] || 0) >= 1
+                (callingCounts['curiosity']    || 0) >= 1 &&
+                (callingCounts['audacity'] || 0) >= 1
             );
         }
 
@@ -878,7 +878,7 @@ export default class CompanionManager {
         const [minCount, maxCount] = this.config.settlementCandidateRange || [1, 3];
         const candidateCount = count ?? settlementRng.nextInt(minCount, maxCount);
 
-        const callingIds = ['dedication', 'scholar', 'wanderlust'];
+        const callingIds = ['dedication', 'curiosity', 'audacity'];
         const motivationIds = Object.keys(this.companionData?.motivationArchetypes || {});
 
         const candidates = [];

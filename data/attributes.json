@@ -24,7 +24,7 @@
       "abbr": "INT",
       "domain": "mental",
       "direction": "outward",
-      "description": "Mental, outward attribute. Reserved for future caster (Scholar) mechanics — out of scope until that calling is implemented.",
+      "description": "Mental, outward attribute. Reserved for future caster (Curiosity) mechanics — out of scope until that calling is implemented.",
       "campaignIds": ["core"]
     },
     {
