@@ -33,11 +33,11 @@ Matter that has passed through dimensional membranes over millennia, acquiring c
 
 When writing items with riftborn components: hint at properties that shouldn't coexist. A blade that holds an edge but also flexes. Armour that is simultaneously dense and light. The impossibility should be felt, not explained.
 
-### 2. Wayfinding
-Nexus Verge is the only stable platform in the known multiverse for studying dimensional navigation from the inside. The ability to move between dimensions reliably is the ultimate power in a multiverse. The Verathi have been developing this knowledge for eons. Others come to learn it, buy it, or take it.
+### 2. Threading
+Moving between dimensions reliably is the ultimate power in a multiverse, and Nexus Verge is the only stable platform in the known multiverse for learning it from the inside. The trade calls it **threading** — a threader pulls a route, called a thread, through something far larger than they are. It is technique, not theory: threads hold or they don't, and nobody can say why. The Verathi have been refining it for eons. Others come to learn it, buy it, or take it.
 
 ### 3. The Boundary
-Where void-state meets matter-space, something is produced. The Vethri call it **null-flux**. Some believe it is the most energetically potent substance in existence. Everyone who has tried to harvest it in quantity has been consumed. This does not stop people from trying.
+Where void-state meets matter-space, something is produced. The Vethri named it **Unheld**, and use it as a mass noun with no article. Some believe it is the most energetically potent substance in existence. Everyone who has tried to harvest it in quantity has been consumed. This does not stop people from trying.
 
 ---
 
@@ -54,6 +54,21 @@ This is why the game's reputation economy is the correct economy for this world.
 
 ---
 
+## The Two Forces
+
+Two things make Aevorn what it is. It is a convergence point — and it sits close enough to both of the forces beneath everything to feel each of them directly.
+
+- **The Source** — everything is everything. The single continuous cosmos, with no edges anywhere in it: no boundary between here and there, between knower and known, between a person and everything they are not. Separateness is the local condition ordinary existence runs on. Threading, riftborn materials, and the Convergence itself all sit on this. Nothing is powered by it. It is not benevolent, not conscious, and not divine.
+- **The Void** — not the removal of the Source, but a construct in which the Source was never a term. Not ignorance, not death, not blindness. Absence there is not a later condition; it is the only one.
+
+Both annihilate the individual, oppositely. In the Void you never existed at all. In the Source you were never *separate* — not erased, never bounded in the first place. Neither is a mercy. Losing every boundary that lets a person be a person is exactly as unsurvivable as absence, and the Source is not the safe one.
+
+The Source will feel benevolent to anyone living inside its consequences and the Void will feel malevolent to anyone losing a home to it, and both readings are artifacts of where the Wrought happen to stand. Nothing in the cosmos objects to the Unmooring. The objection is entirely ours.
+
+**Full canon, including the author-truth / belief / discoverable knowledge tiers and the writing rules for both: `docs/world/COSMOLOGY.md`. Nothing below is superseded by it.**
+
+---
+
 ## The Void
 
 The Void is a neighboring dimension — a true abyss of thermodynamic completion. Pure entropy. Absolute silence. Its boundary with Nexus Verge is slowly, unevenly, advancing.
@@ -67,6 +82,8 @@ The Void does not approach like an army. It arrives. First birds stop. Then inse
 
 ### Writing Rule
 Never describe the Void or Voidborn with emotional language. No rage, no hunger, no malice. They are weather. They are physics. The horror comes from their complete indifference — they don't know you exist, and that is what makes them unsurvivable.
+
+The deeper layer — absolute absence, and why the boundary moves at all — is in `docs/world/COSMOLOGY.md`, along with the hard rule that encounter-scale Void reads as *reduction* while only regional-scale reads as *never-was*.
 
 ---
 

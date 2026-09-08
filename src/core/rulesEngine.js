@@ -1293,6 +1293,26 @@ export const RULES = {
     },
 
     // ====================
+    // SAVE STORAGE
+    // ====================
+    saves: {
+        // 'local' = browser LocalStorage only (original behaviour).
+        // 'cloud' = server-held saves keyed to a recovery code, with LocalStorage as a
+        // write-through cache so play survives an offline API.
+        backend: 'local',
+
+        maxSlots: 5,
+        apiBaseUrl: '/api',
+        // Storage key derives from username AND recovery code together, so a leaked or
+        // guessed code alone unlocks nothing.
+        recoveryCodeStorageKey: 'nexus-verge-recovery-code',
+        usernameStorageKey: 'nexus-verge-player-name',
+
+        // Cloud writes fall back to the local cache rather than failing the save outright.
+        failSoftOnCloudWrite: true
+    },
+
+    // ====================
     // ATTRIBUTE SYSTEM (six-attribute remap — docs/plans/2026-07-30-attribute-system-remap.md)
     // ====================
     attributes: {

@@ -36,7 +36,7 @@ When designing abilities, spells, or progression features, structure them so the
 
 ## Nexus Verge Specifics
 
-- **3 Callings:** Dedication (fighter), Scholar (mage), Wanderlust (thief) - with specializations branching at level 3
+- **3 Callings:** Dedication (fighter), Curiosity (mage), Audacity (thief) - with specializations branching at level 3
 - **13-skill system:** Athletics, Acrobatics, Sleight of Hand, Endurance, Academia, Arcana, Investigation, Perception, Cunning, Creativity, Empathy, Influence, Deception
 - **Level 10 capstone** (compressed from D&D's level 20)
 - **Non-grid combat** (Final Fantasy style with initiative, no positioning)

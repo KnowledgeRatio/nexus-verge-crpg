@@ -95,7 +95,7 @@ When asked about a feature or mechanic:
 - Why Fighters get more ASIs, why Rogues get Expertise, why Monks struggle at high levels
 
 **Nexus Verge Specific:**
-- The Calling system (Dedication, Scholar, Wanderlust - with specializations branching from these)
+- The Calling system (Dedication, Curiosity, Audacity - with specializations branching from these)
 - The 13-skill system (Athletics, Acrobatics, Sleight of Hand, Endurance, Academia, Arcana, Investigation, Perception, Cunning, Creativity, Empathy, Influence, Deception)
 - Focus as the Dedication martial resource (CON-based, short rest recharge)
 - Level 10 capstone (compressed from D&D's level 20)

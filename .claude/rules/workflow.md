@@ -54,7 +54,7 @@ Not auto-loaded into every session via `CLAUDE.md` — same as plans, read on de
 - **Subagents** = isolated autonomous workers via the Agent tool
 - Only spawn a subagent when the task matches the agent's description and you need isolation or parallelism
 - Never duplicate work a subagent is already doing
-- Global skills at `~/.claude/skills/` must be synced manually from project `.claude/skills/`
+- **User-level agents are separate, generic, and independent of this repo.** `~/.claude/agents/` holds domain-neutral versions of `architect`, `refactor-engineer`, `devils-advocate`, `product-owner`, and `creative-director`, which orient themselves by discovering each repo's own architecture doc, conventions, and backlog. This repo's `.claude/agents/` definitions **shadow them by name**, so the Nexus Verge versions always win here. The two sets are deliberately not synced — never "update" a project agent to match its global sibling, or vice versa
 
 ### Nested subagents
 Since Claude Code v2.1.172, a subagent can spawn its own child subagents (max depth 5, requires bare `Agent` — no parentheses — in the subagent's `tools:` list). Current nesting in this project:

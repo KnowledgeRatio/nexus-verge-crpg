@@ -4,6 +4,21 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## Session 20 — 2026-08-14
+**Server-Held Saves (ADR-017)** — built behind `RULES.saves.backend`, default remains `'local'`.
+
+Setup doc: `docs/CLOUD_SAVES_SETUP.md`.
+
+`SaveManager` reduced to serialization only; persistence moved behind an async store contract (`getSlots`/`read`/`write`/`remove`). `LocalSaveStore` preserves the original LocalStorage behaviour; `CloudSaveStore` wraps it as a write-through cache and falls back to it on every failure path, returning `{ synced, warning }` so the UI reports "device only" instead of a false success.
+
+Identity is a player name **plus** a recovery code, both required — blob key is `HMAC-SHA256(username + ":" + code, SAVE_TOKEN_SECRET)`. No identity provider, no password, no PII. Azure Functions API in `api/` (4 routes) over a single new storage account; SWA Free plan is sufficient.
+
+Restored a real 5-slot save/load UI — `renderSaveSlots`/`renderLoadSlots` had been reduced to file export/import only, and `saveToSlot`/`loadFromSlot`/`getSaveSlots` had no UI callers at all.
+
+Gotcha recorded: `SAVE_TOKEN_SECRET` can never be rotated once players have saves — every storage path derives from it.
+
+---
+
 ## Session 19 — 2026-03-09
 **Party Member System — Design Review & Decisions Locked (Planning Only)**
 Plan: `docs/plans/2026-03-09-party-system-amendments.md`

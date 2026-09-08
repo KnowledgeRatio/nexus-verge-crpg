@@ -1,52 +1,33 @@
 /**
  * Save Manager
- * Handles saving and loading game state to/from LocalStorage
+ * Handles serializing game state and persisting it through a save store
  */
 
 import { gameState } from '../core/GameState.js';
+import { RULES } from '../core/rulesEngine.js';
 import { Character } from './Character.js';
+import { LocalSaveStore } from './saveStores/LocalSaveStore.js';
+import { CloudSaveStore } from './saveStores/CloudSaveStore.js';
+
+function createSaveStore(version) {
+    return RULES.saves.backend === 'cloud'
+        ? new CloudSaveStore(version)
+        : new LocalSaveStore(version);
+}
 
 class SaveManager {
     constructor() {
-        this.maxSlots = 5;
-        this.storagePrefix = 'nexus-verge-save-';
-        this.metadataKey = 'nexus-verge-metadata';
         this.version = '1.0.0';
+        this.maxSlots = RULES.saves.maxSlots;
+        this.store = createSaveStore(this.version);
     }
 
     /**
      * Get all save slot metadata
-     * @returns {Object} Metadata for all save slots
+     * @returns {Promise<Object>} Metadata for all save slots
      */
-    getSaveSlots() {
-        const metadata = localStorage.getItem(this.metadataKey);
-        if (!metadata) {
-            return this.initializeSaveSlots();
-        }
-        return JSON.parse(metadata);
-    }
-
-    /**
-     * Initialize empty save slots
-     * @returns {Object} Empty save slot metadata
-     */
-    initializeSaveSlots() {
-        const slots = {};
-        for (let i = 1; i <= this.maxSlots; i++) {
-            slots[i] = {
-                slotId: i,
-                isEmpty: true,
-                characterName: null,
-                level: null,
-                location: null,
-                playtime: 0,
-                timestamp: null,
-                seed: null,
-                version: this.version
-            };
-        }
-        localStorage.setItem(this.metadataKey, JSON.stringify(slots));
-        return slots;
+    async getSaveSlots() {
+        return this.store.getSlots();
     }
 
     /**
@@ -54,7 +35,7 @@ class SaveManager {
      * @param {number} slotId - Save slot ID (1-5)
      * @returns {Object} { success: boolean, message: string }
      */
-    saveGame(slotId) {
+    async saveGame(slotId) {
         const startTime = performance.now();
 
         try {
@@ -71,19 +52,15 @@ class SaveManager {
             // Serialize game state
             const saveData = this.serializeGameState();
 
-            // Save to LocalStorage
-            const saveKey = `${this.storagePrefix}${slotId}`;
-            localStorage.setItem(saveKey, JSON.stringify(saveData));
-
-            // Update metadata
-            this.updateSaveMetadata(slotId, saveData);
+            const result = await this.store.write(slotId, saveData, this.buildSlotMetadata(slotId, saveData));
 
             const elapsed = performance.now() - startTime;
             console.log(`💾 Game saved to slot ${slotId} in ${elapsed.toFixed(2)}ms`);
 
             return {
                 success: true,
-                message: `Game saved to slot ${slotId}`,
+                message: result.warning || `Game saved to slot ${slotId}`,
+                synced: result.synced,
                 elapsed: elapsed
             };
 
@@ -110,7 +87,7 @@ class SaveManager {
      * @param {number} slotId - Save slot ID (1-5)
      * @returns {Object} { success: boolean, message: string, data: Object }
      */
-    loadGame(slotId) {
+    async loadGame(slotId) {
         const startTime = performance.now();
 
         try {
@@ -119,21 +96,11 @@ class SaveManager {
                 return { success: false, message: `Invalid slot ID: ${slotId}` };
             }
 
-            // Check if slot exists and has data
-            const metadata = this.getSaveSlots();
-            if (metadata[slotId].isEmpty) {
+            const saveData = await this.store.read(slotId);
+
+            if (!saveData) {
                 return { success: false, message: 'Save slot is empty!' };
             }
-
-            // Load from LocalStorage
-            const saveKey = `${this.storagePrefix}${slotId}`;
-            const saveDataStr = localStorage.getItem(saveKey);
-
-            if (!saveDataStr) {
-                return { success: false, message: 'Save data not found!' };
-            }
-
-            const saveData = JSON.parse(saveDataStr);
 
             // Version compatibility check
             if (saveData.version !== this.version) {
@@ -167,37 +134,21 @@ class SaveManager {
      * @param {number} slotId - Save slot ID (1-5)
      * @returns {Object} { success: boolean, message: string }
      */
-    deleteSave(slotId) {
+    async deleteSave(slotId) {
         try {
             // Validate slot ID
             if (slotId < 1 || slotId > this.maxSlots) {
                 return { success: false, message: `Invalid slot ID: ${slotId}` };
             }
 
-            // Delete from LocalStorage
-            const saveKey = `${this.storagePrefix}${slotId}`;
-            localStorage.removeItem(saveKey);
-
-            // Update metadata to mark slot as empty
-            const metadata = this.getSaveSlots();
-            metadata[slotId] = {
-                slotId: slotId,
-                isEmpty: true,
-                characterName: null,
-                level: null,
-                location: null,
-                playtime: 0,
-                timestamp: null,
-                seed: null,
-                version: this.version
-            };
-            localStorage.setItem(this.metadataKey, JSON.stringify(metadata));
+            const result = await this.store.remove(slotId);
 
             console.log(`🗑️ Save slot ${slotId} deleted`);
 
             return {
                 success: true,
-                message: `Save slot ${slotId} deleted`
+                message: result.warning || `Save slot ${slotId} deleted`,
+                synced: result.synced
             };
 
         } catch (error) {
@@ -577,17 +528,16 @@ class SaveManager {
     }
 
     /**
-     * Update save slot metadata
+     * Build save slot metadata for the slot list
      * @param {number} slotId - Save slot ID
      * @param {Object} saveData - Save data to extract metadata from
+     * @returns {Object} Slot metadata
      */
-    updateSaveMetadata(slotId, saveData) {
-        const metadata = this.getSaveSlots();
-
+    buildSlotMetadata(slotId, saveData) {
         const character = saveData.character;
         const world = saveData.world;
 
-        metadata[slotId] = {
+        return {
             slotId: slotId,
             isEmpty: false,
             characterName: character?.name || 'Unknown',
@@ -599,8 +549,6 @@ class SaveManager {
             seed: saveData.seed,
             version: saveData.version
         };
-
-        localStorage.setItem(this.metadataKey, JSON.stringify(metadata));
     }
 
     /**
@@ -608,7 +556,7 @@ class SaveManager {
      * @param {number} slotId - Save slot ID (1-5) or 0 for current game
      * @returns {Object} { success: boolean, message: string }
      */
-    exportSaveToFile(slotId = 0) {
+    async exportSaveToFile(slotId = 0) {
         try {
             let saveData;
 
@@ -616,13 +564,10 @@ class SaveManager {
                 // Export current game state (full data, no compression)
                 saveData = this.serializeGameStateFull();
             } else {
-                // Export from existing slot
-                const saveKey = `${this.storagePrefix}${slotId}`;
-                const saved = localStorage.getItem(saveKey);
-                if (!saved) {
+                saveData = await this.store.read(slotId);
+                if (!saveData) {
                     return { success: false, message: `No save in slot ${slotId}` };
                 }
-                saveData = JSON.parse(saved);
             }
 
             // Create filename
@@ -774,17 +719,17 @@ class SaveManager {
 
     /**
      * Auto-save to slot 1 (quick save)
-     * @returns {Object} Save result
+     * @returns {Promise<Object>} Save result
      */
-    quickSave() {
+    async quickSave() {
         return this.saveGame(1);
     }
 
     /**
      * Quick load from slot 1
-     * @returns {Object} Load result
+     * @returns {Promise<Object>} Load result
      */
-    quickLoad() {
+    async quickLoad() {
         return this.loadGame(1);
     }
 }

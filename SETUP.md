@@ -5,8 +5,8 @@ Quick guide to get Nexus Verge running locally or deploy to Azure.
 ## 🚀 Quick Start (Local Development)
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Azure subscription (for Roger AI features)
+- Node.js 20+ and npm
+- Azure subscription (only for cloud saves — the game runs fully without one)
 - Azure Static Web Apps CLI
 
 ### 1. Clone & Install
@@ -25,88 +25,37 @@ cp api/local.settings.json.example api/local.settings.json
 cp staticwebapp.config.json.example staticwebapp.config.json
 ```
 
-### 3. Configure Your Tenant ID
+### 3. Set Up Cloud Saves (optional)
 
-**Get your Entra Tenant ID:**
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Navigate to **Microsoft Entra ID**
-3. Copy the **Tenant ID** from the Overview page
+Cloud saves are off by default (`RULES.saves.backend: 'local'`). To develop against them,
+fill in `api/local.settings.json`:
 
-**Update `staticwebapp.config.json`:**
-```json
-{
-  "auth": {
-    "identityProviders": {
-      "azureActiveDirectory": {
-        "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/YOUR-TENANT-ID-HERE/v2.0"
-        }
-      }
-    }
-  }
-}
-```
-
-### 4. Set Up Azure Resources
-
-#### Create Entra ID App Registration
-1. Go to **Azure Portal** → **Microsoft Entra ID** → **App Registrations**
-2. Click **New registration**
-3. Name: `Nexus Verge - Roger AI`
-4. Supported account types: **Single tenant**
-5. Redirect URI: `https://your-app.azurestaticapps.net/.auth/login/aad/callback`
-6. Click **Register**
-
-**Get credentials:**
-- Copy **Application (client) ID**
-- Create **Client Secret** (Certificates & secrets → New client secret)
-- Save both to `.env` and `api/local.settings.json`
-
-#### Create Azure AI Foundry Project
-1. Go to **Azure Portal** → **AI Foundry**
-2. Create new project
-3. Copy **Endpoint URL** (e.g., `https://project-name.services.ai.azure.com/api/projects/project-name`)
-4. Create an Agent named "Roger" (or your preferred name)
-
-**Update your configs:**
-
-`.env`:
-```bash
-ROGER_ENTRA_CLIENT_ID=your-client-id-here
-ROGER_ENTRA_CLIENT_SECRET=your-client-secret-here
-ROGER_PROJECT_ENDPOINT=https://your-name.services.ai.azure.com/api/projects/your-project
-ROGER_AGENT_NAME=Roger
-# ROGER_AGENT_VERSION=7  # Optional - omit to always use latest agent version
-```
-
-`api/local.settings.json`:
 ```json
 {
   "Values": {
-    "ROGER_ENTRA_CLIENT_ID": "same-as-above",
-    "ROGER_ENTRA_CLIENT_SECRET": "same-as-above",
-    "ROGER_PROJECT_ENDPOINT": "same-as-above",
-    "ROGER_AGENT_NAME": "Roger"
+    "SAVE_STORAGE_CONNECTION": "UseDevelopmentStorage=true",
+    "SAVE_TOKEN_SECRET": "any-value-for-local-dev"
   }
 }
 ```
-**Note:** `ROGER_AGENT_VERSION` is optional - omit it to automatically use the latest agent version.
 
-### 5. Run Locally
+`UseDevelopmentStorage=true` targets [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite).
+For the full Azure setup, see [docs/CLOUD_SAVES_SETUP.md](docs/CLOUD_SAVES_SETUP.md).
+
+### 4. Run Locally
 
 ```bash
 # Install Azure Static Web Apps CLI
 npm install -g @azure/static-web-apps-cli
 
-# Start local dev server
-swa start . --port 8000
+# Start local dev server (frontend + saves API)
+swa start . --api-location api --port 8000
 ```
 
 Open http://localhost:8000
 
-**Without Roger AI (no Azure setup):**
+**Frontend only (no API, no cloud saves):**
 ```bash
-# Simple HTTP server (Roger won't work)
 python -m http.server 8000
 # or
 npx serve .
@@ -129,25 +78,16 @@ az staticwebapp create \
 ```
 
 ### 2. Configure Application Settings
-In **Azure Portal** → **Static Web Apps** → **Configuration**:
+In **Azure Portal** → **Static Web Apps** → **Environment variables** (cloud saves only):
 
 | Setting | Value | Required |
 |---------|-------|----------|
-| `ROGER_ENTRA_CLIENT_ID` | Your Entra client ID | Yes |
-| `ROGER_ENTRA_CLIENT_SECRET` | Your Entra client secret | Yes |
-| `ROGER_PROJECT_ENDPOINT` | Your AI Foundry project endpoint | Yes |
-| `ROGER_AGENT_NAME` | Your agent name (e.g., "Roger") | Yes |
-| `ROGER_AGENT_VERSION` | Your agent version (e.g., "7") | **No** - omit to use latest |
+| `SAVE_STORAGE_CONNECTION` | Storage account connection string | For cloud saves |
+| `SAVE_TOKEN_SECRET` | `openssl rand -base64 48` — **never rotate this** | For cloud saves |
 
-### 3. Update Entra Redirect URI
-Go to **App Registration** → **Authentication** → **Redirect URIs**
+Full walkthrough including the storage account: [docs/CLOUD_SAVES_SETUP.md](docs/CLOUD_SAVES_SETUP.md).
 
-Add:
-```
-https://your-actual-app-name.azurestaticapps.net/.auth/login/aad/callback
-```
-
-### 4. Deploy
+### 3. Deploy
 ```bash
 # Deploy via GitHub Actions (automatic on push to main)
 git push origin main
@@ -164,9 +104,8 @@ Most of the game works **without Azure setup**:
 - ✅ Combat system
 - ✅ Quests
 - ✅ Trading & inventory
-- ✅ Save/load (LocalStorage)
-- ❌ Roger AI assistant (requires Azure)
-- ❌ Dev Mode toggle (requires authentication in production)
+- ✅ Save/load (LocalStorage) and save file export/import
+- ❌ Cloud saves across devices (requires a storage account)
 
 ## 🔒 Security Notes
 
@@ -176,6 +115,6 @@ Most of the game works **without Azure setup**:
 
 ## 📚 More Info
 
-- [Azure Static Web Apps Docs](https://learn.microsoft.com/en-us/azure/static-web-apps/)
-- [Azure AI Foundry Agents](https://learn.microsoft.com/en-us/azure/ai-services/agents/)
-- [Entra ID Authentication](https://learn.microsoft.com/en-us/entra/identity-platform/)
+- [Azure Static Web Apps Docs](https://learn.microsoft.com/azure/static-web-apps/)
+- [Cloud Saves Setup](docs/CLOUD_SAVES_SETUP.md)
+- [Azure Functions Node.js reference](https://learn.microsoft.com/azure/azure-functions/functions-reference-node)

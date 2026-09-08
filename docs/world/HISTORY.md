@@ -28,12 +28,12 @@ Some people, over generations, drifted toward the boundary — by exile, by curi
 
 ## III. The Settling (~4–5 generations ago)
 
-Wayfinding matured — somewhere, by someone, the technique of reliable dimensional travel to Aevorn stopped being a rare feat and became a repeatable one. This opened the door to organized, large-scale arrival for the first time in the dimension's history.
+Threading matured — somewhere, by someone, the technique of reliable dimensional travel to Aevorn stopped being a rare feat and became a repeatable one. This opened the door to organized, large-scale arrival for the first time in the dimension's history.
 
 Two things happened in roughly the same span:
 
 - **Independent settlers** arrived in waves — opportunists, exiles, the curious, the desperate — with no organizing authority behind them. They built towns because towns were useful, not because anyone planned it. Their descendants are the **Kethara**.
-- **The Vaethoran Empire**, tracking wayfinding developments from outside, launched a deliberate colonial expedition once the route was provably stable. They arrived with administrators, surveyors, and a legion — already planning the roads. Their descendants are the **Vaethori**.
+- **The Vaethoran Empire**, tracking threading developments from outside, launched a deliberate colonial expedition once the thread was provably stable. They arrived with administrators, surveyors, and a legion — already planning the roads. Their descendants are the **Vaethori**.
 
 The friction between Vaethori and Verathi begins here: an empire with paperwork showing up to administer land that had never been administered, populated by people who had never asked to be.
 
@@ -47,13 +47,13 @@ At some point within living memory, the Void's boundary stopped being a stable, 
 - **Vethri:** This is not new. It is the natural conclusion of a process they've watched for centuries. What changed is that it became fast enough for people who weren't paying close attention to notice.
 - **Verathi:** Something specific triggered it — an act, an excavation, a rift opened somewhere it shouldn't have been. They don't agree among themselves on what.
 - **Delhari:** A theory for every Delhari you ask. Dimensional over-extraction. A failed Vaethoran experiment. A natural cycle on a scale no single lifetime has observed before. They study it. They have not converged on an answer.
-- **Vaethori:** Officially, a natural phenomenon requiring administrative response. Unofficially, more than a few suspect their own wayfinding activity disturbed something, and the Colonial Administration has no interest in that theory becoming widely believed.
+- **Vaethori:** Officially, a natural phenomenon requiring administrative response. Unofficially, more than a few suspect their own threading activity disturbed something, and the Colonial Administration has no interest in that theory becoming widely believed.
 
 What is not contested: regions began to be lost. Whole settlements went quiet, then absent. The first confirmed loss within living memory was a region the survivors still call **Old Moru** — its name preserved by the people who escaped it, attached to nothing now but their memory of where it was.
 
 The survivors of these losses, and the losses that followed, became a people defined by the experience: the **Sirathi** — "the Unmoored," named for exactly what happened to them. Many converged on a single waypoint that became **First Town**, named with the specific flatness of people who didn't trust themselves to name it anything hopeful.
 
-As losses accumulated and word of them spread across the wayfinding networks, Aevorn became urgent in a way it hadn't been before — not just a place with rare materials, but a dimension visibly dying, which is its own kind of attraction to a certain kind of person. This is what brought the recent surge of **Delhari**: scholars, theorists, and opportunists arriving in the last generation specifically because the crisis became known.
+As losses accumulated and word of them spread back along the threads, Aevorn became urgent in a way it hadn't been before — not just a place with rare materials, but a dimension visibly dying, which is its own kind of attraction to a certain kind of person. This is what brought the recent surge of **Delhari**: scholars, theorists, and opportunists arriving in the last generation specifically because the crisis became known.
 
 ---
 

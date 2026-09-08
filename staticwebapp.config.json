@@ -1,9 +1,18 @@
 {
+  "platform": {
+    "apiRuntime": "node:20"
+  },
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/data/*", "/src/*", "/assets/*", "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico}"]
+    "exclude": ["/api/*", "/data/*", "/src/*", "/assets/*", "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico}"]
   },
   "routes": [
+    {
+      "route": "/api/*",
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
     {
       "route": "/data/*",
       "headers": {

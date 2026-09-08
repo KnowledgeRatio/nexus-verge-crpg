@@ -2,12 +2,16 @@
   "name": "nexus-verge-api",
   "version": "1.0.0",
   "description": "Azure Functions API for Nexus Verge",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/functions/*.js",
   "scripts": {
     "start": "func start"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@azure/functions": "^4.5.0",
+    "@azure/storage-blob": "^12.26.0"
+  }
 }

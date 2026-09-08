@@ -403,5 +403,30 @@
     "generatedAt": "2026-08-10T19:01:03.758Z",
     "promptHash": "ad15b4dc",
     "outputPath": "data/graphics/savanna_2026-08-10T19-00-15.png"
+  },
+  "terrain/temple": {
+    "generatedAt": "2026-08-15T00:31:29.567Z",
+    "promptHash": "3e0f31f9",
+    "outputPath": "data/graphics/temple-cartographic-v1.png"
+  },
+  "terrain/monastery": {
+    "generatedAt": "2026-08-15T00:19:35.546Z",
+    "promptHash": "22e1abab",
+    "outputPath": "data/graphics/monastery-cartographic-v1.png"
+  },
+  "terrain/camp": {
+    "generatedAt": "2026-08-15T00:32:52.205Z",
+    "promptHash": "224b154f",
+    "outputPath": "data/graphics/camp-cartographic-v1.png"
+  },
+  "terrain/watchtower": {
+    "generatedAt": "2026-08-15T00:22:46.622Z",
+    "promptHash": "a63d2fa8",
+    "outputPath": "data/graphics/watchtower-cartographic-v1.png"
+  },
+  "terrain/villa": {
+    "generatedAt": "2026-08-15T00:24:11.734Z",
+    "promptHash": "0d98f627",
+    "outputPath": "data/graphics/villa-cartographic-v1.png"
   }
 }

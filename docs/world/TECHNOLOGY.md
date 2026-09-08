@@ -33,4 +33,4 @@ Anachronistic technology should read as **an event, not a setting.** It intrudes
 
 ## Resource Competition
 
-Recovered technology is a third contested resource, alongside riftborn materials and null-flux (see `docs/world/WORLD.md`). Unlike raw materials, tech relics carry information as well as value — whoever holds one may hold the only working example of something nobody else can build. This sharpens the political friction described in `docs/world/CREATURES.md`'s rival-sapient competition note: a contested ruin isn't just fought over for what it's made of, but for what still runs inside it.
+Recovered technology is a third contested resource, alongside riftborn materials and Unheld (see `docs/world/WORLD.md`). Unlike raw materials, tech relics carry information as well as value — whoever holds one may hold the only working example of something nobody else can build. This sharpens the political friction described in `docs/world/CREATURES.md`'s rival-sapient competition note: a contested ruin isn't just fought over for what it's made of, but for what still runs inside it.

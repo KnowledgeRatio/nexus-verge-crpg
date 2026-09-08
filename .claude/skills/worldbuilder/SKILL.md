@@ -127,7 +127,7 @@ For each: create a new JSON entry with the campaign's `campaignId`. The worldbui
 - The `campaignIds: ["core"]` layer is the stable foundation; `nexus-verge` layer is the setting; campaign overlays are transformations
 
 **The Calling system context:**
-- Dedication (martial), Scholar (arcane), Wanderlust (roguish) — item and lore flavour can reflect which Calling values or uses an item
+- Dedication (martial), Curiosity (arcane), Audacity (roguish) — item and lore flavour can reflect which Calling values or uses an item
 - The reputation-based economy means factions have opinions — NPC dialogue should carry faction voice
 
 ## When You're Done

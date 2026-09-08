@@ -3,12 +3,10 @@
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "ROGER_PROJECT_ENDPOINT": "https://your-name.services.ai.azure.com/api/projects/your-project",
-    "ROGER_AGENT_NAME": "Roger",
-    "ROGER_ENTRA_CLIENT_ID": "your-entra-client-id-here",
-    "ROGER_ENTRA_CLIENT_SECRET": "your-entra-client-secret-here"
+    "SAVE_STORAGE_CONNECTION": "UseDevelopmentStorage=true",
+    "SAVE_TOKEN_SECRET": "generate-with-openssl-rand-base64-48"
   },
-  "Comment": "ROGER_AGENT_VERSION is optional - omit to use latest agent version",
+  "Comment": "SAVE_STORAGE_CONNECTION targets Azurite locally. SAVE_TOKEN_SECRET must never change once real saves exist - every save's storage path derives from it.",
   "Host": {
     "LocalHttpPort": 7071,
     "CORS": "*",

@@ -4,6 +4,8 @@
 
 Gods passed through Aevorn, the same as everything else that converges here. That is the theory, and it will never be more than a theory — no culture has resolved it, and nothing in this doc should be read as a resolution. What the theory proposes: something with the properties people elsewhere call divine arrived during the Convergence, took no lasting form, established no worship, and at some point stopped being here. Not destroyed. Not defeated. Departed — to a destination nobody has ever confirmed, the same way nobody can confirm where a region lost to the Void actually goes.
 
+`docs/world/COSMOLOGY.md` adds the layer under this without settling it: what a god would have to *be* for the theory to work — not a species, not a rank, and not something the Source granted power to, but something that let the illusion of separateness go further than anything else has. Under that reading omniscience, omnipresence and omnipotence stop being three supernatural properties and become one tedious one, and the Departure has three available shapes with no evidence for any of them: they stopped being individuated and did not travel anywhere, because there stopped being a distinct thing that could depart; separateness reasserted and whatever they became is still here, indistinguishable from anyone; or they left by the same boundary mechanics the Void uses now. Nothing below changes, and nothing there confirms a word of it.
+
 This slots into the oldest unresolved fragment in Aevorn's history: that something was already here before the Convergence properly began (see `docs/world/HISTORY.md` §I). A minority of Verathi hold that the "something already here" and any departed gods are the same presence, described two ways by two different kinds of witness. Most Verathi consider this a stretch. Nobody has evidence to settle it either way.
 
 ## Godsign Relics
@@ -18,9 +20,11 @@ Traits attributed to godsign relics:
 
 None of this proves anything. It's exactly the kind of ambiguous, contested evidence Aevorn produces about everything, including itself.
 
+There is an author-level explanation for all three traits in `docs/world/COSMOLOGY.md` — one that turns on godsign relics not being fully separate objects. No in-world source has it, and none of the surface descriptions above — or any shipped relic description — change because of it. A godsign relic still resists appraisal, still doesn't wear, and still warms near the boundary for reasons nobody has measured.
+
 ## Writing Rule
 
-**No pantheon. No divine casters. No church.** This is lore and flavor exclusively — none of the three Callings are divine casters, and no faction in the Verge organizes around confirmed worship. Godsign relics are legendary items with an origin story attached, not a mechanical category. A godsign relic's stat block never changes because of this lore; only its description does.
+**No pantheon. No divine casters. No church.** This rule is binding on `docs/world/COSMOLOGY.md` as well, and is not softened by anything in it. There is nobody listening, nothing granting, and nothing to petition. A Delhari cult that believes dissolving separateness is an attainable technique is a belief and a reason for them to be dangerous — never a mechanic, and never a reward. This is lore and flavor exclusively — none of the three Callings are divine casters, and no faction in the Verge organizes around confirmed worship. Godsign relics are legendary items with an origin story attached, not a mechanical category. A godsign relic's stat block never changes because of this lore; only its description does.
 
 ## Cultural Takes
 

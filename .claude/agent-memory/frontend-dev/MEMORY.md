@@ -8,15 +8,15 @@
 - [Worldbuilder UI removed dead fixed-count fields](worldbuilder_ui_removed_dead_fixed_count_fields.md) — wbDungeons/wbSanctuaries deleted from index.html 2026-08-09; main.js refs were backend-dev's cleanup, not mine
 
 ## Key File Locations
-- `index.html` - 1432 lines (as of Roger feature). All modals live inside `#app` div, before the `<footer>` tag.
-- `styles.css` - 7731 lines (as of Roger feature). New sections append at the very end.
+- `index.html` - all modals live inside the `#app` div, before the `<footer>` tag.
+- `styles.css` - new sections append at the very end.
 - `src/main.js` - Main game loop and all UI setup methods.
 
 ## Confirmed Patterns
 
 ### Modal / Overlay Show-Hide
 - Game modals use `classList.add/remove('active')` and a `.modal { display: none }` / `.modal.active { display: flex }` pair.
-- The Roger overlay uses `.roger-overlay` + `.roger-overlay.active` with `display: none` / `display: flex` — same pattern adapted for non-`.modal` named classes.
+- Non-`.modal` overlays follow the same pattern with their own named class pair (`.x-overlay` + `.x-overlay.active`, `display: none` / `display: flex`).
 - Always add ESC key listener, close button listener, and backdrop click listener for every modal.
 
 ### Multi-View Panels (e.g., auth -> agent -> chat)
@@ -29,11 +29,11 @@
 - `--accent-color` (#4a9eff) for blue accents.
 - `--bg-primary` / `--bg-secondary` / `--bg-tertiary` for background layers.
 - `--text-primary` / `--text-secondary` / `--text-highlight` for text.
-- Roger panel uses `#1a1a2e` / `#16213e` / `#c9a84c` / `#ffd700` as explicit values per spec — acceptable when a feature has its own design language distinct from game UI.
+- A feature with its own design language distinct from the game UI may use explicit hex values instead of these tokens — that is an acceptable, deliberate exception, not drift.
 
 ### Button Classes
 - `.menu-btn` — full-width main menu button (font-mono, border, hover lift).
-- `.menu-btn.secondary` — transparent background variant. Used for Dev Mode and Roger buttons.
+- `.menu-btn.secondary` — transparent background variant. Used for secondary actions such as Dev Mode.
 - `.small-btn` — compact tertiary button.
 
 ### Responsive Breakpoints (all 6 required for game UI)
@@ -43,7 +43,7 @@
 - `1400–1600px` — large (500px)
 - `1600–1920px` — HD (550px)
 - `1920px+` — ultra (600px)
-- Roger modal only needed mobile + 768-1200 + 1200-1400 + 1400+ since it is a fixed-width overlay.
+- A fixed-width overlay only needs mobile + 768-1200 + 1200-1400 + 1400+; the finer steps above are for fluid layouts.
 
 ### Flexbox Layout for Scrollable Panels
 - Outer container: `display: flex; flex-direction: column; overflow: hidden`.

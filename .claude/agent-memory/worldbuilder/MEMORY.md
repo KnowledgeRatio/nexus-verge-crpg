@@ -27,7 +27,8 @@
 
 ## Established Canon
 
-- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); six cultures; no Fracture event exists
+- [Nexus Verge canonical world design](established_canon_fracture.md) — Convergence dimension, not post-apocalyptic; the Void advances (physics not enemy); six cultures; no Fracture event
+- [Cosmology — the Source and the Void](cosmology_source_void.md) — Source is monism ("everything is everything"), NOT flatness; both forces annihilate the individual oppositely; game never confirms cosmology; wayfinding→Threading, null-flux→Unheld exists
 
 ## Practices System
 

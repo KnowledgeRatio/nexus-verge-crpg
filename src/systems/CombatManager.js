@@ -1829,7 +1829,7 @@ class CombatManager {
     }
 
     /**
-     * Check if a Audacity combatant can use Cunning Action for a bonus-action flee.
+     * Check if an Audacity combatant can use Cunning Action for a bonus-action flee.
      * @param {Object} combatant - Combatant instance
      * @returns {boolean}
      */

@@ -30,7 +30,9 @@ Create one continuous square painted terrain sheet, not a self-contained tile, s
 
 Legacy one-image-per-world-tile mode. Depict exactly one terrain material with a sparse, bold motif language that survives reduction to 16 pixels. Do not place a complete landscape, neighbouring biome, internal convergence boundary, road, river, coastline, clearing, or landmark inside the tile. No characters, creatures, pixel art, isometric view, sprites, grid lines, graph paper, ruled lines, or squared-paper texture.
 
-A landmark tile depicting worn architecture may include no more than one small material-impossibility accent — two incompatible physical properties visible in the same surface, per the Item Icons riftborn-material convention — confined to one small detail within the frame, not distributed across the composition.
+Riftborn material-impossibility accents are authored per entry, never added by default. Include one only when the tile's own description explicitly calls for it — then it is a single small detail, two incompatible physical properties visible in the same surface per the Item Icons riftborn-material convention, confined to one detail and not distributed across the composition. Otherwise the tile carries none: no crystal, gemstone, glassy mineral cluster, iridescent patch, or anomalous out-of-place object anywhere in the frame.
+
+The surrounding ground is uniform to every edge. No concentric contour rings, topographic contour lines, ripple bands, halo, vignette, or ring of differing colour encircling the structure, and no clearing or patch of altered ground around it.
 
 ## Monster Art
 

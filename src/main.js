@@ -15,6 +15,7 @@ import Player from './systems/Player.js';
 import CombatManager from './systems/CombatManager.js';
 import restManager from './systems/RestManager.js';
 import saveManager from './systems/SaveManager.js';
+import { playerIdentity } from './systems/PlayerIdentity.js';
 import SettlementManager from './systems/SettlementManager.js';
 import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
@@ -7471,26 +7472,108 @@ class Game {
         const character = gameState.get('character');
 
         slotsContainer.innerHTML = `
-            <div style="padding: 20px; text-align: center;">
-                <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--success);">
-                    <h3 style="margin: 0 0 10px 0; color: var(--success);">📥 Export Save</h3>
-                    <p style="margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                        Download your game as a <strong>.json file</strong><br>
-                        ✓ Full game state preserved<br>
-                        ✓ No size limits<br>
-                        ✓ Portable & backup-friendly<br>
-                        ✓ Share between devices
-                    </p>
-                    <div style="padding: 15px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 20px;">
-                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">Current Character:</div>
-                        <div style="font-size: 16px; font-weight: bold; color: var(--accent);">
-                            ${character?.name || 'Unknown'} - Level ${character?.level || 1} ${character?.class?.displayName || character?.class?.name || ''}
-                        </div>
+            <div style="padding: 20px;">
+                ${this.renderCloudIdentityPanel()}
+                <div style="padding: 15px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 20px; text-align: center;">
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">Current Character:</div>
+                    <div style="font-size: 16px; font-weight: bold; color: var(--accent);">
+                        ${character?.name || 'Unknown'} - Level ${character?.level || 1} ${character?.class?.displayName || character?.class?.name || ''}
                     </div>
-                    <button class="menu-btn" onclick="window.game.exportCurrentGame()" style="width: 100%; font-size: 16px; padding: 15px;">
-                        📥 Download Save File
+                </div>
+                <div id="saveSlotList">${this.renderSlotPlaceholder()}</div>
+                <button class="menu-btn" onclick="window.game.exportCurrentGame()" style="width: 100%; margin-top: 20px;">
+                    📥 Download Backup File
+                </button>
+            </div>
+        `;
+
+        this.populateSlotList('saveSlotList', 'save');
+    }
+
+    /**
+     * Cloud identity panel — player name plus recovery code state
+     */
+    renderCloudIdentityPanel() {
+        if (RULES.saves.backend !== 'cloud') {
+            return '';
+        }
+
+        if (playerIdentity.hasIdentity()) {
+            return `
+                <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--success);">
+                    <div style="font-size: 13px; color: var(--text-secondary);">Cloud saves active for</div>
+                    <div style="font-size: 16px; font-weight: bold; color: var(--success); margin-bottom: 10px;">
+                        ${playerIdentity.getUsername()}
+                    </div>
+                    <button class="menu-btn" onclick="window.game.showRecoveryCode()" style="width: 100%; font-size: 14px;">
+                        🔑 Show Recovery Code
                     </button>
                 </div>
+            `;
+        }
+
+        return `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--warning, #d0a020);">
+                <h3 style="margin: 0 0 10px 0;">☁️ Enable Cloud Saves</h3>
+                <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                    Pick a player name. You'll get a recovery code — you need <strong>both</strong> to reach your saves from another device.
+                </p>
+                <input type="text" id="cloudUsernameInput" placeholder="Player name" maxlength="32"
+                    style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
+                <button class="menu-btn" onclick="window.game.registerCloudSaves()" style="width: 100%;">
+                    Create Cloud Saves
+                </button>
+            </div>
+        `;
+    }
+
+    renderSlotPlaceholder() {
+        return '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">Loading slots…</div>';
+    }
+
+    /**
+     * Fill a slot list container with the current save slots
+     * @param {string} containerId - Element to populate
+     * @param {string} mode - 'save' or 'load'
+     */
+    async populateSlotList(containerId, mode) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            return;
+        }
+
+        const slots = await saveManager.getSaveSlots();
+
+        container.innerHTML = Object.values(slots)
+            .sort((a, b) => a.slotId - b.slotId)
+            .map(slot => this.renderSlotRow(slot, mode))
+            .join('');
+    }
+
+    renderSlotRow(slot, mode) {
+        const action = mode === 'save'
+            ? `<button class="menu-btn" onclick="window.game.saveToSlot(${slot.slotId})">💾 Save</button>`
+            : `<button class="menu-btn" onclick="window.game.loadFromSlot(${slot.slotId})" ${slot.isEmpty ? 'disabled' : ''}>📂 Load</button>`;
+
+        const remove = slot.isEmpty
+            ? ''
+            : `<button class="menu-btn" onclick="window.game.deleteSaveSlot(${slot.slotId})" style="margin-left: 8px;">🗑️</button>`;
+
+        const detail = slot.isEmpty
+            ? '<span style="color: var(--text-secondary);">Empty</span>'
+            : `${slot.characterName} — Level ${slot.level} · ${slot.location}<br>
+               <span style="font-size: 12px; color: var(--text-secondary);">
+                   ${saveManager.formatTimestamp(slot.timestamp)} · ${saveManager.formatPlaytime(slot.playtime)}
+               </span>`;
+
+        return `
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;
+                        padding: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+                <div style="flex: 1;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">Slot ${slot.slotId}</div>
+                    <div>${detail}</div>
+                </div>
+                <div style="display: flex; align-items: center;">${action}${remove}</div>
             </div>
         `;
     }
@@ -7505,33 +7588,120 @@ class Game {
         }
 
         slotsContainer.innerHTML = `
-            <div style="padding: 20px; text-align: center;">
-                <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--success);">
-                    <h3 style="margin: 0 0 10px 0; color: var(--success);">📤 Import Save</h3>
-                    <p style="margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                        Upload a <strong>.json save file</strong><br>
-                        ✓ Full game state restored<br>
-                        ✓ Load from any device<br>
-                        ✓ Resume where you left off<br>
-                        ✓ All quests & progress intact
-                    </p>
-                    <input type="file" id="importSaveInput" accept=".json" style="display: none;" onchange="window.game.importSaveFile(event)">
-                    <button class="menu-btn" onclick="document.getElementById('importSaveInput').click()" style="width: 100%; font-size: 16px; padding: 15px;">
-                        📤 Upload Save File
-                    </button>
-                </div>
+            <div style="padding: 20px;">
+                ${this.renderCloudLinkPanel()}
+                <div id="loadSlotList">${this.renderSlotPlaceholder()}</div>
+                <input type="file" id="importSaveInput" accept=".json" style="display: none;" onchange="window.game.importSaveFile(event)">
+                <button class="menu-btn" onclick="document.getElementById('importSaveInput').click()" style="width: 100%; margin-top: 20px;">
+                    📤 Upload Backup File
+                </button>
+            </div>
+        `;
+
+        this.populateSlotList('loadSlotList', 'load');
+    }
+
+    /**
+     * Panel for pulling saves onto a new device with name + recovery code
+     */
+    renderCloudLinkPanel() {
+        if (RULES.saves.backend !== 'cloud' || playerIdentity.hasIdentity()) {
+            return this.renderCloudIdentityPanel();
+        }
+
+        return `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+                <h3 style="margin: 0 0 10px 0;">☁️ Load From Another Device</h3>
+                <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                    Enter the player name and recovery code you used before. Both must match exactly.
+                </p>
+                <input type="text" id="linkUsernameInput" placeholder="Player name" maxlength="32"
+                    style="width: 100%; padding: 10px; margin-bottom: 8px; box-sizing: border-box;">
+                <input type="text" id="linkCodeInput" placeholder="NV-XXXXX-XXXXX-XXXXX-XXXXX"
+                    style="width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;">
+                <button class="menu-btn" onclick="window.game.linkCloudSaves()" style="width: 100%;">
+                    Link Cloud Saves
+                </button>
             </div>
         `;
     }
 
     /**
+     * Register a new cloud identity and reveal the recovery code
+     */
+    async registerCloudSaves() {
+        const username = document.getElementById('cloudUsernameInput')?.value ?? '';
+
+        try {
+            const code = await playerIdentity.register(username);
+            this.renderSaveSlots();
+            alert(`Cloud saves enabled.\n\nPlayer name: ${username.trim()}\nRecovery code: ${code}\n\nWrite both down. You need BOTH to reach your saves from another device.`);
+        } catch (error) {
+            gameState.addMessage(error.message, 'error');
+        }
+    }
+
+    /**
+     * Link this device to an existing cloud identity
+     */
+    async linkCloudSaves() {
+        const username = document.getElementById('linkUsernameInput')?.value ?? '';
+        const code = document.getElementById('linkCodeInput')?.value ?? '';
+
+        const result = playerIdentity.adopt(username, code);
+        if (!result.success) {
+            gameState.addMessage(result.message, 'error');
+            return;
+        }
+
+        this.renderLoadSlots();
+        gameState.addMessage(result.message, 'success');
+    }
+
+    /**
+     * Show the current recovery code, with the option to replace it
+     */
+    async showRecoveryCode() {
+        const code = playerIdentity.getCode();
+        const username = playerIdentity.getUsername();
+
+        const rotate = confirm(`Player name: ${username}\nRecovery code: ${code}\n\nYou need BOTH to reach your saves from another device.\n\nPress OK to replace this code with a new one (the old code stops working), or Cancel to keep it.`);
+        if (!rotate) {
+            return;
+        }
+
+        try {
+            const next = await playerIdentity.rotateCode();
+            this.renderSaveSlots();
+            alert(`New recovery code: ${next}\n\nThe previous code no longer works.`);
+        } catch (error) {
+            gameState.addMessage(error.message, 'error');
+        }
+    }
+
+    /**
+     * Delete a save slot from the slot list
+     */
+    async deleteSaveSlot(slotId) {
+        if (!confirm(`Delete save slot ${slotId}? This cannot be undone.`)) {
+            return;
+        }
+
+        const result = await saveManager.deleteSave(slotId);
+        gameState.addMessage(result.message, result.success ? 'success' : 'error');
+
+        this.populateSlotList('saveSlotList', 'save');
+        this.populateSlotList('loadSlotList', 'load');
+    }
+
+    /**
      * Save game to specific slot
      */
-    saveToSlot(slotId) {
-        const result = saveManager.saveGame(slotId);
+    async saveToSlot(slotId) {
+        const result = await saveManager.saveGame(slotId);
 
         if (result.success) {
-            gameState.addMessage(result.message, 'success');
+            gameState.addMessage(result.message, result.synced === false ? 'warning' : 'success');
             this.closeSaveMenu();
         } else {
             gameState.addMessage(result.message, 'error');
@@ -7546,7 +7716,7 @@ class Game {
             return;
         }
 
-        const result = saveManager.loadGame(slotId);
+        const result = await saveManager.loadGame(slotId);
 
         if (result.success) {
             // Reinitialize game systems with loaded data
@@ -7562,7 +7732,7 @@ class Game {
      * Load game from specific slot
      */
     async loadGameFromSlot(slotId) {
-        const result = saveManager.loadGame(slotId);
+        const result = await saveManager.loadGame(slotId);
 
         if (result.success) {
             // Reinitialize game systems with loaded data
@@ -7576,8 +7746,8 @@ class Game {
     /**
      * Export current game to downloadable file
      */
-    exportCurrentGame() {
-        const result = saveManager.exportSaveToFile(0); // 0 = current game
+    async exportCurrentGame() {
+        const result = await saveManager.exportSaveToFile(0); // 0 = current game
 
         if (result.success) {
             gameState.addMessage(result.message, 'success');

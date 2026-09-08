@@ -2,8 +2,8 @@
 **Branch:** `main-beta-quests` | **Phase:** 3 — Combat & Abilities
 
 ## Current State
-- **Last session:** NPC conversational skill challenges + loot wiring fixes
-- **In progress:** Quest system polish; rules directory migration + restyle
+- **Last session:** Server-held saves (ADR-017) — built behind `RULES.saves.backend`, default still `'local'`
+- **In progress:** Quest system polish; cloud saves awaiting Azure storage account + playtest before flag flip
 - **Next up:** Party system implementation (design locked, see plan below)
 
 ## Docs

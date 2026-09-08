@@ -110,6 +110,31 @@ When replacing a live, load-bearing system (a whole stat system, a combat formul
 - **New code never reads the old path's raw fields directly.** Route through the generic resolver/dispatch layer the fork introduced, not the legacy field names — that's what makes new code automatically correct on both paths instead of needing to be written twice.
 - **Test coverage must exercise the inactive path deliberately.** Whichever path isn't the current default is invisible to normal testing unless a test explicitly switches to it — every test added for a fork-affected feature needs a variant on the other path, or regressions there go undetected until the flip.
 
+## Server-Held Saves (ADR-017)
+
+*Established 2026-08-14.*
+
+Save persistence is forked behind `RULES.saves.backend` (`'local'` | `'cloud'`), per ADR-015.
+`'local'` is the default and remains the rollback path.
+
+- `SaveManager` owns **serialization only**. Persistence goes through a store implementing
+  `getSlots()` / `read(slot)` / `write(slot, save, metadata)` / `remove(slot)`, all async.
+  No `localStorage` access may return to `SaveManager`.
+- `CloudSaveStore` wraps `LocalSaveStore` as a **write-through cache**, not a replacement.
+  Every cloud path falls back to the cache on failure — an unreachable API must never lose a save.
+  Writes return `{ synced, warning }` so the UI can say "device only" rather than claiming success.
+- Identity is a **player name plus a recovery code, both required**. The blob key is
+  `HMAC-SHA256(username + ":" + code, SAVE_TOKEN_SECRET)`. There is no identity provider, no
+  password, and no PII.
+- **`SAVE_TOKEN_SECRET` is permanent.** Every save's storage path derives from it; rotating it
+  orphans all saves simultaneously. It is not a credential that can be cycled on a schedule.
+- Server-held saves are **continuity, not trust**. The rules engine remains client-side, so the
+  API stores whatever the client submits. Do not build leaderboards or anti-cheat on this.
+- SWA managed functions allow **HTTP triggers/bindings only** — blob access uses the
+  `@azure/storage-blob` SDK directly, never an input/output binding.
+
+Setup and operations: [`docs/CLOUD_SAVES_SETUP.md`](../../docs/CLOUD_SAVES_SETUP.md).
+
 ## NVSystem Balance Baseline (ADR-016)
 
 *Established 2026-08-04.*

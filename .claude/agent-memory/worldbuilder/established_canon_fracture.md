@@ -23,6 +23,8 @@ Tone: **Desperate wonder. Survival on a living frontier.** Not grim-hopeful. Not
 
 You cannot kill them. You disrupt, scatter, or seal the rift they propagate through.
 
+As of 2026-08-15 the Void has a cosmological counterpart, **the Source** — everything is everything, the single continuous cosmos with no edges, where separateness is the local illusion. Both forces annihilate the individual, oppositely, and neither is the good one. Full canon at `docs/world/COSMOLOGY.md`; the game never confirms it. See [[cosmology-source-void]]. Two terms were retired at the same time: *wayfinding* → **Threading**, *null-flux* → **Unheld**.
+
 ## The Six Cultures
 
 | Culture | Who | Voice pattern |
