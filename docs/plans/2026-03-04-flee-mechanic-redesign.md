@@ -1,6 +1,6 @@
 # Flee Mechanic Redesign
 **Date:** 2026-03-04
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Approved — Ready for Implementation"; check against `src/systems/` before treating as current)
+**Status:** Implemented (verified 2026-09-08) — `RULES.flee` is live in `src/core/rulesEngine.js` with the full designed block (`baseDC`, `dcPerExtraEnemy`, `dcCapMax`, `bossDCBonus`, `ambushDCBonus`, `opportunityAttacks`). Note the plan's `modifier: ['dex','wis']` now also has an NVSystem path via `derivedStatMap.flee` (`prowess`+`insight` blend).
 **Branch:** main-beta-quests
 
 ---

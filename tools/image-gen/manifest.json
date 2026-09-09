@@ -69,11 +69,6 @@
     "promptHash": "2ee0152a",
     "outputPath": "data/graphics/tundra_2026-08-09T21-36-31.png"
   },
-  "terrain/dungeonTrap": {
-    "generatedAt": "2026-05-27T22:14:33.654Z",
-    "promptHash": "dd817d06",
-    "outputPath": "data/graphics/dungeonTrap-mai-2.png"
-  },
   "terrain/shallowWater": {
     "generatedAt": "2026-08-10T14:41:09.833Z",
     "promptHash": "ee591457",
@@ -88,11 +83,6 @@
     "generatedAt": "2026-08-09T21:33:29.409Z",
     "promptHash": "2b8fb176",
     "outputPath": "data/graphics/plains_2026-08-09T21-32-46.png"
-  },
-  "terrain/dungeonBones": {
-    "generatedAt": "2026-05-27T22:20:44.657Z",
-    "promptHash": "95a4cee5",
-    "outputPath": "data/graphics/dungeonBones-mai-2.png"
   },
   "items/shortsword": {
     "generatedAt": "2026-06-10T17:37:13.784Z",
@@ -405,13 +395,13 @@
     "outputPath": "data/graphics/savanna_2026-08-10T19-00-15.png"
   },
   "terrain/temple": {
-    "generatedAt": "2026-08-15T00:31:29.567Z",
-    "promptHash": "3e0f31f9",
+    "generatedAt": "2026-09-08T19:39:50.513Z",
+    "promptHash": "b5e12c0d",
     "outputPath": "data/graphics/temple-cartographic-v1.png"
   },
   "terrain/monastery": {
-    "generatedAt": "2026-08-15T00:19:35.546Z",
-    "promptHash": "22e1abab",
+    "generatedAt": "2026-09-08T19:46:44.831Z",
+    "promptHash": "1bfc0a51",
     "outputPath": "data/graphics/monastery-cartographic-v1.png"
   },
   "terrain/camp": {
@@ -420,8 +410,8 @@
     "outputPath": "data/graphics/camp-cartographic-v1.png"
   },
   "terrain/watchtower": {
-    "generatedAt": "2026-08-15T00:22:46.622Z",
-    "promptHash": "a63d2fa8",
+    "generatedAt": "2026-09-08T19:42:20.010Z",
+    "promptHash": "5325b415",
     "outputPath": "data/graphics/watchtower-cartographic-v1.png"
   },
   "terrain/villa": {

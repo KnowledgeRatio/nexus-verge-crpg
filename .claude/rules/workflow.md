@@ -22,6 +22,25 @@ Every plan file starts with a `**Status:**` line using one of these values: `Pro
 
 **Update on contact.** If you read a plan file to inform a decision and find that the actual code has diverged from what it says, update that plan's status line and add a short note describing what actually happened, before using the plan or moving on. Do not leave a plan showing a stale status once you know it is wrong. Fix it at the moment you notice, not in a separate cleanup pass — a cleanup pass nobody is assigned to run will not happen.
 
+### Plan Ownership
+*Decided: 2026-09-09*
+
+**`product-owner` owns the plan library's lifecycle** — the same way it owns the backlog and the open-decision register.
+
+| PO owns | PO does not own |
+|---|---|
+| Status accuracy across every plan | **Plan content.** The design belongs to `game-designer`, `architect`, `worldbuilder` — whoever's domain it is |
+| The inventory: what exists, what's stale, what's dead | Authorship. Design Capture stays with whoever ran the conversation |
+| Pruning — moving a plan to `Abandoned` when it will not happen | Overriding a design ruling by restatusing a plan |
+| Linking plans ↔ issues ↔ `decision` issues | |
+| Enforcing the CHANGELOG entry when a plan reaches `Implemented` | |
+
+The split is the same one that governs issues: PO decides *whether and when*, the domain agent decides *what*. A PO restatusing a plan is recording what happened to it, never revising what it says.
+
+**"Update on contact" above stays everyone's duty.** Plan ownership adds a periodic sweep and someone accountable for the library as a whole — it does not license anyone to leave a stale status for the PO to find later. The hedge status `Approved (unverified)` is not a status; if a sweep cannot confirm a plan's state, it says so in the note and the plan gets tracked, not parked.
+
+**A sweep verifies against code, not against file existence.** A system's manager class existing proves nothing about whether a player can reach it — check for the actual player-facing entry point, and search the whole `src/` tree rather than one file.
+
 ## Calling Reference Docs
 *Decided: 2026-08-05*
 
@@ -34,6 +53,35 @@ One living reference doc per calling at `docs/callings/{calling}.md` (e.g. `docs
 **Structure:** Identity & Narrative (the fiction — what they are, why, tone) → Mechanical Identity Pillars (how the fiction translates to systems) → Progression table (implemented levels only) → Full ability roster (implemented abilities only, with data-file IDs) → Specializations (same structure, nested) → Known Implementation Gaps (places where the doc's own description reveals something documented elsewhere — like a rules file — isn't actually wired up in code; call these out rather than silently matching the aspirational description).
 
 Not auto-loaded into every session via `CLAUDE.md` — same as plans, read on demand when working on that calling, so unrelated conversations don't carry the weight of every calling's full narrative.
+
+## Decision Register
+*Decided: 2026-09-08*
+
+Decisions had eight homes and open decisions had none. Two ADRs contradicted each other on whether `5EClassic` retires, and it went unnoticed for five weeks because no surface lists unresolved questions. This splits the two by state.
+
+| State | Where it lives | Who moves it |
+|---|---|---|
+| **Open** — awaiting a ruling | GitHub issue, `decision` label | `product-owner` maintains the list; the Chief Designer rules |
+| **Closed** — ruled | An ADR in `architecture.md`, or the relevant `.claude/rules/*.md` file | The issue links to it and closes |
+
+**`product-owner` owns the open-decision register as a standing part of the role.** Not a task someone remembers to run — an open decision that isn't on GitHub with the `decision` label isn't tracked, and the register is expected to be current whenever roadmap state is reported.
+
+**What counts as an open decision:** a question where more than one answer is defensible and the choice changes what gets built. A `Proposed` plan awaiting a ruling, two rules files disagreeing, a `Next decision:` line in an issue body, an agent memory recording something as "proposed, not yet accepted." Not: implementation work with an obvious answer, or a decision already made that merely lacks documentation — that one is a doc fix.
+
+**Closing a decision amends the losing document in the same change.** The 5EClassic contradiction existed because a plan and an ADR both stood, each stating the opposite. If a ruling reverses something written down elsewhere, the reversal is recorded where the old statement lives — not only where the new one does.
+
+### Plan status vocabulary
+`Approved` and `Implemented` are different states and were being conflated — nine plans sat at `Approved` including ones that had shipped and ones that were never built.
+
+| Status | Means |
+|---|---|
+| `Proposed` | Written up, not ruled on. **Usually implies an open decision issue.** |
+| `Approved` | Decided, **not built** |
+| `Implemented` | Shipped and live in code/data |
+| `Superseded` | A later decision replaced it — name the replacement |
+| `Abandoned` | Ruled against or dropped |
+
+A plan reaching `Implemented` gets a `docs/CHANGELOG.md` entry in the same change. The attribute-system remap — the largest change in the project — shipped without one, which is how it stayed invisible.
 
 ## Agent Infrastructure
 

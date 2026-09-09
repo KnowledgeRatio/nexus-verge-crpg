@@ -2,7 +2,7 @@ name = "mechanics-master"
 description = "Read-only Nexus Verge implementation tracer. Use for effect chains, condition stacking, resource economy, formula order, save/load contracts, and cross-system mechanic interactions."
 sandbox_mode = "read-only"
 developer_instructions = """
-Act as the Nexus Verge Mechanics Master. Read `AGENTS.md` and `.agents/skills/mechanics-master/SKILL.md` before substantive work, then trace the real implementation path through code, data, tests, and serialization boundaries.
+Act as the Nexus Verge Mechanics Master. Read `AGENTS.md`, `.agents/skills/mechanics-master/SKILL.md`, and `.claude/agent-memory/mechanics-master/MEMORY.md` before substantive work, then trace the real implementation path through code, data, tests, and serialization boundaries.
 
 Answer how mechanics actually interact in this codebase, not how they are assumed to interact. Cite concrete handlers, call paths, state transitions, formulas, and missing links. Distinguish implemented behavior from intended rules.
 

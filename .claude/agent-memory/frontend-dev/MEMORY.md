@@ -6,6 +6,7 @@
 - [Canvas corner-badge overlay pattern](canvas_corner_badge_overlay_pattern.md) — reusable idiom for stacking independent tile-state indicators in MapRenderer.js corners
 - [POI reveal symmetric art fix](poi_reveal_symmetric_art_fix.md) — dungeon/sanctuary renderFeature() cases must resolve via feature.originalPoiType, never a generic icon
 - [Worldbuilder UI removed dead fixed-count fields](worldbuilder_ui_removed_dead_fixed_count_fields.md) — wbDungeons/wbSanctuaries deleted from index.html 2026-08-09; main.js refs were backend-dev's cleanup, not mine
+- [Avatars must read gender-neutral](project_avatar_gender_neutral_constraint.md) — CD constraint 2026-09-09; keeps the picker off large portrait art
 
 ## Key File Locations
 - `index.html` - all modals live inside the `#app` div, before the `<footer>` tag.

@@ -7,7 +7,6 @@
       "description": "You began training for war as soon as you reached adulthood and carry precious few memories of life before you took up arms. Battle is in your blood. Sometimes you catch yourself reflexively performing the basic fighting exercises you learned first. Eventually, you put that training to use on the battlefield, protecting the realm by waging war.",
       "abilityScoreIncreases": ["str", "dex", "con"],
       "abilityScoreIncreasesNVSystem": ["prowess", "insight", "vitality"],
-      "feat": "savageAttacker",
       "skillProficiencies": ["athletics", "influence"],
       "toolProficiencies": ["gamingSet"],
       "equipment": {
@@ -27,7 +26,6 @@
       "description": "You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. There you performed rites in honor of a god or pantheon. You served under a priest and studied religion, learning the ways of your faith.",
       "abilityScoreIncreases": ["int", "wis", "cha"],
       "abilityScoreIncreasesNVSystem": ["intellect", "composure", "presence"],
-      "feat": "magicInitiate",
       "skillProficiencies": ["empathy", "academia"],
       "toolProficiencies": [],
       "equipment": {
@@ -47,7 +45,6 @@
       "description": "You are an experienced criminal with a history of breaking the law. You have connections to the criminal underworld and a knack for staying out of trouble, or at least getting out of it when you're caught.",
       "abilityScoreIncreases": ["dex", "int", "cha"],
       "abilityScoreIncreasesNVSystem": ["insight", "intellect", "presence"],
-      "feat": "alert",
       "skillProficiencies": ["deception", "cunning"],
       "toolProficiencies": ["thievesTools"],
       "equipment": {
@@ -67,7 +64,6 @@
       "description": "You spent years learning the lore of the multiverse. You scoured manuscripts, studied scrolls, and listened to the greatest experts on the subjects that interest you. Your efforts have made you a master in your chosen fields.",
       "abilityScoreIncreases": ["int", "wis", "cha"],
       "abilityScoreIncreasesNVSystem": ["intellect", "composure", "presence"],
-      "feat": "skilled",
       "skillProficiencies": ["arcana", "academia"],
       "toolProficiencies": [],
       "equipment": {
@@ -87,7 +83,6 @@
       "description": "You come from humble origins, but you are destined for so much more. The people of your home village regard you as their champion, and your destiny calls you to stand against the tyrants and monsters that threaten the common folk.",
       "abilityScoreIncreases": ["str", "con", "wis"],
       "abilityScoreIncreasesNVSystem": ["prowess", "vitality", "composure"],
-      "feat": "tough",
       "skillProficiencies": ["empathy", "endurance"],
       "toolProficiencies": ["artisansTools"],
       "equipment": {

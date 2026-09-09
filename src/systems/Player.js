@@ -1508,7 +1508,7 @@ class Player {
             relevantChallenges.push('narrow_ledge');
         }
         if (features.some(f => f.includes('altar') || f.includes('religious') || f.includes('holy') || f.includes('ritual'))) {
-            relevantChallenges.push('holy_ritual');
+            relevantChallenges.push('votive_record');
         }
 
         // If no feature-specific match, fall back to room category defaults

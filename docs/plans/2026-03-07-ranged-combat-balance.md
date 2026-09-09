@@ -1,6 +1,6 @@
 # Ranged Combat Balance Plan
 **Date:** 2026-03-07
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Design approved, pending implementation"; check against `src/core/rulesEngine.js` and combat code before treating as current)
+**Status:** Implemented (verified 2026-09-08) — ammunition tracking (`ammoCount` / `ammoCapacity`, with low-ammo UI state) is live in `src/main.js`.
 **Authors:** Game Designer + Devil's Advocate review
 
 ---

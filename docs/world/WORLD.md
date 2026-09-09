@@ -71,14 +71,17 @@ The Source will feel benevolent to anyone living inside its consequences and the
 
 ## The Void
 
-The Void is a neighboring dimension — a true abyss of thermodynamic completion. Pure entropy. Absolute silence. Its boundary with Nexus Verge is slowly, unevenly, advancing.
+The Void is a neighboring construct. Absolute silence. Its boundary with Nexus Verge is slowly, unevenly, advancing.
 
 The Void does not approach like an army. It arrives. First birds stop. Then insects. Then wind. Then a region becomes absent — not dark, not dead. Just *not there*.
 
 ### What the Void Is Not
 - Not evil. Not malevolent. Not an invasion with intent.
 - Not darkness. Darkness is still something. The Void is the absence of something.
-- Not death. Death is biological. The Void is thermodynamic.
+- Not death. Death is a thing that lived, ending. The Void has no ending, because it has no beginning to end.
+
+### On "entropy"
+Calling the Void entropy, heat-death, or thermodynamic completion is the **Delhari** reading — the most respected wrong answer in the Verge, and wrong in a way that would take them a generation to notice. Entropy is a process that happens to things that exist. Write it as a theory a character holds, never as narration.
 
 ### Writing Rule
 Never describe the Void or Voidborn with emotional language. No rage, no hunger, no malice. They are weather. They are physics. The horror comes from their complete indifference — they don't know you exist, and that is what makes them unsurvivable.
@@ -103,12 +106,12 @@ See `docs/world/TECHNOLOGY.md` for the full framework and per-culture takes.
 
 Arrives from outside Nexus Verge or from within it — **player-defined**. No cultural background is assumed. The Calling carries the identity work.
 
-The Callings are not guilds or formal institutions. Nobody walks around calling themselves a Scholar. They describe what kind of person faces the end of the world in a particular way:
+The Callings are not guilds or formal institutions. Nobody walks around calling themselves a Curiosity. They describe what kind of person faces the end of the world in a particular way:
 
 | Calling | Philosophy | Resource |
 |---|---|---|
 | **Dedication** | Faces it by committing to something living. Strength as an expression of will. | Focus (CON-based, recharges on short rest) |
-| **Scholar** | Faces it by needing to understand it first. To know is to survive. | Mana (pool-based, recharges on long rest) |
-| **Wanderlust** | Faces it by refusing to be caught still. Freedom and cunning as philosophy. | Mana (pool-based, partial recharge available) |
+| **Curiosity** | Faces it by needing to understand it first. To know is to survive. | Mana (pool-based, recharges on long rest) |
+| **Audacity** | Faces it by refusing to be caught still. Freedom and cunning as philosophy. | Mana (pool-based, partial recharge available) |
 
 Specialisations at level 3 are refinements of this identity — not branches of a class tree. They emerge from experience.

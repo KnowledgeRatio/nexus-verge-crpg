@@ -39,7 +39,7 @@
       "sizeWeight": 0.7,
       "lootModifier": 1.2,
       "ambientDescription": "A chill wind carries the scent of decay...",
-      "skillChallenges": ["trap_detect_disarm", "ancient_text", "holy_ritual"],
+      "skillChallenges": ["trap_detect_disarm", "ancient_text", "votive_record"],
       "campaignIds": ["core"]
     },
     {
@@ -139,7 +139,7 @@
       "sizeWeight": 0.5,
       "lootModifier": 1.4,
       "ambientDescription": "Ancient prayers whisper through the halls...",
-      "skillChallenges": ["ancient_text", "holy_ritual", "arcane_puzzle"],
+      "skillChallenges": ["ancient_text", "votive_record", "arcane_puzzle"],
       "campaignIds": ["core"]
     },
     {

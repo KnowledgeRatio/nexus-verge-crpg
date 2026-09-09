@@ -1,6 +1,6 @@
 # Fatigue System Implementation Plan
 
-**Status:** Approved (unverified — flagged 2026-07-17; no status line existed before this pass; check whether a fatigue system exists in `src/systems/` before treating this as current)
+**Status:** Implemented (verified 2026-09-08) — `src/systems/FatigueManager.js` is live, with fatigue values in `src/core/rulesEngine.js` (including `makeCampFatigueRecovery` and supply-linked HP recovery).
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 

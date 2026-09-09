@@ -1,7 +1,7 @@
 # Biome & Terrain Generation Fixes
 
 **Date:** 2026-03-05
-**Status:** Approved (unverified — flagged 2026-07-17; check against current terrain generation code before treating as current)
+**Status:** Implemented (verified 2026-09-08) — `RULES.worldGen.biomeGeneration`, `latitudeInfluence`, `biomeNoise` and `waterGeneration.beaches` are all live in `src/core/rulesEngine.js`. Later terrain work is in `docs/plans/2026-08-09-terrain-atlas-overhaul.md`; read that for current tile/atlas behaviour.
 **Scope:** 3 targeted fixes (DA-approved, not a full rewrite)
 
 ---

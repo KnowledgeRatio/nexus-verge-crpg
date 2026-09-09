@@ -1,7 +1,7 @@
 # Party Member System — Technical Architecture
 
 **Date:** 2026-03-07
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Ready for Implementation"; the party system has since had further amendments in `docs/plans/2026-03-09-party-system-amendments.md` and ADR-012 in `.claude/rules/architecture.md` — check those first)
+**Status:** Implemented (verified 2026-09-08) — `src/systems/CompanionManager.js` is live, attaching `companionMeta` to `Character` instances and computing `getActiveSynergies()` on read, per this design. Authoritative record is **ADR-012** in `.claude/rules/architecture.md`; amendments in `docs/plans/2026-03-09-party-system-amendments.md`. Read ADR-012 first — it, not this file, states current constraints.
 **Design source:** `docs/designjams/2026-03-07-party-member-system.md`
 **ADR compliance:** ADR-000 Modifiability First — validated
 

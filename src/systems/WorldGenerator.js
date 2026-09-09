@@ -674,16 +674,19 @@ class WorldGenerator {
 
         // Check for points of interest
         if (rng.next() < 0.15) {
-            const location = rng.choice(tiles);
-            const poiTypes = ['shrine', 'ruins', 'cave', 'camp', 'landmark'];
+            const poiTypes = (this.poiData?.types ?? []).map(type => type.id);
 
-            features.push({
-                type: 'poi',
-                poiType: rng.choice(poiTypes),
-                x: location.x,
-                y: location.y,
-                discovered: false
-            });
+            if (poiTypes.length > 0) {
+                const location = rng.choice(tiles);
+
+                features.push({
+                    type: 'poi',
+                    poiType: rng.choice(poiTypes),
+                    x: location.x,
+                    y: location.y,
+                    discovered: false
+                });
+            }
         }
 
         return features;

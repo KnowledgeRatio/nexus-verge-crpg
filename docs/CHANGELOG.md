@@ -4,6 +4,25 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## Session 19a — 2026-07-31 to 2026-08-04 (backfilled 2026-09-08)
+**Six-attribute system remap (NVSystem)** — STR/DEX/CON/INT/WIS/CHA → Prowess/Vitality/Intellect/Insight/Presence/Composure. Plan: `docs/plans/2026-07-30-attribute-system-remap.md`. Forked behind `RULES.attributes.system` per ADR-015; **default flipped to `'NVSystem'` on 2026-08-03**.
+
+*Backfilled entry — this shipped without a changelog record, which is why the change was invisible in session history for five weeks. The rule requiring an entry when a plan reaches `Implemented` was added to `workflow.md` on 2026-09-08 as a result.*
+
+`src/utils/attributeResolver.js` is the single translation point (`getRawAttributeModifier`, `getAttributeModifierFor`, `getBlendedAttributeModifier`). `RULES.attributes.derivedStatMap` maps every derived stat to its attribute(s), `type: 'single'` or `type: 'blend'` — blends sum raw unfloored modifiers and floor once on the total, which is now a standing rule in `d5e-compliance.md`. Four blends live: concentration, flee, menacingAttackDC, challengeDC.
+
+Data converted to the dual-field pattern: all 46 monsters (`abilitiesNVSystem`), 5 races, 5 backgrounds, 3 classes, kits, and all 13 skills (`attributeNVSystem` + `descriptionNVSystem`). Chargen remapped to allocate natively into the six new attributes.
+
+Saves narrowed to the three Inward attributes (Vitality, Insight, Composure); Prowess-save and Intellect-save retired. One save proficiency per calling, not two. Only **Dedication** was remapped to an NVSystem identity (Prowess+Vitality) — Curiosity and Audacity have no NVSystem identity yet, and no `savingThrowProficienciesNVSystem` was invented for them (both legacy pairs included `int`, which has no valid target). Tracked as #14.
+
+ADR-015 ("Forking a Live System") and ADR-016 ("NVSystem Balance Baseline") were both established out of this work. ADR-011 save-file compatibility was **waived** on 2026-08-01 — old saves are not required to keep working, and `Character.fromJSON` upconversion was dropped.
+
+Gotchas recorded: a stray `git checkout` briefly reverted 19 monsters' ability blocks to `[]` — the incident behind `workflow.md`'s "Git Safety for Subagents" rule. Balance validation proved CR parity by construction across all 46 monsters rather than by sampling; two SRD deviations found (minotaur WIS 20 vs 16, hillGiant INT 3 vs 5), both CR-inert and left as-is.
+
+Epic #19 closed 2026-09-08. Step 13 (shim retirement, flag removal) was **not** done and is now superseded by ADR-016 — see #34.
+
+---
+
 ## Session 20 — 2026-08-14
 **Server-Held Saves (ADR-017)** — built behind `RULES.saves.backend`, default remains `'local'`.
 

@@ -1,6 +1,6 @@
 # Quest System — Implementation Plan
 **Date:** 2026-05-05  
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Ready for implementation"; CLAUDE.md's Current State lists "Quest system polish" as in progress, which suggests this was implemented and is now being refined — check `src/systems/QuestManager.js` before treating this plan as current)  
+**Status:** Implemented (verified 2026-09-08) — companion to `docs/plans/2026-05-03-quest-system-redesign.md`; `QuestManager.js` and `QuestGenerator.js` are live. Quest state lives in `gameState.quests.available` per `.claude/rules/data-integrity.md`.
 **Depends on:** `docs/plans/2026-05-03-quest-system-redesign.md` (locked decisions)  
 **Review chain:** game-designer → architect → devils-advocate → architect (pruning, pending)
 

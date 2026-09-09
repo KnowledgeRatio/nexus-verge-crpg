@@ -47,7 +47,7 @@
       "id": "campaign-stage-2",
       "stage": 2,
       "name": "The Ancient Blight",
-      "description": "Discover the source of the monster blight in the nearby ruins.",
+      "description": "Discover the cause of the monster blight in the nearby ruins.",
       "type": "campaign",
       "difficulty": "hard",
       "objectives": [
@@ -97,7 +97,7 @@
       "id": "campaign-stage-3",
       "stage": 3,
       "name": "The Enemy Stronghold",
-      "description": "Track the blight to its source - an enemy fortress.",
+      "description": "Track the blight to its origin - an enemy fortress.",
       "type": "campaign",
       "difficulty": "hard",
       "objectives": [
@@ -711,7 +711,7 @@
       "name": "Stop the {enemyType} Ritual at {dungeonName}",
       "type": "kill",
       "callingArchetype": "dedication",
-      "description": "A temple keeper says a ritual sacrifice is scheduled. The ritual leader must be stopped within three rooms. There is no time to loot.",
+      "description": "Word from the nearest settlement: a ritual sacrifice is scheduled. The ritual leader must be stopped within three rooms. There is no time to loot.",
       "objectives": [
         {
           "type": "kill",
@@ -743,7 +743,7 @@
         "targetSettlementFlag": "cursed",
         "settlementScope": "nearest"
       },
-      "questGiverRole": "temple_keeper",
+      "questGiverRole": "elder",
       "campaignIds": ["core"]
     },
     {
@@ -777,7 +777,7 @@
       "competingParty": false,
       "worldTag": null,
       "factionConsequence": null,
-      "questGiverRole": "noble",
+      "questGiverRole": "magistrate",
       "campaignIds": ["core"]
     },
     {
@@ -900,7 +900,7 @@
       "objectives": [
         {
           "type": "investigate",
-          "description": "Find the source of the disturbance in {dungeonName}",
+          "description": "Find the cause of the disturbance in {dungeonName}",
           "requirement": {
             "location": "{dungeonId}",
             "payoffRoom": 1,

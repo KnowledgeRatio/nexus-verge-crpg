@@ -24,7 +24,8 @@
 
 ## Project Context
 
-- [Attribute remap staging recommendation](project_attribute_remap_staging.md) — proposed (not yet accepted) milestone/flag/soak plan for the six-attribute system migration
+- [Attribute remap staging recommendation](project_attribute_remap_staging.md) — accepted and implemented milestone/flag/soak plan; M0–M2 shipped and `NVSystem` became the default on 2026-08-03
 - [Attribute remap deferred-item issues](project_attribute_remap_issues.md) — GitHub issues #13-#20 filed 2026-07-31 for every deferred item in the remap plan doc, with links
 - [Practices system rank-3 constraint](project_practices_system.md) — practices expanding beyond Forgecraft/Hearthcraft, rank 2 = second pick, rank 3 must be step-change not scale-up (issue #22)
+- [Decision register + plan ownership](project_decision_register.md) — PO owns open decisions (GitHub `decision` label) and the `docs/plans/` lifecycle; never leave a hedge status, verify against the player-facing entry point
 - [Sanctuary encounters backlog issue](project_sanctuary_encounters_issue.md) — issue #26, unscoped Later item spun off from the Unified POI System v1 design

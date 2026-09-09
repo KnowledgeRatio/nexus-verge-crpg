@@ -27,3 +27,6 @@
 ## Subsystem Direction
 
 - [Terrain atlas art direction](terrain_atlas_direction.md) — locked painted-overland-atlas cartography identity for the 42-terrain overworld art overhaul; sequencing and risk notes
+- [Player sprite direction](player_sprite_direction.md) — PROPOSED: "you are the hand still drawing the map"; 3 calling-derived traveller figures, 16px floor, alpha/downscale red lines
+- [Unisex player figure constraint](unisex_player_figure_constraint.md) — hard Chief Designer rule: every PC avatar reads gender-neutral; it's a silhouette constraint, not a costume note
+- [Portrait system direction](portrait_system_direction.md) — culture-keyed NPC portrait pool, why species is not an axis, frequency-weighted sizing, borne-not-inherited rule

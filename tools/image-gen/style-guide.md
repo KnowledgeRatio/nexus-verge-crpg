@@ -32,7 +32,7 @@ Legacy one-image-per-world-tile mode. Depict exactly one terrain material with a
 
 Riftborn material-impossibility accents are authored per entry, never added by default. Include one only when the tile's own description explicitly calls for it — then it is a single small detail, two incompatible physical properties visible in the same surface per the Item Icons riftborn-material convention, confined to one detail and not distributed across the composition. Otherwise the tile carries none: no crystal, gemstone, glassy mineral cluster, iridescent patch, or anomalous out-of-place object anywhere in the frame.
 
-The surrounding ground is uniform to every edge. No concentric contour rings, topographic contour lines, ripple bands, halo, vignette, or ring of differing colour encircling the structure, and no clearing or patch of altered ground around it.
+The ground around the structure is one single even painted field, carrying the same tone, the same texture, and the same mark density at the centre, at all four edges, and in all four corners alike. Its marks are scattered irregularly and point in no shared direction, the way an evenly washed flat surface reads. The structure simply sits on that field, and the field continues past it unchanged in every direction.
 
 ## Monster Art
 

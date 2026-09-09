@@ -18,7 +18,7 @@
       "id": "nexus-verge",
       "name": "Nexus Verge",
       "nativeName": "Aevorn",
-      "description": "A procedural D&D 5e roguelike set in Aevorn — a dimension where the edges of countless worlds have folded into one. Explore an infinite frontier, build your reputation across five distinct cultures, and confront the Void that is quietly erasing everything at the edges. You arrive the way most do — unexpectedly, and without a satisfying explanation.",
+      "description": "A procedural D&D 5e roguelike set in Aevorn — a dimension where the edges of countless worlds have folded into one. Explore an infinite frontier, build your reputation across six distinct cultures, and hold ground at the edges, where the Void's boundary keeps moving and some roads no longer lead anywhere. You arrive the way most do — unexpectedly, and without a satisfying explanation.",
       "isBase": false,
       "inherits": ["core"],
       "settings": {

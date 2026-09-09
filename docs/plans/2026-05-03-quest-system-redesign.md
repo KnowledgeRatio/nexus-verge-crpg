@@ -1,6 +1,6 @@
 # Quest System Redesign
 **Date:** 2026-05-03  
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Decisions locked — ready for implementation"; CLAUDE.md's Current State lists "Quest system polish" as in progress, which suggests this was implemented and is now being refined — check `src/systems/QuestManager.js` before treating this plan as current)  
+**Status:** Implemented (verified 2026-09-08) — `RULES.quests` is live; `dungeon.questBind`, `namedBossId` and `maxHookDistanceTiles` are implemented across `QuestGenerator.js` and `DungeonManager.js`. CLAUDE.md's "quest system polish" refers to refinement of this shipped system, not to building it.
 **Session:** Multi-agent review (game-designer, architect, devils-advocate)
 
 ---

@@ -15,14 +15,13 @@ This document defines the structure of all JSON data files used in the game.
 4. [Items](#items)
 5. [Monsters](#monsters)
 6. [Skills](#skills)
-7. [Feats](#feats)
-8. [Backgrounds](#backgrounds)
-9. [Terrains](#terrains)
-10. [Factions](#factions)
-11. [Quests](#quests)
-12. [Campaigns](#campaigns)
-13. [Names](#names)
-14. [Save Game State](#save-game-state)
+7. [Backgrounds](#backgrounds)
+8. [Terrains](#terrains)
+9. [Factions](#factions)
+10. [Quests](#quests)
+11. [Campaigns](#campaigns)
+12. [Names](#names)
+13. [Save Game State](#save-game-state)
 
 ---
 

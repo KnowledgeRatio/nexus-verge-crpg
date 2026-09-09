@@ -957,10 +957,10 @@
         "core"
       ]
     },
-    "holy_ritual": {
-      "id": "holy_ritual",
-      "name": "Perform Holy Ritual",
-      "description": "The sacred site calls for blessing",
+    "votive_record": {
+      "id": "votive_record",
+      "name": "Read the Votive Record",
+      "description": "Someone kept count here. The marks are still legible.",
       "type": "single",
       "skill": "academia",
       "baseDC": 14,
@@ -973,7 +973,7 @@
       },
       "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "onSuccess": {
-        "message": "You successfully perform the ritual. The area is blessed!",
+        "message": "You work out who left what, and when. The last mark is recent.",
         "xp": 150,
         "gold": 30,
         "loot": {
@@ -983,7 +983,7 @@
         }
       },
       "onFailure": {
-        "message": "The ritual fails to take effect."
+        "message": "The marks don't resolve into anything you can read."
       },
       "contextualTriggers": {
         "exploration": {
@@ -995,7 +995,7 @@
         "quest": {
           "objectiveType": [
             "ritual",
-            "religious"
+            "record"
           ]
         }
       },

@@ -1,6 +1,6 @@
 # Monster Stat Overhaul Implementation Plan
 
-**Status:** Approved (unverified — flagged 2026-07-17; no status line existed before this pass; this is a companion doc to `docs/plans/2026-03-11-monster-stat-overhaul.md`, check both together against `data/monsters.json` and the combat code)
+**Status:** Implemented (verified 2026-09-08) — see `docs/plans/2026-03-11-monster-stat-overhaul.md`. Monster stat blocks in `data/monsters.json` have since also been dual-keyed for NVSystem (`abilitiesNVSystem`, all 46 populated) by the attribute remap.
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 

@@ -3,6 +3,7 @@
 ## Tone Rulings
 
 - [Visual tone and art direction](tone_visual_style.md) — Desaturated earth tones, desperate-wonder mood (not grim-hopeful), worn equipment, culture-based portrait backgrounds, per-asset lighting rules
+- [NPC portrait culture markers](portrait_culture_markers.md) — Borne-not-inherited rule (no culture identified by birth features); portraits key to culture NOT species; per-culture bust markers; role tiers; expression range
 - [Riftborn materials visual language](riftborn_materials.md) — Six canonical substances (Vethsteel, Meridian Amber, Splitstone, Thrennwood, Coldcast Bronze, Weftglass); render as impossible physical facts, not as glow/distortion
 
 ## Race Descriptions

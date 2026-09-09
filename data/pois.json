@@ -64,7 +64,7 @@
         "cult": 0.30,
         "warren": 0.30
       },
-      "sanctuaryFlavor": "reclaimed shrine",
+      "sanctuaryFlavor": "reclaimed shelter",
       "sanctuaryNaming": {
         "namePatterns": [
           "The {adjective} {noun}",
@@ -73,14 +73,14 @@
           "{concept}'s {noun}"
         ],
         "adjectives": ["Reclaimed", "Restored", "Mended", "Sheltering", "Ivy-Grown", "Quiet"],
-        "nouns": ["Shrine", "Sanctum", "Hollow", "Refuge", "Chapel"],
-        "concepts": ["What Remains", "Old Stones", "Second Chances", "Forgotten Grace"]
+        "nouns": ["Refuge", "Hollow", "Undercroft", "Shelter", "Lee"],
+        "concepts": ["What Remains", "Old Stones", "Second Chances", "Better Masons"]
       },
       "campaignIds": ["core"]
     },
     {
       "id": "temple",
-      "name": "Temple",
+      "name": "Shrine",
       "biomeEligibility": ["grassland", "plains", "forest", "jungle", "hills"],
       "generationShare": 0.14,
       "dungeonWeightModifier": -0.20,
@@ -89,7 +89,7 @@
         "tomb": 0.30,
         "fey_grove": 0.30
       },
-      "sanctuaryFlavor": "working shrine",
+      "sanctuaryFlavor": "tended shrine",
       "sanctuaryNaming": {
         "namePatterns": [
           "The {adjective} {noun}",
@@ -97,15 +97,15 @@
           "The {adjective} {noun} of {concept}",
           "{concept}'s {noun}"
         ],
-        "adjectives": ["Blessed", "Tended", "Devoted", "Peaceful", "Sacred", "Faithful"],
-        "nouns": ["Shrine", "Temple", "Chapel", "Sanctuary", "Altar"],
-        "concepts": ["the Faithful", "Quiet Devotion", "the Everflame", "Gentle Grace"]
+        "adjectives": ["Tended", "Peaceful", "Quiet", "Weathered", "Kept", "Wayside"],
+        "nouns": ["Shrine", "Waystone", "Marker", "Altar", "Rest"],
+        "concepts": ["What Was Left", "Small Offerings", "the Departed", "Quiet Keeping"]
       },
       "campaignIds": ["core"]
     },
     {
       "id": "monastery",
-      "name": "Monastery",
+      "name": "Cloister",
       "biomeEligibility": ["hills", "mountain", "tundra", "snowyPlains"],
       "generationShare": 0.10,
       "dungeonWeightModifier": -0.35,
@@ -114,7 +114,7 @@
         "tomb": 0.35,
         "frost_hold": 0.30
       },
-      "sanctuaryFlavor": "quiet retreat",
+      "sanctuaryFlavor": "working cloister",
       "sanctuaryNaming": {
         "namePatterns": [
           "The {adjective} {noun}",
@@ -124,7 +124,7 @@
         ],
         "adjectives": ["Silent", "Contemplative", "Ascetic", "Serene", "Cloistered", "Still"],
         "nouns": ["Retreat", "Cloister", "Hermitage", "Sanctum", "Refuge"],
-        "concepts": ["Quiet Discipline", "the Silent Order", "Still Mind", "Inner Peace"]
+        "concepts": ["Quiet Discipline", "Long Practice", "Still Mind", "Inner Peace"]
       },
       "campaignIds": ["core"]
     },
@@ -148,8 +148,8 @@
           "The {adjective} {noun} of {concept}",
           "{concept}'s {noun}"
         ],
-        "adjectives": ["Garrisoned", "Watchful", "Steady", "Fortified", "Manned", "Vigilant"],
-        "nouns": ["Post", "Watch", "Garrison", "Outpost", "Bastion"],
+        "adjectives": ["Garrisoned", "Watchful", "Steady", "Fortified", "Watched", "Kept", "Vigilant"],
+        "nouns": ["Post", "Watch", "Garrison", "Outpost", "Bastion", "Lookout", "Beacon", "Highpost"],
         "concepts": ["the Steady Watch", "Safe Passage", "the Long Vigil", "Guarded Roads"]
       },
       "campaignIds": ["core"]
@@ -165,7 +165,7 @@
         "cult": 0.35,
         "warren": 0.25
       },
-      "sanctuaryFlavor": "noble estate",
+      "sanctuaryFlavor": "country estate",
       "sanctuaryNaming": {
         "namePatterns": [
           "The {adjective} {noun}",
@@ -173,9 +173,9 @@
           "The {adjective} {noun} of {concept}",
           "{concept}'s {noun}"
         ],
-        "adjectives": ["Gracious", "Sheltering", "Genteel", "Welcoming", "Noble", "Quiet"],
+        "adjectives": ["Gracious", "Sheltering", "Well-Kept", "Welcoming", "Walled", "Quiet"],
         "nouns": ["Estate", "Villa", "Manor", "Retreat", "Household"],
-        "concepts": ["Hospitality", "Old Wealth", "Quiet Comfort", "Gracious Hosts"]
+        "concepts": ["Hospitality", "Long Tenancy", "Quiet Comfort", "Gracious Hosts"]
       },
       "campaignIds": ["core"]
     }

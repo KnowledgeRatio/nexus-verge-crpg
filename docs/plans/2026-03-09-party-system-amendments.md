@@ -1,7 +1,7 @@
 # Party Member System — Approved Amendments
 **Date:** 2026-03-09
 **Amends:** `docs/designjams/2026-03-07-party-member-system.md` + `docs/plans/2026-03-07-party-member-architecture.md`
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "All decisions locked. Ready for implementation."; check against ADR-012 in `.claude/rules/architecture.md`, which documents the party system as locked — confirm this file's decisions match)
+**Status:** Implemented (verified 2026-09-08) — amendments are reflected in **ADR-012** (`.claude/rules/architecture.md`) and implemented in `src/systems/CompanionManager.js`. ADR-012 is authoritative for current party constraints, not this file.
 
 ---
 

@@ -2,9 +2,9 @@
 **Branch:** `main-beta-quests` | **Phase:** 3 — Combat & Abilities
 
 ## Current State
-- **Last session:** Server-held saves (ADR-017) — built behind `RULES.saves.backend`, default still `'local'`
+- **Last session:** Backlog + decision register — plan statuses swept, epic #19 closed, open decisions now tracked as `decision`-labelled GitHub issues
 - **In progress:** Quest system polish; cloud saves awaiting Azure storage account + playtest before flag flip
-- **Next up:** Party system implementation (design locked, see plan below)
+- **Next up:** 5 open decisions blocking work — see GitHub `decision` label (#35 run structure is the widest-reaching)
 
 ## Docs
 - Architecture & ADR log: [`.claude/rules/architecture.md`](.claude/rules/architecture.md)

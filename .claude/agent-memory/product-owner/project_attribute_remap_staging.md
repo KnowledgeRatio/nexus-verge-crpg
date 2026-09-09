@@ -1,6 +1,6 @@
 ---
 name: project-attribute-remap-staging
-description: PO staging/rollout recommendation for the six-attribute system remap (docs/plans/2026-07-30-attribute-system-remap.md) — not yet accepted or implemented
+description: PO staging/rollout recommendation for the six-attribute system remap — ACCEPTED and fully implemented; M0-M2 shipped, flag flipped to NVSystem 2026-08-03
 metadata:
   type: project
 ---
@@ -15,4 +15,10 @@ On 2026-07-31, delivered a staging recommendation for `docs/plans/2026-07-30-att
 - Explicit cuts: backgrounds Acolyte/Sage pick-list stays deferred to the already-flagged standalone backgrounds rework, not spot-fixed here; Composure-funding-for-future-caster and spell-attack/DC mapping stay Not Planned until Scholar/Wanderlust are actually scheduled (doc already scopes this correctly — didn't need cutting, just confirmed as Not Planned rather than a "later" IOU).
 - Clarified for the design lead: "skill remap" isn't separable from "attribute rename" (skills.json can't reference attributes that don't exist yet) — the real separable slice is the resolver/plumbing pass vs. the actual formula-value flip.
 
-**Why this matters going forward:** if/when this plan moves from Proposed to Approved, check whether the user accepted this milestone structure or specified a different one before assuming M0/M1/M2 staging is the agreed plan. This memory records what was *proposed*, not a decision.
+**OUTCOME (recorded 2026-09-08): the recommendation was accepted and executed essentially as proposed.** The M0/M1/M1.5/M2 milestone structure became the real execution order. Flag names landed as `'5EClassic' | 'NVSystem'` rather than the proposed `'legacy' | 'sixAttribute'`. Default flipped to `'NVSystem'` on 2026-08-03. Verified 2026-09-08 against code and data: resolver + `data/attributes.json` + `derivedStatMap` live, all 46 monsters and all races/classes/backgrounds/kits carry NVSystem fields, chargen remapped, 579 tests green.
+
+Two proposals did **not** survive:
+- **ADR-011 save-file compatibility was waived** (2026-08-01) — `Character.fromJSON` upconversion was dropped, old saves are not required to keep working. The staging case rested partly on save-file risk; that risk was ruled acceptable instead of mitigated.
+- **Shim/flag retirement never happened, and is now rejected outright.** ADR-016 and `d5e-compliance.md` make `5EClassic` a permanent parallel system, reversing the plan's own 2026-08-01 "disposable scaffolding" call. Consequence: ADR-015's dual-field authoring pattern has no end date, so every new data entry is authored in both shapes indefinitely. See [[project_attribute_remap_dual_field_tax]].
+
+GitHub epic #19 closed 2026-09-08 on this evidence.

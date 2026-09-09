@@ -1,6 +1,8 @@
 # Attribute System Remap — STR/DEX/CON/INT/WIS/CHA → Six-Attribute System
 **Date:** 2026-07-30
-**Status:** Approved (2026-07-31) — design lead signed off on the split-ratio decision and the Architecture/Execution Order rewrite, the last two items pending explicit approval. Kickoff gated on `product-owner`'s roadmap/GitHub-issues task (deferred items) completing.
+**Status:** Implemented (status set 2026-09-08) — M0 through M2 shipped. Default flag flipped to `'NVSystem'` on 2026-08-03 (M1.5). Balance validation signed off ("safe to ship") on 2026-08-01.
+
+**One step of this plan did not happen, and will not happen as written:** step 13, "shim retirement, flag removal." The 2026-08-01 decision recorded below — that `5EClassic` is "disposable scaffolding" to be "fully retired" — was **superseded** by ADR-016 and `.claude/rules/d5e-compliance.md`, which now hold that the two attribute systems "exist side by side... not a one-time migration" and that `5EClassic` is "deliberately kept live as a rollback path, not dead code to delete." Where this plan and those rules files disagree, the rules files are authoritative. Read step 13 below as history, not as outstanding work.
 **Branch:** main-beta-quests
 
 **Terminology note (2026-08-03):** the flag values documented throughout this plan as `'legacy'` and `'sixAttribute'` were renamed to `'5EClassic'` and `'NVSystem'` respectively, and the M2-era `XSixAttribute` data-field suffix convention was renamed to `XNVSystem` — a pure rename, no behavior change. This doc has been updated to use the current names throughout.
@@ -346,7 +348,7 @@ Cross-file rename risk: old 2-3 letter ability codes (`str`, `dex`, `con`, `int`
 
 ## Recommended execution order — revised 2026-08-01 (product-owner + backend-dev + architect review, 5EClassic-fidelity requirement relaxed by design lead)
 
-Status: **in progress**, kicked off 2026-07-31. Milestone-staged (`RULES.attributes.system = '5EClassic' | 'NVSystem'`).
+Status: **complete** — kicked off 2026-07-31, M1.5 flag flip landed 2026-08-03, M2 content conversion and balance validation closed out 2026-08-01. Milestone-staged (`RULES.attributes.system = '5EClassic' | 'NVSystem'`). Step 13 superseded — see the Status block at the top of this file.
 
 **5EClassic-mode fidelity is not required step-by-step — DECIDED (2026-08-01).** The original soak-tested-rollout framing (below, for history) assumed legacy behavior needed to stay byte-identical at every intermediate stage, with 5EClassic kept live as a long-term rollback path. Design lead's call: 5EClassic mode is disposable scaffolding on the way to full replacement, not something to preserve indefinitely — it's fine for 5EClassic-mode behavior to be imperfect mid-migration (e.g. saving throws not perfectly matching today's 6-save system while M1 is in progress) as long as the plan ends with 5EClassic fully retired (M2's shim/flag removal already covers this). Verification happens once, at the end of the full plan — not gated at every step. Agents should still keep the test suite passing for basic hygiene (no crashes, no regressions in what's actually being built), just not treat "matches old 5EClassic output precisely" as a hard gate on unrelated-in-progress work.
 

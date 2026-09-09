@@ -1,6 +1,6 @@
 # Monster Stat Overhaul — Calculated Attacks & Proper HP
 **Date:** 2026-03-11
-**Status:** Approved (unverified — flagged 2026-07-17, original text was "Design locked, ready for implementation"; companion doc `docs/plans/2026-03-11-monster-stat-overhaul-impl.md` may show this as already done — check both together)
+**Status:** Implemented (verified 2026-09-08) — `RULES.combat.monsterProficiencyByCR` and `RULES.monsterHP` are live in `src/core/rulesEngine.js`. Companion doc: `docs/plans/2026-03-11-monster-stat-overhaul-impl.md`.
 
 ---
 

@@ -1,6 +1,6 @@
 # Generic Ability/Effect Schema
 
-**Status:** Proposed — 2026-08-06
+**Status:** Proposed — 2026-08-06 Awaiting ruling: **GitHub #37** (open-decision register).
 
 An ADR-015 fork design for making `abilities.json` maximally composable — new abilities (including future Scholar/Wanderlust spells) authorable as JSON declaring a resource, trigger, damage formula, save/DC, target scope, and a list of effects, instead of each new shape needing its own named handler in `EffectDispatcher.js`. See `.claude/agent-memory/architect/effect_architecture_ceiling_2026-08.md` for the full evidence trail this proposal builds on.
 

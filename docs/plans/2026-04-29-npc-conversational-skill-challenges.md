@@ -1,6 +1,6 @@
 # NPC Conversational Skill Challenges — Implementation Plan
 
-**Status:** Implemented (unverified in detail — flagged 2026-07-17; CLAUDE.md's Current State lists "NPC conversational skill challenges" as the last completed session, so this is very likely done — confirm against `src/systems/` before relying on specific details in this plan)
+**Status:** Implemented (verified 2026-09-09) — every signature element is live: `SkillChallengeManager.canAttemptChallenge()`/`applyConsequences()`, `RelationManager.applyRelationEvent()` wired through `src/ui/SettlementUI.js`, `atmosphereRead` in `data/relations.json`, and challenge definitions such as `appraise_goods` in `data/skillChallenges.json`.
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 

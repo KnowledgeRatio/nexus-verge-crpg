@@ -35,7 +35,7 @@
 - Attribute identity post-remap (see [[project_attribute_system_proposal]]): Dedication=Prowess+Vitality (only calling live/in-scope for the remap). Scholar/Wanderlust's old STR+CON/DEX+CHA-style two-stat identities are not yet redesigned under the new six-attribute system — don't assume a mapping for them until that work happens.
 
 ### Core Architecture
-- 3 Callings: Dedication (d10, martial), Scholar (d6, caster), Wanderlust (d8, hybrid)
+- 3 Callings: Dedication (d10, martial), **Curiosity** (d6, caster), **Audacity** (d8, hybrid). Renamed from Scholar/Wanderlust in commit 5d75d81 — older notes in this file still say the old names.
 - Level 10 capstone, 13-skill system, non-grid combat
 - Specializations branch at level 3 (Dedication: Exemplar/Oath)
 - RULES object in rulesEngine.js is single source of truth for all balance values (ADR-000)
@@ -57,7 +57,11 @@
 ## Open Proposals
 - ~~Attribute system replacement~~ — **no longer a proposal.** Approved 2026-07-31, default flipped to live (`NVSystem`) 2026-08-03 ahead of the original M1.5 playtest gate (playtest still expected to run, just after the flip). Saving-throw gap resolved: saves live only on the three Inward attributes (Vitality/Insight/Composure); Presence has no save, by design, consistently with Prowess/Intellect. See [[project_attribute_system_proposal]] for the full decision trail — that file's own header still says "Proposed," which is now stale too.
 
+## Memory Files
+- [Source/Void mechanics](project_source_void_mechanics.md) — no-bonus-damage rule, Hold/Slip, voidwoven rework, Curiosity information-cost constraint
+- [Combat engine constraints](project_combat_engine_constraints.md) — inert resistance pipeline, unscanned artifact/helmet slots, stat axes fatigue already owns
+
 ## User Preferences
 - Brevity preferred: tables over prose, "super brief" responses
-- Design docs go to docs/designjams/ (not docs/plans/ - that dir doesn't exist)
+- Design docs go to `docs/plans/YYYY-MM-DD-topic.md` — that dir **does** exist (earlier note claiming otherwise was wrong; corrected 2026-09-08). Older docs live in `docs/designjams/`. Every plan needs a `**Status:**` line.
 - Capture design sessions into dated markdown files
