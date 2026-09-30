@@ -1,0 +1,15 @@
+{
+  "goblin": { "source": "data/graphics/combat/goblin-v1.glb" },
+  "skeleton": { "source": "data/graphics/combat/skeleton-v1.glb" },
+  "wight": { "source": "data/graphics/combat/wight-v1.glb" },
+  "zombie": { "source": "data/graphics/combat/zombie-v1.glb" },
+  "kobold": {
+    "source": "data/graphics/combat/kobold-v1.glb",
+    "tail": { "node": "KoboldTail", "sway": 0.1, "clearance": 0.075, "droop": 0.65 }
+  },
+  "medusa": {
+    "source": "data/graphics/combat/medusa-v1.glb",
+    "torsoPitch": 1,
+    "morphNodes": ["Serpent1", "Serpent2", "Serpent3", "Serpent4", "Serpent5", "Serpent6", "Serpent7", "Serpent8", "Serpent9"]
+  }
+}

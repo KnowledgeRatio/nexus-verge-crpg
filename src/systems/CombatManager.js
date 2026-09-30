@@ -76,7 +76,10 @@ function applyDamage(target, amount, damageType, isMagical = false) {
 }
 
 class CombatManager {
-    constructor() {
+    constructor({ beforeEnemyTurn = null, afterAction = null, audio = audioManager } = {}) {
+        this.audio = audio;
+        this.beforeEnemyTurn = beforeEnemyTurn;
+        this.afterAction = afterAction;
         this.active = false;
         this.combatants = [];
         this.turnOrder = [];
@@ -258,7 +261,7 @@ class CombatManager {
             if (b.initiative !== a.initiative) {
                 return b.initiative - a.initiative;
             }
-            // Tiebreaker: higher DEX wins
+            // Tiebreaker: higher initiative attribute wins (Intuition in NVSystem).
             return getAttributeModifierFor(b.character, 'initiative') - getAttributeModifierFor(a.character, 'initiative');
         });
 
@@ -306,10 +309,13 @@ class CombatManager {
                     `${condition.icon || '💢'} ${combatant.name} takes ${condition.value} ${dmgType} damage (${condition.type})`,
                     'warning'
                 );
-                gameState.notify('combat.floatingText', { combatantId: combatant.id, text: `-${condition.value}`, type: 'damage' });
+                gameState.notify('combat.floatingText', {
+                    sourceId: condition.appliedBy || combatant.id,
+                    combatantId: combatant.id, text: `-${condition.value}`, type: 'damage'
+                });
                 if (combatant.hp <= 0) {
                     gameState.addMessage(`💀 ${combatant.name} is defeated!`, 'warning');
-                    setTimeout(() => audioManager.play('death'), 1000);
+                    setTimeout(() => this.playDefeatSound(combatant), 1000);
                     this.handleDefeat(combatant);
                     return;
                 }
@@ -375,6 +381,12 @@ class CombatManager {
      * Execute enemy AI turn — uses monster actions if available, falls back to generic attack
      */
     async executeEnemyAI(combatant) {
+        if (this.beforeEnemyTurn) {
+            await this.beforeEnemyTurn();
+        }
+        if (!this.active || this.getCurrentCombatant() !== combatant || combatant.hp <= 0) {
+            return;
+        }
         console.log(`⚔️ AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is acting...`, 'info');
 
@@ -605,6 +617,10 @@ class CombatManager {
      * Execute a single monster attack action using stat-block data
      */
     async executeMonsterAttack(combatant, target, action) {
+        return this.presentResolvedAction(() => this.resolveMonsterAttack(combatant, target, action));
+    }
+
+    async resolveMonsterAttack(combatant, target, action) {
         const actionName = action.name || 'Attack';
         gameState.addMessage(`${combatant.name} uses ${actionName}!`, 'warning');
 
@@ -615,6 +631,21 @@ class CombatManager {
             gameState.addMessage(`💨 ${combatant.name} is pushed away! Cannot make melee attacks!`, 'error');
             return;
         }
+
+        gameState.notify('combat.presentationAction', {
+            sourceId: combatant.id, targetId: target.id, kind: isMeleeAction ? 'melee' : 'ranged',
+            actionName,
+            ...(action.weaponId ? { weaponId: action.weaponId } : {})
+        });
+        const soundContext = {
+            weaponId: action.weaponId,
+            weaponType: isMeleeAction ? 'melee' : 'ranged',
+            releasePlayed: true,
+            attackKind: action.type,
+            damageType: action.damageType,
+            defenderArmorId: target.character.equipment?.armor?.id
+        };
+        this.audio.playCombatRelease?.(soundContext);
 
         // Attack roll: derive bonus from monster stats + proficiency
         const attackStats = this.calculateMonsterAttackStats(combatant, action);
@@ -691,22 +722,15 @@ class CombatManager {
 
         gameState.addMessage(`🎲 ${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
 
-        // MELEE ENGAGEMENT: attacker switches focus — clear previous engagements, form new one with target
+        // Melee adds a reciprocal engagement; changing targets does not release existing opponents.
         if (isMeleeAction) {
-            combatant.engagedWith.forEach(oldId => {
-                const old = this.combatants.find(c => c.id === oldId);
-                if (old) {
-                    old.engagedWith.delete(combatant.id);
-                }
-            });
-            combatant.engagedWith.clear();
             combatant.engagedWith.add(target.id);
             target.engagedWith.add(combatant.id);
         }
 
         if (isCriticalMiss) {
             gameState.addMessage('❌ Critical miss!', 'info');
-            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
+            this.audio.playCombatSound({ ...soundContext, hit: false, critical: true });
             gameState.notify('combat.floatingText', { combatantId: target.id, text: 'MISS', type: 'miss' });
             // Clear sapped condition after attacking (even on a critical miss)
             if (combatant.hasCondition && combatant.hasCondition('sapped')) {
@@ -754,7 +778,7 @@ class CombatManager {
 
             gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
 
-            audioManager.playCombatSound({ weaponType: 'melee', hit: true, critical: isCritical });
+            this.audio.playCombatSound({ ...soundContext, hit: true, critical: isCritical });
             applyDamage(target, damageTotal, damageType);
             this.updateGameState();
 
@@ -762,7 +786,7 @@ class CombatManager {
             if (target.hp <= 0) {
                 gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
                 setTimeout(() => {
-                    audioManager.play('death');
+                    this.playDefeatSound(target);
                 }, 1000);
                 this.handleDefeat(target);
             }
@@ -773,7 +797,7 @@ class CombatManager {
             }
         } else {
             gameState.addMessage(`❌ ${combatant.name} misses!`, 'info');
-            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
+            this.audio.playCombatSound({ ...soundContext, hit: false, critical: false });
             gameState.notify('combat.floatingText', { combatantId: target.id, text: 'MISS', type: 'miss' });
             // Clear sapped condition after attacking (even on a miss)
             if (combatant.hasCondition && combatant.hasCondition('sapped')) {
@@ -788,6 +812,10 @@ class CombatManager {
     async executeSpecialMonsterAction(combatant, target, action) {
         const actionName = action.name || 'Special Attack';
         gameState.addMessage(`🔥 ${combatant.name} uses ${actionName}!`, 'warning');
+
+        gameState.notify('combat.presentationAction', {
+            sourceId: combatant.id, targetId: target.id, kind: 'spell', actionName
+        });
 
         // Parse save DC from description or use default
         let saveDC = 13;
@@ -876,7 +904,7 @@ class CombatManager {
 
         gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: saved ? 'damage' : 'critical' });
 
-        audioManager.playCombatSound({ weaponType: 'ranged', hit: true, critical: !saved });
+        this.audio.playCombatSound({ weaponType: 'ranged', hit: true, critical: !saved });
         applyDamage(target, damageTotal, damageType);
         this.updateGameState();
 
@@ -884,7 +912,7 @@ class CombatManager {
         if (target.hp <= 0) {
             gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
             setTimeout(() => {
-                audioManager.play('death');
+                this.playDefeatSound(target);
             }, 1000);
             this.handleDefeat(target);
         }
@@ -897,7 +925,25 @@ class CombatManager {
      * @param {String} weaponSlot - 'mainHand' or 'offHand' (defaults to mainHand for backward compatibility)
      * @param {Object} options - { isCleaveAttack: boolean, consumeAction: boolean }
      */
+    async presentResolvedAction(resolve) {
+        try {
+            return await resolve();
+        } finally {
+            if (this.afterAction) {
+                try {
+                    await this.afterAction();
+                } catch (error) {
+                    console.warn('Combat presentation failed after resolving an action:', error);
+                }
+            }
+        }
+    }
+
     async attack(attacker, defender, weaponSlot = 'mainHand', options = {}) {
+        return this.presentResolvedAction(() => this.resolveAttack(attacker, defender, weaponSlot, options));
+    }
+
+    async resolveAttack(attacker, defender, weaponSlot = 'mainHand', options = {}) {
         // Handle backward compatibility: if weaponSlot is an object, it's actually options
         if (typeof weaponSlot === 'object') {
             options = weaponSlot;
@@ -946,6 +992,19 @@ class CombatManager {
             gameState.addMessage(`💨 ${attacker.name} is pushed away! Cannot make melee attacks! Use ranged weapons, spells, or abilities instead!`, 'error');
             return;
         }
+
+        gameState.notify('combat.presentationAction', {
+            sourceId: attacker.id, targetId: defender.id, kind: isRanged ? 'ranged' : 'melee',
+            weaponSlot,
+            ...(weapon?.id ? { weaponId: weapon.id } : {})
+        });
+        const soundContext = {
+            weaponId: weapon?.id,
+            weaponType: isRanged ? 'ranged' : 'melee',
+            releasePlayed: true,
+            defenderArmorId: defender.character.equipment?.armor?.id
+        };
+        this.audio.playCombatRelease?.(soundContext);
 
         const handLabel = isOffHandAttack ? ' (off-hand)' : '';
         gameState.addMessage(`${attacker.name} attacks ${defender.name}${handLabel}!`, 'warning');
@@ -1189,15 +1248,8 @@ class CombatManager {
 
         gameState.addMessage(attackMsg, 'info');
 
-        // MELEE ENGAGEMENT: attacker switches focus — clear previous engagements, form new one with target
+        // Melee adds a reciprocal engagement; changing targets does not release existing opponents.
         if (!isRanged) {
-            attacker.engagedWith.forEach(oldId => {
-                const old = this.combatants.find(c => c.id === oldId);
-                if (old) {
-                    old.engagedWith.delete(attacker.id);
-                }
-            });
-            attacker.engagedWith.clear();
             attacker.engagedWith.add(defender.id);
             defender.engagedWith.add(attacker.id);
         }
@@ -1208,8 +1260,8 @@ class CombatManager {
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'CRITICAL MISS!', type: 'miss' });
 
             // Play miss sound (critical miss uses same sound)
-            audioManager.playCombatSound({
-                weaponType: isRanged ? 'ranged' : 'melee',
+            this.audio.playCombatSound({
+                ...soundContext,
                 hit: false,
                 critical: true
             });
@@ -1329,16 +1381,10 @@ class CombatManager {
 
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
 
-            // Play hit sound
-            audioManager.playCombatSound({
-                weaponType: isRanged ? 'ranged' : 'melee',
-                hit: true,
-                critical: isCritical
-            });
-
             // REACTION HOOK: afterHit — e.g., Parry fires when defender is hit (damage already rolled)
             // Parry can reduce damage before it's applied
             let finalDamage = damageTotal;
+            let parried = false;
             if (!isRanged && window.game?.promptReaction) {
                 const reactionResult = await window.game.promptReaction('afterHit', attacker, defender, {
                     damage: damageTotal,
@@ -1347,10 +1393,14 @@ class CombatManager {
                 });
                 // If Parry was used: reduce damage by maneuver die + CON mod (handled by caller returning reduction)
                 if (reactionResult?.damageReduction) {
+                    parried = true;
                     finalDamage = Math.max(0, damageTotal - reactionResult.damageReduction);
                     gameState.addMessage(`🛡️ Parry! ${defender.name} reduces damage by ${reactionResult.damageReduction}! (${finalDamage} total)`, 'success');
                 }
             }
+
+            this.audio.playCombatSound({ ...soundContext, hit: true, critical: isCritical,
+                blocked: parried && finalDamage === 0 });
 
             // Apply damage (routes through resistance/vulnerability/immunity if system is enabled)
             const weaponDamageType = getWeaponDamageType(weapon) || 'bone';
@@ -1395,7 +1445,7 @@ class CombatManager {
 
                 // Play death sound 1 second after damage sound
                 setTimeout(() => {
-                    audioManager.play('death');
+                    this.playDefeatSound(defender);
                 }, 1000);
 
                 this.handleDefeat(defender);
@@ -1512,7 +1562,7 @@ class CombatManager {
 
                             // Play death sound 1 second after damage sound
                             setTimeout(() => {
-                                audioManager.play('death');
+                                this.playDefeatSound(adjacentEnemy);
                             }, 1000);
 
                             this.handleDefeat(adjacentEnemy);
@@ -1580,7 +1630,7 @@ class CombatManager {
 
                             // Play death sound 1 second after damage sound
                             setTimeout(() => {
-                                audioManager.play('death');
+                                this.playDefeatSound(defender);
                             }, 1000);
 
                             this.handleDefeat(defender);
@@ -1598,8 +1648,8 @@ class CombatManager {
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'MISS', type: 'miss' });
 
             // Play miss sound
-            audioManager.playCombatSound({
-                weaponType: isRanged ? 'ranged' : 'melee',
+            this.audio.playCombatSound({
+                ...soundContext,
                 hit: false,
                 critical: false
             });
@@ -1634,7 +1684,7 @@ class CombatManager {
 
                         // Play death sound 1 second after damage sound
                         setTimeout(() => {
-                            audioManager.play('death');
+                            this.playDefeatSound(defender);
                         }, 1000);
 
                         this.handleDefeat(defender);
@@ -1684,19 +1734,20 @@ class CombatManager {
         }
 
         // WEAPON MASTERY: Topple (onHit)
-        // Force CON save or knock prone (disadvantage on attacks, advantage for melee attackers)
+        // Force a physical-resilience save or knock prone.
         if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'topple')) {
             const saveDC = 8 + proficiency + attackBonus;
             const saveRoll = rollD20().result;
-            let saveTotal = saveRoll + defender.character.abilityModifiers.con + getAuraSaveBonus(this, defender);
+            const saveModifier = getAttributeModifierFor(defender.character, 'resilienceSave');
+            let saveTotal = saveRoll + saveModifier + getAuraSaveBonus(this, defender);
             let toppleSaved = saveTotal >= saveDC;
 
             gameState.addMessage(
-                `⚔️ Topple! ${defender.name} must make CON save DC ${saveDC}...`,
+                `⚔️ Topple! ${defender.name} must make Resilience save DC ${saveDC}...`,
                 'warning'
             );
             gameState.addMessage(
-                `CON save: ${saveRoll} + ${defender.character.abilityModifiers.con} = ${saveTotal}`,
+                `Resilience save: ${saveRoll} + ${saveModifier} = ${saveTotal}`,
                 'info'
             );
 
@@ -1704,7 +1755,7 @@ class CombatManager {
             // executeSpecialMonsterAction()'s save (ADR-010, generic dispatch).
             if (!toppleSaved && defender.team === 'player' && window.game?.promptReaction) {
                 const reactionResult = await window.game.promptReaction('afterFailedSave', attacker, defender, {
-                    saveType: 'con',
+                    saveType: RULES.attributes.system === 'NVSystem' ? 'resilience' : 'con',
                     saveDC,
                     saveRoll: saveTotal
                 });
@@ -1853,7 +1904,7 @@ class CombatManager {
      * Attacks resolve before the flee check (plan design).
      * @param {Object} combatant - The fleeing combatant
      */
-    resolveFleeOpportunityAttacks(combatant) {
+    async resolveFleeOpportunityAttacks(combatant, { awaitPlayback = false } = {}) {
 
         // If combatant disengaged this turn, no OAs fire
         if (combatant.hasCondition('disengaged')) {
@@ -1888,18 +1939,24 @@ class CombatManager {
                 break;
             }
             // Opportunity attack doesn't consume the attacker's action
-            this.attack(attacker, target, 'mainHand', { consumeAction: false, isOpportunityAttack: true });
+            const attack = this.attack(attacker, target, 'mainHand', {
+                consumeAction: false,
+                isOpportunityAttack: true
+            });
+            if (awaitPlayback) {
+                await attack;
+            }
         }
     }
 
     /**
      * Attempt to flee from combat
      * 5EClassic mode: d20 + max(DEX, WIS) + proficiency vs DC (10 + 2 * engaged_enemies - 1)
-     * NVSystem mode: d20 + floor((Prowess_mod + Insight_mod) / 2) + proficiency vs
+     * NVSystem mode: d20 + floor((Prowess_mod + Intuition_mod) / 2) + proficiency vs
      * the same DC (docs/plans/2026-07-30-attribute-system-remap.md, decision #4).
      * Opportunity attacks from engaged melee enemies resolve before the flee check.
      */
-    flee(combatant) {
+    async flee(combatant) {
         // --- Action availability check ---
         const isCunningFlee = this.isCunningActionFlee(combatant);
         if (isCunningFlee) {
@@ -1942,7 +1999,11 @@ class CombatManager {
 
         // --- Opportunity attacks from engaged melee enemies (resolve BEFORE flee check) ---
         if (fleeRules.opportunityAttacks.enabled) {
-            this.resolveFleeOpportunityAttacks(combatant);
+            if (this.afterAction) {
+                await this.resolveFleeOpportunityAttacks(combatant, { awaitPlayback: true });
+            } else {
+                this.resolveFleeOpportunityAttacks(combatant);
+            }
         }
 
         // --- Check if combatant survived opportunity attacks ---
@@ -1974,16 +2035,17 @@ class CombatManager {
 
         // --- Flee roll modifier ---
         // 'NVSystem' mode (docs/plans/2026-07-30-attribute-system-remap.md, decision #4):
-        // floor((Prowess_mod + Insight_mod) / 2) via the resolver's blended 'flee' context,
+        // floor((Prowess_mod + Intuition_mod) / 2) via the resolver's blended 'flee' context,
         // replacing the legacy max(DEX, WIS) pattern entirely — not a mechanical port.
         // '5EClassic' mode keeps today's behavior unchanged.
         let statMod;
         let statLabel;
         if (RULES.attributes.system === 'NVSystem') {
             statMod = getBlendedAttributeModifier(combatant.character, 'flee');
-            statLabel = 'Prowess+Insight blend';
+            statLabel = 'Prowess+Intuition blend';
         } else {
-            // IMPORTANT: use abilityModifiers directly — NOT combatant.initiative (that is d20 + DEX already rolled)
+            // IMPORTANT: use abilityModifiers directly — NOT combatant.initiative
+            // (that is the already-rolled d20 + initiative attribute total).
             const dexMod = combatant.character.abilityModifiers?.dex ?? 0;
             const wisMod = combatant.character.abilityModifiers?.wis ?? 0;
             statMod = Math.max(dexMod, wisMod);
@@ -2074,7 +2136,8 @@ class CombatManager {
             icon: '🛡️'
         });
 
-        gameState.notify('combat.floatingText', { combatantId: combatant.id, text: 'DODGING! 🛡️', type: 'buff' });
+        gameState.notify('combat.floatingText', { sourceId: combatant.id, combatantId: combatant.id,
+            text: 'DODGING! 🛡️', type: 'buff', effectType: 'dodge' });
 
         gameState.addMessage(
             `Attackers have disadvantage until the start of ${combatant.name}'s next turn!`,
@@ -2131,7 +2194,7 @@ class CombatManager {
 
         // Snapshot and clear engagement
         const wasEngagedWith = Array.from(combatant.engagedWith);
-        combatant.engagedWith.clear();
+        this.clearEngagement(combatant);
 
         // Build log message
         const engagedNames = wasEngagedWith
@@ -2183,9 +2246,15 @@ class CombatManager {
         console.log(`⚔️ Engagement cleared for ${defeatedCombatant.name}`);
     }
 
-    /**
-     * Handle combatant defeat
-     */
+    /** Play a collapse cue only when it fits the defeated combatant. */
+    playDefeatSound(combatant) {
+        this.audio.play('death', 1, {
+            monsterId: combatant.character?.monsterId,
+            armorId: combatant.character?.equipment?.armor?.id
+        });
+    }
+
+    /** Handle combatant defeat. */
     handleDefeat(combatant) {
         // Clear engagement for the defeated combatant
         this.clearEngagement(combatant);
@@ -2812,6 +2881,10 @@ class CombatManager {
      * @param {Object} defender - Defending combatant
      */
     async improvisedStrike(attacker, defender) {
+        return this.presentResolvedAction(() => this.resolveImprovisedStrike(attacker, defender));
+    }
+
+    async resolveImprovisedStrike(attacker, defender) {
         if (!attacker.hasAction('action')) {
             gameState.addMessage(`${attacker.name} has no action available!`, 'error');
             return;
@@ -2820,6 +2893,15 @@ class CombatManager {
         const strMod = attacker.character.abilityModifiers?.str ?? 0;
 
         gameState.addMessage(`${attacker.name} makes an improvised strike against ${defender.name}!`, 'warning');
+        gameState.notify('combat.presentationAction', {
+            sourceId: attacker.id,
+            targetId: defender.id,
+            kind: 'melee',
+            actionName: 'Improvised Strike'
+        });
+        const soundContext = { family: 'blunt', weaponType: 'melee', releasePlayed: true,
+            defenderArmorId: defender.character.equipment?.armor?.id };
+        this.audio.playCombatRelease?.(soundContext);
 
         // Attack roll: d20 + STR mod only (no proficiency bonus)
         const attackRollObj = rollD20();
@@ -2836,7 +2918,7 @@ class CombatManager {
             // Critical miss
             gameState.addMessage('💥 Critical miss!', 'error');
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'CRITICAL MISS!', type: 'miss' });
-            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: true });
+            this.audio.playCombatSound({ ...soundContext, hit: false, critical: true });
         } else if (attackTotal >= defender.ac || attackRollObj.result === 20) {
             // Hit (natural 20 always hits)
             const isCritical = attackRollObj.result === 20;
@@ -2854,13 +2936,13 @@ class CombatManager {
 
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damage}`, type: isCritical ? 'critical' : 'damage' });
 
-            audioManager.playCombatSound({ weaponType: 'melee', hit: true, critical: isCritical });
+            this.audio.playCombatSound({ ...soundContext, hit: true, critical: isCritical });
             applyDamage(defender, damage, 'bone');
 
             if (defender.hp <= 0) {
                 gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
                 setTimeout(() => {
-                    audioManager.play('death');
+                    this.playDefeatSound(defender);
                 }, 1000);
                 this.handleDefeat(defender);
             }
@@ -2868,7 +2950,7 @@ class CombatManager {
             // Miss
             gameState.addMessage(`💨 Miss! Improvised strike misses ${defender.name}.`, 'info');
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'MISS', type: 'miss' });
-            audioManager.playCombatSound({ weaponType: 'melee', hit: false, critical: false });
+            this.audio.playCombatSound({ ...soundContext, hit: false, critical: false });
         }
 
         // Consume action
@@ -3132,7 +3214,7 @@ class Combatant {
 
     /**
      * Make a saving throw
-     * @param {string} ability - Ability to use (str, dex, con, int, wis, cha)
+     * @param {string} ability - Legacy save key or canonical inward attribute
      * @param {number} dc - Difficulty Class
      * @param {Object} options - { advantage: boolean, disadvantage: boolean, description: string }
      * @returns {Object} - { success: boolean, total: number, roll: number, modifier: number }
@@ -3143,9 +3225,11 @@ class Combatant {
         // Check for advantage from conditions
         let hasAdvantage = advantage;
         const hasDisadvantage = disadvantage;
+        const contextKey = RULES.attributes.legacySaveAbilityToContext[ability] ?? `${ability}Save`;
+        const saveAttribute = RULES.attributes.derivedStatMap[contextKey]?.attributes?.[0] ?? ability;
 
-        // Dodge gives advantage on DEX saves
-        if (ability === 'dex' && this.hasCondition('dodging')) {
+        // Dodge gives advantage on reactive/Intuition saves.
+        if ((ability === 'dex' || saveAttribute === 'intuition') && this.hasCondition('dodging')) {
             hasAdvantage = true;
         }
 
@@ -3171,11 +3255,15 @@ class Combatant {
             roll = rollD20().result;
         }
 
-        // Get ability modifier and proficiency
-        const abilityMod = this.character.abilityModifiers[ability];
-        const isProficient = this.character.savingThrows[ability].proficient;
-        const profBonus = isProficient ? this.character.proficiencyBonus : 0;
-        let total = roll + abilityMod + profBonus;
+        const saveEntry = this.character.savingThrows?.[saveAttribute]
+            ?? this.character.savingThrows?.[ability];
+        const isProficient = saveEntry?.proficient === true;
+        const baseModifier = typeof saveEntry === 'number'
+            ? saveEntry
+            : typeof saveEntry?.bonus === 'number'
+                ? saveEntry.bonus
+                : getAttributeModifierFor(this.character, contextKey);
+        let total = roll + baseModifier;
 
         // savingThrowReaction effect on offHand slot (e.g. Deflecting) — reads effect type from
         // catalog. Gated by canUseEquipmentModEffect (generic uses/recharge tracker), not just
@@ -3208,9 +3296,9 @@ class Combatant {
         }
 
         // Message
-        const abilityName = ability.toUpperCase();
+        const abilityName = saveAttribute.toUpperCase();
         const profText = isProficient ? ' (proficient)' : '';
-        let saveMsg = `${abilityName} save${profText}: ${roll} + ${abilityMod + profBonus}`;
+        let saveMsg = `${abilityName} save${profText}: ${roll} + ${baseModifier}`;
         if (deflectingBonus > 0) {
             saveMsg += ` + ${deflectingBonus} (deflecting)`;
         }
@@ -3223,7 +3311,7 @@ class Combatant {
             success,
             total,
             roll,
-            modifier: abilityMod + profBonus
+            modifier: baseModifier
         };
     }
 
@@ -3385,6 +3473,7 @@ class Combatant {
             team: this.team,
             hp: this.hp,
             maxHP: this.maxHP,
+            isDowned: Boolean(this.isDowned),
             ac: this.ac,
             initiative: this.initiative,
             actions: { ...this.actions },

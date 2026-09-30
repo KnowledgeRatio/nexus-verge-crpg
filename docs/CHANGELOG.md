@@ -4,6 +4,17 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## Session 21 — 2026-09-22
+**Nine-skill redesign and attribute-integrity completion pass** — Plan: `docs/plans/2026-09-22-skill-system-redesign.md`; backlog: #41 and #42.
+
+Replaced the thirteen-skill stopgap with nine broad skills: Athletics, Finesse, Survival, Craft, Lore, Investigation, Perception, Empathy, and Influence. Each skill has one primary and one secondary NVSystem attribute; players choose authored fictional approaches rather than freely attaching their best attribute. `SkillRegistry` is now the shared boundary for identifiers, aliases, modifiers, rolls, and old-save migration.
+
+Migrated existing challenge, class, background, companion, quest, relation, and monster content. Repaired missing DC/critical plumbing, conversational d20 resolution, locked-door lookup, choice/stage attributes, and stage-specific quest progress. The 10,000-roll-per-cell live-resolver audit found no invalid mappings and level-5 trained aggregate success of 51.4–56.9% across specialised profiles. Automated suite: 603 tests passing.
+
+Also completed the canonical Insight→Intuition and Vitality→Resilience migration, removed `acSoak`, prohibited Resilience-based AC/general damage reduction, and routed initiative through Intuition. ADR-019 now finalises NVSystem AC as a 2:1 Intuition:Prowess weighted average under the existing armour gates, while 5EClassic remains Dexterity-only. A 36,000-fight real-engine comparison covered levels 1/5/10, three allocation shapes, and all four armour categories; all 46 monster native attribute blocks passed structural validation. Automated suite: 610 tests passing. Hands-on acceptance remains for #42; hands-on skill acceptance and party-help ceiling validation remain in #41.
+
+---
+
 ## Session 19a — 2026-07-31 to 2026-08-04 (backfilled 2026-09-08)
 **Six-attribute system remap (NVSystem)** — STR/DEX/CON/INT/WIS/CHA → Prowess/Vitality/Intellect/Insight/Presence/Composure. Plan: `docs/plans/2026-07-30-attribute-system-remap.md`. Forked behind `RULES.attributes.system` per ADR-015; **default flipped to `'NVSystem'` on 2026-08-03**.
 

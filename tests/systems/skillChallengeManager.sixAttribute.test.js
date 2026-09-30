@@ -11,7 +11,7 @@
  * exercises the real skills.json data + the real per-skill attribute lookup instead.
  *
  * Perception is the discriminating case: its legacy `ability` is "wis", but decision #1 maps
- * it to "insight" for NVSystem mode — and insight's legacy conversion source is DEX, not
+ * it to "intuition" for NVSystem mode — and intuition's legacy conversion source is DEX, not
  * WIS (see "Legacy split-attribute conversion" in the plan). So a character with divergent
  * WIS/DEX scores produces genuinely different modifiers depending on which field
  * getSkillModifier reads, proving the fix actually switches attribute source rather than
@@ -97,11 +97,11 @@ describe('SkillChallengeManager.getSkillModifier — real character + real skill
             RULES.attributes.system = 'NVSystem';
         });
 
-        it('Perception reads the Insight modifier (DEX-derived), not WIS — proves attributeNVSystem is actually consulted', () => {
-            const character = makeCharacter(); // wis 8 -> mod -1, dex 18 -> insight mod +4, proficient -> +3 prof
+        it('Perception reads the Intuition modifier (DEX-derived), not WIS — proves attributeNVSystem is actually consulted', () => {
+            const character = makeCharacter(); // wis 8 -> mod -1, dex 18 -> intuition mod +4, proficient -> +3 prof
             const manager = makeManager();
 
-            expect(character.abilities.insight).toBe(18); // dex -> insight bijection
+            expect(character.abilities.intuition).toBe(18); // dex -> intuition bijection
             expect(manager.getSkillModifier(character, 'perception')).toBe(4 + character.proficiencyBonus);
             expect(manager.getSkillModifier(character, 'perception')).not.toBe(
                 getAbilityModifier(character.abilities.wis) + character.proficiencyBonus
@@ -115,7 +115,7 @@ describe('SkillChallengeManager.getSkillModifier — real character + real skill
             expect(manager.getSkillModifier(character, 'athletics')).toBe(3 + character.proficiencyBonus);
         });
 
-        it('proficiency lookup still reads character.skills[skillId].proficient (object shape), not a broken array .find', () => {
+        it('legacy Deception aliases to unproficient Influence and uses its primary Presence approach', () => {
             const character = makeCharacter();
             const manager = makeManager();
 
@@ -123,7 +123,8 @@ describe('SkillChallengeManager.getSkillModifier — real character + real skill
             // (a dictionary keyed by skill id, not an array) — the pre-existing bug this fix
             // also closed.
             expect(() => manager.getSkillModifier(character, 'deception')).not.toThrow();
-            expect(manager.getSkillModifier(character, 'deception')).toBe(character.abilityModifiers.composure);
+            expect(manager.getSkillModifier(character, 'deception')).toBe(character.abilityModifiers.presence);
+            expect(manager.getSkillModifier(character, 'deception', [], 'composure')).toBe(character.abilityModifiers.composure);
         });
     });
 });

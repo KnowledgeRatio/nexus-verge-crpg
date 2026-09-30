@@ -115,7 +115,7 @@ PHB point-blank (within 5 feet = disadvantage) cannot be ported directly to non-
 **Why this works in non-grid:**
 - Thematically: "You can't aim properly while actively fending off a sword" — not about distance
 - Tactically: Dodge action becomes a genuine tool for ranged builds (not just stalling)
-- Initiative matters: higher DEX → shoot before being Harried → meaningful build investment
+- Initiative matters: higher Intuition in `NVSystem` → shoot before being Harried → meaningful build investment (`5EClassic` rollback mode uses DEX)
 - Short fights (2–3 rounds): creates real tension rather than guaranteed round-1 penalty
 
 ### Implementation

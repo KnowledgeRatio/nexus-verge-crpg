@@ -7,6 +7,7 @@ import { Character } from '../systems/Character.js';
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
+import { skillRegistry } from '../systems/SkillRegistry.js';
 
 export class CharacterCreationUI {
     constructor() {
@@ -24,17 +25,14 @@ export class CharacterCreationUI {
             customClassName: '', // New: custom class name (if using custom kit)
             background: null,
             fightingStyle: null, // New: fighting style selection (if applicable)
-            baseAbilities: {
-                str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10
-            },
+            baseAbilities: RULES.attributes.system === 'NVSystem'
+                ? { prowess: 10, resilience: 10, intellect: 10, intuition: 10, presence: 10, composure: 10 }
+                : { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
             skillChoices: [],
             weaponMasteries: [] // New: weapon mastery selections
         };
 
-        this.avatarOptions = [
-            { id: 'knight', name: 'Knight', filename: 'knight.png' },
-            { id: 'monk', name: 'Monk', filename: 'monk.png' }
-        ];
+        this.avatarOptions = [];
         this.avatarPath = 'data/graphics/';
 
 
@@ -45,6 +43,7 @@ export class CharacterCreationUI {
         this.rawWeaponMasteriesData = null;
         this.rawKitsData = null;
         this.rawAttributesData = null;
+        this.rawSkillsData = null;
 
         // Filtered data (based on campaign)
         this.speciesData = null;
@@ -65,13 +64,17 @@ export class CharacterCreationUI {
 
             // Add cache-busting parameter to force reload of updated data
             const cacheBust = Date.now();
-            const [species, classes, backgrounds, weaponMasteries, kits, attributes] = await Promise.all([
+            const [
+                species, classes, backgrounds, weaponMasteries, kits, attributes, skills, combatArt
+            ] = await Promise.all([
                 fetch(`data/races.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/classes.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/backgrounds.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/weaponMasteries.json?v=${cacheBust}`).then(r => r.json()),
                 fetch(`data/kits.json?v=${cacheBust}`).then(r => r.json()),
-                fetch(`data/attributes.json?v=${cacheBust}`).then(r => r.json())
+                fetch(`data/attributes.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/skills.json?v=${cacheBust}`).then(r => r.json()),
+                fetch(`data/combatScene.json?v=${cacheBust}`).then(r => r.json())
             ]);
 
             // Store raw data
@@ -81,6 +84,11 @@ export class CharacterCreationUI {
             this.rawWeaponMasteriesData = weaponMasteries.weaponMasteries;
             this.rawKitsData = kits;
             this.rawAttributesData = attributes.attributes;
+            this.rawSkillsData = skills.skills || [];
+            this.avatarOptions = combatArt.playerAppearances.map(option => ({
+                id: option.id, name: option.label, filename: option.portrait
+            }));
+            skillRegistry.setDefinitions(this.rawSkillsData);
 
             // Apply campaign filtering
             this.applyFiltering();
@@ -318,7 +326,8 @@ export class CharacterCreationUI {
 
         container.innerHTML = `
             <h3>Choose Your Avatar</h3>
-            <p class="step-description">Select a portrait to represent your character.</p>
+            <p class="step-description">Choose your starting combat outfit.
+                Hair, clothing and colours can be changed in your character sheet.</p>
             <div class="avatar-grid">
                 ${avatars.map(avatar => `
                     <button type="button"
@@ -477,19 +486,9 @@ export class CharacterCreationUI {
             this.characterData.background = this.backgroundsData.find(b => b.id === preset.background);
         }
 
-        // Apply abilities. `baseAbilities` is always legacy-keyed (see
-        // renderAbilityScoresStep) regardless of RULES.attributes.system, so an
-        // NVSystem-mode preset's native `abilitiesNVSystem` block is converted
-        // back through the locked bijection before being written — kits.json's native
-        // block is still the operative source in that mode, it just lands in the same
-        // legacy-shaped bag Character.js's constructor expects.
+        // Apply abilities in the active system's native key-space.
         if (this.isSixAttributeMode() && preset.abilitiesNVSystem) {
-            const newToLegacy = this.getNewToLegacyMap();
-            const legacyAbilities = {};
-            for (const [newKey, score] of Object.entries(preset.abilitiesNVSystem)) {
-                legacyAbilities[newToLegacy[newKey]] = score;
-            }
-            this.characterData.baseAbilities = legacyAbilities;
+            this.characterData.baseAbilities = { ...preset.abilitiesNVSystem };
         } else if (preset.abilities) {
             this.characterData.baseAbilities = { ...preset.abilities };
         }
@@ -704,19 +703,11 @@ export class CharacterCreationUI {
     /**
      * Step: Ability Scores
      *
-     * `characterData.baseAbilities` is always legacy-keyed (str/dex/con/int/wis/cha) —
-     * that's the shape Character.js's constructor expects and it is not being changed
-     * by this task. In NVSystem mode this step natively shows and collects
-     * Prowess/Insight/Vitality/Intellect/Composure/Presence (real working keys for this
-     * form, not a label swap): each select's id/label is the new attribute id, and on
-     * change the value is written into baseAbilities through the locked bijection
-     * (getNewToLegacyMap) immediately — the legacy bag is a live mirror of what the
-     * player picked, not the other way around.
+     * In NVSystem mode this step stores the six canonical attributes directly.
      */
     renderAbilityScoresStep(container) {
         const standardArray = RULES.core.standardArray;
         const sixMode = this.isSixAttributeMode();
-        const newToLegacy = sixMode ? this.getNewToLegacyMap() : null;
         const keys = sixMode ? this.getSixAttributeIds() : ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
         container.innerHTML = `
@@ -727,8 +718,7 @@ export class CharacterCreationUI {
             </p>
             <div class="ability-assignment">
                 ${keys.map(key => {
-        const legacyKey = sixMode ? newToLegacy[key] : key;
-        const currentScore = this.characterData.baseAbilities[legacyKey];
+        const currentScore = this.characterData.baseAbilities[key];
         return `
                     <div class="ability-row">
                         <label>${sixMode ? this.getAttributeName(key) : key.toUpperCase()}</label>
@@ -758,8 +748,7 @@ export class CharacterCreationUI {
         keys.forEach(key => {
             const select = container.querySelector(`#ability-${key}`);
             select.addEventListener('change', (e) => {
-                const legacyKey = sixMode ? newToLegacy[key] : key;
-                this.characterData.baseAbilities[legacyKey] = parseInt(e.target.value) || 10;
+                this.characterData.baseAbilities[key] = parseInt(e.target.value) || 10;
                 this.updateAbilityModifiers(container);
             });
         });
@@ -911,18 +900,18 @@ export class CharacterCreationUI {
      * Step 8: Review
      */
     renderReviewStep(container) {
-        // Calculate final abilities with species bonuses (baseAbilities and
-        // species.abilityScoreIncrease are always legacy-keyed — see renderAbilityScoresStep)
+        const sixMode = this.isSixAttributeMode();
         const finalAbilities = { ...this.characterData.baseAbilities };
-        if (this.characterData.species.abilityScoreIncrease) {
-            for (const [ability, bonus] of Object.entries(this.characterData.species.abilityScoreIncrease)) {
+        const speciesIncreases = sixMode
+            ? this.characterData.species.abilityScoreIncreaseNVSystem
+            : this.characterData.species.abilityScoreIncrease;
+        if (speciesIncreases) {
+            for (const [ability, bonus] of Object.entries(speciesIncreases)) {
                 finalAbilities[ability] = (finalAbilities[ability] || 10) + bonus;
             }
         }
 
-        // Display-only view: NVSystem-keyed in NVSystem mode, legacy otherwise.
-        const sixMode = this.isSixAttributeMode();
-        const displayAbilities = sixMode ? this.convertLegacyToSixAttributeDisplay(finalAbilities) : finalAbilities;
+        const displayAbilities = finalAbilities;
 
         // Determine the class display name (custom name, kit name, or calling name)
         let classDisplayName;
@@ -1010,8 +999,8 @@ export class CharacterCreationUI {
 
                 <div class="review-section">
                     <h4>Starting Stats</h4>
-                    <p><strong>Hit Points:</strong> ${this.characterData.class.hitDie + this.getAbilityModifier(sixMode ? displayAbilities.vitality : finalAbilities.con)}</p>
-                    <p><strong>Armor Class:</strong> ${10 + this.getAbilityModifier(sixMode ? displayAbilities.insight : finalAbilities.dex)}</p>
+                    <p><strong>Hit Points:</strong> ${this.characterData.class.hitDie + this.getAbilityModifier(sixMode ? displayAbilities.resilience : finalAbilities.con)}</p>
+                    <p><strong>Armor Class:</strong> ${10 + this.getAbilityModifier(sixMode ? displayAbilities.intuition : finalAbilities.dex)}</p>
                     <p><strong>Speed:</strong> ${this.characterData.species.speed} ft</p>
                     <p><strong>Proficiency Bonus:</strong> +2</p>
                 </div>
@@ -1024,13 +1013,11 @@ export class CharacterCreationUI {
      */
     updateAbilityModifiers(container) {
         const sixMode = this.isSixAttributeMode();
-        const newToLegacy = sixMode ? this.getNewToLegacyMap() : null;
         const keys = sixMode ? this.getSixAttributeIds() : ['str', 'dex', 'con', 'int', 'wis', 'cha'];
         keys.forEach(key => {
             const modSpan = container.querySelector(`#mod-${key}`);
             if (modSpan) {
-                const legacyKey = sixMode ? newToLegacy[key] : key;
-                const score = this.characterData.baseAbilities[legacyKey];
+                const score = this.characterData.baseAbilities[key];
                 modSpan.textContent = this.formatModifier(this.getAbilityModifier(score));
             }
         });
@@ -1178,6 +1165,7 @@ export class CharacterCreationUI {
             const character = new Character({
                 name: this.characterData.name,
                 avatar: this.characterData.avatar,
+                combatAppearance: { avatarId: this.characterData.avatar.id },
                 species: this.characterData.species,
                 class: classData,
                 background: this.characterData.background,
@@ -1216,19 +1204,18 @@ export class CharacterCreationUI {
 
     /**
      * Helper: Get species bonus for ability
-     * `ability` is whatever key-space the caller is currently working in (legacy in
-     * '5EClassic' mode, a new NVSystem id in 'NVSystem' mode) — races.json itself
-     * is not migrated yet, so in NVSystem mode this translates back to the single
-     * legacy source key before reading the (still-legacy-keyed) data.
+     * `ability` is whatever key-space the caller is currently working in.
      */
     getSpeciesBonus(ability) {
-        const legacyKey = this.isSixAttributeMode() ? this.getNewToLegacyMap()[ability] : ability;
-        return this.characterData.species?.abilityScoreIncrease?.[legacyKey] || 0;
+        const increases = this.isSixAttributeMode()
+            ? this.characterData.species?.abilityScoreIncreaseNVSystem
+            : this.characterData.species?.abilityScoreIncrease;
+        return increases?.[ability] || 0;
     }
 
     /**
      * Whether chargen should natively collect the six new attributes
-     * (Prowess/Insight/Vitality/Intellect/Composure/Presence) instead of the legacy six.
+     * (Prowess/Resilience/Intellect/Intuition/Presence/Composure) instead of the legacy six.
      */
     isSixAttributeMode() {
         return RULES.attributes.system === 'NVSystem';

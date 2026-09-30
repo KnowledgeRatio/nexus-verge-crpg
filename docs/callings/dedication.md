@@ -15,9 +15,9 @@ The two specializations chosen at level 3 diverge in kind, not just degree:
 
 - **Resolve** is the calling's signature resource: a short-rest-recharging pool that both specializations spend on their signature abilities, unlocked at level 3.
 - **Exemplar's replayability lever is kit curation** (which tactics you know, chosen across 3 level-ups) reinforced by **Grace Under Pressure**, which rewards diversifying rather than repeating the same tactic. **Oath's replayability lever is resource-spend tension plus a build-defining lean choice** — pick 1 of 3 Auras at level 3 (a permanent, exclusive commitment, closer in weight to Exemplar's whole level-3 pick than to a single tactic) that sets a burst/tank/support direction, then pick 1 of 5 Vows at each of levels 5/7/9 (3 of 5 ever known). The two specs are deliberately asymmetric in shape, not mirrors of each other with different flavor text — Exemplar curates a kit of similar-weight interchangeable tools; Oath makes a smaller number of heavier, distinct commitments.
-- **Concentration exists in this codebase for the first time via Challenge** (see Oath below) — the formula (`floor((Vitality mod + Composure mod)/2)`) was designed during the 2026-08 attribute remap but had zero live callers until this. It is not yet a general system other content can lean on casually; see Known Implementation Gaps.
-- Attribute identity: **Prowess + Vitality** under the live default `NVSystem` attribute system (`RULES.attributes.system`), the 1:1 rename of the legacy **STR + CON** identity under the `5EClassic` fallback system. See `.claude/rules/d5e-compliance.md`'s Attribute Systems section — both systems are live, switched by config, not a one-way migration. Dedication is the only calling with a settled NVSystem identity today; Curiosity and Audacity do not have one yet.
-- Save proficiency under NVSystem: Vitality-save only (one proficiency, not two — the legacy STR-save/CON-save both collapse onto Vitality).
+- **Concentration exists in this codebase for the first time via Challenge** (see Oath below) — the formula (`floor((Resilience mod + Composure mod)/2)`) was designed during the 2026-08 attribute remap but had zero live callers until this. It is not yet a general system other content can lean on casually; see Known Implementation Gaps.
+- Attribute identity: **Prowess + Resilience** under the live default `NVSystem` attribute system (`RULES.attributes.system`), the 1:1 rename of the legacy **STR + CON** identity under the `5EClassic` fallback system. See `.claude/rules/d5e-compliance.md`'s Attribute Systems section — both systems are live, switched by config, not a one-way migration. Dedication is the only calling with a settled NVSystem identity today; Curiosity and Audacity do not have one yet.
+- Save proficiency under NVSystem: Resilience-save only (one proficiency, not two — the legacy STR-save/CON-save both collapse onto Resilience).
 
 ## Progression (implemented)
 
@@ -25,7 +25,7 @@ Source: `data/levelProgression.json` (`progressionByClass.dedication`), `data/ca
 
 | Level | Content |
 |---|---|
-| 1 | Steady Nerve (auto: bonus action, 1/short rest, choose Heal [1d8 + level + CON/Vitality mod] or Dodge [disadvantage on attacks against you until your next turn]). Fighting Style choice (1 of 11 options, auto-choice, see `callingProgression.json`). ASI +1 (flat, every level 1-10, no choice attached). |
+| 1 | Steady Nerve (auto: bonus action, 1/short rest, choose Heal [1d8 + level + CON/Resilience mod] or Dodge [disadvantage on attacks against you until your next turn]). Fighting Style choice (1 of 11 options, auto-choice, see `callingProgression.json`). ASI +1 (flat, every level 1-10, no choice attached). |
 | 2 | Action Surge (auto: free action, 1 extra action, 1/short rest). **Indomitable** (auto, both specs: reaction, reroll one failed saving throw, 1/short rest, free). No practice choice at this level — moved to 4/6/8, see below. ASI +1. |
 | 3 | Resolve resource unlocked. Specialization choice: **Exemplar** (pick 3 of 8 tactics + **Grace Under Pressure** trait auto-granted) or **Oath** (Sworn Strike + Aid the Vulnerable auto-granted, no selection, **plus choose 1 of 3 Auras** — a new required `trait`-type choice). ASI +1. |
 | 4 | Practice choice (optional — `required: false`; see practices note below). ASI +1. |
@@ -50,12 +50,12 @@ Two passive **traits** (`data/traits.json`, not `abilities.json`), both auto-gra
 ### Oath
 Chosen at level 3. Auto-grants two Resolve-fueled abilities, no selection:
 - **Sworn Strike** — on a melee hit, spend 1-3 Resolve, deal 1d8 resonant damage per Resolve spent (+1d8 bonus vs. undead/fiend), once per turn (hard-gated in code, not just by cost). A vulnerability-based rework of the undead/fiend bonus (via `damageVulnerabilities` on monster data instead of a hardcoded bonus) was designed but explicitly **not implemented** — `RULES.combat.damageReductionSystem.enabled` is `false` by default (tied to itemization readiness, a separate call), and separately, on-hit damage handlers bypass that system entirely regardless of the flag. The hardcoded bonus stays as the live mechanic.
-- **Aid the Vulnerable** — bonus action, spend 1-3 Resolve to heal self for (Resolve spent × CON/Vitality mod) + level HP, or spend 1 Resolve to cure one curable condition.
+- **Aid the Vulnerable** — bonus action, spend 1-3 Resolve to heal self for (Resolve spent × CON/Resilience mod) + level HP, or spend 1 Resolve to cure one curable condition.
 
 **Choose 1 of 3 Auras at level 3** (permanent passive traits, `data/traits.json`, `specialization: "oath"`, `tier: 3`, granted via a `trait`-type level-up choice — the first real data ever to exercise `LevelUpManager.renderTraitChoice()`, which previously existed in code but had never been used):
 - **Aura of Exposure** (id `aura_of_exposure`) — enemies engaged with the Oath are Exposed: -1 AC, flat, unconditional, for as long as the engagement lasts.
 - **Aura of Sanctuary** (id `aura_of_sanctuary`) — the Oath and allies engaged with the same enemy as the Oath gain +1 AC.
-- **Aura of Mercy** (id `aura_of_mercy`) — the Oath and allies gain +1 to saving throws, flat (not attribute-scaled — an earlier draft scaled to the Oath's own Composure modifier and was found anti-synergistic with Dedication's Prowess+Vitality identity).
+- **Aura of Mercy** (id `aura_of_mercy`) — the Oath and allies gain +1 to saving throws, flat (not attribute-scaled — an earlier draft scaled to the Oath's own Composure modifier and was found anti-synergistic with Dedication's Prowess+Resilience identity).
 
 All three are deliberately flat and unconditional, on the same footing mathematically — an earlier design pass had asymmetric shapes (a damage bonus vs. an AC bonus) and simulation found a 20-30 percentage-point win-rate gap between leans under pressure; putting all three in the same currency (AC/saves, always-on) was the fix.
 
@@ -73,13 +73,13 @@ Sources: `data/abilities.json` (`abilities.dedication`), `data/traits.json`. All
 | Ability/Trait | Spec | Trigger | Effect |
 |---|---|---|---|
 | Precision Strike | Exemplar | Before an attack roll | Add tactic die to the attack roll |
-| Trip Attack | Exemplar | On hit | +tactic die damage; target saves (Vitality) or Prone |
+| Trip Attack | Exemplar | On hit | +tactic die damage; target saves (Resilience) or Prone |
 | Riposte | Exemplar | Reaction, after an enemy misses you in melee | Free counter-attack, +tactic die damage |
 | Menacing Attack | Exemplar | On hit | +tactic die damage; target saves (Composure) or Frightened until end of their next turn |
-| Pushing Attack | Exemplar | On hit | +tactic die damage; target saves (Vitality) or Pushed (non-grid substitute for a physical push, logged in ADR-014's table) |
-| Rally | Exemplar | Bonus action | Choice: gain temp HP = tactic die + CON/Vitality mod, self or an engaged companion |
-| Parry | Exemplar | Reaction, after being hit by a melee attack | Reduce the damage by tactic die + CON/Vitality mod |
-| Disarming Attack | Exemplar | On hit | +tactic die damage; target saves (Vitality) or -2 to attack rolls until start of their next turn |
+| Pushing Attack | Exemplar | On hit | +tactic die damage; target saves (Resilience) or Pushed (non-grid substitute for a physical push, logged in ADR-014's table) |
+| Rally | Exemplar | Bonus action | Choice: gain temp HP = tactic die + CON/Resilience mod, self or an engaged companion |
+| Parry | Exemplar | Reaction, after being hit by a melee attack | Reduce the damage by tactic die + CON/Resilience mod |
+| Disarming Attack | Exemplar | On hit | +tactic die damage; target saves (Resilience) or -2 to attack rolls until start of their next turn |
 | Grace Under Pressure (trait) | Exemplar | Passive | Disadvantage on the next tactic-save vs. an already-conditioned target |
 | Vanguard (trait) | Exemplar | Passive | +1 attack/+1d4 damage on first tactic-attack vs. an unengaged target |
 | Indomitable | Both specs | Reaction, after failing a saving throw | Reroll the save, must use the new result. 1/short rest, free |

@@ -1,0 +1,87 @@
+{
+  "bugbear": {
+    "label": "Bugbear", "garmentNode": "BugbearClothing",
+    "scale": [1.22, 1.22, 1.22],
+    "torsoBulk": 1.32, "headBulk": 1.23, "limbBulk": 1.13,
+    "armLength": 1.1, "neckLength": 0.88,
+    "jawWidth": 0.3, "browDepth": 0.02,
+    "skin": [0.095, 0.069, 0.042, 1],
+    "cloth": [0.13, 0.115, 0.08, 1], "hide": [0.18, 0.125, 0.065, 1],
+    "bugbearFeatures": true,
+    "groundedPose": { "recoveryPhase": 0.4 },
+    "groundedAttacks": [{ "name": "Ground_Club", "source": "Sword_Attack" }],
+    "extraClips": ["Ground_Idle", "Ground_Club", "Ground_GetUp", "Ground_Death"]
+  },
+  "orc": {
+    "label": "Orc", "garmentNode": "OrcClothing",
+    "scale": [1.12, 1.16, 1.12],
+    "torsoBulk": 1.16, "headBulk": 1.05, "limbBulk": 1.1,
+    "armLength": 1, "neckLength": 1,
+    "jawWidth": 0.2, "browDepth": 0.015,
+    "skin": [0.29, 0.34, 0.27, 1],
+    "cloth": [0.12, 0.12, 0.085, 1], "hide": [0.12, 0.075, 0.04, 1],
+    "orcFeatures": true,
+    "groundedAttacks": [{ "name": "Ground_Axe", "source": "Sword_Attack" }],
+    "extraClips": ["Ground_Idle", "Ground_Axe", "Ground_GetUp", "Ground_Death"]
+  },
+  "gnoll": {
+    "label": "Gnoll", "garmentNode": "GnollClothing",
+    "scale": [1.02, 1.12, 1.02],
+    "torsoBulk": 0.84, "headBulk": 0.06, "limbBulk": 0.8,
+    "armLength": 1.1, "neckLength": 1,
+    "jawWidth": 0, "browDepth": 0,
+    "skin": [0.4, 0.3, 0.17, 1],
+    "cloth": [0.16, 0.13, 0.085, 1], "hide": [0.095, 0.069, 0.04, 1],
+    "hyenaFeatures": true,
+    "meleeClips": ["Melee_2H_Idle", "Melee_2H_Attack_Stab"],
+    "extraClips": ["Gnoll_Bite", "Melee_2H_Idle", "Melee_2H_Attack_Stab"],
+    "gore": { "clipName": "Gnoll_Bite", "idleClip": "Melee_2H_Idle", "seconds": 0.8,
+      "impact": 0.45, "spineLean": 0.8, "headLean": -0.1, "forwardShift": 0.26,
+      "jaw": { "node": "GnollJaw", "openAngle": 0.6 } }
+  },
+  "ettin": {
+    "label": "Ettin", "garmentNode": "EttinClothing",
+    "scale": [1.94, 2, 1.94],
+    "torsoBulk": 1.35, "headBulk": 1, "limbBulk": 1.15,
+    "armLength": 1, "neckLength": 1,
+    "jawWidth": 0, "browDepth": 0.016,
+    "skin": [0.33, 0.28, 0.21, 1],
+    "cloth": [0.13, 0.115, 0.075, 1], "hide": [0.095, 0.069, 0.04, 1],
+    "mirroredClips": [{ "source": "Sword_Attack", "name": "Sword_Attack_Left" }],
+    "extraClips": ["Sword_Attack_Left"],
+    "twinHeads": [
+      { "offsetX": -0.13, "offsetZ": 0.015, "jawWidth": 0.18 },
+      { "offsetX": 0.13, "offsetZ": -0.045, "jawWidth": 0.4 }
+    ]
+  },
+  "minotaur": {
+    "label": "Minotaur", "garmentNode": "MinotaurClothing",
+    "scale": [1.12, 1.1, 1.12],
+    "torsoBulk": 1.3, "headBulk": 0.08, "limbBulk": 1.16,
+    "armLength": 1, "neckLength": 1,
+    "jawWidth": 0, "browDepth": 0,
+    "skin": [0.13, 0.085, 0.048, 1],
+    "cloth": [0.095, 0.085, 0.06, 1], "hide": [0.11, 0.059, 0.025, 1],
+    "bovineFeatures": true,
+    "extraClips": ["Horn_Gore"],
+    "gore": { "idleClip": "Sword_Idle", "seconds": 0.9, "impact": 0.45, "spineLean": 0.65, "headLean": 0.12 }
+  },
+  "ogre": {
+    "label": "Ogre", "garmentNode": "OgreClothing",
+    "scale": [1.72, 1.68, 1.68],
+    "torsoBulk": 1.28, "headBulk": 1.22, "limbBulk": 1.14,
+    "armLength": 1.12, "neckLength": 0.65,
+    "jawWidth": 0.24, "browDepth": 0.018,
+    "skin": [0.32, 0.36, 0.27, 1],
+    "cloth": [0.19, 0.17, 0.12, 1], "hide": [0.095, 0.059, 0.031, 1]
+  },
+  "hillGiant": {
+    "label": "Hill Giant", "garmentNode": "HillGiantClothing",
+    "scale": [3.3, 3.36, 3.3],
+    "torsoBulk": 1.2, "headBulk": 1.28, "limbBulk": 1.02,
+    "armLength": 1, "neckLength": 1,
+    "jawWidth": 0.32, "browDepth": 0.025,
+    "skin": [0.30, 0.28, 0.24, 1],
+    "cloth": [0.15, 0.18, 0.18, 1], "hide": [0.18, 0.11, 0.06, 1]
+  }
+}

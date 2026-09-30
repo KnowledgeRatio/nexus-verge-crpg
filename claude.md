@@ -2,9 +2,10 @@
 **Branch:** `main-beta-quests` | **Phase:** 3 — Combat & Abilities
 
 ## Current State
-- **Last session:** Backlog + decision register — plan statuses swept, epic #19 closed, open decisions now tracked as `decision`-labelled GitHub issues
-- **In progress:** Quest system polish; cloud saves awaiting Azure storage account + playtest before flag flip
-- **Next up:** 5 open decisions blocking work — see GitHub `decision` label (#35 run structure is the widest-reaching)
+- **Last session:** Finalised the six-attribute AC rule as a 2:1 Intuition:Prowess weighted average, validated it through 36,000 real-engine fights, and confirmed all 46 monsters have complete native attributes.
+- **Now:** #42 needs only hands-on player-flow acceptance; #41 remains in acceptance for party-ceiling validation and hands-on play; #39 quest tracking/reputation follows.
+- **Web delivery:** #53 is Now: finish the reproducible asset pipeline and SWA release acceptance before cloud-save rollout. Public combat media is staged in a separate Blob account; production SWA has not switched.
+- **Next / blocked:** #40 sprites and portraits is Next; #38 cloud-save reliability and cutover follows #53, with save-cadence decision #50 required before broad enablement. Open decisions: #16 and #34–#37, #50.
 
 ## Docs
 - Architecture & ADR log: [`.claude/rules/architecture.md`](.claude/rules/architecture.md)

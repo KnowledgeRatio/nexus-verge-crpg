@@ -85,7 +85,7 @@ Never reference `campaignIds` in game logic. If a manager loads data without fil
 Design is locked (2026-03-09). Key constraints:
 
 - Companions are `Character` instances with `companionMeta` attached after construction. `party.candidates[]` is transient (not persisted). `party.activeSynergies` is computed on read via `CompanionManager.getActiveSynergies()` — never stored.
-- Combat uses BG3-style direct control. Every combatant rolls **individual initiative**. Turn order is a single unified queue — no team grouping.
+- Combat uses BG3-style direct control. Every combatant rolls **individual initiative**. Turn order is a single unified queue — no team grouping. The modifier and tie-break resolve through `RULES.attributes.derivedStatMap.initiative` (Intuition in `NVSystem`; DEX only in `5EClassic` rollback mode).
 - Effective party size uses `1 + (companionCount * 0.75)`. **Floor this before passing to `buildMinionGroup`** — integer equality breaks on floats.
 - `CombatManager.endCombat()` **must** emit `gameState.notify('combat.ended', { outcome })` before returning. `CompanionManager` subscribes to this — it is the only coupling point between the two systems.
 - Fled/TPK outcomes = permanent companion death. Victory = auto-stabilize to 1 HP.
@@ -147,3 +147,23 @@ All new game balance is set against the NVSystem attribute model, not `5EClassic
 
 This does not remove or disable `5EClassic`. It only defines the baseline used for future tuning and verification.
 
+## Skill Resolution (ADR-018)
+
+*Established 2026-09-22.*
+
+`data/skills.json` defines the canonical skill catalogue and primary/secondary attribute pairings. `src/systems/SkillRegistry.js` is the single resolution boundary for skill IDs, aliases, modifiers, rolls, and save migration. Gameplay surfaces may author an allowed approach attribute, but must not duplicate skill mappings or calculate skill modifiers independently. See `.claude/rules/systems/skills.md` for the locked design.
+
+## NVSystem AC Ownership (ADR-019)
+
+*Established 2026-09-22.*
+
+NVSystem AC remains one target number. Its evasion modifier is the weighted average
+`floor((2 × raw Intuition modifier + raw Prowess modifier) / 3)`, flooring once after
+weighting. Existing armour gates remain authoritative: unarmoured/light apply the full
+modifier, medium applies its configured cap, and heavy applies none. Resilience never
+contributes AC or general damage reduction, and no soak/second defence pool exists.
+
+`RULES.attributes.derivedStatMap.acEvasion` is the source of truth. Consumers call the
+generic derived-stat resolver so ownership can remain data-configured. `5EClassic` retains
+its Dexterity-only AC formula through the same entry's system override; broader rollback-
+path value is tracked independently in #34.

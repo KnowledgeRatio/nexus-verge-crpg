@@ -3,7 +3,9 @@
  * Handles all settlement and building UI rendering
  */
 
-import { RULES } from '../core/rulesEngine.js';
+import { skillRegistry } from '../systems/SkillRegistry.js';
+import { gameState } from '../core/GameState.js';
+import { SettlementSceneUI } from './SettlementSceneUI.js';
 
 class SettlementUI {
     constructor(settlementManager, merchantManager = null) {
@@ -12,6 +14,7 @@ class SettlementUI {
         this.currentMerchant = null;
         this.merchantInventory = [];
         this.initializeEventListeners();
+        this.sceneUI = new SettlementSceneUI(this);
     }
 
     /**
@@ -95,12 +98,14 @@ class SettlementUI {
 
         // Render active consequence flags
         this.renderSettlementFlags(settlement);
+        this.sceneUI.show(settlement);
     }
 
     /**
    * Hide settlement modal and return to game screen
    */
     hideSettlementModal() {
+        this.sceneUI.hide();
     // Hide settlement modal
         const settlementModal = document.getElementById('settlementModal');
         if (settlementModal) {
@@ -141,8 +146,8 @@ class SettlementUI {
         }
 
         const popEl = document.getElementById('settlementPopulation');
-        if (popEl && settlement.population) {
-            popEl.textContent = `Population: ${settlement.population}`;
+        if (popEl) {
+            popEl.textContent = settlement.population ? `Population: ${settlement.population}` : '';
         }
     }
 
@@ -151,6 +156,7 @@ class SettlementUI {
    * @param {string} buildingType - Type of building ('tavern', 'merchant', etc.)
    */
     showBuildingModal(buildingType) {
+        this.sceneUI.setActive(false);
         const buildingModal = document.getElementById('buildingModal');
         if (!buildingModal) {
             console.error('Building modal not found in HTML');
@@ -179,6 +185,7 @@ class SettlementUI {
    * Hide building modal and return to settlement town map
    */
     hideBuildingModal() {
+        this.sceneUI.setActive(true);
     // Hide building modal
         const buildingModal = document.getElementById('buildingModal');
         if (buildingModal) {
@@ -672,7 +679,9 @@ class SettlementUI {
         }
 
         // Passive Empathy = 10 + empathy modifier
-        const empathyMod = character.skillBonuses?.empathy ?? character.abilityModifiers?.wis ?? 0;
+        const empathyMod = window.skillChallengeManager
+            ? window.skillChallengeManager.getSkillModifier(character, 'empathy', [], 'composure')
+            : skillRegistry.getModifier(character, 'empathy', 'composure');
         const passiveEmpathy = 10 + empathyMod;
 
         // DC modified by relation tier
@@ -708,8 +717,8 @@ class SettlementUI {
             if (npc.passiveFlags[check.flag] !== undefined) continue; // already run
 
             const skillMod = window.skillChallengeManager
-                ? window.skillChallengeManager.getSkillModifier(character, check.skill)
-                : (character.skillBonuses?.[check.skill] ?? character.abilityModifiers?.[this._skillToAbility(check.skill)] ?? 0);
+                ? window.skillChallengeManager.getSkillModifier(character, check.skill, [], check.attribute)
+                : skillRegistry.getModifier(character, check.skill, check.attribute);
 
             const passiveScore = 10 + skillMod;
             const dc = check.dc + tierMod;
@@ -723,36 +732,6 @@ class SettlementUI {
 
             console.log(`🔍 Passive ${check.skill} (${check.flag}): ${passiveScore} vs DC ${dc} → ${passed ? 'pass' : 'fail'}`);
         }
-    }
-
-    _skillToAbility(skillId) {
-        // Prefer delegating to data/skills.json (already loaded by SkillChallengeManager at
-        // game init — window.skillChallengeManager.skillsData) instead of maintaining a second
-        // hardcoded copy. This is only a fallback path anyway (see the caller at
-        // _runPassiveApproachChecks — it's used only when window.skillChallengeManager itself
-        // is unavailable), so the static map below exists purely as a last-resort safety net
-        // for that edge case, not as the primary source of truth.
-        const skillData = window.skillChallengeManager?.skillsData?.find(s => s.id === skillId);
-        if (skillData) {
-            return RULES.attributes.system === 'NVSystem'
-                ? (skillData.attributeNVSystem || skillData.ability)
-                : skillData.ability;
-        }
-
-        const legacyMap = {
-            athletics: 'str', acrobatics: 'dex', sleightOfHand: 'dex',
-            endurance: 'con', academia: 'int', arcana: 'int', investigation: 'int',
-            perception: 'wis', cunning: 'wis', creativity: 'wis', empathy: 'wis',
-            influence: 'cha', deception: 'cha'
-        };
-        const sixAttributeMap = {
-            athletics: 'prowess', acrobatics: 'prowess', sleightOfHand: 'prowess',
-            endurance: 'vitality', academia: 'intellect', arcana: 'intellect', investigation: 'intellect',
-            perception: 'insight', cunning: 'insight', creativity: 'composure', empathy: 'insight',
-            influence: 'presence', deception: 'composure'
-        };
-        const map = RULES.attributes.system === 'NVSystem' ? sixAttributeMap : legacyMap;
-        return map[skillId] || (RULES.attributes.system === 'NVSystem' ? 'insight' : 'wis');
     }
 
     /**
@@ -778,11 +757,15 @@ class SettlementUI {
         const tierMod = config.dcModifierByTier[tierId] ?? 0;
         const dc = config.activeInfluenceBaseDC + tierMod;
 
-        // Roll d20 + Influence skill bonus
-        const influenceMod = character.skillBonuses?.influence ?? character.abilityModifiers?.cha ?? 0;
-        const roll = Math.floor(Math.random() * 20) + 1;
-        const total = roll + influenceMod;
-        const passed = total >= dc;
+        // This approach is patient self-command rather than force of personality.
+        const check = skillRegistry.rollCheck(character, {
+            skillId: 'influence',
+            attribute: 'composure',
+            dc
+        });
+        const { roll, total } = check;
+        const influenceMod = check.modifier;
+        const passed = check.success;
 
         // Show roll result in message log
         const { addMessage } = gameState;
@@ -1810,6 +1793,7 @@ class SettlementUI {
 
         const effectiveType = challenge.type === 'contested' ? 'single' : challenge.type;
         const skillField = challenge.type === 'contested' ? challenge.playerSkill : challenge.skill;
+        const attributeField = challenge.type === 'contested' ? challenge.playerAttribute : challenge.attribute;
         const baseDC = challenge.baseDC ?? challenge.dc ?? challenge.stages?.[0]?.baseDC ?? 14;
         const adjustedDC = Math.min(25, baseDC + tierMod);
 
@@ -1817,6 +1801,7 @@ class SettlementUI {
             title: challenge.name,
             description: challenge.description,
             skill: skillField,
+            attribute: attributeField,
             dc: adjustedDC
         };
 

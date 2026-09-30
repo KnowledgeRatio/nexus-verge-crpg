@@ -1,6 +1,6 @@
 # Terrain Atlas Art Overhaul
 
-**Status:** Implemented (2026-08-15) — the terrain art overhaul is complete. All 19 `continuousAtlas` terrains, all 8 legacy landmarks, and all 5 POI-only terrains (`temple`, `monastery`, `camp`, `watchtower`, `villa`) have generated art wired via `tileImage`; no terrain entry has a null `tileImage`. Full suite 579/579. Only deferred item from this plan is the dungeon-tile cleanup (delete the 15 dead `dungeon*-mai-2.png` + `beach-mai-2.png`), still not done. A second, separate design thread (Unified POI System, end of file) was spun off from this same conversation; its first spec shipped to code on 2026-08-09, but the user rejected one outcome (standalone `dungeon` generation kept as a second parallel pipeline alongside POIs) after seeing it live. A redesign spec resolving that (see that section's "Scope Revision — Redesign Spec") is written but **not yet implemented** — treat the POI system as mid-migration, not done.
+**Status:** Implemented (verified 2026-09-21) — the terrain art overhaul and the simplified Unified POI redesign are live. POIs use data-driven per-type resolution, retain their original art after reveal, and show three-state badges; standalone dungeon generation was removed. The retired `dungeon*-mai-2.png` and `beach-mai-2.png` assets were also removed. Historical proposals later in this file record how the shipped design was reached; they are not outstanding work.
 
 ## Implementation Status (2026-08-09)
 
@@ -192,7 +192,7 @@ Follow-up pass (not scheduled, revisit later):
 
 # Related Design Thread: Unified POI System
 
-**Status:** Proposed (2026-08-09) — spun off from the same conversation while reviewing how `sanctuary`/`ruins` display on terrain. `game-designer` and `architect` have now produced a full spec (below); still **Proposed, not Approved** — pending your sign-off on the judgment calls flagged near the end before any code/data work starts.
+**Historical proposal status:** Proposed on 2026-08-09; subsequently revised and implemented. The plan-level status at the top of this file governs current state.
 
 ## How this surfaced
 

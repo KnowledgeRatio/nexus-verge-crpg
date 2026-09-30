@@ -12,7 +12,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
     getRawAttributeModifier,
     getAttributeModifierFor,
-    getBlendedAttributeModifier
+    getBlendedAttributeModifier,
+    getDerivedStatModifier
 } from '../../src/utils/attributeResolver.js';
 import { getAbilityModifier } from '../../src/utils/dice.js';
 import { RULES } from '../../src/core/rulesEngine.js';
@@ -30,15 +31,26 @@ describe('RULES.attributes scaffolding', () => {
     });
 
     it('derivedStatMap has entries for the documented single-attribute contexts', () => {
-        for (const key of ['meleeAttack', 'rangedFinesseAttack', 'acEvasion', 'acSoak', 'hp', 'initiative', 'passivePerception', 'vitalitySave', 'insightSave', 'composureSave']) {
+        for (const key of ['meleeAttack', 'rangedFinesseAttack', 'hp', 'initiative', 'passivePerception', 'resilienceSave', 'intuitionSave', 'composureSave']) {
             expect(RULES.attributes.derivedStatMap[key]?.type).toBe('single');
         }
     });
 
     it('derivedStatMap has entries for the documented blend contexts', () => {
-        for (const key of ['concentration', 'flee', 'menacingAttackDC']) {
+        for (const key of ['acEvasion', 'concentration', 'flee', 'menacingAttackDC']) {
             expect(RULES.attributes.derivedStatMap[key]?.type).toBe('blend');
         }
+    });
+
+    it('weights AC evasion 2:1 toward Intuition over Prowess', () => {
+        expect(RULES.attributes.derivedStatMap.acEvasion).toEqual({
+            type: 'blend',
+            attributes: ['intuition', 'prowess'],
+            weights: [2, 1],
+            bySystem: {
+                '5EClassic': { type: 'single', attributes: ['intuition'] }
+            }
+        });
     });
 });
 
@@ -60,11 +72,11 @@ describe('getRawAttributeModifier (5EClassic mode — real character shape)', ()
     });
 
     it('score 10 -> raw modifier 0', () => {
-        expect(getRawAttributeModifier({ abilities: { con: 10 } }, 'vitality')).toBe(0);
+        expect(getRawAttributeModifier({ abilities: { con: 10 } }, 'resilience')).toBe(0);
     });
 
     it('score 15 -> raw modifier 2.5 (unfloored)', () => {
-        expect(getRawAttributeModifier({ abilities: { con: 15 } }, 'vitality')).toBe(2.5);
+        expect(getRawAttributeModifier({ abilities: { con: 15 } }, 'resilience')).toBe(2.5);
     });
 
     it('score 13 -> raw modifier 1.5 (unfloored)', () => {
@@ -80,11 +92,11 @@ describe('getRawAttributeModifier (5EClassic mode — real character shape)', ()
     });
 
     it('returns 0 when character is missing', () => {
-        expect(getRawAttributeModifier(undefined, 'vitality')).toBe(0);
+        expect(getRawAttributeModifier(undefined, 'resilience')).toBe(0);
     });
 
     it('returns 0 when abilities bag is missing', () => {
-        expect(getRawAttributeModifier({}, 'vitality')).toBe(0);
+        expect(getRawAttributeModifier({}, 'resilience')).toBe(0);
     });
 
     it('returns 0 when the requested attribute score is missing', () => {
@@ -96,8 +108,8 @@ describe('getRawAttributeModifier (5EClassic mode — real character shape)', ()
         // original bug (every resolver call silently returned 0 regardless of real scores).
         const character = { abilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 } };
         expect(getRawAttributeModifier(character, 'prowess')).toBe(3);   // str 16 -> +3
-        expect(getRawAttributeModifier(character, 'insight')).toBe(2);   // dex 14 -> +2
-        expect(getRawAttributeModifier(character, 'vitality')).toBe(1); // con 12 -> +1
+        expect(getRawAttributeModifier(character, 'intuition')).toBe(2);   // dex 14 -> +2
+        expect(getRawAttributeModifier(character, 'resilience')).toBe(1); // con 12 -> +1
         expect(getRawAttributeModifier(character, 'intellect')).toBe(0); // int 10 -> +0
         expect(getRawAttributeModifier(character, 'composure')).toBe(1.5); // wis 13 -> +1.5 (unfloored)
         expect(getRawAttributeModifier(character, 'presence')).toBe(2.5); // cha 15 -> +2.5 (unfloored)
@@ -112,15 +124,15 @@ describe('getRawAttributeModifier (NVSystem mode — reads new key directly)', (
 
     it('does not redirect new-system keys when system is NVSystem', () => {
         RULES.attributes.system = 'NVSystem';
-        expect(getRawAttributeModifier({ abilities: { vitality: 15 } }, 'vitality')).toBe(2.5);
+        expect(getRawAttributeModifier({ abilities: { resilience: 15 } }, 'resilience')).toBe(2.5);
         // Legacy key would NOT resolve in this mode — confirms no accidental fallback.
-        expect(getRawAttributeModifier({ abilities: { con: 15 } }, 'vitality')).toBe(0);
+        expect(getRawAttributeModifier({ abilities: { con: 15 } }, 'resilience')).toBe(0);
     });
 });
 
 // ---------------------------------------------------------------------------
 // getRawAttributeModifier — Hearthcraft activeMealBuff branch. scoreChoices in
-// data/practices.json are always authored as NVSystem keys (prowess/vitality/...),
+// data/practices.json are always authored as NVSystem keys (prowess/resilience/...),
 // so buff.abilityScore is always NVSystem-shaped even under 5EClassic mode.
 // ---------------------------------------------------------------------------
 describe('getRawAttributeModifier (activeMealBuff)', () => {
@@ -132,20 +144,20 @@ describe('getRawAttributeModifier (activeMealBuff)', () => {
     it('adds the buff bonus to the score before computing the modifier (NVSystem mode)', () => {
         RULES.attributes.system = 'NVSystem';
         const character = {
-            abilities: { vitality: 10 },
-            activeMealBuff: { abilityScore: 'vitality', bonusMagnitude: 1 }
+            abilities: { resilience: 10 },
+            activeMealBuff: { abilityScore: 'resilience', bonusMagnitude: 1 }
         };
         // (10 + 1 - 10) / 2 = 0.5, not (10 - 10) / 2 = 0
-        expect(getRawAttributeModifier(character, 'vitality')).toBe(0.5);
+        expect(getRawAttributeModifier(character, 'resilience')).toBe(0.5);
     });
 
     it('does not apply the buff to a non-matching attribute', () => {
         RULES.attributes.system = 'NVSystem';
         const character = {
-            abilities: { vitality: 10, insight: 10 },
-            activeMealBuff: { abilityScore: 'vitality', bonusMagnitude: 1 }
+            abilities: { resilience: 10, intuition: 10 },
+            activeMealBuff: { abilityScore: 'resilience', bonusMagnitude: 1 }
         };
-        expect(getRawAttributeModifier(character, 'insight')).toBe(0);
+        expect(getRawAttributeModifier(character, 'intuition')).toBe(0);
     });
 
     it('defaults bonusMagnitude to 1 when omitted', () => {
@@ -177,8 +189,8 @@ describe('getRawAttributeModifier (activeMealBuff)', () => {
 
     it('is a no-op when there is no active meal buff', () => {
         RULES.attributes.system = 'NVSystem';
-        const character = { abilities: { vitality: 10 } };
-        expect(getRawAttributeModifier(character, 'vitality')).toBe(0);
+        const character = { abilities: { resilience: 10 } };
+        expect(getRawAttributeModifier(character, 'resilience')).toBe(0);
     });
 });
 
@@ -200,27 +212,27 @@ describe('getBlendedAttributeModifier (NVSystem mode)', () => {
         RULES.attributes.system = originalSystem;
     });
 
-    it('concentration: floor((Vitality_mod + Composure_mod) / 2) — plan worked example, Vitality 15 / Composure 13', () => {
-        const character = { abilities: { vitality: 15, composure: 13 } };
+    it('concentration: floor((Resilience_mod + Composure_mod) / 2) — plan worked example, Resilience 15 / Composure 13', () => {
+        const character = { abilities: { resilience: 15, composure: 13 } };
         // 2.5 + 1.5 = 4.0 -> floor(4.0 / 2) = 2 (not the double-floor bug's 3, and not the
         // missing-division bug's 4 — sum-then-floor with no averaging)
         expect(getBlendedAttributeModifier(character, 'concentration')).toBe(2);
     });
 
     it('concentration: a half-point contribution alone floors to nothing, but pairs to push the total over a threshold', () => {
-        const aloneCase = { abilities: { vitality: 13, composure: 10 } }; // 1.5 + 0 = 1.5 -> floor(1.5/2) = 0
+        const aloneCase = { abilities: { resilience: 13, composure: 10 } }; // 1.5 + 0 = 1.5 -> floor(1.5/2) = 0
         expect(getBlendedAttributeModifier(aloneCase, 'concentration')).toBe(0);
-        const pairedCase = { abilities: { vitality: 13, composure: 13 } }; // 1.5 + 1.5 = 3.0 -> floor(3.0/2) = 1
+        const pairedCase = { abilities: { resilience: 13, composure: 13 } }; // 1.5 + 1.5 = 3.0 -> floor(3.0/2) = 1
         expect(getBlendedAttributeModifier(pairedCase, 'concentration')).toBe(1);
     });
 
-    it('flee: floor((Prowess_mod + Insight_mod) / 2)', () => {
-        const character = { abilities: { prowess: 14, insight: 13 } }; // 2.0 + 1.5 = 3.5 -> floor(3.5/2) = 1
+    it('flee: floor((Prowess_mod + Intuition_mod) / 2)', () => {
+        const character = { abilities: { prowess: 14, intuition: 13 } }; // 2.0 + 1.5 = 3.5 -> floor(3.5/2) = 1
         expect(getBlendedAttributeModifier(character, 'flee')).toBe(1);
     });
 
-    it('flee: a dump-Prowess build still gets a real (if small) blended modifier from Insight alone', () => {
-        const character = { abilities: { prowess: 8, insight: 16 } }; // -1 + 3 = 2 -> floor(2/2) = 1
+    it('flee: a dump-Prowess build still gets a real (if small) blended modifier from Intuition alone', () => {
+        const character = { abilities: { prowess: 8, intuition: 16 } }; // -1 + 3 = 2 -> floor(2/2) = 1
         expect(getBlendedAttributeModifier(character, 'flee')).toBe(1);
     });
 
@@ -235,11 +247,33 @@ describe('getBlendedAttributeModifier (NVSystem mode)', () => {
         const character = { abilities: { prowess: 8, presence: 8 } }; // -1 + -1 = -2 -> floor(-2/2) = -1
         expect(getBlendedAttributeModifier(character, 'menacingAttackDC')).toBe(-1);
     });
+
+    it('supports configured weights while flooring only after the weighted average', () => {
+        const original = RULES.attributes.derivedStatMap.challengeDC;
+        RULES.attributes.derivedStatMap.challengeDC = {
+            type: 'blend',
+            attributes: ['intuition', 'prowess'],
+            weights: [2, 1]
+        };
+        try {
+            const character = { abilities: { intuition: 15, prowess: 13 } };
+            // floor((2.5*2 + 1.5) / 3) = floor(2.166...) = 2
+            expect(getBlendedAttributeModifier(character, 'challengeDC')).toBe(2);
+            expect(getDerivedStatModifier(character, 'challengeDC')).toBe(2);
+        } finally {
+            RULES.attributes.derivedStatMap.challengeDC = original;
+        }
+    });
+
+    it('generic resolution preserves single-attribute contexts', () => {
+        const character = { abilities: { intuition: 15 } };
+        expect(getDerivedStatModifier(character, 'initiative')).toBe(2);
+    });
 });
 
 // ---------------------------------------------------------------------------
 // getAttributeModifierFor (single-attribute contexts) — exercised under '5EClassic'
-// mode, since these tests rely on the legacy-key redirect (e.g. insight -> dex).
+// mode, since these tests rely on the legacy-key redirect (e.g. intuition -> dex).
 // ---------------------------------------------------------------------------
 describe('getAttributeModifierFor', () => {
     const originalSystem = RULES.attributes.system;
@@ -251,7 +285,7 @@ describe('getAttributeModifierFor', () => {
     });
 
     it('floors a single attribute exactly like the existing floored-integer pattern (zero behavior change)', () => {
-        // acEvasion -> ['insight'] (type: 'single'), which redirects to legacy 'dex' under
+        // acEvasion's 5EClassic override -> ['intuition'] (type: 'single'), which redirects to legacy 'dex' under
         // system: '5EClassic'. For any single term, floor(raw) === the game's existing
         // Math.floor((score - 10) / 2) modifier — this IS the "zero behavior change"
         // guarantee for single-attribute contexts: there's nothing to blend, so the
@@ -262,14 +296,14 @@ describe('getAttributeModifierFor', () => {
         }
     });
 
-    it('resolves initiative from insight -> legacy dex (per derivedStatMap + legacyToNew)', () => {
+    it('resolves initiative from intuition -> legacy dex (per derivedStatMap + legacyToNew)', () => {
         const character = { abilities: { dex: 14 } };
         expect(getAttributeModifierFor(character, 'initiative')).toBe(2);
     });
 
-    it('resolves vitalitySave from vitality -> legacy con', () => {
+    it('resolves resilienceSave from resilience -> legacy con', () => {
         const character = { abilities: { con: 17 } };
-        expect(getAttributeModifierFor(character, 'vitalitySave')).toBe(3);
+        expect(getAttributeModifierFor(character, 'resilienceSave')).toBe(3);
     });
 
     it('floors a half-point score down (13 -> +1, not +1.5)', () => {
@@ -307,9 +341,9 @@ describe('getBlendedAttributeModifier', () => {
         RULES.attributes.system = originalSystem;
     });
 
-    // Blend attribute keys redirect through legacyToNew too: concentration (vitality+composure)
-    // -> con+wis; flee (prowess+insight) -> str+dex; menacingAttackDC (prowess+presence) -> str+cha.
-    it('plan worked example: Vitality 15 / Composure 13 (concentration) -> floor(4.0 / 2) = 2, not 3 or 4', () => {
+    // Blend attribute keys redirect through legacyToNew too: concentration (resilience+composure)
+    // -> con+wis; flee (prowess+intuition) -> str+dex; menacingAttackDC (prowess+presence) -> str+cha.
+    it('plan worked example: Resilience 15 / Composure 13 (concentration) -> floor(4.0 / 2) = 2, not 3 or 4', () => {
         const character = { abilities: { con: 15, wis: 13 } };
         const result = getBlendedAttributeModifier(character, 'concentration');
 
@@ -339,7 +373,7 @@ describe('getBlendedAttributeModifier', () => {
         expect(result).not.toBe(buggyMissingDivision);
     });
 
-    it('flee blend (prowess + insight) sums raw and floors once', () => {
+    it('flee blend (prowess + intuition) sums raw and floors once', () => {
         const character = { abilities: { str: 14, dex: 13 } }; // 2.0 + 1.5 = 3.5 -> floor(3.5/2) = 1
         expect(getBlendedAttributeModifier(character, 'flee')).toBe(1);
     });
@@ -372,7 +406,7 @@ describe('getBlendedAttributeModifier', () => {
     });
 
     it('regression: real ability scores (16/14/12/10/13/15) resolve flee to a real non-zero value, not 0', () => {
-        // flee = floor((prowess(str) + insight(dex)) / 2). str 16 -> +3, dex 14 -> +2 -> sum 5 -> floor(5/2) = 2
+        // flee = floor((prowess(str) + intuition(dex)) / 2). str 16 -> +3, dex 14 -> +2 -> sum 5 -> floor(5/2) = 2
         const character = { abilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 } };
         expect(getBlendedAttributeModifier(character, 'flee')).toBe(2);
     });

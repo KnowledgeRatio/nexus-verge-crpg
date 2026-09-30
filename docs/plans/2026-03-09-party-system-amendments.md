@@ -9,7 +9,7 @@
 
 **Decision:** Full BG3-style direct control. Player manually controls each party member on their turn.
 
-**Initiative (locked):** Every combatant — player, each companion, each enemy — rolls individual initiative (d20 + DEX modifier) at combat start. Turn order is a single unified queue sorted highest to lowest, DEX as tiebreaker. No grouping by team. Companions and enemies are fully interleaved in the queue. This is the existing system; companions are added to the same initiative roll loop with `team: 'companion'`.
+**Initiative (party structure locked):** Every combatant — player, each companion, each enemy — rolls individual initiative at combat start. Turn order is a single unified queue sorted highest to lowest, with no grouping by team. Companions and enemies are fully interleaved. The later attribute-system remap supersedes this plan's original DEX modifier: current `NVSystem` initiative is d20 + Intuition modifier, with Intuition breaking ties; DEX applies only in `5EClassic` rollback mode.
 
 **Implementation:** `startTurn()` detects team. Player/companion turns wait for player input via the action panel. Enemy turns auto-resolve. No stance system needed.
 

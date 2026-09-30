@@ -13,6 +13,21 @@ import { Character } from '../../src/systems/Character.js';
 import { getAbilityModifier } from '../../src/utils/dice.js';
 import { RULES } from '../../src/core/rulesEngine.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../../src/utils/attributeResolver.js';
+import { skillRegistry } from '../../src/systems/SkillRegistry.js';
+import { readFileSync } from 'node:fs';
+
+const skillsJson = JSON.parse(readFileSync(new URL('../../data/skills.json', import.meta.url)));
+
+const suiteOriginalSystem = RULES.attributes.system;
+
+beforeEach(() => {
+    RULES.attributes.system = '5EClassic';
+    skillRegistry.setDefinitions(skillsJson.skills);
+});
+
+afterEach(() => {
+    RULES.attributes.system = suiteOriginalSystem;
+});
 
 function makeCharacter(overrides = {}) {
     const base = {
@@ -23,6 +38,7 @@ function makeCharacter(overrides = {}) {
             id: 'testClass',
             hitDie: 8,
             savingThrowProficiencies: ['str', 'con'],
+            savingThrowProficienciesNVSystem: ['resilience'],
             armorProficiencies: [],
             weaponProficiencies: [],
             toolProficiencies: [],
@@ -85,7 +101,7 @@ describe('Character.calculateAC', () => {
             equipment: {
                 mainHand: null,
                 offHand: null,
-                armor: { armorClass: 11, addDexModifier: true, maxDexBonus: null, armorType: 'light' },
+                armor: { armorClass: 11, addEvasionModifier: true, maxEvasionBonus: null, armorType: 'light' },
                 helmet: null,
                 artifact: null
             }
@@ -93,13 +109,13 @@ describe('Character.calculateAC', () => {
         expect(character.ac).toBe(11 + 4);
     });
 
-    it('medium armor caps the DEX bonus at maxDexBonus', () => {
+    it('medium armor caps the DEX bonus at maxEvasionBonus', () => {
         const character = makeCharacter({
             baseAbilities: { str: 10, dex: 18, con: 10, int: 10, wis: 10, cha: 10 }, // dex mod +4
             equipment: {
                 mainHand: null,
                 offHand: null,
-                armor: { armorClass: 14, addDexModifier: true, maxDexBonus: 2, armorType: 'medium' },
+                armor: { armorClass: 14, addEvasionModifier: true, maxEvasionBonus: 2, armorType: 'medium' },
                 helmet: null,
                 artifact: null
             }
@@ -113,7 +129,7 @@ describe('Character.calculateAC', () => {
             equipment: {
                 mainHand: null,
                 offHand: null,
-                armor: { armorClass: 18, addDexModifier: false, maxDexBonus: 0, armorType: 'heavy' },
+                armor: { armorClass: 18, addEvasionModifier: false, maxEvasionBonus: 0, armorType: 'heavy' },
                 helmet: null,
                 artifact: null
             }
@@ -142,7 +158,7 @@ describe('Character.calculateAC', () => {
             equipment: {
                 mainHand: null,
                 offHand: null,
-                armor: { armorClass: 12, addDexModifier: true, maxDexBonus: null, armorType: 'light' },
+                armor: { armorClass: 12, addEvasionModifier: true, maxEvasionBonus: null, armorType: 'light' },
                 helmet: null,
                 artifact: null
             }
@@ -221,7 +237,7 @@ describe('Character.initializeSavingThrows', () => {
 // tests/systems/effectDispatcher.sixAttribute.test.js do) — that's the specific gap that let
 // Bug 2 (no code path populates six-attribute-keyed character.abilities) ship undetected:
 // every existing NVSystem-mode test up to this point used fixtures that already had
-// .prowess/.vitality/etc. present, so the resolver's redirect-vs-populate distinction was
+// .prowess/.resilience/etc. present, so the resolver's redirect-vs-populate distinction was
 // never actually exercised end-to-end through real Character construction.
 // ---------------------------------------------------------------------------
 describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
@@ -235,37 +251,36 @@ describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
         RULES.attributes.system = originalSystem;
     });
 
-    it('calculateAbilities() populates six-attribute keys (prowess/vitality/etc.) via the legacy->new bijection, not just legacy keys', () => {
+    it('calculateAbilities() populates six-attribute keys (prowess/resilience/etc.) via the legacy->new bijection, not just legacy keys', () => {
         const character = makeCharacter({
             level: 5,
             baseAbilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 }
         });
 
         expect(character.abilities.prowess).toBe(16);   // str -> prowess
-        expect(character.abilities.insight).toBe(14);    // dex -> insight
-        expect(character.abilities.vitality).toBe(12);   // con -> vitality
+        expect(character.abilities.intuition).toBe(14);    // dex -> intuition
+        expect(character.abilities.resilience).toBe(12);   // con -> resilience
         expect(character.abilities.intellect).toBe(10);  // int -> intellect
         expect(character.abilities.composure).toBe(13);  // wis -> composure
         expect(character.abilities.presence).toBe(15);   // cha -> presence
     });
 
-    it('calculateAbilityModifiers() (generic, not hardcoded to 6 legacy keys) produces a modifier for every populated attribute, legacy AND new', () => {
+    it('calculateAbilityModifiers() produces only canonical modifiers in NVSystem mode', () => {
         const character = makeCharacter({
             level: 5,
             baseAbilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 }
         });
 
-        // Legacy keys still resolve (unaffected by the generic rewrite).
-        expect(character.abilityModifiers.str).toBe(3);
-        expect(character.abilityModifiers.wis).toBe(1);
+        expect(character.abilityModifiers.str).toBeUndefined();
+        expect(character.abilityModifiers.wis).toBeUndefined();
 
         // New-key modifiers — the actual gap: SkillChallengeManager.getSkillModifier()
         // (NVSystem mode) reads character.abilityModifiers[newKey] directly, e.g.
-        // .composure/.insight. A hardcoded-to-6-legacy-keys calculateAbilityModifiers()
+        // .composure/.intuition. A hardcoded-to-6-legacy-keys calculateAbilityModifiers()
         // never produces these, silently degrading every such lookup to 0.
         expect(character.abilityModifiers.prowess).toBe(3);   // str -> prowess
-        expect(character.abilityModifiers.insight).toBe(2);   // dex 14 -> insight
-        expect(character.abilityModifiers.vitality).toBe(1);  // con 12 -> vitality
+        expect(character.abilityModifiers.intuition).toBe(2);   // dex 14 -> intuition
+        expect(character.abilityModifiers.resilience).toBe(1);  // con 12 -> resilience
         expect(character.abilityModifiers.intellect).toBe(0); // int 10 -> intellect
         expect(character.abilityModifiers.composure).toBe(1); // wis 13 -> composure
         expect(character.abilityModifiers.presence).toBe(2);  // cha 15 -> presence
@@ -282,13 +297,30 @@ describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
         expect(getAttributeModifierFor(character, 'meleeAttack')).toBe(3);
     });
 
+    it('derives initiative from Intuition in NVSystem mode', () => {
+        const character = makeCharacter({
+            baseAbilities: {
+                prowess: 6,
+                resilience: 10,
+                intellect: 10,
+                intuition: 18,
+                presence: 10,
+                composure: 10
+            }
+        });
+
+        expect(character.initiative).toBe(4);
+        expect(character.initiative).toBe(character.abilityModifiers.intuition);
+        expect(character.abilityModifiers.dex).toBeUndefined();
+    });
+
     it('a real Character resolves a real non-zero blended modifier through the resolver, not the silent-0 bug', () => {
         const character = makeCharacter({
             level: 5,
             baseAbilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 }
         });
 
-        // flee = floor((prowess(str 16 -> +3) + insight(dex 14 -> +2)) / 2) = floor(5/2) = 2
+        // flee = floor((prowess(str 16 -> +3) + intuition(dex 14 -> +2)) / 2) = floor(5/2) = 2
         expect(getBlendedAttributeModifier(character, 'flee')).toBe(2);
     });
 
@@ -298,33 +330,30 @@ describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
             baseAbilities: { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15 }
         });
 
-        // str proficient: prowess mod +3 (str 16) + prof 3 = 6
-        expect(character.savingThrows.str.proficient).toBe(true);
-        expect(character.savingThrows.str.bonus).toBe(6);
-        // con proficient: vitality mod +1 (con 12) + prof 3 = 4
-        expect(character.savingThrows.con.proficient).toBe(true);
-        expect(character.savingThrows.con.bonus).toBe(4);
-        // wis non-proficient: composure mod +1 (wis 13), no prof bonus
-        expect(character.savingThrows.wis.proficient).toBe(false);
-        expect(character.savingThrows.wis.bonus).toBe(1);
+        expect(character.savingThrows.resilience.proficient).toBe(true);
+        expect(character.savingThrows.resilience.bonus).toBe(4);
+        expect(character.savingThrows.intuition.proficient).toBe(false);
+        expect(character.savingThrows.intuition.bonus).toBe(2);
+        expect(character.savingThrows.composure.proficient).toBe(false);
+        expect(character.savingThrows.composure.bonus).toBe(1);
     });
 
     // Perception is the discriminating skill: legacy `ability` is "wis", but decision #1 maps
-    // it to "insight" for NVSystem mode — and insight's legacy conversion source is DEX,
+    // it to "intuition" for NVSystem mode — and intuition's legacy conversion source is DEX,
     // not WIS (see SkillChallengeManager.sixAttribute.test.js for the same discriminating
     // case). A character with divergent WIS/DEX scores proves updateSkillBonuses() actually
     // switched attribute source, rather than silently reading the legacy `wis` key in both modes.
-    it('updateSkillBonuses() reads the Insight (DEX-derived) modifier for Perception, not WIS', () => {
+    it('updateSkillBonuses() reads the Intuition (DEX-derived) modifier for Perception, not WIS', () => {
         const character = makeCharacter({
             level: 5, // proficiency bonus +3
             baseAbilities: { str: 10, dex: 18, con: 10, int: 10, wis: 8, cha: 10 },
             skillChoices: ['perception']
         });
 
-        expect(character.abilities.insight).toBe(18); // dex -> insight bijection
-        // dex 18 -> insight mod +4, proficient -> +3 prof = 7
+        expect(character.abilities.intuition).toBe(18); // dex -> intuition bijection
+        // dex 18 -> intuition mod +4, proficient -> +3 prof = 7
         expect(character.skills.perception.bonus).toBe(7);
-        expect(character.skills.perception.bonus).not.toBe(character.abilityModifiers.wis + character.proficiencyBonus);
+        expect(character.abilityModifiers.wis).toBeUndefined();
     });
 
     it('updateSkillBonuses() still reads Prowess (STR-derived) for Athletics — unsplit skill, same numeric answer as legacy', () => {
@@ -336,6 +365,19 @@ describe('Character abilities — NVSystem mode (Bug 2 regression)', () => {
 
         // str 16 -> prowess mod +3, proficient -> +3 prof = 6
         expect(character.skills.athletics.bonus).toBe(6);
+    });
+
+    it('normalizes retired and legacy ASI keys from an old pending save', () => {
+        const character = makeCharacter({
+            baseAbilities: { prowess: 10, resilience: 10, intellect: 10, intuition: 10, presence: 10, composure: 10 }
+        });
+
+        character.applyASI({ insight: 1, con: 1 });
+
+        expect(character.baseAbilities.intuition).toBe(11);
+        expect(character.baseAbilities.resilience).toBe(11);
+        expect(character.baseAbilities.insight).toBeUndefined();
+        expect(character.baseAbilities.con).toBeUndefined();
     });
 });
 

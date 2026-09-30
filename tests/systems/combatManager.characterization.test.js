@@ -240,7 +240,7 @@ describe('CombatManager.attack — to-hit roll resolution (legacy ability keys)'
 // 2026-08-03) — every 5EClassic-mode test above pins the rollback path, but until now
 // nothing pinned the to-hit roll (the single hottest consumer of the resolver) under the
 // mode actually running in production. Mirrors the 5EClassic block's assertions/message
-// format, with 'prowess'/'insight' fixture keys instead of legacy 'str'/'dex' — meleeAttack
+// format, with 'prowess'/'intuition' fixture keys instead of legacy 'str'/'dex' — meleeAttack
 // and rangedFinesseAttack both resolve to Prowess only in this mode (no dropped-DEX
 // nuance to characterize, unlike 5EClassic), so melee + ranged is sufficient to lock the
 // formula and message shape without redundant near-duplicate finesse/unarmed variants.
@@ -273,11 +273,11 @@ describe('CombatManager.attack — to-hit roll resolution (NVSystem mode)', () =
         );
     });
 
-    it('ranged weapon also resolves through Prowess, ignoring Insight', async () => {
+    it('ranged weapon also resolves through Prowess, ignoring Intuition', async () => {
         const cm = new CombatManager();
         const attacker = new Combatant(
             makeCharacter({
-                abilities: { prowess: 14, insight: 20 }, // Insight must be ignored
+                abilities: { prowess: 14, intuition: 20 }, // Intuition must be ignored
                 equipment: { mainHand: { id: 'bow', weaponType: 'ranged', properties: [], damage: { dice: '1d8' }, damageType: 'bone', ammoCapacity: 20 }, offHand: null, armor: null }
             }),
             'enemy', 'atk'
@@ -433,6 +433,39 @@ describe('CombatManager.rollInitiative', () => {
     });
 });
 
+describe('CombatManager.rollInitiative (NVSystem mode)', () => {
+    const originalSystem = RULES.attributes.system;
+
+    beforeEach(() => {
+        RULES.attributes.system = 'NVSystem';
+    });
+
+    afterEach(() => {
+        RULES.attributes.system = originalSystem;
+    });
+
+    it('uses Intuition for both the roll modifier and tied-total tiebreaker', () => {
+        const cm = new CombatManager();
+        const intuitive = new Combatant(makeCharacter({
+            abilities: { intuition: 18, dex: 2 }
+        }), 'player', 'intuitive');
+        const slowerRead = new Combatant(makeCharacter({
+            abilities: { intuition: 8, dex: 20 }
+        }), 'enemy', 'slower-read');
+        cm.combatants = [intuitive, slowerRead];
+
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce((10 - 1) / 20) // 10 + 4 = 14
+            .mockReturnValueOnce((15 - 1) / 20); // 15 - 1 = 14
+
+        cm.rollInitiative();
+
+        expect(intuitive.initiative).toBe(14);
+        expect(slowerRead.initiative).toBe(14);
+        expect(cm.turnOrder.map(c => c.id)).toEqual(['intuitive', 'slower-read']);
+    });
+});
+
 // ---------------------------------------------------------------------------
 // Flee check
 // ---------------------------------------------------------------------------
@@ -565,10 +598,10 @@ describe('CombatManager.flee (NVSystem mode)', () => {
         RULES.attributes.system = originalSystem;
     });
 
-    it('modifier is floor((Prowess_mod + Insight_mod) / 2) + proficiency, replacing max(DEX, WIS)', async () => {
+    it('modifier is floor((Prowess_mod + Intuition_mod) / 2) + proficiency, replacing max(DEX, WIS)', async () => {
         const cm = new CombatManager();
         const fleeing = new Combatant(
-            makeCharacter({ abilities: { prowess: 14, insight: 13 } }), // 2.0 + 1.5 = 3.5 -> floor(3.5/2) = 1
+            makeCharacter({ abilities: { prowess: 14, intuition: 13 } }), // 2.0 + 1.5 = 3.5 -> floor(3.5/2) = 1
             'player', 'flee-me'
         );
         cm.combatants = [fleeing];
@@ -579,15 +612,15 @@ describe('CombatManager.flee (NVSystem mode)', () => {
 
         // 10 + (1 blend + 3 prof) = 14
         expect(lastMessageStartingWith('🏃 Flee check:')).toBe(
-            '🏃 Flee check: 10 + 4 (Prowess+Insight blend + prof) = 14 vs DC 10 (0 engaged enemies)'
+            '🏃 Flee check: 10 + 4 (Prowess+Intuition blend + prof) = 14 vs DC 10 (0 engaged enemies)'
         );
         expect(lastMessageStartingWith('✅')).toBe('✅ Fixture escapes!');
     });
 
-    it('a dump-Prowess build still flees on Insight alone, unlike a single-stat design would allow a total dump', async () => {
+    it('a dump-Prowess build still flees on Intuition alone, unlike a single-stat design would allow a total dump', async () => {
         const cm = new CombatManager();
         const fleeing = new Combatant(
-            makeCharacter({ abilities: { prowess: 8, insight: 16 } }), // -1 + 3 = 2 -> floor(2/2) = 1
+            makeCharacter({ abilities: { prowess: 8, intuition: 16 } }), // -1 + 3 = 2 -> floor(2/2) = 1
             'player', 'flee-me'
         );
         cm.combatants = [fleeing];
@@ -596,9 +629,9 @@ describe('CombatManager.flee (NVSystem mode)', () => {
         cm.flee(fleeing);
         await Promise.resolve();
 
-        // 10 + (1 blend + 3 prof) = 14 — even fully dumping Prowess, Insight alone still
+        // 10 + (1 blend + 3 prof) = 14 — even fully dumping Prowess, Intuition alone still
         // produces a real (non-zero) modifier, not a total dump.
-        expect(lastMessageStartingWith('🏃 Flee check:')).toContain('10 + 4 (Prowess+Insight blend + prof) = 14');
+        expect(lastMessageStartingWith('🏃 Flee check:')).toContain('10 + 4 (Prowess+Intuition blend + prof) = 14');
     });
 });
 

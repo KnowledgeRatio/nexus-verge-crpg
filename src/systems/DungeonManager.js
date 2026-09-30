@@ -184,6 +184,18 @@ export class DungeonManager {
         return null;
     }
 
+    /** Read encounter location from the current room, including restored plain-object state. */
+    getEncounterContext() {
+        const dungeon = gameState.get('dungeon');
+        const position = dungeon?.playerPosition;
+        const tile = position ? this.getTileInCurrentRoom(position.x, position.y) : null;
+        return {
+            context: 'dungeon',
+            dungeonTypeId: dungeon?.dungeonTypeId,
+            terrainId: tile?.terrain?.id
+        };
+    }
+
     /**
      * Move player within the dungeon room
      * @returns {Object} Result of movement attempt

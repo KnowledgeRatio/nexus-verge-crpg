@@ -1,0 +1,652 @@
+{
+  "scope": "Main-game CombatSceneUI catalogue sweep with a real generated combat roster; contexts supplied explicitly after one real forest encounter. Not a natural travel walkthrough.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "errors": [],
+  "cases": [
+    {
+      "context": "overworld",
+      "terrain": "town",
+      "label": "Town",
+      "expected": [
+        "settlement"
+      ],
+      "scene": "settlement",
+      "asset": "data/graphics/combat/settlement-v1.glb",
+      "meshes": 19,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/town.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "forest",
+      "label": "Forest",
+      "expected": [
+        "woodland",
+        "woodlandGlade",
+        "woodlandBend"
+      ],
+      "scene": "woodlandGlade",
+      "asset": "data/graphics/combat/woodland-glade-v1.glb",
+      "meshes": 15,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/forest.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "grassland",
+      "label": "Grassland",
+      "expected": [
+        "grassland"
+      ],
+      "scene": "grassland",
+      "asset": "data/graphics/combat/grassland-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/grassland.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "mountain",
+      "label": "Mountain",
+      "expected": [
+        "mountain"
+      ],
+      "scene": "mountain",
+      "asset": "data/graphics/combat/mountain-v1.glb",
+      "meshes": 3,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/mountain.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "desert",
+      "label": "Desert",
+      "expected": [
+        "desert"
+      ],
+      "scene": "desert",
+      "asset": "data/graphics/combat/desert-v1.glb",
+      "meshes": 3,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/desert.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "snowyPlains",
+      "label": "Snowy Plains",
+      "expected": [
+        "snowyPlains"
+      ],
+      "scene": "snowyPlains",
+      "asset": "data/graphics/combat/snowyPlains-v1.glb",
+      "meshes": 3,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/snowyPlains.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "snowForest",
+      "label": "Snow Forest",
+      "expected": [
+        "snowForest"
+      ],
+      "scene": "snowForest",
+      "asset": "data/graphics/combat/snowForest-v1.glb",
+      "meshes": 14,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/snowForest.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "hills",
+      "label": "Hills",
+      "expected": [
+        "hills"
+      ],
+      "scene": "hills",
+      "asset": "data/graphics/combat/hills-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/hills.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "desertHills",
+      "label": "Desert Hills",
+      "expected": [
+        "desertHills"
+      ],
+      "scene": "desertHills",
+      "asset": "data/graphics/combat/desertHills-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/desertHills.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "plains",
+      "label": "Plains",
+      "expected": [
+        "plains"
+      ],
+      "scene": "plains",
+      "asset": "data/graphics/combat/plains-v1.glb",
+      "meshes": 3,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/plains.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "tundra",
+      "label": "Tundra",
+      "expected": [
+        "tundra"
+      ],
+      "scene": "tundra",
+      "asset": "data/graphics/combat/tundra-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/tundra.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "beach",
+      "label": "Beach",
+      "expected": [
+        "beach"
+      ],
+      "scene": "beach",
+      "asset": "data/graphics/combat/beach-v1.glb",
+      "meshes": 2,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/beach.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "shallowWater",
+      "label": "Shallow Water",
+      "expected": [
+        "shallowWater"
+      ],
+      "scene": "shallowWater",
+      "asset": "data/graphics/combat/shallowWater-v1.glb",
+      "meshes": 3,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/shallowWater.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "swamp",
+      "label": "Swamp",
+      "expected": [
+        "swamp"
+      ],
+      "scene": "swamp",
+      "asset": "data/graphics/combat/swamp-v1.glb",
+      "meshes": 6,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/swamp.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "denseForest",
+      "label": "Dense Forest",
+      "expected": [
+        "denseForest"
+      ],
+      "scene": "denseForest",
+      "asset": "data/graphics/combat/denseForest-v1.glb",
+      "meshes": 21,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/denseForest.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "jungle",
+      "label": "Jungle",
+      "expected": [
+        "jungle"
+      ],
+      "scene": "jungle",
+      "asset": "data/graphics/combat/jungle-v1.glb",
+      "meshes": 21,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/jungle.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "savanna",
+      "label": "Savanna",
+      "expected": [
+        "savanna"
+      ],
+      "scene": "savanna",
+      "asset": "data/graphics/combat/savanna-v1.glb",
+      "meshes": 11,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/savanna.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "road",
+      "label": "Road",
+      "expected": [
+        "road"
+      ],
+      "scene": "road",
+      "asset": "data/graphics/combat/road-v1.glb",
+      "meshes": 6,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/road.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "bridge",
+      "label": "Bridge",
+      "expected": [
+        "bridge"
+      ],
+      "scene": "bridge",
+      "asset": "data/graphics/combat/bridge-v1.glb",
+      "meshes": 7,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/bridge.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "farmland",
+      "label": "Farmland",
+      "expected": [
+        "farmland"
+      ],
+      "scene": "farmland",
+      "asset": "data/graphics/combat/farmland-v1.glb",
+      "meshes": 11,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/farmland.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "camp",
+      "label": "Camp",
+      "expected": [
+        "camp"
+      ],
+      "scene": "camp",
+      "asset": "data/graphics/combat/camp-v1.glb",
+      "meshes": 12,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/camp.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "cave",
+      "label": "Cave Entrance",
+      "expected": [
+        "cave"
+      ],
+      "scene": "cave",
+      "asset": "data/graphics/combat/cave-v1.glb",
+      "meshes": 5,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/cave.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "ruins",
+      "label": "Ruins",
+      "expected": [
+        "ruins"
+      ],
+      "scene": "ruins",
+      "asset": "data/graphics/combat/ruins-v1.glb",
+      "meshes": 7,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/ruins.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "temple",
+      "label": "Shrine",
+      "expected": [
+        "temple"
+      ],
+      "scene": "temple",
+      "asset": "data/graphics/combat/temple-v1.glb",
+      "meshes": 6,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/temple.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "monastery",
+      "label": "Cloister",
+      "expected": [
+        "monastery"
+      ],
+      "scene": "monastery",
+      "asset": "data/graphics/combat/monastery-v1.glb",
+      "meshes": 7,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/monastery.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "watchtower",
+      "label": "Watchtower",
+      "expected": [
+        "watchtower"
+      ],
+      "scene": "watchtower",
+      "asset": "data/graphics/combat/watchtower-v1.glb",
+      "meshes": 29,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/watchtower.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "villa",
+      "label": "Villa",
+      "expected": [
+        "villa"
+      ],
+      "scene": "villa",
+      "asset": "data/graphics/combat/villa-v1.glb",
+      "meshes": 11,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/villa.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "residential",
+      "label": "Residential",
+      "expected": [
+        "residential"
+      ],
+      "scene": "residential",
+      "asset": "data/graphics/combat/residential-v1.glb",
+      "meshes": 15,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/residential.png"
+    },
+    {
+      "context": "overworld",
+      "terrain": "industrial",
+      "label": "Industrial",
+      "expected": [
+        "industrial"
+      ],
+      "scene": "industrial",
+      "asset": "data/graphics/combat/industrial-v1.glb",
+      "meshes": 13,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/industrial.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonFloor",
+      "label": "Dungeon Floor",
+      "expected": [
+        "dungeon"
+      ],
+      "scene": "dungeon",
+      "asset": "data/graphics/combat/dungeon-v1.glb",
+      "meshes": 15,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonFloor.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonDoor",
+      "label": "Door",
+      "expected": [
+        "dungeonDoor"
+      ],
+      "scene": "dungeonDoor",
+      "asset": "data/graphics/combat/dungeonDoor-v1.glb",
+      "meshes": 12,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonDoor.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonExit",
+      "label": "Dungeon Exit",
+      "expected": [
+        "dungeonExit"
+      ],
+      "scene": "dungeonExit",
+      "asset": "data/graphics/combat/dungeonExit-v1.glb",
+      "meshes": 12,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonExit.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonTreasure",
+      "label": "Treasure Chest",
+      "expected": [
+        "dungeonTreasure"
+      ],
+      "scene": "dungeonTreasure",
+      "asset": "data/graphics/combat/dungeonTreasure-v1.glb",
+      "meshes": 10,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonTreasure.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonTrap",
+      "label": "Trapped Floor",
+      "expected": [
+        "dungeonTrap"
+      ],
+      "scene": "dungeonTrap",
+      "asset": "data/graphics/combat/dungeonTrap-v1.glb",
+      "meshes": 11,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonTrap.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonAltar",
+      "label": "Altar",
+      "expected": [
+        "dungeonAltar"
+      ],
+      "scene": "dungeonAltar",
+      "asset": "data/graphics/combat/dungeonAltar-v1.glb",
+      "meshes": 8,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonAltar.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonRubble",
+      "label": "Rubble",
+      "expected": [
+        "dungeonRubble"
+      ],
+      "scene": "dungeonRubble",
+      "asset": "data/graphics/combat/dungeonRubble-v1.glb",
+      "meshes": 6,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonRubble.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonWeb",
+      "label": "Spider Web",
+      "expected": [
+        "dungeonWeb"
+      ],
+      "scene": "dungeonWeb",
+      "asset": "data/graphics/combat/dungeonWeb-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonWeb.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonIce",
+      "label": "Ice Floor",
+      "expected": [
+        "dungeonIce"
+      ],
+      "scene": "dungeonIce",
+      "asset": "data/graphics/combat/dungeonIce-v1.glb",
+      "meshes": 4,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonIce.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonMushroom",
+      "label": "Mushroom Grove",
+      "expected": [
+        "dungeonMushroom"
+      ],
+      "scene": "dungeonMushroom",
+      "asset": "data/graphics/combat/dungeonMushroom-v1.glb",
+      "meshes": 5,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonMushroom.png"
+    },
+    {
+      "context": "dungeon",
+      "terrain": "dungeonBones",
+      "label": "Bone Pile",
+      "expected": [
+        "dungeonBones"
+      ],
+      "scene": "dungeonBones",
+      "asset": "data/graphics/combat/dungeonBones-v1.glb",
+      "meshes": 5,
+      "environmentVisible": true,
+      "legacyVisible": false,
+      "status": "Loading combat scene…",
+      "actors": 2,
+      "capture": "terrain-runtime/dungeonBones.png"
+    }
+  ]
+}

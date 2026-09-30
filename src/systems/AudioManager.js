@@ -3,6 +3,8 @@
  * Handles all game audio playback with proper pooling and volume management
  * Supports combat sounds, exploration sounds, ambient audio, and future extensibility
  */
+import { combatSfxKey } from './combatSfxMatrix.js';
+import { mediaAssetUrl, publishedMediaExists } from '../utils/mediaAssetUrl.js';
 
 class AudioManager {
     constructor() {
@@ -24,7 +26,31 @@ class AudioManager {
 
         // Load all sound effects and music
         this.loadSounds();
+        void this.loadCombatSfx();
         this.loadMusic();
+    }
+
+    async loadCombatSfx() {
+        try {
+            const response = await fetch('data/audio/combat-sfx.json');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const config = await response.json();
+            if (config.schemaVersion !== 1) {
+                throw new Error('Unsupported combat SFX matrix');
+            }
+            await Promise.all(Object.entries(config.assets).map(async ([key, asset]) => {
+                const candidate = `data/audio/local/${asset.source}.mp3`;
+                const published = publishedMediaExists(candidate);
+                const available = published ?? await fetch(candidate, { method: 'HEAD' })
+                    .then(result => result.ok).catch(() => false);
+                this.registerSound(`combat-${key}`, available ? mediaAssetUrl(candidate) : asset.fallback);
+            }));
+            this.combatSfx = config;
+        } catch (error) {
+            console.warn('Combat SFX matrix unavailable; using existing sounds:', error);
+        }
     }
 
     /**
@@ -139,7 +165,15 @@ class AudioManager {
      * @param {string} soundKey - Key of the sound to play
      * @param {number} volumeMultiplier - Optional volume multiplier (0.0 to 1.0)
      */
-    play(soundKey, volumeMultiplier = 1.0) {
+    play(soundKey, volumeMultiplier = 1.0, context = {}) {
+        if (soundKey === 'death' && this.combatSfx) {
+            const cue = combatSfxKey(this.combatSfx, 'impact', { downed: true,
+                monsterId: context.monsterId, defenderArmorId: context.armorId });
+            if (!cue) {
+                return;
+            }
+            soundKey = `combat-${cue}`;
+        }
         if (!this.enabled || !this.sounds[soundKey]) {
             return;
         }
@@ -172,7 +206,21 @@ class AudioManager {
 
         // Healing sound
         if (healing) {
-            this.play('heal', 0.8);
+            this.playHealSound();
+            return;
+        }
+
+        if (this.combatSfx) {
+            const key = combatSfxKey(this.combatSfx, 'impact', result);
+            if (key) {
+                this.play(`combat-${key}`, critical ? 1.0 : 0.9);
+                return;
+            }
+            if (!hit) {
+                return; // A miss has its release sound, but no invented contact.
+            }
+        }
+        if (!hit && result.releasePlayed) {
             return;
         }
 
@@ -193,11 +241,23 @@ class AudioManager {
         }
     }
 
+    /** Play the action sound independently of the resolved hit or miss. */
+    playCombatRelease(result) {
+        if (this.combatSfx) {
+            const key = combatSfxKey(this.combatSfx, 'release', result);
+            if (key) {
+                this.play(`combat-${key}`, 0.7);
+            }
+            return;
+        }
+        this.play(result.weaponType === 'ranged' ? 'rangedMiss' : 'meleeMiss', 0.7);
+    }
+
     /**
      * Play healing sound
      */
     playHealSound() {
-        this.play('heal', 0.8);
+        this.play(this.combatSfx ? 'combat-heal' : 'heal', 0.8);
     }
 
     /**

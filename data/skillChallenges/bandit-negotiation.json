@@ -13,12 +13,14 @@
       "passiveChecks": [
         {
           "skill": "empathy",
+          "attribute": "composure",
           "dc": 13,
           "reveal": "{motivation}_motivation",
           "unlockChoices": ["sympathize", "acknowledge_grievance", "appeal_humanity"]
         },
         {
           "skill": "perception",
+          "attribute": "intuition",
           "dc": 14,
           "reveal": "count_enemies",
           "unlockChoices": ["assess_strength"]
@@ -37,6 +39,7 @@
           "tensionChange": 5,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 15,
             "onSuccess": {
               "text": "The leader's eyes narrow, weighing your words against the risks.",
@@ -55,6 +58,7 @@
           "tensionChange": 15,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 18,
             "onSuccess": {
               "text": "Something in your eyes convinces them you're serious. The leader hesitates.",
@@ -86,6 +90,7 @@
           "requiresReveal": "count_enemies",
           "skillCheck": {
             "skill": "perception",
+            "attribute": "intuition",
             "dc": 13,
             "onSuccess": {
               "text": "You count {enemyCount} bandits. Some look nervous - this isn't a hardened warband.",
@@ -142,6 +147,7 @@
           "tensionChange": 5,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 14,
             "onSuccess": {
               "text": "The leader grudgingly nods. 'Fine. What do YOU think is fair?'",
@@ -169,6 +175,7 @@
       "passiveChecks": [
         {
           "skill": "empathy",
+          "attribute": "composure",
           "dc": 15,
           "reveal": "genuine_emotion",
           "unlockChoices": ["heartfelt_appeal"]
@@ -193,6 +200,7 @@
           "requiresReveal": "genuine_emotion",
           "skillCheck": {
             "skill": "empathy",
+            "attribute": "composure",
             "dc": 16,
             "onSuccess": {
               "text": "The leader's eyes glisten. 'You... you actually care.' Their voice cracks.",
@@ -228,6 +236,7 @@
           "text": "I'll go back to {settlementName} and speak on your behalf. You have my word.",
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 13,
             "onSuccess": {
               "text": "The leader nods slowly. 'Your word, huh? Alright. We'll give you three days.'",
@@ -254,6 +263,7 @@
           "tensionChange": -10,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 14,
             "onSuccess": {
               "text": "The leader considers this. 'Honest work... been a while. You'd really vouch for us?'",
@@ -289,7 +299,8 @@
           "id": "deception_guards",
           "text": "I happen to know the town guard is mobilizing. You don't want to be here.",
           "skillCheck": {
-            "skill": "deception",
+            "skill": "influence",
+            "attribute": "composure",
             "dc": 15,
             "onSuccess": {
               "text": "Their eyes widen. 'The guard? Damn. We're out of here.' They start packing camp.",
@@ -332,6 +343,7 @@
           "text": "Half what you're asking. {settlementName} can't afford more.",
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 16,
             "onSuccess": {
               "text": "'Half... alright. Half. But they pay by week's end.'",
@@ -350,6 +362,7 @@
           "tensionChange": -5,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 14,
             "onSuccess": {
               "text": "The leader considers. 'Supplies we can use... yeah, that works.'",
@@ -370,6 +383,7 @@
       "passiveChecks": [
         {
           "skill": "empathy",
+          "attribute": "composure",
           "dc": 14,
           "reveal": "bluffing",
           "unlockChoices": ["call_bluff"]
@@ -382,6 +396,7 @@
           "tensionChange": 10,
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 17,
             "onSuccess": {
               "text": "Your unwavering confidence shakes them. 'Fine. This territory isn't worth dying over.'",
@@ -480,6 +495,7 @@
           "text": "Because bloodshed helps no one. Let me find a solution that works for everyone.",
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 16,
             "onSuccess": {
               "text": "The leader sighs deeply. 'Fine. One day. Find us a solution or we're back to this.'",
@@ -529,6 +545,7 @@
           "text": "I swear on my honor. If I fail, I'll come back and help you myself.",
           "skillCheck": {
             "skill": "influence",
+            "attribute": "presence",
             "dc": 15,
             "onSuccess": {
               "text": "The leader studies your face, then nods. 'Your honor it is. Don't disappoint us.'",

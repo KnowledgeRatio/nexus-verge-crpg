@@ -7,6 +7,7 @@ import { gameState } from '../core/GameState.js';
 import QuestGenerator from './QuestGenerator.js';
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { skillRegistry } from './SkillRegistry.js';
 
 class QuestManager {
     constructor(questGenerator) {
@@ -503,12 +504,14 @@ class QuestManager {
 
                 // Run Investigation skill check
                 const dc = obj.investigationDC || 14;
-                const investMod = character?.skillModifiers?.investigation
-                    ?? character?.abilityModifiers?.int
-                    ?? 0;
-                const roll = Math.floor(Math.random() * 20) + 1;
-                const total = roll + investMod;
-                const passed = total >= dc;
+                const check = skillRegistry.rollCheck(character, {
+                    skillId: 'investigation',
+                    attribute: obj.attribute || 'intellect',
+                    dc
+                });
+                const investMod = check.modifier;
+                const { roll, total } = check;
+                const passed = check.success;
 
                 const rollMsg = `🔍 Investigation check: rolled ${roll} + ${investMod} = ${total} vs DC ${dc}`;
                 gameState.addMessage(rollMsg, 'info');
@@ -555,12 +558,18 @@ class QuestManager {
                     const req = objective.requirement;
 
                     // Check if this challenge matches
-                    const matchesChallenge = req.challengeId === challengeId;
+                    const expectedChallenge = req.challengeId || quest.generationData?.skillChallengeId;
+                    const matchesChallenge = expectedChallenge === challengeId;
+
+                    // A multi-stage challenge can advance different skill objectives.
+                    const resultSkill = result.skill || result.rollResult?.skill;
+                    const matchesSkill = !req.skill
+                        || skillRegistry.normalizeId(req.skill) === skillRegistry.normalizeId(resultSkill);
 
                     // Check if success is required
                     const meetsSuccessReq = !req.requireSuccess || result.success;
 
-                    if (matchesChallenge && meetsSuccessReq) {
+                    if (matchesChallenge && matchesSkill && meetsSuccessReq) {
                         objective.progress++;
                         if (objective.progress >= objective.required) {
                             objective.completed = true;

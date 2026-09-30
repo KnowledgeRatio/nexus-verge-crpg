@@ -6,14 +6,14 @@
       "id": "tailored",
       "name": "Tailored",
       "appliesTo": ["armor"],
-      "effect": { "type": "modifyArmor", "property": "maxDexBonus", "bonus": 1 },
+      "effect": { "type": "modifyArmor", "property": "maxEvasionBonus", "bonus": 1 },
       "droppable": true,
       "forgecraftEligible": true,
       "weight": 1.0,
       "adjective": "Tailored",
       "epithet": "the Fitted Seam",
       "fragment": "Seam",
-      "description": "Expertly fitted to the wearer. The maximum DEX modifier that contributes to AC increases by 1."
+      "description": "Expertly fitted to the wearer. The maximum evasion modifier that contributes to AC increases by 1."
     },
     {
       "id": "adaptive",

@@ -7,11 +7,11 @@
  */
 
 import { gameState } from '../core/GameState.js';
-import { rollD20, roll } from '../utils/dice.js';
+import { roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue } from './FatigueManager.js';
 import { SeededRandom } from '../utils/rng.js';
-import { getRawAttributeModifier } from '../utils/attributeResolver.js';
+import { skillRegistry } from './SkillRegistry.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -62,7 +62,7 @@ class SkillChallengeManager {
     }
 
     /**
-     * Load skill definitions (id -> ability / attributeNVSystem) from data/skills.json.
+     * Load canonical skill definitions from data/skills.json.
      * Populates this.skillsData, consumed by getSkillModifier().
      */
     async loadSkillsData() {
@@ -70,6 +70,7 @@ class SkillChallengeManager {
             const response = await fetch(`data/skills.json?v=${Date.now()}`);
             const skillsJson = await response.json();
             this.skillsData = skillsJson.skills || [];
+            skillRegistry.setDefinitions(this.skillsData);
         } catch (error) {
             console.error('❌ Failed to load skills.json:', error);
             this.skillsData = [];
@@ -149,7 +150,7 @@ class SkillChallengeManager {
 
         const companions = this._getActiveCompanions();
         node.passiveChecks.forEach(check => {
-            const skillMod = this.getSkillModifier(character, check.skill, companions);
+            const skillMod = this.getSkillModifier(character, check.skill, companions, check.attribute);
             const passiveScore = 10 + skillMod; // Passive = 10 + modifier
 
             if (passiveScore >= check.dc) {
@@ -182,26 +183,32 @@ class SkillChallengeManager {
     processActiveCheck(check) {
         const character = gameState.get('character');
         const companions = this._getActiveCompanions();
-        const skillMod = this.getSkillModifier(character, check.skill, companions);
-        const roll = rollD20();
-        const total = roll + skillMod;
-        const success = total >= check.dc;
+        const skillMod = this.getSkillModifier(character, check.skill, companions, check.attribute);
+        const playerMod = skillRegistry.getModifier(character, check.skill, check.attribute);
+        const checkResult = skillRegistry.rollCheck(character, {
+            skillId: check.skill,
+            attribute: check.attribute,
+            dc: check.dc,
+            modifierAdjustment: skillMod - playerMod
+        });
+        const { roll: naturalRoll, total, success } = checkResult;
 
         const result = {
             success,
-            roll,
+            roll: naturalRoll,
             skillMod,
             total,
             dc: check.dc,
-            critical: roll === 20,
-            criticalFail: roll === 1,
-            skill: check.skill
+            critical: checkResult.critical,
+            criticalFail: checkResult.criticalFail,
+            skill: checkResult.skill,
+            attribute: checkResult.attribute
         };
 
         // Log to challenge history
         const skillName = check.skill.charAt(0).toUpperCase() + check.skill.slice(1);
         const emoji = success ? '✓' : '✗';
-        this.addToHistory('system', `${emoji} ${skillName}: ${roll} + ${skillMod} = ${total} vs DC ${check.dc}`);
+        this.addToHistory('system', `${emoji} ${skillName}: ${naturalRoll} + ${skillMod} = ${total} vs DC ${check.dc}`);
 
         // Apply tension changes
         if (success && check.onSuccess?.tensionChange) {
@@ -510,31 +517,15 @@ class SkillChallengeManager {
      * @param {Object} character - Character object (plain object from GameState)
      * @param {string} skillId - Skill ID
      * @param {Array} [companions=[]] - Active companion character objects with companionMeta
+     * @param {string|null} [attribute=null] - Explicit authored primary/secondary approach
      * @returns {number} Total skill modifier
      */
-    getSkillModifier(character, skillId, companions = []) {
-        // --- Player base calculation ---
-        // Skill -> attribute mapping comes from data/skills.json (this.skillsData), never
-        // hardcoded here (see data-integrity.md's Skills rule). In NVSystem mode, read
-        // the skill's attributeNVSystem field (decision #1's locked mapping); 5EClassic
-        // mode keeps reading the original `ability` field.
-        const skillData = this.skillsData.find(s => s.id === skillId);
-        if (!skillData) {
-            return 0;
+    getSkillModifier(character, skillId, companions = [], attribute = null) {
+        if (skillRegistry.definitions.length === 0 && this.skillsData.length > 0) {
+            skillRegistry.setDefinitions(this.skillsData);
         }
-
-        const attributeKey = RULES.attributes.system === 'NVSystem'
-            ? (skillData.attributeNVSystem || skillData.ability)
-            : skillData.ability;
-
-        // character.skills is keyed by skill id (Character.js's initializeSkills() shape),
-        // not an array — { [skillId]: { proficient, expertise, bonus } }.
-        // Reads live through the buff-aware resolver rather than the cached
-        // character.abilityModifiers snapshot, so a Hearthcraft meal buff is reflected here
-        // the same way it is in Character.updateSkillBonuses().
-        const abilityMod = Math.floor(getRawAttributeModifier(character, attributeKey));
-        const profBonus = character.skills?.[skillId]?.proficient ? character.proficiencyBonus : 0;
-        const playerBase = abilityMod + profBonus;
+        const canonicalId = skillRegistry.normalizeId(skillId);
+        const playerBase = skillRegistry.getModifier(character, canonicalId, attribute);
 
         // --- Party disabled or no companions: return unchanged ---
         if (!RULES.party?.enabled || companions.length === 0) {
@@ -547,7 +538,8 @@ class SkillChallengeManager {
 
         for (const companion of companions) {
             const meta = companion.companionMeta;
-            if (!meta || !meta.skillAssignments.includes(skillId)) {
+            const assignments = skillRegistry.normalizeIds(meta?.skillAssignments || []);
+            if (!meta || !assignments.includes(canonicalId)) {
                 continue;
             }
             if (meta.isDowned) {
@@ -566,6 +558,31 @@ class SkillChallengeManager {
         return playerBase + companionContribution + synergyBonus;
     }
 
+    /** Level-scaled DC shared by terrain, dungeon, quest, and settlement checks. */
+    calculateAdjustedDC(baseDC, level = 1) {
+        const perLevel = this.terrainChallengesData?.balancing?.levelScaling?.dcIncreasePerLevel ?? 0;
+        return Math.round(baseDC + Math.max(0, level - 1) * perLevel);
+    }
+
+    /** Resolve the configured natural-roll and margin-based critical rules. */
+    checkCritical(naturalRoll, total, dc) {
+        const rules = this.terrainChallengesData?.balancing?.criticalThresholds || {};
+        const margin = total - dc;
+        const naturalSuccess = rules.naturalCrit !== false && naturalRoll === 20;
+        const naturalFailure = rules.naturalCrit !== false && naturalRoll === 1;
+        const marginThreshold = rules.critMargin ?? 10;
+        const marginSuccess = rules.marginCrit !== false && margin >= marginThreshold;
+        const marginFailure = rules.marginCrit !== false && margin <= -marginThreshold;
+
+        if (naturalSuccess || marginSuccess) {
+            return { isCritical: true, type: 'success', margin };
+        }
+        if (naturalFailure || marginFailure) {
+            return { isCritical: true, type: 'failure', margin };
+        }
+        return { isCritical: false, type: null, margin };
+    }
+
     /**
      * Get active (non-downed) companions from GameState.
      * @returns {Array} Companion character objects
@@ -574,6 +591,11 @@ class SkillChallengeManager {
         return (gameState.get('party')?.companions || []).filter(
             c => !c.companionMeta?.isDowned
         );
+    }
+
+    /** Public party helper for gameplay surfaces that share skill resolution. */
+    getActiveCompanions() {
+        return this._getActiveCompanions();
     }
 
     /**

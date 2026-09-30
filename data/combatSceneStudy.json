@@ -1,0 +1,1189 @@
+{
+  "healingExamples": [
+    {
+      "source": "abilities",
+      "id": "steadyNerve",
+      "optionId": "heal",
+      "target": "self"
+    },
+    {
+      "source": "spells",
+      "id": "healingWord",
+      "target": "selfOrAlly"
+    }
+  ],
+  "spellExample": "fireBolt",
+  "combatants": [
+    {
+      "id": "hero",
+      "name": "Traveller",
+      "team": "player",
+      "appearance": "traveller",
+      "hp": 34,
+      "maxHP": 34
+    },
+    {
+      "id": "companion",
+      "name": "Companion",
+      "team": "companion",
+      "appearance": "warden",
+      "hp": 28,
+      "maxHP": 28
+    },
+    {
+      "id": "raider",
+      "name": "Raider",
+      "team": "enemy",
+      "appearance": "raider",
+      "hp": 24,
+      "maxHP": 24
+    },
+    {
+      "id": "scout",
+      "name": "Scout",
+      "team": "enemy",
+      "appearance": "raider",
+      "hp": 18,
+      "maxHP": 18
+    },
+    {
+      "id": "heavy",
+      "name": "Heavy",
+      "team": "enemy",
+      "appearance": "brute",
+      "hp": 42,
+      "maxHP": 42
+    },
+    {
+      "id": "guard",
+      "name": "Guard",
+      "team": "enemy",
+      "appearance": "raider",
+      "hp": 24,
+      "maxHP": 24
+    },
+    {
+      "id": "hunter",
+      "name": "Hunter",
+      "team": "enemy",
+      "appearance": "raider",
+      "hp": 24,
+      "maxHP": 24
+    },
+    {
+      "id": "outlaw",
+      "name": "Outlaw",
+      "team": "enemy",
+      "appearance": "raider",
+      "hp": 24,
+      "maxHP": 24
+    },
+    {
+      "id": "wolf1",
+      "name": "Wolf 1",
+      "monsterId": "wolf",
+      "team": "enemy",
+      "appearance": "wolf",
+      "hp": 11,
+      "maxHP": 11,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "wolf2",
+      "name": "Wolf 2",
+      "monsterId": "wolf",
+      "team": "enemy",
+      "appearance": "wolf",
+      "hp": 11,
+      "maxHP": 11,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "wolf3",
+      "name": "Wolf 3",
+      "monsterId": "wolf",
+      "team": "enemy",
+      "appearance": "wolf",
+      "hp": 11,
+      "maxHP": 11,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "direWolf1",
+      "name": "Dire Wolf",
+      "monsterId": "direWolf",
+      "team": "enemy",
+      "appearance": "direWolf",
+      "hp": 37,
+      "maxHP": 37,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "giantRat1",
+      "name": "Giant Rat 1",
+      "monsterId": "giantRat",
+      "team": "enemy",
+      "appearance": "giantRat",
+      "hp": 7,
+      "maxHP": 7,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "giantRat2",
+      "name": "Giant Rat 2",
+      "monsterId": "giantRat",
+      "team": "enemy",
+      "appearance": "giantRat",
+      "hp": 7,
+      "maxHP": 7,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "giantRat3",
+      "name": "Giant Rat 3",
+      "monsterId": "giantRat",
+      "team": "enemy",
+      "appearance": "giantRat",
+      "hp": 7,
+      "maxHP": 7,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "giantSpider1",
+      "name": "Giant Spider 1",
+      "monsterId": "giantSpider",
+      "team": "enemy",
+      "appearance": "giantSpider",
+      "hp": 26,
+      "maxHP": 26,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "giantSpider2",
+      "name": "Giant Spider 2",
+      "monsterId": "giantSpider",
+      "team": "enemy",
+      "appearance": "giantSpider",
+      "hp": 26,
+      "maxHP": 26,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "skeleton1",
+      "name": "Skeleton swordsman",
+      "monsterId": "skeleton",
+      "team": "enemy",
+      "appearance": "skeleton",
+      "hp": 13,
+      "maxHP": 13,
+      "weaponModel": "sword",
+      "itemId": "shortsword"
+    },
+    {
+      "id": "skeleton2",
+      "name": "Skeleton archer",
+      "monsterId": "skeleton",
+      "team": "enemy",
+      "appearance": "skeleton",
+      "hp": 13,
+      "maxHP": 13,
+      "weaponModel": "bow",
+      "itemId": "shortbow"
+    },
+    {
+      "id": "zombie1",
+      "name": "Zombie 1",
+      "monsterId": "zombie",
+      "team": "enemy",
+      "appearance": "zombie",
+      "hp": 22,
+      "maxHP": 22,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "zombie2",
+      "name": "Zombie 2",
+      "monsterId": "zombie",
+      "team": "enemy",
+      "appearance": "zombie",
+      "hp": 22,
+      "maxHP": 22,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "flameskull1",
+      "name": "Flameskull",
+      "monsterId": "flameskull",
+      "team": "enemy",
+      "appearance": "flameskull",
+      "hp": 49,
+      "maxHP": 49,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "hyena1",
+      "name": "Giant hyena 1",
+      "monsterId": "giantHyena",
+      "team": "enemy",
+      "appearance": "giantHyena",
+      "hp": 39,
+      "maxHP": 39,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "hyena2",
+      "name": "Giant hyena 2",
+      "monsterId": "giantHyena",
+      "team": "enemy",
+      "appearance": "giantHyena",
+      "hp": 39,
+      "maxHP": 39,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "shadow1",
+      "name": "Shadow",
+      "monsterId": "shadow",
+      "team": "enemy",
+      "appearance": "shadow",
+      "hp": 16,
+      "maxHP": 16,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "specter1",
+      "name": "Specter",
+      "monsterId": "specter",
+      "team": "enemy",
+      "appearance": "specter",
+      "hp": 22,
+      "maxHP": 22,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "wraith1",
+      "name": "Wraith",
+      "monsterId": "wraith",
+      "team": "enemy",
+      "appearance": "wraith",
+      "hp": 67,
+      "maxHP": 67,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "stirge1",
+      "name": "Stirge 1",
+      "monsterId": "stirge",
+      "team": "enemy",
+      "appearance": "stirge",
+      "hp": 2,
+      "maxHP": 2,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "stirge2",
+      "name": "Stirge 2",
+      "monsterId": "stirge",
+      "team": "enemy",
+      "appearance": "stirge",
+      "hp": 2,
+      "maxHP": 2,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "ghoul1",
+      "name": "Ghoul",
+      "monsterId": "ghoul",
+      "team": "enemy",
+      "appearance": "ghoul",
+      "hp": 22,
+      "maxHP": 22,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "ghast1",
+      "name": "Ghast",
+      "monsterId": "ghast",
+      "team": "enemy",
+      "appearance": "ghast",
+      "hp": 36,
+      "maxHP": 36,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "ogre_club",
+      "name": "Ogre",
+      "monsterId": "ogre",
+      "team": "enemy",
+      "appearance": "ogre",
+      "hp": 59,
+      "maxHP": 59,
+      "weaponModel": "club",
+      "weaponMount": "club2h",
+      "itemId": "greatclub"
+    },
+    {
+      "id": "ogre_javelin",
+      "name": "Ogre",
+      "monsterId": "ogre",
+      "team": "enemy",
+      "appearance": "ogre",
+      "hp": 59,
+      "maxHP": 59,
+      "weaponModel": "spear",
+      "weaponMount": "spear",
+      "itemId": "javelin"
+    },
+    {
+      "id": "hillGiant1",
+      "name": "Hill Giant",
+      "monsterId": "hillGiant",
+      "team": "enemy",
+      "appearance": "hillGiant",
+      "hp": 105,
+      "maxHP": 105,
+      "weaponModel": "club",
+      "weaponMount": "club"
+    },
+    {
+      "id": "troll1",
+      "name": "Troll",
+      "monsterId": "troll",
+      "team": "enemy",
+      "appearance": "troll",
+      "hp": 84,
+      "maxHP": 84,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "wight_sword",
+      "name": "Wight",
+      "monsterId": "wight",
+      "team": "enemy",
+      "appearance": "wight",
+      "hp": 45,
+      "maxHP": 45,
+      "weaponModel": "sword",
+      "weaponMount": "sword",
+      "itemId": "longsword"
+    },
+    {
+      "id": "wight_bow",
+      "name": "Wight",
+      "monsterId": "wight",
+      "team": "enemy",
+      "appearance": "wight",
+      "hp": 45,
+      "maxHP": 45,
+      "weaponModel": "bow",
+      "weaponMount": "bow",
+      "itemId": "longbow"
+    },
+    {
+      "id": "gargoyle1",
+      "name": "Gargoyle",
+      "monsterId": "gargoyle",
+      "team": "enemy",
+      "appearance": "gargoyle",
+      "hp": 52,
+      "maxHP": 52,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "minotaur1",
+      "name": "Minotaur",
+      "monsterId": "minotaur",
+      "team": "enemy",
+      "appearance": "minotaur",
+      "hp": 76,
+      "maxHP": 76,
+      "weaponModel": "axe",
+      "weaponMount": "axe2h",
+      "itemId": "greataxe"
+    },
+    {
+      "id": "ettin1",
+      "name": "Ettin",
+      "monsterId": "ettin",
+      "team": "enemy",
+      "appearance": "ettin",
+      "hp": 95,
+      "maxHP": 95,
+      "weaponModel": "axe",
+      "weaponMount": "axe",
+      "itemId": "battleaxe",
+      "offHandModel": "morningstar",
+      "offHandMount": "mace",
+      "offHandItemId": "morningstar"
+    },
+    {
+      "id": "medusa1",
+      "name": "Medusa",
+      "monsterId": "medusa",
+      "team": "enemy",
+      "appearance": "medusa",
+      "hp": 127,
+      "maxHP": 127,
+      "weaponModel": "bow",
+      "weaponMount": "bow",
+      "itemId": "longbow"
+    },
+    {
+      "id": "voidTrace1",
+      "name": "Void Trace",
+      "monsterId": "voidTrace",
+      "team": "enemy",
+      "appearance": "voidTrace",
+      "hp": 2,
+      "maxHP": 2,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "voidSpawn1",
+      "name": "Void Spawn",
+      "monsterId": "voidSpawn",
+      "team": "enemy",
+      "appearance": "voidSpawn",
+      "hp": 9,
+      "maxHP": 9,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "voidHunter1",
+      "name": "Void Hunter",
+      "monsterId": "voidHunter",
+      "team": "enemy",
+      "appearance": "voidHunter",
+      "hp": 26,
+      "maxHP": 26,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "voidShaper1",
+      "name": "Void Shaper",
+      "monsterId": "voidShaper",
+      "team": "enemy",
+      "appearance": "voidShaper",
+      "hp": 68,
+      "maxHP": 68,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "voidTitan1",
+      "name": "Void Titan",
+      "monsterId": "voidTitan",
+      "team": "enemy",
+      "appearance": "voidTitan",
+      "hp": 200,
+      "maxHP": 200,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "owlbear1",
+      "name": "Owlbear",
+      "monsterId": "owlbear",
+      "team": "enemy",
+      "appearance": "owlbear",
+      "hp": 59,
+      "maxHP": 59,
+      "weaponModel": "unarmed",
+      "weaponMount": "unarmed"
+    },
+    {
+      "id": "gnoll1",
+      "name": "Gnoll",
+      "monsterId": "gnoll",
+      "team": "enemy",
+      "appearance": "gnoll",
+      "hp": 22,
+      "maxHP": 22,
+      "itemId": "spear",
+      "weaponModel": "spear",
+      "weaponMount": "polearm2h",
+      "weaponAction": "meleeStab2h",
+      "weaponMotion": "meleeStab2h"
+    },
+    {
+      "id": "goblin1",
+      "name": "Goblin",
+      "monsterId": "goblin",
+      "team": "enemy",
+      "appearance": "goblin",
+      "hp": 7,
+      "maxHP": 7,
+      "itemId": "scimitar",
+      "weaponModel": "sword",
+      "weaponMount": "sword",
+      "weaponAction": "meleeSlice1h",
+      "weaponMotion": "meleeSlice1h"
+    },
+    {
+      "id": "goblinArcher1",
+      "name": "Goblin Archer",
+      "monsterId": "goblinArcher",
+      "team": "enemy",
+      "appearance": "goblin",
+      "hp": 7,
+      "maxHP": 7,
+      "itemId": "shortbow",
+      "weaponModel": "bow",
+      "weaponMount": "bow",
+      "weaponAction": "bow",
+      "weaponMotion": "bow"
+    },
+    {
+      "id": "orc1",
+      "name": "Orc",
+      "monsterId": "orc",
+      "team": "enemy",
+      "appearance": "orc",
+      "hp": 15,
+      "maxHP": 15,
+      "itemId": "greataxe",
+      "weaponModel": "axe",
+      "weaponMount": "axe2h",
+      "weaponAction": "ogreClub",
+      "weaponMotion": "axe"
+    },
+    {
+      "id": "bugbear1",
+      "name": "Bugbear",
+      "monsterId": "bugbear",
+      "team": "enemy",
+      "appearance": "bugbear",
+      "hp": 27,
+      "maxHP": 27,
+      "itemId": "morningstar",
+      "weaponModel": "morningstar",
+      "weaponMount": "mace",
+      "weaponAction": "ogreClub",
+      "weaponMotion": "club"
+    },
+    {
+      "id": "kobold1",
+      "name": "Kobold",
+      "monsterId": "kobold",
+      "team": "enemy",
+      "appearance": "kobold",
+      "hp": 5,
+      "maxHP": 5,
+      "itemId": "dagger",
+      "weaponModel": "dagger",
+      "weaponMount": "dagger",
+      "weaponAction": "meleeStab1h",
+      "weaponMotion": "meleeStab1h"
+    },
+    {
+      "id": "youngRedDragon1",
+      "name": "Young Red Dragon",
+      "monsterId": "youngRedDragon",
+      "team": "enemy",
+      "appearance": "youngRedDragon",
+      "hp": 100,
+      "maxHP": 100,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "youngGreenDragon1",
+      "name": "Young Green Dragon",
+      "monsterId": "youngGreenDragon",
+      "team": "enemy",
+      "appearance": "youngGreenDragon",
+      "hp": 100,
+      "maxHP": 100,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "youngWhiteDragon1",
+      "name": "Young White Dragon",
+      "monsterId": "youngWhiteDragon",
+      "team": "enemy",
+      "appearance": "youngWhiteDragon",
+      "hp": 100,
+      "maxHP": 100,
+      "weaponModel": "unarmed"
+    },
+    {
+      "id": "manticore1",
+      "name": "Manticore",
+      "monsterId": "manticore",
+      "team": "enemy",
+      "appearance": "manticore",
+      "hp": 68,
+      "maxHP": 68,
+      "weaponModel": "unarmed"
+    }
+  ],
+  "scenarios": {
+    "three": {
+      "participants": [
+        "hero",
+        "companion",
+        "raider",
+        "scout",
+        "heavy"
+      ],
+      "links": [
+        [
+          "hero",
+          "raider"
+        ],
+        [
+          "hero",
+          "scout"
+        ],
+        [
+          "hero",
+          "heavy"
+        ]
+      ]
+    },
+    "shared": {
+      "participants": [
+        "hero",
+        "companion",
+        "raider",
+        "scout",
+        "heavy"
+      ],
+      "links": [
+        [
+          "hero",
+          "raider"
+        ],
+        [
+          "hero",
+          "scout"
+        ],
+        [
+          "hero",
+          "heavy"
+        ],
+        [
+          "companion",
+          "scout"
+        ],
+        [
+          "companion",
+          "heavy"
+        ]
+      ]
+    },
+    "six": {
+      "participants": [
+        "hero",
+        "companion",
+        "raider",
+        "scout",
+        "heavy",
+        "guard",
+        "hunter",
+        "outlaw"
+      ],
+      "links": [
+        [
+          "hero",
+          "raider"
+        ],
+        [
+          "hero",
+          "scout"
+        ],
+        [
+          "hero",
+          "heavy"
+        ],
+        [
+          "hero",
+          "guard"
+        ],
+        [
+          "hero",
+          "hunter"
+        ],
+        [
+          "hero",
+          "outlaw"
+        ]
+      ]
+    },
+    "wolves": {
+      "participants": [
+        "hero",
+        "companion",
+        "wolf1",
+        "wolf2",
+        "wolf3"
+      ],
+      "links": [
+        [
+          "hero",
+          "wolf1"
+        ],
+        [
+          "hero",
+          "wolf2"
+        ],
+        [
+          "hero",
+          "wolf3"
+        ]
+      ]
+    },
+    "direWolves": {
+      "participants": [
+        "hero",
+        "companion",
+        "direWolf1",
+        "wolf1",
+        "wolf2"
+      ],
+      "links": [
+        [
+          "hero",
+          "direWolf1"
+        ],
+        [
+          "hero",
+          "wolf1"
+        ],
+        [
+          "hero",
+          "wolf2"
+        ]
+      ]
+    },
+    "giantRat": {
+      "participants": [
+        "hero",
+        "companion",
+        "giantRat1",
+        "giantRat2",
+        "giantRat3"
+      ],
+      "links": [
+        [
+          "hero",
+          "giantRat1"
+        ],
+        [
+          "hero",
+          "giantRat2"
+        ],
+        [
+          "hero",
+          "giantRat3"
+        ]
+      ]
+    },
+    "giantSpider": {
+      "participants": [
+        "hero",
+        "companion",
+        "giantSpider1",
+        "giantSpider2"
+      ],
+      "links": [
+        [
+          "hero",
+          "giantSpider1"
+        ],
+        [
+          "hero",
+          "giantSpider2"
+        ]
+      ]
+    },
+    "skeletons": {
+      "participants": [
+        "hero",
+        "companion",
+        "skeleton1",
+        "skeleton2"
+      ],
+      "links": [
+        [
+          "hero",
+          "skeleton1"
+        ],
+        [
+          "companion",
+          "skeleton2"
+        ]
+      ]
+    },
+    "zombies": {
+      "participants": [
+        "hero",
+        "companion",
+        "zombie1",
+        "zombie2"
+      ],
+      "links": [
+        [
+          "hero",
+          "zombie1"
+        ],
+        [
+          "hero",
+          "zombie2"
+        ]
+      ]
+    },
+    "flameskull": {
+      "participants": [
+        "hero",
+        "companion",
+        "flameskull1"
+      ],
+      "links": [
+        [
+          "hero",
+          "flameskull1"
+        ]
+      ]
+    },
+    "hyenas": {
+      "participants": [
+        "hero",
+        "companion",
+        "hyena1",
+        "hyena2"
+      ],
+      "links": [
+        [
+          "hero",
+          "hyena1"
+        ],
+        [
+          "hero",
+          "hyena2"
+        ]
+      ]
+    },
+    "shadows": {
+      "participants": [
+        "hero",
+        "companion",
+        "shadow1"
+      ],
+      "links": [
+        [
+          "hero",
+          "shadow1"
+        ]
+      ]
+    },
+    "specters": {
+      "participants": [
+        "hero",
+        "companion",
+        "specter1"
+      ],
+      "links": [
+        [
+          "hero",
+          "specter1"
+        ]
+      ]
+    },
+    "wraiths": {
+      "participants": [
+        "hero",
+        "companion",
+        "wraith1"
+      ],
+      "links": [
+        [
+          "hero",
+          "wraith1"
+        ]
+      ]
+    },
+    "stirges": {
+      "participants": [
+        "hero",
+        "companion",
+        "stirge1",
+        "stirge2"
+      ],
+      "links": [
+        [
+          "hero",
+          "stirge1"
+        ],
+        [
+          "hero",
+          "stirge2"
+        ]
+      ]
+    },
+    "ghouls": {
+      "participants": [
+        "hero",
+        "companion",
+        "ghoul1",
+        "ghast1"
+      ],
+      "links": [
+        [
+          "hero",
+          "ghoul1"
+        ],
+        [
+          "hero",
+          "ghast1"
+        ]
+      ]
+    },
+    "ogreClub": {
+      "participants": [
+        "hero",
+        "companion",
+        "ogre_club"
+      ],
+      "links": [
+        [
+          "hero",
+          "ogre_club"
+        ]
+      ]
+    },
+    "ogreJavelin": {
+      "participants": [
+        "hero",
+        "companion",
+        "ogre_javelin"
+      ],
+      "links": []
+    },
+    "hillGiant": {
+      "participants": [
+        "hero",
+        "companion",
+        "hillGiant1"
+      ],
+      "links": [
+        [
+          "hero",
+          "hillGiant1"
+        ]
+      ]
+    },
+    "troll": {
+      "participants": [
+        "hero",
+        "companion",
+        "troll1"
+      ],
+      "links": [
+        [
+          "hero",
+          "troll1"
+        ]
+      ]
+    },
+    "wightSword": {
+      "participants": [
+        "hero",
+        "companion",
+        "wight_sword"
+      ],
+      "links": [
+        [
+          "hero",
+          "wight_sword"
+        ]
+      ]
+    },
+    "wightBow": {
+      "participants": [
+        "hero",
+        "companion",
+        "wight_bow"
+      ],
+      "links": []
+    },
+    "gargoyle": {
+      "participants": [
+        "hero",
+        "companion",
+        "gargoyle1"
+      ],
+      "links": [
+        [
+          "hero",
+          "gargoyle1"
+        ]
+      ]
+    },
+    "minotaur": {
+      "participants": [
+        "hero",
+        "companion",
+        "minotaur1"
+      ],
+      "links": [
+        [
+          "hero",
+          "minotaur1"
+        ]
+      ]
+    },
+    "ettin": {
+      "participants": [
+        "hero",
+        "companion",
+        "ettin1"
+      ],
+      "links": [
+        [
+          "hero",
+          "ettin1"
+        ]
+      ]
+    },
+    "medusa": {
+      "participants": [
+        "hero",
+        "companion",
+        "medusa1"
+      ],
+      "links": []
+    },
+    "voidTrace": {
+      "participants": [
+        "hero",
+        "companion",
+        "voidTrace1"
+      ],
+      "links": []
+    },
+    "voidSpawn": {
+      "participants": [
+        "hero",
+        "companion",
+        "voidSpawn1"
+      ],
+      "links": []
+    },
+    "voidHunter": {
+      "participants": [
+        "hero",
+        "companion",
+        "voidHunter1"
+      ],
+      "links": []
+    },
+    "voidShaper": {
+      "participants": [
+        "hero",
+        "companion",
+        "voidShaper1"
+      ],
+      "links": []
+    },
+    "voidTitan": {
+      "participants": [
+        "hero",
+        "companion",
+        "voidTitan1"
+      ],
+      "links": []
+    },
+    "owlbear": {
+      "participants": [
+        "hero",
+        "companion",
+        "owlbear1"
+      ],
+      "links": []
+    },
+    "gnoll": {
+      "participants": [
+        "hero",
+        "companion",
+        "gnoll1"
+      ],
+      "links": []
+    },
+    "goblins": {
+      "participants": [
+        "hero",
+        "companion",
+        "goblin1",
+        "goblinArcher1"
+      ],
+      "links": []
+    },
+    "goblinArcher": {
+      "participants": [
+        "hero",
+        "companion",
+        "goblinArcher1"
+      ],
+      "links": []
+    },
+    "orc": {
+      "participants": [
+        "hero",
+        "companion",
+        "orc1"
+      ],
+      "links": []
+    },
+    "bugbear": {
+      "participants": [
+        "hero",
+        "companion",
+        "bugbear1"
+      ],
+      "links": []
+    },
+    "kobold": {
+      "participants": [
+        "hero",
+        "companion",
+        "kobold1"
+      ],
+      "links": []
+    },
+    "youngRedDragon": {
+      "participants": [
+        "hero",
+        "companion",
+        "youngRedDragon1"
+      ],
+      "links": []
+    },
+    "youngGreenDragon": {
+      "participants": [
+        "hero",
+        "companion",
+        "youngGreenDragon1"
+      ],
+      "links": []
+    },
+    "youngWhiteDragon": {
+      "participants": [
+        "hero",
+        "companion",
+        "youngWhiteDragon1"
+      ],
+      "links": []
+    },
+    "manticore": {
+      "participants": [
+        "hero",
+        "companion",
+        "manticore1"
+      ],
+      "links": []
+    }
+  }
+}

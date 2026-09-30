@@ -358,8 +358,8 @@ This document defines the structure of all JSON data files used in the game.
       "name": "Leather Armor",
       "type": "armor",
       "armorClass": 11,
-      "addDexModifier": true,
-      "maxDexBonus": null,
+      "addEvasionModifier": true,
+      "maxEvasionBonus": null,
       "armorType": "light",
       "strengthRequirement": null,
       "stealthDisadvantage": false,
@@ -375,8 +375,8 @@ This document defines the structure of all JSON data files used in the game.
       "name": "Chain Mail",
       "type": "armor",
       "armorClass": 16,
-      "addDexModifier": false,
-      "maxDexBonus": 0,
+      "addEvasionModifier": false,
+      "maxEvasionBonus": 0,
       "armorType": "heavy",
       "strengthRequirement": 13,
       "stealthDisadvantage": true,
@@ -584,26 +584,21 @@ This document defines the structure of all JSON data files used in the game.
 {
   "skills": [
     {
-      "id": "acrobatics",
-      "name": "Acrobatics",
+      "id": "finesse",
+      "campaignIds": ["core"],
+      "name": "Finesse",
       "ability": "dex",
-      "description": "Your Dexterity (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, such as when you're trying to run across a sheet of ice, balance on a tightrope, or stay upright on a rocking ship's deck."
-    },
-    {
-      "id": "athletics",
-      "name": "Athletics",
-      "ability": "str",
-      "description": "Your Strength (Athletics) check covers difficult situations you encounter while climbing, jumping, or swimming."
-    },
-    {
-      "id": "perception",
-      "name": "Perception",
-      "ability": "wis",
-      "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your general awareness of your surroundings and the keenness of your senses."
+      "primaryAttribute": "prowess",
+      "secondaryAttribute": "composure",
+      "legacyIds": ["acrobatics", "sleightOfHand", "sleight_of_hand", "cunning"],
+      "description": "Experience in balance, stealth, manual precision, lockpicking, concealment, and sleight of hand.",
+      "descriptionNVSystem": "Finesse applies Prowess for agile execution and Composure for patient, steady precision."
     }
   ]
 }
 ```
+
+The core catalogue contains exactly nine broad skills. `primaryAttribute` is the default NVSystem approach and `secondaryAttribute` is the only standard alternative. Skill-check content should explicitly author `attribute` when the approach matters. `legacyIds` are accepted for migration only and must not be used by new content.
 
 ---
 

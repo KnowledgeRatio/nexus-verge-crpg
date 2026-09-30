@@ -1,0 +1,111 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-animated-monsters/Skeleton-candidate.gltf",
+  "sha256": "49d2df92f3ffb4724b47968132fe112d7d2c3883999001f79ebbaeae9f9a305e",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -2.3046214714266053,
+      0.01931193767021644,
+      -0.6366944874183627
+    ],
+    "maximum": [
+      2.2999552427543053,
+      5.108909374058286,
+      0.6924702801949214
+    ],
+    "size": [
+      4.604576714180911,
+      5.08959743638807,
+      1.329164767613284
+    ]
+  },
+  "clips": [
+    {
+      "name": "Skeleton_Attack",
+      "seconds": 0.9333333373069763,
+      "samples": 30,
+      "minimum": [
+        -1.4134548690150348,
+        -0.018801457940022415,
+        -1.046950213610288
+      ],
+      "maximum": [
+        1.3596428913972178,
+        5.153883517729177,
+        2.367300115672694
+      ],
+      "lowestSurface": -0.018801457940022415,
+      "highestLowestSurface": 0.019311861068796565
+    },
+    {
+      "name": "Skeleton_Death",
+      "seconds": 0.36666667461395264,
+      "samples": 13,
+      "minimum": [
+        -1.7686429601022375,
+        -0.27012119721273686,
+        -1.2015179709668156
+      ],
+      "maximum": [
+        1.746116690185889,
+        5.108909432438126,
+        1.9941519588586973
+      ],
+      "lowestSurface": -0.27012119721273686,
+      "highestLowestSurface": 0.019311861068796565
+    },
+    {
+      "name": "Skeleton_Idle",
+      "seconds": 2.6666667461395264,
+      "samples": 82,
+      "minimum": [
+        -1.3091422832589816,
+        0.10150499790045275,
+        -0.6366944581422105
+      ],
+      "maximum": [
+        1.422550465238782,
+        5.191102571087242,
+        0.6924791754338355
+      ],
+      "lowestSurface": 0.10150499790045275,
+      "highestLowestSurface": 0.1015050850993906
+    },
+    {
+      "name": "Skeleton_Running",
+      "seconds": 1,
+      "samples": 31,
+      "minimum": [
+        -1.4022989799991934,
+        -0.030463569959185977,
+        -1.810346322987313
+      ],
+      "maximum": [
+        1.3508129904646258,
+        5.33083087700362,
+        1.7371674624118232
+      ],
+      "lowestSurface": -0.030463569959185977,
+      "highestLowestSurface": 1.0069948370591906
+    },
+    {
+      "name": "Skeleton_Spawn",
+      "seconds": 2.9000000953674316,
+      "samples": 89,
+      "minimum": [
+        -1.7687608225967744,
+        -0.27493928127222,
+        -1.2015179672040537
+      ],
+      "maximum": [
+        1.7470023422931575,
+        5.108909432438126,
+        1.9941518321639018
+      ],
+      "lowestSurface": -0.27493928127222,
+      "highestLowestSurface": 0.019311861068796565
+    }
+  ]
+}

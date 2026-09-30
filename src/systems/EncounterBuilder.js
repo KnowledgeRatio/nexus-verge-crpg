@@ -13,7 +13,7 @@ import { RULES } from '../core/rulesEngine.js';
 import { roll, getAbilityModifier } from '../utils/dice.js';
 import { filterByCampaign } from '../utils/campaignFilter.js';
 import { convertMonsterSavingThrows } from '../utils/monsterAttributeConversion.js';
-import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
+import { normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
 
 // Cache loaded monster data to avoid repeated fetches
 let cachedMonsterData = null;
@@ -126,7 +126,7 @@ function rollDifficulty(weights, rng) {
  * @param {Object} options - { isBoss: false }
  * @returns {Object} Enemy character object for CombatManager
  */
-function createEnemyFromMonster(monster, options = {}) {
+export function createEnemyFromMonster(monster, options = {}) {
     const { isBoss = false, worldConfig = {} } = options;
     const bossBuffs = RULES.encounters.bossBuffs;
 
@@ -181,19 +181,14 @@ function createEnemyFromMonster(monster, options = {}) {
         currentHP: hp,
         ac,
         speed: monster.speed || 30,
-        // 'NVSystem' mode: monster.abilities is still legacy-keyed (46-monster batch
-        // convert is deferred to M2) — attributeResolver.js's resolver is a pass-through
-        // there and needs .prowess/.vitality/etc. to already exist. Bug 2 fix (2026-08-01),
-        // same shim as Character.js's calculateAbilities(); see src/utils/attributeConversion.js.
-        abilities: {
-            ...monster.abilities,
-            ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
-        },
+        abilities: RULES.attributes.system === 'NVSystem'
+            ? normalizeSixAttributeAbilities(monster.abilitiesNVSystem ?? monster.abilities)
+            : { ...monster.abilities },
         abilityModifiers: Object.fromEntries(
-            Object.entries({
-                ...monster.abilities,
-                ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
-            }).map(([key, score]) => [key, getAbilityModifier(score)])
+            Object.entries(RULES.attributes.system === 'NVSystem'
+                ? normalizeSixAttributeAbilities(monster.abilitiesNVSystem ?? monster.abilities)
+                : monster.abilities
+            ).map(([key, score]) => [key, getAbilityModifier(score)])
         ),
         proficiencyBonus: profBonus,
         skills: monster.skills || {},
@@ -201,7 +196,7 @@ function createEnemyFromMonster(monster, options = {}) {
         // — only attached in 'NVSystem' mode. 5EClassic mode carries no `savingThrows` on
         // the enemy object today (zero behavior change). See src/utils/monsterAttributeConversion.js.
         ...(RULES.attributes.system === 'NVSystem' && {
-            savingThrows: convertMonsterSavingThrows(monster.savingThrows)
+            savingThrows: monster.savingThrowsNVSystem ?? convertMonsterSavingThrows(monster.savingThrows)
         }),
         senses: monster.senses || {},
         traits: monster.traits || [],

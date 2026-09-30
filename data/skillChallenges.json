@@ -1,7 +1,7 @@
 {
   "description": "Reusable skill challenge templates for contextual gameplay with balance tuning",
   "version": "3.0.0",
-  "note": "Updated for new 13-skill system with comprehensive balance framework. Skills: athletics, acrobatics, sleightOfHand, endurance, academia, arcana, investigation, perception, cunning, creativity, empathy, influence, deception.",
+  "note": "Updated for the nine-skill primary/secondary attribute system. Every authored approach may select one of its skill's two permitted attributes.",
   "balancing": {
     "skillValueMultipliers": {
       "very_high": 0.5,
@@ -58,6 +58,7 @@
         {
           "id": "detect",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 13,
           "passiveRoll": true,
           "description": "Notice the trap before triggering it",
@@ -73,7 +74,8 @@
         },
         {
           "id": "disarm",
-          "skill": "sleightOfHand",
+          "skill": "finesse",
+          "attribute": "composure",
           "baseDC": 14,
           "description": "Carefully disable the trap mechanism",
           "onSuccess": {
@@ -161,7 +163,8 @@
       "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "options": [
         {
-          "skill": "sleightOfHand",
+          "skill": "finesse",
+          "attribute": "composure",
           "baseDC": 15,
           "description": "Pick the lock with finesse",
           "onSuccess": {
@@ -175,6 +178,7 @@
         },
         {
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 18,
           "description": "Force the door open with brute strength",
           "onSuccess": {
@@ -190,7 +194,8 @@
           }
         },
         {
-          "skill": "arcana",
+          "skill": "lore",
+          "attribute": "intellect",
           "baseDC": 14,
           "description": "Detect and dispel magical lock",
           "onSuccess": {
@@ -243,6 +248,7 @@
       "options": [
         {
           "skill": "influence",
+          "attribute": "presence",
           "baseDC": 14,
           "description": "Threaten or persuade the bandits to leave",
           "onSuccess": {
@@ -264,7 +270,8 @@
           }
         },
         {
-          "skill": "deception",
+          "skill": "influence",
+          "attribute": "composure",
           "baseDC": 15,
           "description": "Trick the bandits with false information",
           "onSuccess": {
@@ -287,6 +294,7 @@
         },
         {
           "skill": "empathy",
+          "attribute": "composure",
           "baseDC": 16,
           "description": "Appeal to their better nature",
           "onSuccess": {
@@ -344,6 +352,7 @@
         {
           "id": "assess",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 12,
           "description": "Spot the best climbing route",
           "onSuccess": {
@@ -359,6 +368,7 @@
         {
           "id": "climb",
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 15,
           "description": "Climb the cliff face",
           "onSuccess": {
@@ -406,6 +416,7 @@
         {
           "id": "investigation",
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 13,
           "description": "Search the area methodically",
           "onSuccess": {
@@ -418,7 +429,8 @@
         },
         {
           "id": "retrieve",
-          "skill": "sleightOfHand",
+          "skill": "finesse",
+          "attribute": "composure",
           "baseDC": 12,
           "description": "Open the hidden compartment",
           "onSuccess": {
@@ -461,6 +473,7 @@
       "description": "A wild animal blocks your path, snarling aggressively",
       "type": "single",
       "skill": "empathy",
+      "attribute": "composure",
       "baseDC": 14,
       "balance": {
         "skillValue": "medium",
@@ -517,7 +530,8 @@
       "terrainModifiers": { "denseForest": 2.0, "forest": 1.5, "sanctuary": 0.0, "beach": 0.0, "swamp": 0.0, "desert": 0.0 },
       "options": [
         {
-          "skill": "acrobatics",
+          "skill": "finesse",
+          "attribute": "prowess",
           "baseDC": 14,
           "description": "Move silently past the guards",
           "onSuccess": {
@@ -546,7 +560,8 @@
           }
         },
         {
-          "skill": "cunning",
+          "skill": "finesse",
+          "attribute": "composure",
           "baseDC": 13,
           "description": "Hide in the shadows and wait for an opening",
           "onSuccess": {
@@ -576,6 +591,7 @@
         },
         {
           "skill": "influence",
+          "attribute": "presence",
           "baseDC": 12,
           "description": "Bluff your way past with confidence",
           "onSuccess": {
@@ -641,7 +657,8 @@
       "terrainModifiers": { "dungeon": 2.0, "grassland": 0.0, "plains": 0.0, "forest": 0.0, "swamp": 0.0, "desert": 0.0, "mountain": 0.0, "beach": 0.0, "farmland": 0.0, "sanctuary": 0.0, "hills": 0.0, "tundra": 0.0, "jungle": 0.0 },
       "options": [
         {
-          "skill": "arcana",
+          "skill": "lore",
+          "attribute": "intellect",
           "baseDC": 16,
           "description": "Use magical knowledge to solve the puzzle",
           "onSuccess": {
@@ -660,6 +677,7 @@
         },
         {
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 18,
           "description": "Examine the puzzle for patterns",
           "onSuccess": {
@@ -672,9 +690,10 @@
           }
         },
         {
-          "skill": "creativity",
+          "skill": "craft",
+          "attribute": "intellect",
           "baseDC": 17,
-          "description": "Think outside the box for an unconventional solution",
+          "description": "Reconfigure the rune sequence as a working mechanism",
           "onSuccess": {
             "message": "Your creative approach reveals a hidden solution!",
             "xp": 110,
@@ -709,7 +728,8 @@
       "name": "Decipher Ancient Text",
       "description": "Ancient writing covers the stone tablet",
       "type": "single",
-      "skill": "academia",
+      "skill": "lore",
+      "attribute": "intellect",
       "baseDC": 15,
       "balance": {
         "skillValue": "low",
@@ -769,7 +789,8 @@
       "terrainModifiers": { "grassland": 0.0, "plains": 0.0, "forest": 0.0, "mountain": 0.0, "desert": 0.0, "beach": 0.0, "swamp": 0.0, "jungle": 0.0, "hills": 0.0, "tundra": 0.0, "dungeon": 0.0, "sanctuary": 0.0, "farmland": 0.0, "road": 0.0 },
       "options": [
         {
-          "skill": "academia",
+          "skill": "lore",
+          "attribute": "intellect",
           "baseDC": 13,
           "description": "Apply scholarly medical knowledge",
           "onSuccess": {
@@ -783,6 +804,7 @@
         },
         {
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 14,
           "description": "Examine the wounds and apply practical first aid",
           "onSuccess": {
@@ -823,6 +845,7 @@
         {
           "id": "find_tracks",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 13,
           "description": "Examine the tracks more closely",
           "onSuccess": {
@@ -836,6 +859,7 @@
         {
           "id": "follow",
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 14,
           "description": "Follow the trail to discover where it leads",
           "onSuccess": {
@@ -877,7 +901,9 @@
       "description": "Something about their story doesn't add up...",
       "type": "contested",
       "playerSkill": "empathy",
-      "opposingSkill": "deception",
+      "playerAttribute": "composure",
+      "opposingSkill": "influence",
+      "opposingAttribute": "composure",
       "baseDC": 14,
       "balance": {
         "skillValue": "medium",
@@ -922,7 +948,8 @@
       "name": "Create Distraction",
       "description": "You need to divert attention away from your true goal",
       "type": "single",
-      "skill": "creativity",
+      "skill": "finesse",
+      "attribute": "composure",
       "baseDC": 13,
       "balance": {
         "skillValue": "low",
@@ -962,7 +989,8 @@
       "name": "Read the Votive Record",
       "description": "Someone kept count here. The marks are still legible.",
       "type": "single",
-      "skill": "academia",
+      "skill": "lore",
+      "attribute": "intellect",
       "baseDC": 14,
       "balance": {
         "skillValue": "low",
@@ -1020,6 +1048,7 @@
         {
           "id": "assess",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 10,
           "passiveRoll": true,
           "description": "Read the ledge before you commit",
@@ -1035,7 +1064,8 @@
         },
         {
           "id": "cross",
-          "skill": "acrobatics",
+          "skill": "finesse",
+          "attribute": "prowess",
           "baseDC": 13,
           "description": "Cross the narrow ledge",
           "onSuccess": {
@@ -1080,7 +1110,8 @@
       "stages": [
         {
           "id": "read",
-          "skill": "cunning",
+          "skill": "survival",
+          "attribute": "intuition",
           "baseDC": 11,
           "passiveRoll": true,
           "description": "Read the terrain for what's coming",
@@ -1096,7 +1127,8 @@
         },
         {
           "id": "endure",
-          "skill": "endurance",
+          "skill": "survival",
+          "attribute": "resilience",
           "baseDC": 14,
           "description": "Endure the harsh conditions",
           "onSuccess": {
@@ -1130,6 +1162,7 @@
       "description": "A massive boulder blocks your path",
       "type": "single",
       "skill": "athletics",
+      "attribute": "prowess",
       "baseDC": 16,
       "balance": {
         "skillValue": "low",
@@ -1189,6 +1222,7 @@
         {
           "id": "find_route",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 12,
           "description": "Find the safest climbing route",
           "onSuccess": {
@@ -1204,6 +1238,7 @@
         {
           "id": "climb",
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 15,
           "description": "Scale the steep slope",
           "onSuccess": {
@@ -1247,6 +1282,7 @@
         {
           "id": "notice",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 10,
           "passiveRoll": true,
           "description": "Notice the heat before it becomes something else",
@@ -1262,7 +1298,8 @@
         },
         {
           "id": "endure",
-          "skill": "endurance",
+          "skill": "survival",
+          "attribute": "resilience",
           "baseDC": 14,
           "description": "Endure the scorching heat",
           "onSuccess": {
@@ -1304,7 +1341,8 @@
       "terrainModifiers": { "swamp": 3.0 },
       "options": [
         {
-          "skill": "cunning",
+          "skill": "survival",
+          "attribute": "intuition",
           "baseDC": 13,
           "description": "Probe ahead carefully with a stick",
           "onSuccess": {
@@ -1319,7 +1357,8 @@
           }
         },
         {
-          "skill": "acrobatics",
+          "skill": "finesse",
+          "attribute": "prowess",
           "baseDC": 15,
           "description": "Hop between solid ground patches",
           "onSuccess": {
@@ -1334,7 +1373,8 @@
           }
         },
         {
-          "skill": "academia",
+          "skill": "lore",
+          "attribute": "intellect",
           "baseDC": 12,
           "description": "Use knowledge of wetlands to identify safe paths",
           "onSuccess": {
@@ -1366,7 +1406,8 @@
       "name": "Dense Jungle Undergrowth",
       "description": "Thick vines and vegetation block your path",
       "type": "single",
-      "skill": "cunning",
+      "skill": "survival",
+      "attribute": "intuition",
       "baseDC": 12,
       "balance": {
         "skillValue": "high",
@@ -1415,6 +1456,7 @@
         {
           "id": "assess_peak",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 15,
           "description": "Study the treacherous peak route",
           "onSuccess": {
@@ -1430,6 +1472,7 @@
         {
           "id": "peak_climb",
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 18,
           "description": "Ascend the perilous peak",
           "onSuccess": {
@@ -1471,7 +1514,8 @@
       "stages": [
         {
           "id": "assess",
-          "skill": "cunning",
+          "skill": "survival",
+          "attribute": "intuition",
           "baseDC": 11,
           "passiveRoll": true,
           "description": "Read the ice before you commit your weight",
@@ -1488,6 +1532,7 @@
         {
           "id": "climb",
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 17,
           "description": "Climb the ice wall",
           "onSuccess": {
@@ -1530,6 +1575,7 @@
       "options": [
         {
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 14,
           "description": "Wade across the current",
           "onSuccess": {
@@ -1544,7 +1590,8 @@
           }
         },
         {
-          "skill": "acrobatics",
+          "skill": "finesse",
+          "attribute": "prowess",
           "baseDC": 13,
           "description": "Leap across stepping stones",
           "onSuccess": {
@@ -1560,6 +1607,7 @@
         },
         {
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 12,
           "description": "Find a shallow crossing point",
           "onSuccess": {
@@ -1596,6 +1644,7 @@
         {
           "text": "Show credentials and explain peacefully",
           "skill": "influence",
+          "attribute": "presence",
           "dc": 12,
           "onSuccess": {
             "message": "The guards nod and wave you through.",
@@ -1608,7 +1657,8 @@
         },
         {
           "text": "Bribe the guards with gold",
-          "skill": "deception",
+          "skill": "influence",
+          "attribute": "composure",
           "dc": 13,
           "costGold": 10,
           "onSuccess": {
@@ -1622,7 +1672,8 @@
         },
         {
           "text": "Blend into the crowd and slip away",
-          "skill": "cunning",
+          "skill": "finesse",
+          "attribute": "composure",
           "dc": 14,
           "onSuccess": {
             "message": "You disappear into the crowd before they notice.",
@@ -1656,6 +1707,7 @@
       "type": "single",
       "terrainModifiers": {},
       "skill": "influence",
+      "attribute": "presence",
       "baseDC": 13,
       "onSuccess": {
         "message": "The merchant grudgingly accepts your counteroffer!",
@@ -1687,6 +1739,7 @@
         {
           "text": "Catch the thief and demand they return the goods",
           "skill": "athletics",
+          "attribute": "prowess",
           "dc": 14,
           "onSuccess": {
             "message": "You catch the thief! The merchant rewards you.",
@@ -1702,6 +1755,7 @@
         {
           "text": "Alert the city guard",
           "skill": "perception",
+          "attribute": "intuition",
           "dc": 12,
           "onSuccess": {
             "message": "Guards arrive quickly and apprehend the thief.",
@@ -1741,7 +1795,8 @@
       "terrainModifiers": {},
       "stages": [
         {
-          "skill": "cunning",
+          "skill": "finesse",
+          "attribute": "composure",
           "dc": 14,
           "description": "Hide in the shadows and observe",
           "onSuccess": {
@@ -1758,6 +1813,7 @@
         },
         {
           "skill": "investigation",
+          "attribute": "intellect",
           "dc": 13,
           "description": "Search for evidence of criminal activity",
           "onSuccess": {
@@ -1793,6 +1849,7 @@
         {
           "text": "Ask permission to cross carefully",
           "skill": "influence",
+          "attribute": "presence",
           "dc": 11,
           "onSuccess": {
             "message": "The farmer grants permission and shows you the safest path.",
@@ -1805,7 +1862,8 @@
         },
         {
           "text": "Navigate carefully to avoid trampling crops",
-          "skill": "acrobatics",
+          "skill": "finesse",
+          "attribute": "prowess",
           "dc": 13,
           "onSuccess": {
             "message": "You cross without damaging the crops.",
@@ -1846,7 +1904,8 @@
       "terrainModifiers": {},
       "stages": [
         {
-          "skill": "endurance",
+          "skill": "survival",
+          "attribute": "resilience",
           "dc": 12,
           "description": "Brave the heat to get close to the fire",
           "onSuccess": {
@@ -1861,6 +1920,7 @@
         },
         {
           "skill": "athletics",
+          "attribute": "prowess",
           "dc": 13,
           "description": "Pour water and beat back the flames",
           "onSuccess": {
@@ -1904,6 +1964,7 @@
         {
           "id": "notice",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 12,
           "passiveRoll": true,
           "description": "Notice the predator before it commits",
@@ -1920,6 +1981,7 @@
         {
           "id": "face",
           "skill": "empathy",
+          "attribute": "composure",
           "baseDC": 14,
           "description": "Face down the predator",
           "onSuccess": {
@@ -1959,6 +2021,7 @@
         {
           "id": "orient",
           "skill": "investigation",
+          "attribute": "intellect",
           "baseDC": 12,
           "passiveRoll": true,
           "description": "Read the sun and landscape for orientation",
@@ -1974,7 +2037,8 @@
         },
         {
           "id": "navigate",
-          "skill": "endurance",
+          "skill": "survival",
+          "attribute": "resilience",
           "baseDC": 15,
           "description": "Hold your bearing through the heat",
           "onSuccess": {
@@ -2015,6 +2079,7 @@
         {
           "id": "spot",
           "skill": "perception",
+          "attribute": "intuition",
           "baseDC": 10,
           "passiveRoll": true,
           "description": "Spot salvageable cargo before the tide takes it",
@@ -2031,6 +2096,7 @@
         {
           "id": "retrieve",
           "skill": "athletics",
+          "attribute": "prowess",
           "baseDC": 13,
           "description": "Drag the cargo clear of the surf",
           "onSuccess": {
@@ -2069,6 +2135,7 @@
             {
                 "text": "Buy them a drink and ask casually — Empathy DC 11 (costs 5 gold)",
                 "skill": "empathy",
+                "attribute": "composure",
                 "dc": 11,
                 "onSuccess": {
                     "message": "Over a shared drink, the innkeeper lets slip something useful.",
@@ -2087,6 +2154,7 @@
             {
                 "text": "Ask directly — you heard there's trouble — Investigation DC 14",
                 "skill": "investigation",
+                "attribute": "intellect",
                 "dc": 14,
                 "onSuccess": {
                     "message": "Your direct approach catches them off guard. They confirm what you suspected.",
@@ -2101,8 +2169,9 @@
                 }
             },
             {
-                "text": "Spin a cover story about being a traveling merchant — Deception DC 13",
-                "skill": "deception",
+                "text": "Maintain a cover as a traveling merchant — Influence (Composure) DC 13",
+                "skill": "influence",
+                "attribute": "composure",
                 "dc": 13,
                 "onSuccess": {
                     "message": "Your false identity opens doors. The innkeeper warns you about the roads.",
@@ -2126,6 +2195,7 @@
         "type": "single",
         "terrainModifiers": {},
         "skill": "investigation",
+        "attribute": "intellect",
         "baseDC": 12,
         "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
         "onSuccess": {
@@ -2145,7 +2215,8 @@
         "description": "A blacksmith's work reveals their skill. You could tell a lot by examining the forge.",
         "type": "single",
         "terrainModifiers": {},
-        "skill": "academia",
+        "skill": "craft",
+        "attribute": "intellect",
         "baseDC": 13,
         "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
         "onSuccess": {
@@ -2169,8 +2240,9 @@
         "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
         "choices": [
             {
-                "text": "Grip the metal and work the bellows — Athletics DC 14",
-                "skill": "athletics",
+                "text": "Grip the metal and work the bellows — Craft (Prowess) DC 14",
+                "skill": "craft",
+                "attribute": "prowess",
                 "dc": 14,
                 "onSuccess": {
                     "message": "You haul and hold. The smith nods, impressed. The job goes faster.",
@@ -2185,8 +2257,9 @@
                 }
             },
             {
-                "text": "Suggest a technique from something you've studied — Academia DC 13",
-                "skill": "academia",
+                "text": "Suggest a technique from something you've studied — Craft (Intellect) DC 13",
+                "skill": "craft",
+                "attribute": "intellect",
                 "dc": 13,
                 "onSuccess": {
                     "message": "The smith raises an eyebrow, tries it, and it works. Respect earned.",
@@ -2209,6 +2282,7 @@
         "type": "single",
         "terrainModifiers": {},
         "skill": "influence",
+        "attribute": "presence",
         "baseDC": 16,
         "balance": { "cooldown": 3600000, "riskLevel": "high", "npcOnly": true },
         "onSuccess": {
@@ -2231,6 +2305,7 @@
         "type": "single",
         "terrainModifiers": {},
         "skill": "influence",
+        "attribute": "presence",
         "baseDC": 13,
         "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
         "onSuccess": {
@@ -2252,7 +2327,8 @@
         "description": "Find an unexpected angle they hadn't considered — lateral thinking, not direct pressure.",
         "type": "single",
         "terrainModifiers": {},
-        "skill": "creativity",
+        "skill": "influence",
+        "attribute": "composure",
         "baseDC": 13,
         "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
         "onSuccess": {
@@ -2278,6 +2354,7 @@
             {
                 "text": "Ask casually about recent activity — Influence DC 12",
                 "skill": "influence",
+                "attribute": "presence",
                 "dc": 12,
                 "onSuccess": {
                     "message": "The guard relaxes and shares what they've seen lately.",
@@ -2291,8 +2368,9 @@
                 }
             },
             {
-                "text": "Claim you're investigating on behalf of the town — Deception DC 15",
-                "skill": "deception",
+                "text": "Maintain a false claim of town authority — Influence (Composure) DC 15",
+                "skill": "influence",
+                "attribute": "composure",
                 "dc": 15,
                 "onSuccess": {
                     "message": "The authority of the claim loosens their tongue considerably.",
@@ -2309,6 +2387,7 @@
             {
                 "text": "Don't ask — read their posture and fill in the gaps — Empathy DC 14",
                 "skill": "empathy",
+                "attribute": "composure",
                 "dc": 14,
                 "onSuccess": {
                     "message": "You don't need them to talk. Their body language tells the story.",

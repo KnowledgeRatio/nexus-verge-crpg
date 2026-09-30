@@ -1,0 +1,14 @@
+{
+  "campaignId": "nexus-verge",
+  "level": 3,
+  "worldConfig": { "difficulty": "normal", "useAverageMonsterHP": true },
+  "party": [
+    { "name": "Traveller", "speciesId": "human", "classId": "dedication", "appearance": "traveller",
+      "baseAbilities": { "prowess": 15, "resilience": 14, "intellect": 10, "intuition": 13, "presence": 10, "composure": 12 },
+      "equipment": { "mainHand": "longsword", "armor": "chainMail" } },
+    { "name": "Companion", "speciesId": "human", "classId": "dedication", "appearance": "warden",
+      "baseAbilities": { "prowess": 14, "resilience": 13, "intellect": 10, "intuition": 15, "presence": 12, "composure": 10 },
+      "equipment": { "mainHand": "lightCrossbow", "armor": "leatherArmor" } }
+  ],
+  "enemies": ["bandit", "bandit", "bandit"]
+}

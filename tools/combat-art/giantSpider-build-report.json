@@ -1,0 +1,50 @@
+{
+  "spec": {
+    "source": "tools/combat-art/sources/quaternius-easy-enemies/Spider-candidate.gltf",
+    "auditSource": "tools/combat-art/sources/quaternius-easy-enemies/Spider-adapted.gltf",
+    "output": "data/graphics/combat/giant-spider-v1.glb",
+    "scale": 0.55,
+    "clearance": 0.006,
+    "head": "Head",
+    "hitPitch": -0.12,
+    "collapseDuration": 0.8,
+    "clips": {
+      "idle": "Spider_Idle",
+      "walk": "Spider_Walk",
+      "attack": "Spider_Attack",
+      "death": "Spider_Death"
+    }
+  },
+  "clips": [
+    {
+      "name": "Spider_Attack",
+      "seconds": 0.75,
+      "minCorrection": 0.006357782732375618,
+      "maxCorrection": 0.011192883254036667
+    },
+    {
+      "name": "Spider_Death",
+      "seconds": 0.800000011920929,
+      "minCorrection": -0.050186337321800105,
+      "maxCorrection": 1.2314088714063576
+    },
+    {
+      "name": "Spider_Idle",
+      "seconds": 4.166666507720947,
+      "minCorrection": 0.00591776290342622,
+      "maxCorrection": 0.0067177839446002936
+    },
+    {
+      "name": "Spider_Walk",
+      "seconds": 0.8333333134651184,
+      "minCorrection": 0.006357806294836756,
+      "maxCorrection": 0.027199557967787037
+    },
+    {
+      "name": "Hit",
+      "seconds": 0.3199999928474426,
+      "minCorrection": 0.006357745321013094,
+      "maxCorrection": 0.006357745321013094
+    }
+  ]
+}

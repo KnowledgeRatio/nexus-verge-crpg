@@ -1,0 +1,66 @@
+{
+  "spec": {
+    "scale": 0.68,
+    "floorClearance": 0.006,
+    "sampleRate": 60,
+    "mouthPosition": [
+      0,
+      1.9,
+      2.48
+    ],
+    "chest": {
+      "centreZ": 0.65,
+      "radiusZ": 1,
+      "minimumY": 0.6,
+      "maximumY": 2.1,
+      "fadeHeight": 0.5,
+      "widen": 0.2,
+      "deepen": 0.24
+    },
+    "coat": {
+      "materials": [
+        "Main",
+        "Main_Light"
+      ],
+      "startHeight": 1.15,
+      "endHeight": 2.05,
+      "flanks": [
+        0.075,
+        0.085,
+        0.1
+      ],
+      "spine": [
+        0.55,
+        0.59,
+        0.64
+      ]
+    }
+  },
+  "clips": [
+    {
+      "clip": "Attack",
+      "duration": 1.3333333730697632,
+      "maximumCorrection": 0.038234950833119924
+    },
+    {
+      "clip": "Death",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.1383006510806756
+    },
+    {
+      "clip": "Idle_2_HeadLow",
+      "duration": 4,
+      "maximumCorrection": 0.012937768565621035
+    },
+    {
+      "clip": "Idle_HitReact1",
+      "duration": 0.6666666865348816,
+      "maximumCorrection": 0.012937768565621054
+    },
+    {
+      "clip": "Walk",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.043342792157633106
+    }
+  ]
+}

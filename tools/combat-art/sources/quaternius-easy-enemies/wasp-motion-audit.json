@@ -1,0 +1,77 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-easy-enemies/Wasp-candidate.gltf",
+  "sha256": "e18f08887f96f02865ac4a891ed2c839d30c0c0663a0f57f8f5b58da2fd46a85",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -1.2603360853430638,
+      0.21145468114678204,
+      -1.1935710489677036
+    ],
+    "maximum": [
+      2.3598349171114883,
+      3.991750374071317,
+      1.1935711243324962
+    ],
+    "size": [
+      3.620171002454552,
+      3.7802956929245353,
+      2.3871421733002
+    ]
+  },
+  "clips": [
+    {
+      "name": "Wasp_Attack",
+      "seconds": 0.75,
+      "samples": 24,
+      "minimum": [
+        -1.4915575213453325,
+        0.07006873450254199,
+        -1.4857944739968192
+      ],
+      "maximum": [
+        2.603352216433024,
+        4.813433693047002,
+        1.4472458718492183
+      ],
+      "lowestSurface": 0.07006873450254199,
+      "highestLowestSurface": 0.5987689410827742
+    },
+    {
+      "name": "Wasp_Death",
+      "seconds": 0.75,
+      "samples": 24,
+      "minimum": [
+        -1.5629813696889316,
+        -0.377689085847477,
+        -3.6955050899075723
+      ],
+      "maximum": [
+        2.385658861863889,
+        5.255845613927551,
+        1.920808460506316
+      ],
+      "lowestSurface": -0.377689085847477,
+      "highestLowestSurface": 0.9004089656607094
+    },
+    {
+      "name": "Wasp_Flying",
+      "seconds": 1.5,
+      "samples": 46,
+      "minimum": [
+        -1.259241917360892,
+        0.5694993663660195,
+        -1.4844690344349134
+      ],
+      "maximum": [
+        2.603352216433024,
+        4.95007320711805,
+        1.4477332651690493
+      ],
+      "lowestSurface": 0.5694993663660195,
+      "highestLowestSurface": 0.9931779291124709
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import { RULES } from './core/rulesEngine.js';
 import { generateSeedString } from './utils/rng.js';
 
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
+import { renderCharacterAppearance } from './ui/CharacterAppearance.js';
 import SettlementUI from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
@@ -35,6 +36,8 @@ import CompanionManager from './systems/CompanionManager.js';
 import { getFatigueModifiers } from './systems/FatigueManager.js';
 import consequenceManager from './systems/ConsequenceManager.js';
 import { getPassiveACBonus } from './systems/PassiveModifierRegistry.js';
+import { getAttributeModifierFor, getDerivedStatModifier } from './utils/attributeResolver.js';
+import { CombatSceneUI } from './ui/CombatSceneUI.js';
 
 class Game {
     constructor() {
@@ -113,15 +116,27 @@ class Game {
         });
 
         gameState.subscribe('combat.floatingText', ({ combatantId, text, type, delay }) => {
+            if (this.combatSceneUI?.isShowing() || this.combatSceneUI?.isBusy()) {
+                return;
+            }
             this.showFloatingCombatText(combatantId, text, type, delay ?? 0);
         });
 
         gameState.subscribe('combat.victoryScreen', ({ xpGained, totalXP, leveledUp, totalGold, allLootItems, lootMessages }) => {
-            this.showVictoryModal(xpGained, totalXP, leveledUp, totalGold, allLootItems, lootMessages);
+            const show = () => this.showVictoryModal(xpGained, totalXP, leveledUp, totalGold, allLootItems, lootMessages);
+            if (this.combatSceneUI) {
+                this.combatSceneUI.afterPlayback(show);
+            } else {
+                show();
+            }
         });
 
         gameState.subscribe('combat.gameOver', () => {
-            this.showGameOver();
+            if (this.combatSceneUI) {
+                this.combatSceneUI.afterPlayback(() => this.showGameOver());
+            } else {
+                this.showGameOver();
+            }
         });
 
         // Handle window resize for responsive viewport
@@ -1268,7 +1283,22 @@ class Game {
 
         // Initialize combat manager if needed
         if (!this.combatManager) {
-            this.combatManager = new CombatManager();
+            this.combatManager = new CombatManager({
+                beforeEnemyTurn: () => this.combatSceneUI?.waitForPlayback(),
+                afterAction: () => this.combatSceneUI?.completeAction(),
+                audio: {
+                    play: (...args) => this.combatSceneUI ? this.combatSceneUI.audio('play', args) : audioManager.play(...args),
+                    playCombatRelease: (...args) => this.combatSceneUI ?
+                        this.combatSceneUI.audio('playCombatRelease', args) : audioManager.playCombatRelease(...args),
+                    playCombatSound: (...args) => this.combatSceneUI ?
+                        this.combatSceneUI.audio('playCombatSound', args) : audioManager.playCombatSound(...args)
+                }
+            });
+        }
+
+        if (this.combatManager.active) {
+            this.setupCombatUI();
+            return;
         }
 
         // Get pending combat data
@@ -1280,15 +1310,21 @@ class Game {
         }
 
         // Start combat — pass living companions so they join the initiative queue
+        this.setupCombatUI();
         const player = gameState.get('character');
         const companions = gameState.get('party')?.companions || [];
+        const dungeon = gameState.get('dungeon');
+        this.combatManager.presentationContext = {
+            context: pendingCombat.context || (dungeon?.active ? 'dungeon' : 'overworld'),
+            terrainId: pendingCombat.terrainId,
+            scenerySeed: JSON.stringify([gameState.get('seed'), gameState.get('player.position')]),
+            dungeonTypeId: pendingCombat.dungeonTypeId || dungeon?.dungeonTypeId,
+            isBossFight: Boolean(pendingCombat.isBossFight)
+        };
         await this.combatManager.startCombat(player, pendingCombat.enemies, companions);
 
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
-
-        // Setup combat UI
-        this.setupCombatUI();
 
         console.log('✅ Combat screen initialized');
     }
@@ -1358,60 +1394,84 @@ class Game {
      * Setup combat UI elements
      */
     setupCombatUI() {
+        if (this.combatSceneUI) {
+            return;
+        }
+        this.combatSceneUI = new CombatSceneUI(id => this.handleTargetClick(id), {
+            getManager: () => this.combatManager,
+            onPresented: state => this.presentCombatState(state),
+            onBusy: busy => {
+                document.getElementById('combatActions').inert = busy;
+                document.querySelector('#combatScreen .combatants-display').inert = busy;
+            },
+            onFloatingText: event => this.showFloatingCombatText(event.combatantId, event.text, event.type, event.delay ?? 0)
+        });
         // Setup combat log
         const combatLog = document.getElementById('combatLog');
         if (combatLog) {
             gameState.subscribe('ui.messageLog', (messages) => {
-                const recent = messages.slice(-15);
-                combatLog.innerHTML = recent.map(msg => {
-                    const className = `message message-${msg.type || 'info'}`;
-                    return `<div class="${className}">${msg.text}</div>`;
-                }).join('');
-                combatLog.scrollTop = combatLog.scrollHeight;
+                if (!this.combatSceneUI.isBusy()) {
+                    this.renderCombatLog(messages);
+                }
             });
         }
 
         // Subscribe to combat state updates
-        gameState.subscribe('combat', (combatState) => {
-            if (!combatState || !combatState.active) {
-                // Clear pending ability actions on combat end
-                this._pendingAction = null;
-                this.selectedAction = null;
+        gameState.subscribe('combat', state => this.combatSceneUI.update(state));
 
-                // Combat ended - return to appropriate screen
-                if (this.currentScreen === 'combatScreen' || this.currentScreen === 'combat') {
-                    const dungeonState = gameState.get('dungeon');
-                    if (dungeonState?.active) {
-                        this.showScreen('dungeonScreen');
-                    } else {
-                        this.showScreen('game');
-                    }
-                }
-                return;
-            }
-
-            // Combat started - switch to combat screen
-            if (this.currentScreen !== 'combatScreen' && this.currentScreen !== 'combat') {
-                this.showScreen('combatScreen');
-            }
-
-            this.renderCombatScreen(combatState);
-        });
-
-        // Initial render
         const combatState = gameState.get('combat');
         if (combatState) {
-            this.renderCombatScreen(combatState);
+            this.combatSceneUI.update(combatState);
+        }
+        window.game = this;
+    }
+
+    renderCombatLog(messages) {
+        const combatLog = document.getElementById('combatLog');
+        combatLog.innerHTML = messages.slice(-15).map(msg => {
+            const className = `message message-${msg.type || 'info'}`;
+            return `<div class="${className}">${msg.text}</div>`;
+        }).join('');
+        combatLog.scrollTop = combatLog.scrollHeight;
+    }
+
+    presentCombatState(combatState) {
+        this.renderCombatLog(gameState.get('ui.messageLog'));
+        if (!combatState || !combatState.active) {
+            // Clear pending ability actions on combat end
+            this._pendingAction = null;
+            this.selectedAction = null;
+
+            // Combat ended - return to appropriate screen
+            if (this.currentScreen === 'combatScreen' || this.currentScreen === 'combat') {
+                const dungeonState = gameState.get('dungeon');
+                if (dungeonState?.active) {
+                    this.showScreen('dungeonScreen');
+                } else {
+                    this.showScreen('game');
+                }
+            }
+            return;
         }
 
-        // Expose handleTargetClick to window for onclick handlers
-        window.game = this;
+        // Combat started - switch to combat screen
+        if (!Array.isArray(combatState.combatants)) {
+            return;
+        }
+        if (this.currentScreen !== 'combatScreen' && this.currentScreen !== 'combat') {
+            this.showScreen('combatScreen');
+        }
+
+        this.renderCombatScreen(combatState);
     }
 
     /**
      * Render full combat screen
      */
     renderCombatScreen(combatState) {
+        if (!Array.isArray(combatState?.combatants)) {
+            return;
+        }
         // Update round number
         const roundEl = document.getElementById('roundNumber');
         if (roundEl) {
@@ -1648,6 +1708,9 @@ class Game {
      * Render combat actions
      */
     renderCombatActions(combatState) {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
         const actionsEl = document.getElementById('combatActions');
         if (!actionsEl || !this.combatManager) {
             return;
@@ -1813,7 +1876,7 @@ class Game {
                 ` : ''}
             </div>
             <button class="menu-btn" style="width: 100%; margin-top: 15px;"
-                    onclick="window.game.combatManager.endTurn()">
+                    onclick="window.game.endCombatTurn()">
                 End Turn
             </button>
         `;
@@ -1822,19 +1885,32 @@ class Game {
     /**
      * Select an action
      */
-    selectAction(actionType) {
+    async endCombatTurn() {
+        if (!this.combatSceneUI?.isBusy()) {
+            await this.combatManager?.endTurn();
+        }
+    }
+
+    async selectAction(actionType) {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
+        if (!['attack', 'attackOffHand', 'dodge', 'disengage', 'ability', 'improvisedStrike',
+            'flee', 'cunningFlee'].includes(actionType)) {
+            this.combatSceneUI?.useCards('This action currently uses combat cards.');
+        }
         this.selectedAction = actionType;
 
         if (actionType === 'flee') {
             this._pendingAction = null;
-            this.combatManager.flee(this.combatManager.playerCombatant, { actionCost: 'action' });
+            await this.combatManager.flee(this.combatManager.playerCombatant);
             this.selectedAction = null;
             return;
         }
 
         if (actionType === 'cunningFlee') {
             this._pendingAction = null;
-            this.combatManager.flee(this.combatManager.playerCombatant, { actionCost: 'bonusAction' });
+            await this.combatManager.flee(this.combatManager.playerCombatant);
             this.selectedAction = null;
             return;
         }
@@ -1893,6 +1969,9 @@ class Game {
      * Handle target click
      */
     async handleTargetClick(targetId) {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
         console.log('🎯 Target clicked:', targetId);
 
         if (!this.combatManager || !this.combatManager.active) {
@@ -2074,6 +2153,9 @@ class Game {
      * and you make DEX saving throws with advantage
      */
     dodge() {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
         if (!this.combatManager || !this.combatManager.active) {
             gameState.addMessage('Cannot dodge outside of combat!', 'error');
             return;
@@ -2096,6 +2178,10 @@ class Game {
 
         if (added) {
             gameState.addMessage(`🛡️ ${combatant.name} takes the Dodge action! Attackers have disadvantage until the start of your next turn.`, 'success');
+            gameState.notify('combat.floatingText', {
+                sourceId: combatant.id, combatantId: combatant.id,
+                text: 'DODGING! 🛡️', type: 'buff', effectType: 'dodge'
+            });
 
             // Consume action
             combatant.consumeAction('action');
@@ -2399,6 +2485,9 @@ class Game {
      * @param {object} combatState - current combat state snapshot
      */
     renderCompanionActions(companionId, combatState) {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
         const actionsEl = document.getElementById('combatActions');
         if (!actionsEl || !this.combatManager) {
             return;
@@ -2436,7 +2525,7 @@ class Game {
                 </button>
             </div>
             <button class="menu-btn" style="width: 100%; margin-top: 15px;"
-                    onclick="window.game.combatManager.endTurn()">
+                    onclick="window.game.endCombatTurn()">
                 End Turn
             </button>
         `;
@@ -2451,6 +2540,9 @@ class Game {
      * @param {string} companionId - combatant ID of the companion
      */
     selectCompanionAction(actionType, companionId) {
+        if (this.combatSceneUI?.isBusy()) {
+            return;
+        }
         if (actionType === 'attack') {
             this.selectedAction = 'companionAttack';
             this._pendingCompanionId = companionId;
@@ -3774,7 +3866,7 @@ class Game {
         const options = ability.effects.options.filter(opt => opt.implemented !== false);
         const currentResolve = character.resolvePoints ?? 0;
         const maxResolveCost = ability.maxResolveCost ?? 1;
-        const conMod = character.abilityModifiers?.con ?? 0;
+        const resilienceMod = getAttributeModifierFor(character, 'hp');
         const level = character.level ?? 1;
 
         // Build option buttons — expand variableCostHeal into per-spend rows
@@ -3786,12 +3878,12 @@ class Game {
                     return `<div class="ability-choice-disabled"><strong>${option.name}</strong> — No Resolve remaining</div>`;
                 }
                 return Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
-                    const formula = option.effects.variableCostHeal.formula || 'resolveCost * conMod + level';
+                    const formula = option.effects.variableCostHeal.formula || 'resolveCost * resilienceMod + level';
                     // Simple preview: substitute known values
-                    const approxHeal = n * Math.max(1, conMod) + level;
+                    const approxHeal = n * Math.max(1, resilienceMod) + level;
                     return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${n}">
                                 <strong>${option.name} (${n} Resolve)</strong>
-                                <p>~${approxHeal} HP — ${formula.replace('resolveCost', n).replace('conMod', conMod).replace('level', level)}</p>
+                                <p>~${approxHeal} HP — ${formula.replace('resolveCost', n).replace('resilienceMod', resilienceMod).replace('level', level)}</p>
                             </button>`;
                 }).join('');
             } else if (option.effects?.cureCondition) {
@@ -3819,7 +3911,7 @@ class Game {
                     </div>
                     <div class="modal-body">
                         <p>${ability.description}</p>
-                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | CON mod: ${conMod >= 0 ? '+' : ''}${conMod}</p>` : ''}
+                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | Resilience mod: ${resilienceMod >= 0 ? '+' : ''}${resilienceMod}</p>` : ''}
                         <div class="ability-choices">
                             ${optionButtonsHTML}
                         </div>
@@ -4074,7 +4166,7 @@ class Game {
 
         const currentResolve = character.resolvePoints ?? 0;
         const maxResolveCost = ability.maxResolveCost ?? 1;
-        const conMod = character.abilityModifiers?.con ?? 0;
+        const resilienceMod = getAttributeModifierFor(character, 'hp');
         const level = character.level ?? 1;
 
         // Build option buttons — expand variableCostHeal into per-spend rows
@@ -4085,7 +4177,7 @@ class Game {
                     return `<div class="ability-choice-disabled"><strong>${option.name}</strong> — No Resolve remaining</div>`;
                 }
                 return Array.from({ length: maxSpend }, (_, i) => i + 1).map(n => {
-                    const approxHeal = n * Math.max(1, conMod) + level;
+                    const approxHeal = n * Math.max(1, resilienceMod) + level;
                     return `<button class="ability-choice-btn" data-option-id="${option.id}" data-resolve-spend="${n}">
                                 <strong>${option.name} (${n} Resolve)</strong>
                                 <p>~${approxHeal} HP</p>
@@ -4115,7 +4207,7 @@ class Game {
                     </div>
                     <div class="modal-body">
                         <p>${ability.description}</p>
-                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | CON mod: ${conMod >= 0 ? '+' : ''}${conMod}</p>` : ''}
+                        ${currentResolve > 0 ? `<p style="color:var(--text-muted);font-size:0.85rem;">Resolve: ${currentResolve} | Resilience mod: ${resilienceMod >= 0 ? '+' : ''}${resilienceMod}</p>` : ''}
                         <div class="ability-choices">
                             ${optionButtonsHTML}
                         </div>
@@ -4217,21 +4309,15 @@ class Game {
             this.levelUpManager.confirmLevelUp();
         });
 
-        // Ability score button clicks
-        const abilityBtns = document.querySelectorAll('.ability-score-btn');
-        abilityBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove selected from all buttons
-                abilityBtns.forEach(b => b.classList.remove('selected'));
-                // Add selected to clicked button
-                btn.classList.add('selected');
-                // Store selection
-                this.levelUpManager.selectASI(btn.dataset.ability);
-            });
-        });
-
         // Choice item clicks (delegated event handling)
         modal.addEventListener('click', (e) => {
+            const abilityBtn = e.target.closest('.ability-score-btn');
+            if (abilityBtn) {
+                modal.querySelectorAll('.ability-score-btn').forEach(btn => btn.classList.remove('selected'));
+                abilityBtn.classList.add('selected');
+                this.levelUpManager.selectASI(abilityBtn.dataset.ability);
+                return;
+            }
             const choiceItem = e.target.closest('.choice-item');
             if (choiceItem) {
                 this.levelUpManager.toggleChoiceSelection(choiceItem);
@@ -5109,7 +5195,11 @@ class Game {
 
             // Start combat via the same pattern as regular encounters
             gameState.set('combat', { active: true, pending: true });
-            gameState.set('ui.pendingCombat', { enemies: encounter.monsters, isBossFight: true });
+            gameState.set('ui.pendingCombat', {
+                enemies: encounter.monsters,
+                ...this.dungeonManager.getEncounterContext(),
+                isBossFight: true
+            });
             gameState.set('ui.currentScreen', 'combatScreen');
         } catch (error) {
             console.error('Failed to trigger boss encounter:', error);
@@ -5392,6 +5482,7 @@ class Game {
         // Auto-roll the skill check
         const fatigueMods = getFatigueModifiers();
         const rollResult = character.rollSkill(skillId, {
+            attribute: stage?.attribute || config.attribute,
             advantage: config.advantage || false,
             disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
         });
@@ -5508,6 +5599,8 @@ class Game {
         return {
             attempted: true,
             success,
+            skill: rollResult.skill,
+            attribute: rollResult.attribute,
             rollResult: finalRollResult,
             consequences,
             // Pass enemyTypes for combat initiation from skill challenges
@@ -5576,12 +5669,13 @@ class Game {
 
         // Get skill for current stage (sequential challenges) or main config
         const skillId = stage?.skill || config.skill;
-        const dc = stage?.baseDC || config.dc;
+        const attribute = stage?.attribute || config.attribute || null;
+        const dc = config.dc ?? stage?.baseDC;
         const description = stage?.description || config.description;
         const isPassiveRoll = stage?.passiveRoll || config.passiveRoll || false;
 
         // Calculate skill bonus
-        const skillBonus = character.getSkillBonus(skillId);
+        const skillBonus = character.getSkillBonus(skillId, attribute);
 
         // If passive roll, auto-execute immediately
         if (isPassiveRoll) {
@@ -5591,7 +5685,8 @@ class Game {
         // Populate modal
         document.getElementById('skillCheckTitle').textContent = config.title || challenge?.name || 'Skill Challenge';
         document.getElementById('skillCheckDescription').textContent = description;
-        document.getElementById('skillCheckType').textContent = `${skillId.toUpperCase()} Check`;
+        const attributeLabel = attribute ? ` + ${attribute}` : '';
+        document.getElementById('skillCheckType').textContent = `${this.formatSkillName(skillId)}${attributeLabel} Check`;
         document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
         document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
 
@@ -5680,6 +5775,7 @@ class Game {
                 // Roll skill check using Character.rollSkill() with advantage/disadvantage support
                 const fatigueMods = getFatigueModifiers();
                 const rollResult = character.rollSkill(skillId, {
+                    attribute,
                     advantage: config.advantage || false,
                     disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
                 });
@@ -5795,6 +5891,8 @@ class Game {
                 resolve({
                     attempted: true,
                     success,
+                    skill: rollResult.skill,
+                    attribute: rollResult.attribute,
                     rollResult: finalRollResult,
                     consequences,
                     // Pass enemyTypes for combat initiation from skill challenges
@@ -5826,8 +5924,8 @@ class Game {
 
     /**
      * Format a skill ID into a display name
-     * @param {string} skillId - camelCase skill ID (e.g., "sleightOfHand")
-     * @returns {string} Formatted name (e.g., "Sleight of Hand")
+     * @param {string} skillId - camelCase skill ID
+     * @returns {string} Formatted display name
      */
     formatSkillName(skillId) {
         // Check loaded skills data first
@@ -5866,7 +5964,7 @@ class Game {
             const adjustedDC = window.skillChallengeManager
                 ? window.skillChallengeManager.calculateAdjustedDC(option.baseDC, character.level)
                 : option.baseDC;
-            const skillBonus = character.getSkillBonus(option.skill);
+            const skillBonus = character.getSkillBonus(option.skill, option.attribute);
             const successChance = Math.max(0, Math.min(100, ((21 - adjustedDC + skillBonus) * 5)));
 
             const card = document.createElement('div');
@@ -5883,7 +5981,7 @@ class Game {
 
             card.innerHTML = `
                 <div class="choice-option-header">
-                    <span class="choice-option-skill">${this.formatSkillName(option.skill)}</span>
+                    <span class="choice-option-skill">${this.formatSkillName(option.skill)}${option.attribute ? ` + ${option.attribute}` : ''}</span>
                     <span class="choice-option-dc">DC ${adjustedDC}</span>
                 </div>
                 <div class="choice-option-description">${option.description}</div>
@@ -5919,6 +6017,7 @@ class Game {
                     title: challenge.name,
                     description: `${challenge.description}\n\n${optionData.option.description}`,
                     skill: optionData.option.skill,
+                    attribute: optionData.option.attribute,
                     dc: optionData.adjustedDC
                 };
 
@@ -6187,6 +6286,17 @@ class Game {
             return;
         }
 
+        const abilityScoresHTML = this.getAttributeDisplayEntries(character)
+            .map(({ label, score, modifier }) => this.renderAbilityBox(label, score, modifier))
+            .join('');
+        const savingThrowsHTML = Object.entries(character.savingThrows)
+            .map(([key, save]) => this.renderSavingThrow(
+                this.getAttributeDisplayName(key),
+                save.bonus,
+                save.proficient
+            ))
+            .join('');
+
         // Build character sheet HTML
         content.innerHTML = `
             <!-- Basic Info Section -->
@@ -6235,12 +6345,7 @@ class Game {
             <div class="char-section full-width">
                 <h3>Ability Scores</h3>
                 <div class="ability-grid">
-                    ${this.renderAbilityBox('STR', character.abilities.str, character.abilityModifiers.str)}
-                    ${this.renderAbilityBox('DEX', character.abilities.dex, character.abilityModifiers.dex)}
-                    ${this.renderAbilityBox('CON', character.abilities.con, character.abilityModifiers.con)}
-                    ${this.renderAbilityBox('INT', character.abilities.int, character.abilityModifiers.int)}
-                    ${this.renderAbilityBox('WIS', character.abilities.wis, character.abilityModifiers.wis)}
-                    ${this.renderAbilityBox('CHA', character.abilities.cha, character.abilityModifiers.cha)}
+                    ${abilityScoresHTML}
                 </div>
             </div>
 
@@ -6289,12 +6394,7 @@ class Game {
             <div class="char-section">
                 <h3>Saving Throws</h3>
                 <div class="saving-throws-grid">
-                    ${this.renderSavingThrow('STR', character.savingThrows.str.bonus, character.savingThrows.str.proficient)}
-                    ${this.renderSavingThrow('DEX', character.savingThrows.dex.bonus, character.savingThrows.dex.proficient)}
-                    ${this.renderSavingThrow('CON', character.savingThrows.con.bonus, character.savingThrows.con.proficient)}
-                    ${this.renderSavingThrow('INT', character.savingThrows.int.bonus, character.savingThrows.int.proficient)}
-                    ${this.renderSavingThrow('WIS', character.savingThrows.wis.bonus, character.savingThrows.wis.proficient)}
-                    ${this.renderSavingThrow('CHA', character.savingThrows.cha.bonus, character.savingThrows.cha.proficient)}
+                    ${savingThrowsHTML}
                 </div>
             </div>
 
@@ -6395,6 +6495,11 @@ class Game {
         `;
 
         // Wire up out-of-combat ability "Use" buttons
+        const appearanceHost = document.createElement('section');
+        appearanceHost.className = 'char-section full-width';
+        content.prepend(appearanceHost);
+        void renderCharacterAppearance(appearanceHost);
+
         content.querySelectorAll('.ability-use-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -6416,6 +6521,22 @@ class Game {
                 <div class="ability-modifier">${modStr}</div>
             </div>
         `;
+    }
+
+    getAttributeDisplayName(key) {
+        const definition = this.characterCreationUI?.attributesData?.find(attribute => attribute.id === key);
+        return definition?.abbr || key.toUpperCase();
+    }
+
+    getAttributeDisplayEntries(character) {
+        const keys = RULES.attributes.system === 'NVSystem'
+            ? Object.values(RULES.attributes.legacyToNew)
+            : Object.keys(RULES.attributes.legacyToNew);
+        return keys.map(key => ({
+            label: this.getAttributeDisplayName(key),
+            score: character.abilities?.[key] ?? 10,
+            modifier: character.abilityModifiers?.[key] ?? 0
+        }));
     }
 
     /**
@@ -6846,7 +6967,8 @@ class Game {
      */
     updateWeightDisplay(character) {
         const totalWeight = this.calculateTotalWeight(character);
-        const maxWeight = character.abilities.str * 15; // D&D 5e carrying capacity
+        const carryingAttribute = RULES.attributes.system === 'NVSystem' ? 'prowess' : 'str';
+        const maxWeight = character.abilities[carryingAttribute] * 15;
 
         const weightEl = document.getElementById('invWeight');
         const maxWeightEl = document.getElementById('invMaxWeight');
@@ -6980,10 +7102,10 @@ class Game {
         } else if (item.type === 'armor' && item.armorClass) {
             description = `AC ${item.armorClass}`;
             // Add max DEX bonus info
-            if (item.maxDexBonus !== undefined && item.maxDexBonus !== null) {
-                description += ` (Max DEX +${item.maxDexBonus})`;
-            } else if (item.addDexModifier) {
-                description += ' (Max DEX Inf)';
+            if (item.maxEvasionBonus !== undefined && item.maxEvasionBonus !== null) {
+                description += ` (Max evasion +${item.maxEvasionBonus})`;
+            } else if (item.addEvasionModifier) {
+                description += ' (Max evasion Inf)';
             }
         }
 
@@ -7210,9 +7332,11 @@ class Game {
 
             // Check strength requirement (HARD REQUIREMENT)
             if (item.strengthRequirement) {
-                const charStrength = character.abilities.str;
+                const requirementAttribute = RULES.attributes.system === 'NVSystem' ? 'prowess' : 'str';
+                const charStrength = character.abilities[requirementAttribute];
                 if (charStrength < item.strengthRequirement) {
-                    gameState.addMessage(`❌ You need ${item.strengthRequirement} Strength to wear ${item.name} (you have ${charStrength}). You cannot wear this armor.`, 'error');
+                    const requirementLabel = RULES.attributes.system === 'NVSystem' ? 'Prowess' : 'Strength';
+                    gameState.addMessage(`❌ You need ${item.strengthRequirement} ${requirementLabel} to wear ${item.name} (you have ${charStrength}). You cannot wear this armor.`, 'error');
                     return; // Prevent equipping armor below strength requirement
                 }
             }
@@ -7911,11 +8035,15 @@ class Game {
             this.settlementUI.merchantManager = this.merchantManager;
         }
 
-        // Initialize skill challenge system
-        if (!this.skillChallengeManager.challenges) {
-            console.log('🎲 Initializing skill challenge system...');
-            const skillChallengesData = await fetch('data/skillChallenges.json').then(r => r.json());
-            await this.skillChallengeManager.loadChallenges(skillChallengesData);
+        // A fresh page has no challenge manager yet; saved-game loading must
+        // initialise the same data dependencies as a newly started campaign.
+        if (!this.skillChallengeManager) {
+            this.skillChallengeManager = new SkillChallengeManager();
+            await Promise.all([
+                this.skillChallengeManager.loadChallenges(),
+                this.skillChallengeManager.loadTerrainChallenges(),
+                this.skillChallengeManager.loadSkillsData()
+            ]);
             window.skillChallengeManager = this.skillChallengeManager;
         }
 
@@ -8183,14 +8311,15 @@ class Game {
                 return;
             }
 
+            const abilityStatsHTML = this.getAttributeDisplayEntries(character)
+                .map(({ label, score, modifier }) => (
+                    `<div><strong>${label}:</strong> ${score} (${modifier >= 0 ? '+' : ''}${modifier})</div>`
+                ))
+                .join('');
+
             quickStats.innerHTML = `
                 <div style="font-family: monospace; font-size: 0.85rem; line-height: 1.6;">
-                    <div><strong>STR:</strong> ${character.abilities.str} (${character.abilityModifiers.str >= 0 ? '+' : ''}${character.abilityModifiers.str})</div>
-                    <div><strong>DEX:</strong> ${character.abilities.dex} (${character.abilityModifiers.dex >= 0 ? '+' : ''}${character.abilityModifiers.dex})</div>
-                    <div><strong>CON:</strong> ${character.abilities.con} (${character.abilityModifiers.con >= 0 ? '+' : ''}${character.abilityModifiers.con})</div>
-                    <div><strong>INT:</strong> ${character.abilities.int} (${character.abilityModifiers.int >= 0 ? '+' : ''}${character.abilityModifiers.int})</div>
-                    <div><strong>WIS:</strong> ${character.abilities.wis} (${character.abilityModifiers.wis >= 0 ? '+' : ''}${character.abilityModifiers.wis})</div>
-                    <div><strong>CHA:</strong> ${character.abilities.cha} (${character.abilityModifiers.cha >= 0 ? '+' : ''}${character.abilityModifiers.cha})</div>
+                    ${abilityStatsHTML}
                     <hr style="margin: 10px 0; border-color: #4a4a4a;">
                     <div><strong>Speed:</strong> ${character.speed} ft</div>
                     <div><strong>Initiative:</strong> ${character.initiative >= 0 ? '+' : ''}${character.initiative || 0}</div>
@@ -8681,7 +8810,11 @@ class Game {
         const character = gameState.get('character');
         const mealEffects = hearthcraft.meal.effects;
         const abilityEffect = mealEffects.find(e => e.type === 'abilityScoreBonus');
-        const scoreChoices = abilityEffect?.scoreChoices ?? ['str','dex','con','int','wis','cha'];
+        const scoreChoices = abilityEffect?.scoreChoices ?? (
+            RULES.attributes.system === 'NVSystem'
+                ? Object.values(RULES.attributes.legacyToNew)
+                : Object.keys(RULES.attributes.legacyToNew)
+        );
 
         // Resolve mode for this character's level
         const { resolveLevelKeyedValue } = await import('./utils/practiceUtils.js');
@@ -8701,7 +8834,7 @@ class Game {
         const confirmBtn = document.getElementById('hearthcraftConfirmBtn');
         confirmBtn.disabled = true;
 
-        const scoreLabels = { str: 'STR', dex: 'DEX', con: 'CON', int: 'INT', wis: 'WIS', cha: 'CHA' };
+        const scoreLabels = Object.fromEntries(scoreChoices.map(score => [score, this.getAttributeDisplayName(score)]));
 
         if (mode === 'uniformChoice') {
             uniformSection.style.display = '';
@@ -8930,16 +9063,16 @@ class Game {
             const armor = character.equipment.armor;
             ac = armor.armorClass;
 
-            // Add DEX modifier if allowed
-            if (armor.addDexModifier) {
-                const dexBonus = armor.maxDexBonus !== null
-                    ? Math.min(character.abilityModifiers.dex, armor.maxDexBonus)
-                    : character.abilityModifiers.dex;
-                ac += dexBonus;
+            // Add the active system's evasion modifier if allowed.
+            if (armor.addEvasionModifier) {
+                const evasionMod = getDerivedStatModifier(character, 'acEvasion');
+                ac += armor.maxEvasionBonus !== null
+                    ? Math.min(evasionMod, armor.maxEvasionBonus)
+                    : evasionMod;
             }
         } else {
-            // No armor: 10 + DEX modifier
-            ac = 10 + character.abilityModifiers.dex;
+            // No armour: 10 + the active system's evasion modifier.
+            ac = 10 + getDerivedStatModifier(character, 'acEvasion');
         }
 
         // Shield (shields are equipped in offHand slot)
@@ -8967,17 +9100,11 @@ class Game {
             return 0;
         }
 
-        // Determine which ability modifier to use
-        let abilityMod;
-
-        if (weapon.properties?.includes('finesse')) {
-            // Finesse weapons can use DEX or STR (whichever is higher)
-            abilityMod = Math.max(character.abilityModifiers.str, character.abilityModifiers.dex);
-        } else if (weapon.weaponType === 'ranged') {
-            abilityMod = character.abilityModifiers.dex;
-        } else {
-            abilityMod = character.abilityModifiers.str;
-        }
+        const isFinesseOrRanged = weapon.properties?.includes('finesse') || weapon.weaponType === 'ranged';
+        const abilityMod = getAttributeModifierFor(
+            character,
+            isFinesseOrRanged ? 'rangedFinesseAttack' : 'meleeAttack'
+        );
 
         // Check weapon proficiency
         const proficient = this.isCharacterProficientWithWeapon(character, weapon);
@@ -9065,12 +9192,13 @@ class Game {
             if (effect.type === 'modifyArmor' || effect.type === 'modifyShield') {
                 if (effect.property === 'acBonus') {
                     character.ac += (effect.bonus || 0);
-                } else if (effect.property === 'maxDexBonus') {
+                } else if (effect.property === 'maxEvasionBonus') {
                     const armor = character.equipment.armor;
-                    if (armor?.maxDexBonus !== null && armor?.maxDexBonus !== undefined) {
-                        const extraDex = Math.min(character.abilityModifiers.dex, armor.maxDexBonus + 1)
-                                       - Math.min(character.abilityModifiers.dex, armor.maxDexBonus);
-                        character.ac += extraDex;
+                    if (armor?.maxEvasionBonus !== null && armor?.maxEvasionBonus !== undefined) {
+                        const evasionMod = getDerivedStatModifier(character, 'acEvasion');
+                        const extraEvasion = Math.min(evasionMod, armor.maxEvasionBonus + 1)
+                                           - Math.min(evasionMod, armor.maxEvasionBonus);
+                        character.ac += extraEvasion;
                     }
                 }
             } else if (effect.type === 'modifyWeapon' && effect.property === 'attackBonus') {

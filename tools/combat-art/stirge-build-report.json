@@ -1,0 +1,47 @@
+{
+  "spec": {
+    "source": "tools/combat-art/stirge-candidate.gltf",
+    "auditSource": "tools/combat-art/stirge-adapted.gltf",
+    "output": "data/graphics/combat/stirge-v1.glb",
+    "scale": 0.18,
+    "clearance": 0.006,
+    "hoverClearance": 0.9,
+    "head": "Head",
+    "hitPitch": -0.08,
+    "hitSourceClip": "Wasp_Flying",
+    "collapseDuration": 0.8,
+    "actionMotion": "feed",
+    "clips": {
+      "idle": "Wasp_Flying",
+      "walk": "Wasp_Flying",
+      "attack": "Stirge_Feed",
+      "death": "Wasp_Death"
+    }
+  },
+  "clips": [
+    {
+      "name": "Wasp_Death",
+      "seconds": 0.800000011920929,
+      "minCorrection": 0.045363140118993034,
+      "maxCorrection": 0.8679381573935793
+    },
+    {
+      "name": "Wasp_Flying",
+      "seconds": 1.5,
+      "minCorrection": 0.7270542265394081,
+      "maxCorrection": 0.8034901140541165
+    },
+    {
+      "name": "Stirge_Feed",
+      "seconds": 0.6000000238418579,
+      "minCorrection": 0.7272655283856866,
+      "maxCorrection": 0.8034901140541165
+    },
+    {
+      "name": "Hit",
+      "seconds": 0.3199999928474426,
+      "minCorrection": 0.7270542265394081,
+      "maxCorrection": 0.8034901140541165
+    }
+  ]
+}

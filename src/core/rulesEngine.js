@@ -5,6 +5,14 @@
  */
 
 export const RULES = {
+    settlementPresentation: {
+        enabled: true
+    },
+    combatPresentation: {
+        enabled: true,
+        loadTimeoutMs: 15000,
+        mediaConcurrency: 3
+    },
     // ====================
     // CORE D&D 5E RULES
     // ====================
@@ -80,7 +88,9 @@ export const RULES = {
 
         // Initiative
         initiative: {
-            tiebreaker: 'dexterity' // "dexterity", "reroll", or "random"
+            // Higher initiative attribute wins ties: Intuition in NVSystem, DEX only in
+            // the temporary 5EClassic rollback mode.
+            tiebreaker: 'initiativeAttribute'
         },
 
         // Flanking (optional rule)
@@ -480,10 +490,10 @@ export const RULES = {
         enabled: true,                    // Master toggle — override per campaign or worldbuilder
 
         // Movement fatigue
-        baseFatiguePerTile: 0.5,          // % per tile at movementCost 1.0, CON +0
+        baseFatiguePerTile: 0.5,          // % per tile at movementCost 1.0, Resilience +0
         maxFatigueTerrainMultiplier: 1.5, // Cap terrain scaling — prevents unavoidable exhaustion in swamp/mountain
-        conModMultiplier: 0.1,            // Each CON mod point reduces fatigue rate by 10%
-        minFatigueMultiplier: 0.5,        // Floor at CON +5 — can't go below 50% rate
+        resilienceModMultiplier: 0.1,     // Each Resilience mod point reduces fatigue rate by 10%
+        minFatigueMultiplier: 0.5,        // Floor at Resilience +5 — can't go below 50% rate
 
         // Activity fatigue (flat % per event)
         combatEncounterFatigue: 8,        // Per combat encounter (any result)
@@ -586,7 +596,7 @@ export const RULES = {
         // Resolve: Dedication's martial resource pool
         resolve: {
             enabled: true,
-            formula: 'con_mod + level',  // CON modifier + character level
+            formula: 'resilience_mod + level',
             minimum: 1,
             recharge: 'shortRest',
             unlocksAtLevel: 3,           // Arrives with L3 spec choice
@@ -1317,25 +1327,34 @@ export const RULES = {
     // ====================
     attributes: {
         // Feature flag. '5EClassic' = original str/dex/con/int/wis/cha behaviour.
-        // 'NVSystem' = Nexus Verge Prowess/Vitality/Intellect/Insight/Presence/Composure system.
+        // 'NVSystem' = Nexus Verge Prowess/Resilience/Intellect/Intuition/Presence/Composure system.
         // Default flipped to 'NVSystem' 2026-08-03 (M1.5) — see plan for context; '5EClassic'
         // remains live as rollback for one release cycle.
         system: 'NVSystem',
 
         // Maps every derived-stat context to the attribute(s) that feed it.
         // type: 'single' -> resolver floors once via getAttributeModifierFor().
-        // type: 'blend'  -> resolver sums raw (unfloored) modifiers across `attributes`,
-        //                   then floors once on the total, via getBlendedAttributeModifier().
+        // type: 'blend'  -> resolver averages raw (unfloored) modifiers across `attributes`
+        //                   using optional positive `weights`, then floors once.
         // `attributes` is always an array so both types are consumed identically by callers.
         derivedStatMap: {
             meleeAttack:          { type: 'single', attributes: ['prowess'] },
             rangedFinesseAttack:  { type: 'single', attributes: ['prowess'] },
             damage:                { type: 'single', attributes: ['prowess'] },
-            acEvasion:             { type: 'single', attributes: ['insight'] },
-            acSoak:                { type: 'single', attributes: ['vitality'] },
-            hp:                    { type: 'single', attributes: ['vitality'] },
-            initiative:            { type: 'single', attributes: ['insight'] },
-            passivePerception:     { type: 'single', attributes: ['insight'] },
+            // AC uses a restrained physical contribution without stacking two full
+            // modifiers: Intuition carries 2/3 of the weighted average, Prowess 1/3.
+            // Normal armour gates still decide whether/cap how much evasion applies.
+            acEvasion:             {
+                type: 'blend',
+                attributes: ['intuition', 'prowess'],
+                weights: [2, 1],
+                bySystem: {
+                    '5EClassic': { type: 'single', attributes: ['intuition'] }
+                }
+            },
+            hp:                    { type: 'single', attributes: ['resilience'] },
+            initiative:            { type: 'single', attributes: ['intuition'] },
+            passivePerception:     { type: 'single', attributes: ['intuition'] },
 
             // Saves live only on the three Inward attributes in the target design
             // (locked 2026-07-30) — Prowess-save and Intellect-save are retired there.
@@ -1346,13 +1365,13 @@ export const RULES = {
             // once 5EClassic mode is gone — they have no target-system meaning.
             prowessSave:           { type: 'single', attributes: ['prowess'] },
             intellectSave:         { type: 'single', attributes: ['intellect'] },
-            vitalitySave:          { type: 'single', attributes: ['vitality'] },
-            insightSave:           { type: 'single', attributes: ['insight'] },
+            resilienceSave:        { type: 'single', attributes: ['resilience'] },
+            intuitionSave:         { type: 'single', attributes: ['intuition'] },
             composureSave:         { type: 'single', attributes: ['composure'] },
 
             // Blended contexts — sum raw modifiers, floor once (see Engine rule in the plan).
-            concentration:         { type: 'blend', attributes: ['vitality', 'composure'] },
-            flee:                  { type: 'blend', attributes: ['prowess', 'insight'] },
+            concentration:         { type: 'blend', attributes: ['resilience', 'composure'] },
+            flee:                  { type: 'blend', attributes: ['prowess', 'intuition'] },
             menacingAttackDC:      { type: 'blend', attributes: ['prowess', 'presence'] },
             challengeDC:           { type: 'blend', attributes: ['prowess', 'presence'] }
         },
@@ -1362,9 +1381,9 @@ export const RULES = {
         // "Legacy split-attribute conversion" in the plan for why each pairing is forced.
         legacyToNew: {
             str: 'prowess',
-            con: 'vitality',
+            con: 'resilience',
             int: 'intellect',
-            dex: 'insight',
+            dex: 'intuition',
             wis: 'composure',
             cha: 'presence'
         },
@@ -1379,8 +1398,8 @@ export const RULES = {
         // decision #2, full WIS+CHA averaging is a later backend-dev formula job.
         legacySaveAbilityToContext: {
             str: 'prowessSave',
-            dex: 'insightSave',
-            con: 'vitalitySave',
+            dex: 'intuitionSave',
+            con: 'resilienceSave',
             int: 'intellectSave',
             wis: 'composureSave',
             cha: 'composureSave'

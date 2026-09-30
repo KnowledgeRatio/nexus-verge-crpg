@@ -1,0 +1,13 @@
+{
+  "youngRedDragon": {
+    "shadow": "#270409", "light": "#b83c24", "curve": 0.55,
+    "keepWarmHighlights": true
+  },
+  "youngGreenDragon": {
+    "shadow": "#071a16", "light": "#729b42", "curve": 0.55,
+    "keepWarmHighlights": true
+  },
+  "youngWhiteDragon": {
+    "shadow": "#6b8c9d", "light": "#f1fbff", "curve": 0.5
+  }
+}

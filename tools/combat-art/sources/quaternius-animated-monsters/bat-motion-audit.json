@@ -1,0 +1,43 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-animated-monsters/Bat-candidate.gltf",
+  "sha256": "7c25c467a0bf56e07ce8dd26ff23bd3b60282f67d44bad9c77139c96d76b55f2",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -1.2841078216021669,
+      0.427806479408653,
+      -2.8839073206868524
+    ],
+    "maximum": [
+      1.449078805965638,
+      4.505945001408566,
+      1.4300304955652385
+    ],
+    "size": [
+      2.7331866275678047,
+      4.078138521999914,
+      4.313937816252091
+    ]
+  },
+  "clips": [
+    {
+      "name": "Bat_Flying",
+      "seconds": 1.25,
+      "samples": 39,
+      "minimum": [
+        -2.7000583090686603,
+        -0.21701555837581088,
+        -3.040394286247608
+      ],
+      "maximum": [
+        2.6929766953492322,
+        4.614886868124489,
+        1.430030207902461
+      ],
+      "lowestSurface": -0.21701555837581088,
+      "highestLowestSurface": 0.46302798973345144
+    }
+  ]
+}

@@ -160,6 +160,10 @@ lib-cov/
 .env.production.local
 .env*.local
 
+# ElevenLabs Sound Effects outputs stay local; the public repo tracks cue metadata only
+/data/audio/local/
+__pycache__/
+
 # Azure Functions local settings (contains secrets)
 local.settings.json
 

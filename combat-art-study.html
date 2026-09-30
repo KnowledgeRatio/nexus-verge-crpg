@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexus Verge · Combat Art Target</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="combat-scene.css">
+</head>
+<body class="combat-study-page">
+    <main class="combat-study combat-art-study">
+        <header>
+            <div>
+                <div class="combat-study-kicker">NEXUS VERGE / ART TARGET 01</div>
+                <h1>The traveller and the waystation</h1>
+                <p>Concept art for the next visual slice: adult proportions, worn cloth and leather, weathered masonry and restrained warm light. This image is a visual target, not the playable renderer.</p>
+            </div>
+            <nav aria-label="Study pages"><a href="combat-encounter.html">Play the encounter</a> · <a href="combat-study.html">Animation study</a></nav>
+        </header>
+        <figure class="combat-art-board">
+            <a href="docs/art/combat-study/character-waystation-v1.png" aria-label="Open the full-size art target">
+                <img src="docs/art/combat-study/character-waystation-v1.png" width="1536" height="1024"
+                    alt="Concept board: a full-length traveller in a repaired slate coat, scarf, leather straps and boots, carrying a plain sword. Beside them, an elevated view of two fighters in a worn stone waystation courtyard with a broken wall and a warm lantern.">
+            </a>
+            <figcaption>Generated concept · one appearance candidate · open the image to inspect it at full size.</figcaption>
+        </figure>
+        <div class="combat-art-notes">
+            <section aria-labelledby="artReview">
+                <h2 id="artReview">What to judge</h2>
+                <p>The proportions and degree of realism; the balance of character identity and player projection; whether the materials and courtyard feel like the world you want to inhabit.</p>
+                <p>The close-up tests character design. The courtyard tests atmosphere and small-figure readability. Its staging is illustrative; sword contact still belongs to the moving demo.</p>
+            </section>
+            <section aria-labelledby="artProof">
+                <h2 id="artProof">What the playable proof must show</h2>
+                <p>The encounter now contains an early Blender traveller with separate weapons and a first waystation section. Use the animation study to swap the traveller’s weapon and compare actions.</p>
+                <p>This first articulated model proves the asset pipeline. Sculpting, clothing, hair, textures and animation still need refinement toward the concept shown above.</p>
+                <p>This concept does not establish animation quality or browser performance. Those need to be measured using the real asset in the scene.</p>
+            </section>
+        </div>
+        <details class="combat-encounter-log">
+            <summary>Current playable composition pass</summary>
+            <p>The closer combat view with the gateway, shelter and lantern recomposed behind the formation. Review character readability and the presence of the setting together. The supporting cast still uses the earlier geometry; the concept above remains the art-quality target.</p>
+            <figure class="combat-art-board">
+                <img src="docs/art/combat-study/runtime-composition-v1.png" width="1100" height="900" loading="lazy"
+                    alt="Actual browser encounter with the early imported traveller, separate weapon, stone courtyard and masonry backdrop, alongside the earlier geometric companion and enemy stand-ins.">
+                <figcaption><a href="docs/art/combat-study/traveller-pipeline-close-v1.png">Inspect the early traveller close-up</a> · <a href="combat-encounter.html">Try the playable encounter</a></figcaption>
+            </figure>
+        </details>
+        <p class="combat-study-note"><a href="docs/art/combat-study/character-waystation-v1.md">Reference notes and generation prompt</a>. Character selection remains open for this 3D study; this is not a decision to replace the existing map avatars or portraits.</p>
+    </main>
+</body>
+</html>

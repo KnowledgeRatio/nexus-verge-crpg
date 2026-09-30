@@ -1,0 +1,37 @@
+{
+  "stirge": {
+    "source": "tools/combat-art/stirge-candidate.gltf",
+    "auditSource": "tools/combat-art/stirge-adapted.gltf",
+    "output": "data/graphics/combat/stirge-v1.glb",
+    "scale": 0.18,
+    "clearance": 0.006,
+    "hoverClearance": 0.9,
+    "head": "Head",
+    "hitPitch": -0.08,
+    "hitSourceClip": "Wasp_Flying",
+    "collapseDuration": 0.8,
+    "actionMotion": "feed",
+    "clips": {"idle": "Wasp_Flying", "walk": "Wasp_Flying", "attack": "Stirge_Feed", "death": "Wasp_Death"}
+  },
+  "giantRat": {
+    "source": "tools/combat-art/sources/quaternius-easy-enemies/Rat-candidate.gltf",
+    "auditSource": "tools/combat-art/sources/quaternius-easy-enemies/Rat-adapted.gltf",
+    "output": "data/graphics/combat/giant-rat-v1.glb",
+    "scale": 0.23,
+    "clearance": 0.006,
+    "head": "Head",
+    "hitPitch": -0.15,
+    "clips": {"idle": "Rat_Idle", "walk": "Rat_Walk", "attack": "Rat_Attack", "death": "Rat_Death"}
+  },
+  "giantSpider": {
+    "source": "tools/combat-art/sources/quaternius-easy-enemies/Spider-candidate.gltf",
+    "auditSource": "tools/combat-art/sources/quaternius-easy-enemies/Spider-adapted.gltf",
+    "output": "data/graphics/combat/giant-spider-v1.glb",
+    "scale": 0.55,
+    "clearance": 0.006,
+    "head": "Head",
+    "hitPitch": -0.12,
+    "collapseDuration": 0.8,
+    "clips": {"idle": "Spider_Idle", "walk": "Spider_Walk", "attack": "Spider_Attack", "death": "Spider_Death"}
+  }
+}

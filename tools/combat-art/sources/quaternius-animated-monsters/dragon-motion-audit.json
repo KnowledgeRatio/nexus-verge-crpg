@@ -1,0 +1,60 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-animated-monsters/Dragon-candidate.gltf",
+  "sha256": "e4342d44f3d7e61d74970e8af20ed49d217f2fcd285f64051f83d2afd76c8dee",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -1.704843414418447,
+      0.12988969022713684,
+      -1.9001262634464526
+    ],
+    "maximum": [
+      1.7048421929277247,
+      3.982264882730126,
+      1.8113462439520989
+    ],
+    "size": [
+      3.4096856073461717,
+      3.8523751925029894,
+      3.7114725073985513
+    ]
+  },
+  "clips": [
+    {
+      "name": "Dragon_Flying",
+      "seconds": 1.6666666269302368,
+      "samples": 51,
+      "minimum": [
+        -2.9930391837080927,
+        0.10178036726522728,
+        -2.367508649597899
+      ],
+      "maximum": [
+        3.03123232480215,
+        4.024539043589801,
+        1.811346281913845
+      ],
+      "lowestSurface": 0.10178036726522728,
+      "highestLowestSurface": 0.15540307799567435
+    },
+    {
+      "name": "Dragon_Hit",
+      "seconds": 1.6666666269302368,
+      "samples": 51,
+      "minimum": [
+        -2.978940136484403,
+        0.10899663002278506,
+        -2.3683473332952802
+      ],
+      "maximum": [
+        3.0005857031984644,
+        4.262079871537043,
+        1.811346281913845
+      ],
+      "lowestSurface": 0.10899663002278506,
+      "highestLowestSurface": 0.7744188145258772
+    }
+  ]
+}

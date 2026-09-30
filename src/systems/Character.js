@@ -7,8 +7,9 @@ import { generateUUID } from '../utils/helpers.js';
 import { getAbilityModifier, getProficiencyBonus, rollHitPoints, roll } from '../utils/dice.js';
 import { getProficiencyBonus as getRulesProfBonus, getLevelFromXP, isASILevel, RULES } from '../core/rulesEngine.js';
 import { getPassiveACBonus } from './PassiveModifierRegistry.js';
-import { getAttributeModifierFor, getRawAttributeModifier } from '../utils/attributeResolver.js';
-import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
+import { getAttributeModifierFor, getDerivedStatModifier } from '../utils/attributeResolver.js';
+import { normalizeNVAttributeKey, normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
+import { skillRegistry } from './SkillRegistry.js';
 
 export class Character {
     constructor(data) {
@@ -16,6 +17,7 @@ export class Character {
         this.id = data.id || generateUUID();
         this.name = data.name;
         this.avatar = data.avatar || null;
+        this.combatAppearance = data.combatAppearance ? JSON.parse(JSON.stringify(data.combatAppearance)) : null;
         this.species = data.species ?? data.race; // Species object from races.json — data.race is the pre-rename save key
         this.class = data.class;         // Class object from classes.json
         this.background = data.background; // Background object from backgrounds.json
@@ -24,14 +26,30 @@ export class Character {
         this.xp = data.xp || 0;
 
         // Ability scores (base scores before racial bonuses)
-        this.baseAbilities = data.baseAbilities || {
-            str: 10,
-            dex: 10,
-            con: 10,
-            int: 10,
-            wis: 10,
-            cha: 10
-        };
+        const suppliedBaseAbilities = data.baseAbilities || {};
+        this.baseAbilities = RULES.attributes.system === 'NVSystem'
+            ? {
+                prowess: 10,
+                resilience: 10,
+                intellect: 10,
+                intuition: 10,
+                presence: 10,
+                composure: 10,
+                ...normalizeSixAttributeAbilities(suppliedBaseAbilities)
+            }
+            : {
+                str: 10,
+                dex: 10,
+                con: 10,
+                int: 10,
+                wis: 10,
+                cha: 10,
+                ...suppliedBaseAbilities
+            };
+
+        if (data.activeMealBuff?.abilityScore) {
+            data.activeMealBuff.abilityScore = normalizeNVAttributeKey(data.activeMealBuff.abilityScore);
+        }
 
         // Calculate final abilities (with racial bonuses)
         this.abilities = this.calculateAbilities();
@@ -94,10 +112,10 @@ export class Character {
         this.proficiencies = this.initializeProficiencies();
 
         // Track chosen skill proficiencies (needed for save/load)
-        this.skillChoices = data.skillChoices || [];
+        this.skillChoices = skillRegistry.normalizeIds(data.skillChoices || []);
 
         // Skills (proficiency tracking and bonuses)
-        this.skills = this.initializeSkills(this.skillChoices);
+        this.skills = this.initializeSkills(this.skillChoices, data.skills);
 
         // Saving throws
         this.savingThrows = this.initializeSavingThrows();
@@ -197,8 +215,12 @@ export class Character {
     calculateAbilities() {
         const abilities = { ...this.baseAbilities };
 
-        if (this.species?.abilityScoreIncrease) {
-            for (const [ability, bonus] of Object.entries(this.species.abilityScoreIncrease)) {
+        const speciesIncreases = RULES.attributes.system === 'NVSystem'
+            ? (this.species?.abilityScoreIncreaseNVSystem
+                ?? normalizeSixAttributeAbilities(this.species?.abilityScoreIncrease))
+            : this.species?.abilityScoreIncrease;
+        if (speciesIncreases) {
+            for (const [ability, bonus] of Object.entries(speciesIncreases)) {
                 abilities[ability] = (abilities[ability] || 10) + bonus;
             }
         }
@@ -206,15 +228,6 @@ export class Character {
         // Cap at 20 (standard D&D rule)
         for (const ability in abilities) {
             abilities[ability] = Math.min(20, abilities[ability]);
-        }
-
-        // 'NVSystem' mode: attributeResolver.js's resolver is a pass-through expecting
-        // character.abilities.prowess/.vitality/etc. to already exist — populate them here
-        // via the locked legacy->new bijection (see src/utils/attributeConversion.js). Bug 2
-        // fix (2026-08-01): without this, every resolver call for a real Character silently
-        // returned 0 regardless of the character's actual scores.
-        if (RULES.attributes.system === 'NVSystem') {
-            Object.assign(abilities, convertLegacyAbilitiesToSixAttribute(abilities));
         }
 
         return abilities;
@@ -233,12 +246,12 @@ export class Character {
      * Calculate maximum HP
      */
     calculateMaxHP() {
-        // First level: max hit die + CON modifier
-        let hp = this.class.hitDie + this.abilityModifiers.con;
+        const resilienceMod = getAttributeModifierFor(this, 'hp');
+        let hp = this.class.hitDie + resilienceMod;
 
         // Additional levels: roll or take average
         for (let level = 2; level <= this.level; level++) {
-            hp += rollHitPoints(this.class.hitDie, this.abilityModifiers.con, true);
+            hp += rollHitPoints(this.class.hitDie, resilienceMod, true);
         }
 
         return Math.max(1, hp); // Minimum 1 HP
@@ -255,17 +268,17 @@ export class Character {
             const armor = this.equipment.armor;
             ac = armor.armorClass;
 
-            // Add DEX modifier if allowed
-            if (armor.addDexModifier) {
-                const evasionMod = getAttributeModifierFor(this, 'acEvasion');
-                const dexBonus = armor.maxDexBonus !== null
-                    ? Math.min(evasionMod, armor.maxDexBonus)
+            // Add the active system's evasion modifier if allowed.
+            if (armor.addEvasionModifier) {
+                const evasionMod = getDerivedStatModifier(this, 'acEvasion');
+                const evasionBonus = armor.maxEvasionBonus !== null
+                    ? Math.min(evasionMod, armor.maxEvasionBonus)
                     : evasionMod;
-                ac += dexBonus;
+                ac += evasionBonus;
             }
         } else {
-            // No armor: 10 + DEX modifier
-            ac = 10 + getAttributeModifierFor(this, 'acEvasion');
+            // No armour: 10 + the active system's evasion modifier.
+            ac = 10 + getDerivedStatModifier(this, 'acEvasion');
         }
 
         // Shield (shields are equipped in offHand slot)
@@ -324,36 +337,35 @@ export class Character {
     /**
      * Initialize skills with proficiency tracking
      */
-    initializeSkills(chosenSkills = []) {
-        const skills = {};
-        const skillList = [
-            'athletics', 'acrobatics', 'sleightOfHand', 'endurance',
-            'academia', 'arcana', 'investigation',
-            'perception', 'cunning', 'creativity', 'empathy',
-            'influence', 'deception'
+    initializeSkills(chosenSkills = [], savedSkills = {}) {
+        const sourceIds = [
+            ...Object.keys(savedSkills || {}),
+            ...chosenSkills,
+            ...(this.background?.skillProficiencies || []),
+            ...(this.species?.skillProficiencies || [])
         ];
-
-        // Initialize all skills
-        for (const skill of skillList) {
-            skills[skill] = {
-                proficient: false,
-                expertise: false,
-                bonus: 0
-            };
-        }
+        const skills = skillRegistry.definitions.length > 0
+            ? skillRegistry.migrateSkillState(savedSkills, chosenSkills)
+            : Object.fromEntries(skillRegistry.normalizeIds(sourceIds).map(skillId => [skillId, {
+                proficient: Boolean(savedSkills?.[skillId]?.proficient),
+                expertise: Boolean(savedSkills?.[skillId]?.expertise),
+                bonus: savedSkills?.[skillId]?.bonus || 0
+            }]));
 
         // Apply class skill proficiencies (chosen by player)
         for (const skill of chosenSkills) {
-            if (skills[skill]) {
-                skills[skill].proficient = true;
+            const canonicalId = skillRegistry.normalizeId(skill);
+            if (skills[canonicalId]) {
+                skills[canonicalId].proficient = true;
             }
         }
 
         // Apply background skill proficiencies
         if (this.background?.skillProficiencies) {
             for (const skill of this.background.skillProficiencies) {
-                if (skills[skill]) {
-                    skills[skill].proficient = true;
+                const canonicalId = skillRegistry.normalizeId(skill);
+                if (skills[canonicalId]) {
+                    skills[canonicalId].proficient = true;
                 }
             }
         }
@@ -361,11 +373,14 @@ export class Character {
         // Apply species skill proficiencies from species data
         if (this.species?.skillProficiencies) {
             for (const skill of this.species.skillProficiencies) {
-                if (skills[skill]) skills[skill].proficient = true;
+                const canonicalId = skillRegistry.normalizeId(skill);
+                if (skills[canonicalId]) skills[canonicalId].proficient = true;
             }
         }
 
         // Calculate bonuses
+        // Expose the in-construction state because the shared registry reads character.skills.
+        this.skills = skills;
         this.updateSkillBonuses(skills);
 
         return skills;
@@ -375,76 +390,27 @@ export class Character {
      * Update skill bonuses based on proficiency and ability modifiers
      */
     updateSkillBonuses(skills = this.skills) {
-        // Skill -> attribute mapping mirrors data/skills.json's `ability` / `attributeNVSystem`
-        // fields (same dual-mode pattern as SkillChallengeManager.getSkillModifier() and
-        // SettlementUI._skillToAbility()). This is a synchronous constructor path (Character
-        // objects are built without an async init step), so unlike those two call sites it
-        // can't fetch() skills.json at runtime — the map below must stay in sync with
-        // data/skills.json's per-skill `ability`/`attributeNVSystem` fields by hand.
-        const skillAbilities = RULES.attributes.system === 'NVSystem'
-            ? {
-                athletics: 'prowess',
-                acrobatics: 'prowess',
-                sleightOfHand: 'prowess',
-                endurance: 'vitality',
-                academia: 'intellect',
-                arcana: 'intellect',
-                investigation: 'intellect',
-                perception: 'insight',
-                cunning: 'insight',
-                creativity: 'composure',
-                empathy: 'insight',
-                influence: 'presence',
-                deception: 'composure'
+        for (const [skillId, data] of Object.entries(skills)) {
+            if (skillRegistry.getDefinition(skillId)) {
+                data.bonus = skillRegistry.getModifier(this, skillId);
             }
-            : {
-                athletics: 'str',
-                acrobatics: 'dex',
-                sleightOfHand: 'dex',
-                endurance: 'con',
-                academia: 'int',
-                arcana: 'int',
-                investigation: 'int',
-                perception: 'wis',
-                cunning: 'wis',
-                creativity: 'wis',
-                empathy: 'wis',
-                influence: 'cha',
-                deception: 'cha'
-            };
-
-        for (const [skill, data] of Object.entries(skills)) {
-            const ability = skillAbilities[skill];
-            // Read live through the buff-aware resolver rather than the cached
-            // this.abilityModifiers snapshot — otherwise a Hearthcraft meal buff applied
-            // mid-rest never reaches skill checks even after the resolver-level fix.
-            let bonus = Math.floor(getRawAttributeModifier(this, ability));
-
-            if (data.proficient) {
-                bonus += this.proficiencyBonus;
-            }
-
-            if (data.expertise) {
-                bonus += this.proficiencyBonus; // Double proficiency
-            }
-
-            data.bonus = bonus;
         }
     }
 
     /**
      * Get skill bonus (ability modifier + proficiency)
      * @param {string} skillId - Skill ID
+     * @param {string|null} [attribute=null] - Authored primary/secondary approach
      * @returns {number} - Total skill bonus
      */
-    getSkillBonus(skillId) {
-        const skill = this.skills[skillId];
-        if (!skill) {
+    getSkillBonus(skillId, attribute = null) {
+        const canonicalId = skillRegistry.normalizeId(skillId);
+        const skill = this.skills[canonicalId];
+        if (!skill || !skillRegistry.getDefinition(canonicalId)) {
             console.warn(`⚠️ Skill not found: ${skillId}`);
             return 0;
         }
-
-        return skill.bonus;
+        return skillRegistry.getModifier(this, canonicalId, attribute);
     }
 
     /**
@@ -454,43 +420,12 @@ export class Character {
      * @returns {Object} - Roll result with total, modifier, and roll details
      */
     rollSkill(skillId, options = {}) {
-        const { advantage = false, disadvantage = false } = options;
-
-        const skillBonus = this.getSkillBonus(skillId);
-
-        // Roll d20 (with advantage/disadvantage)
-        let roll = 0;
-        let rolls = [];
-
-        if (advantage && !disadvantage) {
-            // Roll twice, take higher
-            const roll1 = Math.floor(Math.random() * 20) + 1;
-            const roll2 = Math.floor(Math.random() * 20) + 1;
-            roll = Math.max(roll1, roll2);
-            rolls = [roll1, roll2];
-        } else if (disadvantage && !advantage) {
-            // Roll twice, take lower
-            const roll1 = Math.floor(Math.random() * 20) + 1;
-            const roll2 = Math.floor(Math.random() * 20) + 1;
-            roll = Math.min(roll1, roll2);
-            rolls = [roll1, roll2];
-        } else {
-            // Normal roll
-            roll = Math.floor(Math.random() * 20) + 1;
-            rolls = [roll];
-        }
-
-        const total = roll + skillBonus;
-
-        return {
-            roll,           // Natural d20 roll (before modifiers)
-            total,          // Total result (roll + modifier)
-            modifier: skillBonus,
-            advantage,
-            disadvantage,
-            rolls,          // All rolls (for display)
-            skillId
-        };
+        return skillRegistry.rollCheck(this, {
+            skillId,
+            attribute: options.attribute,
+            advantage: options.advantage,
+            disadvantage: options.disadvantage
+        });
     }
 
     /**
@@ -498,6 +433,19 @@ export class Character {
      */
     initializeSavingThrows() {
         const saves = {};
+        if (RULES.attributes.system === 'NVSystem') {
+            const abilities = ['resilience', 'intuition', 'composure'];
+            const proficiencies = this.class.savingThrowProficienciesNVSystem || [];
+            for (const ability of abilities) {
+                const proficient = proficiencies.includes(ability);
+                saves[ability] = {
+                    proficient,
+                    bonus: getAttributeModifierFor(this, `${ability}Save`) + (proficient ? this.proficiencyBonus : 0)
+                };
+            }
+            return saves;
+        }
+
         const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
         for (const ability of abilities) {
@@ -778,7 +726,7 @@ export class Character {
         const oldLevel = this.level;
 
         // Calculate what WOULD change (but don't apply yet!)
-        const hpGain = rollHitPoints(this.class.hitDie, this.abilityModifiers.con, true);
+        const hpGain = rollHitPoints(this.class.hitDie, getAttributeModifierFor(this, 'hp'), true);
         const oldProfBonus = this.proficiencyBonus;
         const newProfBonus = getRulesProfBonus(newLevel);
         const profBonusChanged = newProfBonus !== oldProfBonus;
@@ -815,9 +763,12 @@ export class Character {
      * Apply Ability Score Improvement
      */
     applyASI(increases) {
-        // increases is an object like { str: 1, dex: 1 } or { str: 2 }
+        // Normalize old pending/save selections at the compatibility boundary.
         for (const [ability, increase] of Object.entries(increases)) {
-            this.baseAbilities[ability] = Math.min(20, this.baseAbilities[ability] + increase);
+            const activeAbility = RULES.attributes.system === 'NVSystem'
+                ? normalizeNVAttributeKey(RULES.attributes.legacyToNew[ability] ?? ability)
+                : ability;
+            this.baseAbilities[activeAbility] = Math.min(20, (this.baseAbilities[activeAbility] ?? 10) + increase);
         }
 
         this.abilities = this.calculateAbilities();
@@ -866,7 +817,11 @@ export class Character {
 
         // Apply ASI (single ability increase)
         if (selections.asiChoice) {
-            const ability = selections.asiChoice;
+            const ability = RULES.attributes.system === 'NVSystem'
+                ? normalizeNVAttributeKey(
+                    RULES.attributes.legacyToNew[selections.asiChoice] ?? selections.asiChoice
+                )
+                : selections.asiChoice;
             this.baseAbilities[ability] = Math.min(20, this.baseAbilities[ability] + 1);
             this.abilities = this.calculateAbilities();
             this.abilityModifiers = this.calculateAbilityModifiers();
@@ -969,7 +924,7 @@ export class Character {
         this.speed = this.calculateSpeed();
         this.initiative = getAttributeModifierFor(this, 'initiative');
 
-        // Recalculate Resolve pool (CON mod or level may have changed)
+        // Recalculate Resolve pool (Resilience modifier or level may have changed)
         const newMax = this.calculateMaxResolve();
         if (newMax !== this.maxResolvePoints) {
             const wasAtMax = this.resolvePoints === this.maxResolvePoints;
@@ -1102,7 +1057,7 @@ export class Character {
         let healing = 0;
 
         for (let i = 0; i < diceToRoll; i++) {
-            healing += roll(`1d${this.hitDice.size}`) + this.abilityModifiers.con;
+            healing += roll(`1d${this.hitDice.size}`) + getAttributeModifierFor(this, 'hp');
         }
 
         if (healing > 0) {
@@ -1129,7 +1084,7 @@ export class Character {
 
     /**
      * Calculate maximum Resolve points (Dedication only, L3+)
-     * Formula: CON modifier + level (min 1)
+     * Formula: Resilience modifier + level (min 1)
      */
     calculateMaxResolve() {
         if (this.class?.id !== 'dedication') {
@@ -1138,7 +1093,7 @@ export class Character {
         if (this.level < 3) {
             return 0;
         }
-        return Math.max(1, this.abilityModifiers.con + this.level);
+        return Math.max(1, getAttributeModifierFor(this, 'hp') + this.level);
     }
 
     /**
@@ -1617,7 +1572,8 @@ export class Character {
      * @returns {number} - Max weight in lbs
      */
     getMaxCarryingCapacity() {
-        return this.abilities.str * 15;
+        const carryingAttribute = RULES.attributes.system === 'NVSystem' ? 'prowess' : 'str';
+        return this.abilities[carryingAttribute] * 15;
     }
 
     /**
@@ -1636,6 +1592,7 @@ export class Character {
             id: this.id,
             name: this.name,
             avatar: this.avatar,
+            combatAppearance: this.combatAppearance,
             species: this.species,
             class: this.class,
             background: this.background,

@@ -96,6 +96,8 @@ A plan reaching `Implemented` gets a `docs/CHANGELOG.md` entry in the same chang
 
 **Maintenance rule:** When a team-role agent is added or its tools/responsibilities change, update its Claude subagent + skill and its Codex custom agent + repo skill exposure together. Codex custom agents live in `.codex/agents/`; Codex discovers repo skills in `.agents/skills/`. Compatible Claude skills may be exposed there by symlink to avoid a third copy. This section is the enforcement point.
 
+**Skill parity is test-enforced.** Every repo skill exposed under `.agents/skills/` must have byte-identical `SKILL.md` instructions to its `.claude/skills/` counterpart. `tests/config/agentSkillParity.test.js` fails when a copied skill drifts; symlinked skills satisfy the same check automatically. Platform-specific agent wrappers may differ, but role instructions and decision rights may not.
+
 **Current roster (all fourteen, skill + subagent + Codex custom agent):** `product-owner`, `creative-director`, `game-designer`, `architect`, `backend-dev`, `frontend-dev`, `devils-advocate`, `legal-reviewer`, `worldbuilder`, `data-agent`, `mechanics-master`, `balance-engineer`, `refactor-engineer`, `creative-prompt-engineer`.
 
 - **Skills** = personas loaded into the main conversation

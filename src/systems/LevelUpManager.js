@@ -1,4 +1,5 @@
 import { gameState } from '../core/GameState.js';
+import { RULES } from '../core/rulesEngine.js';
 import { filterByCampaign } from '../utils/campaignFilter.js';
 
 /**
@@ -348,17 +349,22 @@ export default class LevelUpManager {
    * @param {object} character - The character object
    */
     renderASISelection(character) {
-        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-
-        abilities.forEach(ability => {
+        const abilities = RULES.attributes.system === 'NVSystem'
+            ? Object.values(RULES.attributes.legacyToNew)
+            : Object.keys(RULES.attributes.legacyToNew);
+        const grid = document.querySelector('#asiSection .ability-score-grid');
+        if (!grid) {
+            return;
+        }
+        grid.innerHTML = abilities.map(ability => {
             const value = character.abilities[ability];
-            const btn = document.querySelector(`.ability-score-btn[data-ability="${ability}"]`);
-            if (btn) {
-                btn.querySelector('.ability-value').textContent = value;
-                btn.querySelector('.ability-increase').textContent = `+1 → ${value + 1}`;
-                btn.classList.remove('selected');
-            }
-        });
+            return `
+                <button class="ability-score-btn" data-ability="${ability}">
+                    <div class="ability-name">${ability.toUpperCase()}</div>
+                    <div class="ability-value">${value}</div>
+                    <div class="ability-increase">+1 → ${value + 1}</div>
+                </button>`;
+        }).join('');
     }
 
     /**
@@ -708,7 +714,7 @@ export default class LevelUpManager {
 
     /**
    * Handle ASI selection
-   * @param {string} ability - The ability score chosen (str, dex, con, int, wis, cha)
+   * @param {string} ability - The active-system attribute chosen
    */
     selectASI(ability) {
         this.currentSelections.asiChoice = ability;
@@ -964,33 +970,19 @@ export default class LevelUpManager {
                 }
 
                 // Evaluate formula: only + and identifier tokens (con, level, etc.)
-                // Use the same context as formulaEvaluator
                 const mods = character.abilityModifiers || {};
                 const formulaCtx = {
+                    ...mods,
                     level: character.level,
-                    con: mods.con || 0,
-                    str: mods.str || 0,
-                    dex: mods.dex || 0,
-                    int: mods.int || 0,
-                    wis: mods.wis || 0,
-                    cha: mods.cha || 0,
+                    resilienceMod: mods.resilience || 0,
                     proficiency: character.proficiencyBonus || 2
                 };
 
                 let maxValue = 0;
                 const formulaStr = res.formula || '0';
                 // Substitute named tokens (longest first to avoid substring collisions)
-                const tokenMap = [
-                    ['proficiency', formulaCtx.proficiency],
-                    ['level', formulaCtx.level],
-                    ['conMod', formulaCtx.con],
-                    ['con', formulaCtx.con],
-                    ['str', formulaCtx.str],
-                    ['dex', formulaCtx.dex],
-                    ['int', formulaCtx.int],
-                    ['wis', formulaCtx.wis],
-                    ['cha', formulaCtx.cha]
-                ].sort((a, b) => b[0].length - a[0].length);
+                const tokenMap = Object.entries(formulaCtx)
+                    .sort((a, b) => b[0].length - a[0].length);
 
                 let evalFormula = formulaStr;
                 for (const [name, val] of tokenMap) {

@@ -1,0 +1,94 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-animated-monsters/Slime-candidate.gltf",
+  "sha256": "c939898e1bf9534e10d97798f47e1f0b6bea11ae78ce864f85fc7a9dc31be640",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -1.2683874180844077,
+      -0.014278572052717209,
+      -1.5308773860419942
+    ],
+    "maximum": [
+      1.2683874651586036,
+      1.9337545216038676,
+      1.5308774355909311
+    ],
+    "size": [
+      2.5367748832430115,
+      1.9480330936565848,
+      3.0617548216329253
+    ]
+  },
+  "clips": [
+    {
+      "name": "Slime_Attack",
+      "seconds": 0.625,
+      "samples": 20,
+      "minimum": [
+        -1.4724641340173767,
+        -0.014278572052717209,
+        -1.530877370589846
+      ],
+      "maximum": [
+        2.2750211526232107,
+        2.8356106004934576,
+        1.5308775618872348
+      ],
+      "lowestSurface": -0.014278572052717209,
+      "highestLowestSurface": -0.014278572052717209
+    },
+    {
+      "name": "Slime_Death",
+      "seconds": 0.4166666567325592,
+      "samples": 14,
+      "minimum": [
+        -1.2683874179282089,
+        -0.057574751172224575,
+        -1.5308773741934905
+      ],
+      "maximum": [
+        1.2683874652364664,
+        1.711365815734281,
+        1.530877518024316
+      ],
+      "lowestSurface": -0.057574751172224575,
+      "highestLowestSurface": -0.014278572052717209
+    },
+    {
+      "name": "Slime_Idle",
+      "seconds": 2.5,
+      "samples": 76,
+      "minimum": [
+        -1.2683874180844075,
+        -0.014278572052717209,
+        -1.530877370589846
+      ],
+      "maximum": [
+        1.2683874651586036,
+        2.0673676509956445,
+        1.5308775618872348
+      ],
+      "lowestSurface": -0.014278572052717209,
+      "highestLowestSurface": -0.014278572052717209
+    },
+    {
+      "name": "Slime_Walk",
+      "seconds": 0.8333333134651184,
+      "samples": 26,
+      "minimum": [
+        -1.2683874180844075,
+        -0.035147889875652746,
+        -1.5798167646903605
+      ],
+      "maximum": [
+        1.2683874651586036,
+        1.9472609754073824,
+        1.5636795671399202
+      ],
+      "lowestSurface": -0.035147889875652746,
+      "highestLowestSurface": -0.014278572052717209
+    }
+  ]
+}

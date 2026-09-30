@@ -29,10 +29,10 @@
         "newFeatures": [
           {
             "name": "Resolve",
-            "description": "You gain a pool of Resolve equal to your CON modifier + your level (minimum 1). Resolve recharges fully on a short rest.",
+            "description": "You gain a pool of Resolve equal to your Resilience modifier + your level (minimum 1). Resolve recharges fully on a short rest.",
             "grantedResource": {
               "id": "resolve",
-              "formula": "conMod + level",
+              "formula": "resilienceMod + level",
               "minimum": 1,
               "recharge": "shortRest"
             }

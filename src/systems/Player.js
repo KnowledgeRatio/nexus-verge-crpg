@@ -9,7 +9,8 @@ import { rollDice, getAbilityModifier } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue, calcMovementFatigue, getFatigueState, removeFatigue } from './FatigueManager.js';
-import { convertLegacyAbilitiesToSixAttribute } from '../utils/attributeConversion.js';
+import { normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
+import { convertMonsterSavingThrows } from '../utils/monsterAttributeConversion.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -511,7 +512,7 @@ class Player {
                 }
 
                 // Check for locked door skill challenge trigger
-                const lockedDoorChallenge = window.skillChallengeManager?.challenges?.challenges?.['locked_door'];
+                const lockedDoorChallenge = window.skillChallengeManager?.terrainChallengesData?.challenges?.locked_door;
                 if (lockedDoorChallenge?.doorChallenge && !doorTile?.challengeCompleted) {
                     const triggerChance = lockedDoorChallenge.balance?.triggerFrequency || 0.6;
                     if (Math.random() < triggerChance) {
@@ -759,7 +760,10 @@ class Player {
         window.skillChallengeManager.recordChallengeAttempt(challengeId);
 
         // Calculate level-adjusted DC
-        const baseDC = challenge.type === 'single' ? challenge.baseDC : challenge.stages[0].baseDC;
+        const baseDC = challenge.baseDC
+            ?? challenge.stages?.[0]?.baseDC
+            ?? challenge.options?.[0]?.baseDC
+            ?? 10;
         const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level);
 
         // Handle challenge types
@@ -788,6 +792,7 @@ class Player {
             title: challenge.name,
             description: challenge.description,
             skill: challenge.skill,
+            attribute: challenge.attribute,
             dc: adjustedDC
         };
 
@@ -850,6 +855,7 @@ class Player {
                 title: `${challenge.name} - Stage ${currentStageIndex + 1}/${challenge.stages.length}`,
                 description: stage.description || challenge.description,
                 skill: stage.skill,
+                attribute: stage.attribute,
                 dc: adjustedDC,
                 stageHistory: [...stageHistory] // Pass current history for display
             };
@@ -929,6 +935,15 @@ class Player {
                     break;
                 }
             } else {
+                // Each successful stage can advance its matching quest objective.
+                if (window.questManager) {
+                    window.questManager.onSkillChallengeCompleted(challenge.id, {
+                        ...result,
+                        skill: stage.skill,
+                        attribute: stage.attribute
+                    });
+                }
+
                 // Stage succeeded - check for next stage
                 if (stage.onSuccess?.nextStage) {
                     // Find next stage by ID
@@ -939,11 +954,6 @@ class Player {
                 } else {
                     // Final stage completed
                     gameState.addMessage(`✨ Challenge complete: ${challenge.name}`, 'success');
-
-                    // Notify QuestManager of challenge completion
-                    if (window.questManager) {
-                        window.questManager.onSkillChallengeCompleted(challenge.id, result);
-                    }
 
                     // Clear pending challenge
                     gameState.set('pendingChallenge', null);
@@ -977,7 +987,7 @@ class Player {
         // Generate appropriate enemy based on location/terrain
         // Force trigger combat (don't use random encounter check)
         // Pass enemyTypes to ensure contextually appropriate enemies (e.g., wolves for wild beast challenge)
-        this.triggerCombatEncounter(tile.terrain, enemyTypes);
+        await this.triggerCombatEncounter(tile.terrain, enemyTypes);
     }
 
     /**
@@ -1078,14 +1088,20 @@ class Player {
 
     /**
      * Trigger a combat encounter using the XP-budget EncounterBuilder
-     * @param {Object} terrainDef - Terrain definition
+     * @param {Object|string} terrainDef - Terrain definition or ID from a world tile
      * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
     async triggerCombatEncounter(terrainDef, enemyTypes = null) {
         const playerLevel = gameState.get('character.level') || 1;
         const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
         const campaignId = gameState.get('worldConfig.campaignId') || 'core';
-        const terrainId = terrainDef?.id || 'grassland';
+        const terrainId = (typeof terrainDef === 'string' ? terrainDef : terrainDef?.id) || 'grassland';
+        // Forced challenge encounters can originate inside a dungeon. Capture their
+        // visible location before asynchronous generation without changing its rules.
+        const dungeon = gameState.get('dungeon');
+        const presentationContext = dungeon?.active
+            ? this.dungeonManager?.getEncounterContext() || { context: 'dungeon', dungeonTypeId: dungeon.dungeonTypeId }
+            : { context: 'overworld', terrainId };
 
         const { buildEncounter } = await import('./EncounterBuilder.js');
 
@@ -1111,7 +1127,7 @@ class Player {
         gameState.set('combat', { active: true, pending: true });
 
         // Trigger combat event
-        gameState.set('ui.pendingCombat', { enemies: encounter.monsters });
+        gameState.set('ui.pendingCombat', { enemies: encounter.monsters, ...presentationContext });
         gameState.set('ui.currentScreen', 'combatScreen');
     }
 
@@ -1355,7 +1371,12 @@ class Player {
         }
 
         // Calculate passive perception: 10 + perception skill bonus
-        const perceptionBonus = character.skills?.perception?.bonus || 0;
+        const perceptionBonus = window.skillChallengeManager.getSkillModifier(
+            character,
+            'perception',
+            window.skillChallengeManager.getActiveCompanions(),
+            'intuition'
+        );
         const passivePerception = 10 + perceptionBonus;
 
         const detected = passivePerception >= trapDC;
@@ -1370,7 +1391,7 @@ class Player {
                 if (challenge && challenge.stages?.length >= 2) {
                     // Skip stage 1 (detect) - already detected via passive perception
                     // Go directly to stage 2 (disarm)
-                    const disarmStage = challenge.stages[1]; // sleightOfHand disarm stage
+                    const disarmStage = challenge.stages[1];
                     const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(
                         disarmStage.baseDC || 14,
                         character.level
@@ -1379,7 +1400,8 @@ class Player {
                     const config = {
                         title: '🪤 Trap Detected!',
                         description: 'You spot a hidden trap mechanism ahead. You can attempt to disarm it.',
-                        skill: disarmStage.skill || 'sleightOfHand',
+                        skill: disarmStage.skill || 'finesse',
+                        attribute: disarmStage.attribute,
                         dc: adjustedDC
                     };
 
@@ -1579,7 +1601,7 @@ class Player {
      */
     async triggerDungeonEncounter() {
         const playerLevel = gameState.get('character.level') || 1;
-        const dungeonState = gameState.get('dungeon');
+        const encounterContext = this.dungeonManager.getEncounterContext();
 
         // Import rules engine
         const { RULES } = await import('../core/rulesEngine.js');
@@ -1613,7 +1635,10 @@ class Player {
         gameState.set('combat', { active: true, pending: true });
 
         // Trigger combat event
-        gameState.set('ui.pendingCombat', { enemies });
+        gameState.set('ui.pendingCombat', {
+            enemies,
+            ...encounterContext
+        });
         gameState.set('ui.currentScreen', 'combatScreen');
     }
 
@@ -1723,23 +1748,20 @@ class Player {
             currentHP: hp,
             ac: monster.armorClass,
             speed: monster.speed || 30,
-            // 'NVSystem' mode: monster.abilities is still legacy-keyed (46-monster batch
-            // convert is deferred to M2) — attributeResolver.js's resolver is a pass-through
-            // there and needs .prowess/.vitality/etc. to already exist. Same shim as
-            // Character.js's calculateAbilities() / EncounterBuilder.js's createEnemyFromMonster();
-            // see src/utils/attributeConversion.js.
-            abilities: {
-                ...monster.abilities,
-                ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
-            },
+            abilities: RULES.attributes.system === 'NVSystem'
+                ? normalizeSixAttributeAbilities(monster.abilitiesNVSystem ?? monster.abilities)
+                : { ...monster.abilities },
             abilityModifiers: Object.fromEntries(
-                Object.entries({
-                    ...monster.abilities,
-                    ...(RULES.attributes.system === 'NVSystem' && convertLegacyAbilitiesToSixAttribute(monster.abilities))
-                }).map(([key, score]) => [key, getAbilityModifier(score)])
+                Object.entries(RULES.attributes.system === 'NVSystem'
+                    ? normalizeSixAttributeAbilities(monster.abilitiesNVSystem ?? monster.abilities)
+                    : monster.abilities
+                ).map(([key, score]) => [key, getAbilityModifier(score)])
             ),
             proficiencyBonus: RULES.combat.monsterProficiencyByCR[monster.challengeRating] ?? 2,
             skills: monster.skills || {},
+            ...(RULES.attributes.system === 'NVSystem' && {
+                savingThrows: monster.savingThrowsNVSystem ?? convertMonsterSavingThrows(monster.savingThrows)
+            }),
             equipment: {
                 mainHand: null,
                 offHand: null,

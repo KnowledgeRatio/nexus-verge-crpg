@@ -5,163 +5,104 @@
       "campaignIds": ["core"],
       "name": "Athletics",
       "ability": "str",
-      "attributeNVSystem": "prowess",
-      "description": "Your Strength (Athletics) check covers difficult situations you encounter while climbing, jumping, swimming, grappling, and other feats of physical prowess.",
-      "descriptionNVSystem": "Your Prowess (Athletics) check covers difficult situations you encounter while climbing, jumping, swimming, grappling, and other feats of physical prowess."
+      "primaryAttribute": "prowess",
+      "secondaryAttribute": "resilience",
+      "legacyIds": ["athletics"],
+      "description": "Experience in climbing, swimming, jumping, lifting, carrying, forcing obstacles, and sustained physical exertion.",
+      "descriptionNVSystem": "Athletics applies Prowess for forceful physical action and Resilience for sustained exertion. Each check names the approach it uses."
     },
     {
-      "id": "acrobatics",
+      "id": "finesse",
       "campaignIds": ["core"],
-      "name": "Acrobatics",
+      "name": "Finesse",
       "ability": "dex",
-      "attributeNVSystem": "prowess",
-      "description": "Your Dexterity (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, balance on precarious surfaces, move silently, and perform acrobatic maneuvers. Also used for stealth (moving silently).",
-      "descriptionNVSystem": "Your Prowess (Acrobatics) check covers your attempt to stay on your feet in a tricky situation, balance on precarious surfaces, move silently, and perform acrobatic maneuvers. Also used for stealth (moving silently)."
+      "primaryAttribute": "prowess",
+      "secondaryAttribute": "composure",
+      "legacyIds": ["acrobatics", "sleightOfHand", "sleight_of_hand", "cunning"],
+      "description": "Experience in balance, stealth, manual precision, lockpicking, concealment, and sleight of hand.",
+      "descriptionNVSystem": "Finesse applies Prowess for agile execution and Composure for patient, steady precision. Each check names the approach it uses."
     },
     {
-      "id": "sleightOfHand",
+      "id": "survival",
       "campaignIds": ["core"],
-      "name": "Sleight of Hand",
-      "ability": "dex",
-      "attributeNVSystem": "prowess",
-      "description": "Whenever you attempt an act of legerdemain or manual trickery, such as planting something on someone else, concealing an object on your person, lockpicking, or disarming traps, make a Dexterity (Sleight of Hand) check.",
-      "descriptionNVSystem": "Whenever you attempt an act of legerdemain or manual trickery, such as planting something on someone else, concealing an object on your person, lockpicking, or disarming traps, make a Prowess (Sleight of Hand) check."
+      "name": "Survival",
+      "ability": "wis",
+      "primaryAttribute": "intuition",
+      "secondaryAttribute": "resilience",
+      "legacyIds": ["endurance"],
+      "description": "Experience in travel, tracking, hunting, weather, fieldcraft, exposure, and practical treatment in the wild.",
+      "descriptionNVSystem": "Survival applies Intuition for reading the environment and Resilience for enduring it. Each check names the approach it uses."
     },
     {
-      "id": "endurance",
+      "id": "craft",
       "campaignIds": ["core"],
-      "name": "Endurance",
-      "ability": "con",
-      "attributeNVSystem": "vitality",
-      "description": "Your Constitution (Endurance) check measures your ability to push through harsh environments, endure sustained activity, resist fatigue, and maintain concentration during physically demanding tasks.",
-      "descriptionNVSystem": "Your Vitality (Endurance) check measures your ability to push through harsh environments, endure sustained activity, resist fatigue, and maintain concentration during physically demanding tasks."
-    },
-    {
-      "id": "academia",
-      "campaignIds": ["core"],
-      "name": "Academia",
+      "name": "Craft",
       "ability": "int",
-      "attributeNVSystem": "intellect",
-      "description": "Your Intelligence (Academia) check measures your ability to recall lore about historical events, natural phenomena (terrain, plants, animals, weather), religious knowledge (deities, rites, prayers), and scholarly theory. Merges History, Nature, and Religion.",
-      "descriptionNVSystem": "Your Intellect (Academia) check measures your ability to recall lore about historical events, natural phenomena (terrain, plants, animals, weather), religious knowledge (deities, rites, prayers), and scholarly theory. Merges History, Nature, and Religion."
+      "primaryAttribute": "intellect",
+      "secondaryAttribute": "prowess",
+      "legacyIds": ["creativity"],
+      "description": "Experience in constructing, repairing, appraising, salvaging, and manipulating tools and mechanisms.",
+      "descriptionNVSystem": "Craft applies Intellect for design and diagnosis and Prowess for forceful fabrication. Each check names the approach it uses."
     },
     {
-      "id": "arcana",
+      "id": "lore",
       "campaignIds": ["core"],
-      "name": "Arcana",
+      "name": "Lore",
       "ability": "int",
-      "attributeNVSystem": "intellect",
-      "description": "Your Intelligence (Arcana) check measures your ability to recall lore about spells, magic items, eldritch symbols, magical traditions, the planes of existence, and the inhabitants of those planes.",
-      "descriptionNVSystem": "Your Intellect (Arcana) check measures your ability to recall lore about spells, magic items, eldritch symbols, magical traditions, the planes of existence, and the inhabitants of those planes."
+      "primaryAttribute": "intellect",
+      "secondaryAttribute": "intuition",
+      "legacyIds": ["academia", "arcana"],
+      "description": "Experience with history, cultures, creatures, religion, magic, relics, symbols, and scholarly traditions.",
+      "descriptionNVSystem": "Lore applies Intellect for learned knowledge and Intuition for interpreting incomplete or unfamiliar signs. Each check names the approach it uses."
     },
     {
       "id": "investigation",
       "campaignIds": ["core"],
       "name": "Investigation",
       "ability": "int",
-      "attributeNVSystem": "intellect",
-      "description": "When you look around for clues and make deductions based on those clues, conduct forensic analysis, follow evidence chains, or piece together logical inferences, you make an Intelligence (Investigation) check.",
-      "descriptionNVSystem": "When you look around for clues and make deductions based on those clues, conduct forensic analysis, follow evidence chains, or piece together logical inferences, you make an Intellect (Investigation) check."
+      "primaryAttribute": "intellect",
+      "secondaryAttribute": "intuition",
+      "legacyIds": ["investigation"],
+      "description": "Experience in finding evidence, reconstructing events, testing explanations, appraisal, and methodical inquiry.",
+      "descriptionNVSystem": "Investigation applies Intellect for methodical deduction and Intuition for rapid synthesis. Each check names the approach it uses."
     },
     {
       "id": "perception",
       "campaignIds": ["core"],
       "name": "Perception",
       "ability": "wis",
-      "attributeNVSystem": "insight",
-      "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your awareness of detail, danger, motion, and the keenness of your senses.",
-      "descriptionNVSystem": "Your Insight (Perception) check lets you spot, hear, or otherwise detect the presence of something. It measures your awareness of detail, danger, motion, and the keenness of your senses."
-    },
-    {
-      "id": "cunning",
-      "campaignIds": ["core"],
-      "name": "Cunning",
-      "ability": "wis",
-      "attributeNVSystem": "insight",
-      "description": "Your Wisdom (Cunning) check represents the subtle brother of creativity, focusing on stealth (hiding, blending into shadows), tactical thinking, and practical problem-solving in the moment.",
-      "descriptionNVSystem": "Your Insight (Cunning) check represents the subtle brother of creativity, focusing on stealth (hiding, blending into shadows), tactical thinking, and practical problem-solving in the moment."
-    },
-    {
-      "id": "creativity",
-      "campaignIds": ["core"],
-      "name": "Creativity",
-      "ability": "wis",
-      "attributeNVSystem": "composure",
-      "description": "Your Wisdom (Creativity) check measures improvisational problem solving, artistic expression, and thinking outside the box. Used when conventional approaches fail and innovation is required.",
-      "descriptionNVSystem": "Your Composure (Creativity) check measures improvisational problem solving, artistic expression, and thinking outside the box. Used when conventional approaches fail and innovation is required."
+      "primaryAttribute": "intuition",
+      "secondaryAttribute": "composure",
+      "legacyIds": ["perception"],
+      "description": "Experience in noticing danger, detail, motion, sound, hidden features, and changes in the environment.",
+      "descriptionNVSystem": "Perception applies Intuition for immediate awareness and Composure for patient observation. Each check names the approach it uses."
     },
     {
       "id": "empathy",
       "campaignIds": ["core"],
       "name": "Empathy",
       "ability": "wis",
-      "attributeNVSystem": "insight",
-      "description": "Your Wisdom (Empathy) check determines whether you can understand the true intentions and emotions of a creature, sense when someone is lying, predict their next move, or connect with them emotionally. Replaces Insight.",
-      "descriptionNVSystem": "Your Insight (Empathy) check determines whether you can understand the true intentions and emotions of a creature, sense when someone is lying, predict their next move, or connect with them emotionally. Replaces the standalone 5e Insight skill."
+      "primaryAttribute": "composure",
+      "secondaryAttribute": "presence",
+      "legacyIds": ["empathy"],
+      "description": "Experience in understanding emotion, recognising motives, listening, calming, reassuring, and connecting with others.",
+      "descriptionNVSystem": "Empathy applies Composure for emotional awareness and steadiness and Presence for active connection or reassurance. Each check names the approach it uses."
     },
     {
       "id": "influence",
       "campaignIds": ["core"],
       "name": "Influence",
       "ability": "cha",
-      "attributeNVSystem": "presence",
-      "description": "Your Charisma (Influence) check covers all forms of social persuasion, from gentle diplomacy and inspiring speeches to overt threats and intimidation. Merges Persuasion and Intimidation.",
-      "descriptionNVSystem": "Your Presence (Influence) check covers all forms of social persuasion, from gentle diplomacy and inspiring speeches to overt threats and intimidation. Merges Persuasion and Intimidation."
-    },
-    {
-      "id": "deception",
-      "campaignIds": ["core"],
-      "name": "Deception",
-      "ability": "cha",
-      "attributeNVSystem": "composure",
-      "description": "Your Charisma (Deception) check determines whether you can convincingly hide the truth, either verbally or through your actions, bluff your way past guards, or maintain a false identity.",
-      "descriptionNVSystem": "Your Composure (Deception) check determines whether you can convincingly hide the truth, either verbally or through your actions, bluff your way past guards, or maintain a false identity."
+      "primaryAttribute": "presence",
+      "secondaryAttribute": "composure",
+      "legacyIds": ["influence", "deception"],
+      "description": "Experience in persuasion, intimidation, negotiation, deception, command, and maintaining a social performance.",
+      "descriptionNVSystem": "Influence applies Presence for direct social force and Composure for patient negotiation or deception. Each check names the approach it uses."
     }
   ],
-
   "campaignSpecificSkills": {
-    "description": "Skills that only appear in specific campaigns. These serve as examples for future campaign-specific content.",
-
-    "nautical": [
-      {
-        "id": "sailing",
-        "campaignIds": ["nautical"],
-        "name": "Sailing",
-        "ability": "wis",
-        "attributeNVSystem": "insight",
-        "description": "Your Wisdom (Sailing) check measures your ability to navigate ships, read wind and weather patterns, manage crew during maneuvers, and handle maritime emergencies.",
-        "descriptionNVSystem": "Your Insight (Sailing) check measures your ability to navigate ships, read wind and weather patterns, manage crew during maneuvers, and handle maritime emergencies."
-      },
-      {
-        "id": "navigation",
-        "campaignIds": ["nautical"],
-        "name": "Navigation",
-        "ability": "int",
-        "attributeNVSystem": "intellect",
-        "description": "Your Intelligence (Navigation) check measures your ability to chart courses using stars and maps, determine position at sea, and plot efficient travel routes.",
-        "descriptionNVSystem": "Your Intellect (Navigation) check measures your ability to chart courses using stars and maps, determine position at sea, and plot efficient travel routes."
-      }
-    ],
-
-    "darkSun": [
-      {
-        "id": "defiling",
-        "campaignIds": ["dark-sun"],
-        "name": "Defiling",
-        "ability": "int",
-        "attributeNVSystem": "intellect",
-        "description": "Your Intelligence (Defiling) check measures your ability to draw life force from the land to power arcane magic, leaving destruction in your wake. Higher checks cause more environmental damage but yield more power.",
-        "descriptionNVSystem": "Your Intellect (Defiling) check measures your ability to draw life force from the land to power arcane magic, leaving destruction in your wake. Higher checks cause more environmental damage but yield more power."
-      },
-      {
-        "id": "psionics",
-        "campaignIds": ["dark-sun"],
-        "name": "Psionics",
-        "ability": "int",
-        "attributeNVSystem": "intellect",
-        "description": "Your Intelligence (Psionics) check measures your mental discipline for using psionic abilities - mind-to-mind communication, telekinesis, and psychic attacks that are common on Athas.",
-        "descriptionNVSystem": "Your Intellect (Psionics) check measures your mental discipline for using psionic abilities - mind-to-mind communication, telekinesis, and psychic attacks that are common on Athas."
-      }
-    ]
+    "description": "Campaign-specific expertise should normally use practices or content tags rather than expanding the core skill list.",
+    "nautical": [],
+    "darkSun": []
   }
 }

@@ -1,26 +1,34 @@
 ---
 name: player-sprite-direction
-description: Proposed art direction for the player map sprite — "the map is the record, you are the hand still drawing it"; 3 calling-derived traveller figures, awaiting Chief Designer decision
+description: Direction for the player map sprite — nine unisex traveller figures on a calling x mass x accent Latin square, bottom-anchored oversize rendering, revised legibility floor
 metadata:
   type: project
 ---
 
-**Status: PROPOSED, awaiting Chief Designer decision (delivered 2026-09-09).** Do not treat as locked.
+**Status: REVISED 2026-09-09 after Chief Designer decisions. Spec below reflects those decisions; asset counts still awaiting ratification.**
 
-Direction for the player-character map sprite (`character.avatar` → `MapRenderer.setPlayerAvatar`, `DungeonUI.setPlayerAvatar`, drawn at tile size, default 16px).
+Player-character map sprite (`character.avatar` → `MapRenderer.setPlayerAvatar`, `DungeonUI.setPlayerAvatar`).
 
-**Why this came up:** `CharacterCreation.js` offered two avatars named "Knight" and "Monk" — D&D class names in a three-calling game — and both PNGs were **deleted** in `632f2e5` ("cleanup dev art") while the code references stayed live. Every player since has been forced through a picker of broken images and then rendered as the `@` fallback. The real failure mode is **asset/reference decoupling**, which the Azure Blob migration makes *more* likely, not less — any avatar work must land a reference that fails loudly, not silently.
+**Why this came up:** `CharacterCreation.js` offered two avatars named "Knight" and "Monk" — D&D class names in a three-calling game — and both PNGs were **deleted** in `632f2e5` ("cleanup dev art") while the code references stayed live. Players since have been forced through a picker of broken images, then rendered as the `@` fallback. The real failure mode is **asset/reference decoupling**, which the Azure Blob migration makes *more* likely, not less.
 
-**Creative thesis:** the terrain is a painted field atlas — the record of what has been surveyed. The player figure is *the hand still drawing it*. That makes the sprite the map's only sanctioned figure-ground exception: it is allowed the focal centre, hard contour, and contact shadow that the terrain rules explicitly forbid. Direct it as an **ink-and-gouache traveller's mark**, never as a miniature painting of a person.
+**Creative thesis:** the terrain is a painted field atlas — the record of what has been surveyed. The player figure is *the hand still drawing it*. The sprite is therefore the map's only sanctioned figure-ground exception: it alone gets a focal centre, a hard contour, and a contact shadow, all of which the terrain rules forbid. Direct it as an ink-and-gouache traveller's mark, never as a miniature painting of a person.
+
+**Chief Designer decisions (2026-09-09) that overruled my recommendations — do not re-litigate:**
+- The avatar picker **stays**. I recommended deleting it and deriving the figure from calling; overruled.
+- **Nine figures, three per calling**, all unisex; grouped by calling with the player's own three surfaced first, but all nine selectable.
+- Variation axis within a calling: **silhouette mass + accent colour** (chosen because they are the two properties that read at tile size).
+- Sprite renders **oversize, bottom-anchored, ~1.5-1.75x tile**, feet on the logical tile, overhanging upward.
 
 **How to apply:**
-- **Taxonomy: calling, not culture.** `worldbuilder` confirmed from `docs/world/WORLD.md` that the PC's origin is player-defined with no assumed culture, so culture-keyed sprites contradict canon. Callings are dispositions, not uniforms — so calling must read by **inference from what is carried** (worldbuilder's #3 distance signal), never as insignia or costume.
-- **Three figures. One shared travel-load silhouette, differentiated only by carried load.** Reject any proposal that multiplies along a second axis (species, culture, specialisation, gear tier) — art volume is the standing risk here.
-- **One master file per figure suffices.** `frontend-dev` confirmed an offscreen step-halving downscale cache in `setPlayerAvatar` handles all 12 `RULES.zoom.levels` sizes in ~30 lines. Do **not** commission per-zoom mip sets.
-- **Nearest-neighbour is the silent killer.** `imageSmoothingEnabled = false` globally (`MapRenderer.js:23`, `DungeonUI.js:19`); a detailed painting blitted 1024→16 is point-sampled noise that *shimmers* as the rect moves. Any painted-asset-at-tile-size direction must specify the downscale path or it will look broken regardless of art quality.
-- **Alpha discipline is a red line.** The player draws last, edge-to-edge over the tile, `globalAlpha` 1.0, no compositing ops. An opaque sprite punches a square hole in the map.
-- **Two-tone contour, because dungeons are black.** World map is warm parchment; `DungeonUI` renders flat `#000` + per-tile colour (deliberate ASCII-contrast choice, see [[terrain-atlas-direction]]). A single dark rim vanishes on one of the two surfaces.
-- **Findability is already solved in code** — the camera re-centres on the player every frame (`MapRenderer.js:646`), so the figure is permanently at viewport centre. Do not spend art budget on "help the player find themselves."
-- Unisex is a hard constraint on all of the above: see [[unisex-player-figure-constraint]].
+- **"Mass" means load mass, never body type.** Lean/broad/compact describe the outer layer and pack, not the person — broad is a wide *pack and wrap*, not wide shoulders. Say this explicitly every time or it slides straight into body types and gendered reads, defeating [[unisex-player-figure-constraint]].
+- Calling reads from **what is carried** (worldbuilder: inference, not insignia — callings are dispositions, not uniforms, and nobody in the Verge calls themselves "a Curiosity").
+- **Culture is not an axis.** The PC's origin is player-defined with no assumed culture (`docs/world/PEOPLES.md`), so culture-keyed player figures contradict canon.
+- **The legibility floor moved but did not vanish.** Destination range is 15px (zoom 10 x 1.5) to 84px (zoom 48 x 1.75); default is ~28px. Reframe: the figure must stay *locatable* at 15px but need only be *identifiable* at 28px. Deep zoom-out is a deliberate act — the player is looking at the map, not at themselves.
+- **The contact ellipse became load-bearing.** With the figure overhanging upward, it is the only thing telling the player which tile they actually occupy. It is no longer decorative.
+- **Author at 128px, not 512** (frontend: step-halving 128→64→32→16 brackets every target within one bilinear step). The offscreen downscale cache is load-bearing, not an optimisation — smoothing is off globally (`MapRenderer.js:22`) and per-draw (`:461`), so a painted figure blitted straight to 17px aliases and *shimmers* as the rect moves.
+- **`centerOn` does not clamp** (`MapRenderer.js:406-408`) — the player is always the exact centre tile even at a world corner, so overhang can never clip and findability is already free. Do not spend art budget on a halo or marker.
+- **Do not reuse `.avatar-image`** (`styles.css:1359`) or `.avatar-review-image` (`:1387`) for anything painted — both set `image-rendering: pixelated`.
+- Alpha discipline is still a red line: the player draws edge-to-edge over the tile at `globalAlpha` 1.0 with no compositing ops, so an opaque sprite punches a square hole in the map.
+- Two-tone rim still required and unaffected by the size increase — it exists because the world map is warm parchment and `DungeonUI` is flat `#000`.
 
-**Pre-existing style-guide bug found in passing:** the global `## Negative Prompts` block in `tools/image-gen/style-guide.md` carries terrain-motivated terms (`relief shading`, `directional dramatic lighting`, `drop shadow implying elevation`, ...) and `buildNegativePrompt` applies that whole block to portraits, monsters, and items. It directly contradicts `## Character Portraits`' own "strong chiaroscuro" instruction. The block needs splitting into shared + per-asset-class before any character art is generated.
+Related: [[portrait-system-direction]], [[unisex-player-figure-constraint]], [[terrain-atlas-direction]].

@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-07
 **Author:** Chief Game Designer
-**Status:** Design Document - Ready for Architect Review
+**Status:** Historical design document — superseded by ADR-012 and the 2026-07-30 attribute-system remap where noted
 
 ---
 
@@ -279,7 +279,7 @@ All party members participate in the same initiative order as the player, as sep
 
 Each companion turn: player takes direct control of that companion. Interface switches context to the companion's action panel. This is the BG3 model.
 
-**Initiative:** Each companion rolls their own d20 + DEX modifier at combat start. Automatic — no player input needed. Companion initiatives shown in the turn order tracker.
+**Initiative (original design):** Each companion rolls separately at combat start. The later attribute-system remap supersedes the DEX formula: current `NVSystem` initiative is d20 + Intuition modifier, with Intuition breaking ties. Automatic — no player input needed. Companion initiatives are shown in the turn order tracker.
 
 ### Action Economy Per Companion
 

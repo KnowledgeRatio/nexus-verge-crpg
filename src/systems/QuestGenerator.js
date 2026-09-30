@@ -243,7 +243,7 @@ class QuestGenerator {
                     type: 'social_challenge',
                     challengeId: 'bandit_negotiation',
                     description: 'Negotiate with or intimidate the bandit leader',
-                    skills: ['influence', 'deception'],
+                    skills: ['influence'],
                     dc: 14,
                     progress: 0,
                     completed: false

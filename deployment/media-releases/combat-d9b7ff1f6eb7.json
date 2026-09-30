@@ -1,0 +1,756 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "combat-d9b7ff1f6eb7",
+  "mediaBaseUrl": "/media/releases/combat-d9b7ff1f6eb7/",
+  "assets": {
+    "data/graphics/combat/beach-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/beach-v1.glb",
+      "bytes": 5218564,
+      "sha256": "7bb1f3751568e680912ee7ab7f02bc02f2c7af391daaee6461cdb9315a09c9e5",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/bridge-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/bridge-v1.glb",
+      "bytes": 4706144,
+      "sha256": "80c14d3e862194f08f4c20fb337cab9ba9ddbe58ecfa3f4db134bf4239c14786",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/bugbear-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/bugbear-v1.glb",
+      "bytes": 3497288,
+      "sha256": "ef06fa1b500b4a32974e36b4116b52509bcedc655de3a85f2970a0b41781f834",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/camp-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/camp-v1.glb",
+      "bytes": 7008068,
+      "sha256": "c359679ed3d3e668cb439b0f6f2b17b94c3e318fc7765fa3afdaca9567fe7adb",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/cave-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/cave-v1.glb",
+      "bytes": 6329204,
+      "sha256": "5b55a2f0a617343f3cdb9449d1abd088e6f917d83a230b27cd900fca22b37707",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/denseForest-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/denseForest-v1.glb",
+      "bytes": 7295284,
+      "sha256": "2776facf6900e1f7b06ed0ce6828993bbb12cd982f882758fe458a76e1b3a9bf",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/desert-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/desert-v1.glb",
+      "bytes": 4768648,
+      "sha256": "34f22f14cdbcaf9a0467017b2f1d24de4646297ae7f3bdb09544bc59ee44935c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/desertHills-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/desertHills-v1.glb",
+      "bytes": 6178068,
+      "sha256": "2388a373fb9917d89814cad110fa1046d81c7a1309022da970c5654317bd2468",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dire-wolf-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dire-wolf-v1.glb",
+      "bytes": 1863364,
+      "sha256": "e5958a4b0684e7b31cd6d789ed23a1afa4467f4269b4d73fa29657ce71769ef4",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dragon-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dragon-v1.glb",
+      "bytes": 751492,
+      "sha256": "79259e53bd0226882f50fa65faf37c212656c2e8dc9ba79a2479993ae75808b2",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeon-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeon-v1.glb",
+      "bytes": 4114120,
+      "sha256": "63598d785cf4dfed56f361bbf7b78325560762dfa49af9883fa8763dac3032f7",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonAltar-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonAltar-v1.glb",
+      "bytes": 3942904,
+      "sha256": "10d285a31af4d4b76263ef6b56bb13791b4b7dc6f2a477e917e4b14d8416435d",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonBones-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonBones-v1.glb",
+      "bytes": 4273284,
+      "sha256": "acbfde46c91084be7ebeff7e70a5eadf5984014cac604d0c87a4aafedbf64d25",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonDoor-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonDoor-v1.glb",
+      "bytes": 4260512,
+      "sha256": "9ca65c4598cb4e558b144a2c8c9951ccbb4b530de85970e6796ac57aad294881",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonExit-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonExit-v1.glb",
+      "bytes": 4334556,
+      "sha256": "6c0bc167c5f47ba7efcca79e3f6e98f7b1e1b8bed3b50b8556011b2dcbfff636",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonIce-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonIce-v1.glb",
+      "bytes": 5149328,
+      "sha256": "159396e6938019d3d99ef021cda2140f34a71e8dc5f19aa6c433f6ae68b03644",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonMushroom-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonMushroom-v1.glb",
+      "bytes": 3943792,
+      "sha256": "5722a568693057492ff1dc6634f02ce79b782ac1f8a4f358bb346ddd9ed134fe",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonRubble-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonRubble-v1.glb",
+      "bytes": 3725900,
+      "sha256": "692af592cb0ba4acd9359a43afd80304f91eb722efa4a00e1ee734bd5ae16c8f",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonTrap-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonTrap-v1.glb",
+      "bytes": 3941568,
+      "sha256": "763e038d55045926c22358a13581a555c8fc08ce6388fc19bebdb1ff0a79357f",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonTreasure-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonTreasure-v1.glb",
+      "bytes": 4116392,
+      "sha256": "26e65048912224cc50c374702333b6e2b26aacb374e76b561375eb3cddd69871",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/dungeonWeb-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/dungeonWeb-v1.glb",
+      "bytes": 3788892,
+      "sha256": "7d963770da80e2b56dd507219a9cbe89c17b123d22ed65fe5e6141e87f9f8861",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/ettin-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/ettin-v1.glb",
+      "bytes": 4597556,
+      "sha256": "5ba34150171bd3548955709b5dfa91a783cca0db9922a1d5da4c7517a8edab65",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/farmland-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/farmland-v1.glb",
+      "bytes": 6692452,
+      "sha256": "7ac1c45dea7b35a95cb0a8278b4059e313cf3e4ed26c491c28fb8194942418ee",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/flameskull-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/flameskull-v1.glb",
+      "bytes": 303280,
+      "sha256": "2bfafb0bf53b4986e5e36e9e7026eebb80f9c1d6077c0d70a5f132b4727aa85c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/gargoyle-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/gargoyle-v1.glb",
+      "bytes": 2160244,
+      "sha256": "b57574f51fcf77c37d704c5104e1708f925f3aa2bc5f9d0fb3b87e37b8331d0b",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/ghast-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/ghast-v1.glb",
+      "bytes": 2059084,
+      "sha256": "eb778d178ac7a497338d64b197bfc3b4399868f1a1b724dcbcc00bd52f3aea24",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/ghoul-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/ghoul-v1.glb",
+      "bytes": 2059088,
+      "sha256": "938e015083878959dd9b8fafa08fb853cbd04cf46dcb44b1fd2f7fa41c7f6be8",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/giant-hyena-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/giant-hyena-v1.glb",
+      "bytes": 2269836,
+      "sha256": "ab584cf6c485e693579e9f807c1e6878e929cd01dee11a9634cd192414cdbcaa",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/giant-rat-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/giant-rat-v1.glb",
+      "bytes": 559828,
+      "sha256": "c2975ea68e46250e4bfd4fa8a61100208ab31a92e12998e1b46c298001ac5555",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/giant-spider-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/giant-spider-v1.glb",
+      "bytes": 559600,
+      "sha256": "8ab2fc0072ab14bcdb85bc10618ccb5c3b7533fc0b58c8ccd3bfa5cd86163595",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/gnoll-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/gnoll-v1.glb",
+      "bytes": 3127956,
+      "sha256": "e3741d3cf3ff9f0a6bbfd19a7a93ea566f22d787f744cc77bea085229f68d08c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/goblin-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/goblin-grounded.glb",
+      "bytes": 3436012,
+      "sha256": "f5086560210bfc08248ee89bbe35132b3bc40ddd0e879b9427d9504f977ac67c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/grassland-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/grassland-v1.glb",
+      "bytes": 6770832,
+      "sha256": "09f238abb8327350ea24435960f64fedda5821e85bcc43c45063c7f132260ac3",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/hillGiant-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/hillGiant-v1.glb",
+      "bytes": 2209172,
+      "sha256": "88048d2e7c584fc480c7bad8978ff1202252d49c7c121c8d2b1c582cdd439756",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/hills-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/hills-v1.glb",
+      "bytes": 6761752,
+      "sha256": "afea382409f303a79e4d4f9bd5c2065ff814a9120c6adb19d5b1d7cf601c990f",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/industrial-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/industrial-v1.glb",
+      "bytes": 4351628,
+      "sha256": "3862d9e16cca2a03aa454bb267726bda5e09b0c7adf9a03b6b98ed68328a7887",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/jungle-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/jungle-v1.glb",
+      "bytes": 7232412,
+      "sha256": "403ac7edbee8eef8b33a8382b7cfbc65db23b2cfa43e93ba527a0340a6788cc9",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/kobold-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/kobold-grounded.glb",
+      "bytes": 3475908,
+      "sha256": "f02a4b1300208473d2dfabd3066d9c36cb98a56fc212332f383061a49be1ecc9",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/manticore-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/manticore-v1.glb",
+      "bytes": 1589508,
+      "sha256": "663125836568f6a606a7f492bd25778abb402e035131a7e0fd81cd85354fc804",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/medusa-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/medusa-grounded.glb",
+      "bytes": 3829868,
+      "sha256": "dfdac73bb1d3b7c6727d6a18e898cac7c7175a26e65aca9e3f00dfff5d33c557",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/minotaur-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/minotaur-v1.glb",
+      "bytes": 2687072,
+      "sha256": "907c5c86164241e94c34a6a3f485189cd80566f86dd132aea1ab285ca1ea42e9",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/monastery-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/monastery-v1.glb",
+      "bytes": 3754632,
+      "sha256": "f041a6dcae99dbcee0d39f83ac4446ce061cb5bbbc4f081117a26c5a4398025c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/mountain-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/mountain-v1.glb",
+      "bytes": 5538468,
+      "sha256": "3082e9f10c4efe93bced27a2e28af680b8f19c7e69513e084ce66b591d6168f9",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/ogre-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/ogre-v1.glb",
+      "bytes": 2214380,
+      "sha256": "3a4d499ce85b74c15b1d11d1541d2c80966c311759216c7744ac9301b98bf99d",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/orc-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/orc-v1.glb",
+      "bytes": 3250628,
+      "sha256": "44a02e37037f3adeb7447e573acbf6eba989b92a047c940226c6d2b1f53879b6",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/owlbear-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/owlbear-v1.glb",
+      "bytes": 5552512,
+      "sha256": "4012583fecde6e1a4347c94d8205a162c9c156afe695a1c6702b09f25f3e8d8d",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/plains-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/plains-v1.glb",
+      "bytes": 7408752,
+      "sha256": "2672fcbef70576ba8b7afb1607b39b2a0912a567acd48139384055b8c7f5e4ad",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/residential-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/residential-v1.glb",
+      "bytes": 4427504,
+      "sha256": "10abc565fb9c7a4aed4234b348e028091ba231c0d5d0c88a25bd094a03ad5cbf",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/road-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/road-v1.glb",
+      "bytes": 6585688,
+      "sha256": "40f1bddf4100663488c34dfd5dcc91efb3b18072979225fea630cc6f1974282e",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/ruins-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/ruins-v1.glb",
+      "bytes": 6838092,
+      "sha256": "c84a6d20586a10af5bb505a35c0bea6a0b683f140359a15f725b80f9d7f26e98",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/savanna-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/savanna-v1.glb",
+      "bytes": 7111216,
+      "sha256": "85f672c5ad1b14b545db1e11503c5623fc2501c6cb8dc8d34488f8f3f7933aff",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/settlement-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/settlement-v1.glb",
+      "bytes": 4390616,
+      "sha256": "559061721f4813975534f2c6a46cc633bd7780d6affc253455f7c897fa0f8fb0",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/shadow-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/shadow-v1.glb",
+      "bytes": 3866364,
+      "sha256": "86590e310e8df0ab91180feaf6cc040e3590f3ab5a7d9faee2529eb9d3f043f9",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/shallowWater-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/shallowWater-v1.glb",
+      "bytes": 4480020,
+      "sha256": "7520b1828f31abd1e2ee03ba052d2a6c76d646fcb35c558f5ef3568861ecb66a",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/skeleton-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/skeleton-grounded.glb",
+      "bytes": 5743508,
+      "sha256": "fc48fc71b15eec21c3c3141d319cafd3087ad9feb70b404ad23c25c560c84fed",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/smoke-rig-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/smoke-rig-v1.glb",
+      "bytes": 9868,
+      "sha256": "ac7118676c806cdfa6f27ba1e505fd12a91b83fde183432529fa4bf063ae1412",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/snowForest-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/snowForest-v1.glb",
+      "bytes": 5458684,
+      "sha256": "3b20a70cae13e88fc52929b5aa5f1f11efa7c6059193a3b328371e9585008f2f",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/snowyPlains-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/snowyPlains-v1.glb",
+      "bytes": 5083212,
+      "sha256": "dc649e505b8a2e533fb963f7fdee6dd8b94611214d8ceeb14d0c83c79a29fe87",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/specter-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/specter-v1.glb",
+      "bytes": 1376964,
+      "sha256": "223000be6af098c68c505792c28ac0ffaa86d9562095a2a0a1c2aabf198b0a54",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/stirge-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/stirge-v1.glb",
+      "bytes": 597940,
+      "sha256": "bf334e4e724d142e1aae72617526f615ebbf7e936a4ebcd65364b41644bed74b",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/swamp-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/swamp-v1.glb",
+      "bytes": 6464188,
+      "sha256": "f60132684984c2694c106fe1378ce71312ec2c939df0199481b2a390cd64da87",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/temple-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/temple-v1.glb",
+      "bytes": 3788380,
+      "sha256": "22b25bfbc58e2239fecac8d64a4b1cd44c4f3e0ea39f9e232e4981a021a7dc00",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/textures/anatomical-T_Eye_Brown.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/anatomical-T_Eye_Brown.png",
+      "bytes": 35958,
+      "sha256": "d08e3356a83211bc6ca21fe3a8e39f4b5c1a3b8f85457fc2c0fb57be09935025",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/anatomical-T_Eye_Normal.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/anatomical-T_Eye_Normal.png",
+      "bytes": 15099,
+      "sha256": "9ed61f7726a54fe346a78b9e5a18905d8e2b88f86235d97f53cd207a26f3f8c7",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/anatomical-T_Superhero_Male_Normal.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/anatomical-T_Superhero_Male_Normal.png",
+      "bytes": 4252937,
+      "sha256": "9b25cf9200216eb754b79cf4c63b5380c419780788322f3c57cdd2b3e02679a6",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/anatomical-T_Superhero_Male_Roughness.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/anatomical-T_Superhero_Male_Roughness.png",
+      "bytes": 3152049,
+      "sha256": "c70dabf48574cda55644d556beae1ee7cf1bdcf68a50d259d20f2f2358f27991",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/beach-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/beach-earth-v1.png",
+      "bytes": 5102511,
+      "sha256": "44b7228b8ed8ddcfa145b48be9af16b959525dba7ff99cadde0ca2d6e6bacf02",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/bridge-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/bridge-earth-v1.png",
+      "bytes": 4170530,
+      "sha256": "dfb357cdc696ce8a41a8a07e391510b62b7ac7ea2bae298534312f6909dfcca8",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/camp-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/camp-earth-v1.png",
+      "bytes": 5873220,
+      "sha256": "64a8d8a8ad37bbe91a0c8ef0223cb6855ca20428fd87700dabcfaa7cc3c24e94",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/cave-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/cave-earth-v1.png",
+      "bytes": 5927980,
+      "sha256": "96081600aa862afc5f4a29281dd392483a7dd29ed644576dd26222337c16f092",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/denseForest-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/denseForest-earth-v1.png",
+      "bytes": 5876287,
+      "sha256": "c301f93b72c0305e55f9a2b32361c3814b500a20afae4c36f1b22d60b96128ca",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/desert-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/desert-earth-v1.png",
+      "bytes": 4533289,
+      "sha256": "2bb99dda4f11a237c1b69208c29f127684ae0ca6fbfaeaaa81bcf1e504f11850",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/desertHills-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/desertHills-earth-v1.png",
+      "bytes": 5899625,
+      "sha256": "5f5a3b39ac46f1cb830e62f6dd8b1bb620e46f64530a25daa40a5e799e71c4aa",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/dungeon-flagstone-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/dungeon-flagstone-v1.png",
+      "bytes": 3264177,
+      "sha256": "0284efe40821d34582cf272d156c0c626073148a4a2796b82ee3bfebffeef05e",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/dungeon-masonry-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/dungeon-masonry-v1.png",
+      "bytes": 3418746,
+      "sha256": "cd376c6020aa0d77cdd2c5508e8e48924a7fa15055c79cf41ce379fa7480f734",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/dungeonIce-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/dungeonIce-earth-v1.png",
+      "bytes": 4668580,
+      "sha256": "2f8017a913b36f92bb01f0ed14e0219583735cadb59654505cce5e4f2b65bbc0",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/farmland-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/farmland-earth-v1.png",
+      "bytes": 5345386,
+      "sha256": "12c051afa55b2b1c1d08436664a846093332df158244d24f3471053bbdb8f3ac",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/gnoll-authored-7.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/gnoll-authored-7.png",
+      "bytes": 70158,
+      "sha256": "99e56a8f0a70b8cdbc200dd55c03fad920caec7b3cd704879b9a83135b63dfa6",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/grassland-v1-earth.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/grassland-v1-earth.png",
+      "bytes": 5875757,
+      "sha256": "238249a815dc34ffcbf938b28b56fb045623f847024cce146a0c286b553be87a",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/hills-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/hills-earth-v1.png",
+      "bytes": 5839956,
+      "sha256": "6d0e774ae7378c9cf826273198d98b30e5f14f8e62c7be304d576f1e1ea6549b",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/jungle-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/jungle-earth-v1.png",
+      "bytes": 5918508,
+      "sha256": "6b0456a45c93fb599514f0c5ba5cab8fdf0d181fc2fe515c59358b1e78c552f5",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/mountain-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/mountain-earth-v1.png",
+      "bytes": 5307848,
+      "sha256": "8e0e22433749d7deac5a40da199672a4e0016a71e51558bad8c91871f766149a",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/plains-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/plains-earth-v1.png",
+      "bytes": 5459043,
+      "sha256": "c0d44250391ba840e86d50e777be127bf035fedd42f931c50d679ab00105d397",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/road-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/road-earth-v1.png",
+      "bytes": 5774495,
+      "sha256": "438a172725f04d3cf2f16821bd195bd6c79a2fe2e3453222a1f29d5108e737ce",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/ruins-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/ruins-earth-v1.png",
+      "bytes": 5837462,
+      "sha256": "956ed177369effef1adddadab609b1de8a5741de9c4c1e0a201d10b5126b6a27",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/savanna-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/savanna-earth-v1.png",
+      "bytes": 5644531,
+      "sha256": "0289d8a81c2b002bf7158376cea3bbf335874d2080457b5cc490f4a89a9b476e",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/shallowWater-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/shallowWater-earth-v1.png",
+      "bytes": 4075449,
+      "sha256": "da5d76bd5e8b16b397b11253deb8089563482d11f5151dd11f4d3114293e3631",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/snowForest-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/snowForest-earth-v1.png",
+      "bytes": 4749546,
+      "sha256": "465b8cefc1827b94d64edaf0464cbdded076d777a857e322f001a44707b3d2c5",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/snowyPlains-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/snowyPlains-earth-v1.png",
+      "bytes": 4840623,
+      "sha256": "d583d121178b17d2752f39ada581cde125dcd80e3fc22827d831a12510f1e70f",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/swamp-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/swamp-earth-v1.png",
+      "bytes": 5339132,
+      "sha256": "20458b2c9c4938611a6a037b800c68a256c8dbff006f26d92a3d65c6fffcb81e",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/tundra-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/tundra-earth-v1.png",
+      "bytes": 5974950,
+      "sha256": "84510cefb0853f4a46491352e5eaae8866731c29645f52b2751a76b4fb57082a",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/woodland-bend-v1-earth.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/woodland-bend-v1-earth.png",
+      "bytes": 5814409,
+      "sha256": "1cd0f5f5ed0d12d3f10ec38466b684ac8613e90a7223f3685bdc0ddae63ba59a",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/woodland-earth-v1.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/woodland-earth-v1.png",
+      "bytes": 5886763,
+      "sha256": "d93e0bfd69f0f9a4e591dfaffe8865d88e7fe810ee80b8ef166a5691051fae36",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/textures/woodland-glade-v1-earth.png": {
+      "location": "media",
+      "path": "data/graphics/combat/textures/woodland-glade-v1-earth.png",
+      "bytes": 5926983,
+      "sha256": "aea8a32238c8d977d9aca4de1a425e6adddf39228b2be286aa754232a19307fb",
+      "contentType": "image/png"
+    },
+    "data/graphics/combat/traveller-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/traveller-grounded.glb",
+      "bytes": 3005932,
+      "sha256": "0077885b7671168c1e2877760201b5974f018e62f5ab150194b4b2507c201186",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/troll-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/troll-v1.glb",
+      "bytes": 2060248,
+      "sha256": "3c1046e839ea9c611d9353f8be5b467d33080aaf947712ff841ef80f10d95d2e",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/tundra-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/tundra-v1.glb",
+      "bytes": 6667320,
+      "sha256": "7925a0326af25d726f18a2541e02fe85702486602c43b6eb104f7414fbe09002",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/villa-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/villa-v1.glb",
+      "bytes": 4244584,
+      "sha256": "176306f46318cb70d49b74d9a472d9f55af81d8033da4573ed736d726c444114",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/watchtower-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/watchtower-v1.glb",
+      "bytes": 6005636,
+      "sha256": "52b764972cacf3124914e687bd5ac03769a0db445db88db36e4efde63c10a1ec",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/waystation-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/waystation-v1.glb",
+      "bytes": 4135364,
+      "sha256": "f87a96fb175dd254665168760d3f0a96bd7461186c7c6271763dd2d9207dcb2f",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/wight-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/wight-grounded.glb",
+      "bytes": 3906012,
+      "sha256": "6b51c9bfd5e82a2c357802d4ba043827d629c2a31659814af97fb28da08dfda8",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/wolf-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/wolf-v1.glb",
+      "bytes": 1816104,
+      "sha256": "baf669b57b928193f0f0b18c2adc20c3cb37c62168cbebd72d92812108bad70c",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/woodland-bend-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/woodland-bend-v1.glb",
+      "bytes": 6651176,
+      "sha256": "9fac3589f0082cc7645d63b4fec0ba511458e176c93f29164214207e18bd9a88",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/woodland-glade-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/woodland-glade-v1.glb",
+      "bytes": 6766388,
+      "sha256": "899675cfd7bd47a779441473848154684592a50d589d7f210ad54266bd8973a5",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/woodland-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/woodland-v1.glb",
+      "bytes": 6775908,
+      "sha256": "73b593ee3ed33f41f30035cc1e2aeb1ee1e88368502d189927f6c043b3eed074",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/wraith-v1.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/wraith-v1.glb",
+      "bytes": 1164076,
+      "sha256": "2ca6af76e95afc6123113ae77809dc59f60078cc532c0cd41917556f237c50e2",
+      "contentType": "model/gltf-binary"
+    },
+    "data/graphics/combat/zombie-grounded.glb": {
+      "location": "media",
+      "path": "data/graphics/combat/zombie-grounded.glb",
+      "bytes": 2867528,
+      "sha256": "f61bace3087d8181685b51b50e0d455a16907558c927e5fffef19b4ddc2a1aae",
+      "contentType": "model/gltf-binary"
+    }
+  }
+}

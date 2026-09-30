@@ -40,9 +40,9 @@
  * Player build: reused verbatim from the prior Exemplar-vs-Oath pass
  * (tools/balance-sim/dedication-exemplar-oath-l2-10-proposal-sim.js) for
  * continuity — STR/CON ASI curve, 1d8 longsword, flat AC 16, avg-per-level HP.
- * Composure (Oath's dump stat, since Dedication's identity is Prowess+Vitality
+ * Composure (Oath's dump stat, since Dedication's identity is Prowess+Resilience
  * per dedication.md) modeled at chargen-dump floor, score 8 (mod -1),
- * unraised — realistic for a build spending all ASIs on Prowess/Vitality
+ * unraised — realistic for a build spending all ASIs on Prowess/Resilience
  * exactly like the existing harness already does for STR/CON.
  */
 import { attackRoll, damageRoll } from '../../src/utils/dice.js';

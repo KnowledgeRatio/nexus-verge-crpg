@@ -37,10 +37,10 @@ describe('averageComposureSaveBonus', () => {
 });
 
 describe('convertMonsterSavingThrows', () => {
-    it('maps con->vitality and dex->insight as clean 1:1 renames', () => {
+    it('maps con->resilience and dex->intuition as clean 1:1 renames', () => {
         const result = convertMonsterSavingThrows({ con: 6, dex: 4 });
-        expect(result.vitality).toBe(6);
-        expect(result.insight).toBe(4);
+        expect(result.resilience).toBe(6);
+        expect(result.intuition).toBe(4);
     });
 
     it('averages wis+cha into composure when both present (dragon-shaped block)', () => {
@@ -60,7 +60,7 @@ describe('convertMonsterSavingThrows', () => {
 
     it('str is retired entirely — never appears in the output even if present on input', () => {
         const result = convertMonsterSavingThrows({ str: 8, con: 6 });
-        expect(result).toEqual({ vitality: 6 });
+        expect(result).toEqual({ resilience: 6 });
         expect(result.prowess).toBeUndefined();
     });
 

@@ -10,12 +10,12 @@
       "campaignIds": ["core"]
     },
     {
-      "id": "vitality",
-      "name": "Vitality",
-      "abbr": "VIT",
+      "id": "resilience",
+      "name": "Resilience",
+      "abbr": "RES",
       "domain": "physical",
       "direction": "inward",
-      "description": "Physical, inward attribute. Governs HP, AC soak/armour, and Vitality saves.",
+      "description": "Physical, inward attribute. Governs HP, endurance, and Resilience saves.",
       "campaignIds": ["core"]
     },
     {
@@ -28,12 +28,12 @@
       "campaignIds": ["core"]
     },
     {
-      "id": "insight",
-      "name": "Insight",
-      "abbr": "INS",
+      "id": "intuition",
+      "name": "Intuition",
+      "abbr": "ITU",
       "domain": "mental",
       "direction": "inward",
-      "description": "Mental, inward attribute. Governs AC evasion, initiative, passive perception, and Insight saves.",
+      "description": "Mental, inward attribute. Governs AC evasion, initiative, passive perception, and Intuition saves.",
       "campaignIds": ["core"]
     },
     {
@@ -51,7 +51,7 @@
       "abbr": "COM",
       "domain": "social",
       "direction": "inward",
-      "description": "Social, inward attribute. Governs Composure saves (fear/charm/compulsion, consolidated) and converges with Vitality on concentration.",
+      "description": "Social, inward attribute. Governs Composure saves (fear/charm/compulsion, consolidated) and converges with Resilience on concentration.",
       "campaignIds": ["core"]
     }
   ]

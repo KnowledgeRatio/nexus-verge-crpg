@@ -9,15 +9,15 @@
       "flavor": "Discipline made into a weapon — martial mastery and physical perfection",
       "hitDie": 10,
       "primaryAbility": ["str", "con"],
-      "primaryAbilityNVSystem": ["prowess", "vitality"],
+      "primaryAbilityNVSystem": ["prowess", "resilience"],
       "savingThrowProficiencies": ["str", "con"],
-      "savingThrowProficienciesNVSystem": ["vitality"],
+      "savingThrowProficienciesNVSystem": ["resilience"],
       "armorProficiencies": ["light", "medium", "heavy", "shields"],
       "weaponProficiencies": ["simple", "martial"],
       "toolProficiencies": [],
       "skillChoices": {
         "choose": 2,
-        "from": ["acrobatics", "athletics", "endurance", "perception", "empathy", "influence", "cunning"]
+        "from": ["athletics", "finesse", "survival", "perception", "empathy", "influence"]
       },
       "startingEquipment": {
         "defaults": ["chainMail", "longsword", "shield", "lightCrossbow", "bolt:20", "dungeoneersPack"]
@@ -25,7 +25,7 @@
       "spellcaster": false,
       "resourceSystem": {
         "type": "resolve",
-        "formula": "con_mod + level",
+        "formula": "resilience_mod + level",
         "unlocksAtLevel": 3,
         "recharge": "shortRest"
       },
@@ -46,7 +46,7 @@
           },
           {
             "name": "Steady Nerve",
-            "description": "As a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + CON modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn). Once per short rest.",
+            "description": "As a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + Resilience modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn). Once per short rest.",
             "type": "bonusAction",
             "uses": 1,
             "recharge": "shortRest",
@@ -118,7 +118,7 @@
       "toolProficiencies": ["thievesTools", "tinkerersTools"],
       "skillChoices": {
         "choose": 3,
-        "from": ["arcana", "academia", "empathy", "investigation", "creativity", "cunning"]
+        "from": ["lore", "empathy", "investigation", "craft", "finesse"]
       },
       "startingEquipment": {
         "defaults": ["quarterstaff", "componentPouch", "scholarsPack", "spellbook", "tinkerersTools"]
@@ -173,14 +173,14 @@
       "flavor": "Nerve made into an advantage — improvisation, guile, and charm",
       "hitDie": 8,
       "primaryAbility": ["dex", "cha"],
-      "primaryAbilityNVSystem": ["insight", "presence"],
+      "primaryAbilityNVSystem": ["intuition", "presence"],
       "savingThrowProficiencies": ["dex", "int"],
       "armorProficiencies": ["light"],
       "weaponProficiencies": ["simple", "handCrossbow", "longsword", "rapier", "shortsword"],
       "toolProficiencies": ["thievesTools", "musicalInstrument"],
       "skillChoices": {
         "choose": 4,
-        "from": ["acrobatics", "athletics", "deception", "empathy", "influence", "investigation", "perception", "creativity", "sleightOfHand", "cunning"]
+        "from": ["athletics", "finesse", "craft", "investigation", "perception", "empathy", "influence"]
       },
       "startingEquipment": {
         "defaults": ["rapier", "shortbow", "arrow:20", "leatherArmor", "dagger:2", "thievesTools", "lute", "burglarsPack"]
@@ -268,7 +268,7 @@
         "3": [
           {
             "name": "Fast Hands",
-            "description": "Use Cunning Action bonus action to make a Sleight of Hand check, use thieves' tools to disarm traps/pick locks, or Use an Object.",
+            "description": "Use Cunning Action bonus action to make a Finesse check, use thieves' tools to disarm traps/pick locks, or Use an Object.",
             "type": "bonusAction"
           },
           {

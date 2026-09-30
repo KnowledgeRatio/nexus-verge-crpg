@@ -1,0 +1,104 @@
+.combat-study-link { text-align: center; text-decoration: none; }
+.combat-scene-toolbar { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem; font-size: 0.8rem; }
+.combat-scene-toolbar button, .combat-study-controls button, .combat-study-controls select {
+    padding: 0.6rem 0.9rem; border: 1px solid var(--border-color); border-radius: 0.3rem;
+    color: var(--text-primary); background: var(--bg-secondary); cursor: pointer; font: inherit;
+}
+.combat-scene-toolbar button:focus-visible, .combat-study-controls button:focus-visible,
+.combat-scene-actor:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
+.combat-scene-stage { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 26rem; flex: 1; overflow: hidden; border: 1px solid var(--border-color); border-radius: 0.4rem; }
+.combat-scene-stage[hidden] { display: none; }
+.combat-scene-stage canvas { display: block; width: 100%; height: 100%; }
+.combat-scene-viewport { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.combat-scene-camera { position: absolute; top: 0.65rem; left: 0.65rem; right: 0.65rem;
+    display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; pointer-events: none;
+    font: 0.8rem var(--font-sans); }
+.combat-scene-camera button, .combat-scene-camera span {
+    pointer-events: auto; padding: 0.5rem; min-height: 2.5rem; border: 1px solid var(--border-color);
+    border-radius: 0.25rem; background: var(--bg-secondary); color: var(--text-primary); font: inherit;
+}
+.combat-scene-camera button { min-width: 2.5rem; cursor: pointer; }
+.combat-scene-camera span { display: inline-flex; align-items: center; min-width: 3.5rem; justify-content: center; }
+.combat-scene-camera button:disabled { opacity: 0.5; cursor: default; }
+.combat-scene-camera button:focus-visible {
+    outline: 2px solid var(--accent-color); outline-offset: 2px;
+}
+.combat-scene-roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 0.5rem; padding: 0.65rem; max-height: 12rem; flex: none; overflow-y: auto;
+    background: var(--bg-secondary); border-top: 1px solid var(--border-color);
+}
+.combat-scene-actor { display: flex; flex-direction: column; align-items: flex-start; min-width: 0;
+    border: 1px solid var(--border-color); border-left: 3px solid var(--success-color);
+    border-radius: 0.25rem; padding: 0.4rem 0.6rem; overflow-wrap: anywhere;
+    background: var(--bg-secondary);
+    color: var(--text-primary); font: 0.8rem/1.4 var(--font-sans); cursor: pointer;
+}
+.combat-scene-actor[data-team="enemy"] { border-left-color: var(--danger-color); }
+.combat-scene-hp { color: var(--text-primary); opacity: 0.8; font: 0.7rem/1.5 var(--font-mono); }
+.combat-scene-statuses { display: flex; flex-wrap: wrap; gap: 0.25rem; min-height: 1.25rem; margin-top: 0.15rem; }
+.combat-scene-status { display: inline-flex; align-items: center; min-height: 1.25rem; padding: 0.05rem 0.3rem;
+    border: 1px solid currentColor; border-radius: 999px; font: 0.65rem/1.1 var(--font-mono); }
+.combat-scene-status.is-buff { color: var(--success-color); }
+.combat-scene-status.is-debuff { color: var(--danger-color); }
+.combat-scene-actor.is-active { border-color: var(--accent-color); }
+.combat-scene-actor.is-engaged-highlight { outline: 2px solid var(--text-highlight); }
+.combat-scene-actor.is-defeated { opacity: 0.55; }
+.combat-scene-actor.is-downed { opacity: 0.72; }
+.combat-scene-feedback { min-height: 1.4em; font: bold 0.75rem/1.4 var(--font-mono); color: var(--text-primary); }
+.combat-scene-feedback[data-type="damage"], .combat-scene-feedback[data-type="critical"] { color: var(--danger-color); }
+.combat-scene-feedback[data-type="healing"] { color: var(--success-color); }
+.has-combat-scene .combatants-display { display: none; }
+#combatScreen .has-combat-scene { min-height: 0; padding-bottom: 3rem; }
+#combatScreen .has-combat-scene .combat-scene-stage { min-height: 0; }
+.has-combat-scene .combat-sidebar { overflow-y: auto; }
+.has-combat-scene .sidebar-section { flex-shrink: 0; }
+.has-combat-scene .sidebar-section:has(#combatLog) { flex: 0 0 auto; }
+.has-combat-scene #combatLog { min-height: 10rem; max-height: 16rem; }
+.combat-study-page { margin: 0; padding: 2rem; min-height: 100vh; height: auto; overflow: auto; background: var(--bg-secondary); }
+.combat-study { max-width: 100rem; margin: auto; }
+.combat-study header { display: flex; align-items: start; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
+.combat-study h1 { font: 2rem var(--font-sans); margin: 0.5rem 0; color: var(--text-primary); }
+.combat-study p { max-width: 65rem; line-height: 1.6; }
+.combat-study a { color: var(--text-highlight); }
+.combat-study-kicker { font: 0.75rem var(--font-mono); letter-spacing: 0.15em; color: var(--text-highlight); }
+.combat-study-layout { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 1.25rem; }
+.combat-study .combat-scene-stage { height: min(72vh, 50rem); min-height: 32rem; }
+.combat-study-controls { display: flex; flex-direction: column; gap: 0.75rem; }
+.combat-study-controls label { display: flex; flex-direction: column; gap: 0.4rem; }
+.combat-study-audio { display: flex; flex-wrap: wrap; grid-column: 1 / -1; gap: 0.5rem 1rem;
+    padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.3rem;
+    background: var(--bg-secondary); font-size: 0.85rem; }
+.combat-study-audio label { display: inline-flex; flex-direction: row; align-items: center; gap: 0.4rem; cursor: pointer; }
+.combat-study-audio input { accent-color: var(--accent-color); width: 1rem; height: 1rem; margin: 0; }
+.combat-study-audio input:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
+.combat-study-audio #studyAudioStatus { flex-basis: 100%; min-height: 0; padding: 0; border: 0; color: var(--text-highlight); }
+.combat-study-audio #studyAudioStatus:empty { display: none; }
+.combat-study-controls button:hover { border-color: var(--accent-color); }
+.combat-study-controls button:disabled { cursor: default; opacity: 0.5; }
+.combat-study-controls p, .combat-study-note { font-size: 0.85rem; }
+.combat-study-controls output { display: block; min-height: 5rem; padding: 1rem; border-left: 2px solid var(--accent-color); font-size: 0.85rem; line-height: 1.5; }
+.combat-study-note { margin-top: 1rem; opacity: 0.8; }
+.combat-study-fallback { padding: 1rem; }
+.combat-study-fallback li { margin: 0.7rem 0; }
+.combat-encounter-log { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border-color); }
+.combat-encounter-log ol { max-height: 16rem; overflow-y: auto; padding-left: 1.5rem; font-size: 0.85rem; line-height: 1.6; }
+.combat-study-fallback button { padding: 0.65rem; margin: 0.25rem; color: var(--text-primary); background: var(--bg-secondary); border: 1px solid var(--border-color); }
+.combat-study-fallback button[aria-pressed="true"] { border-color: var(--accent-color); }
+.combat-art-board { margin: 0; }
+.combat-art-board img { display: block; width: 100%; height: auto; border: 1px solid var(--border-color); }
+.combat-art-board figcaption { margin-top: 0.65rem; font-size: 0.85rem; color: var(--text-secondary); }
+.combat-art-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 2rem; margin-top: 2rem; }
+.combat-art-notes h2 { font: 1.2rem var(--font-sans); color: var(--text-primary); }
+.combat-art-study a:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 4px; }
+@media (max-width: 1000px) {
+    .combat-study-page { padding: 1rem; }
+    .combat-study-layout { grid-template-columns: 1fr; }
+    .combat-study-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+    .combat-scene-stage { display: none; }
+    .has-combat-scene .combatants-display { display: flex; }
+    .combat-study header { flex-direction: column; gap: 0.5rem; }
+    .combat-study-controls { display: flex; }
+    .combat-scene-toolbar { flex-wrap: wrap; }
+}

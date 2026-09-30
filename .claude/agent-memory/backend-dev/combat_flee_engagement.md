@@ -5,12 +5,12 @@ metadata:
   type: project
 ---
 
-## Flee Mechanic (updated 2026-03-14 — engagement redesign)
-- Formula: `d20 + max(DEX mod, WIS mod) + proficiency >= DC`
+## Flee Mechanic (updated 2026-09-22 — attribute remap)
+- Formula (`NVSystem`): `d20 + floor((Prowess mod + Intuition mod) / 2) + proficiency >= DC`. `5EClassic` retains `max(DEX mod, WIS mod)`.
 - DC: `10 + 2*(engagedCount-1)`, capped at 25. `engagedCount = combatant.engagedWith.size`.
 - `isRangedCombatant(combatant)`: checks equipped weapon first, then `character.attackType` field. `"both"` returns false (has melee capability).
 - Opportunity attacks use `{ consumeAction: false, isOpportunityAttack: true }` — does NOT consume the attacker's action.
-- DO NOT use `combatant.initiative` as a modifier — it is a fully-rolled value (d20 + DEX). Always use `combatant.character.abilityModifiers.dex` directly.
+- DO NOT use `combatant.initiative` as a modifier — it is a fully rolled value. Resolve the dedicated `flee` context through the attribute resolver.
 - Wanderlust Cunning Action flee uses bonus action instead of action (same roll, no advantage).
 
 ## Engagement System (redesigned 2026-03-14)

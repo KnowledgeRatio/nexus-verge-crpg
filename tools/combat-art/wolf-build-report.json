@@ -1,0 +1,39 @@
+{
+  "spec": {
+    "scale": 0.48,
+    "floorClearance": 0.006,
+    "sampleRate": 60,
+    "mouthPosition": [
+      0,
+      1.9,
+      2.48
+    ]
+  },
+  "clips": [
+    {
+      "clip": "Attack",
+      "duration": 1.3333333730697632,
+      "maximumCorrection": 0.028754082941025827
+    },
+    {
+      "clip": "Death",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.0993886948804769
+    },
+    {
+      "clip": "Idle_2_HeadLow",
+      "duration": 4,
+      "maximumCorrection": 0.010897248399261907
+    },
+    {
+      "clip": "Idle_HitReact1",
+      "duration": 0.6666666865348816,
+      "maximumCorrection": 0.01089724839926192
+    },
+    {
+      "clip": "Walk",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.032359617993623364
+    }
+  ]
+}

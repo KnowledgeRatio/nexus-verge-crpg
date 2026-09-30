@@ -12,7 +12,9 @@
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { SeededRandom } from '../utils/rng.js';
+import { getAttributeModifierFor } from '../utils/attributeResolver.js';
 import Character from './Character.js';
+import { skillRegistry } from './SkillRegistry.js';
 
 // ---------------------------------------------------------------------------
 // Name-generation data — short procedural fallback when no name is provided
@@ -206,6 +208,8 @@ export default class CompanionManager {
         skillAssignments,
         campaignIds = ['core']
     } = {}) {
+        await skillRegistry.load();
+
         // ---- Resolve class data ----
         let classData = null;
         try {
@@ -321,12 +325,21 @@ export default class CompanionManager {
      * @private
      */
     _defaultAbilitiesForCalling(callingId) {
-        const defaults = {
+        if (RULES.attributes.system === 'NVSystem') {
+            const defaults = {
+                dedication: { prowess: 16, intuition: 12, resilience: 14, intellect: 8, composure: 13, presence: 10 },
+                curiosity: { prowess: 8, intuition: 12, resilience: 13, intellect: 16, composure: 14, presence: 10 },
+                audacity: { prowess: 10, intuition: 16, resilience: 12, intellect: 13, composure: 10, presence: 14 }
+            };
+            return defaults[callingId]
+                || { prowess: 12, intuition: 12, resilience: 12, intellect: 12, composure: 12, presence: 12 };
+        }
+        const classicDefaults = {
             dedication: { str: 16, dex: 12, con: 14, int: 8, wis: 13, cha: 10 },
-            curiosity:    { str: 8,  dex: 12, con: 13, int: 16, wis: 14, cha: 10 },
+            curiosity: { str: 8, dex: 12, con: 13, int: 16, wis: 14, cha: 10 },
             audacity: { str: 10, dex: 16, con: 12, int: 13, wis: 10, cha: 14 }
         };
-        return defaults[callingId] || { str: 12, dex: 12, con: 12, int: 12, wis: 12, cha: 12 };
+        return classicDefaults[callingId] || { str: 12, dex: 12, con: 12, int: 12, wis: 12, cha: 12 };
     }
 
     // =========================================================================
@@ -771,7 +784,7 @@ export default class CompanionManager {
         } else {
             const levelsGained = newLevel - (companion.level - 1);
             const avgHitDie = Math.ceil(companion.class.hitDie / 2) + 1;
-            companion.maxHP += levelsGained * (avgHitDie + (companion.abilityModifiers?.con || 0));
+            companion.maxHP += levelsGained * (avgHitDie + getAttributeModifierFor(companion, 'hp'));
         }
         companion.currentHP = companion.maxHP;
     }
@@ -783,8 +796,9 @@ export default class CompanionManager {
     _autoApplyASI(companion, newLevel) {
         this._silentLevelUp(companion, newLevel);
 
-        // Pick primary ability — caller's class.primaryAbility[0] or STR
-        const primaryAbility = companion.class?.primaryAbility?.[0] || 'str';
+        const primaryAbility = RULES.attributes.system === 'NVSystem'
+            ? (companion.class?.primaryAbilityNVSystem?.[0] || 'prowess')
+            : (companion.class?.primaryAbility?.[0] || 'str');
         if (companion.baseAbilities) {
             companion.baseAbilities[primaryAbility] = Math.min(
                 RULES.core.abilityScoreMax,

@@ -4,9 +4,9 @@
  * "NVSystem"-mode only).
  *
  * Saves live only on the three Inward attributes under the target system
- * (Vitality / Insight / Composure) — a monster's legacy `savingThrows` block
+ * (Resilience / Intuition / Composure) — a monster's legacy `savingThrows` block
  * (data/monsters.json, keyed by str/dex/con/int/wis/cha bonus overrides) needs
- * converting: dex->insight and con->vitality are clean 1:1 renames; str-save and
+ * converting: dex->intuition and con->resilience are clean 1:1 renames; str-save and
  * int-save are retired entirely (not carried forward); wis+cha collapse onto a single
  * Composure save via averaging (decision #2 — average, not keep-higher).
  *
@@ -39,15 +39,15 @@ export function averageComposureSaveBonus(wisSaveBonus, chaSaveBonus) {
  * 'NVSystem'-mode shape. Only keys with a real source value are included — a monster
  * with no wis/cha entries produces no `composure` key, etc.
  * @param {Object} [savingThrows] - e.g. { wis: 4, cha: 5 } or { wis: 0 }
- * @returns {{ vitality?: number, insight?: number, composure?: number }}
+ * @returns {{ resilience?: number, intuition?: number, composure?: number }}
  */
 export function convertMonsterSavingThrows(savingThrows = {}) {
     const result = {};
     if (typeof savingThrows.con === 'number') {
-        result.vitality = savingThrows.con;
+        result.resilience = savingThrows.con;
     }
     if (typeof savingThrows.dex === 'number') {
-        result.insight = savingThrows.dex;
+        result.intuition = savingThrows.dex;
     }
     const composure = averageComposureSaveBonus(savingThrows.wis, savingThrows.cha);
     if (composure !== undefined) {

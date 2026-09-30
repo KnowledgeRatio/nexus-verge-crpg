@@ -8,10 +8,21 @@ This document contains the required notices and licenses for third-party softwar
 
 Nexus Verge uses the following categories of third-party software:
 - **Development Dependencies:** Tools used for code quality (ESLint)
-- **Runtime Dependencies:** None (game runs 100% client-side with vanilla JavaScript)
-- **Third-Party Assets:** Sound effects (see [ASSET_ATTRIBUTIONS.md](ASSET_ATTRIBUTIONS.md))
+- **Runtime Dependencies:** Three.js 0.180.0, locally vendored for the optional combat visualisation
+- **Third-Party Assets:** Sound effects, graphics and animations (see [ASSET_ATTRIBUTIONS.md](ASSET_ATTRIBUTIONS.md))
 
 ---
+
+## Runtime Dependencies
+
+### Three.js 0.180.0
+
+- **License:** MIT
+- **Copyright:** 2010–2025 Three.js authors
+- **Source:** https://github.com/mrdoob/three.js/tree/r180
+- **Purpose:** Optional browser-based combat scene rendering
+- **Distribution:** Core ES modules under `vendor/three/`, outside the npm dependency tree. The same-version GLTFLoader and BufferGeometryUtils addons change only their bare `three` import to a local relative path; see `vendor/three/README.md`.
+- **Full licence:** [vendor/three/LICENSE](../vendor/three/LICENSE)
 
 ## Development Dependencies
 

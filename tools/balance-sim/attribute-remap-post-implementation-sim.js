@@ -81,7 +81,7 @@ console.log('='.repeat(80));
   // A1: legacy-mode redirection — new-system key -> correct legacy key.
   RULES.attributes.system = 'legacy';
   const legacyChar = { abilities: { str: 17, dex: 13, con: 15, int: 8, wis: 12, cha: 10 } };
-  const expectedRedirect = { prowess: 'str', insight: 'dex', vitality: 'con', intellect: 'int', composure: 'wis', presence: 'cha' };
+  const expectedRedirect = { prowess: 'str', intuition: 'dex', resilience: 'con', intellect: 'int', composure: 'wis', presence: 'cha' };
   let redirectOK = true;
   for (const [newKey, legacyKey] of Object.entries(expectedRedirect)) {
     const got = getRawAttributeModifier(legacyChar, newKey);
@@ -101,12 +101,12 @@ console.log('='.repeat(80));
   // sixAttribute.test.js:112-125, whose comment title says ".../ 2)" but whose expected
   // value 13 = 8+prof(3)+floor(1.5+0.5)=floor(2.0)=2, NOT floor((1.5+0.5)/2)=floor(1.0)=1)
   // -- but it directly CONTRADICTS the literal "/2" written into decisions #3/#4/#5's
-  // formula text. Below: Vitality 15 (mod 2.5) + Composure 13 (mod 1.5) -- true average
+  // formula text. Below: Resilience 15 (mod 2.5) + Composure 13 (mod 1.5) -- true average
   // formula gives floor(4.0/2)=2; implemented code gives floor(4.0)=4, exactly double.
   RULES.attributes.system = 'sixAttribute';
-  const blendChar = { abilities: { vitality: 15, composure: 13 } };
+  const blendChar = { abilities: { resilience: 15, composure: 13 } };
   const concentrationMod = getBlendedAttributeModifier(blendChar, 'concentration');
-  console.log(`A2 concentration blend (Vitality 15/Composure 13): implemented=${concentrationMod}  true-formula-per-decision#3(divide by 2)=${Math.floor(4.0 / 2)}  <- MISMATCH, implemented is 2x the decided formula`);
+  console.log(`A2 concentration blend (Resilience 15/Composure 13): implemented=${concentrationMod}  true-formula-per-decision#3(divide by 2)=${Math.floor(4.0 / 2)}  <- MISMATCH, implemented is 2x the decided formula`);
 
   // A2b: half-point-only case (plan's second worked example) — Prowess +1.5, Presence +0.5.
   const halfPointChar = { abilities: { prowess: 13, presence: 11 } };
@@ -114,9 +114,9 @@ console.log('='.repeat(80));
   console.log(`A2b menacingAttackDC blend (Prowess 13/Presence 11): implemented=${menaceMod}  true-formula-per-decision#5(divide by 2)=${Math.floor(2.0 / 2)}  <- MISMATCH`);
 
   // A3: flee blend, same gap.
-  const fleeChar = { abilities: { prowess: 14, insight: 13 } };
+  const fleeChar = { abilities: { prowess: 14, intuition: 13 } };
   const fleeBlend = getBlendedAttributeModifier(fleeChar, 'flee');
-  console.log(`A3 flee blend (Prowess 14/Insight 13): implemented=${fleeBlend}  true-formula-per-decision#4(divide by 2)=${Math.floor((2.0 + 1.5) / 2)}  <- MISMATCH`);
+  console.log(`A3 flee blend (Prowess 14/Intuition 13): implemented=${fleeBlend}  true-formula-per-decision#4(divide by 2)=${Math.floor((2.0 + 1.5) / 2)}  <- MISMATCH`);
 
   // A4: concentration has zero live consumers — confirms design doc's framing.
   console.log('A4 concentration live-consumer grep: zero call sites outside attributeResolver.js/tests (confirmed via grep before this run) — function-level correctness only, not a live balance signal.');
@@ -147,7 +147,7 @@ console.log('='.repeat(80));
     class: { hitDie: 10, id: 'dedication' },
     background: {},
     species: {},
-    baseAbilities: { str: 18, dex: 14, con: 16, int: 8, wis: 10, cha: 8 }, // real, invested Prowess/Vitality build
+    baseAbilities: { str: 18, dex: 14, con: 16, int: 8, wis: 10, cha: 8 }, // real, invested Prowess/Resilience build
     equipment: { mainHand: null, offHand: null, armor: null }
   });
   realPC.proficiencyBonus = getProficiencyBonus(5);
@@ -157,7 +157,7 @@ console.log('='.repeat(80));
   console.log(`Real Character.abilities shape: ${JSON.stringify(realPC.abilities)}  <- still legacy keys, system flag is 'sixAttribute'`);
   const fleeModReal = getBlendedAttributeModifier(realPC, 'flee');
   const dcModReal = getBlendedAttributeModifier(realPC, 'menacingAttackDC');
-  console.log(`  flee blend on REAL character (str18/dex14 invested): ${fleeModReal}  <- expect ~+2 (Prowess+Insight), ACTUAL below`);
+  console.log(`  flee blend on REAL character (str18/dex14 invested): ${fleeModReal}  <- expect ~+2 (Prowess+Intuition), ACTUAL below`);
   console.log(`  menacingAttackDC blend on REAL character: ${dcModReal}  <- expect ~+2/+3, ACTUAL below`);
 
   const cmD = new CombatManager();
@@ -168,7 +168,7 @@ console.log('='.repeat(80));
   cmD.flee(fleeingD);
   const fleeMsg = gameState.data.ui.messageLog.find(m => m.text.startsWith('🏃 Flee check:'));
   console.log(`  Real CombatManager.flee() output: "${fleeMsg?.text}"`);
-  console.log(`  -> ${fleeModReal === 0 ? 'CONFIRMED BUG: modifier is 0 despite a real Prowess18/Insight14-equivalent build' : 'not reproduced this run'}`);
+  console.log(`  -> ${fleeModReal === 0 ? 'CONFIRMED BUG: modifier is 0 despite a real Prowess18/Intuition14-equivalent build' : 'not reproduced this run'}`);
 
   console.log(`\nSame gap hits monster-side identically (EncounterBuilder.js:183 populates abilities: {...monster.abilities}, legacy keys, unconditionally):`);
   const monsterLikeChar = { abilities: { str: 16, dex: 12, con: 14, int: 8, wis: 10, cha: 8 }, proficiencyBonus: 2, level: 1 };
@@ -226,7 +226,7 @@ console.log('='.repeat(80));
 
 RULES.attributes.system = 'sixAttribute';
 
-function makeFleeCharacter(level, { prowess, insight }) {
+function makeFleeCharacter(level, { prowess, intuition }) {
   return {
     name: 'Fixture',
     level,
@@ -236,19 +236,19 @@ function makeFleeCharacter(level, { prowess, insight }) {
     maxHP: 20,
     currentHP: 20,
     ac: 15,
-    abilities: { prowess, insight, vitality: 12, intellect: 10, presence: 10, composure: 10 }
+    abilities: { prowess, intuition, resilience: 12, intellect: 10, presence: 10, composure: 10 }
   };
 }
 
 // Builds derived from real point-buy (27pts, cap 15) + real ASI (+2/level for players,
 // per reference_asi_every_level_not_asilevels_gated.md memory), scaled to the flee-
-// relevant stats only (Prowess/Insight).
+// relevant stats only (Prowess/Intuition).
 const FLEE_BUILDS = {
-  // Dumps Insight to point-buy floor, invests everything in Prowess (a martial's natural pull).
-  PureProwessDump: { 1: { prowess: 15, insight: 8 }, 5: { prowess: 19, insight: 8 }, 10: { prowess: 20, insight: 8 } },
-  // Dumps Prowess, invests in Insight (the "caster reflexes" hypothetical from decision #4's note).
-  PureInsightDump: { 1: { prowess: 8, insight: 15 }, 5: { prowess: 8, insight: 19 }, 10: { prowess: 8, insight: 20 } },
-  Balanced: { 1: { prowess: 13, insight: 13 }, 5: { prowess: 16, insight: 15 }, 10: { prowess: 18, insight: 17 } }
+  // Dumps Intuition to point-buy floor, invests everything in Prowess (a martial's natural pull).
+  PureProwessDump: { 1: { prowess: 15, intuition: 8 }, 5: { prowess: 19, intuition: 8 }, 10: { prowess: 20, intuition: 8 } },
+  // Dumps Prowess, invests in Intuition (the "caster reflexes" hypothetical from decision #4's note).
+  PureIntuitionDump: { 1: { prowess: 8, intuition: 15 }, 5: { prowess: 8, intuition: 19 }, 10: { prowess: 8, intuition: 20 } },
+  Balanced: { 1: { prowess: 13, intuition: 13 }, 5: { prowess: 16, intuition: 15 }, 10: { prowess: 18, intuition: 17 } }
 };
 
 function runFleeCell(level, buildName, engagedCount, isBoss) {
@@ -291,11 +291,11 @@ for (const scenario of FLEE_SCENARIOS) {
   }
 }
 
-console.log('\nDump-punishment check: PureProwessDump vs PureInsightDump vs Balanced, delta vs Balanced (pts):');
+console.log('\nDump-punishment check: PureProwessDump vs PureIntuitionDump vs Balanced, delta vs Balanced (pts):');
 for (const scenario of FLEE_SCENARIOS) {
   const bal = fleeResults.find(r => r.scenario === scenario && r.buildName === 'Balanced');
   const pp = fleeResults.find(r => r.scenario === scenario && r.buildName === 'PureProwessDump');
-  const pi = fleeResults.find(r => r.scenario === scenario && r.buildName === 'PureInsightDump');
+  const pi = fleeResults.find(r => r.scenario === scenario && r.buildName === 'PureIntuitionDump');
   const ciBal = ci95(bal.rate, TRIALS_PER_CELL);
   const ciPP = ci95(pp.rate, TRIALS_PER_CELL);
   const ciPI = ci95(pi.rate, TRIALS_PER_CELL);
@@ -305,7 +305,7 @@ for (const scenario of FLEE_SCENARIOS) {
   const marginSumPI = (ciBal.margin + ciPI.margin) * 100;
   console.log(
     `  ${scenario.label}: PureProwessDump ${deltaPP >= 0 ? '+' : ''}${deltaPP.toFixed(1)}pts (${Math.abs(deltaPP) < marginSumPP ? 'NOT distinguishable' : 'real'}), ` +
-    `PureInsightDump ${deltaPI >= 0 ? '+' : ''}${deltaPI.toFixed(1)}pts (${Math.abs(deltaPI) < marginSumPI ? 'NOT distinguishable' : 'real'})`
+    `PureIntuitionDump ${deltaPI >= 0 ? '+' : ''}${deltaPI.toFixed(1)}pts (${Math.abs(deltaPI) < marginSumPI ? 'NOT distinguishable' : 'real'})`
   );
 }
 
@@ -338,16 +338,16 @@ function resolveManeuverDieSides(level) {
 // Same chargen-derivation methodology as the design-stage convergence pass
 // (menacing-attack-convergence-sim.js) -- real point-buy cap 15, real per-level ASI.
 const PURE_PROWESS = {
-  3: { prowess: 17, vitality: 15, presence: 8 },
-  5: { prowess: 19, vitality: 15, presence: 8 },
-  7: { prowess: 20, vitality: 16, presence: 8 },
-  10: { prowess: 20, vitality: 19, presence: 8 }
+  3: { prowess: 17, resilience: 15, presence: 8 },
+  5: { prowess: 19, resilience: 15, presence: 8 },
+  7: { prowess: 20, resilience: 16, presence: 8 },
+  10: { prowess: 20, resilience: 19, presence: 8 }
 };
 const BALANCED = {
-  3: { prowess: 16, vitality: 15, presence: 16 },
-  5: { prowess: 17, vitality: 15, presence: 17 },
-  7: { prowess: 18, vitality: 15, presence: 18 },
-  10: { prowess: 20, vitality: 15, presence: 19 }
+  3: { prowess: 16, resilience: 15, presence: 16 },
+  5: { prowess: 17, resilience: 15, presence: 17 },
+  7: { prowess: 18, resilience: 15, presence: 18 },
+  10: { prowess: 20, resilience: 15, presence: 19 }
 };
 
 const menacingAttackAbility = {
@@ -368,7 +368,7 @@ const tripAttackAbility = {
   id: 'tripAttack',
   name: 'Trip Attack',
   effects: {
-    onHitSaveOrCondition: { bonusDice: 'maneuverDie', saveType: 'vitality', condition: 'prone', conditionDuration: 'combat', conditionIcon: '🔻' }
+    onHitSaveOrCondition: { bonusDice: 'maneuverDie', saveType: 'resilience', condition: 'prone', conditionDuration: 'combat', conditionIcon: '🔻' }
   }
 };
 
@@ -378,7 +378,7 @@ function makePCFixture(level, build) {
     name: 'PC', level,
     proficiencyBonus: getProficiencyBonus(level),
     maxHP: 20, currentHP: 20, ac: 18,
-    abilities: { prowess: s.prowess, vitality: s.vitality, presence: s.presence, insight: 10, intellect: 10, composure: 10 }
+    abilities: { prowess: s.prowess, resilience: s.resilience, presence: s.presence, intuition: 10, intellect: 10, composure: 10 }
   };
 }
 // Monster fixtures -- real ability scores from data/monsters.json (goblin/bugbear/ogre/veteran),
@@ -427,7 +427,7 @@ const dcTable = [];
 for (const level of [3, 5, 7, 10]) {
   for (const [name, build] of [['PureProwess', PURE_PROWESS], ['Balanced', BALANCED]]) {
     const pc = makePCFixture(level, build);
-    const dummyDefender = { name: 'dummy', level: 1, proficiencyBonus: 2, maxHP: 10, currentHP: 10, ac: 10, abilities: { composure: 10, vitality: 10 } };
+    const dummyDefender = { name: 'dummy', level: 1, proficiencyBonus: 2, maxHP: 10, currentHP: 10, ac: 10, abilities: { composure: 10, resilience: 10 } };
     const menaceResult = await runManeuverOnce(menacingAttackAbility, pc, dummyDefender);
     const tripResult = await runManeuverOnce(tripAttackAbility, pc, dummyDefender);
     const baselineDC = 8 + getProficiencyBonus(level) + mod(build[level].prowess); // pure-Prowess formula, i.e. today's live Trip DC

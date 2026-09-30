@@ -9,7 +9,7 @@ Each `Combatant` has:
 - `masteryEffects: { sapped, slowed, vexed, prone }` — legacy, being migrated to conditions
 - `hasEngaged: false` — set `true` on first melee attack; only engaged enemies count for flee DC and opportunity attacks
 - `team: 'player' | 'enemy' | 'companion'`
-- `sourceCharacter` — back-reference to the original character object (needed for isDowned writeback; currently missing, must be added before party system)
+- `sourceCharacter` — back-reference to the original character object, populated for companions and used for `isDowned` writeback
 
 ## Conditions Object Shape
 ```javascript
@@ -28,7 +28,7 @@ Each `Combatant` has:
 
 ## Flee Formula
 ```
-d20 + floor((Prowess_mod + Insight_mod) / 2) + proficiency bonus >= DC   (RULES.attributes.system === 'NVSystem', current default)
+d20 + floor((Prowess_mod + Intuition_mod) / 2) + proficiency bonus >= DC   (RULES.attributes.system === 'NVSystem', current default)
 d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC   (RULES.attributes.system === '5EClassic')
 DC = 10 + 2 × (engaged_enemies - 1) + situational modifiers
 ```
@@ -40,13 +40,19 @@ See `docs/plans/2026-07-30-attribute-system-remap.md` decision #4 for the NVSyst
 - Opportunity attacks resolve **before** flee check. Only engaged melee enemies attack.
 
 ## Initiative
-`d20 + DEX modifier`. DEX tiebreaker. Companions use `team: 'companion'` and slot into the single unified turn queue — no team grouping.
+Initiative is `d20 + Intuition modifier` in `NVSystem`. Tied totals are broken by the higher Intuition modifier. Both calculation paths must resolve through `RULES.attributes.derivedStatMap.initiative`; never read DEX directly. The temporary `5EClassic` rollback mode redirects that same context to DEX. Companions use `team: 'companion'` and slot into the single unified turn queue — no team grouping.
 
-## Known Gap
-`endCombat()` does **not** currently emit a `combat.ended` event. This must be added before the party system ships — companion relationship triggers depend on it.
+## Combat End Event
+`endCombat()` emits `gameState.notify('combat.ended', { outcome })` for victory, TPK, and flee outcomes. `CompanionManager` subscribes to this event for post-combat handling.
 
 ## Action Economy
 Each combatant gets: Action, Bonus Action, Reaction per turn. Movement is narrative-only (no grid).
+
+## Engagement
+Melee attacks add reciprocal `engagedWith` links, including on a miss. Links accumulate:
+attacking another target never releases previous opponents. Ranged attacks do not
+add or clear links. Only an explicit removal rule, such as Disengage or defeat,
+clears engagement. Multiple attackers and shared opponents must remain supported.
 
 ## Weapon Mastery Checks
 `hasWeaponMastery(attacker, weapon, masteryType)` — requires proficiency with the weapon. Never apply mastery effects without this check.

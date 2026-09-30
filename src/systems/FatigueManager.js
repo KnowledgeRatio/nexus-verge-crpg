@@ -5,6 +5,7 @@
  */
 
 import { RULES } from '../core/rulesEngine.js';
+import { getAttributeModifierFor } from '../utils/attributeResolver.js';
 import { gameState } from '../core/GameState.js';
 
 // ─── Read helpers ────────────────────────────────────────────────────────────
@@ -210,15 +211,15 @@ export function calcMovementFatigue(movementCost, character) {
     // Terrain cap: never multiply fatigue beyond maxFatigueTerrainMultiplier even in swamp/mountain
     const terrainMult = Math.min(movementCost || 1, r.maxFatigueTerrainMultiplier);
 
-    // CON factor (Audacity may use DEX instead)
-    const conMod = character.abilityModifiers?.con ?? 0;
-    const dexMod = character.abilityModifiers?.dex ?? 0;
+    // Resilience factor (Audacity may lean on reactive Intuition instead)
+    const resilienceMod = getAttributeModifierFor(character, 'hp');
+    const intuitionMod = getAttributeModifierFor(character, 'initiative');
     const isAudacity = character.class?.id === 'audacity';
-    const statMod = isAudacity ? Math.max(conMod, dexMod) : conMod;
-    const conFactor = Math.max(r.minFatigueMultiplier, 1 - statMod * r.conModMultiplier);
+    const statMod = isAudacity ? Math.max(resilienceMod, intuitionMod) : resilienceMod;
+    const resilienceFactor = Math.max(r.minFatigueMultiplier, 1 - statMod * r.resilienceModMultiplier);
 
     const mealMult = character?.activeMealBuff?.fatigueRateMultiplier ?? 1;
-    return r.baseFatiguePerTile * terrainMult * conFactor * mealMult;
+    return r.baseFatiguePerTile * terrainMult * resilienceFactor * mealMult;
 }
 
 // ─── Private helpers ──────────────────────────────────────────────────────────

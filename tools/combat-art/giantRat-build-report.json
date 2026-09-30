@@ -1,0 +1,49 @@
+{
+  "spec": {
+    "source": "tools/combat-art/sources/quaternius-easy-enemies/Rat-candidate.gltf",
+    "auditSource": "tools/combat-art/sources/quaternius-easy-enemies/Rat-adapted.gltf",
+    "output": "data/graphics/combat/giant-rat-v1.glb",
+    "scale": 0.23,
+    "clearance": 0.006,
+    "head": "Head",
+    "hitPitch": -0.15,
+    "clips": {
+      "idle": "Rat_Idle",
+      "walk": "Rat_Walk",
+      "attack": "Rat_Attack",
+      "death": "Rat_Death"
+    }
+  },
+  "clips": [
+    {
+      "name": "Rat_Attack",
+      "seconds": 0.6666666865348816,
+      "minCorrection": 0.006266966629935593,
+      "maxCorrection": 0.024620635324159812
+    },
+    {
+      "name": "Rat_Death",
+      "seconds": 1.0833333730697632,
+      "minCorrection": 0.006287820888352498,
+      "maxCorrection": 0.07923550683265236
+    },
+    {
+      "name": "Rat_Idle",
+      "seconds": 2.375,
+      "minCorrection": 0.006275421782596945,
+      "maxCorrection": 0.006287820888352498
+    },
+    {
+      "name": "Rat_Walk",
+      "seconds": 1.3333333730697632,
+      "minCorrection": 0.006266954269355525,
+      "maxCorrection": 0.0069140973336454595
+    },
+    {
+      "name": "Hit",
+      "seconds": 0.3199999928474426,
+      "minCorrection": 0.006266966733635075,
+      "maxCorrection": 0.006266966733635075
+    }
+  ]
+}

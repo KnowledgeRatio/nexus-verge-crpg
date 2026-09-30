@@ -10,7 +10,7 @@
  *   1. CR/DPR sanity across the converted bestiary, esp. the 19 monsters whose ability
  *      scores were freshly authored during a data-loss recovery (not mechanically
  *      converted from pre-existing legacy data).
- *   2. Re-test of the "Insight is the free third stat" concern (plan decision #1) at
+ *   2. Re-test of the "Intuition is the free third stat" concern (plan decision #1) at
  *      full scale (real chargen + real bestiary, not the earlier small hand-picked
  *      sample).
  *   3. Spot-check of the zombie/mage save-averaging fix (decision #2) in an actual live
@@ -154,13 +154,13 @@ console.log('='.repeat(80));
     const legacyChar = { abilities: buildAbilities('legacy'), proficiencyBonus: prof, level: 1 };
     const legacyMelee = getAttributeModifierFor(legacyChar, 'meleeAttack');
     const legacyComposure = getAttributeModifierFor(legacyChar, 'composureSave');
-    const legacyVitality = getAttributeModifierFor(legacyChar, 'vitalitySave');
+    const legacyResilience = getAttributeModifierFor(legacyChar, 'resilienceSave');
 
     RULES.attributes.system = 'sixAttribute';
     const sixChar = { abilities: buildAbilities('sixAttribute'), proficiencyBonus: prof, level: 1 };
     const sixMelee = getAttributeModifierFor(sixChar, 'meleeAttack');
     const sixComposure = getAttributeModifierFor(sixChar, 'composureSave');
-    const sixVitality = getAttributeModifierFor(sixChar, 'vitalitySave');
+    const sixResilience = getAttributeModifierFor(sixChar, 'resilienceSave');
 
     // Also run a representative weapon action (if any) through the real
     // calculateMonsterAttackStats() to confirm the actual attack-bonus consumer, not
@@ -180,7 +180,7 @@ console.log('='.repeat(80));
       }
     }
 
-    const match = legacyMelee === sixMelee && legacyComposure === sixComposure && legacyVitality === sixVitality && attackStatsMatch;
+    const match = legacyMelee === sixMelee && legacyComposure === sixComposure && legacyResilience === sixResilience && attackStatsMatch;
     if (!match) mismatches++;
     rows.push({ id: m.id, cr, recovered: RECOVERED_19.has(m.id), match, legacyMelee, sixMelee, legacyComposure, sixComposure });
   }
@@ -195,7 +195,7 @@ console.log('='.repeat(80));
     for (const c of attackStatsCrashes) console.log(`    ${c.id} / "${c.action}": ${c.error}`);
   }
 
-  console.log(`\n${monsters.length} monsters checked (attack bonus, composure-save mod, vitality-save mod, and real`);
+  console.log(`\n${monsters.length} monsters checked (attack bonus, composure-save mod, resilience-save mod, and real`);
   console.log(`calculateMonsterAttackStats() output) — legacy vs sixAttribute mode.`);
   check('A1: all 46 monsters produce IDENTICAL combat-relevant modifiers in both modes', mismatches === 0, `${mismatches} mismatch(es)`);
 
@@ -245,7 +245,7 @@ console.log('='.repeat(80));
 
   const tripAttack = {
     id: 'tripAttack', name: 'Trip Attack',
-    effects: { onHitSaveOrCondition: { bonusDice: 'maneuverDie', saveType: 'vitality', condition: 'prone', conditionDuration: 'combat', conditionIcon: '🔻' } }
+    effects: { onHitSaveOrCondition: { bonusDice: 'maneuverDie', saveType: 'resilience', condition: 'prone', conditionDuration: 'combat', conditionIcon: '🔻' } }
   };
   const menacingAttack = {
     id: 'menacingAttack', name: 'Menacing Attack',
@@ -253,7 +253,7 @@ console.log('='.repeat(80));
   };
 
   function makeAttackerFixture(level) {
-    return { name: 'PC', level, proficiencyBonus: getProficiencyBonus(level), maxHP: 40, currentHP: 40, ac: 18, abilities: { prowess: 16, vitality: 14, presence: 12, insight: 10, intellect: 10, composure: 10 } };
+    return { name: 'PC', level, proficiencyBonus: getProficiencyBonus(level), maxHP: 40, currentHP: 40, ac: 18, abilities: { prowess: 16, resilience: 14, presence: 12, intuition: 10, intellect: 10, composure: 10 } };
   }
 
   const zombie = monsters.find((m) => m.id === 'zombie');
@@ -262,8 +262,8 @@ console.log('='.repeat(80));
   console.log(`mage   real savingThrows=${JSON.stringify(mage.savingThrows)} -> composure override=${convertMonsterSavingThrows(mage.savingThrows).composure}`);
 
   const scenarios = [
-    { label: 'Trip Attack (vitality) vs zombie, L3', ability: tripAttack, monster: zombie, level: 3 },
-    { label: 'Trip Attack (vitality) vs zombie, L7', ability: tripAttack, monster: zombie, level: 7 },
+    { label: 'Trip Attack (resilience) vs zombie, L3', ability: tripAttack, monster: zombie, level: 3 },
+    { label: 'Trip Attack (resilience) vs zombie, L7', ability: tripAttack, monster: zombie, level: 7 },
     { label: 'Menacing Attack (composure) vs mage, L5', ability: menacingAttack, monster: mage, level: 5 },
     { label: 'Menacing Attack (composure) vs mage, L10', ability: menacingAttack, monster: mage, level: 10 }
   ];
@@ -452,11 +452,11 @@ console.log('\n' + '='.repeat(80));
 console.log('SECTION D — Dump/dominance retest, full chargen + full bestiary, sixAttribute mode');
 console.log('='.repeat(80));
 {
-  // Structural check first: is the evasion/soak AC split actually built yet? If not,
-  // decision #1's "Insight is the free third stat" risk remains exactly as bounded as
-  // the earlier small-sample finding (chainMail's addDexModifier:false gate still
-  // exists and still makes Insight AC-inert for a heavy-armor Dedication build).
-  check('D0: chainMail.addDexModifier is still false (evasion/soak AC split still unbuilt --', chainMail.addDexModifier === false,
+  // Structural check: heavy armour still excludes the reactive AC modifier, so decision
+  // #1's "Intuition is the free third stat" risk remains exactly as bounded as
+  // the earlier small-sample finding (chainMail's addEvasionModifier:false gate still
+  // exists and still makes Intuition AC-inert for a heavy-armor Dedication build).
+  check('D0: chainMail.addEvasionModifier is still false --', chainMail.addEvasionModifier === false,
     'the "free third stat" mechanism is structurally unchanged from the earlier finding, not newly realized');
 
   RULES.attributes.system = 'sixAttribute';

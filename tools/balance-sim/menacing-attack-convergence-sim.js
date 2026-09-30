@@ -17,7 +17,7 @@
  * Neither Prowess nor Presence exist in code today (six-attribute remap,
  * docs/plans/2026-07-30-attribute-system-remap.md, still Proposed) -- this is
  * a Monte Carlo of a hypothetical formula layered on the REAL engine, same
- * pattern as the prior two passes: Prowess/Vitality stand in 1:1 for live
+ * pattern as the prior two passes: Prowess/Resilience stand in 1:1 for live
  * STR/CON, everything else (turn structure, d20 resolution, advantage/
  * disadvantage, frightened-imposes-disadvantage, condition-clears-at-end-of-
  * possessor's-own-turn, maneuver die size table) is a faithful reproduction
@@ -33,7 +33,7 @@
  * found and fixed for the concentration formula (plan line 163: label reads
  * "floor(Vit/2) + floor(Comp/2)" but the resolved, correct formula per its
  * own worked example and the Engine Rule section is
- * floor(rawVitality/2 + rawComposure/2), i.e. sum-then-floor-once) and reused
+ * floor(rawResilience/2 + rawComposure/2), i.e. sum-then-floor-once) and reused
  * for flee (plan line 180, same pattern, same citation).
  *
  * The formula given for this review -- literally
@@ -86,19 +86,19 @@ const mod = (score) => Math.floor((score - 10) / 2);
 const ROUND_CAP = 30;
 
 // ---------------------------------------------------------------------------
-// PC builds -- level: { prowess, vitality, presence }
+// PC builds -- level: { prowess, resilience, presence }
 // ---------------------------------------------------------------------------
 const PURE_PROWESS = {
-  3: { prowess: 17, vitality: 15, presence: 8 },
-  5: { prowess: 19, vitality: 15, presence: 8 },
-  7: { prowess: 20, vitality: 16, presence: 8 },
-  10: { prowess: 20, vitality: 19, presence: 8 },
+  3: { prowess: 17, resilience: 15, presence: 8 },
+  5: { prowess: 19, resilience: 15, presence: 8 },
+  7: { prowess: 20, resilience: 16, presence: 8 },
+  10: { prowess: 20, resilience: 19, presence: 8 },
 };
 const BALANCED = {
-  3: { prowess: 16, vitality: 15, presence: 16 },
-  5: { prowess: 17, vitality: 15, presence: 17 },
-  7: { prowess: 18, vitality: 15, presence: 18 },
-  10: { prowess: 20, vitality: 15, presence: 19 },
+  3: { prowess: 16, resilience: 15, presence: 16 },
+  5: { prowess: 17, resilience: 15, presence: 17 },
+  7: { prowess: 18, resilience: 15, presence: 18 },
+  10: { prowess: 20, resilience: 15, presence: 19 },
 };
 
 function resolveManeuverDieSides(level) {
@@ -172,23 +172,23 @@ function monsterChassis(id) {
 function pcChassis(level, build) {
   const scores = build[level];
   const prowessMod = mod(scores.prowess);
-  const vitalityMod = mod(scores.vitality);
+  const resilienceMod = mod(scores.resilience);
   const presenceMod = mod(scores.presence);
   const pb = getProficiencyBonus(level);
-  let maxHP = 10 + vitalityMod; // hitDie 10 (Dedication, classes.json)
-  for (let l = 2; l <= level; l++) maxHP += rollHitPoints(10, vitalityMod, true);
+  let maxHP = 10 + resilienceMod; // hitDie 10 (Dedication, classes.json)
+  for (let l = 2; l <= level; l++) maxHP += rollHitPoints(10, resilienceMod, true);
   return {
     prowessMod,
-    vitalityMod,
+    resilienceMod,
     presenceMod,
     prof: pb,
     attackBonus: prowessMod + pb,
     weaponDie: 8, // longsword
-    ac: 18, // chainMail(16, addDexModifier:false) + shield(+2), verified DEX-independent
+    ac: 18, // chainMail(16, addEvasionModifier:false) + shield(+2), verified DEX-independent
     maxHP,
     attacksPerRound: level >= 5 ? 2 : 1,
     maneuverDieSides: resolveManeuverDieSides(level),
-    maxResolve: Math.max(1, vitalityMod + level), // RULES.callingResources.resolve formula
+    maxResolve: Math.max(1, resilienceMod + level), // RULES.callingResources.resolve formula
   };
 }
 

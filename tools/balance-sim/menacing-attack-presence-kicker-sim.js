@@ -16,7 +16,7 @@
  * today -- this is a Monte Carlo of a HYPOTHETICAL formula layered on the
  * REAL engine, following the established pattern in
  * tools/balance-sim/attribute-remap-dump-dominance-sim.js:
- *   - Prowess/Vitality stand in 1:1 for the live STR/CON numbers already in
+ *   - Prowess/Resilience stand in 1:1 for the live STR/CON numbers already in
  *     Character.js/CombatManager.js (plan's own "clean 1:1" mapping).
  *   - Presence and the DC-kicker term have NO current analog anywhere in
  *     the engine -- modeled explicitly as the proposed formula, computed
@@ -62,13 +62,13 @@
  *   diverges) -- not fixed here, diagnosis only.
  *
  *   PureProwess baseline (Presence dumped to point-buy floor 8, never
- *   invested): chargen Prowess15/Vitality15 (27-pt buy, both at the 15 cap,
+ *   invested): chargen Prowess15/Resilience15 (27-pt buy, both at the 15 cap,
  *   cost 9+9=18 of 27), all subsequent ASIs into Prowess until the 20 cap,
- *   then into Vitality.
+ *   then into Resilience.
  *   DreadKnight (Presence invested "alongside" Prowess, per the proposal's
- *   own framing): identical chargen floor+cap (Prowess15/Vitality15), but the
+ *   own framing): identical chargen floor+cap (Prowess15/Resilience15), but the
  *   free 9 remaining chargen points buy Presence 8->15 (exact cost, dumping
- *   Insight/Composure/Intellect instead), then ASIs ALTERNATE Prowess/
+ *   Intuition/Composure/Intellect instead), then ASIs ALTERNATE Prowess/
  *   Presence every level. This is the max plausible "genuinely invests
  *   alongside Prowess" build, not the degenerate "abandon Prowess entirely"
  *   case (that case was also checked arithmetically and DC-delta went
@@ -102,19 +102,19 @@ const ROUND_CAP = 30;
 const mod = (score) => Math.floor((score - 10) / 2);
 
 // ---------------------------------------------------------------------------
-// PC builds (see header derivation) -- level: { prowess, vitality, presence }
+// PC builds (see header derivation) -- level: { prowess, resilience, presence }
 // ---------------------------------------------------------------------------
 const PURE_PROWESS = {
-  3: { prowess: 17, vitality: 15, presence: 8 },
-  5: { prowess: 19, vitality: 15, presence: 8 },
-  7: { prowess: 20, vitality: 16, presence: 8 },
-  10: { prowess: 20, vitality: 19, presence: 8 },
+  3: { prowess: 17, resilience: 15, presence: 8 },
+  5: { prowess: 19, resilience: 15, presence: 8 },
+  7: { prowess: 20, resilience: 16, presence: 8 },
+  10: { prowess: 20, resilience: 19, presence: 8 },
 };
 const DREAD_KNIGHT = {
-  3: { prowess: 16, vitality: 15, presence: 16 },
-  5: { prowess: 17, vitality: 15, presence: 17 },
-  7: { prowess: 18, vitality: 15, presence: 18 },
-  10: { prowess: 20, vitality: 15, presence: 19 },
+  3: { prowess: 16, resilience: 15, presence: 16 },
+  5: { prowess: 17, resilience: 15, presence: 17 },
+  7: { prowess: 18, resilience: 15, presence: 18 },
+  10: { prowess: 20, resilience: 15, presence: 19 },
 };
 // Q3 regression check -- pure-Prowess build but Presence left at the natural
 // point-buy floor (8) instead of the formula's "Presence 0 (mod)" reference
@@ -183,23 +183,23 @@ function monsterChassis(id) {
 function pcChassis(level, build) {
   const scores = build[level];
   const prowessMod = mod(scores.prowess);
-  const vitalityMod = mod(scores.vitality);
+  const resilienceMod = mod(scores.resilience);
   const presenceMod = mod(scores.presence);
   const pb = getProficiencyBonus(level);
-  let maxHP = 10 + vitalityMod; // hitDie 10 (Dedication, classes.json)
-  for (let l = 2; l <= level; l++) maxHP += rollHitPoints(10, vitalityMod, true);
+  let maxHP = 10 + resilienceMod; // hitDie 10 (Dedication, classes.json)
+  for (let l = 2; l <= level; l++) maxHP += rollHitPoints(10, resilienceMod, true);
   return {
     prowessMod,
-    vitalityMod,
+    resilienceMod,
     presenceMod,
     prof: pb,
     attackBonus: prowessMod + pb,
     weaponDie: 8, // longsword
-    ac: 18, // chainMail(16, addDexModifier:false) + shield(+2), verified DEX-independent
+    ac: 18, // chainMail(16, addEvasionModifier:false) + shield(+2), verified DEX-independent
     maxHP,
     attacksPerRound: level >= 5 ? 2 : 1,
     maneuverDieSides: resolveManeuverDieSides(level),
-    maxResolve: Math.max(1, vitalityMod + level), // RULES.callingResources.resolve formula
+    maxResolve: Math.max(1, resilienceMod + level), // RULES.callingResources.resolve formula
   };
 }
 

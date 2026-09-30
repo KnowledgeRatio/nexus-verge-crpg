@@ -1,0 +1,373 @@
+{
+  "idle": {
+    "clip": "Ranged_Bow_Idle",
+    "poseTime": 0
+  },
+  "offHandIdles": {
+    "roundShield": {
+      "clip": "Idle_Shield_Loop",
+      "poseTime": 0.2
+    }
+  },
+  "idles": {
+    "carbine": {
+      "clip": "Pistol_Idle_Loop",
+      "poseTime": 0.2
+    },
+    "rifle": {
+      "clip": "Pistol_Idle_Loop",
+      "poseTime": 0.2
+    },
+    "blowgun": {
+      "clip": "Pistol_Idle_Loop",
+      "poseTime": 0.2
+    },
+    "sidearm": {
+      "clip": "Pistol_Idle_Loop",
+      "poseTime": 0.2
+    },
+    "bow": {
+      "clip": "Ranged_Bow_Idle",
+      "poseTime": 0.2
+    },
+    "sword2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "axe2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "club2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "hammer2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "staff2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "polearm2h": {
+      "clip": "Melee_2H_Idle",
+      "poseTime": 0.2
+    },
+    "unarmed": {
+      "clip": "Melee_Unarmed_Idle",
+      "poseTime": 0.2
+    }
+  },
+  "walk": {
+    "clip": "Walk_Loop",
+    "nominalSpeed": 2
+  },
+  "blendDuration": 0.12,
+  "actions": {
+    "melee": {
+      "clip": "Sword_Attack",
+      "impact": 0.196,
+      "timeScale": 2.359
+    },
+    "meleeSlice1h": {
+      "clip": "Melee_1H_Attack_Slice_Diagonal",
+      "impact": 0.4,
+      "timeScale": 1.429,
+      "attackHand": "right",
+      "handClips": {
+        "left": "Melee_1H_Attack_Slice_Diagonal_Left"
+      }
+    },
+    "meleeChop1h": {
+      "clip": "Melee_1H_Attack_Chop",
+      "impact": 0.55,
+      "timeScale": 1.422,
+      "attackHand": "right",
+      "handClips": {
+        "left": "Melee_1H_Attack_Chop_Left"
+      }
+    },
+    "meleeStab1h": {
+      "clip": "Melee_1H_Attack_Stab",
+      "impact": 0.275,
+      "timeScale": 2.133,
+      "attackHand": "right",
+      "handClips": {
+        "left": "Melee_1H_Attack_Stab_Left"
+      }
+    },
+    "meleeChop2h": {
+      "clip": "Melee_2H_Attack_Chop",
+      "impact": 0.5,
+      "timeScale": 1.815
+    },
+    "meleeSlice2h": {
+      "clip": "Melee_2H_Attack_Slice",
+      "impact": 0.375,
+      "timeScale": 1.375
+    },
+    "meleeStab2h": {
+      "clip": "Melee_2H_Attack_Stab",
+      "impact": 0.425,
+      "timeScale": 1.778
+    },
+    "throw": {
+      "clip": "OverhandThrow",
+      "impact": 0.325,
+      "timeScale": 1.667
+    },
+    "sidearm": {
+      "clip": "Ranged_1H_Shoot",
+      "impact": 0.4,
+      "timeScale": 1.255,
+      "attackHand": "right",
+      "handClips": {
+        "left": "Ranged_1H_Shoot_Left"
+      }
+    },
+    "longarm": {
+      "clip": "Ranged_2H_Shoot",
+      "impact": 0.4,
+      "timeScale": 1.255
+    },
+    "bow": {
+      "clip": "Ranged_Bow_Shot",
+      "impact": 0.61,
+      "timeScale": 2.319
+    },
+    "ranged": {
+      "clip": "Spell_Simple_Shoot",
+      "impact": 0.4,
+      "timeScale": 0.625,
+      "supportGrip": false,
+      "gestureHand": "left",
+      "handClips": {
+        "right": "Spell_Simple_Shoot_Right"
+      }
+    },
+    "spell": {
+      "clip": "Spell_Simple_Shoot",
+      "impact": 0.4,
+      "timeScale": 0.556,
+      "supportGrip": false,
+      "gestureHand": "left",
+      "handClips": {
+        "right": "Spell_Simple_Shoot_Right"
+      }
+    },
+    "healing": {
+      "clip": "Spell_Simple_Shoot",
+      "impact": 0.45,
+      "timeScale": 0.455,
+      "supportGrip": false,
+      "gestureHand": "left",
+      "handClips": {
+        "right": "Spell_Simple_Shoot_Right"
+      }
+    },
+    "unarmed": {
+      "clip": "Punch_Jab",
+      "impact": 0.231,
+      "timeScale": 1.333,
+      "attackHand": "right",
+      "handClips": {
+        "left": "Punch_Jab_Left"
+      }
+    },
+    "getUp": {
+      "clip": "LayToIdle",
+      "preservePose": true,
+      "supportGrip": false
+    },
+    "hit": {
+      "clip": "Hit_Chest"
+    },
+    "death": {
+      "clip": "Death01",
+      "hold": true
+    },
+    "snake": {
+      "clip": "Serpent_Strike",
+      "impact": 0.45,
+      "supportGrip": false
+    },
+    "groundGetUp": {
+      "clip": "Ground_GetUp",
+      "preservePose": true,
+      "supportGrip": false
+    }
+  },
+  "conditions": {
+    "prone": {
+      "clip": "Ground_Idle",
+      "poseTime": 0,
+      "exit": "groundGetUp",
+      "reactions": {
+        "hit": false
+      },
+      "aimWeapons": true,
+      "actions": {
+        "melee": {
+          "clip": "Ground_Sword_Attack",
+          "preservePose": true
+        },
+        "meleeSlice1h": {
+          "clip": "Ground_Melee_1H_Attack_Slice_Diagonal",
+          "preservePose": true,
+          "handClips": {
+            "left": "Ground_Melee_1H_Attack_Slice_Diagonal_Left"
+          }
+        },
+        "meleeChop1h": {
+          "clip": "Ground_Melee_1H_Attack_Chop",
+          "preservePose": true,
+          "handClips": {
+            "left": "Ground_Melee_1H_Attack_Chop_Left"
+          }
+        },
+        "meleeStab1h": {
+          "clip": "Ground_Melee_1H_Attack_Stab",
+          "preservePose": true,
+          "handClips": {
+            "left": "Ground_Melee_1H_Attack_Stab_Left"
+          }
+        },
+        "meleeChop2h": {
+          "clip": "Ground_Melee_2H_Attack_Chop",
+          "preservePose": true
+        },
+        "meleeSlice2h": {
+          "clip": "Ground_Melee_2H_Attack_Slice",
+          "preservePose": true
+        },
+        "meleeStab2h": {
+          "clip": "Ground_Melee_2H_Attack_Stab",
+          "preservePose": true
+        },
+        "throw": {
+          "clip": "Ground_OverhandThrow",
+          "preservePose": true
+        },
+        "sidearm": {
+          "clip": "Ground_Ranged_1H_Shoot",
+          "preservePose": true,
+          "handClips": {
+            "left": "Ground_Ranged_1H_Shoot_Left"
+          }
+        },
+        "longarm": {
+          "clip": "Ground_Ranged_2H_Shoot",
+          "preservePose": true
+        },
+        "bow": {
+          "clip": "Ground_Ranged_Bow_Shot",
+          "preservePose": true
+        },
+        "ranged": {
+          "clip": "Ground_Spell_Simple_Shoot",
+          "preservePose": true,
+          "handClips": {
+            "right": "Ground_Spell_Simple_Shoot_Right"
+          }
+        },
+        "spell": {
+          "clip": "Ground_Spell_Simple_Shoot",
+          "preservePose": true,
+          "handClips": {
+            "right": "Ground_Spell_Simple_Shoot_Right"
+          }
+        },
+        "healing": {
+          "clip": "Ground_Spell_Simple_Shoot",
+          "preservePose": true,
+          "handClips": {
+            "right": "Ground_Spell_Simple_Shoot_Right"
+          }
+        },
+        "unarmed": {
+          "clip": "Ground_Punch_Jab",
+          "preservePose": true,
+          "handClips": {
+            "left": "Ground_Punch_Jab_Left"
+          }
+        },
+        "snake": {
+          "clip": "Ground_Serpent_Strike",
+          "preservePose": true
+        },
+        "death": {
+          "clip": "Ground_Death",
+          "hold": true,
+          "preservePose": true,
+          "supportGrip": false
+        }
+      },
+      "idles": {
+        "carbine": {
+          "clip": "Ground_Pistol_Idle_Loop",
+          "poseTime": 0
+        },
+        "rifle": {
+          "clip": "Ground_Pistol_Idle_Loop",
+          "poseTime": 0
+        },
+        "blowgun": {
+          "clip": "Ground_Pistol_Idle_Loop",
+          "poseTime": 0
+        },
+        "sidearm": {
+          "clip": "Ground_Pistol_Idle_Loop",
+          "poseTime": 0
+        },
+        "bow": {
+          "clip": "Ground_Ranged_Bow_Idle",
+          "poseTime": 0
+        },
+        "sword2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "axe2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "club2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "hammer2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "staff2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "polearm2h": {
+          "clip": "Ground_Melee_2H_Idle",
+          "poseTime": 0
+        },
+        "unarmed": {
+          "clip": "Ground_Melee_Unarmed_Idle",
+          "poseTime": 0
+        }
+      },
+      "offHandIdles": {
+        "roundShield": {
+          "clip": "Ground_Idle_Shield_Loop",
+          "poseTime": 0
+        }
+      },
+      "weaponMounts": {
+        "bow": {
+          "rotation": [
+            0,
+            0,
+            1.5707963267948966
+          ]
+        }
+      }
+    }
+  }
+}

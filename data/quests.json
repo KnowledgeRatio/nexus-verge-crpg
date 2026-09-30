@@ -498,16 +498,16 @@
           "requirement": {
             "skill": "perception",
             "dc": 15,
-            "count": 3
+            "count": 1
           }
         },
         {
           "type": "skill",
-          "description": "Disarm traps with Sleight of Hand",
+          "description": "Disarm traps with Finesse",
           "requirement": {
-            "skill": "sleight_of_hand",
+            "skill": "finesse",
             "dc": 13,
-            "count": 3
+            "count": 1
           }
         }
       ],
@@ -549,7 +549,7 @@
           "description": "Negotiate with or intimidate the bandit leader",
           "requirement": {
             "challengeId": "bandit_negotiation",
-            "skills": ["influence", "deception"],
+            "skills": ["influence"],
             "dc": 14
           }
         }

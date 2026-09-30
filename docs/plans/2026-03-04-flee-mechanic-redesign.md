@@ -1,6 +1,6 @@
 # Flee Mechanic Redesign
 **Date:** 2026-03-04
-**Status:** Implemented (verified 2026-09-08) — `RULES.flee` is live in `src/core/rulesEngine.js` with the full designed block (`baseDC`, `dcPerExtraEnemy`, `dcCapMax`, `bossDCBonus`, `ambushDCBonus`, `opportunityAttacks`). Note the plan's `modifier: ['dex','wis']` now also has an NVSystem path via `derivedStatMap.flee` (`prowess`+`insight` blend).
+**Status:** Implemented (verified 2026-09-08) — `RULES.flee` is live in `src/core/rulesEngine.js` with the full designed block (`baseDC`, `dcPerExtraEnemy`, `dcCapMax`, `bossDCBonus`, `ambushDCBonus`, `opportunityAttacks`). The plan's original DEX/WIS formula is now the `5EClassic` rollback path; current `NVSystem` uses the `derivedStatMap.flee` Prowess/Intuition blend.
 **Branch:** main-beta-quests
 
 ---
@@ -21,7 +21,8 @@
 ### Check Formula
 
 ```
-d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC
+NVSystem:  d20 + floor((Prowess modifier + Intuition modifier) / 2) + proficiency bonus >= DC
+5EClassic: d20 + max(DEX modifier, WIS modifier) + proficiency bonus >= DC
 ```
 
 **Why DEX or WIS:** Physical agility (DEX) OR tactical intuition (WIS) — whichever is stronger. Mirrors finesse weapon logic. Makes Scholar viable at fleeing via WIS without needing to be fast.
@@ -206,7 +207,7 @@ flee: {
 
 ## Implementation Notes for Backend Dev
 
-- **DO NOT use `combatant.initiative`** for the flee modifier — that is the full rolled initiative value (d20 + DEX), not a modifier. Use `combatant.character.abilityModifiers.dex` and `combatant.character.abilityModifiers.wis` directly.
+- **DO NOT use `combatant.initiative`** for the flee modifier — it is the full rolled initiative value. Resolve the separate `flee` context instead (`Prowess`/`Intuition` blend in `NVSystem`; max DEX/WIS in `5EClassic`).
 - `hasEngaged` must be set on the first melee attack in both player and enemy attack flows
 - `isRangedCombatant()` must be a named method (will be reused for archer AI later)
 - Opportunity attacks during flee use the same attack resolution path as normal attacks

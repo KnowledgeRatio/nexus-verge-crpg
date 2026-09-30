@@ -6,6 +6,7 @@
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { roll } from '../utils/dice.js';
+import { getAttributeModifierFor } from '../utils/attributeResolver.js';
 import { applyLongRestFatigue, getFatigueState } from './FatigueManager.js';
 
 class RestManager {
@@ -207,9 +208,9 @@ class RestManager {
         const diceToRoll = character.hitDice.current; // Hit dice = level (they don't deplete)
         let healing = 0;
 
-        // Roll each hit die + CON modifier
+        // Roll each hit die + physical resilience modifier
         for (let i = 0; i < diceToRoll; i++) {
-            healing += roll(`1d${character.hitDice.size}`) + character.abilityModifiers.con;
+            healing += roll(`1d${character.hitDice.size}`) + getAttributeModifierFor(character, 'hp');
         }
 
         // Apply healing

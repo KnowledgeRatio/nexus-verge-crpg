@@ -1,7 +1,7 @@
 # Nexus Verge — World Design
 *Captured: 2026-05-15*
 
-**Status:** Partially superseded (2026-08-15) — still Implemented-as-canon in the main, but two coinages in this document are **retired**: "Wayfinding" → **Threading** and "null-flux" → **Unheld**. The underlying phenomena are unchanged; only the vocabulary and its framing were replaced, sourced from the new cosmology canon in `docs/world/COSMOLOGY.md`. The §2/§3 wording below is stale. Prior flag stands: this is a lore/canon document, not an implementation plan, so "Implemented" means "adopted as canon" — check `docs/world/` before treating any specific detail as settled.
+**Status:** Superseded (2026-08-15) — this historical design informed the current canon, but its "Wayfinding" and "null-flux" terminology and parts of its cosmological framing were replaced by **Threading**, **Unheld**, and `docs/world/COSMOLOGY.md`. Use `docs/world/` as the current source of truth.
 
 ## Core Identity
 

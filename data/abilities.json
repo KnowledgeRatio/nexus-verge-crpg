@@ -12,14 +12,14 @@
         "resourceType": "shortRest",
         "usesPerShortRest": 1,
         "usableOutOfCombat": true,
-        "description": "You have a well of inner resolve to draw upon. As a bonus action, choose one: Heal (regain 1d8 + your level + CON modifier HP) or Dodge (attackers have disadvantage until start of your next turn).",
+        "description": "You have a well of inner resolve to draw upon. As a bonus action, choose one: Heal (regain 1d8 + your level + Resilience modifier HP) or Dodge (attackers have disadvantage until start of your next turn).",
         "effects": {
           "choice": true,
           "options": [
             {
               "id": "heal",
               "name": "Heal",
-              "description": "Regain 1d8 + level + CON modifier hit points",
+              "description": "Regain 1d8 + level + Resilience modifier hit points",
               "usableOutOfCombat": true,
               "effects": { "heal": "1d8 + level + con" }
             },
@@ -93,7 +93,7 @@
         "effects": {
           "onHitSaveOrCondition": {
             "bonusDice": "tacticDie",
-            "saveType": "vitality",
+            "saveType": "resilience",
             "condition": "prone",
             "conditionDuration": "combat",
             "conditionIcon": "🔻"
@@ -164,7 +164,7 @@
         "effects": {
           "onHitPush": {
             "bonusDice": "tacticDie",
-            "saveType": "vitality",
+            "saveType": "resilience",
             "condition": "pushed",
             "conditionDuration": "untilEndOfTurn"
           }
@@ -183,31 +183,31 @@
         "resourceType": "resolve",
         "resolveCost": 1,
         "usableOutOfCombat": false,
-        "description": "As a bonus action, spend 1 Resolve to bolster your resolve. Choose one: gain temporary HP equal to your tactic die roll + your CON modifier, or grant that temporary HP to an ally you are engaged alongside.",
+        "description": "As a bonus action, spend 1 Resolve to bolster your resolve. Choose one: gain temporary HP equal to your tactic die roll + your Resilience modifier, or grant that temporary HP to an ally you are engaged alongside.",
         "effects": {
           "choice": true,
           "options": [
             {
               "id": "self",
               "name": "Self",
-              "description": "Gain temporary HP equal to your tactic die roll + your CON modifier",
+              "description": "Gain temporary HP equal to your tactic die roll + your Resilience modifier",
               "usableOutOfCombat": false,
               "effects": {
                 "selfTempHP": {
                   "dice": "tacticDie",
-                  "bonus": "conMod"
+                  "bonus": "resilienceMod"
                 }
               }
             },
             {
               "id": "ally",
               "name": "Ally",
-              "description": "Grant temporary HP to an ally you are engaged alongside, equal to the tactic die roll + your CON modifier",
+              "description": "Grant temporary HP to an ally you are engaged alongside, equal to the tactic die roll + your Resilience modifier",
               "usableOutOfCombat": false,
               "effects": {
                 "allyTempHP": {
                   "dice": "tacticDie",
-                  "bonus": "conMod"
+                  "bonus": "resilienceMod"
                 }
               }
             }
@@ -228,11 +228,11 @@
         "resourceType": "resolve",
         "resolveCost": 1,
         "usableOutOfCombat": false,
-        "description": "When you are hit by a melee attack, use your reaction to reduce the damage by your maneuver die roll + your CON modifier.",
+        "description": "When you are hit by a melee attack, use your reaction to reduce the damage by your maneuver die roll + your Resilience modifier.",
         "effects": {
           "reactionDamageReduction": {
             "reductionDice": "tacticDie",
-            "reductionBonus": "conMod"
+            "reductionBonus": "resilienceMod"
           }
         },
         "campaignIds": ["core"]
@@ -253,7 +253,7 @@
         "effects": {
           "onHitCondition": {
             "bonusDice": "tacticDie",
-            "saveType": "vitality",
+            "saveType": "resilience",
             "condition": "disarmed",
             "conditionDuration": "untilStartOfTurn",
             "conditionIcon": "🗡️",
@@ -299,18 +299,18 @@
         "resolveCost": "variable",
         "maxResolveCost": 3,
         "usableOutOfCombat": true,
-        "description": "Spend 1–3 Resolve to heal a target for (Resolve spent × CON modifier) + level HP. Alternatively, spend 1 Resolve to cure one curable condition.",
+        "description": "Spend 1–3 Resolve to heal a target for (Resolve spent × Resilience modifier) + level HP. Alternatively, spend 1 Resolve to cure one curable condition.",
         "effects": {
           "choice": true,
           "options": [
             {
               "id": "heal",
               "name": "Heal",
-              "description": "Heal self for (Resolve spent × CON modifier) + level HP",
+              "description": "Heal self for (Resolve spent × Resilience modifier) + level HP",
               "usableOutOfCombat": true,
               "effects": {
                 "variableCostHeal": {
-                  "formula": "resolveCost * conMod + level"
+                  "formula": "resolveCost * resilienceMod + level"
                 }
               }
             },

@@ -1,0 +1,68 @@
+name: Web media release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      media_lock:
+        description: Tracked immutable media lock to promote
+        required: true
+        default: deployment/media-releases/combat-d9b7ff1f6eb7.json
+        type: string
+      media_origin:
+        description: HTTPS public-media origin (Blob pilot or Front Door)
+        required: true
+        default: https://nexusvergemedia.blob.core.windows.net/media/
+        type: string
+      app_origin:
+        description: App origin to verify in Blob CORS preflight
+        required: true
+        default: https://victorious-stone-02afeaa03.2.azurestaticapps.net
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: web-media-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: github.ref == 'refs/heads/main-beta-quests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      WEB_MEDIA_LOCK: ${{ inputs.media_lock }}
+      WEB_MEDIA_ORIGIN: ${{ inputs.media_origin }}
+      WEB_APP_ORIGIN: ${{ inputs.app_origin }}
+      WEB_MEDIA_SOURCE_ACCOUNT: nexusvergeartsrc
+      WEB_MEDIA_SOURCE_CONTAINER: approved-exports
+      WEB_MEDIA_ACCOUNT: nexusvergemedia
+      WEB_MEDIA_CONTAINER: media
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run legal:verify
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_MEDIA_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Promote exact approved private exports to public immutable blobs
+        run: node scripts/promote-web-media.mjs --apply
+      - name: Verify public HTTP delivery and CORS
+        run: node scripts/verify-web-media.mjs
+      - name: Build the tracked app against the promoted release
+        env:
+          WEB_REQUIRE_TRACKED_APP: '1'
+        run: npm run build:web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-app-${{ github.run_id }}
+          path: dist/app
+          retention-days: 7

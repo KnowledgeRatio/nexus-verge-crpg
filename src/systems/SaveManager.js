@@ -6,6 +6,7 @@
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { Character } from './Character.js';
+import { skillRegistry } from './SkillRegistry.js';
 import { LocalSaveStore } from './saveStores/LocalSaveStore.js';
 import { CloudSaveStore } from './saveStores/CloudSaveStore.js';
 
@@ -101,6 +102,8 @@ class SaveManager {
             if (!saveData) {
                 return { success: false, message: 'Save slot is empty!' };
             }
+
+            await skillRegistry.load();
 
             // Version compatibility check
             if (saveData.version !== this.version) {
@@ -388,6 +391,8 @@ class SaveManager {
             id: character.id,
             name: character.name,
             avatar: character.avatar || null,
+            combatAppearance: character.combatAppearance
+                ? JSON.parse(JSON.stringify(character.combatAppearance)) : null,
             species: character.species,
             class: character.class,
             background: character.background,

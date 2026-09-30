@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="combat-scene.css">
 </head>
 <body>
     <div id="app">
@@ -20,6 +21,7 @@
                     <button id="newGameBtn" class="menu-btn">New Game</button>
                     <button id="loadGameBtn" class="menu-btn">Load Game</button>
                     <button id="helpBtn" class="menu-btn">Help</button>
+                    <a href="combat-study.html" class="menu-btn combat-study-link">Combat Visual Study</a>
                     <button id="devModeBtn" class="menu-btn secondary" style="margin-top: 20px;">Dev Mode: OFF</button>
 
                 </div>
@@ -209,8 +211,14 @@
         <div id="combatScreen" class="screen">
             <div class="combat-container">
                 <h2>Combat - Round <span id="roundNumber">1</span></h2>
+                <div class="combat-scene-toolbar">
+                    <button id="combatSceneToggle" type="button" aria-pressed="false">Show 3D preview</button>
+                    <button id="combatSceneSkip" type="button" hidden>Finish animations</button>
+                    <span id="combatSceneStatus" role="status"></span>
+                </div>
 
                 <div class="combat-content">
+                    <div id="combatSceneStage" class="combat-scene-stage" aria-label="Combat scene" hidden></div>
                     <!-- Combatants Display -->
                     <div class="combatants-display">
                         <div class="team player-team">
@@ -394,6 +402,11 @@
                     <button class="close-btn" id="closeSettlementBtn">&times;</button>
                 </div>
                 <p id="settlementPopulation" class="settlement-population">Population: 234</p>
+                <div class="settlement-scene-toolbar">
+                    <button id="settlementSceneToggle" class="menu-btn secondary" aria-pressed="true">Use service list</button>
+                    <span id="settlementSceneStatus" role="status" aria-live="polite"></span>
+                </div>
+                <div id="settlementSceneHost" class="settlement-scene-host" hidden></div>
 
                 <div class="town-map">
                     <!-- Top Row: Tavern & Blacksmith -->
@@ -823,7 +836,7 @@
                         <!-- Combat -->
                         <section class="help-section">
                             <h3>⚔️ Combat</h3>
-                            <p><strong>Initiative:</strong> Turn order determined by d20 + DEX modifier. Combat is turn-based with action economy.</p>
+                            <p><strong>Initiative:</strong> Turn order determined by d20 + Intuition modifier. Combat is turn-based with action economy.</p>
                             <p><strong>Actions:</strong> Each turn you have an Action, Bonus Action, and Reaction (not yet implemented).</p>
                             <p><strong>Attacking:</strong> Roll d20 + ability modifier + proficiency bonus vs enemy AC. Natural 20 = critical hit (double damage dice).</p>
                             <p><strong>Weapon Masteries:</strong> Special effects based on equipped weapon (Cleave, Graze, Nick, Push, Sap, Slow, Topple, Vex).</p>
@@ -834,7 +847,7 @@
                         <section class="help-section">
                             <h3>📈 Character Progression</h3>
                             <p><strong>Experience:</strong> Gain XP from combat victories based on enemy CR. Level up when reaching XP thresholds (follows 5e SRD progression).</p>
-                            <p><strong>HP & Hit Dice:</strong> HP = class hit die + CON modifier per level. Hit dice used during short rests for healing.</p>
+                            <p><strong>HP & Hit Dice:</strong> HP = calling hit die + Resilience modifier per level. Hit dice are used during short rests for healing.</p>
                             <p><strong>Abilities:</strong> Six ability scores (STR, DEX, CON, INT, WIS, CHA) determine modifiers for all rolls and stats.</p>
                             <p><strong>Skills:</strong> 13 skills based on abilities. Proficiency bonus applies to skills you're proficient in.</p>
                         </section>
@@ -869,7 +882,7 @@
                         <section class="help-section">
                             <h3>🎲 5e SRD Rules</h3>
                             <p><strong>Proficiency Bonus:</strong> Starts at +2, increases with level. Applies to proficient skills, saves, and attacks.</p>
-                            <p><strong>Armor Class (AC):</strong> Base 10 + DEX modifier + armor bonus + shield bonus.</p>
+                            <p><strong>Armor Class (AC):</strong> Unarmoured AC is 10 + Intuition modifier; armour limits or replaces that modifier, and shields add their bonus.</p>
                             <p><strong>Ability Modifiers:</strong> (Ability Score - 10) ÷ 2, rounded down. Applied to relevant rolls.</p>
                             <p><strong>Advantage/Disadvantage:</strong> Roll 2d20, take higher (advantage) or lower (disadvantage).</p>
                             <p><strong>Critical Hits:</strong> Natural 20 on attack roll = double damage dice (not modifiers).</p>
@@ -1420,36 +1433,7 @@
                     <div id="asiSection" class="level-up-section">
                         <h3>Choose Ability Score to Increase <span class="required-badge">Required</span></h3>
                         <div class="ability-score-grid">
-                            <button class="ability-score-btn" data-ability="str">
-                                <div class="ability-name">STR</div>
-                                <div class="ability-value" id="strValue">16</div>
-                                <div class="ability-increase">+1 → 17</div>
-                            </button>
-                            <button class="ability-score-btn" data-ability="dex">
-                                <div class="ability-name">DEX</div>
-                                <div class="ability-value" id="dexValue">14</div>
-                                <div class="ability-increase">+1 → 15</div>
-                            </button>
-                            <button class="ability-score-btn" data-ability="con">
-                                <div class="ability-name">CON</div>
-                                <div class="ability-value" id="conValue">15</div>
-                                <div class="ability-increase">+1 → 16</div>
-                            </button>
-                            <button class="ability-score-btn" data-ability="int">
-                                <div class="ability-name">INT</div>
-                                <div class="ability-value" id="intValue">10</div>
-                                <div class="ability-increase">+1 → 11</div>
-                            </button>
-                            <button class="ability-score-btn" data-ability="wis">
-                                <div class="ability-name">WIS</div>
-                                <div class="ability-value" id="wisValue">13</div>
-                                <div class="ability-increase">+1 → 14</div>
-                            </button>
-                            <button class="ability-score-btn" data-ability="cha">
-                                <div class="ability-name">CHA</div>
-                                <div class="ability-value" id="chaValue">8</div>
-                                <div class="ability-increase">+1 → 9</div>
-                            </button>
+                            <!-- Populated for the active attribute system by LevelUpManager. -->
                         </div>
                     </div>
 

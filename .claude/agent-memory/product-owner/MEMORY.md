@@ -12,6 +12,8 @@
 
 ## Integration Status — Revalidate
 
+- On 2026-09-27, an unrestricted `gh auth status` succeeded with `project` scope; the sandboxed check had misleadingly reported an invalid token. Confirmed existing project: **Nexus Verge 5E Roadmap**, owner `KnowledgeRatio`, number **3**, URL https://github.com/users/KnowledgeRatio/projects/3, ID `PVT_kwHOBfpfbc4BMFds`. Settlement issues #51 and #52 were added and their statuses verified. Revalidate credentials and live board state before future mutations; the older scope limitation below is historical.
+
 - On 2026-07-31, local `gh` authentication for `KnowledgeRatio` is valid and works for issue read/write (`repo` scope present). It lacks `read:project`, so both `gh project` and GraphQL `projectsV2` queries fail with `INSUFFICIENT_SCOPES` — cannot confirm whether a Projects v2 board even exists for this repo, let alone sync to it. Re-check scopes (`gh auth status`) each session; don't assume this is still true.
 - GitHub Issues is therefore the only confirmed-working live roadmap mechanism right now. As of 2026-07-31 the repo has few issues total and no prior roadmap/backlog issues — issues #13–#20 (attribute-remap deferred items, see [[project_attribute_remap_issues]]) are the first roadmap-style issues filed here.
 - Repo labels available: `bug`, `documentation`, `duplicate`, `enhancement`, `good first issue`, `help wanted`, `invalid`, `question`, `wontfix` — no `chore`/`design`/`roadmap` label exists; map to closest fit rather than inventing new labels without asking.

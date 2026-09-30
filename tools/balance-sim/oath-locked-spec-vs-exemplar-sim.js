@@ -59,7 +59,7 @@
  * Player build: reused verbatim from the prior Exemplar-vs-Oath passes for
  * continuity — STR/CON ASI curve, 1d8 longsword, flat AC 16, avg-per-level
  * HP. Presence set flat at 10 (mod 0, "unraised default") for Challenge's DC
- * — Dedication's stated attribute identity is Prowess+Vitality, so Presence
+ * — Dedication's stated attribute identity is Prowess+Resilience, so Presence
  * is neither invested in nor punitively dumped; this is a judgment call,
  * flagged.
  */

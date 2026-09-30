@@ -1,0 +1,40 @@
+{
+  "spec": {
+    "source": "tools/combat-art/hyena-candidate.gltf",
+    "scale": 0.76,
+    "floorClearance": 0.006,
+    "sampleRate": 60,
+    "mouthPosition": [
+      0,
+      1.9,
+      2.18
+    ]
+  },
+  "clips": [
+    {
+      "clip": "Attack",
+      "duration": 1.3333333730697632,
+      "maximumCorrection": 0.03071194086061549
+    },
+    {
+      "clip": "Death",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.2383674868923423
+    },
+    {
+      "clip": "Idle_2_HeadLow",
+      "duration": 4,
+      "maximumCorrection": 0.013753976632164686
+    },
+    {
+      "clip": "Idle_HitReact1",
+      "duration": 0.6666666865348816,
+      "maximumCorrection": 0.013753976632164707
+    },
+    {
+      "clip": "Walk",
+      "duration": 1.0666667222976685,
+      "maximumCorrection": 0.047736061823236996
+    }
+  ]
+}

@@ -347,7 +347,7 @@
       "type": "armor",
       "armorType": "light",
       "ac": 11,
-      "dexModifier": "full",
+      "evasionModifier": "full",
       "weight": 10,
       "value": 100,
       "rarity": "common",
@@ -361,7 +361,7 @@
       "type": "armor",
       "armorType": "light",
       "ac": 12,
-      "dexModifier": "full",
+      "evasionModifier": "full",
       "weight": 13,
       "value": 450,
       "rarity": "common",
@@ -375,11 +375,11 @@
       "type": "armor",
       "armorType": "heavy",
       "ac": 16,
-      "dexModifier": "none",
+      "evasionModifier": "none",
       "weight": 55,
       "value": 750,
       "rarity": "common",
-      "cunningDisadvantage": true,
+      "finesseDisadvantage": true,
       "campaignIds": [
         "core"
       ]
@@ -390,11 +390,11 @@
       "type": "armor",
       "armorType": "heavy",
       "ac": 18,
-      "dexModifier": "none",
+      "evasionModifier": "none",
       "weight": 65,
       "value": 15000,
       "rarity": "uncommon",
-      "cunningDisadvantage": true,
+      "finesseDisadvantage": true,
       "campaignIds": [
         "core"
       ]
@@ -440,11 +440,11 @@
       "type": "armor",
       "armorType": "heavy",
       "ac": 17,
-      "dexModifier": "none",
+      "evasionModifier": "none",
       "weight": 55,
       "value": 3000,
       "rarity": "rare",
-      "cunningDisadvantage": true,
+      "finesseDisadvantage": true,
       "campaignIds": [
         "core"
       ]

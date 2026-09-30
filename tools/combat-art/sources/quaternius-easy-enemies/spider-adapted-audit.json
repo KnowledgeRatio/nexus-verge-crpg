@@ -1,0 +1,111 @@
+{
+  "sourcePath": "tools/combat-art/sources/quaternius-easy-enemies/Spider-adapted.gltf",
+  "sha256": "b3c1477d83a397ebe10ae398bb9de154a933bdc10c486a845922dc713cfa8ad7",
+  "units": "Uncalibrated source units; do not treat as metres.",
+  "sampleRate": 30,
+  "interpretation": "Bounds include tails/ears and air phases. They do not prove planted-foot stability or contact quality.",
+  "rest": {
+    "minimum": [
+      -1.6326161176294727,
+      -0.00035774532101311797,
+      -1.412138839920721
+    ],
+    "maximum": [
+      1.6326161376395334,
+      1.071727068994522,
+      1.4861919495359228
+    ],
+    "size": [
+      3.265232255269006,
+      1.072084814315535,
+      2.8983307894566437
+    ]
+  },
+  "clips": [
+    {
+      "name": "Spider_Attack",
+      "seconds": 0.75,
+      "samples": 24,
+      "minimum": [
+        -1.669427011716426,
+        0.005983069294116676,
+        -1.648478037625049
+      ],
+      "maximum": [
+        1.661488316224576,
+        1.1846794065900261,
+        2.046419576801177
+      ],
+      "lowestSurface": 0.005983069294116676,
+      "highestLowestSurface": 0.006000000269901471
+    },
+    {
+      "name": "Spider_Death",
+      "seconds": 0.800000011920929,
+      "samples": 26,
+      "minimum": [
+        -1.6326161176294727,
+        0.0028021002103313375,
+        -1.412138839920721
+      ],
+      "maximum": [
+        1.8451488175359099,
+        2.931128745018489,
+        1.4861919495359228
+      ],
+      "lowestSurface": 0.0028021002103313375,
+      "highestLowestSurface": 0.01069695928483424
+    },
+    {
+      "name": "Spider_Idle",
+      "seconds": 4.166666507720947,
+      "samples": 126,
+      "minimum": [
+        -1.6353551020466865,
+        0.005999999632713357,
+        -1.4058990305368506
+      ],
+      "maximum": [
+        1.6326162648600047,
+        1.1573100828112708,
+        1.4991486656466708
+      ],
+      "lowestSurface": 0.005999999632713357,
+      "highestLowestSurface": 0.006000000264365374
+    },
+    {
+      "name": "Spider_Walk",
+      "seconds": 0.8333333134651184,
+      "samples": 26,
+      "minimum": [
+        -1.659671903637431,
+        0.005999996799975832,
+        -1.4066964090166274
+      ],
+      "maximum": [
+        1.686137652719349,
+        1.2526482823316045,
+        1.5219900600372325
+      ],
+      "lowestSurface": 0.005999996799975832,
+      "highestLowestSurface": 0.00600000090415183
+    },
+    {
+      "name": "Hit",
+      "seconds": 0.3199999928474426,
+      "samples": 11,
+      "minimum": [
+        -1.6326161176294727,
+        0.005999999946437692,
+        -1.412138839920721
+      ],
+      "maximum": [
+        1.6326161376395334,
+        1.0780848144514488,
+        1.4861919495359228
+      ],
+      "lowestSurface": 0.005999999946437692,
+      "highestLowestSurface": 0.005999999946437692
+    }
+  ]
+}

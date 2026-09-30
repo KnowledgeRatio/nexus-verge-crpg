@@ -34,9 +34,9 @@ import { RULES } from '../../src/core/rulesEngine.js';
 // than fetched, since these tests run in a fetch-less node environment.
 const attributesFixture = [
     { id: 'prowess', name: 'Prowess', abbr: 'PRO', domain: 'physical', direction: 'outward' },
-    { id: 'vitality', name: 'Vitality', abbr: 'VIT', domain: 'physical', direction: 'inward' },
+    { id: 'resilience', name: 'Resilience', abbr: 'RES', domain: 'physical', direction: 'inward' },
     { id: 'intellect', name: 'Intellect', abbr: 'INT', domain: 'mental', direction: 'outward' },
-    { id: 'insight', name: 'Insight', abbr: 'INS', domain: 'mental', direction: 'inward' },
+    { id: 'intuition', name: 'Intuition', abbr: 'ITU', domain: 'mental', direction: 'inward' },
     { id: 'presence', name: 'Presence', abbr: 'PRE', domain: 'social', direction: 'outward' },
     { id: 'composure', name: 'Composure', abbr: 'COM', domain: 'social', direction: 'inward' }
 ];
@@ -105,9 +105,9 @@ describe('getNewToLegacyMap', () => {
         const ui = makeUI({ sixMode: true });
         expect(ui.getNewToLegacyMap()).toEqual({
             prowess: 'str',
-            vitality: 'con',
+            resilience: 'con',
             intellect: 'int',
-            insight: 'dex',
+            intuition: 'dex',
             composure: 'wis',
             presence: 'cha'
         });
@@ -117,7 +117,7 @@ describe('getNewToLegacyMap', () => {
 describe('getSixAttributeIds', () => {
     it('uses the domain-grid order from attributesData when loaded', () => {
         const ui = makeUI({ sixMode: true });
-        expect(ui.getSixAttributeIds()).toEqual(['prowess', 'vitality', 'intellect', 'insight', 'presence', 'composure']);
+        expect(ui.getSixAttributeIds()).toEqual(['prowess', 'resilience', 'intellect', 'intuition', 'presence', 'composure']);
     });
 
     it('falls back to RULES.attributes.legacyToNew\'s value set when attributesData has not loaded', () => {
@@ -130,7 +130,7 @@ describe('getSixAttributeIds', () => {
 describe('getAttributeName', () => {
     it('resolves a new attribute id to its display name', () => {
         const ui = makeUI({ sixMode: true });
-        expect(ui.getAttributeName('insight')).toBe('Insight');
+        expect(ui.getAttributeName('intuition')).toBe('Intuition');
     });
 
     it('falls back to the raw id when attributesData has no match', () => {
@@ -147,8 +147,8 @@ describe('formatLegacyAbilityLabel', () => {
 
     it('NVSystem mode: translates through the bijection, not a direct relabel', () => {
         const ui = makeUI({ sixMode: true });
-        // dex -> insight (NOT prowess) — the split-attribute reassignment, per the plan.
-        expect(ui.formatLegacyAbilityLabel('dex')).toBe('Insight');
+        // dex -> intuition (NOT prowess) — the split-attribute reassignment, per the plan.
+        expect(ui.formatLegacyAbilityLabel('dex')).toBe('Intuition');
         expect(ui.formatLegacyAbilityLabel('wis')).toBe('Composure');
         expect(ui.formatLegacyAbilityLabel('cha')).toBe('Presence');
         expect(ui.formatLegacyAbilityLabel('str')).toBe('Prowess');
@@ -163,10 +163,10 @@ describe('getSpeciesBonus', () => {
         expect(ui.getSpeciesBonus('str')).toBe(0);
     });
 
-    it('NVSystem mode: translates the new key back to its legacy source before lookup', () => {
+    it('NVSystem mode: reads native species increases', () => {
         const ui = makeUI({ sixMode: true });
-        ui.characterData.species = { abilityScoreIncrease: { dex: 2 } };
-        expect(ui.getSpeciesBonus('insight')).toBe(2); // insight's legacy source is dex
+        ui.characterData.species = { abilityScoreIncreaseNVSystem: { intuition: 2 } };
+        expect(ui.getSpeciesBonus('intuition')).toBe(2);
         expect(ui.getSpeciesBonus('prowess')).toBe(0);
     });
 });
@@ -178,14 +178,14 @@ describe('convertLegacyToSixAttributeDisplay', () => {
             str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 15
         });
         expect(result).toEqual({
-            prowess: 16, vitality: 12, intellect: 10, insight: 14, presence: 15, composure: 13
+            prowess: 16, resilience: 12, intellect: 10, intuition: 14, presence: 15, composure: 13
         });
     });
 
     it('defaults a missing legacy key to 10', () => {
         const ui = makeUI({ sixMode: true });
         const result = ui.convertLegacyToSixAttributeDisplay({ str: 16 });
-        expect(result.vitality).toBe(10);
+        expect(result.resilience).toBe(10);
     });
 });
 
@@ -213,17 +213,17 @@ describe('formatKitPresetAbilities', () => {
     it('NVSystem mode: falls back to the bijection conversion when the preset has no native block, domain-grid order, translated labels', () => {
         const ui = makeUI({ sixMode: true });
         expect(ui.formatKitPresetAbilities(preset))
-            .toBe('Prowess 15, Vitality 13, Intellect 12, Insight 14, Presence 8, Composure 10');
+            .toBe('Prowess 15, Resilience 13, Intellect 12, Intuition 14, Presence 8, Composure 10');
     });
 
     it('NVSystem mode: uses the preset\'s native abilitiesNVSystem block directly when present, ignoring the legacy block', () => {
         const ui = makeUI({ sixMode: true });
         const nativePreset = {
             abilities: presetAbilities,
-            abilitiesNVSystem: { prowess: 99, vitality: 99, intellect: 99, insight: 99, presence: 99, composure: 99 }
+            abilitiesNVSystem: { prowess: 99, resilience: 99, intellect: 99, intuition: 99, presence: 99, composure: 99 }
         };
         expect(ui.formatKitPresetAbilities(nativePreset))
-            .toBe('Prowess 99, Vitality 99, Intellect 99, Insight 99, Presence 99, Composure 99');
+            .toBe('Prowess 99, Resilience 99, Intellect 99, Intuition 99, Presence 99, Composure 99');
     });
 });
 
@@ -252,59 +252,58 @@ describe('renderAbilityScoresStep', () => {
     it('NVSystem mode: natively labels the six new attributes, not STR/DEX relabeled', () => {
         const ui = makeUI({ sixMode: true });
         ui.characterData.class = fixtureClass();
-        ui.characterData.species = { abilityScoreIncrease: { dex: 2 } };
-        ui.characterData.baseAbilities = { str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8 };
+        ui.characterData.species = { abilityScoreIncreaseNVSystem: { intuition: 2 } };
+        ui.characterData.baseAbilities = { prowess: 15, intuition: 14, resilience: 13, intellect: 12, composure: 10, presence: 8 };
         const container = new FakeContainer();
 
         ui.renderAbilityScoresStep(container);
 
-        for (const label of ['Prowess', 'Vitality', 'Intellect', 'Insight', 'Presence', 'Composure']) {
+        for (const label of ['Prowess', 'Resilience', 'Intellect', 'Intuition', 'Presence', 'Composure']) {
             expect(container.innerHTML).toContain(`<label>${label}</label>`);
         }
         for (const legacyLabel of ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']) {
             expect(container.innerHTML).not.toContain(`<label>${legacyLabel}</label>`);
         }
 
-        // Insight's initial modifier reflects dex=14 (its legacy source): floor((14-10)/2) = +2
-        expect(extractSpanText(container.innerHTML, 'mod-insight')).toBe('+2');
-        // Species dex+2 bonus surfaces on the Insight row, translated correctly.
-        expect(extractSpanText(container.innerHTML, 'racial-insight')).toBe('+2 (species)');
+        // Intuition 14 -> +2.
+        expect(extractSpanText(container.innerHTML, 'mod-intuition')).toBe('+2');
+        // Native species Intuition bonus surfaces on the Intuition row.
+        expect(extractSpanText(container.innerHTML, 'racial-intuition')).toBe('+2 (species)');
         // Recommended-for hint translates class.primaryAbility (['dex','wis']) too.
-        expect(container.innerHTML).toContain('Insight, Composure');
+        expect(container.innerHTML).toContain('Intuition, Composure');
     });
 
-    it('NVSystem mode: a change on the Insight select writes into baseAbilities.dex (legacy), not .insight', () => {
+    it('NVSystem mode: a change on the Intuition select writes the canonical key', () => {
         const ui = makeUI({ sixMode: true });
         ui.characterData.class = fixtureClass();
-        ui.characterData.baseAbilities = { str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8 };
+        ui.characterData.baseAbilities = { prowess: 15, intuition: 14, resilience: 13, intellect: 12, composure: 10, presence: 8 };
         const container = new FakeContainer();
 
         ui.renderAbilityScoresStep(container);
-        container.querySelector('#ability-insight').triggerChange(8);
+        container.querySelector('#ability-intuition').triggerChange(8);
 
-        expect(ui.characterData.baseAbilities.dex).toBe(8);
-        expect(ui.characterData.baseAbilities.insight).toBeUndefined();
+        expect(ui.characterData.baseAbilities.intuition).toBe(8);
+        expect(ui.characterData.baseAbilities.dex).toBeUndefined();
         // Untouched keys are unaffected by the write-back.
-        expect(ui.characterData.baseAbilities.str).toBe(15);
-        expect(ui.characterData.baseAbilities.con).toBe(13);
-        // baseAbilities stays exactly legacy-shaped (Character.js's contract) after collection.
-        expect(Object.keys(ui.characterData.baseAbilities).sort()).toEqual(['cha', 'con', 'dex', 'int', 'str', 'wis']);
+        expect(ui.characterData.baseAbilities.prowess).toBe(15);
+        expect(ui.characterData.baseAbilities.resilience).toBe(13);
+        expect(Object.keys(ui.characterData.baseAbilities).sort()).toEqual(['composure', 'intellect', 'intuition', 'presence', 'prowess', 'resilience']);
 
         // updateAbilityModifiers is invoked by the change handler: floor((8-10)/2) = -1
-        expect(container.querySelector('#mod-insight').textContent).toBe('-1');
+        expect(container.querySelector('#mod-intuition').textContent).toBe('-1');
     });
 
-    it('NVSystem mode: a change on the Presence select writes into baseAbilities.cha, mirroring the locked bijection', () => {
+    it('NVSystem mode: a change on the Presence select writes the canonical key', () => {
         const ui = makeUI({ sixMode: true });
         ui.characterData.class = fixtureClass();
-        ui.characterData.baseAbilities = { str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8 };
+        ui.characterData.baseAbilities = { prowess: 15, intuition: 14, resilience: 13, intellect: 12, composure: 10, presence: 8 };
         const container = new FakeContainer();
 
         ui.renderAbilityScoresStep(container);
         container.querySelector('#ability-presence').triggerChange(15);
 
-        expect(ui.characterData.baseAbilities.cha).toBe(15);
-        expect(ui.characterData.baseAbilities.wis).toBe(10); // Composure's select untouched
+        expect(ui.characterData.baseAbilities.presence).toBe(15);
+        expect(ui.characterData.baseAbilities.composure).toBe(10);
     });
 });
 
@@ -341,22 +340,24 @@ describe('renderReviewStep', () => {
         expect(container.innerHTML).toContain('<strong>Armor Class:</strong> 12');
     });
 
-    it('NVSystem mode: shows Prowess/Vitality/... and HP/AC from Vitality/Insight', () => {
+    it('NVSystem mode: shows Prowess/Resilience/... and HP/weighted Prowess-Intuition AC', () => {
         const ui = makeUI({ sixMode: true });
         fixtureCharacterData(ui);
+        ui.characterData.species.abilityScoreIncreaseNVSystem = { intuition: 1 };
+        ui.characterData.baseAbilities = { prowess: 15, intuition: 14, resilience: 13, intellect: 12, composure: 10, presence: 8 };
         const container = new FakeContainer();
 
         ui.renderReviewStep(container);
 
         expect(container.innerHTML).toContain('<span class="ability-name">Prowess</span>');
-        expect(container.innerHTML).toContain('<span class="ability-name">Vitality</span>');
-        expect(container.innerHTML).toContain('<span class="ability-name">Insight</span>');
+        expect(container.innerHTML).toContain('<span class="ability-name">Resilience</span>');
+        expect(container.innerHTML).toContain('<span class="ability-name">Intuition</span>');
         expect(container.innerHTML).not.toContain('<span class="ability-name">STR</span>');
         expect(container.innerHTML).not.toContain('<span class="ability-name">DEX</span>');
 
-        // HP: hitDie(10) + Vitality mod, Vitality <- con(13), species doesn't touch con: +1 -> 11
+        // HP: hitDie(10) + Resilience mod, Resilience <- con(13), species doesn't touch con: +1 -> 11
         expect(container.innerHTML).toContain('<strong>Hit Points:</strong> 11');
-        // AC: 10 + Insight mod, Insight <- dex(14) + species dex+1 = 15 -> mod +2 -> AC 12
+        // AC: 10 + floor((2×Intuition raw mod 2.5 + Prowess raw mod 2.5) / 3) = 12
         expect(container.innerHTML).toContain('<strong>Armor Class:</strong> 12');
     });
 });

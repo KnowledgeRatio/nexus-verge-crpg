@@ -42,8 +42,8 @@
 - Systems independently toggleable
 - Adding new abilities/spells should require 0 JS changes
 
-### 6. Flee Mechanic Implementation Traps (2026-03-04)
-- `combatant.initiative` is the ROLLED VALUE (1-24), NOT the modifier. Flee bonus must use `abilityModifiers.dex + proficiencyBonus` separately.
+### 6. Flee Mechanic Implementation Traps (2026-03-04; attribute note updated 2026-09-22)
+- `combatant.initiative` is the rolled total, not a reusable modifier. Flee must resolve its own attribute context: Prowess/Intuition blend in `NVSystem`, with the legacy DEX/WIS formula confined to `5EClassic`.
 - Melee vs ranged classification needs an explicit utility function `isRangedCombatant()` — monsters with natural attacks (wolf, rat) have no weapon slot, default to melee.
 - L1 Scholar (6-8 HP) vs 3 melee enemies: expected opp attack damage 11-14 = near-certain death. Add `RULES.flee.oppAttackMinHP: 1` (cannot kill during flee attempt) or the flee button becomes a suicide button for squishy callings.
 - Ranged-only encounters: zero opp attack cost = dominant "always flee" strategy for squishy callings at 50-65% success rate with no downside on failure. Accept or add ranged harassment rule.

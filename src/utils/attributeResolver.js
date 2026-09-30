@@ -17,7 +17,7 @@
  * order" sections), since completed.
  *
  * 5EClassic-mode key redirection (fixed 2026-08-01): `derivedStatMap` always expresses
- * attribute keys in the new six-attribute naming (`prowess`/`insight`/`vitality`/...),
+ * attribute keys in the new six-attribute naming (`prowess`/`intuition`/`resilience`/...),
  * but under `RULES.attributes.system === '5EClassic'` every live character only ever
  * populates `character.abilities` with legacy keys (`str`/`dex`/`con`/...). `getRawAttributeModifier`
  * redirects new-system keys to their legacy source key (via the inverse of
@@ -30,6 +30,7 @@
  */
 
 import { RULES } from '../core/rulesEngine.js';
+import { normalizeNVAttributeKey } from './attributeConversion.js';
 
 // Built lazily from RULES.attributes.legacyToNew (the single source of truth for the
 // legacy<->new attribute bijection) — never hardcode a second copy of this mapping here.
@@ -61,7 +62,7 @@ function resolveAbilityKey(attrKey) {
  * character's base score. Never floors — callers floor once, at the appropriate point.
  * @param {Object} character - Character-shaped object with an `abilities` score bag
  *   (e.g. { str: 15, dex: 12, ... } today under the legacy system; new attribute keys
- *   like `vitality`/`composure` once a character actually has them populated).
+ *   like `resilience`/`composure` once a character actually has them populated).
  * @param {string} attrKey - Attribute key from RULES.attributes.derivedStatMap (a
  *   new-system name). Redirected to its legacy source key under `system: '5EClassic'`.
  * @returns {number} Raw fractional modifier, e.g. score 15 -> 2.5. Returns 0 if the
@@ -69,7 +70,8 @@ function resolveAbilityKey(attrKey) {
  *   the zero-default pattern used elsewhere for missing character data).
  */
 export function getRawAttributeModifier(character, attrKey) {
-    const resolvedKey = resolveAbilityKey(attrKey);
+    const canonicalKey = normalizeNVAttributeKey(attrKey);
+    const resolvedKey = resolveAbilityKey(canonicalKey);
     let score = character?.abilities?.[resolvedKey];
     if (typeof score !== 'number') {
         return 0;
@@ -81,7 +83,9 @@ export function getRawAttributeModifier(character, attrKey) {
     // persisted with a legacy key before that data migration. Match either shape against
     // the key we actually resolved against.
     const buff = character?.activeMealBuff;
-    if (buff?.abilityScore && (buff.abilityScore === resolvedKey || RULES.attributes.legacyToNew[buff.abilityScore] === resolvedKey)) {
+    const persistedBuffKey = normalizeNVAttributeKey(buff?.abilityScore);
+    const canonicalBuffKey = RULES.attributes.legacyToNew[persistedBuffKey] ?? persistedBuffKey;
+    if (canonicalBuffKey && resolveAbilityKey(canonicalBuffKey) === resolvedKey) {
         score += buff.bonusMagnitude ?? 1;
     }
 
@@ -91,10 +95,11 @@ export function getRawAttributeModifier(character, attrKey) {
 /**
  * Look up a derived-stat context in RULES.attributes.derivedStatMap.
  * @param {string} contextKey
- * @returns {{ type: 'single'|'blend', attributes: string[] } | null}
+ * @returns {{ type: 'single'|'blend', attributes: string[], weights?: number[] } | null}
  */
 function resolveDerivedStatEntry(contextKey) {
-    const entry = RULES.attributes?.derivedStatMap?.[contextKey];
+    const configuredEntry = RULES.attributes?.derivedStatMap?.[contextKey];
+    const entry = configuredEntry?.bySystem?.[RULES.attributes.system] ?? configuredEntry;
     if (!entry || !Array.isArray(entry.attributes) || entry.attributes.length === 0) {
         console.warn(`attributeResolver: no derivedStatMap entry for context "${contextKey}"`);
         return null;
@@ -123,12 +128,10 @@ export function getAttributeModifierFor(character, contextKey) {
 }
 
 /**
- * Resolve a multi-attribute (blend) derived-stat context (e.g. concentration, flee,
- * Menacing Attack DC). Sums the RAW (unfloored) modifier of every attribute in the
- * blend, divides by the number of attributes blended, then floors exactly once on the
- * result — per the plan's locked formulas (decisions #3/#4/#5 are all explicitly
- * `floor((A+B)/2)`, not just `floor(A+B)`). Dividing by `entry.attributes.length` (not a
- * hardcoded `/2`) generalizes to any future blend width. This also carries forward the
+ * Resolve a multi-attribute (blend) derived-stat context (e.g. AC, concentration, flee,
+ * Menacing Attack DC). A blend may define one positive weight per attribute; omitted or
+ * invalid weights fall back to equal weighting. The resolver averages RAW (unfloored)
+ * modifiers by total weight, then floors exactly once on the result. This carries forward the
  * "floor each attribute, then sum" double-floor fix from the engine rule: two half-point
  * contributions that individually round down to nothing can still combine into a real
  * bonus once averaged and floored together, instead of being discarded per-term.
@@ -144,9 +147,34 @@ export function getBlendedAttributeModifier(character, contextKey) {
     if (entry.type !== 'blend') {
         console.warn(`attributeResolver: getBlendedAttributeModifier called on "${contextKey}" (type "${entry.type}") — use getAttributeModifierFor for single-attribute contexts`);
     }
-    const total = entry.attributes.reduce(
-        (sum, attrKey) => sum + getRawAttributeModifier(character, attrKey),
+    const hasValidWeights = Array.isArray(entry.weights)
+        && entry.weights.length === entry.attributes.length
+        && entry.weights.every(weight => Number.isFinite(weight) && weight > 0);
+    const weights = hasValidWeights
+        ? entry.weights
+        : entry.attributes.map(() => 1);
+    const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+    const weightedTotal = entry.attributes.reduce(
+        (sum, attrKey, index) => sum + (getRawAttributeModifier(character, attrKey) * weights[index]),
         0
     );
-    return Math.floor(total / entry.attributes.length);
+    return Math.floor(weightedTotal / totalWeight);
+}
+
+/**
+ * Resolve any configured derived-stat context without making callers know whether its
+ * implementation is currently single-attribute or blended. This is the stable boundary
+ * for contexts whose ownership can change through rules configuration (such as AC).
+ * @param {Object} character
+ * @param {string} contextKey
+ * @returns {number} Floored derived-stat modifier
+ */
+export function getDerivedStatModifier(character, contextKey) {
+    const entry = resolveDerivedStatEntry(contextKey);
+    if (!entry) {
+        return 0;
+    }
+    return entry.type === 'blend'
+        ? getBlendedAttributeModifier(character, contextKey)
+        : getAttributeModifierFor(character, contextKey);
 }

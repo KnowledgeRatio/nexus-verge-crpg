@@ -29,6 +29,16 @@ function makeCharacter(overrides = {}) {
 }
 
 describe('Character.toJSON — selectedAbilities/selectedTraits round-trip', () => {
+    it('preserves combat appearance through JSON storage and character restoration', () => {
+        const original = makeCharacter({ combatAppearance: { avatarId: 'travellerOlive',
+            parts: { head: 'future-head' } } });
+        const stored = JSON.parse(JSON.stringify(original.toJSON()));
+        const restored = Character.fromJSON(stored);
+        expect(restored.combatAppearance).toEqual(original.combatAppearance);
+        restored.combatAppearance.parts.head = 'changed';
+        expect(stored.combatAppearance.parts.head).toBe('future-head');
+        expect(makeCharacter().combatAppearance).toBeNull();
+    });
     it('survives a toJSON -> new Character round-trip', () => {
         const original = makeCharacter({
             selectedAbilities: ['steadyNerve'],

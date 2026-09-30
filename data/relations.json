@@ -86,21 +86,21 @@
     },
     "passiveApproachChecks": {
         "innkeeper": [
-            { "skill": "empathy",      "dc": 12, "flag": "innkeeperWorried",  "setsIntel": true },
-            { "skill": "perception",   "dc": 11, "flag": "atmosphereRead" }
+            { "skill": "empathy",      "attribute": "composure", "dc": 12, "flag": "innkeeperWorried",  "setsIntel": true },
+            { "skill": "perception",   "attribute": "intuition", "dc": 11, "flag": "atmosphereRead" }
         ],
         "merchant": [
-            { "skill": "investigation","dc": 12, "flag": "goodsOverpriced" },
-            { "skill": "academia",     "dc": 13, "flag": "raritySpotted" }
+            { "skill": "investigation","attribute": "intellect", "dc": 12, "flag": "goodsOverpriced" },
+            { "skill": "lore",         "attribute": "intellect", "dc": 13, "flag": "raritySpotted" }
         ],
         "blacksmith": [
-            { "skill": "academia",     "dc": 12, "flag": "qualityRead" }
+            { "skill": "lore",         "attribute": "intellect", "dc": 12, "flag": "qualityRead" }
         ],
         "guard": [
-            { "skill": "perception",   "dc": 12, "flag": "guardDistracted" }
+            { "skill": "perception",   "attribute": "intuition", "dc": 12, "flag": "guardDistracted" }
         ],
         "leader": [
-            { "skill": "empathy",      "dc": 14, "flag": "leaderStressed" }
+            { "skill": "empathy",      "attribute": "composure", "dc": 14, "flag": "leaderStressed" }
         ]
     }
 }

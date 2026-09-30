@@ -2,10 +2,10 @@
  * Attribute-remap dump/dominance stress test (balance-engineer, 2026-07-30).
  *
  * Context: docs/plans/2026-07-30-attribute-system-remap.md proposes collapsing
- * ALL saving throws onto the 3 Inward attributes (Vitality/Insight/Composure),
+ * ALL saving throws onto the 3 Inward attributes (Resilience/Intuition/Composure),
  * retiring Prowess-save and Intellect-save entirely. This makes the 3 Outward
  * attributes (Prowess/Intellect/Presence) purely offensive with zero defensive
- * payoff. Only Dedication (Prowess+Vitality, STR+CON 1:1) is live today, so
+ * payoff. Only Dedication (Prowess+Resilience, STR+CON 1:1) is live today, so
  * this harness tests Dedication specifically per the plan's own scope note.
  *
  * The six-attribute system has NO implementation in code — there is nothing to
@@ -14,9 +14,9 @@
  * Monte Carlo, not a reimplementation of guessed math: it reuses the actual
  * D&D-labelled mechanics already live in this engine (Character.js /
  * CombatManager.js / EncounterBuilder.js), because the plan's own ability
- * mapping states STR->Prowess and CON->Vitality are "clean 1:1" — so today's
- * live STR/CON numbers ARE the Prowess/Vitality numbers the remap would ship.
- * DEX stands in for Insight's initiative/evasion role for this test.
+ * mapping states STR->Prowess and CON->Resilience are "clean 1:1" — so today's
+ * live STR/CON numbers ARE the Prowess/Resilience numbers the remap would ship.
+ * DEX stands in for Intuition's initiative/evasion role for this test.
  *
  * Reused directly (not reimplemented):
  *   - RULES from src/core/rulesEngine.js (proficiency table, ASI levels, ASI
@@ -26,7 +26,7 @@
  *     EncounterBuilder.js's real attack/damage/AC/HP resolution)
  *
  * PC chassis: longsword (1d8, data/items.json) + chainMail (AC 16,
- * addDexModifier:false, data/items.json) + shield (+2) = flat AC 18,
+ * addEvasionModifier:false, data/items.json) + shield (+2) = flat AC 18,
  * confirmed DEX-independent for Dedication's real starting kit
  * (data/classes.json dedication.startingEquipment). Damage stays single-stat
  * Prowess (STR) per the plan's own non-negotiable #4 ("damage stays
@@ -108,10 +108,10 @@ function pcChassis(level, build) {
     maxHP += rollHitPoints(10, conMod, true);
   }
   const dexMod = mod(scores.dex);
-  // EVASION_AC_MODE models the plan's UNBUILT future split-AC (evasion=Insight
-  // stacked additively on top of armor soak) to bound Q2's "does this widen
+  // EVASION_AC_MODE models an older hypothetical Intuition bonus stacked on armour AC
+  // to bound Q2's "does this widen
   // the free-third-stat gap" risk. Off by default -- today's live Character.js
-  // calculateAC() formula is DEX-independent for chainMail (addDexModifier:false),
+  // calculateAC() formula is DEX-independent for chainMail (addEvasionModifier:false),
   // confirmed in data/items.json. This is a documented hypothetical, not a
   // claim about current behavior.
   const evasionBonus = process.env.EVASION_AC_MODE ? dexMod : 0;
@@ -121,7 +121,7 @@ function pcChassis(level, build) {
     dexMod,
     attackBonus: strMod + pb,
     damageDie: 8, // longsword, data/items.json
-    ac: 18 + evasionBonus, // chainMail(16, addDexModifier:false) + shield(+2) -- DEX-independent today
+    ac: 18 + evasionBonus, // chainMail(16, addEvasionModifier:false) + shield(+2) -- DEX-independent today
     maxHP,
     attacksPerRound: level >= 5 ? 2 : 1, // carried from dedication-l1-10-dpr.js precedent
   };
@@ -265,7 +265,7 @@ for (const { level, favorable, unfavorable } of SCENARIOS) {
 // so `Math.floor((undefined - 10) / 2)` = NaN for EVERY ability modifier on
 // those monsters. In EffectDispatcher.js's rollDefenderSave (used by Trip
 // Attack / Pushing Attack / Disarming Attack today, and would be used by
-// their proposed vitality-save target identically), `defender.character
+// their proposed resilience-save target identically), `defender.character
 // .abilityModifiers[saveType]` is NaN, so `saveRoll` (NaN + d20) is NaN, and
 // `NaN < saveDC` is always `false` in JS -- the code takes the "resists"
 // branch unconditionally. Confirmed by cross-referencing
@@ -274,7 +274,7 @@ for (const { level, favorable, unfavorable } of SCENARIOS) {
 //   L5 bracket (11 monsters): 5 broken (ghoul, specter, ghast, gargoyle, manticore)
 //   L7 bracket (8 monsters):  6 broken (minotaur, wight, owlbear, flameskull, ettin, mage, medusa -- 7 of 8)
 //   L10 bracket (4 monsters): 4 broken -- ALL of troll, wraith, hillGiant, youngWhiteDragon
-// This is independent of the str-save -> vitality-save reassignment (the bug
+// This is independent of the str-save -> resilience-save reassignment (the bug
 // is in ability-score sourcing, not save-type selection) but means Trip/
 // Pushing/Disarming Attack ALREADY cannot land on the iconic L10 bracket
 // monsters today, regardless of which attribute the save keys off after the

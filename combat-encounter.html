@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexus Verge · Playable Combat Study</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="combat-scene.css">
+</head>
+<body class="combat-study-page">
+    <main class="combat-study">
+        <header>
+            <div>
+                <div class="combat-study-kicker">NEXUS VERGE / PLAYABLE COMBAT STUDY</div>
+                <h1>Encounter at the waystation</h1>
+                <p>Control the traveller and companion against three bandits. Select an enemy, then attack. Melee creates engagement; Dodge and Disengage use your turn’s action.</p>
+            </div>
+            <nav><a href="combat-art-study.html">Art target</a> · <a href="combat-study.html">Return to animation study</a></nav>
+        </header>
+        <div class="combat-study-layout">
+            <div id="encounterStage" class="combat-scene-stage" aria-label="Combat scene"></div>
+            <div id="encounterFallback" class="combat-study-fallback" hidden></div>
+            <aside class="combat-study-controls" aria-label="Encounter controls">
+                <button id="encounterStart" type="button" disabled>Start encounter</button>
+                <output id="encounterStatus" aria-live="polite">Loading encounter…</output>
+                <p id="encounterOrder"></p>
+                <p id="encounterResources"></p>
+                <label>Target<select id="encounterTarget" disabled></select></label>
+                <button id="encounterAttack" type="button" disabled>Attack</button>
+                <button id="encounterDodge" type="button" disabled>Dodge · Action</button>
+                <button id="encounterDisengage" type="button" disabled>Disengage · Action</button>
+                <button id="encounterEndTurn" type="button" disabled>End turn</button>
+                <button id="encounterSkip" type="button" disabled>Finish animations</button>
+                <button id="encounterCards" type="button" disabled>Use compact view</button>
+                <p>Turns, rolls, damage, ammunition and outcomes use the game’s combat engine. Wait for your character’s turn; enemy turns run automatically.</p>
+            </aside>
+        </div>
+        <details class="combat-encounter-log" open>
+            <summary>Combat log</summary>
+            <ol id="encounterLog" aria-label="Combat log"></ol>
+        </details>
+        <p class="combat-study-note">A disposable level-3 encounter. Your saved game is never loaded or written. This slice covers weapon combat, Dodge and Disengage; spell and healing animations remain in the animation study. The traveller and waystation now use first-pass Blender assets. The supporting cast and weapons remain stand-ins; the approved concept is still the visual target.</p>
+    </main>
+    <script type="module" src="src/ui/CombatEncounterStudy.js"></script>
+</body>
+</html>

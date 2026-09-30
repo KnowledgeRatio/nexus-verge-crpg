@@ -1,0 +1,203 @@
+{
+  "Rat": {
+    "actions": [
+      {
+        "name": "Rat_Attack",
+        "frames": [
+          0.0,
+          16.0
+        ]
+      },
+      {
+        "name": "Rat_Death",
+        "frames": [
+          0.0,
+          26.0
+        ]
+      },
+      {
+        "name": "Rat_Idle",
+        "frames": [
+          0.0,
+          57.0
+        ]
+      },
+      {
+        "name": "Rat_Jump",
+        "frames": [
+          0.0,
+          20.0
+        ]
+      },
+      {
+        "name": "Rat_Run",
+        "frames": [
+          0.0,
+          12.0
+        ]
+      },
+      {
+        "name": "Rat_Walk",
+        "frames": [
+          0.0,
+          32.0
+        ]
+      }
+    ],
+    "objects": [
+      {
+        "name": "Armature",
+        "type": "ARMATURE",
+        "dimensions": [
+          1.1212782859802246,
+          6.619166851043701,
+          1.3987032175064087
+        ],
+        "bones": [
+          "root",
+          "FrontFoot.R",
+          "Body",
+          "FrontLeg.R",
+          "FrontUpLeg.R",
+          "FrontLowLeg.R",
+          "BackLeg.R",
+          "BackUpLeg.R",
+          "BackLowLeg.R",
+          "FrontLeg.L",
+          "FrontUpLeg.L",
+          "FrontLowLeg.L",
+          "BackLeg.L",
+          "BackUpLeg.L",
+          "BackLowLeg.L",
+          "Back",
+          "Tail1",
+          "Tail2",
+          "Tail3",
+          "Tail4",
+          "Tail5",
+          "Tail6",
+          "Tail7",
+          "Shoulders",
+          "Neck",
+          "Head",
+          "Hips",
+          "Torso",
+          "BackFoot.R",
+          "FrontFoot.L",
+          "BackFoot.L"
+        ]
+      },
+      {
+        "name": "Rat",
+        "type": "MESH",
+        "dimensions": [
+          1.5100313425064087,
+          6.807689189910889,
+          2.2442734241485596
+        ],
+        "bones": []
+      }
+    ]
+  },
+  "Spider": {
+    "actions": [
+      {
+        "name": "Spider_Attack",
+        "frames": [
+          0.0,
+          18.0
+        ]
+      },
+      {
+        "name": "Spider_Death",
+        "frames": [
+          0.0,
+          25.0
+        ]
+      },
+      {
+        "name": "Spider_Idle",
+        "frames": [
+          0.0,
+          100.0
+        ]
+      },
+      {
+        "name": "Spider_Jump",
+        "frames": [
+          0.0,
+          17.0
+        ]
+      },
+      {
+        "name": "Spider_Walk",
+        "frames": [
+          0.0,
+          20.0
+        ]
+      }
+    ],
+    "objects": [
+      {
+        "name": "HumanArmature",
+        "type": "ARMATURE",
+        "dimensions": [
+          5.966191291809082,
+          7.758326053619385,
+          2.5480337142944336
+        ],
+        "bones": [
+          "Root",
+          "Body",
+          "FrontLeg.L",
+          "FrontLeg2.L",
+          "FrontLeg3.L",
+          "MidFrontLeg.L",
+          "MidFrontLeg2.L",
+          "MidFrontLeg3.L",
+          "BackLeg.L",
+          "BackLeg2.L",
+          "BackLeg3.L",
+          "MidBackLeg.L",
+          "MidBackLeg2.L",
+          "MidBackLeg3.L",
+          "FrontLeg.R",
+          "FrontLeg2.R",
+          "FrontLeg3.R",
+          "MidFrontLeg.R",
+          "MidFrontLeg2.R",
+          "MidFrontLeg3.R",
+          "BackLeg.R",
+          "BackLeg2.R",
+          "BackLeg3.R",
+          "MidBackLeg.R",
+          "MidBackLeg2.R",
+          "MidBackLeg3.R",
+          "Abdomen",
+          "Thorax",
+          "Head",
+          "PoleTarget.L",
+          "FrontFoot.L",
+          "MidFrontFoot.L",
+          "BackFoot.L",
+          "MidBackFoot.L",
+          "PoleTarget.R",
+          "FrontFoot2.R",
+          "MidFrontFoot.R",
+          "BackFoot.R",
+          "MidBackFoot.R"
+        ]
+      },
+      {
+        "name": "Cube",
+        "type": "MESH",
+        "dimensions": [
+          5.911179542541504,
+          5.078776836395264,
+          2.002253770828247
+        ],
+        "bones": []
+      }
+    ]
+  }
+}

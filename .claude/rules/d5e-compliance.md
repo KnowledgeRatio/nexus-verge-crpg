@@ -9,15 +9,17 @@ Two ability-score systems exist **side by side**, switched by `RULES.attributes.
 | Flag value | System |
 |---|---|
 | `'5EClassic'` | Original STR/DEX/CON/INT/WIS/CHA |
-| `'NVSystem'` | **Current default** (flipped 2026-08-03) — Prowess/Vitality/Intellect/Insight/Presence/Composure, on a 3-domain (Physical/Mental/Social) × Outward/Inward grid |
+| `'NVSystem'` | **Current default** (flipped 2026-08-03) — Prowess/Resilience/Intellect/Intuition/Presence/Composure, on a 3-domain (Physical/Mental/Social) × Outward/Inward grid |
 
 `src/utils/attributeResolver.js` is the single translation point — its canonical keys are always the NVSystem names; under `'5EClassic'` it redirects reads to the matching legacy key via `RULES.attributes.legacyToNew`. New code and new data should reference attributes generically through that resolver, never hardcode one system's key names directly — that's what makes a data entry correct under both flag values instead of needing to be authored twice.
 
-**5e → NVSystem ability mapping** (`docs/plans/2026-07-30-attribute-system-remap.md`): STR→Prowess, CON→Vitality, INT→Intellect all 1:1. DEX splits Prowess (finesse attack)/Insight (reflex, AC-evasion, initiative). WIS splits Insight (perception)/Composure (will). CHA splits Presence (force/command)/Composure (poise).
+**5e → NVSystem ability mapping** (`docs/plans/2026-07-30-attribute-system-remap.md`): STR→Prowess, CON→Resilience, INT→Intellect all 1:1. DEX splits Prowess (finesse attack)/Intuition (reflex, AC-evasion, initiative). WIS splits Intuition (perception)/Composure (will). CHA splits Presence (force/command)/Composure (poise).
 
-**Saves under NVSystem:** only the three Inward attributes carry saves — Vitality, Insight, Composure. Prowess-save and Intellect-save are retired; Presence has no save, by design (all three Outward attributes are save-less, not just Presence). Each calling gets one save proficiency, not two (matches 5e's 33% coverage against a smaller 3-slot pool).
+**Saves under NVSystem:** only the three Inward attributes carry saves — Resilience, Intuition, Composure. Prowess-save and Intellect-save are retired; Presence has no save, by design (all three Outward attributes are save-less, not just Presence). Each calling gets one save proficiency, not two (matches 5e's 33% coverage against a smaller 3-slot pool).
 
-**Scope:** only **Dedication** has been remapped to NVSystem identity (Prowess+Vitality) so far — it's the only implemented calling the remap touched. Curiosity and Audacity have no live NVSystem-specific identity yet; their old two-stat descriptions (INT+CON, DEX+CHA) are 5EClassic-only until those callings are actually built out under the new system.
+**AC and damage reduction:** AC remains a single target number. In NVSystem, its evasion modifier is `floor((2 × raw Intuition modifier + raw Prowess modifier) / 3)`, flooring once after weighting. Existing unarmoured/light/medium/heavy gates still determine whether and how much of that modifier applies; 5EClassic remains Dexterity-only. Resilience governs HP/endurance and never contributes AC or general damage reduction. Do not introduce natural armour, armour damage reduction, soak, or a second defence pool. See ADR-019.
+
+**Scope:** only **Dedication** has been remapped to NVSystem identity (Prowess+Resilience) so far — it's the only implemented calling the remap touched. Curiosity and Audacity have no live NVSystem-specific identity yet; their old two-stat descriptions (INT+CON, DEX+CHA) are 5EClassic-only until those callings are actually built out under the new system.
 
 ## Skill System
 This project uses a **13-skill system**, not the standard 18. Never reference retired skills (History, Nature, Religion, Insight, Persuasion, Intimidation, Performance, Stealth as standalone).
@@ -25,10 +27,10 @@ This project uses a **13-skill system**, not the standard 18. Never reference re
 | 5EClassic ability | NVSystem attribute | Skills |
 |---|---|---|
 | STR | Prowess | Athletics, Acrobatics, Sleight of Hand |
-| DEX | Prowess / Insight (split) | (see Prowess row for Acrobatics/Sleight of Hand) |
-| CON | Vitality | Endurance |
+| DEX | Prowess / Intuition (split) | (see Prowess row for Acrobatics/Sleight of Hand) |
+| CON | Resilience | Endurance |
 | INT | Intellect | Academia, Arcana, Investigation |
-| WIS | Insight | Perception, Empathy, Cunning |
+| WIS | Intuition | Perception, Empathy, Cunning |
 | WIS/CHA | Composure | Creativity, Deception |
 | CHA | Presence | Influence |
 
@@ -50,7 +52,7 @@ Governing attribute pair, by active `RULES.attributes.system` (see Attribute Sys
 
 | Calling | 5EClassic | NVSystem |
 |---|---|---|
-| Dedication | STR+CON | **Prowess+Vitality** (only calling actually remapped) |
+| Dedication | STR+CON | **Prowess+Resilience** (only calling actually remapped) |
 | Curiosity | INT+CON | not yet designed under NVSystem — treat as undecided, not INT+CON-equivalent by default |
 | Audacity | DEX+CHA | not yet designed under NVSystem — treat as undecided, not DEX+CHA-equivalent by default |
 

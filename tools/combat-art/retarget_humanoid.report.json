@@ -1,0 +1,3287 @@
+{
+  "sources": {
+    "ual1": "Quaternius Universal Animation Library 1 Standard (CC0)",
+    "ual2": "Quaternius Universal Animation Library 2 Standard (CC0)",
+    "kaykit": "KayKit Character Animations 1.1 Free, Rig_Medium CombatRanged (CC0)",
+    "kaykitMelee": "KayKit Character Animations 1.1 Free, Rig_Medium CombatMelee (CC0)"
+  },
+  "fps": 30,
+  "legScales": {
+    "ual2": 0.9892932597576292,
+    "kaykitMelee": 2.1802749071475875,
+    "kaykit": 2.1802749071475875,
+    "ual1": 0.9892932597576292
+  },
+  "method": "World segment frame retarget; anatomical torso frame collapses source spine chain; explicit source/target facing; hip pivot compensation; two-bone arm and foot constraints using source end-effector paths and target proportions.",
+  "limitations": [
+    "No clavicle, neck or toe joints on target",
+    "Coat has only two deforming sections",
+    "Weapon grip orientation is calibrated by runtime weapon sockets",
+    "Numerical checks do not establish visual realism"
+  ],
+  "clips": {
+    "Prone_Idle": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Hit_Knockback"
+      ],
+      "mirrored": false,
+      "heldSourceTime": 0.75,
+      "originalGestureSide": null,
+      "duration": 0.5,
+      "frames": 16,
+      "ankleHeightMin": 0.109969516139766,
+      "ankleHeightMax": 0.11079792647277979,
+      "minimumSoleHeight": 0.001999998979273443,
+      "maximumKneeFlexionDegrees": 30.78253834745497,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.4895143244613904,
+          0.11977893542631425,
+          -0.24105766540469586
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.37444166926264083,
+          0.09968948968190416,
+          -0.17799392821861118
+        ],
+        [
+          0.4895143244613904,
+          0.11977893542631425,
+          -0.24105766540469586
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3572548568877346,
+          0.014044498914809965,
+          -0.23069925982169792
+        ],
+        [
+          0.45287968125546163,
+          0.04766614336886164,
+          -0.29293608344409333
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004114249362609974,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "Prone_Cast_L": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Hit_Knockback"
+      ],
+      "mirrored": false,
+      "heldSourceTime": 0.75,
+      "originalGestureSide": "L",
+      "duration": 0.5,
+      "frames": 16,
+      "ankleHeightMin": 0.109969516139766,
+      "ankleHeightMax": 0.11079792647277979,
+      "minimumSoleHeight": 0.001999998979273443,
+      "maximumKneeFlexionDegrees": 30.78253834745497,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.4895143244613904,
+          0.11977893542631425,
+          -0.24105766540469586
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.3744416692653221,
+          0.3294319872794654,
+          -0.2631155774969913
+        ],
+        [
+          0.4895143244613904,
+          0.11977893542631425,
+          -0.24105766540469586
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3572548568877346,
+          0.014044498914809965,
+          -0.23069925982169792
+        ],
+        [
+          0.45287968125546163,
+          0.04766614336886164,
+          -0.29293608344409333
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004114249362609974,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "Prone_Cast_R": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Hit_Knockback"
+      ],
+      "mirrored": false,
+      "heldSourceTime": 0.75,
+      "originalGestureSide": "R",
+      "duration": 0.5,
+      "frames": 16,
+      "ankleHeightMin": 0.109969516139766,
+      "ankleHeightMax": 0.11079792647277979,
+      "minimumSoleHeight": 0.001999998979273443,
+      "maximumKneeFlexionDegrees": 30.78253834745497,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.4895143244605129,
+          0.11977893542640508,
+          -0.2410576654081014
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.37444166926264083,
+          0.09968948968190416,
+          -0.17799392821861118
+        ],
+        [
+          0.48951432446036824,
+          0.3135981017544037,
+          -0.32735970540972775
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3572548568877346,
+          0.014044498914809965,
+          -0.23069925982169792
+        ],
+        [
+          0.45287968125546163,
+          0.04766614336886164,
+          -0.29293608344409333
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004114249362609974,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0,
+            0,
+            0
+          ],
+          "sourceRangeMetres": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Chop_Left": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Chop"
+      ],
+      "mirrored": true,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09005759351813275,
+      "ankleHeightMax": 0.33183669022026085,
+      "minimumSoleHeight": 0.0019999993619964213,
+      "maximumKneeFlexionDegrees": 69.80372657056822,
+      "rightHandMaximumForward": {
+        "time": 0.3333333507180214,
+        "position": [
+          0.5538869161323003,
+          1.1295740619741528,
+          0.029091645001244074
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.533848922867242,
+          1.4358237288621467,
+          0.09288781628710077
+        ],
+        [
+          0.545500209836219,
+          1.2249713896606544,
+          -0.007172814541745842
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5769924801292233,
+          0.8383747743093867,
+          0.044084681167804944
+        ],
+        [
+          0.5480514944963135,
+          1.0793548495204355,
+          0.20002590262974018
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.008554987167410905,
+            0.22046896811776528,
+            0.019329180032873674
+          ],
+          "sourceRangeMetres": [
+            0.008589428336981952,
+            0.11045290786835643,
+            0.020222666425303154
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.018863564908999098,
+            0.2417790967021281,
+            0.04409097308738967
+          ],
+          "sourceRangeMetres": [
+            0.0037076840518864562,
+            0.09703604668428834,
+            0.007715660899829434
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Slice_Diagonal_Left": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Slice_Diagonal"
+      ],
+      "mirrored": true,
+      "duration": 1,
+      "frames": 31,
+      "ankleHeightMin": 0.09004423122325733,
+      "ankleHeightMax": 0.3760805939568521,
+      "minimumSoleHeight": 0.0019999998460382,
+      "maximumKneeFlexionDegrees": 93.8900662680136,
+      "rightHandMaximumForward": {
+        "time": 0.7333333333333333,
+        "position": [
+          0.5445380714166704,
+          1.0592177730271752,
+          0.10166169679308103
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.6445788232799177,
+          1.1304677972712904,
+          -0.18605469604835456
+        ],
+        [
+          0.5685376018616173,
+          1.2366710951642055,
+          -0.022329738593688073
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5849854061987478,
+          0.9354733372074799,
+          0.17670902928049667
+        ],
+        [
+          0.6887400302813054,
+          0.814879701779988,
+          0.02238817464452247
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.00516803786238465,
+            0.039150766306771,
+            0.25025013340564645
+          ],
+          "sourceRangeMetres": [
+            0.049579291235762935,
+            0.13121320223800928,
+            0.5147502309826042
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.11439699547662785,
+            0.2859941770475703,
+            0.9696144340727493
+          ],
+          "sourceRangeMetres": [
+            0.0010663869916920643,
+            0.014043303053385692,
+            0.12241053188445049
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Stab_Left": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Stab"
+      ],
+      "mirrored": true,
+      "duration": 1.600000023841858,
+      "frames": 49,
+      "ankleHeightMin": 0.09000954962940516,
+      "ankleHeightMax": 0.16995865969646912,
+      "minimumSoleHeight": 0.00199999737335442,
+      "maximumKneeFlexionDegrees": 49.52486592559367,
+      "rightHandMaximumForward": {
+        "time": 0.23333333681027094,
+        "position": [
+          0.5225124522163226,
+          1.1315959974400807,
+          0.26411773599940913
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4392793974262782,
+          0.9362409561333183,
+          0.6284210645621785
+        ],
+        [
+          0.529290723623977,
+          1.0991149779872882,
+          0.05238141260098331
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5638492636595922,
+          0.8231513403506108,
+          -0.01972833088025025
+        ],
+        [
+          0.46869911501247524,
+          0.6552405973707045,
+          0.6065334439915746
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.2632188169919862,
+            0.056424844884275294,
+            0.5565721889825931
+          ],
+          "sourceRangeMetres": [
+            0.03140545679501419,
+            0.03667518097432437,
+            0.08769216447324328
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.06847252939679507,
+            0.07994911006706396,
+            0.19119302573890604
+          ],
+          "sourceRangeMetres": [
+            0.1207273522448182,
+            0.025903038645909343,
+            0.25527615220868083
+          ]
+        }
+      ]
+    },
+    "Ranged_1H_Shoot_Left": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_1H_Shoot"
+      ],
+      "mirrored": true,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.0900720176089988,
+      "ankleHeightMax": 0.1287430120264857,
+      "minimumSoleHeight": 0.0019999998608426217,
+      "maximumKneeFlexionDegrees": 29.843676305357352,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.5436973496163116,
+          1.0534750501502188,
+          -0.03376697238202052
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.3355348922307223,
+          1.292249000918072,
+          0.4925639232764154
+        ],
+        [
+          0.5274162921661041,
+          1.1232733670041988,
+          -0.31201570901441744
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5434265062999002,
+          0.8039062556034778,
+          -0.2758496622249364
+        ],
+        [
+          0.3481671564440856,
+          0.9960558372446409,
+          0.5859965090221544
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.050773826579042586,
+            0.03867099441748689,
+            0.3240987398539515
+          ],
+          "sourceRangeMetres": [
+            0.06305846221523254,
+            0.000012163050889135718,
+            0.09594227188113166
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.13837664256052387,
+            0.017342353346336048,
+            0.2039665451196458
+          ],
+          "sourceRangeMetres": [
+            0.024855531866614267,
+            0.001946846287820908,
+            0.15504166603677602
+          ]
+        }
+      ]
+    },
+    "Punch_Jab_Left": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Punch_Jab"
+      ],
+      "mirrored": true,
+      "duration": 0.8666666746139526,
+      "frames": 27,
+      "ankleHeightMin": 0.09000000062642771,
+      "ankleHeightMax": 0.09005260028922685,
+      "minimumSoleHeight": 0.0019999996105934115,
+      "maximumKneeFlexionDegrees": 48.952322639968294,
+      "rightHandMaximumForward": {
+        "time": 0.20000000183398908,
+        "position": [
+          0.06007689462517293,
+          1.3347344804374857,
+          0.8095644842005687
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.35832728445452533,
+          1.2628094190954617,
+          -0.02078619072226362
+        ],
+        [
+          0.10139221223509515,
+          1.305228611843209,
+          0.7009243820049759
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.11990142769588127,
+          1.3575518412177687,
+          0.646991838283433
+        ],
+        [
+          0.31354071220842816,
+          1.3185182058161822,
+          -0.05522312413265493
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004907204537049192,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.00009166171511509891,
+            0.00002494873557001842,
+            0.0000559827009220526
+          ],
+          "sourceRangeMetres": [
+            0.00006411096484879031,
+            0.00007317705698928201,
+            0.00046236402758784156
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00006342456667920993,
+            0.000052599662799135416,
+            0.00045741361310788764
+          ],
+          "sourceRangeMetres": [
+            0.000092654075086962,
+            0.00002225276748235583,
+            0.000056588253747491546
+          ]
+        }
+      ]
+    },
+    "Spell_Simple_Shoot_Right": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Spell_Simple_Shoot"
+      ],
+      "mirrored": true,
+      "duration": 0.5,
+      "frames": 16,
+      "ankleHeightMin": 0.09000003340533907,
+      "ankleHeightMax": 0.09013460885692937,
+      "minimumSoleHeight": 0.001999999636736041,
+      "maximumKneeFlexionDegrees": 26.87607985611311,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.13154111931259288,
+          1.3722865403877416,
+          0.7287564307724136
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.2917675697597995,
+          0.9326923009658219,
+          -0.35405025173665716
+        ],
+        [
+          0.14331655029574913,
+          1.3643312405067893,
+          0.6942193796453178
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.1677725297733363,
+          1.436409000480053,
+          0.6192199158429857
+        ],
+        [
+          0.22329117512571467,
+          0.9295570990729813,
+          -0.428390637220033
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.0016850420680279705,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0000013348741410845744,
+            7.384959671563607e-8,
+            0.0000032877570375622334
+          ],
+          "sourceRangeMetres": [
+            0.0000056399841476817425,
+            0.000023508561865615007,
+            0.00019655793273057331
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.0000055795795207702614,
+            0.00013456564418740102,
+            0.00019445344007704146
+          ],
+          "sourceRangeMetres": [
+            0.0000013493000069197958,
+            0.000016542032399979867,
+            0.0000033232982666331345
+          ]
+        }
+      ]
+    },
+    "Sword_Idle": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Sword_Idle"
+      ],
+      "mirrored": false,
+      "duration": 1.6666666269302368,
+      "frames": 51,
+      "ankleHeightMin": 0.09000000465531588,
+      "ankleHeightMax": 0.09009929565205882,
+      "minimumSoleHeight": 0.001999993216372467,
+      "maximumKneeFlexionDegrees": 75.20319732984164,
+      "rightHandMaximumForward": {
+        "time": 0.06666666507720947,
+        "position": [
+          0.3249752855696962,
+          0.8542903183249286,
+          -0.4137297934918219
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.30752413287899105,
+          0.8610640042708955,
+          0.42843796277762464
+        ],
+        [
+          0.37978158301189385,
+          0.8505655354062454,
+          -0.41611246462684354
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.33467562850649335,
+          0.8615864269575977,
+          0.34309006527767294
+        ],
+        [
+          0.32646265969354016,
+          0.8849990043345736,
+          -0.47014187195903057
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.006972529709216326,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.000008162685769308453,
+            0.00005675765574608693,
+            0.0000022451315959959306
+          ],
+          "sourceRangeMetres": [
+            0.000008251063148778659,
+            0.0000412159322526473,
+            0.00000226944644815541
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00039349458744450394,
+            0.00009927738558535015,
+            0.0004894574891900205
+          ],
+          "sourceRangeMetres": [
+            0.0003977522938701239,
+            0.00011710007923781962,
+            0.0004947528982229832
+          ]
+        }
+      ]
+    },
+    "Walk_Loop": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Walk_Loop"
+      ],
+      "mirrored": false,
+      "duration": 1.3333333730697632,
+      "frames": 41,
+      "ankleHeightMin": 0.09000003514930544,
+      "ankleHeightMax": 0.32901672212299327,
+      "minimumSoleHeight": 0.0019999999938655894,
+      "maximumKneeFlexionDegrees": 88.7186912880672,
+      "rightHandMaximumForward": {
+        "time": 0.06666666865348816,
+        "position": [
+          0.3233893334757344,
+          0.9346310498751361,
+          0.36872287604766096
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.34757299352978643,
+          0.9392142323907464,
+          0.3631061648651953
+        ],
+        [
+          0.30221503677104067,
+          0.8588363931721856,
+          0.010409768461362719
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.31988701151900156,
+          0.9779912629928027,
+          0.24745485646141233
+        ],
+        [
+          0.23764767162724265,
+          0.8847369554694389,
+          -0.11040959348224536
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.0001370831898457725,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.007653055870986081,
+            0.2390165918908913,
+            0.6350779842490515
+          ],
+          "sourceRangeMetres": [
+            0.007735881949224074,
+            0.2416656801554794,
+            0.6419511888753018
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.007267855465514672,
+            0.23428070185031447,
+            0.6248909097104843
+          ],
+          "sourceRangeMetres": [
+            0.0073465126681614284,
+            0.24160460671978473,
+            0.6316538635489566
+          ]
+        }
+      ]
+    },
+    "Sword_Attack": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Sword_Attack"
+      ],
+      "mirrored": false,
+      "duration": 1.5333333015441895,
+      "frames": 47,
+      "ankleHeightMin": 0.09000000488224824,
+      "ankleHeightMax": 0.3037134221423373,
+      "minimumSoleHeight": 0.0019999770436868874,
+      "maximumKneeFlexionDegrees": 103.15842509498623,
+      "rightHandMaximumForward": {
+        "time": 0.4333333243494448,
+        "position": [
+          -0.04741466695019102,
+          0.8571664101571893,
+          0.8403546047135145
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.005197012069124353,
+          1.193654062427068,
+          -0.5435032077438038
+        ],
+        [
+          -0.5409616435128648,
+          0.6090621940306112,
+          0.4913545376213486
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.02384625711257389,
+          1.262597723722382,
+          -0.5359230692059853
+        ],
+        [
+          -0.49845570462278677,
+          0.6148258196418795,
+          0.43094407838488163
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.00769746221220331,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.04624128269645755,
+            0.21371341726008908,
+            0.8161044735019105
+          ],
+          "sourceRangeMetres": [
+            0.04674173481909735,
+            0.21673088836663235,
+            0.8249368602556758
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.01605777934571237,
+            0.06421014954045795,
+            0.5436373793333533
+          ],
+          "sourceRangeMetres": [
+            0.016231563859326892,
+            0.06506225123157738,
+            0.5495209543434132
+          ]
+        }
+      ]
+    },
+    "Hit_Chest": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Hit_Chest"
+      ],
+      "mirrored": false,
+      "duration": 0.3333333432674408,
+      "frames": 11,
+      "ankleHeightMin": 0.0900000030349194,
+      "ankleHeightMax": 0.09000009744727894,
+      "minimumSoleHeight": 0.001999999955373949,
+      "maximumKneeFlexionDegrees": 34.131311812653784,
+      "rightHandMaximumForward": {
+        "time": 0.10000000298023223,
+        "position": [
+          0.3506420612637028,
+          0.9218987791288634,
+          0.07111741583822184
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.3524787058478365,
+          0.9348267687206051,
+          0.2432365192062068
+        ],
+        [
+          0.35031515561548865,
+          0.9130602196794045,
+          0.025158163606093506
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3511190030835734,
+          0.9431117542953251,
+          0.1317148283200234
+        ],
+        [
+          0.29052871341464453,
+          0.9244704909933886,
+          -0.06492604024751308
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 13.816014488617302,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0000018842360716975204,
+            6.411389619209729e-8,
+            0.0000015552207464908374
+          ],
+          "sourceRangeMetres": [
+            0.00000190464104118937,
+            0.000014152449793580768,
+            0.0000015720524760287624
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            8.35259056114479e-7,
+            9.441235954144034e-8,
+            0.000004219137738431522
+          ],
+          "sourceRangeMetres": [
+            8.443035849625691e-7,
+            0.000013190033481991215,
+            0.000004264808620368932
+          ]
+        }
+      ]
+    },
+    "Death01": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Death01"
+      ],
+      "mirrored": false,
+      "duration": 2.4000000953674316,
+      "frames": 73,
+      "ankleHeightMin": 0.0900000051960676,
+      "ankleHeightMax": 0.4031161289090237,
+      "minimumSoleHeight": 0.001999990538738186,
+      "maximumKneeFlexionDegrees": 122.36174171616429,
+      "rightHandMaximumForward": {
+        "time": 0.7000000278155009,
+        "position": [
+          0.3434145426116682,
+          0.7765707455125428,
+          -0.05754013655027079
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4692987561833185,
+          0.22575473545589916,
+          -1.2478721920746203
+        ],
+        [
+          0.5870839277463926,
+          0.17324723946155468,
+          -1.3245949106608328
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.4061101464044883,
+          0.14682074651890373,
+          -1.3898515544966572
+        ],
+        [
+          0.5315091768311112,
+          0.10880917391832415,
+          -1.5446147432727229
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 134.63015238685935,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.03214058377067722,
+            0.31207115281057085,
+            0.13952331586245548
+          ],
+          "sourceRangeMetres": [
+            0.03248843579716251,
+            0.35011713729087085,
+            0.14103332611030722
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.016331982244442433,
+            0.2951341763052332,
+            0.47719044659598997
+          ],
+          "sourceRangeMetres": [
+            0.016508734074355713,
+            0.33865316887102465,
+            0.4823548900103857
+          ]
+        }
+      ]
+    },
+    "Idle_Loop": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Idle_Loop"
+      ],
+      "mirrored": false,
+      "duration": 2.5,
+      "frames": 76,
+      "ankleHeightMin": 0.09000000169994593,
+      "ankleHeightMax": 0.0901114869526527,
+      "minimumSoleHeight": 0.001999999864865265,
+      "maximumKneeFlexionDegrees": 29.221766937423,
+      "rightHandMaximumForward": {
+        "time": 0.6333333333333333,
+        "position": [
+          0.3426427635183623,
+          0.890310077235138,
+          -0.05319432394773349
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.3416752423984199,
+          0.8868981792780848,
+          0.1338978068481952
+        ],
+        [
+          0.36075715323548857,
+          0.9063823770198269,
+          -0.08810039186952737
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3406604950549907,
+          0.8989811285270464,
+          0.01092058643293578
+        ],
+        [
+          0.30081989021741595,
+          0.9223521589579669,
+          -0.18883487234035645
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.2484044731146942,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0003568120771151595,
+            0.00011148525270676668,
+            0.0006455319440798468
+          ],
+          "sourceRangeMetres": [
+            0.00036067370815690003,
+            0.00015414915432643284,
+            0.0006525182892218317
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00015098213460321142,
+            0.00010817121490608317,
+            0.0006356961249936455
+          ],
+          "sourceRangeMetres": [
+            0.00015261618489204043,
+            0.00012615452651981718,
+            0.0006425759858113
+          ]
+        }
+      ]
+    },
+    "Pistol_Idle_Loop": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Pistol_Idle_Loop"
+      ],
+      "mirrored": false,
+      "duration": 1.6666666269302368,
+      "frames": 51,
+      "ankleHeightMin": 0.09000004482601004,
+      "ankleHeightMax": 0.09000007161779544,
+      "minimumSoleHeight": 0.0019999999530354584,
+      "maximumKneeFlexionDegrees": 23.93914753982941,
+      "rightHandMaximumForward": {
+        "time": 1.0333333086967469,
+        "position": [
+          0.21761216539134365,
+          1.3428215249124296,
+          0.4826356475132697
+        ]
+      },
+      "midpointHands": [
+        [
+          0.04746300220135183,
+          1.272605474727097,
+          0.4741167626714509
+        ],
+        [
+          0.21712467405143246,
+          1.3447621826385479,
+          0.4822941012823047
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.1208971369992545,
+          1.3324738880032123,
+          0.36530746147153137
+        ],
+        [
+          0.18854741370913622,
+          1.3962345145137058,
+          0.40281079557024996
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.02687964483530685,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            1.6653345369377348e-16,
+            6.744604874597826e-14,
+            4.413136522884997e-15
+          ],
+          "sourceRangeMetres": [
+            0,
+            4.4075854077618715e-14,
+            4.6074255521944e-15
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            5.9119376061289586e-15,
+            2.4313884239290928e-14,
+            7.377431998634165e-14
+          ],
+          "sourceRangeMetres": [
+            5.773159728050814e-15,
+            3.086420008457935e-14,
+            7.438494264988549e-14
+          ]
+        }
+      ]
+    },
+    "Pistol_Shoot": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Pistol_Shoot"
+      ],
+      "mirrored": false,
+      "duration": 0.6333333253860474,
+      "frames": 20,
+      "ankleHeightMin": 0.09000004482602542,
+      "ankleHeightMax": 0.09000007161779544,
+      "minimumSoleHeight": 0.0019999999530355694,
+      "maximumKneeFlexionDegrees": 23.93914753982941,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.21786769615841967,
+          1.3506175716592834,
+          0.47967916265920557
+        ]
+      },
+      "midpointHands": [
+        [
+          0.05125621010635156,
+          1.2826250708961024,
+          0.4760775469168149
+        ],
+        [
+          0.23013026508708254,
+          1.3472676964827204,
+          0.47112374538457735
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.12001412714761121,
+          1.3394752702023958,
+          0.35385924250743206
+        ],
+        [
+          0.1884279795755518,
+          1.4024088689507603,
+          0.38684480150802014
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.02315091212541001,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            1.3877787807814457e-16,
+            2.4868995751603507e-14,
+            1.7486012637846216e-15
+          ],
+          "sourceRangeMetres": [
+            0,
+            1.637578961322106e-14,
+            1.7486012637846216e-15
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            2.0539125955565396e-15,
+            8.93729534823251e-15,
+            2.731148640577885e-14
+          ],
+          "sourceRangeMetres": [
+            2.1649348980190553e-15,
+            1.1601830607332886e-14,
+            2.7533531010703882e-14
+          ]
+        }
+      ]
+    },
+    "Spell_Simple_Idle_Loop": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Spell_Simple_Idle_Loop"
+      ],
+      "mirrored": false,
+      "duration": 2.0999999046325684,
+      "frames": 64,
+      "ankleHeightMin": 0.0900000073534667,
+      "ankleHeightMax": 0.09017225978779458,
+      "minimumSoleHeight": 0.001999999558237514,
+      "maximumKneeFlexionDegrees": 29.781641735319237,
+      "rightHandMaximumForward": {
+        "time": 1.099999950045631,
+        "position": [
+          0.2592403733501496,
+          0.9329104840116427,
+          -0.32041326683613996
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.13431704266046085,
+          1.358553196309702,
+          0.7396902059912678
+        ],
+        [
+          0.2601734952492885,
+          0.9328281573493064,
+          -0.3206532477910178
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.16951455368266583,
+          1.4228784135123416,
+          0.6756204350563402
+        ],
+        [
+          0.1964119090098564,
+          0.921216066416299,
+          -0.3772517991680521
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.019102628230567114,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.00004743488336217405,
+            0.00017188435994996976,
+            0.0008829800413827915
+          ],
+          "sourceRangeMetres": [
+            0.00004794820034054181,
+            0.0002534113353598322,
+            0.0008925362184787899
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.0008842264035488767,
+            0.0001722509527672389,
+            0.0008998975287638211
+          ],
+          "sourceRangeMetres": [
+            0.0008937962048056747,
+            0.00022350804432325067,
+            0.0009096364062398665
+          ]
+        }
+      ]
+    },
+    "Spell_Simple_Shoot": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Spell_Simple_Shoot"
+      ],
+      "mirrored": false,
+      "duration": 0.5,
+      "frames": 16,
+      "ankleHeightMin": 0.09000003340533907,
+      "ankleHeightMax": 0.09013460885692937,
+      "minimumSoleHeight": 0.001999999636736041,
+      "maximumKneeFlexionDegrees": 26.87607985611311,
+      "rightHandMaximumForward": {
+        "time": 0.2,
+        "position": [
+          0.2983877307477027,
+          0.9308731891418952,
+          -0.34939201405507747
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.14331655029574913,
+          1.3643312405067893,
+          0.6942193796453178
+        ],
+        [
+          0.2917675697597995,
+          0.9326923009658219,
+          -0.35405025173665716
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.1677725297733363,
+          1.436409000480053,
+          0.6192199158429857
+        ],
+        [
+          0.22329117512571467,
+          0.9295570990729813,
+          -0.428390637220033
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.0016850420680279705,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0000055795795207702614,
+            0.00013456564418740102,
+            0.00019445344007704146
+          ],
+          "sourceRangeMetres": [
+            0.0000056399841476817425,
+            0.000023508561865615007,
+            0.00019655793273057331
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.0000013348741410845744,
+            7.384959671563607e-8,
+            0.0000032877570375622334
+          ],
+          "sourceRangeMetres": [
+            0.0000013493000069197958,
+            0.000016542032399979867,
+            0.0000033232982666331345
+          ]
+        }
+      ]
+    },
+    "Punch_Jab": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Punch_Jab"
+      ],
+      "mirrored": false,
+      "duration": 0.8666666746139526,
+      "frames": 27,
+      "ankleHeightMin": 0.09000000062642771,
+      "ankleHeightMax": 0.09005260028922685,
+      "minimumSoleHeight": 0.0019999996105934115,
+      "maximumKneeFlexionDegrees": 48.952322639968294,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.2795960330242314,
+          1.275654880181377,
+          0.15623349260814035
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.10139221223509515,
+          1.305228611843209,
+          0.7009243820049759
+        ],
+        [
+          0.35832728445452533,
+          1.2628094190954617,
+          -0.02078619072226362
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.11990142769588127,
+          1.3575518412177687,
+          0.646991838283433
+        ],
+        [
+          0.31354071220842816,
+          1.3185182058161822,
+          -0.05522312413265493
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004907204537049192,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.00006342456667920993,
+            0.000052599662799135416,
+            0.00045741361310788764
+          ],
+          "sourceRangeMetres": [
+            0.00006411096484879031,
+            0.00007317705698928201,
+            0.00046236402758784156
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00009166171511509891,
+            0.00002494873557001842,
+            0.0000559827009220526
+          ],
+          "sourceRangeMetres": [
+            0.000092654075086962,
+            0.00002225276748235583,
+            0.000056588253747491546
+          ]
+        }
+      ]
+    },
+    "Punch_Cross": {
+      "sourceLibrary": "UAL1",
+      "sourceAnimations": [
+        "Punch_Cross"
+      ],
+      "mirrored": false,
+      "duration": 1,
+      "frames": 31,
+      "ankleHeightMin": 0.09000000739136005,
+      "ankleHeightMax": 0.19624669330708105,
+      "minimumSoleHeight": 0.0019999994959696843,
+      "maximumKneeFlexionDegrees": 60.10726035009842,
+      "rightHandMaximumForward": {
+        "time": 0.3,
+        "position": [
+          0.14812608442514935,
+          1.3116971226092295,
+          0.7326647286022865
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.2488183708207854,
+          1.315213042674612,
+          0.2981770169111017
+        ],
+        [
+          0.16565550952876323,
+          1.294242604492242,
+          0.7203266461721674
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.22373517807640841,
+          1.3822336051987425,
+          0.2581160704663726
+        ],
+        [
+          0.14054697224447843,
+          1.3382593189671825,
+          0.6569011764752775
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.004907204537049192,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.00026650464074085,
+            0.00005244663744852218,
+            0.0001061992663647926
+          ],
+          "sourceRangeMetres": [
+            0.0002693889197787347,
+            0.0000445211573730786,
+            0.00010734861712119459
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.10886080507724091,
+            0.106246685915721,
+            0.03964523174254503
+          ],
+          "sourceRangeMetres": [
+            0.11003896370202512,
+            0.07481533621563136,
+            0.04007429772957505
+          ]
+        }
+      ]
+    },
+    "Sword_Regular_A": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Sword_Regular_A"
+      ],
+      "mirrored": false,
+      "duration": 0.4333333373069763,
+      "frames": 14,
+      "ankleHeightMin": 0.09000000069556824,
+      "ankleHeightMax": 0.1562592491697628,
+      "minimumSoleHeight": 0.0019999923059697555,
+      "maximumKneeFlexionDegrees": 106.533058776424,
+      "rightHandMaximumForward": {
+        "time": 0.23333333547298724,
+        "position": [
+          0.0765123347636385,
+          0.7095076878122564,
+          0.85263314041183
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4554479154152877,
+          0.985530565704422,
+          0.22476813791535952
+        ],
+        [
+          0.0765123347636385,
+          0.7095076878122564,
+          0.85263314041183
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.44581126940308036,
+          0.9611064611452258,
+          0.16706429269526388
+        ],
+        [
+          0.06676388769801367,
+          0.7357101982182871,
+          0.7912828091088215
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 134.26231139424715,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.05253090050593126,
+            0.06625923356557606,
+            0.8074274450128248
+          ],
+          "sourceRangeMetres": [
+            0.05309942179667837,
+            0.05480309642447245,
+            0.8161659228651621
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.039391541745525144,
+            1.310839695956023e-7,
+            0.6527810879992579
+          ],
+          "sourceRangeMetres": [
+            0.03981785891710146,
+            0.00005471795634071075,
+            0.6598458865918246
+          ]
+        }
+      ]
+    },
+    "Sword_Regular_B": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Sword_Regular_B"
+      ],
+      "mirrored": false,
+      "duration": 0.5333333611488342,
+      "frames": 17,
+      "ankleHeightMin": 0.09000000814506903,
+      "ankleHeightMax": 0.19931454308527224,
+      "minimumSoleHeight": 0.001999983859160101,
+      "maximumKneeFlexionDegrees": 122.57627382245424,
+      "rightHandMaximumForward": {
+        "time": 0.23333334550261497,
+        "position": [
+          -0.08102855618082833,
+          0.7422341315548812,
+          0.8331305336179696
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4085177471789028,
+          0.4185774042038783,
+          0.6951603124976871
+        ],
+        [
+          0.7360731220901023,
+          0.9540344182510334,
+          0.5911179423318401
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.37916002413532934,
+          0.4539887937985305,
+          0.6627904107771121
+        ],
+        [
+          0.7670798349225713,
+          1.0070780895881042,
+          0.562041648186172
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 140.69013666336068,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.03859512058930331,
+            0.10931448452239106,
+            0.1704524665453131
+          ],
+          "sourceRangeMetres": [
+            0.0390128208966774,
+            0.0689736227151117,
+            0.17229721474332194
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.007637357941241041,
+            1.191010563506012e-7,
+            0.07560230913966179
+          ],
+          "sourceRangeMetres": [
+            0.007720013273388726,
+            0.00006137132926806177,
+            0.07642052362692353
+          ]
+        }
+      ]
+    },
+    "Sword_Block": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Sword_Block"
+      ],
+      "mirrored": false,
+      "duration": 1.2333333492279053,
+      "frames": 38,
+      "ankleHeightMin": 0.09000000459808283,
+      "ankleHeightMax": 0.09003350603365823,
+      "minimumSoleHeight": 0.001999991454745234,
+      "maximumKneeFlexionDegrees": 93.33665662110741,
+      "rightHandMaximumForward": {
+        "time": 0.16666666881458178,
+        "position": [
+          0.25082238170229415,
+          0.8927027914925137,
+          0.6164672345593144
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.44866096915000175,
+          0.8588455666362906,
+          -0.25541909820446673
+        ],
+        [
+          0.33459911939695997,
+          0.9042474828506725,
+          0.5889465422999091
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.4203314564293734,
+          0.8941628167369838,
+          -0.3634498584325588
+        ],
+        [
+          0.31027770494523416,
+          0.9555005731720366,
+          0.5057874404634347
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.0008098059912139878,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.000058039156023648175,
+            0.00003184672313283343,
+            0.00020771233553945612
+          ],
+          "sourceRangeMetres": [
+            0.00005866868008777559,
+            0.0001504749335574096,
+            0.00020995971938714275
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.000012333155176985633,
+            0.00003350143557540042,
+            0.00011892257815601659
+          ],
+          "sourceRangeMetres": [
+            0.000012466650244846722,
+            0.00007927251108014177,
+            0.0001202097309157546
+          ]
+        }
+      ]
+    },
+    "Idle_Shield_Loop": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Idle_Shield_Loop"
+      ],
+      "mirrored": false,
+      "duration": 2.5,
+      "frames": 76,
+      "ankleHeightMin": 0.09000000169994593,
+      "ankleHeightMax": 0.0901114869526527,
+      "minimumSoleHeight": 0.001999999864865265,
+      "maximumKneeFlexionDegrees": 29.221766937423,
+      "rightHandMaximumForward": {
+        "time": 0.6333333333333333,
+        "position": [
+          0.32237776647080574,
+          0.8973630241615239,
+          -0.17144771327315725
+        ]
+      },
+      "midpointHands": [
+        [
+          0.10271016911420068,
+          1.1767935873731348,
+          0.43549268874847236
+        ],
+        [
+          0.32360394895330413,
+          0.9096602571786992,
+          -0.20599531697185425
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.11668531803125509,
+          1.2191324261958194,
+          0.33011136505392324
+        ],
+        [
+          0.25654132350124936,
+          0.9199509423702893,
+          -0.28798959821945613
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.20342873515841775,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0003568120771151595,
+            0.00011148525270676668,
+            0.0006455319440798468
+          ],
+          "sourceRangeMetres": [
+            0.00036067370815690003,
+            0.00015414915432643284,
+            0.0006525182892218317
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00015098213460321142,
+            0.00010817121490608317,
+            0.0006356961249936455
+          ],
+          "sourceRangeMetres": [
+            0.00015261618489204043,
+            0.00012615452651981718,
+            0.0006425759858113
+          ]
+        }
+      ]
+    },
+    "Hit_Knockback": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "Hit_Knockback"
+      ],
+      "mirrored": false,
+      "duration": 0.8333333134651184,
+      "frames": 26,
+      "ankleHeightMin": 0.08060456211151432,
+      "ankleHeightMax": 1.0631580101830203,
+      "minimumSoleHeight": 0.0019999933486943844,
+      "maximumKneeFlexionDegrees": 105.5007687125662,
+      "rightHandMaximumForward": {
+        "time": 0.03333333253860474,
+        "position": [
+          0.4159215934809033,
+          0.6357987743810638,
+          0.35860040970516005
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4495726649999247,
+          0.08200625200805244,
+          -0.20024833391136418
+        ],
+        [
+          0.431184319693357,
+          0.2821666062138167,
+          -0.18860583744730675
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.4260174806320616,
+          0.017041975644148437,
+          -0.2797113056257618
+        ],
+        [
+          0.4013318048684479,
+          0.22031968936823865,
+          -0.28254880918298475
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 164.75175127141284,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.061461601131898136,
+            0.9731578696050803,
+            0.469887278431074
+          ],
+          "sourceRangeMetres": [
+            0.062126774509608934,
+            1.021064541694351,
+            0.4749726925218569
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.000010985100193344755,
+            0.5692497641202772,
+            0.8950746544751554
+          ],
+          "sourceRangeMetres": [
+            0.000011100528086699368,
+            0.6030905067162815,
+            0.9047616966982985
+          ]
+        }
+      ]
+    },
+    "LayToIdle": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "LayToIdle"
+      ],
+      "mirrored": false,
+      "duration": 1.5333333015441895,
+      "frames": 47,
+      "ankleHeightMin": 0.090000005346895,
+      "ankleHeightMax": 0.1377562703088212,
+      "minimumSoleHeight": 0.0019999857858569448,
+      "maximumKneeFlexionDegrees": 122.68733825873645,
+      "rightHandMaximumForward": {
+        "time": 0.9999999792679496,
+        "position": [
+          -0.1727489428924684,
+          0.7071505343749204,
+          0.3639513907999888
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.4583638042341042,
+          0.10652239886972625,
+          -0.3913274523718637
+        ],
+        [
+          0.14464320808642062,
+          0.925811061642245,
+          0.02585474695409362
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.4072452028332666,
+          0.08564693958926722,
+          -0.5045014560739599
+        ],
+        [
+          0.11411706408458161,
+          0.9456826746508402,
+          -0.1131099670876557
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 94.16582345968206,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.06754864944595962,
+            0.03456199107606436,
+            0.4456924275790539
+          ],
+          "sourceRangeMetres": [
+            0.06827970230899247,
+            0.06460297346589908,
+            0.450515985148192
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.2019635552593846,
+            0.0477562649619262,
+            0.813763749766717
+          ],
+          "sourceRangeMetres": [
+            0.20414932947058273,
+            0.09015936664826103,
+            0.8225708006788539
+          ]
+        }
+      ]
+    },
+    "OverhandThrow": {
+      "sourceLibrary": "UAL2",
+      "sourceAnimations": [
+        "OverhandThrow"
+      ],
+      "mirrored": false,
+      "duration": 1.3333333730697632,
+      "frames": 41,
+      "ankleHeightMin": 0.09000000593384822,
+      "ankleHeightMax": 0.1837275126933527,
+      "minimumSoleHeight": 0.001999984731708579,
+      "maximumKneeFlexionDegrees": 91.36723062520392,
+      "rightHandMaximumForward": {
+        "time": 0.40000001192092893,
+        "position": [
+          -0.20843859831167677,
+          0.5638732911092063,
+          1.0681534520431313
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.13867791610427394,
+          1.0911650238117259,
+          -0.03370718488006036
+        ],
+        [
+          -0.15716825425602354,
+          0.32316246146030814,
+          0.863356378078055
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.0839509584933706,
+          1.14510479254634,
+          -0.03181331279361754
+        ],
+        [
+          -0.13955119436174895,
+          0.34688448490424,
+          0.7819581949753017
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.0036862738818631154,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.020290147787067392,
+            0.007884033134036572,
+            0.20404214405549614
+          ],
+          "sourceRangeMetres": [
+            0.020509740264738063,
+            0.00007663057296980469,
+            0.20625041366256872
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.10230379999936737,
+            0.09372748897667271,
+            0.033152184782034466
+          ],
+          "sourceRangeMetres": [
+            0.10341099754149141,
+            0.06692570168804585,
+            0.03351097707338768
+          ]
+        }
+      ]
+    },
+    "Ranged_1H_Shoot": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_1H_Shoot"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.0900720176089988,
+      "ankleHeightMax": 0.1287430120264857,
+      "minimumSoleHeight": 0.0019999998608426217,
+      "maximumKneeFlexionDegrees": 29.843676305357352,
+      "rightHandMaximumForward": {
+        "time": 0.36666668578982353,
+        "position": [
+          0.3398512509796319,
+          1.2914035046263577,
+          0.5075954602906142
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.5274162921661041,
+          1.1232733670041988,
+          -0.31201570901441744
+        ],
+        [
+          0.3355348922307223,
+          1.292249000918072,
+          0.4925639232764154
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5434265062999002,
+          0.8039062556034778,
+          -0.2758496622249364
+        ],
+        [
+          0.3481671564440856,
+          0.9960558372446409,
+          0.5859965090221544
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.13837664256052387,
+            0.017342353346336048,
+            0.2039665451196458
+          ],
+          "sourceRangeMetres": [
+            0.06305846221523254,
+            0.000012163050889135718,
+            0.09594227188113166
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.050773826579042586,
+            0.03867099441748689,
+            0.3240987398539515
+          ],
+          "sourceRangeMetres": [
+            0.024855531866614267,
+            0.001946846287820908,
+            0.15504166603677602
+          ]
+        }
+      ]
+    },
+    "Ranged_2H_Shoot": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_2H_Shoot"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09002204014221016,
+      "ankleHeightMax": 0.23565109352396535,
+      "minimumSoleHeight": 0.001999999843596015,
+      "maximumKneeFlexionDegrees": 29.843676305357352,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.5302118059342004,
+          1.0572781397112814,
+          0.09034809691887831
+        ]
+      },
+      "midpointHands": [
+        [
+          0.02630911312271564,
+          1.297370626795734,
+          0.5126629629321388
+        ],
+        [
+          0.47725782607442824,
+          1.266244724944968,
+          -0.05786574093021621
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.03962674359897073,
+          1.0049434682967278,
+          0.5552069129522901
+        ],
+        [
+          0.5032319344075494,
+          0.9752540484008432,
+          -0.04531652140772602
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 84.6239683417874,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.06121063414740635,
+            0.0000725743313305105,
+            0.3264313736643454
+          ],
+          "sourceRangeMetres": [
+            0.028074732219957543,
+            0.0028038880256998633,
+            0.14972028188673592
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.21602617905272395,
+            0.1455402094555469,
+            0.4824085901292359
+          ],
+          "sourceRangeMetres": [
+            0.11120752565601452,
+            0.0012883423532971672,
+            0.2713473907338921
+          ]
+        }
+      ]
+    },
+    "Ranged_Bow_Idle": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_Bow_Idle"
+      ],
+      "mirrored": false,
+      "duration": 1.5666667222976685,
+      "frames": 48,
+      "ankleHeightMin": 0.09000637333769645,
+      "ankleHeightMax": 0.11923193633056522,
+      "minimumSoleHeight": 0.001999999978615316,
+      "maximumKneeFlexionDegrees": 33.171180105311755,
+      "rightHandMaximumForward": {
+        "time": 0.033333334516971666,
+        "position": [
+          0.22590907777349917,
+          1.1445924101918963,
+          0.08085817359911524
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.04460476475483255,
+          1.0221582665473221,
+          0.4009553909213249
+        ],
+        [
+          0.22493750828351158,
+          1.1539643313904913,
+          0.06898398962443439
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.04897027745716336,
+          0.6920273425924792,
+          0.5280362957841575
+        ],
+        [
+          0.24874803553735417,
+          0.8844835348179552,
+          0.16239923405789963
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.025437019316317498,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.000012063443304011212,
+            0.0001991542133424895,
+            0.0002984920147207498
+          ],
+          "sourceRangeMetres": [
+            0.000005532990929452142,
+            0.00004117429853195409,
+            0.000136905679026203
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.000056233572004321664,
+            0.00014275605524627366,
+            0.0002864438275804737
+          ],
+          "sourceRangeMetres": [
+            0.00002265237068257986,
+            0.00004700888770226008,
+            0.0001473456937524098
+          ]
+        }
+      ]
+    },
+    "Ranged_Bow_Draw": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_Bow_Draw"
+      ],
+      "mirrored": false,
+      "duration": 1.3333333730697632,
+      "frames": 41,
+      "ankleHeightMin": 0.09004068513099511,
+      "ankleHeightMax": 0.22706346751292628,
+      "minimumSoleHeight": 0.001999999982423936,
+      "maximumKneeFlexionDegrees": 50.99083745737848,
+      "rightHandMaximumForward": {
+        "time": 0.1666666716337204,
+        "position": [
+          0.3283015888068207,
+          1.2389460293492125,
+          0.1925762884981566
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.01741398074264744,
+          1.4605613914514526,
+          0.4093264564722918
+        ],
+        [
+          0.20519967331207892,
+          1.3543653190406475,
+          0.06328310986384647
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.0203986050787352,
+          1.1823802432370822,
+          0.5336685392143843
+        ],
+        [
+          0.23718139793390752,
+          1.1218562324584604,
+          0.126837729765454
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 114.56642250141971,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.20603697611175437,
+            0.00007458998188469845,
+            0.24999531491314864
+          ],
+          "sourceRangeMetres": [
+            0.09450045746172225,
+            0.0000016535653559746066,
+            0.1146622905657642
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.14970002675705318,
+            0.13694323796815755,
+            0.7733836709829605
+          ],
+          "sourceRangeMetres": [
+            0.07193997676831049,
+            0.023969698202589096,
+            0.38893367203327595
+          ]
+        }
+      ]
+    },
+    "Ranged_Bow_Release": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_Bow_Release"
+      ],
+      "mirrored": false,
+      "duration": 1.3333333730697632,
+      "frames": 41,
+      "ankleHeightMin": 0.09002857595360186,
+      "ankleHeightMax": 0.23428058410842106,
+      "minimumSoleHeight": 0.0019999999740891033,
+      "maximumKneeFlexionDegrees": 52.50010217534045,
+      "rightHandMaximumForward": {
+        "time": 0.6666666865348816,
+        "position": [
+          0.2606074959312321,
+          1.0291629358309637,
+          0.14525543109129074
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.07491541847252159,
+          0.9343314405274848,
+          0.30658371083461905
+        ],
+        [
+          0.2606074959312321,
+          1.0291629358309637,
+          0.14525543109129074
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.04546638136059028,
+          0.585369129411685,
+          0.39752653268780996
+        ],
+        [
+          0.22863100134446113,
+          0.7250533306538939,
+          0.2527414758635151
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 53.45873989924977,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.10332298612541982,
+            0.00008054941373242253,
+            0.12428527920719959
+          ],
+          "sourceRangeMetres": [
+            0.047389889134616975,
+            0.0000024566219378185927,
+            0.057004407474428406
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.15818896103116556,
+            0.1391481204799348,
+            0.6164479228390332
+          ],
+          "sourceRangeMetres": [
+            0.0761872038766239,
+            0.023969145909039064,
+            0.3063112949062379
+          ]
+        }
+      ]
+    },
+    "Ranged_Bow_Shot": {
+      "sourceLibrary": "KAYKIT",
+      "sourceAnimations": [
+        "Ranged_Bow_Draw",
+        "Ranged_Bow_Release"
+      ],
+      "mirrored": false,
+      "duration": 2.6666667461395264,
+      "frames": 81,
+      "ankleHeightMin": 0.09002857595360181,
+      "ankleHeightMax": 0.22706346751292628,
+      "minimumSoleHeight": 0.0019999999740887703,
+      "maximumKneeFlexionDegrees": 52.50010217534045,
+      "rightHandMaximumForward": {
+        "time": 0.1666666716337204,
+        "position": [
+          0.3283015888068207,
+          1.2389460293492125,
+          0.1925762884981566
+        ]
+      },
+      "midpointHands": [
+        [
+          0.022282794544849625,
+          1.334564501703585,
+          0.536381792458354
+        ],
+        [
+          0.21050243758002612,
+          1.2914783329366404,
+          -0.13294541781507258
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.022117083678051395,
+          1.0604198884184488,
+          0.6983713573085828
+        ],
+        [
+          0.25129306827246695,
+          1.0700639760030086,
+          -0.11203460160569888
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 113.52374192947006,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.20603697611175437,
+            0.00008669915927800309,
+            0.24999531491314864
+          ],
+          "sourceRangeMetres": [
+            0.09450045746172225,
+            0.000003848791110844241,
+            0.1146622905657642
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.15818896103116567,
+            0.13694323796815755,
+            0.7965871334451025
+          ],
+          "sourceRangeMetres": [
+            0.07618722646633053,
+            0.023969698202589096,
+            0.38893367203327595
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Chop": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Chop"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09005759351813275,
+      "ankleHeightMax": 0.33183669022026085,
+      "minimumSoleHeight": 0.0019999993619964213,
+      "maximumKneeFlexionDegrees": 69.80372657056822,
+      "rightHandMaximumForward": {
+        "time": 0.6666667014360428,
+        "position": [
+          0.531336572042028,
+          1.0209412671733145,
+          0.46979299625714155
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.545500209836219,
+          1.2249713896606544,
+          -0.007172814541745842
+        ],
+        [
+          0.533848922867242,
+          1.4358237288621467,
+          0.09288781628710077
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5769924801292233,
+          0.8383747743093867,
+          0.044084681167804944
+        ],
+        [
+          0.5480514944963135,
+          1.0793548495204355,
+          0.20002590262974018
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.018863564908999098,
+            0.2417790967021281,
+            0.04409097308738967
+          ],
+          "sourceRangeMetres": [
+            0.008589428336981952,
+            0.11045290786835643,
+            0.020222666425303154
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.008554987167410905,
+            0.22046896811776528,
+            0.019329180032873674
+          ],
+          "sourceRangeMetres": [
+            0.0037076840518864562,
+            0.09703604668428834,
+            0.007715660899829434
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Slice_Diagonal": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Slice_Diagonal"
+      ],
+      "mirrored": false,
+      "duration": 1,
+      "frames": 31,
+      "ankleHeightMin": 0.09004423122325733,
+      "ankleHeightMax": 0.3760805939568521,
+      "minimumSoleHeight": 0.0019999998460382,
+      "maximumKneeFlexionDegrees": 93.8900662680136,
+      "rightHandMaximumForward": {
+        "time": 0.3333333333333333,
+        "position": [
+          0.2248596117249514,
+          1.2166152231635656,
+          0.6200734059513835
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.5685376018616173,
+          1.2366710951642055,
+          -0.022329738593688073
+        ],
+        [
+          0.6445788232799177,
+          1.1304677972712904,
+          -0.18605469604835456
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5849854061987478,
+          0.9354733372074799,
+          0.17670902928049667
+        ],
+        [
+          0.6887400302813054,
+          0.814879701779988,
+          0.02238817464452247
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.11439699547662785,
+            0.2859941770475703,
+            0.9696144340727493
+          ],
+          "sourceRangeMetres": [
+            0.049579291235762935,
+            0.13121320223800928,
+            0.5147502309826042
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.00516803786238465,
+            0.039150766306771,
+            0.25025013340564645
+          ],
+          "sourceRangeMetres": [
+            0.0010663869916920643,
+            0.014043303053385692,
+            0.12241053188445049
+          ]
+        }
+      ]
+    },
+    "Melee_1H_Attack_Stab": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_1H_Attack_Stab"
+      ],
+      "mirrored": false,
+      "duration": 1.600000023841858,
+      "frames": 49,
+      "ankleHeightMin": 0.09000954962940516,
+      "ankleHeightMax": 0.16995865969646912,
+      "minimumSoleHeight": 0.00199999737335442,
+      "maximumKneeFlexionDegrees": 49.52486592559367,
+      "rightHandMaximumForward": {
+        "time": 0.46666667362054187,
+        "position": [
+          0.3904702735741796,
+          1.1371132022901884,
+          0.8943627724690941
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.529290723623977,
+          1.0991149779872882,
+          0.05238141260098331
+        ],
+        [
+          0.4392793974262782,
+          0.9362409561333183,
+          0.6284210645621785
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.5638492636595922,
+          0.8231513403506108,
+          -0.01972833088025025
+        ],
+        [
+          0.46869911501247524,
+          0.6552405973707045,
+          0.6065334439915746
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.008638795648895406,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.06847252939679507,
+            0.07994911006706396,
+            0.19119302573890604
+          ],
+          "sourceRangeMetres": [
+            0.03140545679501419,
+            0.03667518097432437,
+            0.08769216447324328
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.2632188169919862,
+            0.056424844884275294,
+            0.5565721889825931
+          ],
+          "sourceRangeMetres": [
+            0.1207273522448182,
+            0.025903038645909343,
+            0.25527615220868083
+          ]
+        }
+      ]
+    },
+    "Melee_2H_Attack_Chop": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_2H_Attack_Chop"
+      ],
+      "mirrored": false,
+      "duration": 1.6333333253860474,
+      "frames": 50,
+      "ankleHeightMin": 0.09001281870967054,
+      "ankleHeightMax": 0.2195616125493522,
+      "minimumSoleHeight": 0.001999999364648161,
+      "maximumKneeFlexionDegrees": 72.9392692381006,
+      "rightHandMaximumForward": {
+        "time": 0.7999999961074518,
+        "position": [
+          0.3577932358218932,
+          1.099724789499702,
+          0.476437162689013
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.10294363588783734,
+          1.1187029293446122,
+          0.6787539054794435
+        ],
+        [
+          0.38303090033002535,
+          1.0932773042916306,
+          0.39949013070181655
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.05848488761575264,
+          0.7393224049389189,
+          0.691949721324121
+        ],
+        [
+          0.3861978695968955,
+          0.7259595887516146,
+          0.44488651292356046
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.04656364235615295,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.02009996976808609,
+            0.1294798640811815,
+            0.9468777308859935
+          ],
+          "sourceRangeMetres": [
+            0.0048377776431512975,
+            0.05942639350520437,
+            0.44747857769911825
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.05306185308373093,
+            0.02213653282928746,
+            0.10908990193914261
+          ],
+          "sourceRangeMetres": [
+            0.024337230555935813,
+            0.01023289156735599,
+            0.05003492980929794
+          ]
+        }
+      ]
+    },
+    "Melee_2H_Attack_Slice": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_2H_Attack_Slice"
+      ],
+      "mirrored": false,
+      "duration": 1.100000023841858,
+      "frames": 34,
+      "ankleHeightMin": 0.09000375334010463,
+      "ankleHeightMax": 0.13433754956187005,
+      "minimumSoleHeight": 0.001999999431189642,
+      "maximumKneeFlexionDegrees": 46.783136669732684,
+      "rightHandMaximumForward": {
+        "time": 0.33333334055813874,
+        "position": [
+          -0.000583277521025688,
+          1.114789641935723,
+          0.32408912092487013
+        ]
+      },
+      "midpointHands": [
+        [
+          0.3496773786733881,
+          1.0729111264409867,
+          0.7011538370497714
+        ],
+        [
+          0.4572227972362748,
+          1.1148326426931081,
+          0.10659219673719679
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.17639875583965237,
+          0.7502709691987186,
+          0.7087846246506454
+        ],
+        [
+          0.26730058019329184,
+          0.7816686717053365,
+          0.13653954713831007
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.04645577651580725,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.02450686347337716,
+            0.044212322336571686,
+            0.7660026541889491
+          ],
+          "sourceRangeMetres": [
+            2.83449003518621e-7,
+            0.0000037337890244626415,
+            0.3545096019465264
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.10456843113777939,
+            0.016606747261864396,
+            0.05732951386769934
+          ],
+          "sourceRangeMetres": [
+            0.04796112214202786,
+            0.007620612239364444,
+            0.026294626242305413
+          ]
+        }
+      ]
+    },
+    "Melee_2H_Attack_Stab": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_2H_Attack_Stab"
+      ],
+      "mirrored": false,
+      "duration": 1.600000023841858,
+      "frames": 49,
+      "ankleHeightMin": 0.09004035648686987,
+      "ankleHeightMax": 0.2523018161014567,
+      "minimumSoleHeight": 0.0019999998751305814,
+      "maximumKneeFlexionDegrees": 49.95647183576818,
+      "rightHandMaximumForward": {
+        "time": 0.7000000104308128,
+        "position": [
+          0.3213044784210609,
+          1.212467662903983,
+          0.6353494185219013
+        ]
+      },
+      "midpointHands": [
+        [
+          0.004802603826412316,
+          1.047186272733013,
+          0.5652934923174173
+        ],
+        [
+          0.3194828798163043,
+          1.2111167601149342,
+          0.6267918149493434
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          0.02400850561669196,
+          0.7535613343771458,
+          0.5767165164145324
+        ],
+        [
+          0.331027790272962,
+          0.8583211796138804,
+          0.6485401870413267
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.04656364235615295,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.000006107915916486739,
+            0.0002743794239384312,
+            0.28437321626209044
+          ],
+          "sourceRangeMetres": [
+            0.000002801685276443422,
+            0.000013183594644805563,
+            0.13042998163124317
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.10517333305718254,
+            0.162140133825165,
+            0.401580263211034
+          ],
+          "sourceRangeMetres": [
+            0.04823856510490637,
+            0.0021629996211901537,
+            0.2550857245566229
+          ]
+        }
+      ]
+    },
+    "Melee_Unarmed_Attack_Punch_A": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_Unarmed_Attack_Punch_A"
+      ],
+      "mirrored": false,
+      "duration": 1.1666666269302368,
+      "frames": 36,
+      "ankleHeightMin": 0.09000946856627118,
+      "ankleHeightMax": 0.4443552777270104,
+      "minimumSoleHeight": 0.001999999552373788,
+      "maximumKneeFlexionDegrees": 112.60708866881737,
+      "rightHandMaximumForward": {
+        "time": 0.4999999829701015,
+        "position": [
+          0.14591023915445428,
+          1.1490390142582902,
+          0.9934778782041408
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.5251922288156319,
+          1.1002182797145446,
+          0.18588722828863152
+        ],
+        [
+          0.15840858950801479,
+          1.032487780202121,
+          0.9208242273855713
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.530829271528562,
+          0.7994252693403432,
+          0.5522188063475859
+        ],
+        [
+          0.164583006055297,
+          0.7307903491320881,
+          1.32784908100635
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.045278110871241915,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.005608587006264321,
+            0.03422596118665483,
+            0.22869682661461327
+          ],
+          "sourceRangeMetres": [
+            0.002171273410245672,
+            0.00003739838621305558,
+            0.10489357365189061
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.08648425997854048,
+            0.3541713330729566,
+            1.5451216456530754
+          ],
+          "sourceRangeMetres": [
+            0.03552499546529625,
+            0.14010259022174412,
+            0.8077408527654459
+          ]
+        }
+      ]
+    },
+    "Melee_Block": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_Block"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09010939854227179,
+      "ankleHeightMax": 0.1061205402572254,
+      "minimumSoleHeight": 0.0019999993848334036,
+      "maximumKneeFlexionDegrees": 48.16621184649609,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.5294082570135892,
+          1.0580807006534838,
+          0.08810638427794072
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.33475568119485133,
+          1.251926648624337,
+          0.5062636715165744
+        ],
+        [
+          0.5458482074329734,
+          1.083553824981669,
+          -0.1749226340632422
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3254262259811442,
+          0.9813605346334358,
+          0.6969836711885091
+        ],
+        [
+          0.5800819477424374,
+          0.8081279144620666,
+          -0.018819492270660036
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 64.69075338933918,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0023223986018827136,
+            0.01599908528087668,
+            0.5638852134995052
+          ],
+          "sourceRangeMetres": [
+            0.0000016054862190806318,
+            0.000015039647731723838,
+            0.25863032761293
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.0877091141910672,
+            0.00047214102857923157,
+            0.18514219156929546
+          ],
+          "sourceRangeMetres": [
+            0.040228465642630995,
+            0.00026683554438181045,
+            0.08491690243372024
+          ]
+        }
+      ]
+    },
+    "Melee_2H_Idle": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_2H_Idle"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09016168227629168,
+      "ankleHeightMax": 0.09024427714431632,
+      "minimumSoleHeight": 0.0019999999436063065,
+      "maximumKneeFlexionDegrees": 58.45577180661485,
+      "rightHandMaximumForward": {
+        "time": 0.5333333611488342,
+        "position": [
+          0.39685785323809875,
+          1.065183105485064,
+          0.2460663977312983
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.31484796792913083,
+          1.0641453554466092,
+          0.35446776200474367
+        ],
+        [
+          0.39685785323809875,
+          1.065183105485064,
+          0.2460663977312983
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.3311861555497948,
+          0.7720409020281814,
+          0.45958617790580925
+        ],
+        [
+          0.3714853075800106,
+          0.7792263133965831,
+          0.3624309147766128
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.04656364235615295,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.000004528042156559664,
+            0.000076334087866059,
+            0.000003461848796404432
+          ],
+          "sourceRangeMetres": [
+            0.000002076830367819804,
+            0.000012075739294348242,
+            0.0000015878239451663778
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.000003895386592456251,
+            0.00007053310377003186,
+            0.0000016426074225805998
+          ],
+          "sourceRangeMetres": [
+            0.0000017866455448434237,
+            0.000020322158750668562,
+            7.533841457144086e-7
+          ]
+        }
+      ]
+    },
+    "Melee_Unarmed_Idle": {
+      "sourceLibrary": "KAYKITMELEE",
+      "sourceAnimations": [
+        "Melee_Unarmed_Idle"
+      ],
+      "mirrored": false,
+      "duration": 1.0666667222976685,
+      "frames": 33,
+      "ankleHeightMin": 0.09005002839400389,
+      "ankleHeightMax": 0.09030430708644871,
+      "minimumSoleHeight": 0.001999999628537627,
+      "maximumKneeFlexionDegrees": 75.36691873882022,
+      "rightHandMaximumForward": {
+        "time": 0,
+        "position": [
+          0.4447640084564708,
+          1.0649285142173122,
+          0.10609795296590253
+        ]
+      },
+      "midpointHands": [
+        [
+          -0.2992201905871412,
+          1.0552843131014122,
+          0.5195138893651168
+        ],
+        [
+          0.4446686356055545,
+          1.0059256315709857,
+          0.09283515901031915
+        ]
+      ],
+      "sourceMidpointHands": [
+        [
+          -0.2627123894695154,
+          0.8690831047001566,
+          0.6028068766711577
+        ],
+        [
+          0.49825545181391706,
+          0.8377917011577726,
+          0.17310667256444517
+        ]
+      ],
+      "loopEndpointMaximumJointAngleDegrees": 0.045278110871241915,
+      "feet": [
+        {
+          "side": "left",
+          "rangeMetres": [
+            0.0000042808516399206464,
+            0.000046635165152075775,
+            0.000018074850237637108
+          ],
+          "sourceRangeMetres": [
+            0.0000019634477263774652,
+            0.000013721624697704549,
+            0.000008290175461223015
+          ]
+        },
+        {
+          "side": "right",
+          "rangeMetres": [
+            0.0000017450756345516183,
+            0.00011519757040742706,
+            0.000016849868193058448
+          ],
+          "sourceRangeMetres": [
+            8.004919953563672e-7,
+            0.00001273509503219028,
+            0.000007728885216551351
+          ]
+        }
+      ]
+    }
+  }
+}

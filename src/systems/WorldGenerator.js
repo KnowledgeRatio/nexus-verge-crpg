@@ -2021,8 +2021,8 @@ class WorldGenerator {
             return false;
         }
 
-        // Build road tile set on first call (lazy initialization)
-        if (!this.worldMetadata.roadTileSet) {
+        // Rebuild this derived cache after JSON saves turn a Set into a plain object.
+        if (!(this.worldMetadata.roadTileSet instanceof Set)) {
             this.worldMetadata.roadTileSet = new Set();
             for (const road of this.worldMetadata.roads) {
                 for (const p of road.path) {

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexus Verge · Settlement study</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { overflow: auto; padding: 16px; }
+        .study-controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .study-controls select, .study-controls button { padding: 10px; font: inherit; }
+        #settlementModal, #buildingModal { position: relative; height: auto; min-height: 0; background: none; padding: 0; }
+        .settlement-container, .building-container { max-height: none; }
+        #studyMessages { margin: 12px 0; }
+    </style>
+</head>
+<body>
+    <h1>Settlement study</h1>
+    <p>One shared square, connected to the game's existing settlement services. Preview characters and settlements are temporary.</p>
+    <div class="study-controls">
+        <label>Settlement <select id="studySettlement"><option value="village">Village</option><option value="town">Town</option><option value="city">City</option></select></label>
+        <button id="studyReenter">Enter settlement</button>
+        <a href="index.html">Open the game</a>
+    </div>
+    <div id="studyMessages" role="status">Loading…</div>
+    <main id="studyMount"></main>
+    <script type="module" src="src/ui/SettlementStudy.js"></script>
+</body>
+</html>

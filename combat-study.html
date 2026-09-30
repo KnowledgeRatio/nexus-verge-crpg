@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexus Verge · Combat Visual Study</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="combat-scene.css">
+</head>
+<body class="combat-study-page">
+    <main class="combat-study">
+        <header>
+            <div>
+                <div class="combat-study-kicker">NEXUS VERGE / VISUAL STUDY 03</div>
+                <h1 id="studySceneName">Combat environments</h1>
+                <p>A study of atmosphere, character presence and readable engagements. Try the encounter arrangements below, then withdraw and watch the characters make room.</p>
+            </div>
+            <nav><a href="combat-encounter.html">Play the encounter</a> · <a href="combat-art-study.html">Art target</a> · <a href="index.html">Return to game</a></nav>
+        </header>
+        <div class="combat-study-layout">
+            <div id="studyStage" class="combat-scene-stage" aria-label="Waystation combat scene"></div>
+            <div id="studyFallback" class="combat-study-fallback" hidden></div>
+            <aside class="combat-study-controls" aria-label="Combat study controls">
+                <div class="combat-study-audio" role="group" aria-label="Audio preview">
+                    <label><input id="studyMusic" type="checkbox" disabled> Music on</label>
+                    <label for="studyMusicCue">Cue
+                        <select id="studyMusicCue" disabled><option>Loading cue versions…</option></select>
+                    </label>
+                    <label><input id="studySoundEffects" type="checkbox" checked> Sound effects</label>
+                    <output id="studyAudioStatus" aria-live="polite"></output>
+                </div>
+                <label>Encounter<select id="studyScenario">
+                    <option value="three">One against three</option>
+                    <option value="shared">Shared opponents</option>
+                    <option value="six">Surrounded by six</option>
+                    <option value="wolves">Wolf pack</option>
+                    <option value="direWolves">Dire wolf mixed pack</option>
+                    <option value="giantRat">Giant rat pack</option>
+                    <option value="giantSpider">Giant spiders</option>
+                    <option value="skeletons">Skeleton swordsman and archer</option>
+                    <option value="zombies">Shambling zombies</option>
+                    <option value="ghouls">Ghouls and Ghasts</option>
+                    <option value="ogreClub">Ogre · greatclub</option>
+                    <option value="ogreJavelin">Ogre · javelin</option>
+                    <option value="hillGiant">Hill Giant</option>
+                    <option value="troll">Troll</option>
+                    <option value="gargoyle">Gargoyle</option>
+                    <option value="minotaur">Minotaur</option>
+                    <option value="ettin">Ettin</option>
+                    <option value="medusa">Medusa</option>
+                    <option value="voidTrace">Void Trace</option>
+                    <option value="voidSpawn">Void Spawn</option>
+                    <option value="voidHunter">Void Hunter</option>
+                    <option value="voidShaper">Void Shaper</option>
+                    <option value="voidTitan">Void Titan</option>
+                    <option value="owlbear">Owlbear</option>
+                    <option value="gnoll">Gnoll</option>
+                    <option value="orc">Orc</option>
+                    <option value="bugbear">Bugbear</option>
+                    <option value="kobold">Kobold</option>
+                    <option value="youngRedDragon">Young red dragon</option>
+                    <option value="youngGreenDragon">Young green dragon</option>
+                    <option value="youngWhiteDragon">Young white dragon</option>
+                    <option value="manticore">Manticore</option>
+                    <option value="goblins">Goblins — melee and archer</option>
+                    <option value="goblinArcher">Goblin archer</option>
+                    <option value="wightSword">Wight — sword and Life Drain</option>
+                    <option value="wightBow">Wight — longbow and Life Drain</option>
+                    <option value="shadows">Shadow</option>
+                    <option value="specters">Specter</option>
+                    <option value="wraiths">Wraith</option>
+                    <option value="stirges">Stirges</option>
+                    <option value="flameskull">Flameskull</option>
+                    <option value="hyenas">Giant hyenas</option>
+                </select></label>
+                <label>Environment<select id="studyEnvironment">
+                    <option value="waystation">Old waystation</option>
+                    <option value="woodland">Woodland road</option>
+                    <option value="woodlandGlade">Woodland glade</option>
+                    <option value="woodlandBend">Woodland bend</option>
+                    <option value="grassland">Open meadow</option>
+                    <option value="settlement">Settlement street</option>
+                    <option value="dungeon">Dungeon chamber</option>
+                </select></label>
+                <label>Player appearance<select id="studyAppearance">
+                    <option value="traveller">Slate coat</option>
+                    <option value="warden">Olive coat</option>
+                </select></label>
+                <label>Player weapon<select id="studyWeapon"></select></label>
+                <label>Off-hand equipment<select id="studyOffHand"><option value="">Empty hand</option></select></label>
+                <label>Example outcome<select id="studyOutcome">
+                    <option value="damage">Hit</option>
+                    <option value="miss">Miss</option>
+                    <option value="block">Parry · no damage</option>
+                </select></label>
+                <label>Target contact<select id="studyTargetSurface">
+                    <option value="soft">Cloth / hide</option>
+                    <option value="metal">Metal armour</option>
+                </select></label>
+                <button id="studyEngage" type="button">Engage opponents</button>
+                <button id="studyDisengage" type="button">Disengage player</button>
+                <button id="studyStrike" type="button">Show weapon attack</button>
+                <label>Creature action<select id="studyCreatureAction"></select></label>
+                <button id="studyEnemyStrike" type="button">Show selected creature attack</button>
+                <button id="studyOffHandStrike" type="button" disabled>Show off-hand attack</button>
+                <button id="studySpell" type="button">Show spell effect</button>
+                <label>Healing example<select id="studyHealing"></select></label>
+                <button id="studyHealSelf" type="button">Heal self</button>
+                <button id="studyHealAlly" type="button">Heal companion</button>
+                <button id="studySkip" type="button">Finish movement</button>
+                <button id="studyReset" type="button">Reset scene</button>
+                <output id="studyStatus" aria-live="polite">Loading scene…</output>
+                <p>Select an enemy figure or roster entry to target the examples. Hover a figure or focus its roster entry to reveal engagement partners. Positions do not change range, cover or combat rules.</p>
+            </aside>
+        </div>
+        <p class="combat-study-note">Interactive presentation study, not a live battle. Weapon and ability names come from the game data; example effects do not roll dice, spend resources or change health. Humanoids reuse compatible rigs and animations, with distinct bodies for different creatures. The approved concept remains the visual target. <a href="vendor/three/LICENSE">Three.js · MIT licence</a></p>
+    </main>
+    <script type="module" src="src/ui/CombatSceneStudy.js?v=cue-versions-4"></script>
+</body>
+</html>

@@ -138,11 +138,11 @@
       "devotedPassive": {
         "id": "knowledge_devoted",
         "name": "Forewarned",
-        "description": "Companion grants +1 to all Investigation and Academia skill checks for the next dungeon.",
+        "description": "Companion grants +1 to all Investigation and Lore skill checks for the next dungeon.",
         "trigger": "onDungeonEntry",
         "effect": {
           "skillBonus": 1,
-          "skills": ["investigation", "academia"],
+          "skills": ["investigation", "lore"],
           "scope": "nextDungeon"
         }
       }

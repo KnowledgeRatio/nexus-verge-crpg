@@ -74,7 +74,9 @@ export async function execute(ability, effects, context) {
         }
 
         try {
-            const result = await handler(effectValue, ability, context);
+            const effectContext = { ...context,
+                showFloatingText: (id, text, type) => context.showFloatingText?.(id, text, type, { effectType }) };
+            const result = await handler(effectValue, ability, effectContext);
             results.push({ type: effectType, result });
         } catch (err) {
             console.error(`EffectDispatcher: handler "${effectType}" threw:`, err);
@@ -133,10 +135,12 @@ export function buildContext(character, combatant, combatManager) {
         combatManager,
         outOfCombat: false,
         addMessage: (msg, type) => gameState.addMessage(msg, type),
-        showFloatingText: (id, text, type) => {
-            if (window.game?.showFloatingCombatText) {
-                window.game.showFloatingCombatText(id, text, type);
-            }
+        showFloatingText: (id, text, type, metadata = {}) => {
+            gameState.notify('combat.floatingText', {
+                combatantId: id, text, type,
+                ...(combatant?.id ? { sourceId: combatant.id } : {}),
+                ...(metadata.effectType ? { effectType: metadata.effectType } : {})
+            });
         }
     };
 }
@@ -285,7 +289,7 @@ registerHandler('variableCostDamage', async (config, ability, ctx) => {
         'success'
     );
     defender.takeDamage(totalDamage);
-    ctx.showFloatingText(defender.id, `✨ ${totalDamage}`, 'buff');
+    ctx.showFloatingText(defender.id, `-${totalDamage}`, 'damage');
 
     return { damage: totalDamage, resolveSpent };
 });
@@ -295,7 +299,7 @@ registerHandler('variableCostDamage', async (config, ability, ctx) => {
  * Used for Aid the Vulnerable (heal option) and any future variable-cost heals.
  *
  * Effect value object (from abilities.json effects.variableCostHeal):
- *   formula  {string} Formula using resolveCost, conMod, level — e.g. "resolveCost * conMod + level"
+ *   formula  {string} Formula using resolveCost, resilienceMod, level
  *
  * Context must include ctx.resolveSpent (injected by showAbilityChoices path or variableCost dispatch).
  * Applies healing to combatant.hp and character.currentHP.
@@ -305,15 +309,14 @@ registerHandler('variableCostHeal', async (config, ability, ctx) => {
     const resolveSpent = ctx.resolveSpent ?? 1;
     const character = ctx.character;
 
-    const conMod = character.abilityModifiers?.con ?? 0;
+    const resilienceMod = getAttributeModifierFor(character, 'hp');
     const level = character.level ?? 1;
 
-    // Evaluate formula with resolveCost, conMod, and level substituted
-    const rawFormula = config.formula || 'resolveCost * conMod + level';
+    const rawFormula = config.formula || 'resolveCost * resilienceMod + level';
     // Substitute named variables (longest-first to prevent substring collisions)
     const vars = [
         ['resolveCost', resolveSpent],
-        ['conMod', conMod],
+        ['resilienceMod', resilienceMod],
         ['level', level]
     ].sort((a, b) => b[0].length - a[0].length);
 
@@ -329,7 +332,7 @@ registerHandler('variableCostHeal', async (config, ability, ctx) => {
         healAmount = Math.max(0, Math.floor(Function(`"use strict"; return (${formula})`)()));
     } catch (e) {
         console.warn('variableCostHeal: formula evaluation error', formula, e);
-        healAmount = resolveSpent * Math.max(1, conMod) + level;
+        healAmount = resolveSpent * Math.max(1, resilienceMod) + level;
     }
 
     let actual = 0;
@@ -514,7 +517,7 @@ function tacticSaveDC(character, config) {
  * ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha' — resolved via
  * RULES.attributes.legacySaveAbilityToContext) or, since the attribute-system remap
  * (docs/plans/2026-07-30-attribute-system-remap.md, decision #5), a new-system attribute
- * name directly (e.g. "vitality" for Trip/Pushing/Disarming Attack's retargeted save) —
+ * name directly (e.g. "resilience" for Trip/Pushing/Disarming Attack's retargeted save) —
  * matched against derivedStatMap's `${attr}Save` naming convention. Works unchanged in
  * both '5EClassic' and 'NVSystem' mode: the resulting context still resolves through
  * getAttributeModifierFor(), which redirects new-system keys to their legacy source
@@ -524,7 +527,7 @@ function tacticSaveDC(character, config) {
  * monsters (zombie, mage) have hand-authored wis/cha save bonuses that don't perfectly
  * match their ability modifier — decision #2's monster-loader shim
  * (`monsterAttributeConversion.js`'s `convertMonsterSavingThrows`) attaches those as
- * `character.savingThrows.{vitality|insight|composure}` plain-number overrides. If one
+ * `character.savingThrows.{resilience|intuition|composure}` overrides. If one
  * exists for this context's attribute, it wins outright; every other character (including
  * every player character, whose own `character.savingThrows` is a differently-shaped
  * {proficient, bonus} object keyed by legacy ability abbreviations — the `typeof === 'number'`
@@ -550,7 +553,9 @@ function rollDefenderSave(defender, saveAbility, { disadvantage = false, combatM
     const override = defender.character?.savingThrows?.[overrideAttrKey];
     const baseMod = typeof override === 'number'
         ? override
-        : getAttributeModifierFor(defender.character, contextKey);
+        : typeof override?.bonus === 'number'
+            ? override.bonus
+            : getAttributeModifierFor(defender.character, contextKey);
     const mod = baseMod + (combatManager ? getAuraSaveBonus(combatManager, defender) : 0);
 
     const rollOnce = () => Math.floor(Math.random() * 20) + 1;
@@ -753,10 +758,10 @@ registerHandler('onHitPush', (config, ability, ctx) => {
 });
 
 /**
- * selfTempHP — Grant temporary HP equal to tactic die + CON mod (Rally).
+ * selfTempHP — Grant temporary HP equal to tactic die + Resilience modifier (Rally).
  * Effect config:
  *   dice   {string} "tacticDie"
- *   bonus  {string} "conMod"
+ *   bonus  {string} "resilienceMod"
  *
  * Spends 1 Resolve and consumes Bonus Action (caller already validated availability).
  * Context: ctx.combatant and ctx.character required.
@@ -770,8 +775,8 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
     }
 
     const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
-    const conMod = character?.abilityModifiers?.con ?? 0;
-    const tempHP = Math.max(1, dieRoll + conMod);
+    const resilienceMod = getAttributeModifierFor(character, 'hp');
+    const tempHP = Math.max(1, dieRoll + resilienceMod);
 
     combatant.addCondition('tempHP', 'combat', combatant.id, {
         value: tempHP,
@@ -784,7 +789,7 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
     combatant.actions.bonusAction = Math.max(0, (combatant.actions.bonusAction ?? 1) - 1);
 
     ctx.addMessage(
-        `⚡ ${ability.name}! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + CON ${conMod})`,
+        `⚡ ${ability.name}! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
         'success'
     );
     ctx.showFloatingText(combatant.id, `+${tempHP} THP ✨`, 'buff');
@@ -793,10 +798,10 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
 });
 
 /**
- * allyTempHP — Grant temporary HP equal to tactic die + CON mod to an engaged ally
+ * allyTempHP — Grant temporary HP equal to tactic die + Resilience modifier to an engaged ally
  * (Rally's ally option). Effect config:
  *   dice   {string} "tacticDie"
- *   bonus  {string} "conMod"
+ *   bonus  {string} "resilienceMod"
  *
  * Scope note: no multi-ally target picker exists in this codebase yet (ADR-000 — not
  * building one speculatively). Minimal behavior: targets one companion combatant that is
@@ -821,8 +826,8 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
     }
 
     const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
-    const conMod = character?.abilityModifiers?.con ?? 0;
-    const tempHP = Math.max(1, dieRoll + conMod);
+    const resilienceMod = getAttributeModifierFor(character, 'hp');
+    const tempHP = Math.max(1, dieRoll + resilienceMod);
 
     ally.addCondition('tempHP', 'combat', combatant.id, {
         value: tempHP,
@@ -835,7 +840,7 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
     combatant.actions.bonusAction = Math.max(0, (combatant.actions.bonusAction ?? 1) - 1);
 
     ctx.addMessage(
-        `⚡ ${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + CON ${conMod})`,
+        `⚡ ${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
         'success'
     );
     ctx.showFloatingText(ally.id, `+${tempHP} THP ✨`, 'buff');
@@ -898,10 +903,10 @@ registerHandler('reactionAttack', (config, ability, ctx) => {
 });
 
 /**
- * reactionDamageReduction — Reduce incoming damage by tactic die + CON mod (Parry).
+ * reactionDamageReduction — Reduce incoming damage by tactic die + Resilience modifier (Parry).
  * Effect config:
  *   reductionDice  {string} "tacticDie"
- *   reductionBonus {string} "conMod"
+ *   reductionBonus {string} "resilienceMod"
  *
  * Execution is handled inline by main.js promptReaction (it returns damageReduction).
  * This handler computes and returns the reduction for the caller.
@@ -911,11 +916,11 @@ registerHandler('reactionDamageReduction', (config, ability, ctx) => {
     const character = ctx.character;
 
     const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
-    const conMod    = character?.abilityModifiers?.con ?? 0;
-    const reduction = Math.max(0, dieRoll + conMod);
+    const resilienceMod = getAttributeModifierFor(character, 'hp');
+    const reduction = Math.max(0, dieRoll + resilienceMod);
 
     ctx.addMessage(
-        `🛡️ ${ability.name}! Reduces incoming damage by ${dieRoll}+${conMod}=${reduction} (d${dieSides})`,
+        `🛡️ ${ability.name}! Reduces incoming damage by ${dieRoll}+${resilienceMod}=${reduction} (d${dieSides})`,
         'success'
     );
 

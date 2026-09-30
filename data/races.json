@@ -20,8 +20,8 @@
       },
       "abilityScoreIncreaseNVSystem": {
         "prowess": 1,
-        "insight": 1,
-        "vitality": 1,
+        "intuition": 1,
+        "resilience": 1,
         "intellect": 1,
         "composure": 1,
         "presence": 1
@@ -52,7 +52,7 @@
         "int": 1
       },
       "abilityScoreIncreaseNVSystem": {
-        "insight": 2,
+        "intuition": 2,
         "intellect": 1
       },
       "size": "medium",
@@ -92,7 +92,7 @@
         "wis": 1
       },
       "abilityScoreIncreaseNVSystem": {
-        "vitality": 2,
+        "resilience": 2,
         "composure": 1
       },
       "size": "medium",
@@ -132,7 +132,7 @@
         "cha": 1
       },
       "abilityScoreIncreaseNVSystem": {
-        "insight": 2,
+        "intuition": 2,
         "presence": 1
       },
       "size": "small",

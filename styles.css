@@ -1356,7 +1356,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 6px;
-    image-rendering: pixelated;
+    image-rendering: auto;
 }
 
 .avatar-name {
@@ -2185,6 +2185,45 @@ body {
 }
 
 /* Town Map Grid */
+.settlement-scene-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.settlement-scene-toolbar .menu-btn { width: auto; margin: 0; }
+.settlement-scene-toolbar span { color: var(--text-secondary); font-size: .85rem; }
+.settlement-scene-host { width: 100%; }
+.settlement-scene-host[hidden], .town-map[hidden] { display: none; }
+.settlement-scene-viewport { position: relative; width: 100%; height: 480px; overflow: hidden; border-radius: 8px; }
+.settlement-scene-viewport canvas { display: block; width: 100%; height: 100%; }
+.settlement-scene-hotspots { position: absolute; inset: 0; pointer-events: none; }
+.settlement-scene-hotspots button {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    pointer-events: auto;
+    min-height: 44px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .8rem;
+}
+.settlement-scene-hotspots button:hover, .settlement-scene-hotspots button:focus-visible {
+    outline: 2px solid var(--warning-color);
+    outline-offset: 2px;
+}
+.settlement-scene-status { min-height: 1.5em; color: var(--text-secondary); margin-top: 8px; }
+@media (min-width: 1024px) {
+    .settlement-container:has(.settlement-scene-host:not([hidden])) { max-width: 1100px; }
+    .settlement-scene-viewport { height: min(58vh, 590px); }
+}
+
 .town-map {
     display: flex;
     flex-direction: column;
@@ -4222,11 +4261,12 @@ body {
 
 #characterSheetContent {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
 .char-section {
+    min-width: 0;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -4245,6 +4285,54 @@ body {
 
 .char-section.full-width {
     grid-column: 1 / -1;
+}
+
+.character-appearance {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 1.5rem;
+    font-family: var(--font-mono);
+}
+
+.character-appearance h3,
+.character-appearance .appearance-note {
+    grid-column: 1 / -1;
+}
+
+.appearance-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.appearance-choice select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.appearance-choice select:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.appearance-note {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    #characterSheetContent,
+    .character-appearance {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 .char-row {

@@ -21,13 +21,13 @@
             "propertyId": "tailored",
             "name": "Tailored",
             "levelRequired": 2,
-            "description": "Expertly fitted to the wearer. The maximum DEX modifier that contributes to AC increases by 1.",
+            "description": "Expertly fitted to the wearer. The maximum evasion modifier that contributes to AC increases by 1.",
             "effect": {
               "type": "modifyArmor",
-              "property": "maxDexBonus",
+              "property": "maxEvasionBonus",
               "bonus": 1
             },
-            "implementation": "armor.maxDexBonus += 1 (medium armor goes from +2 to +3, heavy from +0 to +1)"
+            "implementation": "armor.maxEvasionBonus += 1 (medium armor goes from +2 to +3, heavy from +0 to +1)"
           },
           {
             "id": "adaptive",
@@ -145,7 +145,7 @@
           {
             "type": "abilityScoreBonus",
             "bonusMagnitude": 1,
-            "scoreChoices": ["prowess", "vitality", "intellect", "insight", "presence", "composure"],
+            "scoreChoices": ["prowess", "resilience", "intellect", "intuition", "presence", "composure"],
             "bonusApplication": {
               "mode": {
                 "1": "uniformChoice",

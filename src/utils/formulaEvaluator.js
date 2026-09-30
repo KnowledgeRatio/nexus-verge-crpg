@@ -1,14 +1,15 @@
 /**
- * Formula Evaluator - Parses D&D-style formulas like "1d8 + level + con"
+ * Formula Evaluator - Parses formulas like "1d8 + level + resilience"
  * Pure function, no side effects. Reusable across abilities, spells, quest rewards.
  */
 
 import { roll } from './dice.js';
+import { RULES } from '../core/rulesEngine.js';
 
 /**
  * Evaluate a formula string with character context
- * @param {string} formula - e.g. "1d8 + level + con", "2d6 + str", "level + proficiency"
- * @param {Object} context - { level, str, dex, con, int, wis, cha, proficiency }
+ * @param {string} formula - e.g. "1d8 + level + resilience", "level + proficiency"
+ * @param {Object} context - Named numeric values available to the formula
  * @returns {{ total: number, breakdown: string }}
  */
 export function evaluateFormula(formula, context) {
@@ -43,8 +44,8 @@ export function evaluateFormula(formula, context) {
         } else if (trimmed === 'proficiency' && context.proficiency !== undefined) {
             total += context.proficiency;
             parts.push(`prof(${context.proficiency})`);
-        } else if (['str', 'dex', 'con', 'int', 'wis', 'cha'].includes(trimmed) && context[trimmed] !== undefined) {
-            // Ability modifier shortcuts
+        } else if (typeof context[trimmed] === 'number') {
+            // Generic named context value (including active-system attribute modifiers)
             total += context[trimmed];
             parts.push(`${trimmed}(${context[trimmed]})`);
         } else if (!isNaN(trimmed)) {
@@ -67,14 +68,13 @@ export function evaluateFormula(formula, context) {
  */
 export function buildFormulaContext(character) {
     const mods = character.abilityModifiers || {};
+    const supportedAttributes = [
+        ...Object.keys(RULES.attributes.legacyToNew),
+        ...Object.values(RULES.attributes.legacyToNew)
+    ];
     return {
+        ...Object.fromEntries(supportedAttributes.map(key => [key, mods[key] ?? 0])),
         level: character.level || 1,
-        str: mods.str || 0,
-        dex: mods.dex || 0,
-        con: mods.con || 0,
-        int: mods.int || 0,
-        wis: mods.wis || 0,
-        cha: mods.cha || 0,
         proficiency: character.proficiencyBonus || 2
     };
 }

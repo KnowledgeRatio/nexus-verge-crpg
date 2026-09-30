@@ -1,0 +1,266 @@
+{
+  "music_overworld_music_api": {
+    "kind": "music",
+    "mvp": false,
+    "duration_ms": 75000,
+    "prompt": "Instrumental exploration music for old roads between inhabited settlements and an uncertain living world. Invite adventure within the first six seconds: a clear ascending D-F-G motif in warm sustained viola and low woodwind, answered by A-G-F-D. D Dorian, about 78 BPM in 4/4. Repeat a recognizable four-bar Dm-G-Dm-C harmonic cycle and return clearly to Dm before the loop. A gentle travel pulse and plucked strings support a broad, resonant melody; quiet danger stays underneath. No vocals, choir, Western guitar, harmonica, saloon piano, gallop, horror drone, trailer impact or heroic brass."
+  },
+  "music_combat_music_api": {
+    "kind": "music",
+    "mvp": false,
+    "duration_ms": 75000,
+    "prompt": "Original instrumental turn-based combat score in D natural minor around 112 BPM. Build a 75-second arc from urgent low strings and hand drums, with a recognizable D-F-G-A viola theme. Develop the theme through a higher answering counterline and changing harmony: Dm-Bb-F-C, then Gm-Bb-Dm, then Gm-A7-Dm. Vary register, voicing, rhythm, and melodic shape over three related passages while keeping danger and momentum throughout. Return to the opening idea for an edited loop without repeating the same four bars unchanged. Dark chamber-orchestra colour and hard-won resolve. Music only: no weapon sounds, impacts, footsteps, Foley, vocals, choir, brass blasts, trailer booms, Western guitar, harmonica or gallop."
+  },
+  "music_overworld": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt": "Seamless instrumental ambient music loop for an old road between inhabited settlements and uncertain wilderness. Sparse bowed strings, low reed, a hand-worked wooden pulse and a restrained three-note motif; curious and uneasy, quiet dynamics. No vocals, choir, twang guitar, harmonica, saloon piano, gallop or big drums."
+  },
+  "music_combat": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt": "Seamless instrumental combat music loop using a restrained three-note low-string motif, irregular hand percussion and dry wooden taps. Controlled pressure with open space for decisions and weapon sounds. No vocals, choir, heroic brass, trailer impacts, twang guitar, harmonica, saloon piano or galloping rhythm."
+  },
+  "music_overworld_v2": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt_influence": 0.75,
+    "prompt": "Seamless 25-second instrumental adventure music loop, a composed melody rather than ambience. In D Dorian, warm sustained strings state D-F-G then answer A-G-F-D within six seconds. Repeat a four-bar Dm-G-Dm-C chord cycle with a clear return to Dm. Gentle travel pulse, low reed answer, broad natural resonance; quiet unease beneath an inviting lead. No vocals, choir, twang guitar, harmonica, saloon piano or horror drone."
+  },
+  "music_combat_v2": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt_influence": 0.75,
+    "prompt": "Seamless 25-second instrumental combat music loop in D natural minor. Repeat a four-bar Dm-Bb-C-Dm chord cycle over a steady D bass pulse. Low strings repeat a short D-F-G motif and A-G-F-D answer each cycle. Crisp syncopated hand drum above stable 4/4, restrained pressure and space for action sounds; return audibly to Dm at the loop. No vocals, atonal wandering, choir, brass swells, twang guitar, harmonica or galloping rhythm."
+  },
+  "music_combat_v3": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt_influence": 0.75,
+    "prompt": "Seamless 25-second instrumental combat loop. Urgent bowed low-string ostinato, irregular hand drums and dry wooden strikes drive tense 4/4 at 115 BPM. D natural minor: repeat Dm-Bb-C-Dm; a short D-F-G figure in insistent eighth notes climbs in force over Bb-C, then lands hard on Dm. Short gaps for weapon impacts; danger never fades. Dark, physical and agile. No vocals, choir, heroic brass, trailer booms, twang guitar, harmonica or gallop."
+  },
+  "music_combat_v4": {
+    "kind": "sfx",
+    "mvp": false,
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt_influence": 0.85,
+    "prompt": "Seamless 25-second combat music loop in D natural minor, 115 BPM. Urgent bowed low-string eighth notes and hand drums maintain an unbroken driving pulse from first beat to last; dry wooden strikes add danger. Repeat Dm-Bb-C-Dm, with a short D-F-G motif climbing over Bb-C and landing hard on Dm. Keep high-stakes intensity throughout: no breaks, rests, stops, dropouts, fades or breakdowns. No vocals, choir, trailer booms, Western guitar or gallop."
+  },
+  "music_combat_v5": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 16.7,
+    "prompt_influence": 0.9,
+    "prompt": "Seamless instrumental combat loop: eight continuous bars at 115 BPM in D natural minor. Low bowed strings play urgent eighth notes throughout. Hand drums maintain a forceful steady pulse, with dry wooden accents and a rising D-F-G motif. Cycle Dm-Bb-C-Dm twice and land firmly on Dm. Sustain high stakes and consistent intensity from first note to final note, ready to repeat immediately. No vocals, choir, brass, guitar or gallop."
+  },
+  "music_combat_v6": {
+    "kind": "sfx",
+    "mvp": false,
+    "loop": true,
+    "duration_seconds": 16.7,
+    "prompt_influence": 0.9,
+    "prompt": "Seamless 16.7-second instrumental action-score loop, eight bars around 115 BPM in D natural minor. Urgent low bowed strings play steady eighth notes; violas climb D-F-G; bass and frame drums maintain a continuous musical pulse. Repeat Dm-Bb-C-Dm twice, resolving firmly to Dm. Keep tense energy through the whole loop. Music instruments only: no sword clashes, weapon hits, gunshots, impacts, footsteps, Foley, speech, choir or dramatic stop."
+  },
+  "music_combat_v7": {
+    "kind": "sfx",
+    "loop": true,
+    "duration_seconds": 16.7,
+    "prompt_influence": 0.9,
+    "prompt": "Seamless combat music loop: eight bars at 115 BPM in D natural minor. Low bowed strings play urgent eighth notes throughout. Hand drums maintain a forceful steady pulse, with a rising D-F-G string motif. Cycle Dm-Bb-C-Dm twice and land firmly on Dm. Sustain high stakes and consistent intensity from first note to final note, ready to repeat immediately. Pure music only: no weapon sounds, impacts, footsteps, sound effects, voices or choir."
+  },
+  "music_combat_v8": {
+    "kind": "sfx",
+    "mvp": false,
+    "loop": true,
+    "duration_seconds": 25,
+    "prompt_influence": 0.8,
+    "prompt": "Instrumental fantasy RPG combat score, 25 seconds, evolving A/B/C arrangement, not a repeated ostinato. Dark urgent D minor: sparse low strings and frame drum; cello/viola call-and-response; syncopated percussion; high-string surge; smooth D-minor loop seam. Change rhythm, register, or orchestration every two to four bars. Never repeat a bar twice in a row. No vocals, choir, brass, guitar, gallop, Foley, impacts, or weapon sounds."
+  },
+  "music_combat_arc_a": {
+    "kind": "sfx",
+    "loop": false,
+    "duration_seconds": 24,
+    "prompt_influence": 0.9,
+    "prompt": "24-second instrumental combat passage in D natural minor at 112 BPM. Urgent low strings pulse beneath a D-F-G-A viola motif. The melody grows from clipped notes into a wider answer; harmony moves Dm-Bb-F-C, then Gm-A7-Dm. Hand drums keep tension moving. Dark chamber-orchestra colour and desperate resolve. Develop the melody; avoid repeating one four-bar figure. Music only: no weapon sounds, Foley, voices, choir, brass blasts or Western guitar."
+  },
+  "music_combat_arc_b": {
+    "kind": "sfx",
+    "loop": false,
+    "duration_seconds": 24,
+    "prompt_influence": 0.9,
+    "prompt": "24-second instrumental combat continuation in D natural minor at 112 BPM. Low strings and hand drums drive steadily. Vary the D-F-G-A idea in a higher bowed-string counterline; bassoon answers below. Move from Gm-Bb-Dm through F-C-A7, then toward Dm. Two developing phrases with a stronger second half, not just a repeated ostinato. Tense, agile chamber-orchestra score. Music only: no impacts, Foley, voices, choir, brass blasts or Western guitar."
+  },
+  "music_combat_arc_c": {
+    "kind": "sfx",
+    "loop": false,
+    "duration_seconds": 24,
+    "prompt_influence": 0.9,
+    "prompt": "24-second instrumental combat culmination in D natural minor at 112 BPM. Low strings and hand drums keep urgency. Stretch a D-F-G-A viola theme into a rising phrase, answered by descending cello and bassoon; bring it home over Bb-Gm-A7-Dm. Change voicing and harmony across the passage; build to hard-won intensity that leads back to the opening. Music only: no weapon sounds, Foley, voices, choir, brass blasts or Western guitar."
+  },
+  "sfx_melee_swing": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One fast worn iron sword swing through open air, brief sleeve movement and narrow blade whoosh. Close and dry. No impact, voice or music."
+  },
+  "sfx_melee_hit": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One close iron sword strike against thick worn leather armour over dense padding. Sharp metal-and-leather transient, short dull body resonance. Dry outdoor air; no gore, voice or music."
+  },
+  "sfx_melee_block": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "A single worn iron blade caught on a battered raised iron guard. Short sharp clang and two brief rattles. Close and dry; no musical sting, voice or music."
+  },
+  "sfx_carbine_shot": {
+    "kind": "sfx",
+    "duration_seconds": 1.0,
+    "prompt": "One shot from a worn early mechanical carbine: dry close muzzle crack and short mechanism click with a brief open-air tail. No automatic fire, explosion, voice or music."
+  },
+  "sfx_carbine_impact": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One small fast projectile striking a wooden shield rim with a hard splintering crack and short decay. No explosion, voice or music."
+  },
+  "sfx_heal": {
+    "kind": "sfx",
+    "duration_seconds": 1.2,
+    "prompt": "One small restrained restoration sound: soft airy onset, a warm glass-like harmonic and a gentle short release. Clear and intimate; no choir, speech, music or triumphant swell."
+  },
+  "sfx_blunt_swing": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close swing of a worn wooden haft and heavy blunt head through air, short cloth movement. Dry and isolated. No impact, voice, music or dramatic bass."
+  },
+  "sfx_blunt_hit_soft": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One blunt weapon strike against dense cloth and leather padding, a compact low thud with a brief rattle of worn equipment. Close and dry. No gore, voice, music or bass boom."
+  },
+  "sfx_blade_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One bladed iron weapon strikes worn metal armour, a sharp short scrape and contained metal impact with very brief rattle. Close and dry. No parry, voice, music or dramatic ring."
+  },
+  "sfx_blunt_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One blunt iron weapon strikes worn metal armour, a compact hard clunk and short plate rattle. Close and dry. No voice, music, bass boom or long reverberation."
+  },
+  "sfx_bow_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One rough bowstring snaps forward and an arrow leaves the bow, close dry twang with a very short air movement. No impact, voice, music or long ringing tail."
+  },
+  "sfx_sling_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One worn leather sling releases a small stone, short leather whip and restrained stone air movement. Close and dry. No impact, voice or music."
+  },
+  "sfx_light_projectile_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One small hand-launched dart or light projectile leaves the attacker, a short narrow air pass with faint cloth movement. Close and dry. No bowstring, impact, voice or music."
+  },
+  "sfx_projectile_hit_soft": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One small fast projectile strikes thick cloth and leather padding with a short sharp tap and dense soft thud. Close and dry. No gore, voice, music or explosion."
+  },
+  "sfx_projectile_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One small fast projectile strikes worn metal armour, a brief hard ping and muted plate rattle. Close and dry. No ricochet sequence, voice, music or explosion."
+  },
+  "sfx_unarmed_swing": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close bare-handed or clawed attack moves through air, a short sleeve or hide rustle and narrow air pass. Dry and isolated. No impact, growl, voice or music."
+  },
+  "sfx_unarmed_hit": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close unarmed or creature strike against a clothed body, compact soft contact and brief equipment rustle. Dry and restrained. No gore, growl, voice, music or bass boom."
+  },
+  "sfx_downed": {
+    "kind": "sfx",
+    "duration_seconds": 1.0,
+    "prompt": "One exhausted armoured combatant falls to the ground, brief cloth and gear movement followed by a contained body and equipment settling thud. Close and dry. No voice, scream, gore, music or dramatic boom."
+  },
+  "sfx_pointed_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close thrust or lunge of a spear, pike, rapier or other pointed weapon through air, brief shaft and sleeve movement. Dry and isolated. No sword slash, impact, voice or music."
+  },
+  "sfx_pointed_hit_soft": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One pointed iron weapon meets dense cloth, hide and padding with a narrow sharp contact and short dull stop. Close and dry. No slash, gore, voice or music."
+  },
+  "sfx_pointed_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One pointed iron weapon glances against worn metal armour, a brief sharp tick and short plate rattle. Close and dry. No drawn-out clang, voice or music."
+  },
+  "sfx_whip_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One braided cord whip flicks through air with a brief tight crack and leather movement. Close and dry. No contact, voice, music or gunshot."
+  },
+  "sfx_whip_hit": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One braided cord whip contacts dense cloth and hide, a brief sharp slap with a short muted body resonance. Close and dry. No gore, voice, music or gunshot."
+  },
+  "sfx_blowgun_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One short breath sends a needle through a hollow reed blowgun, soft close air puff and tiny projectile air movement. No spoken voice, impact or music."
+  },
+  "sfx_parry": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close melee strike is diverted by a guarded movement, a brief dry scrape and compact contact of worn gear. Material-neutral, no clear sword ring or wooden shield crack. No voice or music."
+  },
+  "sfx_body_fall": {
+    "kind": "sfx",
+    "duration_seconds": 1.0,
+    "prompt": "One corporeal combatant collapses onto dirt, a short contained body and cloth settling thud. Close and dry. No metal armour, voice, scream, gore, music or dramatic boom."
+  },
+  "sfx_edged_release": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One close swing of a worn edged axe or sickle through air, brief heavier haft and sleeve movement. Dry and isolated. No sword ring, impact, voice or music."
+  },
+  "sfx_edged_hit_soft": {
+    "kind": "sfx",
+    "duration_seconds": 0.8,
+    "prompt": "One worn edged axe or sickle contacts dense cloth and hide padding, a short sharp edge contact with a compact body thud. Close and dry. No sword ring, gore, voice or music."
+  },
+  "sfx_natural_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One bare fist or claw strikes worn metal armour, a short dull glove-or-hide contact and restrained plate rattle. Close and dry. No weapon clang, growl, gore, voice or music."
+  },
+  "sfx_natural_hit_soft": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One bare fist or claw lands against a soft corporeal target or animal hide, a short contained contact with no clothing detail. Close and dry. No growl, gore, voice, music or bass boom."
+  },
+  "sfx_whip_hit_metal": {
+    "kind": "sfx",
+    "duration_seconds": 0.7,
+    "prompt": "One braided cord whip brushes worn metal armour, a dry leather slap and small softened metal tick. Close and dry. No projectile ping, gunshot, voice or music."
+  },
+  "sfx_creature_fall": {
+    "kind": "sfx",
+    "duration_seconds": 1.0,
+    "prompt": "One corporeal creature or unarmoured person collapses onto dirt, a short restrained body thud and natural movement settling. No clothing, gear, armour, growl, voice, gore, music or dramatic boom."
+  }
+}
