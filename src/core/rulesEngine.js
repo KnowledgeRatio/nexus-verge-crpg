@@ -108,6 +108,17 @@ export const RULES = {
             immunityMultiplier: 0
         },
 
+        damageOverTime: {
+            enabled: false,
+            unitsPerHP: 1000,
+            immediateFraction: 0.8,
+            ticks: 3,
+            damageTypes: ['blood'],
+            conditionType: 'bleeding',
+            conditionIcon: '🩸',
+            curable: true
+        },
+
         damageTypes: {
             physical: ['blood', 'bone', 'injury'],
             elemental: ['fire', 'cold', 'lightning', 'poison', 'necrotic', 'acid', 'void'],

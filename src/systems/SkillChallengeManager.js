@@ -10,6 +10,7 @@ import { gameState } from '../core/GameState.js';
 import { roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue } from './FatigueManager.js';
+import { subtractHP } from '../utils/damagePrecision.js';
 import { SeededRandom } from '../utils/rng.js';
 import { skillRegistry } from './SkillRegistry.js';
 
@@ -914,7 +915,7 @@ class SkillChallengeManager {
                 character.takeDamage(dmg, outcome.damageType || 'environmental');
             } else {
                 // Fallback: direct HP reduction for plain objects
-                character.currentHP = Math.max(0, (character.currentHP || 0) - dmg);
+                character.currentHP = subtractHP(character.currentHP || 0, dmg);
             }
             result.damageDealt = dmg;
         }

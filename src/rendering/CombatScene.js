@@ -7,6 +7,7 @@ import { encounterArtConfig } from './CombatArtAssets.js';
 import { CombatSmokeDepth } from './CombatSmoke.js';
 import { createCombatBreath, updateCombatBreath } from './CombatBreath.js';
 import { mediaAssetUrl } from '../utils/mediaAssetUrl.js';
+import { formatCombatNumber, fractionalCombatEnabled, conditionDescription } from '../utils/combatNumberFormat.js';
 
 function samplePose(frames, progress) {
     const t = Math.max(0, Math.min(1, progress));
@@ -415,7 +416,7 @@ export class CombatScene {
             mountCharacterOffHand(actor, this.config);
         }
         actor.name.textContent = combatant.name;
-        actor.hp.textContent = `HP ${combatant.hp} / ${combatant.maxHP}`;
+        actor.hp.textContent = `HP ${formatCombatNumber(combatant.hp)} / ${formatCombatNumber(combatant.maxHP)}`;
         const partnerNames = [...this.links.get(combatant.id)].map(id =>
             state.combatants.find(c => c.id === id)?.name).join(', ');
         actor.label.title = partnerNames ? `Engaged with ${partnerNames}` : 'Not engaged';
@@ -427,7 +428,10 @@ export class CombatScene {
         if (actor.offHand && !this.config.offHandModels?.[actor.offHandModel]) {
             actor.offHand.visible = actor.weapon.visible;
         }
-        const conditionNames = conditions.map(condition => condition.type).join(', ');
+        const describeCondition = condition => fractionalCombatEnabled()
+            ? conditionDescription(condition, id => state.combatants.find(c => c.id === id)?.name)
+            : condition.type;
+        const conditionNames = conditions.map(describeCondition).join(', ');
         if (conditionNames) {
             actor.label.title += `. Conditions: ${conditionNames}`;
         }
@@ -435,7 +439,7 @@ export class CombatScene {
             actor.label.title += `. AC ${combatant.ac}`;
         }
         actor.label.setAttribute('aria-label',
-            `${combatant.name}, ${combatant.hp} of ${combatant.maxHP} health. ${actor.label.title}`);
+            `${combatant.name}, ${formatCombatNumber(combatant.hp)} of ${formatCombatNumber(combatant.maxHP)} health. ${actor.label.title}`);
         actor.label.classList.toggle('is-active', combatant.id === state.currentTurn);
         actor.label.classList.toggle('is-defeated', combatant.hp <= 0);
         actor.label.classList.toggle('is-downed', Boolean(combatant.isDowned));
@@ -454,10 +458,10 @@ export class CombatScene {
             const badge = document.createElement('span');
             badge.className = `combat-scene-status ${condition.isBuff ? 'is-buff' : 'is-debuff'}`;
             badge.textContent = condition.type === 'tempHP' && condition.value > 0 ?
-                `${condition.icon} ${condition.value}` : condition.icon;
-            badge.title = condition.type;
+                `${condition.icon} ${formatCombatNumber(condition.value)}` : condition.icon;
+            badge.title = describeCondition(condition);
             actor.statuses.append(badge);
-            statusNames.push(condition.type);
+            statusNames.push(describeCondition(condition));
         }
         actor.statuses.setAttribute('aria-label', statusNames.length ?
             `Active conditions: ${statusNames.join(', ')}` : 'No active conditions');

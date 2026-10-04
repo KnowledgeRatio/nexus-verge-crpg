@@ -1,5 +1,6 @@
 import { combatSceneConfig, combatActionVisual, selectedPlayerParts } from './CombatPresentation.js';
 import { combatSfxKey } from '../systems/combatSfxMatrix.js';
+import { formatCombatNumber } from '../utils/combatNumberFormat.js';
 
 const stage = document.getElementById('studyStage');
 const status = document.getElementById('studyStatus');
@@ -243,7 +244,7 @@ function showFallback() {
     for (const c of state.combatants) {
         const item = document.createElement('li');
         const names = c.engagedWith.map(id => state.combatants.find(other => other.id === id).name);
-        item.textContent = `${c.name} · ${c.hp}/${c.maxHP} · ${names.length ? `Engaged with ${names.join(', ')}` : 'Not engaged'}`;
+        item.textContent = `${c.name} · ${formatCombatNumber(c.hp)}/${formatCombatNumber(c.maxHP)} · ${names.length ? `Engaged with ${names.join(', ')}` : 'Not engaged'}`;
         list.append(item);
     }
     fallback.append(intro, list);

@@ -10,6 +10,7 @@ import { getPassiveACBonus } from './PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getDerivedStatModifier } from '../utils/attributeResolver.js';
 import { normalizeNVAttributeKey, normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
 import { skillRegistry } from './SkillRegistry.js';
+import { damagePrecisionEnabled, hpToUnits, unitsToHP, normalizeHP, subtractHP, addHP } from '../utils/damagePrecision.js';
 
 export class Character {
     constructor(data) {
@@ -61,7 +62,13 @@ export class Character {
         // Hit Points
         this.maxHP = data.maxHP || this.calculateMaxHP();
         this.currentHP = data.currentHP !== undefined ? data.currentHP : this.maxHP;
+        if (damagePrecisionEnabled()) {
+            this.currentHP = addHP(0, this.currentHP, this.maxHP);
+        }
         this.tempHP = data.tempHP || 0;
+        if (damagePrecisionEnabled()) {
+            this.tempHP = normalizeHP(Math.max(0, this.tempHP));
+        }
 
         // Hit Dice
         this.hitDice = {
@@ -952,6 +959,15 @@ export class Character {
      * Take damage
      */
     takeDamage(amount, damageType = null) {
+        if (damagePrecisionEnabled()) {
+            const rawUnits = Math.max(0, hpToUnits(amount));
+            const absorbedUnits = Math.min(rawUnits, Math.max(0, hpToUnits(this.tempHP || 0)));
+            this.tempHP = unitsToHP(Math.max(0, hpToUnits(this.tempHP || 0) - absorbedUnits));
+            const before = this.currentHP;
+            this.currentHP = subtractHP(this.currentHP, unitsToHP(rawUnits - absorbedUnits));
+            return { damage: unitsToHP(rawUnits), hpDamage: unitsToHP(hpToUnits(before) - hpToUnits(this.currentHP)),
+                tempHPUsed: unitsToHP(absorbedUnits), newHP: this.currentHP, isDead: this.currentHP <= 0 };
+        }
         // Apply temp HP first
         if (this.tempHP > 0) {
             if (amount <= this.tempHP) {
@@ -978,9 +994,9 @@ export class Character {
      */
     heal(amount) {
         const oldHP = this.currentHP;
-        this.currentHP = Math.min(this.maxHP, this.currentHP + amount);
+        this.currentHP = damagePrecisionEnabled() ? addHP(this.currentHP, amount, this.maxHP) : Math.min(this.maxHP, this.currentHP + amount);
         return {
-            healed: this.currentHP - oldHP,
+            healed: normalizeHP(this.currentHP - oldHP),
             newHP: this.currentHP
         };
     }
@@ -1495,7 +1511,7 @@ export class Character {
         // Healing effect
         if (effect.healing) {
             const healing = roll(effect.healing);
-            this.currentHP = Math.min(this.maxHP, this.currentHP + healing);
+            this.currentHP = damagePrecisionEnabled() ? addHP(this.currentHP, healing, this.maxHP) : Math.min(this.maxHP, this.currentHP + healing);
             result.healing = healing;
             console.log(`💚 Healed ${healing} HP (${this.currentHP}/${this.maxHP})`);
         }

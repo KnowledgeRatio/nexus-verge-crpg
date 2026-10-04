@@ -5,6 +5,8 @@
 
 import { gameState } from './core/GameState.js';
 import { RULES } from './core/rulesEngine.js';
+import { formatCombatNumber, fractionalCombatEnabled, healthBarAttributes, conditionDescription, escapeAttribute } from './utils/combatNumberFormat.js';
+import { addHP, subtractHP } from './utils/damagePrecision.js';
 import { generateSeedString } from './utils/rng.js';
 
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
@@ -385,14 +387,14 @@ class Game {
                 ctxEl.textContent = `${defender.name} failed a ${ctx.saveType?.toUpperCase() || ''} save (${ctx.saveRoll ?? '?'} vs DC ${ctx.saveDC ?? '?'})!`;
                 titleEl.textContent = '⚡ Reaction: Reroll Save';
             } else if (hookPoint === 'allyAttacked') {
-                const dmg = ctx.damage ?? '?';
+                const dmg = formatCombatNumber(ctx.damage ?? '?');
                 ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
                 titleEl.textContent = '⚡ Reaction: Reprisal';
             } else if (hookPoint === 'allyWouldDrop0') {
                 ctxEl.textContent = `${attacker.name}'s hit would drop ${defender.name}!`;
                 titleEl.textContent = '⚡ Reaction: Intervene';
             } else {
-                const dmg = ctx.damage ?? '?';
+                const dmg = formatCombatNumber(ctx.damage ?? '?');
                 ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
                 titleEl.textContent = '⚡ Reaction: Defend';
             }
@@ -1519,7 +1521,7 @@ class Game {
 
         playerDiv.innerHTML = playerCombatants.map(c => {
             const conditionsDisplay = c.conditions && c.conditions.length > 0
-                ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
+                ? `<div class="combatant-conditions" title="${fractionalCombatEnabled() ? escapeAttribute(c.conditions.map(cond => conditionDescription(cond, id => combatantById[id]?.name)).join(', ')) : c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
                 : '';
 
             // Ammo display for ranged weapons (player card only)
@@ -1565,8 +1567,8 @@ class Game {
                     <div class="combatant-name">${c.name}</div>
                     ${companionBadge}
                     ${isDowned ? downedBadge : `
-                    <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
-                    <div class="hp-bar">
+                    <div class="combatant-hp">HP: ${formatCombatNumber(c.hp)}/${formatCombatNumber(c.maxHP)}</div>
+                    <div class="hp-bar"${healthBarAttributes(c.hp, c.maxHP)}>
                         <div class="hp-fill" style="width: ${Math.max(0,(c.hp / c.maxHP) * 100)}%"></div>
                     </div>
                     <div class="combatant-ac">AC: ${c.ac}</div>
@@ -1582,7 +1584,7 @@ class Game {
         const enemyCombatants = combatState.combatants.filter(c => c.team === 'enemy');
         enemyDiv.innerHTML = enemyCombatants.map(c => {
             const conditionsDisplay = c.conditions && c.conditions.length > 0
-                ? `<div class="combatant-conditions" title="${c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
+                ? `<div class="combatant-conditions" title="${fractionalCombatEnabled() ? escapeAttribute(c.conditions.map(cond => conditionDescription(cond, id => combatantById[id]?.name)).join(', ')) : c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
                 : '';
             const enemyEngagedIds = Array.isArray(c.engagedWith) ? c.engagedWith : [];
             const enemyCardClasses = [
@@ -1598,8 +1600,8 @@ class Game {
                      onmouseenter="window.game.highlightEngaged('${c.id}', true)"
                      onmouseleave="window.game.highlightEngaged('${c.id}', false)">
                     <div class="combatant-name">${c.name}</div>
-                    <div class="combatant-hp">HP: ${c.hp}/${c.maxHP}</div>
-                    <div class="hp-bar">
+                    <div class="combatant-hp">HP: ${formatCombatNumber(c.hp)}/${formatCombatNumber(c.maxHP)}</div>
+                    <div class="hp-bar"${healthBarAttributes(c.hp, c.maxHP)}>
                         <div class="hp-fill" style="width: ${(c.hp / c.maxHP) * 100}%"></div>
                     </div>
                     <div class="combatant-ac">AC: ${c.ac}</div>
@@ -1654,7 +1656,7 @@ class Game {
             const initiative = c.initiative !== null && c.initiative !== undefined ? `<span style="color:var(--text-secondary);font-size:0.75rem;margin-left:auto;">${c.initiative}</span>` : '';
 
             return `<div style="${baseStyle}${extraStyle}" class="${teamColorClass}">
-                ${teamIcon} ${c.name}${downedLabel} (${c.hp}/${c.maxHP})${initiative}
+                ${teamIcon} ${c.name}${downedLabel} (${formatCombatNumber(c.hp)}/${formatCombatNumber(c.maxHP)})${initiative}
             </div>`;
         }).join('');
     }
@@ -2220,7 +2222,7 @@ class Game {
             charLevel.textContent = `Level ${character.level} ${character.class.displayName || character.class.name}`;
         }
         if (hpDisplay) {
-            hpDisplay.textContent = `HP: ${character.currentHP}/${character.maxHP}`;
+            hpDisplay.textContent = `HP: ${formatCombatNumber(character.currentHP)}/${formatCombatNumber(character.maxHP)}`;
         }
         if (acDisplay) {
             acDisplay.textContent = `AC: ${character.ac}`;
@@ -2271,7 +2273,7 @@ class Game {
                 charLevel.textContent = `Level ${updatedChar.level} ${updatedChar.class.name}`;
             }
             if (hpDisplay) {
-                hpDisplay.textContent = `HP: ${updatedChar.currentHP}/${updatedChar.maxHP}`;
+                hpDisplay.textContent = `HP: ${formatCombatNumber(updatedChar.currentHP)}/${formatCombatNumber(updatedChar.maxHP)}`;
             }
             if (acDisplay) {
                 acDisplay.textContent = `AC: ${updatedChar.ac}`;
@@ -2290,7 +2292,7 @@ class Game {
         gameState.subscribe('character.currentHP', (hp) => {
             const char = gameState.get('character');
             if (hpDisplay && char) {
-                hpDisplay.textContent = `HP: ${hp}/${char.maxHP}`;
+                hpDisplay.textContent = `HP: ${formatCombatNumber(hp)}/${formatCombatNumber(char.maxHP)}`;
             }
         });
 
@@ -2442,7 +2444,8 @@ class Game {
 
             const currentHP = member.currentHP ?? member.hp ?? 0;
             const maxHP = member.maxHP ?? 1;
-            const hpPct = Math.max(0, Math.min(100, Math.round((currentHP / maxHP) * 100)));
+            const rawHPPct = (currentHP / maxHP) * 100;
+            const hpPct = Math.max(0, Math.min(100, fractionalCombatEnabled() ? rawHPPct : Math.round(rawHPPct)));
 
             let fillClass = 'hp-high';
             if (hpPct <= 25) {
@@ -2468,12 +2471,12 @@ class Game {
             }
 
             return `
-                <div class="${cardClass}" title="${member.name} — HP: ${currentHP}/${maxHP}">
+                <div class="${cardClass}" title="${member.name} — HP: ${formatCombatNumber(currentHP)}/${formatCombatNumber(maxHP)}">
                     <div class="party-member-name">${displayName}</div>
-                    <div class="party-member-hp-bar">
+                    <div class="party-member-hp-bar"${healthBarAttributes(currentHP, maxHP)}>
                         <div class="party-member-hp-fill ${fillClass}" style="width:${hpPct}%"></div>
                     </div>
-                    <div class="party-member-hp-text">${currentHP}/${maxHP}</div>
+                    <div class="party-member-hp-text">${formatCombatNumber(currentHP)}/${formatCombatNumber(maxHP)}</div>
                 </div>`;
         }).join('');
     }
@@ -5252,7 +5255,7 @@ class Game {
         if (character) {
             const hpEl = document.getElementById('dungeonHP');
             if (hpEl) {
-                hpEl.textContent = `${character.currentHP}/${character.maxHP}`;
+                hpEl.textContent = `${formatCombatNumber(character.currentHP)}/${formatCombatNumber(character.maxHP)}`;
             }
 
             const acEl = document.getElementById('dungeonAC');
@@ -6221,7 +6224,7 @@ class Game {
                         <div class="consequence-item">
                             <span class="consequence-icon">💔</span>
                             <span class="consequence-text">Took</span>
-                            <span class="consequence-value">${consequences.damage} ${damageType}</span>
+                            <span class="consequence-value">${formatCombatNumber(consequences.damage)} ${damageType}</span>
                         </div>
                     `;
                 }
@@ -6358,7 +6361,7 @@ class Game {
                 </div>
                 <div class="char-row">
                     <span class="char-label">Hit Points:</span>
-                    <span class="char-value">${character.currentHP} / ${character.maxHP}</span>
+                    <span class="char-value">${formatCombatNumber(character.currentHP)} / ${formatCombatNumber(character.maxHP)}</span>
                 </div>
                 <div class="char-row">
                     <span class="char-label">Hit Dice:</span>
@@ -7443,10 +7446,14 @@ class Game {
         if (item.id.includes('potion') && item.id.includes('healing')) {
             const healing = this.rollHealing(item);
             const oldHP = character.currentHP;
-            character.currentHP = Math.min(character.maxHP, character.currentHP + healing);
-            const actualHealing = character.currentHP - oldHP;
+            character.currentHP = fractionalCombatEnabled()
+                ? addHP(character.currentHP, healing, character.maxHP)
+                : Math.min(character.maxHP, character.currentHP + healing);
+            const actualHealing = fractionalCombatEnabled()
+                ? subtractHP(character.currentHP, oldHP)
+                : character.currentHP - oldHP;
 
-            gameState.addMessage(`You drink ${item.name} and restore ${actualHealing} HP!`, 'success');
+            gameState.addMessage(`You drink ${item.name} and restore ${formatCombatNumber(actualHealing)} HP!`, 'success');
 
             // Decrease quantity or remove item
             if (item.quantity && item.quantity > 1) {
