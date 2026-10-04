@@ -8,6 +8,8 @@ import { RULES } from '../core/rulesEngine.js';
 import { roll } from '../utils/dice.js';
 import { getAttributeModifierFor } from '../utils/attributeResolver.js';
 import { applyLongRestFatigue, getFatigueState } from './FatigueManager.js';
+import { damagePrecisionEnabled, normalizeHP, addHP } from '../utils/damagePrecision.js';
+import { formatCombatNumber } from '../utils/combatNumberFormat.js';
 
 class RestManager {
     constructor() {
@@ -216,8 +218,8 @@ class RestManager {
         // Apply healing
         if (healing > 0) {
             const oldHP = character.currentHP;
-            character.currentHP = Math.min(character.maxHP, character.currentHP + healing);
-            healing = character.currentHP - oldHP; // Actual healing applied
+            character.currentHP = addHP(character.currentHP, healing, character.maxHP);
+            healing = normalizeHP(character.currentHP - oldHP); // Actual healing applied
         }
 
         // Increment short rests used
@@ -260,7 +262,9 @@ class RestManager {
 
         // If out of supplies, cap HP recovery at 50% of max
         if (fatigueResult.hpRecoveryMultiplier < 1) {
-            character.currentHP = Math.floor(character.maxHP * fatigueResult.hpRecoveryMultiplier);
+            character.currentHP = damagePrecisionEnabled()
+                ? normalizeHP(character.maxHP * fatigueResult.hpRecoveryMultiplier)
+                : Math.floor(character.maxHP * fatigueResult.hpRecoveryMultiplier);
         }
 
         // Hit dice don't need restoring (they equal level and don't deplete)
@@ -288,7 +292,7 @@ class RestManager {
         gameState.addMessage('You take a long rest at the inn...', 'info');
         gameState.addMessage('You wake up feeling refreshed!', 'success');
         const hpLabel = fatigueResult.hpRecoveryMultiplier < 1 ? 'halved — no supplies!' : 'fully restored';
-        gameState.addMessage(`HP: ${character.currentHP}/${character.maxHP} (${hpLabel})`, fatigueResult.hpRecoveryMultiplier < 1 ? 'warning' : 'success');
+        gameState.addMessage(`HP: ${formatCombatNumber(character.currentHP)}/${formatCombatNumber(character.maxHP)} (${hpLabel})`, fatigueResult.hpRecoveryMultiplier < 1 ? 'warning' : 'success');
         gameState.addMessage(`Hit dice: ${character.hitDice.current}/${character.hitDice.max}`, 'info');
 
         if (character.spellcasting) {

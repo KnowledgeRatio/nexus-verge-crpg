@@ -12,6 +12,9 @@ import { addFatigue, getFatigueModifiers } from './FatigueManager.js';
 import { execute as dispatchAbilityEffects, buildContext as buildAbilityContext } from './EffectDispatcher.js';
 import { getPassiveAttackBonus, getPassiveDamageBonus, getPassiveUnarmedDie, passiveAddsOffHandAbilityMod, passiveShouldRerollDamage, getAuraACBonus, getAuraSaveBonus } from './PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
+import { damagePrecisionEnabled, hpToUnits, unitsToHP, normalizeHP, subtractHP, addHP, partitionDamage } from '../utils/damagePrecision.js';
+import { resolveDamageComponents, resolveDamageModifier as resolvePreciseDamageModifier } from './DamageResolver.js';
+import { formatCombatNumber } from '../utils/combatNumberFormat.js';
 
 function resolveDamageModifier(combatant, damageType, isMagical = false) {
     if (!RULES.combat.damageReductionSystem.enabled) return 'normal';
@@ -62,7 +65,12 @@ function consumeEquipmentModEffect(character, propId, effect) {
     character.equipmentModCharges[propId] = (character.equipmentModCharges[propId] || 0) + 1;
 }
 
-function applyDamage(target, amount, damageType, isMagical = false) {
+function applyDamage(target, amount, damageType, isMagical = false, damageFlavor = null) {
+    if (damagePrecisionEnabled()) {
+        const result = resolveDamageComponents(target, [{ amount, damageType, isMagical, damageFlavor }]);
+        reportDamage(target, result);
+        return result;
+    }
     const rules = RULES.combat.damageReductionSystem;
     const modifier = resolveDamageModifier(target, damageType, isMagical);
     const multipliers = { immune: rules.immunityMultiplier, resistant: rules.resistanceMultiplier, vulnerable: rules.vulnerabilityMultiplier, normal: 1 };
@@ -73,6 +81,19 @@ function applyDamage(target, amount, damageType, isMagical = false) {
     }
     target.takeDamage(final);
     return { modifier, final };
+}
+
+function reportDamage(target, result, sourceId = null, phase = 'impact') {
+    for (const component of result.components) {
+        if (component.modifier !== 'normal') {
+            const labels = { immune: 'is immune to', resistant: 'resists', vulnerable: 'is vulnerable to' };
+            gameState.addMessage(`${target.name} ${labels[component.modifier]} ${component.damageType} (${formatCombatNumber(component.raw)} → ${formatCombatNumber(component.final)})`, 'info');
+        }
+    }
+    gameState.notify('combat.floatingText', {
+        sourceId, combatantId: target.id, text: `-${formatCombatNumber(result.hpDamage)}`,
+        type: phase === 'critical' ? 'critical' : 'damage', phase: phase === 'critical' ? 'impact' : phase, damage: result
+    });
 }
 
 class CombatManager {
@@ -289,6 +310,27 @@ class CombatManager {
 
         combatant.startTurn();
 
+        if (damagePrecisionEnabled()) {
+            this.turnActor = combatant;
+            const previousOrder = [...this.turnOrder];
+            const previousIndex = this.currentTurnIndex;
+            this.processPeriodicDamage(combatant);
+            if (combatant.hp <= 0) {
+                if (this.active) {
+                    this.advanceAfterPeriodicDefeat(previousOrder, previousIndex);
+                }
+                return;
+            }
+            for (const condition of [...combatant.conditions]) {
+                if (condition.duration === 'rounds') {
+                    condition.roundsRemaining--;
+                    if (condition.roundsRemaining <= 0) {
+                        combatant.removeCondition(condition.type, true);
+                    }
+                }
+            }
+        } else {
+        /* eslint-disable indent */
         // Process round-based conditions on THIS combatant
         combatant.conditions.forEach(condition => {
             if (condition.duration === 'rounds') {
@@ -320,6 +362,8 @@ class CombatManager {
                     return;
                 }
             }
+        }
+        /* eslint-enable indent */
         }
 
         // Process conditions with 'untilStartOfTurn' duration where this combatant was the applier
@@ -374,6 +418,113 @@ class CombatManager {
             // UI handles panel switch via 'combat.activeCompanionId' subscription
         } else {
             console.log('👤 Player turn - waiting for input');
+        }
+    }
+
+    applyWeaponDamage(attacker, target, amount, damageType, metadata = {}) {
+        const isMagical = metadata.isMagical ?? false;
+        const damageFlavor = metadata.damageFlavor ?? null;
+        if (!damagePrecisionEnabled()) {
+            return applyDamage(target, amount, damageType);
+        }
+        const rules = RULES.combat.damageOverTime;
+        const eligibleAmount = metadata.eligible === false ? 0 : Math.min(Math.max(0, amount), metadata.eligibleAmount ?? amount);
+        const eligible = eligibleAmount > 0 && rules.damageTypes.includes(damageType);
+        const partition = eligible ? partitionDamage(eligibleAmount, rules.immediateFraction, rules.ticks)
+            : { raw: normalizeHP(Math.max(0, amount)), immediate: normalizeHP(Math.max(0, amount)), deferred: 0, ticksUnits: [] };
+        let suppressedDeferred = 0;
+        if (partition.deferred > 0) {
+            const conditionImmune = (target.conditionImmunities ?? target.character?.conditionImmunities ?? []).includes(rules.conditionType);
+            const damageImmune = resolvePreciseDamageModifier(target, damageType, isMagical, damageFlavor) === 'immune';
+            if (conditionImmune || damageImmune) {
+                suppressedDeferred = partition.deferred;
+            } else {
+                let condition = target.getCondition(rules.conditionType);
+                if (!condition) {
+                    target.addCondition(rules.conditionType, 'combat', attacker.id, {
+                        curable: rules.curable, icon: rules.conditionIcon, isBuff: false
+                    });
+                    condition = target.getCondition(rules.conditionType);
+                    condition.periodicDamage = { tranches: [] };
+                }
+                if (!condition.periodicDamage) {
+                    condition.periodicDamage = { tranches: [] };
+                }
+                condition.periodicDamage.tranches.push({ sourceId: attacker.id, damageType, isMagical, damageFlavor,
+                    ticksUnits: partition.ticksUnits, cursor: 0 });
+            }
+        }
+        const immediate = eligible ? normalizeHP(partition.immediate + Math.max(0, amount - eligibleAmount)) : partition.immediate;
+        const result = resolveDamageComponents(target, [{ amount: immediate, damageType, isMagical, damageFlavor, sourceId: attacker.id }]);
+        reportDamage(target, result, attacker.id, metadata.isCritical ? 'critical' : 'impact');
+        gameState.addMessage(`${target.name} takes ${formatCombatNumber(result.hpDamage)} HP damage${partition.deferred > 0 ? `; ${formatCombatNumber(partition.deferred - suppressedDeferred)} blood damage pending` : ''}.`, 'info');
+        if (target.hp <= 0) {
+            this.handleDefeat(target);
+        }
+        return { ...result, raw: normalizeHP(Math.max(0, amount)), immediate, deferred: partition.deferred,
+            suppressedDeferred, eligible, ticksUnits: [...partition.ticksUnits] };
+    }
+
+    getPendingDamage(target) {
+        const tranches = target.conditions.flatMap(condition => condition.periodicDamage?.tranches ?? []);
+        return {
+            nextTick: unitsToHP(tranches.reduce((sum, tranche) => sum + (tranche.ticksUnits[tranche.cursor] ?? 0), 0)),
+            totalPending: unitsToHP(tranches.reduce((sum, tranche) => sum + tranche.ticksUnits.slice(tranche.cursor).reduce((total, value) => total + value, 0), 0)),
+            ticksRemaining: tranches.reduce((maximum, tranche) => Math.max(maximum, tranche.ticksUnits.length - tranche.cursor), 0),
+            tranches: tranches.map(tranche => ({ ...tranche, ticksUnits: [...tranche.ticksUnits] }))
+        };
+    }
+
+    processPeriodicDamage(target) {
+        if (!damagePrecisionEnabled() || target.hp <= 0) {
+            return null;
+        }
+        const components = [];
+        for (const condition of [...target.conditions]) {
+            if (condition.periodicDamage) {
+                for (const tranche of condition.periodicDamage.tranches) {
+                    const amount = unitsToHP(tranche.ticksUnits[tranche.cursor++] ?? 0);
+                    if (amount > 0) {
+                        components.push({ amount, damageType: tranche.damageType,
+                            isMagical: tranche.isMagical, damageFlavor: tranche.damageFlavor, sourceId: tranche.sourceId });
+                    }
+                }
+                condition.periodicDamage.tranches = condition.periodicDamage.tranches.filter(tranche => tranche.cursor < tranche.ticksUnits.length);
+                if (!condition.periodicDamage.tranches.length) {
+                    target.removeCondition(condition.type, true);
+                }
+            } else if (condition.damageOnTurnStart && condition.value > 0) {
+                components.push({ amount: condition.value, damageType: condition.damageOnTurnStart.type || 'necrotic',
+                    isMagical: condition.damageOnTurnStart.isMagical ?? false,
+                    damageFlavor: condition.damageOnTurnStart.damageFlavor ?? null, sourceId: condition.appliedBy });
+            }
+        }
+        if (!components.length) {
+            return null;
+        }
+        const result = resolveDamageComponents(target, components);
+        reportDamage(target, result, null, 'tick');
+        gameState.addMessage(`${target.name} takes ${formatCombatNumber(result.hpDamage)} HP damage from ongoing effects.`, 'warning');
+        if (target.hp <= 0) {
+            this.handleDefeat(target);
+        }
+        return result;
+    }
+
+    advanceAfterPeriodicDefeat(previousOrder, previousIndex) {
+        for (let offset = 1; offset <= previousOrder.length; offset++) {
+            const next = previousOrder[(previousIndex + offset) % previousOrder.length];
+            if (next.hp > 0 && this.turnOrder.includes(next)) {
+                if (previousIndex + offset >= previousOrder.length) {
+                    this.round++;
+                    if (gameState.get('combat')) {
+                        gameState.set('combat.round', this.round);
+                    }
+                }
+                this.currentTurnIndex = this.turnOrder.indexOf(next);
+                this.startTurn();
+                return;
+            }
         }
     }
 
@@ -776,10 +927,17 @@ class CombatManager {
             damageMsg += `${actionName}: ${damageTotal} ${damageType} damage`;
             gameState.addMessage(damageMsg, 'error');
 
-            gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
+            if (!damagePrecisionEnabled()) {
+                gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
+            }
 
             this.audio.playCombatSound({ ...soundContext, hit: true, critical: isCritical });
-            applyDamage(target, damageTotal, damageType);
+            this.applyWeaponDamage(combatant, target, damageTotal, damageType, {
+                eligible: action.type === 'meleeWeaponAttack' || action.type === 'rangedWeaponAttack',
+                isCritical,
+                isMagical: action.isMagical ?? action.magical ?? ['meleeSpellAttack', 'rangedSpellAttack'].includes(action.type),
+                damageFlavor: action.damageFlavor ?? action.damage?.flavor ?? null
+            });
             this.updateGameState();
 
             // Check if target is defeated
@@ -893,7 +1051,7 @@ class CombatManager {
         }
 
         // Half damage on save
-        const damageTotal = saved ? Math.floor(damageRoll / 2) : damageRoll;
+        const damageTotal = saved ? (damagePrecisionEnabled() ? normalizeHP(damageRoll / 2) : Math.floor(damageRoll / 2)) : damageRoll;
         const damageType = action.damageType || 'fire';
 
         if (saved) {
@@ -902,10 +1060,13 @@ class CombatManager {
             gameState.addMessage(`💥 ${target.name} fails! Takes ${damageTotal} ${damageType} damage!`, 'error');
         }
 
-        gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: saved ? 'damage' : 'critical' });
+        if (!damagePrecisionEnabled()) {
+            gameState.notify('combat.floatingText', { combatantId: target.id, text: `-${damageTotal}`, type: saved ? 'damage' : 'critical' });
+        }
 
         this.audio.playCombatSound({ weaponType: 'ranged', hit: true, critical: !saved });
-        applyDamage(target, damageTotal, damageType);
+        applyDamage(target, damageTotal, damageType, damagePrecisionEnabled() ? (action.isMagical ?? action.magical ?? false) : false,
+            action.damageFlavor ?? action.damage?.flavor ?? null);
         this.updateGameState();
 
         // Check if target is defeated
@@ -1351,7 +1512,7 @@ class CombatManager {
             const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus + extraDamage;
 
             // Build detailed damage message
-            let damageMsg = '💥 Hit! ';
+            let damageMsg = damagePrecisionEnabled() ? '💥 Hit! Rolled ' : '💥 Hit! ';
             if (isCritical) {
                 // Critical: show both dice rolls
                 damageMsg += `Damage: ${firstRoll} + ${secondRoll} (crit)`;
@@ -1379,7 +1540,9 @@ class CombatManager {
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
-            gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
+            if (!damagePrecisionEnabled()) {
+                gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damageTotal}`, type: isCritical ? 'critical' : 'damage' });
+            }
 
             // REACTION HOOK: afterHit — e.g., Parry fires when defender is hit (damage already rolled)
             // Parry can reduce damage before it's applied
@@ -1437,7 +1600,13 @@ class CombatManager {
                 }
             }
 
-            applyDamage(defender, finalDamage, weaponDamageType);
+            this.applyWeaponDamage(attacker, defender, finalDamage, weaponDamageType, {
+                eligible: !!weapon,
+                isCritical,
+                eligibleAmount: Math.min(finalDamage, Math.max(0, damageRoll + damageBonus + forgecraftDamageBonus)),
+                isMagical: weapon?.isMagical ?? weapon?.magical ?? false,
+                damageFlavor: weapon?.damageFlavor ?? weapon?.damage?.flavor ?? null
+            });
 
             // Check if defender is defeated
             if (defender.hp <= 0) {
@@ -1553,9 +1722,13 @@ class CombatManager {
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
-                        gameState.notify('combat.floatingText', { combatantId: adjacentEnemy.id, text: `-${cleaveDamage} CLEAVE`, type: 'damage' });
+                        if (!damagePrecisionEnabled()) {
+                            gameState.notify('combat.floatingText', { combatantId: adjacentEnemy.id, text: `-${cleaveDamage} CLEAVE`, type: 'damage' });
+                        }
 
-                        applyDamage(adjacentEnemy, cleaveDamage, getWeaponDamageType(weapon) || 'bone');
+                        this.applyWeaponDamage(attacker, adjacentEnemy, cleaveDamage, getWeaponDamageType(weapon) || 'bone', {
+                            isMagical: weapon?.isMagical ?? weapon?.magical ?? false
+                        });
 
                         if (adjacentEnemy.hp <= 0) {
                             gameState.addMessage(`💀 ${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
@@ -1621,9 +1794,13 @@ class CombatManager {
                             attacker.team === 'player' ? 'success' : 'error'
                         );
 
-                        gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${nickDamageTotal} NICK`, type: 'damage' });
+                        if (!damagePrecisionEnabled()) {
+                            gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${nickDamageTotal} NICK`, type: 'damage' });
+                        }
 
-                        applyDamage(defender, nickDamageTotal, getWeaponDamageType(offHandWeapon) || 'bone');
+                        this.applyWeaponDamage(attacker, defender, nickDamageTotal, getWeaponDamageType(offHandWeapon) || 'bone', {
+                            isMagical: offHandWeapon?.isMagical ?? offHandWeapon?.magical ?? false
+                        });
 
                         if (defender.hp <= 0) {
                             gameState.addMessage(`💀 ${defender.name} is defeated by Nick!`, 'warning');
@@ -1675,9 +1852,11 @@ class CombatManager {
                         'warning'
                     );
 
-                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${grazeDamage} GRAZE`, type: 'damage' });
+                    if (!damagePrecisionEnabled()) {
+                        gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${grazeDamage} GRAZE`, type: 'damage' });
+                    }
 
-                    applyDamage(defender, grazeDamage, getWeaponDamageType(weapon) || 'bone');
+                    applyDamage(defender, grazeDamage, getWeaponDamageType(weapon) || 'bone', damagePrecisionEnabled() ? (weapon?.isMagical ?? weapon?.magical ?? false) : false);
 
                     if (defender.hp <= 0) {
                         gameState.addMessage(`💀 ${defender.name} is defeated by Graze!`, 'warning');
@@ -2256,6 +2435,17 @@ class CombatManager {
 
     /** Handle combatant defeat. */
     handleDefeat(combatant) {
+        if (damagePrecisionEnabled()) {
+            if (combatant.defeatHandled || combatant.hp > 0) {
+                return;
+            }
+            combatant.defeatHandled = true;
+            for (const condition of [...combatant.conditions]) {
+                if (condition.periodicDamage) {
+                    combatant.removeCondition(condition.type, true);
+                }
+            }
+        }
         // Clear engagement for the defeated combatant
         this.clearEngagement(combatant);
         combatant.concentratingOn = null;
@@ -2270,6 +2460,12 @@ class CombatManager {
                 combatant.sourceCharacter.companionMeta.isDowned = true;
             }
             // Remove from turn order so they don't get future turns
+            if (damagePrecisionEnabled()) {
+                const removedIndex = this.turnOrder.indexOf(combatant);
+                if (removedIndex >= 0 && removedIndex <= this.currentTurnIndex) {
+                    this.currentTurnIndex--;
+                }
+            }
             this.turnOrder = this.turnOrder.filter(c => c.id !== combatant.id);
             gameState.addMessage(`💔 ${combatant.name} is downed!`, 'error');
             gameState.notify('combat.floatingText', { combatantId: combatant.id, text: 'DOWNED!', type: 'condition' });
@@ -2289,6 +2485,33 @@ class CombatManager {
      * End current turn
      */
     async endTurn() {
+        if (damagePrecisionEnabled()) {
+            const actor = this.turnActor ?? this.getCurrentCombatant();
+            actor?.endTurn();
+            gameState.set('combat.isCompanionTurn', false);
+            gameState.set('combat.activeCompanionId', null);
+            if (actor?.hp > 0 && this.active) {
+                await this.processLegendaryActions(actor);
+            }
+            if (!this.active || !this.turnOrder.some(entry => entry.hp > 0)) {
+                return;
+            }
+            const previousIndex = this.turnOrder.indexOf(actor);
+            const startIndex = previousIndex >= 0 ? previousIndex : this.currentTurnIndex;
+            let nextIndex = (startIndex + 1 + this.turnOrder.length) % this.turnOrder.length;
+            while (this.turnOrder[nextIndex].hp <= 0) {
+                nextIndex = (nextIndex + 1) % this.turnOrder.length;
+            }
+            if (nextIndex <= startIndex) {
+                this.round++;
+                if (gameState.get('combat')) {
+                    gameState.set('combat.round', this.round);
+                }
+            }
+            this.currentTurnIndex = nextIndex;
+            this.startTurn();
+            return;
+        }
         const combatant = this.getCurrentCombatant();
         if (combatant) {
             combatant.endTurn();
@@ -2418,7 +2641,8 @@ class CombatManager {
                 c.duration === 'combat' ||
                 c.duration === 'untilStartOfTurn' ||
                 c.duration === 'untilEndOfTurn' ||
-                c.type === 'tempHP'
+                c.type === 'tempHP' ||
+                (damagePrecisionEnabled() && (c.periodicDamage || c.damageOnTurnStart))
             );
 
             conditionsToRemove.forEach(condition => {
@@ -2934,7 +3158,9 @@ class CombatManager {
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
-            gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damage}`, type: isCritical ? 'critical' : 'damage' });
+            if (!damagePrecisionEnabled()) {
+                gameState.notify('combat.floatingText', { combatantId: defender.id, text: `-${damage}`, type: isCritical ? 'critical' : 'damage' });
+            }
 
             this.audio.playCombatSound({ ...soundContext, hit: true, critical: isCritical });
             applyDamage(defender, damage, 'bone');
@@ -2998,6 +3224,9 @@ class Combatant {
         // Combat stats
         this.hp = character.currentHP !== null && character.currentHP !== undefined ? character.currentHP : character.maxHP;
         this.maxHP = character.maxHP;
+        if (damagePrecisionEnabled()) {
+            this.hp = addHP(0, this.hp, this.maxHP);
+        }
         this.ac = character.ac;
         this.initiative = 0;
 
@@ -3117,7 +3346,7 @@ class Combatant {
         const existing = this.conditions.find(c => c.type === type);
         if (existing) {
             if (type === 'tempHP' && options.value !== null && options.value !== undefined && options.value > (existing.value || 0)) {
-                existing.value = options.value;
+                existing.value = damagePrecisionEnabled() ? normalizeHP(options.value) : options.value;
                 existing.roundsRemaining = options.roundsRemaining ?? existing.roundsRemaining;
                 existing.duration = duration;
             } else if (stackable) {
@@ -3136,7 +3365,7 @@ class Combatant {
         }
 
         this.conditions.push({
-            type, duration, appliedBy, value, roundsRemaining,
+            type, duration, appliedBy, value: damagePrecisionEnabled() && type === 'tempHP' ? normalizeHP(Math.max(0, value || 0)) : value, roundsRemaining,
             isBuff, curable, icon, damageOnTurnStart, inflictedByTactic, affectsAC
         });
         return true;
@@ -3366,6 +3595,28 @@ class Combatant {
      * Take damage — absorbs through tempHP condition first
      */
     takeDamage(amount) {
+        if (damagePrecisionEnabled()) {
+            const rawUnits = Math.max(0, hpToUnits(amount));
+            const tempHP = this.getCondition('tempHP');
+            const absorbedUnits = tempHP ? Math.min(rawUnits, Math.max(0, hpToUnits(tempHP.value || 0))) : 0;
+            if (tempHP) {
+                tempHP.value = unitsToHP(Math.max(0, hpToUnits(tempHP.value || 0) - absorbedUnits));
+                if (tempHP.value <= 0) {
+                    this.removeCondition('tempHP', true);
+                }
+            }
+            const remaining = unitsToHP(rawUnits - absorbedUnits);
+            const hpBefore = this.hp;
+            this.hp = subtractHP(this.hp, remaining);
+            if (this.team === 'player') {
+                gameState.set('character.currentHP', this.hp);
+            }
+            if (remaining > 0 && this.concentratingOn) {
+                this._checkConcentration(remaining);
+            }
+            return { hpDamage: unitsToHP(hpToUnits(hpBefore) - hpToUnits(this.hp)),
+                tempHPUsed: unitsToHP(absorbedUnits), newHP: this.hp, isDead: this.hp <= 0 };
+        }
         let remaining = amount;
 
         // TempHP absorbs damage first (D&D 5e rule)
@@ -3435,7 +3686,10 @@ class Combatant {
      * @param {CombatManager} combatManager - Reference to manager (needed for turn order re-insertion)
      */
     heal(amount, combatManager = null) {
-        const newHP = Math.min(this.maxHP, this.hp + amount);
+        const newHP = damagePrecisionEnabled() ? addHP(this.hp, amount, this.maxHP) : Math.min(this.maxHP, this.hp + amount);
+        if (damagePrecisionEnabled() && newHP > 0) {
+            this.defeatHandled = false;
+        }
 
         // Revive downed companion when healing brings them above 0
         if (this.isDowned && newHP > 0 && this.team === 'companion') {
@@ -3477,12 +3731,16 @@ class Combatant {
             ac: this.ac,
             initiative: this.initiative,
             actions: { ...this.actions },
-            conditions: [...this.conditions],
+            conditions: damagePrecisionEnabled() ? this.conditions.map(condition => ({ ...condition,
+                ...(condition.periodicDamage ? { periodicDamage: { tranches: condition.periodicDamage.tranches.map(tranche => ({
+                    ...tranche, ticksUnits: [...tranche.ticksUnits]
+                })) } } : {})
+            })) : [...this.conditions],
             masteryEffects: { ...this.masteryEffects },
             engagedWith: Array.from(this.engagedWith)
         };
     }
 }
 
-export { CombatManager, Combatant };
+export { CombatManager, Combatant, applyDamage };
 export default CombatManager;

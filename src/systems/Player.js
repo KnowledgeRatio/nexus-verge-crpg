@@ -11,6 +11,7 @@ import { RULES } from '../core/rulesEngine.js';
 import { addFatigue, calcMovementFatigue, getFatigueState, removeFatigue } from './FatigueManager.js';
 import { normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
 import { convertMonsterSavingThrows } from '../utils/monsterAttributeConversion.js';
+import { damagePrecisionEnabled, normalizeHP, subtractHP } from '../utils/damagePrecision.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -1413,8 +1414,8 @@ class Player {
                         // Failed disarm - take reduced damage (you knew it was there)
                         const { roll: rollFn } = await import('../utils/dice.js');
                         const damage = rollFn(trapDamageDice);
-                        const reducedDamage = Math.max(1, Math.floor(damage / 2));
-                        character.currentHP = Math.max(0, character.currentHP - reducedDamage);
+                        const reducedDamage = Math.max(1, damagePrecisionEnabled() ? normalizeHP(damage / 2) : Math.floor(damage / 2));
+                        character.currentHP = subtractHP(character.currentHP, reducedDamage);
                         gameState.set('character', character);
                         if (window.game) {
                             window.game.updateHUD(character);
@@ -1435,7 +1436,7 @@ class Player {
             // TRAP NOT DETECTED - Immediate damage, no choice
             const { roll: rollFn } = await import('../utils/dice.js');
             const damage = rollFn(trapDamageDice);
-            character.currentHP = Math.max(0, character.currentHP - damage);
+            character.currentHP = subtractHP(character.currentHP, damage);
             gameState.set('character', character);
             if (window.game) {
                 window.game.updateHUD(character);

@@ -4,6 +4,16 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## 2026-10-04 — Blood damage over time prototype
+
+Added a default-disabled combat fork using 1,000 integer units per HP. Positive eligible blood-weapon damage splits into 80 percent immediate damage and 20 percent bleeding over three independent target-turn starts. Reapplication preserves earlier schedules; immunity, cleansing, target defeat, and encounter completion follow explicit cancellation rules.
+
+Shared fractional resolution covers direct and periodic damage, healing, temporary HP, elemental-flavor defenses, and neutral damage types. The fork repairs periodic expiration and lethal-tick turn advancement, and adds fractional health displays and bleed details. Global resistance remains independently disabled; ordinary weapons retain single damage types. Elemental burn content and hands-on activation are not part of this delivery.
+
+Validation: 1,235 tests passed with an explicit ten-second test timeout; 128,800 actual-engine simulation fights and 19 numerical/lifecycle fixtures completed. Existing lint errors are unchanged. Concentration pressure, complete Calling and companion gameplay, and mobile visual acceptance remain gates before enabling the fork. Design and evidence: `docs/plans/2026-10-04-blood-dot-precision.md` and `docs/plans/2026-10-04-blood-dot-simulation.md`.
+
+---
+
 ## Session 21 — 2026-09-22
 **Nine-skill redesign and attribute-integrity completion pass** — Plan: `docs/plans/2026-09-22-skill-system-redesign.md`; backlog: #41 and #42.
 

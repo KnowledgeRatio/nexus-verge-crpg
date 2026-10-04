@@ -12,6 +12,28 @@ import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
 import { getAuraSaveBonus } from './PassiveModifierRegistry.js';
+import { damagePrecisionEnabled, addHP, normalizeHP } from '../utils/damagePrecision.js';
+import { resolveDamageComponents } from './DamageResolver.js';
+import { formatCombatNumber } from '../utils/combatNumberFormat.js';
+
+function applyAbilityDamage(target, amount, config, ability, ctx) {
+    if (!damagePrecisionEnabled()) {
+        target.takeDamage(amount);
+        return { hpDamage: amount };
+    }
+    const weapon = (ctx.attacker ?? ctx.combatant)?.character?.equipment?.mainHand;
+    const result = resolveDamageComponents(target, [{ amount,
+        damageType: config.damageType ?? weapon?.damageType ?? weapon?.damage?.type ?? 'bone',
+        damageFlavor: config.damageFlavor ?? null,
+        isMagical: config.isMagical ?? (ability.tags?.includes('spell') || weapon?.isMagical || weapon?.magical || false),
+        sourceId: (ctx.attacker ?? ctx.combatant)?.id }]);
+    ctx.addMessage(`${ability.name}: ${formatCombatNumber(result.hpDamage)} HP damage.`, 'info');
+    ctx.showFloatingText?.(target.id, `-${formatCombatNumber(result.hpDamage)}`, 'damage');
+    if (target.hp <= 0) {
+        ctx.combatManager?.handleDefeat(target);
+    }
+    return result;
+}
 
 // ---------------------------------------------------------------------------
 // Handler Registry
@@ -199,18 +221,22 @@ registerHandler('heal', (formula, ability, ctx) => {
     if (ctx.outOfCombat) {
         // Out of combat: modify character directly
         oldHP = ctx.character.currentHP;
-        ctx.character.currentHP = Math.min(ctx.character.maxHP, ctx.character.currentHP + healAmount);
-        actual = ctx.character.currentHP - oldHP;
+        ctx.character.currentHP = damagePrecisionEnabled() ? addHP(ctx.character.currentHP, healAmount, ctx.character.maxHP) : Math.min(ctx.character.maxHP, ctx.character.currentHP + healAmount);
+        actual = normalizeHP(ctx.character.currentHP - oldHP);
     } else {
         // In combat: modify combatant
         oldHP = ctx.combatant.hp;
-        ctx.combatant.hp = Math.min(ctx.combatant.maxHP, ctx.combatant.hp + healAmount);
-        actual = ctx.combatant.hp - oldHP;
+        if (damagePrecisionEnabled()) {
+            ctx.combatant.heal(healAmount, ctx.combatManager);
+        } else {
+            ctx.combatant.hp = Math.min(ctx.combatant.maxHP, ctx.combatant.hp + healAmount);
+        }
+        actual = normalizeHP(ctx.combatant.hp - oldHP);
     }
 
-    ctx.addMessage(`💚 ${ability.name} (Heal): ${ctx.character.name} heals for ${actual} HP! [${breakdown}]`, 'success');
+    ctx.addMessage(`💚 ${ability.name} (Heal): ${ctx.character.name} heals for ${formatCombatNumber(actual)} HP! [${breakdown}]`, 'success');
     if (!ctx.outOfCombat) {
-        ctx.showFloatingText(ctx.combatant.id, `+${actual} HP`, 'healing');
+        ctx.showFloatingText(ctx.combatant.id, `+${formatCombatNumber(actual)} HP`, 'healing');
     }
 
     return { healing: actual, rolled: healAmount };
@@ -288,10 +314,12 @@ registerHandler('variableCostDamage', async (config, ability, ctx) => {
         `✨ ${ability.name}! ${ctx.combatant?.name || 'Attacker'} spends ${resolveSpent} Resolve — ${totalDamage} ${config.damageType || ''} damage!${bonusNote}`,
         'success'
     );
-    defender.takeDamage(totalDamage);
-    ctx.showFloatingText(defender.id, `-${totalDamage}`, 'damage');
+    const damageResult = applyAbilityDamage(defender, totalDamage, config, ability, ctx);
+    if (!damagePrecisionEnabled()) {
+        ctx.showFloatingText(defender.id, `-${totalDamage}`, 'damage');
+    }
 
-    return { damage: totalDamage, resolveSpent };
+    return { damage: damagePrecisionEnabled() ? damageResult.hpDamage : totalDamage, resolveSpent };
 });
 
 /**
@@ -329,7 +357,8 @@ registerHandler('variableCostHeal', async (config, ability, ctx) => {
     let healAmount = 0;
     try {
         // eslint-disable-next-line no-new-func
-        healAmount = Math.max(0, Math.floor(Function(`"use strict"; return (${formula})`)()));
+        const evaluated = Function(`"use strict"; return (${formula})`)();
+        healAmount = Math.max(0, damagePrecisionEnabled() ? normalizeHP(evaluated) : Math.floor(evaluated));
     } catch (e) {
         console.warn('variableCostHeal: formula evaluation error', formula, e);
         healAmount = resolveSpent * Math.max(1, resilienceMod) + level;
@@ -338,24 +367,28 @@ registerHandler('variableCostHeal', async (config, ability, ctx) => {
     let actual = 0;
     if (ctx.outOfCombat) {
         const oldHP = character.currentHP;
-        character.currentHP = Math.min(character.maxHP, character.currentHP + healAmount);
-        actual = character.currentHP - oldHP;
+        character.currentHP = damagePrecisionEnabled() ? addHP(character.currentHP, healAmount, character.maxHP) : Math.min(character.maxHP, character.currentHP + healAmount);
+        actual = normalizeHP(character.currentHP - oldHP);
     } else {
         const combatant = ctx.combatant;
         const oldHP = combatant.hp;
-        combatant.hp = Math.min(combatant.maxHP, combatant.hp + healAmount);
-        actual = combatant.hp - oldHP;
+        if (damagePrecisionEnabled()) {
+            combatant.heal(healAmount, ctx.combatManager);
+        } else {
+            combatant.hp = Math.min(combatant.maxHP, combatant.hp + healAmount);
+        }
+        actual = normalizeHP(combatant.hp - oldHP);
         character.currentHP = combatant.hp;
     }
 
     gameState.set('character', character);
 
     ctx.addMessage(
-        `🤝 ${ability.name} (Heal): ${character.name} heals for ${actual} HP [${resolveSpent} Resolve]`,
+        `🤝 ${ability.name} (Heal): ${character.name} heals for ${formatCombatNumber(actual)} HP [${resolveSpent} Resolve]`,
         'success'
     );
     if (!ctx.outOfCombat && ctx.combatant) {
-        ctx.showFloatingText(ctx.combatant.id, `+${actual} HP`, 'healing');
+        ctx.showFloatingText(ctx.combatant.id, `+${formatCombatNumber(actual)} HP`, 'healing');
     }
 
     return { healing: actual, resolveSpent };
@@ -594,7 +627,10 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
-    defender.takeDamage(dieRoll);
+    applyAbilityDamage(defender, dieRoll, config, ability, ctx);
+    if (damagePrecisionEnabled() && defender.hp <= 0) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
+    }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     // EXPOSED: disadvantage on this save if the target is already suffering a condition
@@ -657,7 +693,10 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
-    defender.takeDamage(dieRoll);
+    applyAbilityDamage(defender, dieRoll, config, ability, ctx);
+    if (damagePrecisionEnabled() && defender.hp <= 0) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
+    }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     // EXPOSED: disadvantage on this save if the target is already suffering a condition
@@ -719,7 +758,10 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     const saveDC  = tacticSaveDC(attacker.character, config);
 
     // Apply bonus damage
-    defender.takeDamage(dieRoll);
+    applyAbilityDamage(defender, dieRoll, config, ability, ctx);
+    if (damagePrecisionEnabled() && defender.hp <= 0) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
+    }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     // EXPOSED: disadvantage on this save if the target is already suffering a condition

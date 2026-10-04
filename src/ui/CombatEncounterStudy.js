@@ -1,6 +1,7 @@
 import { CombatManager } from '../systems/CombatManager.js';
 import audioManager from '../systems/AudioManager.js';
 import { gameState } from '../core/GameState.js';
+import { formatCombatNumber } from '../utils/combatNumberFormat.js';
 import { skillRegistry } from '../systems/SkillRegistry.js';
 import { loadCampaigns } from '../utils/campaignFilter.js';
 import { buildStudyEncounter } from './CombatEncounterSetup.js';
@@ -104,7 +105,7 @@ function updateControls() {
         element('Fallback').replaceChildren(...(displayed?.combatants || []).map(actor => {
             const button = document.createElement('button');
             button.type = 'button';
-            button.textContent = `${actor.name} · HP ${actor.hp}/${actor.maxHP} · ${actor.engagedWith.length} engaged`;
+            button.textContent = `${actor.name} · HP ${formatCombatNumber(actor.hp)}/${formatCombatNumber(actor.maxHP)} · ${actor.engagedWith.length} engaged`;
             button.disabled = actor.team !== 'enemy' || actor.hp <= 0;
             button.setAttribute('aria-pressed', String(actor.id === selectedTarget));
             button.addEventListener('click', () => chooseTarget(actor.id));
