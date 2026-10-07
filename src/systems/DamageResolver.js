@@ -29,7 +29,7 @@ export function resolveDamageModifier(target, damageType, isMagical = false, dam
 
 // Components are mitigated independently, then delivered as one damage event so that
 // subdividing a bleed cannot multiply concentration checks. Public HP stays in points.
-export function resolveDamageComponents(target, components) {
+export function previewDamageComponents(target, components) {
     const rules = RULES.combat.damageReductionSystem;
     let totalUnits = 0;
     const resolved = components.map(component => {
@@ -43,9 +43,19 @@ export function resolveDamageComponents(target, components) {
     });
     const hpBefore = target.hp ?? target.currentHP;
     const final = unitsToHP(totalUnits);
-    const damage = target.takeDamage(final);
-    const hpDamage = unitsToHP(hpToUnits(hpBefore) - hpToUnits(target.hp ?? target.currentHP));
+    const tempHPUnits = Math.max(0, hpToUnits(target.getCondition?.('tempHP')?.value ?? 0));
+    const tempHPUsed = unitsToHP(Math.min(totalUnits, tempHPUnits));
+    const hpDamage = unitsToHP(Math.min(hpToUnits(hpBefore), totalUnits - hpToUnits(tempHPUsed)));
     return { raw: unitsToHP(resolved.reduce((sum, component) => sum + hpToUnits(component.raw), 0)),
-        final, hpDamage, tempHPUsed: damage?.tempHPUsed ?? 0, components: resolved,
+        final, hpDamage, tempHPUsed, components: resolved,
         modifier: resolved.length === 1 ? resolved[0].modifier : 'mixed' };
+}
+
+export function resolveDamageComponents(target, components) {
+    const result = previewDamageComponents(target, components);
+    const hpBefore = target.hp ?? target.currentHP;
+    const damage = target.takeDamage(result.final);
+    return { ...result,
+        hpDamage: unitsToHP(hpToUnits(hpBefore) - hpToUnits(target.hp ?? target.currentHP)),
+        tempHPUsed: damage?.tempHPUsed ?? 0 };
 }

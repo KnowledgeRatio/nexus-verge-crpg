@@ -2,10 +2,9 @@
 **Branch:** `main-beta-quests` | **Phase:** 3 — Combat & Abilities
 
 ## Current State
-- **Last session:** Finalised the six-attribute AC rule as a 2:1 Intuition:Prowess weighted average, validated it through 36,000 real-engine fights, and confirmed all 46 monsters have complete native attributes.
-- **Now:** #42 needs only hands-on player-flow acceptance; #41 remains in acceptance for party-ceiling validation and hands-on play; #39 quest tracking/reputation follows.
-- **Web delivery:** #53 is Now: finish the reproducible asset pipeline and SWA release acceptance before cloud-save rollout. Public combat media is staged in a separate Blob account; production SWA has not switched.
-- **Next / blocked:** #40 sprites and portraits is Next; #38 cloud-save reliability and cutover follows #53, with save-cadence decision #50 required before broad enablement. Open decisions: #16 and #34–#37, #50.
+- **Last session:** #56 blood/bone implementation is complete and locally enabled: eligible blood weapon base deals 80% immediately plus 40% over three target-turn starts; bone remains immediate. Injury stays separate; elemental DoT is deferred to Curiosity spellcasting #47. No commit or deployment is implied.
+- **Now:** #42 and #41 await play acceptance; #39 owns quest tracking/reputation; #44 combat presentation and #51 settlement scene remain in progress. #53 owns reproducible web/media release before cloud-save rollout.
+- **Next / decisions:** #49 condition immunities, #40 character identity, #43 animated combatant and #52 settlement variants remain open; #38 cloud-save rollout follows #53 and save-policy decision #50. Necrotic/Void classification remains #16; other open decisions include #34–#37 and #46.
 
 ## Docs
 - Architecture & ADR log: [`.claude/rules/architecture.md`](.claude/rules/architecture.md)

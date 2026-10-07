@@ -87,19 +87,25 @@ function lastMessageStartingWith(prefix) {
 // populate legacy `abilities.str`, so force '5EClassic' mode for the resolver redirect
 // to find it (matches this file's pre-flip authoring intent, orthogonal to the remap).
 const originalAttributeSystem = RULES.attributes.system;
+const originalDamageOverTime = { ...RULES.combat.damageOverTime };
 
 beforeEach(() => {
     gameState.data.ui.messageLog = [];
     RULES.attributes.system = '5EClassic';
+    RULES.combat.damageOverTime.enabled = false;
 });
 
 afterEach(() => {
     vi.restoreAllMocks();
     RULES.attributes.system = originalAttributeSystem;
+    Object.assign(RULES.combat.damageOverTime, originalDamageOverTime);
 });
 
 describe('Bug 1 regression — weapon.damage is a plain string in items.json, not { dice, type }', () => {
-    it('a real weapon (greataxe, "1d12") rolls its actual die, not the 1d4 unarmed fallback', async () => {
+    it.each([false, true])('a real greataxe rolls its d12 with the blood fork enabled=%s', async enabled => {
+        RULES.combat.damageOverTime.enabled = enabled;
+        RULES.combat.damageOverTime.totalMultiplier = 1.2;
+        RULES.combat.damageOverTime.immediateFraction = 2 / 3;
         const cm = new CombatManager();
         const greataxe = findWeapon('greataxe');
         expect(typeof greataxe.damage).toBe('string'); // sanity: confirms items.json's real shape
@@ -121,11 +127,14 @@ describe('Bug 1 regression — weapon.damage is a plain string in items.json, no
 
             // 0.99 on a real 1d12 rolls 12; the pre-fix fallback (damageDice stuck at the
             // unarmed default of 4) would have rolled a 4 here instead.
-            expect(lastMessageStartingWith('💥 Hit! Damage:')).toBe('💥 Hit! Damage: 12 = 12');
+            expect(lastMessageStartingWith(enabled ? '💥 Hit! Rolled Damage:' : '💥 Hit! Damage:'))
+                .toBe(enabled ? '💥 Hit! Rolled Damage: 12 = 12 base damage' : '💥 Hit! Damage: 12 = 12');
 
             // damageType also comes from a sibling field (weapon.damageType), not weapon.damage.type —
             // confirmed via the resistance message, which only fires if the real type ("blood") matched.
-            expect(lastMessageStartingWith('Fixture resists')).toBe('Fixture resists blood (12 → 6)');
+            expect(lastMessageStartingWith('Fixture resists'))
+                .toBe(enabled ? 'Fixture resists blood (9.6 → 4.8)' : 'Fixture resists blood (12 → 6)');
+            expect(cm.getPendingDamage(defender).totalPending).toBe(enabled ? 4.8 : 0);
         } finally {
             RULES.combat.damageReductionSystem.enabled = false;
         }

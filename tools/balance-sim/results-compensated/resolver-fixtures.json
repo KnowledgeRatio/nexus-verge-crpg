@@ -1,0 +1,250 @@
+{
+  "unitsPerHP": 1000,
+  "fixtures": [
+    {
+      "name": "raw1-off",
+      "passed": true,
+      "observed": {
+        "raw": 1,
+        "immediate": 0.8,
+        "deferred": 0.2,
+        "suppressed": 0,
+        "ticks": [
+          0.06700000000000728,
+          0.06699999999999307,
+          0.0660000000000025
+        ],
+        "delivered": 1,
+        "exactMitigated": 1
+      }
+    },
+    {
+      "name": "raw1-normal",
+      "passed": true,
+      "observed": {
+        "raw": 1,
+        "immediate": 0.8,
+        "deferred": 0.2,
+        "suppressed": 0,
+        "ticks": [
+          0.06700000000000728,
+          0.06699999999999307,
+          0.0660000000000025
+        ],
+        "delivered": 1,
+        "exactMitigated": 1
+      }
+    },
+    {
+      "name": "raw1-resistant",
+      "passed": true,
+      "observed": {
+        "raw": 1,
+        "immediate": 0.8,
+        "deferred": 0.2,
+        "suppressed": 0,
+        "ticks": [
+          0.033999999999991815,
+          0.034000000000006025,
+          0.03300000000000125
+        ],
+        "delivered": 0.5010000000000048,
+        "exactMitigated": 0.5
+      }
+    },
+    {
+      "name": "raw1-vulnerable",
+      "passed": true,
+      "observed": {
+        "raw": 1,
+        "immediate": 0.8,
+        "deferred": 0.2,
+        "suppressed": 0,
+        "ticks": [
+          0.13400000000000034,
+          0.13400000000000034,
+          0.132000000000005
+        ],
+        "delivered": 2,
+        "exactMitigated": 2
+      }
+    },
+    {
+      "name": "raw1-immune",
+      "passed": true,
+      "observed": {
+        "raw": 1,
+        "immediate": 0.8,
+        "deferred": 0.2,
+        "suppressed": 0.2,
+        "ticks": [
+          0,
+          0,
+          0
+        ],
+        "delivered": 0,
+        "exactMitigated": 0
+      }
+    },
+    {
+      "name": "raw2-off",
+      "passed": true,
+      "observed": {
+        "raw": 2,
+        "immediate": 1.6,
+        "deferred": 0.4,
+        "suppressed": 0,
+        "ticks": [
+          0.13400000000000034,
+          0.13300000000000978,
+          0.13299999999999557
+        ],
+        "delivered": 2,
+        "exactMitigated": 2
+      }
+    },
+    {
+      "name": "raw2-normal",
+      "passed": true,
+      "observed": {
+        "raw": 2,
+        "immediate": 1.6,
+        "deferred": 0.4,
+        "suppressed": 0,
+        "ticks": [
+          0.13400000000000034,
+          0.13300000000000978,
+          0.13299999999999557
+        ],
+        "delivered": 2,
+        "exactMitigated": 2
+      }
+    },
+    {
+      "name": "raw2-resistant",
+      "passed": true,
+      "observed": {
+        "raw": 2,
+        "immediate": 1.6,
+        "deferred": 0.4,
+        "suppressed": 0,
+        "ticks": [
+          0.06700000000000728,
+          0.06699999999999307,
+          0.06700000000000728
+        ],
+        "delivered": 1.0010000000000048,
+        "exactMitigated": 1
+      }
+    },
+    {
+      "name": "raw2-vulnerable",
+      "passed": true,
+      "observed": {
+        "raw": 2,
+        "immediate": 1.6,
+        "deferred": 0.4,
+        "suppressed": 0,
+        "ticks": [
+          0.2680000000000007,
+          0.26599999999999113,
+          0.26600000000000534
+        ],
+        "delivered": 4,
+        "exactMitigated": 4
+      }
+    },
+    {
+      "name": "raw2-immune",
+      "passed": true,
+      "observed": {
+        "raw": 2,
+        "immediate": 1.6,
+        "deferred": 0.4,
+        "suppressed": 0.4,
+        "ticks": [
+          0,
+          0,
+          0
+        ],
+        "delivered": 0,
+        "exactMitigated": 0
+      }
+    },
+    {
+      "name": "three-independent-tranches-conserve-schedule",
+      "passed": true,
+      "observed": {
+        "ticks": [
+          2,
+          4,
+          6,
+          4,
+          2
+        ],
+        "delivered": 36
+      }
+    },
+    {
+      "name": "cleanse-cancels-pending-without-accelerating",
+      "passed": true,
+      "observed": {
+        "pendingCancelled": 0.2,
+        "delivered": 0.7999999999999972
+      }
+    },
+    {
+      "name": "condition-immunity-suppresses-deferred-no-conversion",
+      "passed": true,
+      "observed": {
+        "delivered": 0.7999999999999972,
+        "suppressed": 0.2
+      }
+    },
+    {
+      "name": "source-defeat-does-not-cancel-applied-tranche",
+      "passed": true,
+      "observed": {
+        "delivered": 1,
+        "sourceDowned": true
+      }
+    },
+    {
+      "name": "target-defeat-cancels-own-pending",
+      "passed": true,
+      "observed": {
+        "pendingAfterDefeat": 0
+      }
+    },
+    {
+      "name": "temporary-health-absorbs-fractional-impact-and-ticks",
+      "passed": true,
+      "observed": {
+        "hp": 100,
+        "tempHP": 0
+      }
+    },
+    {
+      "name": "healing-adds-fractions-consistently",
+      "passed": true,
+      "observed": {
+        "hp": 99.333
+      }
+    },
+    {
+      "name": "neutral-injury-retains-type-and-bypasses-resistance",
+      "passed": true,
+      "observed": {
+        "final": 1
+      }
+    },
+    {
+      "name": "real-startTurn-lethal-tick-advances-once",
+      "passed": true,
+      "observed": {
+        "deadTargetHP": 0,
+        "nextActor": "pc"
+      }
+    }
+  ]
+}

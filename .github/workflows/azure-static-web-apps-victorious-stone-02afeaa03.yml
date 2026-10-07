@@ -2,61 +2,90 @@ name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches:
-      - main-beta-quests
+    branches: [main-beta-quests]
   pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main-beta-quests
+    types: [opened, synchronize, reopened]
+    branches: [main-beta-quests]
+
+permissions:
+  contents: read
+
+env:
+  WEB_MEDIA_LOCK: deployment/media-releases/combat-d9b7ff1f6eb7.json
+  WEB_MEDIA_ORIGIN: https://nexusvergemedia.blob.core.windows.net/media
+  WEB_APP_ORIGIN: https://victorious-stone-02afeaa03.2.azurestaticapps.net
+  WEB_REQUIRE_TRACKED_APP: '1'
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
-       id-token: write
-       contents: read
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          submodules: true
-          lfs: false
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-           script: |
-               const coredemo = require('@actions/core')
-               return await coredemo.getIDToken()
-           result-encoding: string
-      - name: Remove non-deployable directories
-        run: rm -rf .claude docs scripts .playwright-mcp
-      - name: Build And Deploy
-        id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03 }}
-          action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "api" # Api source code path - optional
-          output_location: "" # Built app content directory - optional
-          skip_app_build: true # Skip build since this is a static app with no build process
-          github_id_token: ${{ steps.idtoken.outputs.result }}
-          ###### End of Repository/Build Configurations ######
+          persist-credentials: false
 
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03 }}
-          action: "close"
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify legal compliance
+        run: npm run legal:verify
+
+      - name: Build the tracked release package
+        run: npm run build:web
+
+      - name: Verify published media and production CORS
+        run: node scripts/verify-web-media.mjs
+
+      - name: Upload release package for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-app-release
+          path: dist/app
+          if-no-files-found: error
+          retention-days: 7
+
+      # PRs validate the same release without deploying a browser origin that
+      # the media account's production-only CORS policy does not allow.
+      - name: Prepare deployment credentials
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        id: credentials
+        env:
+          SWA_DEPLOYMENT_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03 }}
+        with:
+          script: |
+            const token = (process.env.SWA_DEPLOYMENT_TOKEN || '').trim();
+            if (!token || /\s/.test(token)) {
+              core.setFailed('Azure deployment token is missing or contains embedded whitespace. Check AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03.');
+              return;
+            }
+            core.setSecret(token);
+            core.setOutput('deployment_token', token);
+            const idToken = await core.getIDToken();
+            core.setSecret(idToken);
+            core.setOutput('id_token', idToken);
+
+      - name: Deploy release package and save API
+        if: github.event_name == 'push'
+        # Pin the maintained v1 branch. The v1 tag resolves to the older action
+        # that does not declare github_id_token.
+        uses: Azure/static-web-apps-deploy@4d27395796ac319302594769cfe812bd207490b1
+        with:
+          azure_static_web_apps_api_token: ${{ steps.credentials.outputs.deployment_token }}
+          github_id_token: ${{ steps.credentials.outputs.id_token }}
+          action: upload
+          app_location: dist/app
+          api_location: api
+          output_location: ''
+          skip_app_build: true

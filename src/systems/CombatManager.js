@@ -13,7 +13,7 @@ import { execute as dispatchAbilityEffects, buildContext as buildAbilityContext 
 import { getPassiveAttackBonus, getPassiveDamageBonus, getPassiveUnarmedDie, passiveAddsOffHandAbilityMod, passiveShouldRerollDamage, getAuraACBonus, getAuraSaveBonus } from './PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/attributeResolver.js';
 import { damagePrecisionEnabled, hpToUnits, unitsToHP, normalizeHP, subtractHP, addHP, partitionDamage } from '../utils/damagePrecision.js';
-import { resolveDamageComponents, resolveDamageModifier as resolvePreciseDamageModifier } from './DamageResolver.js';
+import { previewDamageComponents, resolveDamageComponents, resolveDamageModifier as resolvePreciseDamageModifier } from './DamageResolver.js';
 import { formatCombatNumber } from '../utils/combatNumberFormat.js';
 
 function resolveDamageModifier(combatant, damageType, isMagical = false) {
@@ -421,6 +421,17 @@ class CombatManager {
         }
     }
 
+    getWeaponDamageBudget(amount, damageType, metadata = {}) {
+        const rules = RULES.combat.damageOverTime;
+        const eligibleAmount = metadata.eligible === false ? 0
+            : Math.max(0, Math.min(Math.max(0, amount), metadata.eligibleAmount ?? amount));
+        const eligible = eligibleAmount > 0 && rules.damageTypes.includes(damageType);
+        const partition = eligible ? partitionDamage(eligibleAmount * rules.totalMultiplier, rules.immediateFraction, rules.ticks)
+            : { raw: normalizeHP(Math.max(0, amount)), immediate: normalizeHP(Math.max(0, amount)), deferred: 0, ticksUnits: [] };
+        const immediate = eligible ? normalizeHP(partition.immediate + Math.max(0, amount - eligibleAmount)) : partition.immediate;
+        return { ...partition, immediate, eligible };
+    }
+
     applyWeaponDamage(attacker, target, amount, damageType, metadata = {}) {
         const isMagical = metadata.isMagical ?? false;
         const damageFlavor = metadata.damageFlavor ?? null;
@@ -428,10 +439,7 @@ class CombatManager {
             return applyDamage(target, amount, damageType);
         }
         const rules = RULES.combat.damageOverTime;
-        const eligibleAmount = metadata.eligible === false ? 0 : Math.min(Math.max(0, amount), metadata.eligibleAmount ?? amount);
-        const eligible = eligibleAmount > 0 && rules.damageTypes.includes(damageType);
-        const partition = eligible ? partitionDamage(eligibleAmount, rules.immediateFraction, rules.ticks)
-            : { raw: normalizeHP(Math.max(0, amount)), immediate: normalizeHP(Math.max(0, amount)), deferred: 0, ticksUnits: [] };
+        const partition = this.getWeaponDamageBudget(amount, damageType, metadata);
         let suppressedDeferred = 0;
         if (partition.deferred > 0) {
             const conditionImmune = (target.conditionImmunities ?? target.character?.conditionImmunities ?? []).includes(rules.conditionType);
@@ -454,15 +462,17 @@ class CombatManager {
                     ticksUnits: partition.ticksUnits, cursor: 0 });
             }
         }
-        const immediate = eligible ? normalizeHP(partition.immediate + Math.max(0, amount - eligibleAmount)) : partition.immediate;
+        const immediate = partition.immediate;
         const result = resolveDamageComponents(target, [{ amount: immediate, damageType, isMagical, damageFlavor, sourceId: attacker.id }]);
         reportDamage(target, result, attacker.id, metadata.isCritical ? 'critical' : 'impact');
-        gameState.addMessage(`${target.name} takes ${formatCombatNumber(result.hpDamage)} HP damage${partition.deferred > 0 ? `; ${formatCombatNumber(partition.deferred - suppressedDeferred)} blood damage pending` : ''}.`, 'info');
         if (target.hp <= 0) {
             this.handleDefeat(target);
         }
+        const pending = target.hp > 0 ? partition.deferred - suppressedDeferred : 0;
+        gameState.addMessage(`${target.name} takes ${formatCombatNumber(result.hpDamage)} HP damage${pending > 0 ? `; ${formatCombatNumber(pending)} ${damageType} damage pending before defenses` : ''}.`, 'info');
         return { ...result, raw: normalizeHP(Math.max(0, amount)), immediate, deferred: partition.deferred,
-            suppressedDeferred, eligible, ticksUnits: [...partition.ticksUnits] };
+            totalBudget: normalizeHP(immediate + partition.deferred),
+            suppressedDeferred, eligible: partition.eligible, ticksUnits: [...partition.ticksUnits] };
     }
 
     getPendingDamage(target) {
@@ -924,7 +934,7 @@ class CombatManager {
             const damageTotal = Math.max(1, damageRoll);
 
             let damageMsg = isCritical ? '⭐ Critical hit! ' : '💥 Hit! ';
-            damageMsg += `${actionName}: ${damageTotal} ${damageType} damage`;
+            damageMsg += `${actionName}: ${damageTotal} ${damageType} ${damagePrecisionEnabled() ? 'base damage' : 'damage'}`;
             gameState.addMessage(damageMsg, 'error');
 
             if (!damagePrecisionEnabled()) {
@@ -1535,6 +1545,10 @@ class CombatManager {
                 damageMsg += ` = ${damageTotal}`;
             }
 
+            if (damagePrecisionEnabled()) {
+                damageMsg += ' base damage';
+            }
+
             gameState.addMessage(
                 damageMsg,
                 attacker.team === 'player' ? 'success' : 'error'
@@ -1579,7 +1593,20 @@ class CombatManager {
                 }, this.playerCombatant);
 
                 // Intervene: only offered when this hit would drop the ally to 0 HP
-                if (finalDamage >= defender.hp) {
+                const impactMetadata = {
+                    eligible: !!weapon,
+                    eligibleAmount: Math.min(finalDamage,
+                        Math.max(0, damageRoll + damageBonus + forgecraftDamageBonus)),
+                    isMagical: weapon?.isMagical ?? weapon?.magical ?? false,
+                    damageFlavor: weapon?.damageFlavor ?? weapon?.damage?.flavor ?? null
+                };
+                const projectedImpact = damagePrecisionEnabled()
+                    ? previewDamageComponents(defender, [{
+                        amount: this.getWeaponDamageBudget(finalDamage, weaponDamageType, impactMetadata).immediate,
+                        damageType: weaponDamageType, ...impactMetadata
+                    }]).hpDamage
+                    : finalDamage;
+                if (projectedImpact >= defender.hp) {
                     const interveneResult = await window.game.promptReaction('allyWouldDrop0', attacker, defender, {
                         damage: finalDamage,
                         damageType: weaponDamageType,

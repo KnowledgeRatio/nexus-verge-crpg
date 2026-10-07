@@ -1,0 +1,236 @@
+[
+  {
+    "candidate": "instant100",
+    "trials": 300,
+    "maintainedRate": 0.58,
+    "CI95": [
+      0.5241485971528019,
+      0.635851402847198
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 10 HP damage.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 10 HP damage.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "old80_20",
+    "trials": 300,
+    "maintainedRate": 0.08666666666666667,
+    "CI95": [
+      0.05482937290488356,
+      0.11850396042844978
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 8 HP damage; 2 blood damage pending before defenses.",
+        "🎯 Ogre concentration check: 19 + 0 = 19 vs DC 10 — maintained!",
+        "Ogre takes 0.667 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 13 + 0 = 13 vs DC 10 — maintained!",
+        "Ogre takes 0.667 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 16 + 0 = 16 vs DC 10 — maintained!",
+        "Ogre takes 0.666 HP damage from ongoing effects.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 8 HP damage; 2 blood damage pending before defenses.",
+        "Ogre takes 0.667 HP damage from ongoing effects.",
+        "Ogre takes 0.667 HP damage from ongoing effects.",
+        "Ogre takes 0.666 HP damage from ongoing effects.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "premium70_70",
+    "trials": 300,
+    "maintainedRate": 0.08666666666666667,
+    "CI95": [
+      0.05482937290488356,
+      0.11850396042844978
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 7 HP damage; 7 blood damage pending before defenses.",
+        "🎯 Ogre concentration check: 19 + 0 = 19 vs DC 10 — maintained!",
+        "Ogre takes 2.334 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 13 + 0 = 13 vs DC 10 — maintained!",
+        "Ogre takes 2.333 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 16 + 0 = 16 vs DC 10 — maintained!",
+        "Ogre takes 2.333 HP damage from ongoing effects.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 7 HP damage; 7 blood damage pending before defenses.",
+        "Ogre takes 2.334 HP damage from ongoing effects.",
+        "Ogre takes 2.333 HP damage from ongoing effects.",
+        "Ogre takes 2.333 HP damage from ongoing effects.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "premium80_60",
+    "trials": 300,
+    "maintainedRate": 0.08666666666666667,
+    "CI95": [
+      0.05482937290488356,
+      0.11850396042844978
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 8 HP damage; 6 blood damage pending before defenses.",
+        "🎯 Ogre concentration check: 19 + 0 = 19 vs DC 10 — maintained!",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 13 + 0 = 13 vs DC 10 — maintained!",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 16 + 0 = 16 vs DC 10 — maintained!",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 8 HP damage; 6 blood damage pending before defenses.",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "Ogre takes 2 HP damage from ongoing effects.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "premium84_56",
+    "trials": 300,
+    "maintainedRate": 0.08666666666666667,
+    "CI95": [
+      0.05482937290488356,
+      0.11850396042844978
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 8.4 HP damage; 5.6 blood damage pending before defenses.",
+        "🎯 Ogre concentration check: 19 + 0 = 19 vs DC 10 — maintained!",
+        "Ogre takes 1.867 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 13 + 0 = 13 vs DC 10 — maintained!",
+        "Ogre takes 1.867 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 16 + 0 = 16 vs DC 10 — maintained!",
+        "Ogre takes 1.866 HP damage from ongoing effects.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 8.4 HP damage; 5.6 blood damage pending before defenses.",
+        "Ogre takes 1.867 HP damage from ongoing effects.",
+        "Ogre takes 1.867 HP damage from ongoing effects.",
+        "Ogre takes 1.866 HP damage from ongoing effects.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "premium80_40",
+    "trials": 300,
+    "maintainedRate": 0.08666666666666667,
+    "CI95": [
+      0.05482937290488356,
+      0.11850396042844978
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 8 HP damage; 4 blood damage pending before defenses.",
+        "🎯 Ogre concentration check: 19 + 0 = 19 vs DC 10 — maintained!",
+        "Ogre takes 1.334 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 13 + 0 = 13 vs DC 10 — maintained!",
+        "Ogre takes 1.333 HP damage from ongoing effects.",
+        "🎯 Ogre concentration check: 16 + 0 = 16 vs DC 10 — maintained!",
+        "Ogre takes 1.333 HP damage from ongoing effects.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 8 HP damage; 4 blood damage pending before defenses.",
+        "Ogre takes 1.334 HP damage from ongoing effects.",
+        "Ogre takes 1.333 HP damage from ongoing effects.",
+        "Ogre takes 1.333 HP damage from ongoing effects.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  },
+  {
+    "candidate": "instant140",
+    "trials": 300,
+    "maintainedRate": 0.58,
+    "CI95": [
+      0.5241485971528019,
+      0.635851402847198
+    ],
+    "traces": {
+      "maintained": [
+        "🎯 Ogre concentration check: 18 + 0 = 18 vs DC 10 — maintained!",
+        "Ogre takes 14 HP damage.",
+        "player rolls initiative: 12 + 1 = 13",
+        "ally rolls initiative: 16 + 1 = 17",
+        "Ogre rolls initiative: 9 + -1 = 8",
+        "Ogre rolls initiative: 15 + -1 = 14"
+      ],
+      "broken": [
+        "🎯 Ogre concentration check: 1 + 0 = 1 vs DC 10 — broken!",
+        "Ogre takes 14 HP damage.",
+        "player rolls initiative: 15 + 1 = 16",
+        "ally rolls initiative: 15 + 1 = 16",
+        "Ogre rolls initiative: 20 + -1 = 19",
+        "Ogre rolls initiative: 13 + -1 = 12"
+      ]
+    }
+  }
+]

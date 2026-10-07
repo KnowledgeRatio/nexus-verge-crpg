@@ -1,145 +1,55 @@
 # GitHub Actions Workflows
 
-This directory contains GitHub Actions workflows for automated deployment, security scanning, and legal compliance.
+## Azure Static Web Apps deployment
 
-## Azure Static Web Apps Deployment
+`azure-static-web-apps-victorious-stone-02afeaa03.yml` validates a release package
+on pushes and pull requests targeting `main-beta-quests`. Only pushes deploy to
+the production Static Web App; PRs upload a `web-app-release` artifact for review.
 
-### Current Setup
+The workflow installs locked dependencies, verifies legal artifacts, and runs
+the existing `build:web` script with the tracked
+`deployment/media-releases/combat-d9b7ff1f6eb7.json` lock. It verifies all published
+media responses and production CORS before uploading `dist/app`. The `api/`
+directory remains a separate managed Functions deployment for saves.
 
-When you create the Azure Static Web App through the Azure Portal with GitHub integration, Azure **automatically** creates a workflow file in this directory.
+The release uses the existing public media origin
+`https://nexusvergemedia.blob.core.windows.net/media`. Changing that origin or lock
+requires publishing and verifying the media first. The current media CORS policy
+allows the production hostname only; automatic PR browser previews are disabled
+until their origins are explicitly supported. PR checks require no deployment
+secret, including for forked PRs.
 
-**Auto-generated file pattern:**
-```
-azure-static-web-apps-<random-identifier>.yml
-```
+The maintained Azure action is pinned to
+`4d27395796ac319302594769cfe812bd207490b1`, which declares `github_id_token`.
+The ambiguous `@v1` reference previously resolved to an older tag that did not
+declare this input. OIDC uses the bundled Actions client; no ad hoc npm installation is
+needed. The existing
+`AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_STONE_02AFEAA03` secret is also passed
+after masking and trimming surrounding whitespace. Empty tokens and embedded
+whitespace produce a specific error before Azure runs.
 
-**Example:**
-```
-azure-static-web-apps-happy-ocean-12345.yml
-```
+Do not upload the repository root or rely on `.staticwebappignore`. The old
+directory-removal step left dangling skill symlinks after deleting `.claude`;
+tracked media and authoring files also exceeded the Free-plan package limit.
+The allowlisted builder copies regular app files, excludes authoring/tooling
+directories, checks tracked sources, and enforces its package-size budget.
 
-### Workflow Files
+### Local validation
 
-You will see **one** of the following:
-
-#### Option 1: Azure's Auto-Generated Workflow (Recommended)
-- **File:** `azure-static-web-apps-<random>.yml`
-- **Created by:** Azure Portal during resource creation
-- **Secret used:** `AZURE_STATIC_WEB_APPS_API_TOKEN_<GENERATED_HOSTNAME>`
-- **Status:** ✅ Fully functional, no setup needed
-
-#### Option 2: Our Custom Workflow (Manual Setup)
-- **File:** `azure-static-web-apps.yml`
-- **Created by:** Manual setup (this repository)
-- **Secret used:** `AZURE_STATIC_WEB_APPS_API_TOKEN`
-- **Status:** Alternative for manual control
-
-### Which One Should I Use?
-
-**Use Azure's auto-generated workflow** (Option 1) unless you have specific reasons to customize.
-
-**Reasons to use Azure's workflow:**
-- ✅ Zero configuration required
-- ✅ Automatically created and configured
-- ✅ Azure maintains it
-- ✅ Secret auto-created
-- ✅ First deployment happens automatically
-
-**Reasons to use our custom workflow:**
-- ✅ Simpler secret naming (no hostname suffix)
-- ✅ Easier to maintain across multiple projects
-- ✅ Full control over workflow configuration
-- ✅ Custom build steps (if needed in future)
-
-### How to Switch Between Workflows
-
-#### From Azure Auto-Generated → Our Custom Workflow
-
-1. **Delete Azure's workflow:**
-   ```bash
-   git rm .github/workflows/azure-static-web-apps-<random>.yml
-   git commit -m "Switch to custom workflow"
-   ```
-
-2. **Update GitHub Secret:**
-   - Go to: Settings → Secrets → Actions
-   - Delete: `AZURE_STATIC_WEB_APPS_API_TOKEN_<HOSTNAME>`
-   - Create: `AZURE_STATIC_WEB_APPS_API_TOKEN` (use same token value)
-
-3. **Verify our workflow exists:**
-   - File: `.github/workflows/azure-static-web-apps.yml`
-   - Secret name in file: `AZURE_STATIC_WEB_APPS_API_TOKEN`
-
-4. **Push changes:**
-   ```bash
-   git push origin main-beta-quests
-   ```
-
-#### From Our Custom Workflow → Azure Auto-Generated
-
-1. **Delete our workflow:**
-   ```bash
-   git rm .github/workflows/azure-static-web-apps.yml
-   git commit -m "Use Azure auto-generated workflow"
-   ```
-
-2. **In Azure Portal:**
-   - Go to Static Web App → Configuration
-   - Disconnect GitHub integration
-   - Reconnect GitHub integration
-   - Azure will recreate the workflow
-
-### Workflow Configuration
-
-Both workflows are configured identically:
-
-```yaml
-on:
-  push:
-    branches:
-      - main-beta-quests  # Auto-deploy on push
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main-beta-quests  # Preview deployments for PRs
-
-jobs:
-  build_and_deploy_job:
-    # Build and deploy on push or PR open
-    # Creates staging environment for PRs
-
-  close_pull_request_job:
-    # Clean up staging environment when PR closes
+```bash
+npm run legal:verify
+WEB_MEDIA_LOCK=deployment/media-releases/combat-d9b7ff1f6eb7.json WEB_MEDIA_ORIGIN=https://nexusvergemedia.blob.core.windows.net/media WEB_REQUIRE_TRACKED_APP=1 npm run build:web
+WEB_MEDIA_LOCK=deployment/media-releases/combat-d9b7ff1f6eb7.json WEB_MEDIA_ORIGIN=https://nexusvergemedia.blob.core.windows.net/media WEB_APP_ORIGIN=https://victorious-stone-02afeaa03.2.azurestaticapps.net node scripts/verify-web-media.mjs
 ```
 
-**App Configuration:**
-- **App location:** `/` (root directory)
-- **API location:** _(empty - no backend API)_
-- **Output location:** _(empty - no build step)_
+If Azure still reports `No matching static site found`, verify the repository,
+branch and app hostname in Azure, then refresh the named GitHub deployment
+secret from that app's current deployment token. Never print the token or rotate
+`SAVE_TOKEN_SECRET`. An `unknown exception` is not by itself proof of a bad token:
+retain the job logs and inspect the failing phase.
 
-### Troubleshooting
-
-#### Workflow doesn't trigger
-1. Check branch name is exactly: `main-beta-quests` (case-sensitive)
-2. Verify workflow file exists in `.github/workflows/`
-3. Check GitHub Actions is enabled (Settings → Actions → General)
-
-#### Deployment fails with "Invalid API token"
-1. Go to Azure Portal → Static Web App → **Manage deployment token**
-2. Copy the token
-3. Update GitHub secret (Settings → Secrets → Actions)
-4. Re-run the workflow
-
-#### Multiple workflows running
-If both workflows exist, **delete one**:
-- Keep Azure's: Delete `azure-static-web-apps.yml`
-- Keep ours: Delete `azure-static-web-apps-<random>.yml`
-
-### Learn More
-
-- **Quick Start:** [docs/AZURE_DEPLOYMENT_QUICK_START.md](../../docs/AZURE_DEPLOYMENT_QUICK_START.md)
-- **Full Runbook:** [docs/AZURE_DEPLOYMENT_RUNBOOK.md](../../docs/AZURE_DEPLOYMENT_RUNBOOK.md)
-- **Azure Docs:** https://learn.microsoft.com/azure/static-web-apps/
+Repair evidence and remaining release verification:
+[7 October CI investigation](../../docs/reports/2026-10-07-ci-deployment.md).
 
 ---
 
@@ -192,7 +102,7 @@ Scans dependencies for vulnerabilities, generates SBOMs, and optionally uploads 
 2. **Run npm audit** - Checks for known vulnerabilities
 3. **Upload to Dependency-Track** (optional, requires secrets)
 4. **Generate security summary** - Creates detailed security report
-5. **Comment on PRs** - Posts security summary as PR comment
+5. **Publish the run summary** - Shows the report in GitHub Actions without PR write permissions
 
 ### Artifacts Uploaded
 - `security-summary` - Security analysis report (90 days)

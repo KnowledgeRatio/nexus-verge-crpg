@@ -1,9 +1,9 @@
 /**
- * Actual feature-fork simulation, not a generated hook or copied combat formula.
+ * Actual compensated damage simulation, no copied combat formula.
  * Imports the edited production CombatManager, Character and monster factory.
  * Enables the normally-OFF fork deliberately; precision100/0 is the fair control.
  * Runtime wrappers observe resolver/scheduler/condition removal without calculating damage.
- * Scripted melee-only Dedication builds, average authored monster HP, one attack/action;
+ * Shared melee chassis across three Calling HP/proficiency profiles, one attack/action;
  * real monster multiattack and target-start processing. No Extra Attack or invented kits.
  * Test-only semantic-role RNG overrides Math.random; live combat RNG remains untouched.
  */
@@ -42,14 +42,28 @@ assert.ok(RULES.combat.damageOverTime, 'Real feature fork config required; no fa
 assert.equal(typeof CombatManager.prototype.applyWeaponDamage, 'function');
 assert.equal(typeof CombatManager.prototype.processPeriodicDamage, 'function');
 const items = read('data/items.json'); const monsters = read('data/monsters.json').monsters;
-const calling = read('data/classes.json').classes.find(c => c.id === 'dedication');
+const callings = read('data/classes.json').classes;
 const mastery = read('data/weaponMasteries.json');
 const originalMessage = gameState.addMessage.bind(gameState);
 const TRIALS = Number(process.env.DOT_TRIALS || 300);
-const SPLITS = [1, .8, .7, .6, .5]; const SCALE = RULES.combat.damageOverTime.unitsPerHP;
+const CANDIDATES = [
+    { name:'instant100',total:1,split:1 }, { name:'old80_20',total:1,split:.8 },
+    { name:'premium70_70',total:1.4,split:.5 }, { name:'premium80_60',total:1.4,split:4 / 7 },
+    { name:'premium84_56',total:1.4,split:.6 }, { name:'premium80_40',total:1.2,split:2 / 3 },
+    { name:'instant140',total:1.4,split:1 }
+]; const SCALE = RULES.combat.damageOverTime.unitsPerHP;
+if (process.env.DOT_CANDIDATES){
+    const selected = new Set(process.env.DOT_CANDIDATES.split(','));
+    for (let index = CANDIDATES.length - 1;index >= 0;index--){
+        if (!selected.has(CANDIDATES[index].name)){
+            CANDIDATES.splice(index,1);
+        }
+    }
+    assert.ok(CANDIDATES.length,'At least one candidate must be selected');
+}
 const SHORT = { 1: 'goblin', 5: 'gnoll', 10: 'bugbear' };
 const DURABLE = { 1: 'gnoll', 5: 'ogre', 10: 'veteran' };
-const ROUND_CAP = 30; const OUT = path.join(root, process.env.DOT_OUTPUT || 'results-fractional');
+const ROUND_CAP = 30; const OUT = path.resolve(root, process.env.DOT_OUTPUT || 'tools/balance-sim/results-compensated');
 mkdirSync(OUT, { recursive: true });
 function hash(text) {
     let h = 2166136261; for (const c of text) {
@@ -64,11 +78,11 @@ function rng(seed) {
 function near(a,b,message) {
     assert.ok(Math.abs(a - b) <= 1 / SCALE + 1e-9, `${message}: ${a} != ${b}`);
 }
-function wilson(wins,n) {
-    const p = wins / n,z = 1.96,den = 1 + z * z / n,mid = (p + z * z / (2 * n)) / den,half = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / den; return [mid - half,mid + half];
+function confidence(wins,n) {
+    const p = wins / n,half = 1.96 * Math.sqrt(p * (1 - p) / n);return [Math.max(0,p - half),Math.min(1,p + half)];
 }
-function character(level,weapon,id) {
-    const c = new Character({ id,name:id,level,class:calling,background:{},species:{},
+function character(level,weapon,id,callingId = 'dedication') {
+    const c = new Character({ id,name:id,level,class:callings.find(calling => calling.id === callingId),background:{},species:{},
         baseAbilities:{ prowess:{ 1:15,5:17,10:19 }[level],resilience:15,intuition:13,intellect:10,presence:10,composure:10 },
         equipment:{ mainHand:structuredClone(items.weapons.find(w => w.id === weapon)),offHand:null,armor:structuredClone(items.armor.find(a => a.id === { 1:'ringMail',5:'chainMail',10:'plateMail' }[level])) } }); c.companionMeta = { isDowned:false }; return c;
 }
@@ -88,14 +102,18 @@ function sideOf(cm,id) {
     return cm.combatants.find(c => c.id === id)?.team === 'enemy' ? 'enemy' : 'player';
 }
 function initialize(scenario,split,trial) {
-    const seedKey = `${JSON.stringify({ level:scenario.level,weapon:scenario.weapon,profile:scenario.profile,party:scenario.party,defense:scenario.defense })  }:${  trial}`;
+    const seedKey = `${JSON.stringify({ level:scenario.level,calling:scenario.calling,weapon:scenario.weapon,profile:scenario.profile,party:scenario.party,defense:scenario.defense,state:scenario.state })  }:${  trial}`;
     Math.random = rng(hash(`${seedKey}:construct`));
     RULES.attributes.system = 'NVSystem'; RULES.combat.damageOverTime.enabled = scenario.mode !== 'legacy';
     RULES.combat.damageOverTime.immediateFraction = split; RULES.combat.damageReductionSystem.enabled = scenario.defense !== 'off';
-    // Historical timing-only experiment deliberately retains a 100% damage budget.
-    RULES.combat.damageOverTime.totalMultiplier = 1;
-    const cm = new CombatManager(); const pcChar = character(scenario.level,scenario.weapon,'player');const pc = new Combatant(pcChar,'player','pc');
-    const companions = scenario.party === 2 ? [new Combatant(character(scenario.level,scenario.weapon,'ally'),'companion','ally')] : [];
+    RULES.combat.damageOverTime.totalMultiplier = scenario.total ?? 1;
+    const cm = new CombatManager(); const pcChar = character(scenario.level,scenario.weapon,'player',scenario.calling);const pc = new Combatant(pcChar,'player','pc');
+    const companions = scenario.party === 2 ? [new Combatant(character(scenario.level,scenario.weapon,'ally',scenario.calling),'companion','ally')] : [];
+    if (scenario.weaponType){
+        for (const c of [pc,...companions]){
+            c.character.equipment.mainHand.damageType = scenario.weaponType;
+        }
+    }
     companions.forEach(c => {
         c.sourceCharacter = c.character;
     });
@@ -116,6 +134,14 @@ function initialize(scenario,split,trial) {
     cm.combatants.forEach(c => {
         c.combatManager = cm;
     });cm.coverType = null;cm.coverWinner = null;
+    if (scenario.state === 'halfHP'){
+        for (const c of [pc,...companions]){
+            c.hp = Math.floor(c.hp / 2);c.character.currentHP = c.hp;
+        }
+    }
+    if (scenario.concentration){
+        pc.concentratingOn = { abilityId:'simulationConcentration' };
+    }
     cm.weaponMasteryAssignments = mastery.weaponMasteries?.weaponMasteryAssignments?.assignments || cm.weaponMasteryAssignments;
     cm.weaponMasteryProficiencyRequired = mastery.weaponMasteries?.proficiencyRequirement?.enabled ?? true;cm.weaponMasteryDataLoaded = true;
     gameState.data.ui.messageLog = [];gameState.data.items = items.weapons;gameState.data.fatigue = { current:0,exhaustionLevels:0 };gameState.set('character',pcChar);gameState.set('seed','fractional-dot-tests');
@@ -264,10 +290,15 @@ async function fight(scenario,split,trial) {
         try {
             const effectiveSplit = source.team === 'enemy' && scenario.enemySplit !== undefined ? scenario.enemySplit : split;
             const previous = RULES.combat.damageOverTime.immediateFraction;RULES.combat.damageOverTime.immediateFraction = effectiveSplit;
+            const previousTotal = RULES.combat.damageOverTime.totalMultiplier;
+            if (source.team === 'enemy' && scenario.enemySplit !== undefined){
+                RULES.combat.damageOverTime.totalMultiplier = 1;
+            }
             let result;try {
                 result = originalWeapon(source,target,raw,type,opts);
             } finally {
                 RULES.combat.damageOverTime.immediateFraction = previous;
+                RULES.combat.damageOverTime.totalMultiplier = previousTotal;
             }
             if (type === 'blood' && opts.eligible !== false && raw > 0) {
                 const side = source.team === 'enemy' ? 'enemy' : 'player';stats[`${side}Raw`] += raw;stats[`${side}EligibleHits`]++;
@@ -277,7 +308,7 @@ async function fight(scenario,split,trial) {
                     stats[`${side}ZeroDeferred`]++;
                 }
                 if (scenario.mode !== 'legacy'){
-                    near(raw,(result.immediate ?? raw) + deferred,'landed raw budget');
+                    near(raw * (source.team === 'enemy' && scenario.enemySplit !== undefined ? 1 : scenario.total ?? 1),(result.immediate ?? raw) + deferred,'landed amplified raw budget');
                 }
                 if (side === 'player' && raw >= before && (result.immediate ?? raw) < before){
                     stats.rawPotentialImmediateFinishers++;
@@ -383,7 +414,7 @@ async function cell(scenario,split) {
         }
     }
     const ordered = [...trials].sort((a,b) => a.rounds - b.rounds),winsOnly = ordered.filter(t => t.won),losses = ordered.filter(t => !t.won);
-    return { ...scenario,split,trials:TRIALS,monster:trials[0].monster,winRate:wins / TRIALS,winCI95:wilson(wins,TRIALS),
+    return { ...scenario,split,trials:TRIALS,monster:trials[0].monster,winRate:wins / TRIALS,winCI95:confidence(wins,TRIALS),
         means:Object.fromEntries(Object.entries(totals).map(([k,v]) => [k,v / TRIALS])),
         playerZeroDeferredHitRate:totals.playerEligibleHits ? totals.playerZeroDeferred / totals.playerEligibleHits : 0,
         enemyZeroDeferredHitRate:totals.enemyEligibleHits ? totals.enemyZeroDeferred / totals.enemyEligibleHits : 0,
@@ -393,49 +424,87 @@ async function cell(scenario,split) {
 }
 const scenarios = [];
 for (const level of [1,5,10]) {
-    for (const weapon of ['dagger','longsword']) {
+    for (const calling of ['dedication','audacity','curiosity']) {
         for (const profile of ['short','durable']) {
             for (const party of [1,2]) {
-                scenarios.push({ level,weapon,profile,party,defense:'off',mode:'fractional',cohort:'main' });
-                scenarios.push({ level,weapon,profile,party,defense:'off',mode:'legacy',cohort:'legacyInteger' });
+                scenarios.push({ level,calling,weapon:calling === 'dedication' ? 'longsword' : 'dagger',profile,party,defense:'off',mode:'fractional',cohort:'main' });
             }
         }
     }
 }
+for (const level of [1,5,10]){
+    for (const weaponType of ['blood','bone']){
+        scenarios.push({ level,weapon:'longsword',weaponType,profile:'durable',party:1,defense:'off',mode:'fractional',enemySplit:1,cohort:'matchedType' });
+    }
+}
 for (const level of [1,5,10]) {
-    for (const weapon of ['dagger','longsword']) {
+    for (const weapon of ['longsword']) {
         for (const profile of ['short','durable']) {
             for (const defense of ['resistant','vulnerable','immune']){
                 scenarios.push({ level,weapon,profile,party:1,defense,mode:'fractional',cohort:'defenseSensitivity' });
             }
-            scenarios.push({ level,weapon,profile,party:1,defense:'resistant',mode:'legacy',cohort:'legacyResistance' });
-            scenarios.push({ level,weapon,profile,party:1,defense:'off',mode:'fractional',enemySplit:1,cohort:'offensivePenaltyDiagnostic' });
+            scenarios.push({ level,weapon,profile,party:1,defense:'off',mode:'fractional',enemySplit:1,cohort:'playerOnly' });
+            scenarios.push({ level,weapon,profile,party:1,defense:'off',mode:'fractional',state:'halfHP',cohort:'halfHP' });
         }
     }
 }
 if (process.env.DOT_FOCUSED === '1') {
     const level = Number(process.env.DOT_FOCUS_LEVEL || 10);const selected = scenarios.filter(s => s.cohort === 'main' && s.level === level && s.weapon === 'longsword' && s.party === 2 && s.profile === 'durable');scenarios.splice(0,scenarios.length,...selected);
 }
+if (process.env.DOT_MATCHED === '1'){
+    scenarios.splice(0,scenarios.length);
+    for (const level of [1,5,10]){
+        for (const profile of ['short','durable']){
+            for (const weaponType of ['blood','bone']){
+                scenarios.push({ level,weapon:'longsword',weaponType,profile,party:1,defense:'off',mode:'fractional',enemySplit:1,cohort:'matchedType' });
+            }
+        }
+    }
+}
 const originalRandom = Math.random,originalFlag = RULES.combat.damageOverTime.enabled,originalFraction = RULES.combat.damageOverTime.immediateFraction,originalReduction = RULES.combat.damageReductionSystem.enabled,originalTotal = RULES.combat.damageOverTime.totalMultiplier;
 const results = [];
 try {
     deterministicFixtures();
-    const expected = scenarios.reduce((sum,s) => sum + (s.mode === 'legacy' ? 1 : 5),0);realLog(`Real fractional fork: ${expected} cells × ${TRIALS}`);
+    const concentrationResults = [];
+    for (const candidate of CANDIDATES){
+        let kept = 0;const diagnostics = [];
+        for (let trial = 0;trial < TRIALS;trial++){
+            const { cm,pc,enemies } = initialize({ level:5,weapon:'longsword',profile:'durable',party:2,defense:'off',mode:'fractional',total:candidate.total },candidate.split,trial);
+            const target = enemies[0];target.hp = 100;target.maxHP = 100;target.concentratingOn = { abilityId:'fixture' };
+            Math.random = rng(hash(`concentration:${trial}`));
+            const trace = [];gameState.addMessage = message => {
+                trace.push(String(message));
+            };
+            cm.applyWeaponDamage(pc,target,10,'blood');
+            for (let tick = 0;tick < 3;tick++){
+                cm.processPeriodicDamage(target);
+            }
+            if (target.concentratingOn){
+                kept++;
+            }
+            diagnostics.push({ kept:!!target.concentratingOn,trace });
+        }
+        concentrationResults.push({ candidate:candidate.name,trials:TRIALS,maintainedRate:kept / TRIALS,CI95:confidence(kept,TRIALS),traces:{ maintained:diagnostics.find(d => d.kept)?.trace,broken:diagnostics.find(d => !d.kept)?.trace } });
+    }
+    writeFileSync(path.join(OUT,'concentration-fixtures.json'),JSON.stringify(concentrationResults,null,2));
+    gameState.addMessage = originalMessage;
+    assert.equal(typeof RULES.combat.damageOverTime.totalMultiplier,'number','Actual production total multiplier required');
+    const expected = scenarios.length * CANDIDATES.length;realLog(`Real compensated engine: ${expected} cells × ${TRIALS}`);
     for (let i = 0;i < scenarios.length;i++) {
-        for (const split of (scenarios[i].mode === 'legacy' ? [1] : SPLITS)){
-            results.push(await cell(scenarios[i],split));
+        for (const candidate of CANDIDATES){
+            results.push(await cell({ ...scenarios[i],candidate:candidate.name,total:candidate.total },candidate.split));
         }
         if (i % 6 === 0){
             realLog(`Completed ${results.length}/${expected} cells`);
         }
     }
-    writeFileSync(path.join(OUT,'fractional-blood-dot.json'),JSON.stringify({ sourceSHA:'7c4e16ca738774617e7bc0f022594165e2e1a4cf',testedSourceHashes,feature:'actual local feature fork; default disabled',unitsPerHP:SCALE,trials:TRIALS,cells:results,
-        assumptions:['Production CombatManager resolver/scheduler imported directly; no sim-only generated hook','Current Dedication Prowess-oriented melee-only chassis','Actual one-action player budget, enemy authored multiattack','Average authored monster HP, normal difficulty, no cover','Constructed same-level companion; deterministic lowest-HP target policy','Test-only semantic RNG; not production seeding','No tactics, spells, consumables or advanced Calling kits','Fractional100/0 control uses same new precision; legacy integer controls reported separately'] },null,2));
-    const csv = ['cohort,level,weapon,profile,party,defense,mode,split,winRate,ciLow,ciHigh,rounds,enemyTurns,partyHP,playerTickEffective,playerPendingLost,playerZeroDeferredHitRate,enemyZeroDeferredHitRate,achievedDeferredFraction,timeouts'];
+    writeFileSync(path.join(OUT,'compensated-blood-dot.json'),JSON.stringify({ testedSourceHashes,feature:'actual compensated weapon engine',unitsPerHP:SCALE,trials:TRIALS,cells:results,
+        assumptions:['Production CombatManager resolver/scheduler imported directly; no copied combat math','Three Callings weapon-only chassis; not full Calling kit balance','One player attack/action intentionally, enemy authored multiattack','Average authored monster HP, normal difficulty, no cover','Constructed same-level companion; deterministic lowest-HP target policy','Test-only semantic RNG; not production seeding','No tactics, spells, consumables, Void monsters or Extra Attack; premium does not yet prove full build parity','Fractional100 control uses same precision; symmetric rule except playerOnly diagnostic'] },null,2));
+    const csv = ['cohort,calling,level,weapon,profile,party,defense,candidate,total,split,winRate,ciLow,ciHigh,rounds,enemyTurns,partyHP,playerTickEffective,playerPendingLost,timeouts'];
     for (const r of results){
-        csv.push([r.cohort,r.level,r.weapon,r.profile,r.party,r.defense,r.mode,r.split,r.winRate,...r.winCI95,r.means.rounds,r.means.enemyTurns,r.means.partyHP,r.means.playerTickEffective,r.means.playerPendingLost,r.playerZeroDeferredHitRate,r.enemyZeroDeferredHitRate,r.achievedDeferredFraction,r.means.timeoutCount * r.trials].join(','));
+        csv.push([r.cohort,r.calling || 'dedication',r.level,r.weapon,r.profile,r.party,r.defense,r.candidate,r.total,r.split,r.winRate,...r.winCI95,r.means.rounds,r.means.enemyTurns,r.means.partyHP,r.means.playerTickEffective,r.means.playerPendingLost,r.means.timeoutCount * r.trials].join(','));
     }
-    writeFileSync(path.join(OUT,'fractional-blood-dot.csv'),csv.join('\n'));
+    writeFileSync(path.join(OUT,'compensated-blood-dot.csv'),csv.join('\n'));
     realLog(`FINISHED ${results.length} cells × ${TRIALS} = ${results.length * TRIALS} fights; actual fork budget/HP checks passed.`);
 } finally {
     Math.random = originalRandom;RULES.combat.damageOverTime.enabled = originalFlag;RULES.combat.damageOverTime.immediateFraction = originalFraction;RULES.combat.damageReductionSystem.enabled = originalReduction;RULES.combat.damageOverTime.totalMultiplier = originalTotal;gameState.addMessage = originalMessage;

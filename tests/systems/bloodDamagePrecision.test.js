@@ -15,7 +15,7 @@ import { hpToUnits, partitionDamage } from '../../src/utils/damagePrecision.js';
 const items = JSON.parse(readFileSync(new URL('../../data/items.json', import.meta.url), 'utf8'));
 const classes = JSON.parse(readFileSync(new URL('../../data/classes.json', import.meta.url), 'utf8')).classes;
 const monsters = JSON.parse(readFileSync(new URL('../../data/monsters.json', import.meta.url), 'utf8')).monsters;
-let enabled, reduction, fraction;
+let enabled, reduction, fraction, multiplier;
 
 function fixture(prowess = 15) {
     const character = new Character({ name: 'Fighter', level: 5,
@@ -42,8 +42,10 @@ beforeEach(() => {
     enabled = RULES.combat.damageOverTime.enabled;
     reduction = RULES.combat.damageReductionSystem.enabled;
     fraction = RULES.combat.damageOverTime.immediateFraction;
+    multiplier = RULES.combat.damageOverTime.totalMultiplier;
     RULES.combat.damageOverTime.enabled = true;
     RULES.combat.damageOverTime.immediateFraction = 0.8;
+    RULES.combat.damageOverTime.totalMultiplier = 1;
     RULES.combat.damageReductionSystem.enabled = false;
     globalThis.window = { game: null, lootManager: null };
     vi.useFakeTimers();
@@ -56,6 +58,7 @@ afterEach(() => {
     RULES.combat.damageOverTime.enabled = enabled;
     RULES.combat.damageReductionSystem.enabled = reduction;
     RULES.combat.damageOverTime.immediateFraction = fraction;
+    RULES.combat.damageOverTime.totalMultiplier = multiplier;
     vi.useRealTimers(); vi.restoreAllMocks();
 });
 
@@ -79,37 +82,106 @@ describe('blood damage precision fork', () => {
         expect(enemy.getCondition('legacyPeriodic')).toBeUndefined();
     });
 
-    it('conserves authored one and two HP hits with three positive schedules', () => {
+    it.each([1, 1.2, 1.4])('delivers the %s total multiplier budget for small hits with three positive schedules', totalMultiplier => {
+        RULES.combat.damageOverTime.totalMultiplier = totalMultiplier;
+        RULES.combat.damageOverTime.immediateFraction = 0.5;
         for (const raw of [1, 2]) {
-            const split = partitionDamage(raw, 0.8, 3);
+            const split = partitionDamage(raw * totalMultiplier, 0.5, 3);
             expect(split.ticksUnits.every(amount => amount > 0)).toBe(true);
-            expect(hpToUnits(split.immediate) + split.ticksUnits.reduce((sum, amount) => sum + amount, 0)).toBe(hpToUnits(raw));
+            const scheduledUnits = split.ticksUnits.reduce((sum, amount) => sum + amount, 0);
+            expect(hpToUnits(split.immediate) + scheduledUnits).toBe(hpToUnits(raw * totalMultiplier));
             const { manager, player, enemy } = fixture(); const before = enemy.hp;
             manager.applyWeaponDamage(player, enemy, raw, 'blood');
             for (let tick = 0; tick < 3; tick++) {
                 manager.processPeriodicDamage(enemy);
             }
-            expect(hpToUnits(before - enemy.hp)).toBe(hpToUnits(raw));
+            expect(hpToUnits(before - enemy.hp)).toBe(hpToUnits(raw * totalMultiplier));
             expect(manager.getPendingDamage(enemy).totalPending).toBe(0);
         }
     });
 
+    it('independently tunes total premium and impact while leaving riders and other attacks instant', () => {
+        RULES.combat.damageOverTime.totalMultiplier = 1.2;
+        RULES.combat.damageOverTime.immediateFraction = 2 / 3;
+        const { manager, player, enemy } = fixture();
+        const boosted = manager.applyWeaponDamage(player, enemy, 14, 'blood', { eligibleAmount: 10 });
+        expect(boosted.raw).toBe(14);
+        expect(boosted.totalBudget).toBe(16);
+        expect(boosted.immediate).toBe(12);
+        expect(boosted.deferred).toBe(4);
+        enemy.removeCondition('bleeding');
+        RULES.combat.damageOverTime.totalMultiplier = 1.4;
+        for (const [damageType, metadata] of [['bone', {}], ['blood', { eligible: false }], ['blood', { eligibleAmount: -1 }]]) {
+            const result = manager.applyWeaponDamage(player, enemy, 1, damageType, metadata);
+            expect(result.immediate).toBe(1);
+            expect(result.totalBudget).toBe(1);
+            expect(manager.getPendingDamage(enemy).totalPending).toBe(0);
+        }
+    });
+
+    it.each([
+        { hp: 8, tempHP: 0, resistant: false, offered: false },
+        { hp: 7, tempHP: 0, resistant: false, offered: true },
+        { hp: 7, tempHP: 1, resistant: false, offered: false },
+        { hp: 4, tempHP: 0, resistant: true, offered: false }
+    ])('offers Intervene only for projected lethal impact: %j', async ({ hp, tempHP, resistant, offered }) => {
+        RULES.combat.damageOverTime.totalMultiplier = 1.4;
+        RULES.combat.damageOverTime.immediateFraction = 0.5;
+        RULES.combat.damageReductionSystem.enabled = resistant;
+        const { manager, player, enemy } = fixture();
+        enemy.team = 'companion'; enemy.hp = hp;
+        if (tempHP) {
+            enemy.addCondition('tempHP', 'combat', 'enemy', { value: tempHP });
+        }
+        if (resistant) {
+            enemy.damageResistances = ['blood'];
+        }
+        const promptReaction = vi.fn().mockResolvedValue(null);
+        window.game = { promptReaction };
+        vi.spyOn(manager, 'handleDefeat').mockImplementation(() => {});
+        vi.spyOn(Math, 'random').mockReturnValueOnce(0.75).mockReturnValue(0.99);
+        await manager.attack(player, enemy);
+        expect(promptReaction.mock.calls.some(([trigger]) => trigger === 'allyWouldDrop0')).toBe(offered);
+        expect(hpToUnits(hp - enemy.hp)).toBe(hpToUnits(resistant ? 3.5 : Math.min(hp, 7 - tempHP)));
+    });
+
+    it('does not announce suppressed or defeated-target damage as pending', () => {
+        RULES.combat.damageOverTime.totalMultiplier = 1.4;
+        RULES.combat.damageOverTime.immediateFraction = 0.5;
+        const { manager, player, enemy } = fixture();
+        enemy.character.conditionImmunities = ['bleeding'];
+        manager.applyWeaponDamage(player, enemy, 1, 'blood');
+        expect(gameState.data.ui.messageLog.at(-1).text).not.toContain('pending');
+        enemy.character.conditionImmunities = []; enemy.hp = 0.1;
+        manager.applyWeaponDamage(player, enemy, 1, 'blood');
+        expect(manager.getPendingDamage(enemy).totalPending).toBe(0);
+        expect(gameState.data.ui.messageLog.at(-1).text).not.toContain('pending');
+    });
+
     it('uses real attack dice and one critical result before partitioning', async () => {
+        RULES.combat.damageOverTime.totalMultiplier = 1.4;
+        RULES.combat.damageOverTime.immediateFraction = 0.5;
         const { manager, player, enemy } = fixture(); const before = enemy.hp;
         vi.spyOn(Math, 'random').mockReturnValue(0.99);
         await manager.attack(player, enemy, 'mainHand', { extraDamage: 4 });
-        expect(manager.getPendingDamage(enemy).totalPending).toBe(3.6);
-        expect(hpToUnits(before - enemy.hp)).toBe(18400);
+        expect(manager.getPendingDamage(enemy).totalPending).toBe(12.6);
+        expect(hpToUnits(before - enemy.hp)).toBe(16600);
     });
 
     it('uses the same landed packet rule for natural monster weapon attacks', async () => {
-        const { manager, player, enemy } = fixture(); const before = player.hp;
+        RULES.combat.damageOverTime.totalMultiplier = 1.2;
+        RULES.combat.damageOverTime.immediateFraction = 2 / 3;
+        const { manager, player } = fixture(); const before = player.hp;
+        const wolf = createEnemyFromMonster(monsters.find(entry => entry.id === 'wolf'), {
+            worldConfig: { useAverageMonsterHP: true }
+        });
+        const enemy = new Combatant(wolf, 'enemy', 'wolf'); enemy.combatManager = manager;
         vi.spyOn(Math, 'random').mockReturnValue(0.99);
-        const action = { name: 'Claw', type: 'meleeWeaponAttack', attackBonus: 99,
-            damage: { dice: '1d4', bonus: 0, type: 'blood' } };
+        const action = wolf.monsterActions.find(entry => entry.damageType === 'blood');
+        const raw = 16 + manager.calculateMonsterAttackStats(enemy, action).damageBonus;
         await manager.executeMonsterAttack(enemy, player, action);
-        expect(manager.getPendingDamage(player).totalPending).toBeGreaterThan(0);
-        expect(player.hp).toBeLessThan(before);
+        expect(hpToUnits(manager.getPendingDamage(player).totalPending)).toBe(hpToUnits(raw * 0.4));
+        expect(hpToUnits(before - player.hp)).toBe(hpToUnits(raw * 0.8));
     });
 
     it.each([

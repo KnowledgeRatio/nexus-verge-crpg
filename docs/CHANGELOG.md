@@ -4,6 +4,20 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## 2026-10-07 — Compensated blood damage over time
+
+Local playtest activation: at the user's request, `RULES.combat.damageOverTime.enabled` is now `true`. The 120-percent budget and 80/40 delivery are unchanged; the independent resistance system remains disabled. Reload the local game to exercise the feature. This activation is not a deployment or completed hands-on acceptance; setting the switch to `false` rolls back. Activation checks passed in 105 test files; the remaining weapon-damage regression fixture was updated to exercise both explicit rollback and enabled modes, and its five tests passed alongside the 27 blood-damage tests.
+
+The Game Designer replaced the uncompensated 80/20 prototype with a 120-percent potential budget: 80 percent of eligible weapon-base damage on impact plus 40 percent bleeding over three target turns. Total multiplier and timing split are independent rules controls; the tested 140-percent alternative remains configurable. Paid riders remain immediate and unboosted. The same rules apply to player, companion and eligible monster weapon hits. Intervene now predicts lethal immediate HP damage using the same partition, defenses and temporary-HP calculations as actual resolution. Pending damage messages distinguish damage before defenses and avoid claiming a schedule survives target defeat.
+
+The Balance Engineer ran 271,200 actual-engine fights plus 12,100 concentration trials. Higher-sample matched-weapon probes show a smaller durable-target advantage at 120 percent than 140 percent, while short-target outcomes retain a timing cost. The independent review found no remaining production blocker. All 1,243 tests across 106 files passed using `npm test -- --testTimeout 10000` before local activation; standard lint retains the same 205 pre-existing errors with no new error signatures. Full Calling kits, actual concentration/cleanse choices, Void interactions and hands-on presentation remain acceptance work. The user subsequently authorized the local playtest activation recorded above; global resistance and authored elemental effects retain their independent configuration.
+
+Evidence and reproducibility: [compensated report](../tools/balance-sim/results-compensated/report.md), [matched follow-up](../tools/balance-sim/results-compensated/matched-followup.md), [final-source verification](../tools/balance-sim/results-compensated/final-verification.json), and [updated specification](plans/2026-10-04-blood-dot-precision.md). The original 100-percent-budget simulation report is explicitly historical and superseded.
+
+Elemental proposal, not implemented: add a generic authored periodic-damage producer using the existing typed/flavored resolver and schedule consumer. Compare an optional fire Burn at 120-percent total/80-40 delivery against an equally costly instant fire effect; do not add automatic burn to all fire attacks. Cold and lightning should spend their effect budget on meaningful non-grid control or reaction suppression; acid/poison sustained effects should price damage and debuffs together. Preserve authored necrotic/Void escalation. No broad damage-type remap is necessary.
+
+---
+
 ## 2026-10-04 — Blood damage over time prototype
 
 Added a default-disabled combat fork using 1,000 integer units per HP. Positive eligible blood-weapon damage splits into 80 percent immediate damage and 20 percent bleeding over three independent target-turn starts. Reapplication preserves earlier schedules; immunity, cleansing, target defeat, and encounter completion follow explicit cancellation rules.

@@ -109,9 +109,11 @@ export const RULES = {
         },
 
         damageOverTime: {
-            enabled: false,
+            enabled: true,
             unitsPerHP: 1000,
-            immediateFraction: 0.8,
+            totalMultiplier: 1.2,
+            // Fraction of the amplified eligible weapon budget, not of the base hit.
+            immediateFraction: 2 / 3,
             ticks: 3,
             damageTypes: ['blood'],
             conditionType: 'bleeding',

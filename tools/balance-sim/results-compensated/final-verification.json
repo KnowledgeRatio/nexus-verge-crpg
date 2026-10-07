@@ -1,0 +1,21 @@
+{
+  "trials": 1000,
+  "cells": 36,
+  "fights": 36000,
+  "concentrationTrials": 3000,
+  "checks": [
+    "Every paired outcome and metric matches earlier1000trial diagnostic",
+    "All recorded production source hashes match final workspace bytes after final messages and formatting changes",
+    "No matched cell timeout"
+  ],
+  "testedSourceHashes": {
+    "src/core/rulesEngine.js": "daa543f45c56ecfeac6d68c42bcc480e4e2f41efda820793f16a02e50c97a405",
+    "src/systems/CombatManager.js": "fc3b12bc8c004faa8c4196e02f649dd6dda71ecf90733050299e52cb1ff0354f",
+    "src/systems/Character.js": "39da47924b6ced9885091328659e6d9e7cab470bb8f5e10d0d5d2cbf6d951f9b",
+    "src/systems/EffectDispatcher.js": "227c168da0bbf63ebbff8a924769c759746b85d449f4c340ae8674c5c39a48f9",
+    "src/systems/DamageResolver.js": "ecc73843f5e9ff9a6d1febf98ce0b237649b0e2a64e3e492d672b1f60910ef28",
+    "src/utils/damagePrecision.js": "5cee5ad7c2a530158e598007776937a52d675a7c8d2ee30e7779f14f6aee4e7c"
+  },
+  "rawResults": "/tmp/nexus-dot-final-source-revalidated/compensated-blood-dot.json",
+  "supersededRepeat": "/tmp/nexus-dot-final-source/compensated-blood-dot.json (excluded from accepted evidence counts)"
+}

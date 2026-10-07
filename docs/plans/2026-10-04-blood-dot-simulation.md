@@ -1,3 +1,5 @@
+**Status:** Superseded (2026-10-07). Historical evidence for the original 100%-total-damage prototype. Replaced by the [compensated-damage evaluation](../../tools/balance-sim/results-compensated/report.md) and the revised [implementation specification](2026-10-04-blood-dot-precision.md). These historical runs did not test 140% total damage and cannot select or reject a compensation multiplier.
+
 # Fractional blood DoT — actual feature-fork simulation
 
 **Result:** 80/20 immediate/deferred remains the conservative prototype. The real fractional implementation preserves tiny-hit bleeding and removes the old whole-HP resistance floor. Increasing delayed share generally allows more enemy actions and loses more pending damage before combat ends. This is scoped quantitative evidence, not full-game or deployment acceptance.
