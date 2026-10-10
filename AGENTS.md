@@ -51,6 +51,14 @@ The user is the product sponsor and final decision-maker.
 - Do not add dependencies without a concrete need.
 - Do not treat a passing unit test as sufficient evidence for a player-facing outcome.
 
+## Documentation Handoff
+
+Before completing a task, assess whether its changes affect documented player behavior, setup/deployment, architecture or integration contracts, data schemas, calling mechanics, or agent workflows. If they do, engage `documentation-agent` with the task's changed files, behavior/decision summary, validation evidence, and affected documentation targets. Allow implementation to settle, then complete the documentation updates in the same task and inspect the resulting diff before reporting completion. Coordinate shared document ownership and preserve unrelated changes.
+
+This is a required agent-workflow handoff, not a background filesystem watcher. If the custom agent is unavailable, load `.agents/skills/documentation-agent/SKILL.md` and perform the same scoped pass directly. Changes with no documentation impact need only a brief reason; do not force unrelated documentation edits. A documentation-only pass does not trigger another handoff to itself.
+
+Use `documentation-agent` directly for requested documentation reviews or artifacts built from user requirements. A review-only request produces findings unless the user also authorizes repairs.
+
 ## Validation
 
 Choose checks proportionate to the change:
@@ -83,6 +91,7 @@ Use a custom subagent only when its specialist context or independent execution 
 - `refactor-engineer`: behavior-preserving cleanup and architecture enforcement.
 - `devils-advocate`: constructive challenge of decisions, risks, assumptions, and completed work.
 - `legal-reviewer`: SRD, licensing, attribution, trademark, and release compliance.
+- `documentation-agent`: living documentation maintenance, evidence-based reviews, and documentation artifacts from user requirements.
 
 ## Decision Rights
 
@@ -92,6 +101,7 @@ Use a custom subagent only when its specialist context or independent execution 
 - Worldbuilder decides narrative canon and voice.
 - Architect decides technical architecture within product and design intent.
 - Implementing agents decide local implementation details within those constraints.
+- Documentation Agent owns documentation accuracy, structure, and reader usability; domain owners retain authority over the decisions being documented.
 
 Escalate a genuine conflict between decision rights to the user. Do not silently let one role absorb another role’s authority.
 
@@ -102,6 +112,7 @@ Escalate a genuine conflict between decision rights to the user. Do not silently
 - `game-designer` may consult `mechanics-master` and `balance-engineer`.
 - `architect` may consult `refactor-engineer`.
 - `balance-engineer` may delegate independent simulation batches.
+- The main agent coordinates `documentation-agent` after relevant implementation or accepted decisions, and for requested documentation work.
 
 Keep nested delegation bounded to a named unresolved question. Return distilled evidence to the parent instead of raw logs.
 

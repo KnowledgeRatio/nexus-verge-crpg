@@ -5,6 +5,8 @@
 
 import { SeededRandom } from '../utils/rng.js';
 import { RULES } from '../core/rulesEngine.js';
+import { gameState } from '../core/GameState.js';
+import { skillRegistry } from './SkillRegistry.js';
 import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
 
 class MerchantManager {
@@ -107,8 +109,53 @@ class MerchantManager {
             });
         }
 
+        const persisted = (gameState.get('world.settlements') || []).find(s =>
+            s.id === (settlement.id || `${settlement.x},${settlement.y}`));
+        for (const entry of (persisted?.questStock || settlement.questStock || [])) {
+            const item = itemPool.find(candidate => candidate.id === entry.itemId);
+            if (!item || entry.merchantRole !== merchantType || entry.remaining <= 0) {
+                continue;
+            }
+            inventory.push({ ...item, stock: entry.remaining,
+                stockId: `${settlement.id || `${settlement.x},${settlement.y}`}_quest_${entry.sourceQuestId}_${entry.effectId}`,
+                questStock: { settlementId: settlement.id || `${settlement.x},${settlement.y}`,
+                    sourceQuestId: entry.sourceQuestId, effectId: entry.effectId, merchantRole: merchantType } });
+        }
+
         console.log(`🏪 Generated ${inventory.length} items for ${merchantType} in ${settlement.name}`);
         return inventory;
+    }
+
+    /** Validate a shipment against the actual town and campaign-filtered stock pool. */
+    canAddQuestStock(settlementId, itemId, merchantRole) {
+        const settlement = (gameState.get('world.settlements') || []).find(s => s.id === settlementId);
+        const pool = merchantRole === 'merchant' ? this.merchantInventoryData?.merchantItems
+            : merchantRole === 'blacksmith' ? this.merchantInventoryData?.blacksmithItems : null;
+        return Boolean(settlement?.npcs?.some(npc => npc.role === merchantRole)
+            && pool?.some(item => item.id === itemId));
+    }
+
+    /** Add a finite, source-owned shipment once; exhausted entries remain as receipts. */
+    addQuestStock(settlementId, sourceQuestId, effectId, itemId, merchantRole, quantity) {
+        if (!sourceQuestId || !effectId || !Number.isInteger(quantity) || quantity <= 0
+            || !this.canAddQuestStock(settlementId, itemId, merchantRole)) {
+            return false;
+        }
+        const settlements = gameState.get('world.settlements');
+        const settlement = settlements.find(s => s.id === settlementId);
+        settlement.questStock ||= [];
+        const existing = settlement.questStock.find(entry =>
+            entry.sourceQuestId === sourceQuestId && entry.effectId === effectId);
+        if (existing) {
+            return existing.itemId === itemId && existing.merchantRole === merchantRole;
+        }
+        settlement.questStock.push({ sourceQuestId, effectId, itemId, merchantRole, remaining: quantity });
+        gameState.set('world.settlements', settlements);
+        const live = globalThis.window?.game?.settlementManager?.currentSettlement;
+        if (live?.id === settlementId) {
+            live.questStock = settlement.questStock;
+        }
+        return true;
     }
 
     /**
@@ -128,7 +175,7 @@ class MerchantManager {
 
         // Fallback: Influence skill modifier only (no relation tier)
         const basePrice = item.value || 0;
-        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceBonus = skillRegistry.getModifier(character, 'influence');
         const influenceEffect = influenceBonus * 0.01;
         return Math.max(1, Math.round(basePrice * (1.0 - influenceEffect)));
     }
@@ -150,7 +197,7 @@ class MerchantManager {
 
         // Fallback: Influence skill modifier only (no relation tier)
         const basePrice = item.value || 0;
-        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceBonus = skillRegistry.getModifier(character, 'influence');
         const influenceEffect = influenceBonus * 0.01;
         const baseSellPrice = basePrice * 0.5;
         return Math.max(1, Math.round(baseSellPrice * (1.0 + influenceEffect)));
@@ -165,6 +212,25 @@ class MerchantManager {
    * @returns {Object} Result {success, message, cost}
    */
     buyItem(item, character, quantity = 1, npc) {
+        if (!Number.isInteger(quantity) || quantity <= 0) {
+            return { success: false, message: 'Choose a whole, positive quantity.' };
+        }
+        let shipment;
+        if (item.questStock) {
+            const binding = item.questStock;
+            const live = gameState.get('ui.currentSettlement');
+            const settlement = (gameState.get('world.settlements') || []).find(s => s.id === binding.settlementId);
+            shipment = settlement?.questStock?.find(entry => entry.sourceQuestId === binding.sourceQuestId
+                && entry.effectId === binding.effectId && entry.itemId === item.id
+                && entry.merchantRole === binding.merchantRole);
+            if (live?.id !== binding.settlementId || live.merchantLocked
+                || !settlement.npcs?.some(candidate => candidate.id === npc?.id && candidate.role === binding.merchantRole)
+                || !shipment || quantity > shipment.remaining) {
+                return { success: false, message: 'That recovered shipment is unavailable.' };
+            }
+        } else if (item.stock !== undefined && quantity > item.stock) {
+            return { success: false, message: 'Not enough stock.' };
+        }
         const unitPrice = this.calculateBuyPrice(item, character, npc);
         const totalCost = unitPrice * quantity;
 
@@ -178,10 +244,34 @@ class MerchantManager {
         }
 
         // Remove gold
-        character.removeGold(totalCost);
+        if (typeof character.removeGold === 'function') {
+            character.removeGold(totalCost);
+        } else {
+            character.gold -= totalCost;
+        }
 
         // Add item to inventory
-        character.addItem(item, quantity);
+        // Stock receipts belong to the merchant, never to the player's inventory.
+        const purchasedItem = { ...item };
+        delete purchasedItem.questStock;
+        delete purchasedItem.stockId;
+        delete purchasedItem.stock;
+        if (typeof character.addItem === 'function') {
+            character.addItem(purchasedItem, quantity);
+        } else {
+            character.inventory ||= [];
+            const owned = character.inventory.find(entry => entry.id === item.id && !entry.questSource);
+            if (owned) {
+                owned.quantity = (owned.quantity || 1) + quantity;
+            } else {
+                character.inventory.push({ ...purchasedItem, quantity });
+            }
+        }
+        if (shipment) {
+            shipment.remaining -= quantity;
+            gameState.set('world.settlements', gameState.get('world.settlements'));
+        }
+        gameState.set('character', character);
 
         // Apply relation bonus for successful trade
         const relationManager = window.game?.relationManager;
@@ -205,11 +295,14 @@ class MerchantManager {
    * @returns {Object} Result {success, message, earnings}
    */
     sellItem(item, character, quantity = 1, npc) {
+        if (item.questSource) {
+            return { success: false, message: 'Quest goods must be handed over through the quest.', earnings: 0 };
+        }
         const unitPrice = this.calculateSellPrice(item, character, npc);
         const totalEarnings = unitPrice * quantity;
 
         // Remove item from inventory
-        const removed = character.removeItem(item.id || item.instanceId, quantity);
+        const removed = character.removeItem(item.instanceId || item.id, quantity);
 
         if (!removed) {
             return {

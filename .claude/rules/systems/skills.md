@@ -14,6 +14,9 @@ Retired skills are save/content aliases only. Arcana and Academia map to Lore; A
 - Store proficiency and expertise on the character. Do not store an attribute-specific modifier as authoritative state.
 - `SkillChallengeManager` owns challenge sequencing, party help, DC scaling, critical interpretation, and consequences; it delegates skill math to `SkillRegistry`.
 - Dialogue, quests, settlement checks, traps, terrain, and dungeon checks must use the same resolver. Do not add a UI-local skill-to-attribute map.
+- Use `SkillChallengeManager.getSkillCheckContext` for shared party help, fatigue and roll previews; plain saved characters must retain their skill modifiers.
+- Omitted challenge cooldowns use `RULES.skillChallenges.defaultCooldownMs`; preserve explicit zero. Record actual attempts in saved `flags.skillChallengeAttempts`, never cancellation. Finite NPC opportunities use their authored completion flags.
+- Quest room Investigation persists its initial attempt. Failed searches require the deliberate E retry action and the existing `RULES.fatigue.skillChallengeFatigue` cost; room reentry must not grant free rerolls.
 - Expertise is the highest mastery tier. Player-facing wording may use “Expert” or “Master,” but the mechanical state remains `expertise` until a separately approved progression redesign.
 
 ## Canonical pairings
@@ -29,4 +32,3 @@ Retired skills are save/content aliases only. Arcana and Academia map to Lore; A
 | Perception | Intuition | Composure |
 | Empathy | Composure | Presence |
 | Influence | Presence | Composure |
-

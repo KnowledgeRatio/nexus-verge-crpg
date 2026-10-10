@@ -5,13 +5,13 @@
 
 import { gameState } from '../core/GameState.js';
 import restManager from './RestManager.js';
-import { rollDice, getAbilityModifier } from '../utils/dice.js';
+import { roll, getAbilityModifier } from '../utils/dice.js';
 import audioManager from './AudioManager.js';
 import { RULES } from '../core/rulesEngine.js';
 import { addFatigue, calcMovementFatigue, getFatigueState, removeFatigue } from './FatigueManager.js';
 import { normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
 import { convertMonsterSavingThrows } from '../utils/monsterAttributeConversion.js';
-import { damagePrecisionEnabled, normalizeHP, subtractHP } from '../utils/damagePrecision.js';
+import { Character } from './Character.js';
 
 class Player {
     constructor(worldGenerator, mapRenderer, settlementManager = null, dungeonManager = null) {
@@ -424,7 +424,9 @@ class Player {
      * Camp coordinates come from dungeonHookId on the quest — no Math.random() placement.
      */
     async checkForQuestEncounters() {
-        if (gameState.get('combat')?.active) return;
+        if (gameState.get('combat')?.active) {
+            return;
+        }
 
         const quests = gameState.get('quests');
         if (!quests?.active?.length) {
@@ -436,7 +438,7 @@ class Player {
         const socialQuest = quests.active.find(q =>
             q.type === 'social' &&
             q.dungeonHookId &&
-            q.objectives?.some(obj => obj.type === 'reach_location' && !obj.completed)
+            q.objectives?.some(obj => obj.type === 'social_challenge' && !obj.completed)
         );
 
         if (!socialQuest) {
@@ -453,7 +455,7 @@ class Player {
             return;
         }
 
-        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location' && !obj.completed);
+        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location');
         if (!locationObj) {
             this.nearBanditCamp = false;
             return;
@@ -546,6 +548,15 @@ class Player {
                         await window.game.triggerBossEncounter(result.bossId);
                     }
                 }
+                return;
+            }
+
+            // Failed quest searches can be retried deliberately rather than by room re-entry.
+            const dungeon = this.dungeonManager.currentDungeon;
+            const roomIndex = gameState.get('dungeon.currentRoomIndex');
+            if (dungeon && await window.questManager?.retryRoomInvestigations?.(
+                dungeon.x, dungeon.y, roomIndex, gameState.get('character')
+            )) {
                 return;
             }
 
@@ -644,17 +655,21 @@ class Player {
      */
     async approachBanditCamp() {
         const quests = gameState.get('quests');
-        const socialQuest = quests?.active?.find(q =>
-            q.type === 'social' &&
-            q.objectives?.some(obj => obj.type === 'reach_location' && !obj.completed)
-        );
+        const socialQuest = quests?.active?.find(q => q.type === 'social'
+            && q.objectives?.some(obj => obj.type === 'social_challenge' && !obj.completed)
+            && q.objectives?.some(obj => obj.type === 'reach_location'
+                && (() => {
+                    const [x, y] = (obj.dungeonHookId || q.dungeonHookId || '').split(',').map(Number);
+                    return Number.isFinite(x) && Number.isFinite(y)
+                        && Math.hypot(this.x - x, this.y - y) <= (obj.radius || 3);
+                })()));
 
         if (!socialQuest) {
             gameState.addMessage('The camp is empty.', 'info');
             return;
         }
 
-        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location' && !obj.completed);
+        const locationObj = socialQuest.objectives.find(obj => obj.type === 'reach_location');
         const challengeObj = socialQuest.objectives.find(obj => obj.type === 'social_challenge');
 
         if (challengeObj?.completed) {
@@ -757,9 +772,6 @@ class Player {
             return; // Frequency check failed or on cooldown
         }
 
-        // Record attempt for cooldown
-        window.skillChallengeManager.recordChallengeAttempt(challengeId);
-
         // Calculate level-adjusted DC
         const baseDC = challenge.baseDC
             ?? challenge.stages?.[0]?.baseDC
@@ -799,10 +811,16 @@ class Player {
 
         // Prompt skill check with challenge integration
         const result = await window.game.promptSkillCheck(config, challenge, null);
+        if (result.attempted) {
+            window.skillChallengeManager.recordChallengeAttempt(challenge.id);
+        }
+        if (result.dead) {
+            return result;
+        }
 
         if (!result.attempted) {
             gameState.addMessage('You decide to avoid the challenge.', 'info');
-            return;
+            return result;
         }
 
         // Check if combat was initiated
@@ -827,29 +845,36 @@ class Player {
 
             // Challenge ends after combat (single challenges don't resume)
             gameState.set('pendingChallenge', null);
-            return;
+            return result;
         }
 
         // Notify QuestManager of challenge completion
         if (window.questManager) {
             window.questManager.onSkillChallengeCompleted(challenge.id, result);
         }
+        return { ...result, outcomes: result.outcome ? [result.outcome] : [] };
     }
 
     /**
      * Handle sequential (multi-stage) skill challenge
      * @param {Object} challenge - Challenge template
      */
-    async handleSequentialSkillChallenge(challenge) {
+    async handleSequentialSkillChallenge(challenge, context = {}) {
         const character = gameState.get('character');
         let currentStageIndex = 0;
         const stageHistory = []; // Track stage results for outcome display
+        const outcomes = [];
+        let nextDCModifier = 0;
+        let lastResult = { attempted: false, success: false };
+        let completed = false;
 
         while (currentStageIndex < challenge.stages.length) {
             const stage = challenge.stages[currentStageIndex];
 
             // Calculate level-adjusted DC for this stage
-            const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(stage.baseDC, character.level);
+            const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(stage.baseDC ?? stage.dc, character.level)
+                + (context.dcModifier || 0) + nextDCModifier;
+            nextDCModifier = 0;
 
             // Create config for this stage with stage history
             const config = {
@@ -863,6 +888,18 @@ class Player {
 
             // Prompt skill check
             const result = await window.game.promptSkillCheck(config, challenge, stage);
+            lastResult = result;
+            if (result.attempted && !stageHistory.length) {
+                window.skillChallengeManager.recordChallengeAttempt(challenge.id);
+            }
+            const outcome = result.outcome || (result.success ? stage.onSuccess : stage.onFailure);
+            if (result.attempted && outcome) {
+                outcomes.push(outcome);
+            }
+            if (result.dead) {
+                break;
+            }
+            nextDCModifier = outcome?.nextDCModifier ?? outcome?.climbDCModifier ?? 0;
 
             // Record this stage's result for history (if attempted)
             if (result.attempted) {
@@ -925,9 +962,10 @@ class Player {
 
             if (!result.success) {
                 // Stage failed - check if there's a nextStage on failure or if challenge ends
-                if (stage.onFailure?.nextStage) {
+                if (outcome?.nextStage) {
                     // Find next stage by ID
-                    currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onFailure.nextStage);
+                    currentStageIndex = outcome.nextStage === true ? currentStageIndex + 1
+                        : challenge.stages.findIndex(s => s.id === outcome.nextStage);
                     if (currentStageIndex === -1) {
                         break;
                     } // Stage not found, end challenge
@@ -946,15 +984,17 @@ class Player {
                 }
 
                 // Stage succeeded - check for next stage
-                if (stage.onSuccess?.nextStage) {
+                if (outcome?.nextStage) {
                     // Find next stage by ID
-                    currentStageIndex = challenge.stages.findIndex(s => s.id === stage.onSuccess.nextStage);
+                    currentStageIndex = outcome.nextStage === true ? currentStageIndex + 1
+                        : challenge.stages.findIndex(s => s.id === outcome.nextStage);
                     if (currentStageIndex === -1) {
                         break;
                     } // Stage not found, end challenge
                 } else {
                     // Final stage completed
                     gameState.addMessage(`✨ Challenge complete: ${challenge.name}`, 'success');
+                    completed = true;
 
                     // Clear pending challenge
                     gameState.set('pendingChallenge', null);
@@ -966,6 +1006,8 @@ class Player {
 
         // Clear pending challenge if we exit loop early
         gameState.set('pendingChallenge', null);
+        return { ...lastResult, attempted: stageHistory.length > 0 || lastResult.attempted,
+            success: completed, completed, outcomes, stageHistory };
     }
 
     /**
@@ -998,11 +1040,19 @@ class Player {
      */
     async handleChoiceSkillChallenge(challenge, baseAdjustedDC) {
         // Show choice UI - player picks which skill to use
-        const result = await window.game.promptChoiceSkillChallenge(challenge);
+        const result = await window.game.promptChoiceSkillChallenge(challenge, {
+            dcModifier: typeof baseAdjustedDC === 'object' ? baseAdjustedDC.dcModifier || 0 : 0
+        });
+        if (result.attempted) {
+            window.skillChallengeManager.recordChallengeAttempt(challenge.id);
+        }
+        if (result.dead) {
+            return result;
+        }
 
         if (!result.attempted) {
             gameState.addMessage('You decide to find another way.', 'info');
-            return;
+            return result;
         }
 
         // Check if combat was initiated
@@ -1027,13 +1077,15 @@ class Player {
 
             // Challenge ends after combat (choice challenges don't resume)
             gameState.set('pendingChallenge', null);
-            return;
+            return result;
         }
 
         // Notify QuestManager of challenge completion
         if (window.questManager) {
             window.questManager.onSkillChallengeCompleted(challenge.id, result);
         }
+        const outcome = result.outcome || (result.success ? result.optionChosen?.onSuccess : result.optionChosen?.onFailure);
+        return { ...result, outcomes: outcome ? [outcome] : [] };
     }
 
     /**
@@ -1372,13 +1424,9 @@ class Player {
         }
 
         // Calculate passive perception: 10 + perception skill bonus
-        const perceptionBonus = window.skillChallengeManager.getSkillModifier(
-            character,
-            'perception',
-            window.skillChallengeManager.getActiveCompanions(),
-            'intuition'
+        const { passiveScore: passivePerception } = window.skillChallengeManager.getSkillCheckContext(
+            character, 'perception', { attribute: 'intuition' }
         );
-        const passivePerception = 10 + perceptionBonus;
 
         const detected = passivePerception >= trapDC;
 
@@ -1411,16 +1459,8 @@ class Player {
                     if (result.attempted && result.success) {
                         gameState.addMessage('✅ You carefully disarm the trap!', 'success');
                     } else if (result.attempted && !result.success) {
-                        // Failed disarm - take reduced damage (you knew it was there)
-                        const { roll: rollFn } = await import('../utils/dice.js');
-                        const damage = rollFn(trapDamageDice);
-                        const reducedDamage = Math.max(1, damagePrecisionEnabled() ? normalizeHP(damage / 2) : Math.floor(damage / 2));
-                        character.currentHP = subtractHP(character.currentHP, reducedDamage);
-                        gameState.set('character', character);
-                        if (window.game) {
-                            window.game.updateHUD(character);
-                        }
-                        gameState.addMessage(`💥 The trap triggers during disarm! You take ${reducedDamage} damage (reduced).`, 'danger');
+                        // The shared prompt already applied the authored disarm failure once.
+                        gameState.addMessage('💥 The trap triggers during disarm!', 'danger');
                     } else {
                         // Player chose not to attempt - carefully step around
                         gameState.addMessage('🚶 You carefully avoid the trap.', 'info');
@@ -1436,7 +1476,7 @@ class Player {
             // TRAP NOT DETECTED - Immediate damage, no choice
             const { roll: rollFn } = await import('../utils/dice.js');
             const damage = rollFn(trapDamageDice);
-            character.currentHP = subtractHP(character.currentHP, damage);
+            Character.prototype.takeDamage.call(character, damage, 'blood');
             gameState.set('character', character);
             if (window.game) {
                 window.game.updateHUD(character);
@@ -1444,6 +1484,7 @@ class Player {
 
             gameState.addMessage(`⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
             gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+            window.game?.checkDeath?.(character);
 
             // Show floating combat text if available
             if (window.game?.showFloatingCombatText) {
@@ -1561,9 +1602,6 @@ class Player {
         if (!window.skillChallengeManager.canAttemptChallenge(challengeId)) {
             return;
         }
-
-        // Record attempt for cooldown tracking
-        window.skillChallengeManager.recordChallengeAttempt(challengeId);
 
         // Calculate level-adjusted DC
         const baseDC = challenge.type === 'single' ? challenge.baseDC : (challenge.stages?.[0]?.baseDC || 12);
@@ -1782,8 +1820,8 @@ class Player {
         consequences.forEach(consequence => {
             switch (consequence.type) {
                 case 'damage': {
-                    const damage = rollDice(consequence.dice);
-                    character.takeDamage(damage);
+                    const damage = roll(consequence.dice);
+                    Character.prototype.takeDamage.call(character, damage, consequence.damageType);
                     gameState.addMessage(
                         `💥 ${consequence.damageType} damage: ${damage} HP!`,
                         'danger'
@@ -1791,18 +1829,38 @@ class Player {
                     break;
                 }
 
-                case 'exhaustion':
-                    character.addExhaustion(consequence.level);
+                case 'exhaustion': {
+                    const fatigue = getFatigueState();
+                    gameState.set('fatigue', {
+                        ...fatigue,
+                        exhaustionLevels: Math.min(RULES.fatigue.maxExhaustionLevels,
+                            fatigue.exhaustionLevels + consequence.level)
+                    });
+                    if (gameState.get('fatigue.exhaustionLevels') >= RULES.fatigue.maxExhaustionLevels) {
+                        character.currentHP = 0;
+                    }
                     gameState.addMessage(
                         `😓 You gain Exhaustion level ${consequence.level}!`,
                         'warning'
                     );
                     break;
+                }
 
                 case 'equipmentLoss':
                     if (Math.random() < consequence.chance) {
-                        const lostItem = character.loseRandomEquipment();
+                        const equipped = Object.entries(character.equipment || {}).filter(([, item]) => item);
+                        const [lostSlot, lostItem] = equipped[Math.floor(Math.random() * equipped.length)] || [];
                         if (lostItem) {
+                            const inventory = character.inventory || [];
+                            const inventoryIndex = inventory.findIndex(item => lostItem.instanceId
+                                ? item.instanceId === lostItem.instanceId : item === lostItem || item.id === lostItem.id);
+                            if (inventoryIndex !== -1) {
+                                inventory.splice(inventoryIndex, 1);
+                            }
+                            character.equipment[lostSlot] = null;
+                            character.equipment ||= {};
+                            character.ac = Character.prototype.calculateAC.call({ ...character,
+                                baseAC: character.baseAC ?? 10, armorBonus: character.armorBonus ?? 0 });
                             gameState.addMessage(
                                 `🌊 Your ${lostItem.name} was swept away by the current!`,
                                 'danger'
@@ -1812,7 +1870,10 @@ class Player {
                     break;
 
                 case 'injury':
-                    character.addInjury();
+                    character.conditions ||= [];
+                    if (!character.conditions.includes('injured')) {
+                        character.conditions.push('injured');
+                    }
                     gameState.addMessage(
                         '🩹 You suffer an injury!',
                         'danger'
@@ -1820,7 +1881,7 @@ class Player {
                     break;
 
                 case 'death':
-                    character.die();
+                    character.currentHP = 0;
                     gameState.addMessage(
                         '💀 You fall to your death...',
                         'danger'
@@ -1834,8 +1895,9 @@ class Player {
 
         // Update HUD via Game instance
         if (window.game && typeof window.game.updateHUD === 'function') {
-            window.game.updateHUD();
+            window.game.updateHUD(character);
         }
+        window.game?.checkDeath?.(character);
     }
 }
 

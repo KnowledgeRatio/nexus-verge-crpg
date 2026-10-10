@@ -111,6 +111,8 @@ class CombatManager {
         this.playerCombatant = null;
         this.enemyCombatants = [];
         this.companionCombatants = [];
+        this.encounterSource = null;
+        this.encounterPosition = null;
 
         // Cover type for current encounter ('partial', 'substantial', or null)
         // Read from terrain at player's position when combat starts.
@@ -135,7 +137,17 @@ class CombatManager {
      * @param {Array} enemies - Array of enemy characters
      * @param {Array} companions - Array of companion characters (defaults to empty for backward compatibility)
      */
-    async startCombat(player, enemies, companions = []) {
+    async startCombat(player, enemies, companions = [], encounterSource = null) {
+        // Capture provenance before asynchronous setup or subsequent movement can change it.
+        const actualBoss = enemies.find(enemy => enemy.isBoss);
+        const actualSource = actualBoss && window.game?.dungeonManager?.getQuestEncounterSource?.(
+            actualBoss.species?.id
+        );
+        const sourceFields = ['siteId', 'roomIndex', 'targetId', 'encounterId', 'encounterRole', 'encounterKey'];
+        this.encounterSource = encounterSource && actualSource &&
+            sourceFields.every(key => encounterSource[key] === actualSource[key]) ? { ...actualSource } : null;
+        const encounterPosition = gameState.get('player.position');
+        this.encounterPosition = encounterPosition ? { ...encounterPosition } : null;
         // Ensure weapon mastery data is loaded before applying effects
         await this.loadWeaponMasteryData();
         console.log('⚔️ Starting combat encounter!');
@@ -227,7 +239,8 @@ class CombatManager {
             coverType: this.coverType,
             coverWinner: this.coverWinner,
             isCompanionTurn: false,
-            activeCompanionId: null
+            activeCompanionId: null,
+            encounterSource: this.encounterSource
         });
 
         // Add combat start messages
@@ -2649,6 +2662,8 @@ class CombatManager {
      * End combat
      */
     endCombat(result) {
+        const encounterSource = this.encounterSource;
+        this.encounterSource = null;
         this.active = false;
 
         // Reset combat movement warning flag
@@ -2702,6 +2717,8 @@ class CombatManager {
 
         if (result === 'victory') {
             const character = gameState.get('character');
+            const encounterDefeated = this.enemyCombatants.length > 0 &&
+                this.enemyCombatants.every(enemy => enemy.hp <= 0);
 
             // Award XP
             const xpGained = this.calculateXPReward();
@@ -2797,20 +2814,23 @@ class CombatManager {
 
             // Notify quest system of kills
             if (window.questManager) {
-                const playerPos = gameState.get('player.position');
+                const playerPos = this.encounterPosition || gameState.get('player.position');
                 this.enemyCombatants.forEach(enemy => {
                     if (enemy.hp <= 0) {
                         // Get creature type ID (species.id or monster type)
                         const creatureId = enemy.character.species?.id || enemy.character.type || 'unknown';
-                        window.questManager.onCreatureKilled(creatureId, playerPos);
+                        window.questManager.onCreatureKilled?.(creatureId, playerPos);
                     }
                 });
+                if (encounterSource && encounterDefeated) {
+                    window.questManager.onQuestEncounterVictory?.({ ...encounterSource });
+                }
             }
 
             // Check if this was a boss fight victory
             const wasBossFight = this.enemyCombatants.some(e => e.character?.isBoss);
-            if (wasBossFight && window.game?.dungeonManager) {
-                window.game.dungeonManager.markBossDefeated();
+            if (wasBossFight && encounterDefeated && window.game?.dungeonManager) {
+                window.game.dungeonManager.markBossDefeated(encounterSource);
             }
 
             // Update character state

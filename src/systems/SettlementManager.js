@@ -100,6 +100,9 @@ class SettlementManager {
             }
         }
 
+        this._restoreNPCsFromPersistent(settlement);
+        this._persistSettlement(settlement);
+
         // Generate quests if they haven't been generated yet (separate from NPC check)
         if (!settlement.questsGenerated && this.questGenerator && this.questManager) {
             console.log('📜 Generating quests for first visit...');
@@ -145,6 +148,7 @@ class SettlementManager {
         if (!settlement.visitedAt) {
             settlement.visitedAt = Date.now();
         }
+        this._persistSettlement(settlement);
 
         // Show settlement UI
         this.showSettlementUI();
@@ -181,10 +185,12 @@ class SettlementManager {
             const preferredRole = quest.questGiver?.role || 'leader';
 
             // Find NPCs with matching role
-            let candidates = npcsByRole[preferredRole] || [];
+            let candidates = quest.questGiver?.npcId
+                ? settlement.npcs.filter(npc => npc.id === quest.questGiver.npcId)
+                : npcsByRole[preferredRole] || [];
 
             // Fallback to any quest-giving NPC if no match
-            if (candidates.length === 0) {
+            if (candidates.length === 0 && !quest.questGiver?.npcId) {
                 candidates = settlement.npcs.filter(npc => npc.offersQuest);
             }
 
@@ -202,6 +208,7 @@ class SettlementManager {
                 quest.questGiver = {
                     npcId: selectedNPC.id,
                     npcName: selectedNPC.name,
+                    settlementId: settlement.id || `${settlement.x},${settlement.y}`,
                     role: selectedNPC.role,
                     building: selectedNPC.building
                 };
@@ -359,17 +366,53 @@ class SettlementManager {
      */
     _restoreSettlementFromPersistent(settlement) {
         const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
-        if (!settlement.id) settlement.id = settlementId;
+        if (!settlement.id) {
+            settlement.id = settlementId;
+        }
 
         const settlements = gameState.get('world.settlements') || [];
         const persisted = settlements.find(s => s.id === settlementId);
-        if (!persisted) return;
+        if (!persisted) {
+            return;
+        }
 
         // Copy consequence-relevant fields from persistent storage onto live feature object
-        if (persisted.flags !== undefined) settlement.flags = persisted.flags;
-        if (persisted.localVisitCount !== undefined) settlement.localVisitCount = persisted.localVisitCount;
-        if (persisted.merchantLocked !== undefined) settlement.merchantLocked = persisted.merchantLocked;
-        if (persisted.sacked !== undefined) settlement.sacked = persisted.sacked;
+        for (const field of ['flags', 'localVisitCount', 'merchantLocked', 'sacked', 'questsGenerated', 'visitedAt', 'questStock']) {
+            if (persisted[field] !== undefined) {
+                settlement[field] = persisted[field];
+            }
+        }
+    }
+
+    /** Keep the existing settlement store current before binding quests and services. */
+    _persistSettlement(settlement) {
+        const settlements = gameState.get('world.settlements') || [];
+        const index = settlements.findIndex(saved => saved.id === settlement.id);
+        if (index === -1) {
+            settlements.push(settlement);
+        } else {
+            settlements[index] = settlement;
+        }
+        gameState.set('world.settlements', settlements);
+    }
+
+    /** Restore learned checks and relations without replacing regenerated NPC content. */
+    _restoreNPCsFromPersistent(settlement) {
+        const persisted = (gameState.get('world.settlements') || []).find(s => s.id === settlement.id);
+        const savedNPCs = new Map((persisted?.npcs || []).map(npc => [npc.id, npc]));
+        const worldNPCs = gameState.get('world.npcs');
+
+        for (const npc of (settlement.npcs || [])) {
+            const saved = (worldNPCs instanceof Map && worldNPCs.get(npc.id)) || savedNPCs.get(npc.id);
+            if (!saved) {
+                continue;
+            }
+            for (const field of ['passiveFlags', 'intelStatus', 'relations', 'questIds']) {
+                if (saved[field] !== undefined) {
+                    npc[field] = JSON.parse(JSON.stringify(saved[field]));
+                }
+            }
+        }
     }
 
     /**

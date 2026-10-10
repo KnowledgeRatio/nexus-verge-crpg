@@ -10,6 +10,7 @@
  */
 
 import { gameState } from '../core/GameState.js';
+import { SeededRandom } from '../utils/rng.js';
 
 export class DungeonManager {
     constructor(dungeonGenerator, worldGenerator) {
@@ -25,6 +26,21 @@ export class DungeonManager {
      */
     setMonstersData(monstersData) {
         this.monstersData = monstersData;
+    }
+
+    /** Read the same seeded type that actual entry will select, without generating or pinning rooms. */
+    getQuestDungeonType(feature) {
+        if (!feature || !this.dungeonGenerator) {
+            return null;
+        }
+        if (feature.dungeonType) {
+            return feature.dungeonType;
+        }
+        if (feature.dungeonTypeId) {
+            return this.dungeonGenerator.dungeonTypes.find(type => type.id === feature.dungeonTypeId) || null;
+        }
+        const rng = new SeededRandom(`${this.dungeonGenerator.seed}_dungeon_${feature.x}_${feature.y}`);
+        return this.dungeonGenerator.selectDungeonType(rng);
     }
 
     /**
@@ -105,7 +121,7 @@ export class DungeonManager {
             worldMapPosition: this.worldMapPosition,
             rooms: dungeonFeature.rooms,
             roomsExplored: [0], // Start with entrance explored
-            bossDefeated: false
+            bossDefeated: this._hasClearedBoss(dungeonFeature)
         });
 
         // 6. Show entry message
@@ -194,6 +210,79 @@ export class DungeonManager {
             dungeonTypeId: dungeon?.dungeonTypeId,
             terrainId: tile?.terrain?.id
         };
+    }
+
+    /** Capture the exact generated boss identity, including after plain-object restoration. */
+    getQuestEncounterSource(targetId) {
+        const dungeon = gameState.get('dungeon');
+        const roomIndex = dungeon?.currentRoomIndex;
+        const room = dungeon?.rooms?.[roomIndex];
+        const position = dungeon?.worldMapPosition || this.worldMapPosition;
+        if (!dungeon?.active || !position || !room?.isBossRoom || room.boss !== targetId ||
+            dungeon.bossDefeated) {
+            return null;
+        }
+        const siteId = `${position.x},${position.y}`;
+        return { siteId, roomIndex, targetId, encounterId: `${siteId}:${roomIndex}:${targetId}`,
+            encounterRole: 'boss', encounterKey: `${siteId}:boss` };
+    }
+
+    _questEncounterFeature(source) {
+        if (!source || !Number.isInteger(source.roomIndex) || source.roomIndex < 0 ||
+            typeof source.targetId !== 'string' || !source.targetId || source.encounterRole !== 'boss' ||
+            source.encounterKey !== `${source.siteId}:boss` ||
+            source.encounterId !== `${source.siteId}:${source.roomIndex}:${source.targetId}`) {
+            return null;
+        }
+        return gameState.get('world.metadata')?.features?.find(feature =>
+            `${feature.x},${feature.y}` === source.siteId) || null;
+    }
+
+    /** Validate a consequence against an actual generated boss, not species-only kill credit. */
+    canClearQuestEncounter(source) {
+        const feature = this._questEncounterFeature(source);
+        if (!feature) {
+            return false;
+        }
+        return (feature.questEncounterVictories || []).some(proof =>
+            proof.encounterId === source.encounterId && proof.encounterKey === source.encounterKey &&
+            proof.targetId === source.targetId && proof.roomIndex === source.roomIndex);
+    }
+
+    /** Persist a target-scoped occupation removal; exhausted receipts survive revisits and saves. */
+    clearQuestEncounter(source, questId, effectId) {
+        if (!questId || !effectId || !this.canClearQuestEncounter(source)) {
+            return false;
+        }
+        const metadata = gameState.get('world.metadata');
+        const feature = this._questEncounterFeature(source);
+        feature.questEncounterClears = feature.questEncounterClears || [];
+        if (feature.questEncounterClears.some(receipt => receipt.questId === questId &&
+            receipt.effectId === effectId)) {
+            return false;
+        }
+        feature.questEncounterClears.push({ ...source, questId, effectId });
+        gameState.set('world.metadata', metadata);
+        if (this.worldGenerator) {
+            this.worldGenerator.worldMetadata = metadata;
+        }
+        const dungeon = gameState.get('dungeon');
+        if (dungeon?.active && dungeon.worldMapPosition &&
+            `${dungeon.worldMapPosition.x},${dungeon.worldMapPosition.y}` === source.siteId) {
+            dungeon.bossDefeated = this._hasClearedBoss({ ...feature, rooms: dungeon.rooms });
+            gameState.set('dungeon', dungeon);
+        }
+        return true;
+    }
+
+    _hasClearedBoss(feature) {
+        const canonical = gameState.get('world.metadata')?.features?.find(entry =>
+            entry.x === feature.x && entry.y === feature.y);
+        return (canonical?.questEncounterClears || []).some(receipt => {
+            return receipt.siteId === `${feature.x},${feature.y}` &&
+                receipt.encounterRole === 'boss' && receipt.encounterKey === `${receipt.siteId}:boss` &&
+                feature.rooms?.some(room => room.isBossRoom && room.boss);
+        });
     }
 
     /**
@@ -547,8 +636,28 @@ export class DungeonManager {
     /**
      * Mark boss as defeated, and inject any bound quest item into the player's inventory.
      */
-    markBossDefeated() {
+    markBossDefeated(source = null) {
         const dungeonState = gameState.get('dungeon');
+        // Combat validated this source at construction. Persist that witness even if exploration
+        // state changed; only update the active room when it is still the captured site.
+        const feature = source ? this._questEncounterFeature(source) : null;
+        if (feature) {
+            feature.questEncounterVictories = feature.questEncounterVictories || [];
+            if (!feature.questEncounterVictories.some(proof => proof.encounterId === source.encounterId)) {
+                feature.questEncounterVictories.push({ ...source });
+                const metadata = gameState.get('world.metadata');
+                gameState.set('world.metadata', metadata);
+                if (this.worldGenerator) {
+                    this.worldGenerator.worldMetadata = metadata;
+                }
+            }
+        }
+        if (source && (!dungeonState?.active ||
+            `${dungeonState.worldMapPosition?.x},${dungeonState.worldMapPosition?.y}` !== source.siteId ||
+            !dungeonState.rooms?.[source.roomIndex]?.isBossRoom ||
+            dungeonState.rooms?.[source.roomIndex]?.boss !== source.targetId)) {
+            return;
+        }
         if (dungeonState) {
             dungeonState.bossDefeated = true;
             gameState.set('dungeon', dungeonState);
@@ -573,6 +682,10 @@ export class DungeonManager {
         const metadata = gameState.get('world.metadata');
         const feature = metadata?.features?.find(f => f.x === dungeonX && f.y === dungeonY);
         if (!feature?.questBind || feature.questBind.bindType !== 'retrieve') return;
+        // Rich recovery actions own source-bound acquisition. Legacy saved bindings keep their path.
+        if (feature.questBind.sourceId || feature.questBind.questSource) {
+            return;
+        }
 
         // Only inject once — guard against duplicate injection on re-entry
         if (feature.questBind.injected) return;

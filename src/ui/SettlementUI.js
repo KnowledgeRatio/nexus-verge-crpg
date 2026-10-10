@@ -7,6 +7,10 @@ import { skillRegistry } from '../systems/SkillRegistry.js';
 import { gameState } from '../core/GameState.js';
 import { SettlementSceneUI } from './SettlementSceneUI.js';
 
+const questText = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+})[char]);
+
 class SettlementUI {
     constructor(settlementManager, merchantManager = null) {
         this.settlementManager = settlementManager;
@@ -499,6 +503,16 @@ class SettlementUI {
       `;
         }
 
+        const participantQuests = this.getParticipantQuests(npc);
+        if (canSpeak && participantQuests.length > 0) {
+            optionsHTML += '<button class="dialogue-option" data-action="quest-progress">Discuss the ongoing work</button>';
+        }
+        const rememberedQuest = (gameState.get('quests.completed') || []).slice().reverse().find(quest =>
+            this.getQuestParticipants(quest).giver?.npcId === npc.id && quest.resolution?.reply);
+        if (canSpeak && rememberedQuest && textEl) {
+            textEl.textContent = rememberedQuest.resolution.reply;
+        }
+
         // Quest option (gated by relation tier)
         if (npc.offersQuest && npc.questIds && npc.questIds.length > 0 && canOfferQuest) {
             console.log('   ✅ Adding "Ask about work" button');
@@ -613,6 +627,10 @@ class SettlementUI {
                 this.showQuestOptions(npc, textEl, optionsEl);
                 break;
 
+            case 'quest-progress':
+                this.showProceduralQuestOptions(npc, textEl, optionsEl);
+                break;
+
             case 'trade': {
                 // Check if settlement has been sacked — merchants have fled
                 const currentSettlement = gameState.get('ui.currentSettlement');
@@ -679,10 +697,9 @@ class SettlementUI {
         }
 
         // Passive Empathy = 10 + empathy modifier
-        const empathyMod = window.skillChallengeManager
-            ? window.skillChallengeManager.getSkillModifier(character, 'empathy', [], 'composure')
-            : skillRegistry.getModifier(character, 'empathy', 'composure');
-        const passiveEmpathy = 10 + empathyMod;
+        const passiveEmpathy = window.skillChallengeManager
+            ? window.skillChallengeManager.getSkillCheckContext(character, 'empathy', { attribute: 'composure' }).passiveScore
+            : 10 + skillRegistry.getModifier(character, 'empathy', 'composure');
 
         // DC modified by relation tier
         const tierId = relation?.tier?.id || 'neutral';
@@ -696,6 +713,7 @@ class SettlementUI {
             npc.intelStatus = 'locked';
             console.log(`🔍 Passive Empathy failed for ${npc.name} (${passiveEmpathy} < DC ${dc}) — intel locked permanently`);
         }
+        this._persistNPC(npc);
     }
 
     _runPassiveApproachChecks(npc, relation) {
@@ -716,11 +734,9 @@ class SettlementUI {
         for (const check of checksForRole) {
             if (npc.passiveFlags[check.flag] !== undefined) continue; // already run
 
-            const skillMod = window.skillChallengeManager
-                ? window.skillChallengeManager.getSkillModifier(character, check.skill, [], check.attribute)
-                : skillRegistry.getModifier(character, check.skill, check.attribute);
-
-            const passiveScore = 10 + skillMod;
+            const passiveScore = window.skillChallengeManager
+                ? window.skillChallengeManager.getSkillCheckContext(character, check.skill, { attribute: check.attribute }).passiveScore
+                : 10 + skillRegistry.getModifier(character, check.skill, check.attribute);
             const dc = check.dc + tierMod;
             const passed = passiveScore >= dc;
 
@@ -732,6 +748,7 @@ class SettlementUI {
 
             console.log(`🔍 Passive ${check.skill} (${check.flag}): ${passiveScore} vs DC ${dc} → ${passed ? 'pass' : 'fail'}`);
         }
+        this._persistNPC(npc);
     }
 
     /**
@@ -758,17 +775,16 @@ class SettlementUI {
         const dc = config.activeInfluenceBaseDC + tierMod;
 
         // This approach is patient self-command rather than force of personality.
-        const check = skillRegistry.rollCheck(character, {
+        const check = (window.skillChallengeManager || skillRegistry).rollSkillCheck?.(character, {
             skillId: 'influence',
             attribute: 'composure',
             dc
-        });
+        }) || skillRegistry.rollCheck(character, { skillId: 'influence', attribute: 'composure', dc });
         const { roll, total } = check;
         const influenceMod = check.modifier;
         const passed = check.success;
 
         // Show roll result in message log
-        const { addMessage } = gameState;
         gameState.addMessage(
             `🎲 Influence check: rolled ${roll} + ${influenceMod} = ${total} vs DC ${dc} — ${passed ? 'SUCCESS' : 'FAILED'}`,
             passed ? 'success' : 'warning'
@@ -809,6 +825,7 @@ class SettlementUI {
             const lockedMsg = lockedMsgs[Math.floor(Math.random() * lockedMsgs.length)].replace(/{npcName}/g, npc.name);
             gameState.addMessage(lockedMsg, 'warning');
         }
+        this._persistNPC(npc);
     }
 
     /**
@@ -848,6 +865,106 @@ class SettlementUI {
    * @param {HTMLElement} textEl - Dialogue text element
    * @param {HTMLElement} optionsEl - Dialogue options element
    */
+    getParticipantQuests(npc) {
+        return (gameState.get('quests.active') || []).filter(quest =>
+            this.hasQuestChoices(quest)
+            && Object.values(this.getQuestParticipants(quest)).some(participant => participant.npcId === npc.id));
+    }
+
+    hasQuestChoices(quest) {
+        return Boolean(quest && (Array.isArray(quest.actions) || Array.isArray(quest.resolutions)
+            || quest.evidence || quest.baseline || quest.procedural));
+    }
+
+    getQuestParticipants(quest) {
+        return quest.participants || quest.procedural?.participants || {};
+    }
+
+    renderQuestObjectives(quest) {
+        return (quest.objectives || []).map(objective => {
+            const total = objective.required ?? objective.count ?? 1;
+            const progress = objective.completed ? total : (objective.progress ?? 0);
+            return `<div class="objective-item ${objective.completed ? 'completed' : ''}" data-objective-id="${questText(objective.id)}">
+                <span class="objective-checkbox">${objective.completed ? '☑' : '☐'}</span>
+                <span class="objective-text">${questText(objective.description)}</span>
+                <span class="objective-progress">${questText(progress)}/${questText(total)}</span></div>`;
+        }).join('');
+    }
+
+    renderProceduralQuest(quest, { active = true, npc = null } = {}) {
+        if (!this.hasQuestChoices(quest)) {
+            return '';
+        }
+        const participants = this.getQuestParticipants(quest);
+        const manager = window.questManager;
+        const factIds = quest.evidence?.facts || [];
+        const facts = [...(quest.baseline?.facts || []), ...(quest.actions || []).flatMap(action => action.facts || [])]
+            .filter(fact => factIds.includes(fact.id));
+        const factHTML = facts.length > 0
+            ? `<ul>${facts.map(fact => `<li>${questText(fact.text)}</li>`).join('')}</ul>`
+            : '<p>No evidence recorded yet. Follow the objectives and next steps below.</p>';
+        const actionHTML = active ? (manager?.getQuestActions(quest.id) || []).filter(action => {
+            if (!npc) {
+                return true;
+            }
+            return action.location === 'settlement' && participants[action.npcParticipant]?.npcId === npc.id;
+        }).map(action => this.renderQuestChoice(quest.id, {
+            ...action,
+            ...(!npc && action.npcParticipant ? {
+                available: false,
+                reason: `Speak directly with ${participants[action.npcParticipant]?.name || 'the participant'} in town.`
+            } : {}),
+            label: action.npcParticipant
+                ? `${action.label} — ${participants[action.npcParticipant]?.name || ''}`
+                : action.label
+        }, 'quest-evidence')).join('') : '';
+        const resolutionHTML = active && (!npc || participants.giver?.npcId === npc.id)
+            ? (manager?.getResolutionOptions(quest.id) || []).map(choice => this.renderQuestChoice(quest.id, choice, 'quest-resolve')).join('') : '';
+        return `<section class="procedural-quest-progress" aria-label="Evidence and decisions">
+            ${npc && quest.objectives?.length ? `<h4>Objectives</h4>${this.renderQuestObjectives(quest)}` : ''}
+            <h4>Recorded evidence</h4>${factHTML}
+            ${actionHTML ? `<h4>Next steps</h4><div class="procedural-quest-choices">${actionHTML}</div>` : ''}
+            ${resolutionHTML ? `<h4>Report your findings</h4><div class="procedural-quest-choices">${resolutionHTML}</div>` : ''}
+            ${quest.resolution?.reply ? `<p class="quest-aftermath">${questText(quest.resolution.reply)}</p>` : ''}
+        </section>`;
+    }
+
+    renderQuestChoice(questId, choice, action) {
+        return `<div class="procedural-quest-choice"><button class="quest-action-btn dialogue-option"
+            data-action="${action}" data-quest-id="${questText(questId)}" data-choice-id="${questText(choice.id)}"
+            ${choice.available ? '' : 'disabled'}>${questText(choice.label)}</button>
+            ${!choice.available && choice.reason ? `<small>${questText(choice.reason)}</small>` : ''}</div>`;
+    }
+
+    performQuestChoice(questId, choiceId, action, npcId = null) {
+        const manager = window.questManager;
+        const result = action === 'quest-resolve'
+            ? manager.resolveQuest(questId, choiceId)
+            : manager.recordQuestAction(questId, choiceId, npcId);
+        const message = result.message || (result.success ? 'Your findings have been recorded.' : 'The attempt did not uncover more evidence.');
+        gameState.addMessage(message, result.success ? 'success' : 'warning');
+        window.game?.updateHUD?.(gameState.get('character'));
+        window.game?.renderCurrentQuestTab?.();
+        return result;
+    }
+
+    showProceduralQuestOptions(npc, textEl, optionsEl) {
+        const quests = this.getParticipantQuests(npc);
+        textEl.textContent = 'Review the evidence and decide what to do next.';
+        optionsEl.innerHTML = quests.map(quest => `<div class="quest-item" data-quest-id="${questText(quest.id)}">
+            <h4>${questText(quest.name)}</h4>${this.renderProceduralQuest(quest, { npc })}</div>`).join('')
+            + '<button class="dialogue-option" data-action="back">← Back</button>';
+        optionsEl.querySelectorAll('[data-choice-id]').forEach(button => {
+            button.addEventListener('click', event => {
+                event.stopPropagation();
+                const result = this.performQuestChoice(button.dataset.questId, button.dataset.choiceId, button.dataset.action, npc.id);
+                this.showProceduralQuestOptions(npc, textEl, optionsEl);
+                textEl.textContent = result.quest?.resolution?.reply || result.message || textEl.textContent;
+            });
+        });
+        optionsEl.querySelector('[data-action="back"]')?.addEventListener('click', () => this.showNPCDialogue(npc));
+    }
+
     showQuestOptions(npc, textEl, optionsEl) {
         if (!window.questManager) {
             textEl.textContent = "I might have some work for you, but I can't quite remember... (Quest system not initialized)";
@@ -870,7 +987,7 @@ class SettlementUI {
         console.log(`   - Completed quests found: ${completedQuests.length}`);
 
         // Check if player has completed quests ready to turn in
-        const readyToTurnIn = activeQuests.filter(q => window.questManager.isQuestReadyToComplete(q.id));
+        const readyToTurnIn = activeQuests.filter(q => !this.hasQuestChoices(q) && window.questManager.isQuestReadyToComplete(q.id));
 
         if (readyToTurnIn.length > 0) {
             // Show turn-in options
@@ -1011,7 +1128,7 @@ class SettlementUI {
             return;
         }
 
-        const success = window.questManager.acceptQuest(questId);
+        const success = window.questManager.acceptQuest(questId, npc.id);
 
         if (success) {
             const textEl = document.getElementById('npcDialogueText');
@@ -1385,7 +1502,8 @@ class SettlementUI {
             return;
         }
 
-        const items = this.tradeMode === 'buy' ? this.merchantInventory : (character.inventory || []);
+        const items = this.tradeMode === 'buy' ? this.merchantInventory
+            : (character.inventory || []).filter(item => !item.questSource);
 
         if (items.length === 0) {
             itemsListEl.innerHTML = `
@@ -1398,7 +1516,7 @@ class SettlementUI {
 
         let html = '';
         items.forEach((item, index) => {
-            const isSelected = this.selectedItem?.id === item.id;
+            const isSelected = this.selectedItem && (this.selectedItem.stockId || this.selectedItem.id) === (item.stockId || item.id);
             const price = this.tradeMode === 'buy'
                 ? this.merchantManager.calculateBuyPrice(item, character, this.currentMerchant)
                 : this.merchantManager.calculateSellPrice(item, character, this.currentMerchant);
@@ -1408,11 +1526,12 @@ class SettlementUI {
                 : (item.quantity > 1 ? `Owned: ${item.quantity}` : '');
 
             html += `
-        <div class="trading-item ${isSelected ? 'selected' : ''}" data-item-index="${index}">
+        <div class="trading-item ${isSelected ? 'selected' : ''}" data-item-index="${index}" role="button" tabindex="0" aria-pressed="${Boolean(isSelected)}">
           <div class="trading-item-icon">${this.getItemIcon(item.type)}</div>
           <div class="trading-item-details">
             <div class="trading-item-name">${item.name}</div>
             <div class="trading-item-description">${item.description || ''}</div>
+            ${item.questStock ? '<div class="trading-item-stock">Recovered shipment</div>' : ''}
             <div class="trading-item-stats">
               ${item.weight ? `<span class="trading-item-weight">⚖️ ${item.weight} lb</span>` : ''}
               ${item.rarity ? `<span class="item-rarity ${item.rarity}">${item.rarity}</span>` : ''}
@@ -1430,6 +1549,12 @@ class SettlementUI {
 
         // Add click handlers
         itemsListEl.querySelectorAll('.trading-item').forEach(itemEl => {
+            itemEl.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.selectItem(items[parseInt(itemEl.dataset.itemIndex)]);
+                }
+            });
             itemEl.addEventListener('click', (e) => {
                 const index = parseInt(e.currentTarget.dataset.itemIndex);
                 const item = items[index];
@@ -1471,8 +1596,8 @@ class SettlementUI {
 
         // Calculate prices
         const unitPrice = this.tradeMode === 'buy'
-            ? this.merchantManager.calculateBuyPrice(this.selectedItem, character)
-            : this.merchantManager.calculateSellPrice(this.selectedItem, character);
+            ? this.merchantManager.calculateBuyPrice(this.selectedItem, character, this.currentMerchant)
+            : this.merchantManager.calculateSellPrice(this.selectedItem, character, this.currentMerchant);
         const totalPrice = unitPrice * this.tradeQuantity;
 
         // Update selected item display
@@ -1550,7 +1675,7 @@ class SettlementUI {
                 const summary = relationManager.getPricingSummary(this.currentMerchant, character);
                 chaHintEl.innerHTML = `<span style="color:${relationManager.getRelation(this.currentMerchant).color}">${summary.tierLabel}</span>: ${summary.tierEffect} | Influence: <span class="cha-bonus">${summary.influenceEffect}</span>`;
             } else {
-                const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+                const influenceBonus = skillRegistry.getModifier(character, 'influence');
                 const influencePercent = Math.abs(influenceBonus);
                 const direction = this.tradeMode === 'buy' ? 'discount' : 'bonus';
                 chaHintEl.innerHTML = `Your Influence gives you a <span class="cha-bonus">${influencePercent}% ${direction}</span> on prices`;
@@ -1637,7 +1762,7 @@ class SettlementUI {
             if (result.success) {
                 // Add message to log
                 const action = this.tradeMode === 'buy' ? 'Bought' : 'Sold';
-                const message = `${action} ${this.tradeQuantity}x ${this.selectedItem.name} for ${result.totalCost} gp`;
+                const message = result.message || `${action} ${this.tradeQuantity}x ${this.selectedItem.name} for ${result.cost ?? result.totalCost ?? result.revenue} gp`;
                 window.gameState?.addMessage(message, 'success');
 
                 // Update merchant inventory stock
@@ -1654,11 +1779,11 @@ class SettlementUI {
 
                 // Update HUD
                 if (window.game?.updateHUD) {
-                    window.game.updateHUD();
+                    window.game.updateHUD(character);
                 }
             } else {
                 // Show error message
-                window.gameState?.addMessage(result.error || 'Trade failed', 'combat');
+                window.gameState?.addMessage(result.message || result.error || 'Trade failed', 'combat');
             }
         } catch (error) {
             console.error('Trade failed:', error);
@@ -1706,12 +1831,21 @@ class SettlementUI {
         // Find challenges that match and player can attempt
         for (const challengeId of possibleChallengeIds) {
             const challenge = allChallenges[challengeId];
-            if (challenge && window.skillChallengeManager.canAttemptChallenge(challengeId)) {
+            if (challenge && !this._hasCompletedNPCChallenge(npc, challenge)
+                && window.skillChallengeManager.canAttemptChallenge(challengeId)) {
                 availableChallenges.push(challenge);
             }
         }
 
         return availableChallenges;
+    }
+
+    /** Completion flags describe work already rewarded for this particular NPC. */
+    _hasCompletedNPCChallenge(npc, challenge) {
+        const options = window.skillChallengeManager?.getChallengeOptions(challenge) || [];
+        const successes = options.length ? options.map(option => option.onSuccess).filter(Boolean)
+            : [challenge.onSuccess].filter(Boolean);
+        return successes.length > 0 && successes.every(outcome => outcome.npcFlag && npc.passiveFlags?.[outcome.npcFlag]);
     }
 
     /**
@@ -1777,13 +1911,15 @@ class SettlementUI {
             console.error(`Challenge ${challengeId} not found`);
             return;
         }
+        if (this._hasCompletedNPCChallenge(npc, challenge) || !window.skillChallengeManager.canAttemptChallenge(challengeId)) {
+            window.gameState?.addMessage('This challenge is not available yet.', 'info');
+            return;
+        }
 
         this.closeNPCDialogue();
 
         const character = window.gameState?.get('character');
         if (!character) return;
-
-        window.skillChallengeManager.recordChallengeAttempt(challengeId);
 
         // Relation-aware DC
         const relationManager = window.game?.relationManager;
@@ -1795,7 +1931,7 @@ class SettlementUI {
         const skillField = challenge.type === 'contested' ? challenge.playerSkill : challenge.skill;
         const attributeField = challenge.type === 'contested' ? challenge.playerAttribute : challenge.attribute;
         const baseDC = challenge.baseDC ?? challenge.dc ?? challenge.stages?.[0]?.baseDC ?? 14;
-        const adjustedDC = Math.min(25, baseDC + tierMod);
+        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(baseDC, character.level) + tierMod;
 
         const config = {
             title: challenge.name,
@@ -1809,31 +1945,29 @@ class SettlementUI {
         if (effectiveType === 'single') {
             result = await window.game.promptSkillCheck(config, challenge, null);
         } else if (effectiveType === 'sequential') {
-            await window.game.player.handleSequentialSkillChallenge(challenge);
-            return;
+            result = await window.game.player.handleSequentialSkillChallenge(challenge, { dcModifier: tierMod });
         } else if (effectiveType === 'choice') {
-            await window.game.player.handleChoiceSkillChallenge(challenge, adjustedDC);
-            return;
+            result = await window.game.player.handleChoiceSkillChallenge(challenge, { dcModifier: tierMod });
         }
 
         if (result?.attempted) {
-            this._applyNPCChallengeOutcome(challengeId, npc, challenge, result.success, relation);
-            window.questManager?.onSkillChallengeCompleted(challengeId, result);
+            window.skillChallengeManager.recordChallengeAttempt(challengeId);
+            const outcomes = result.outcomes || [result.outcome || (result.success ? challenge.onSuccess : challenge.onFailure)];
+            outcomes.filter(Boolean).forEach(outcome => {
+                this._applyNPCChallengeOutcome(challengeId, npc, challenge, result.success, relation, outcome);
+            });
+            if (effectiveType === 'single') {
+                window.questManager?.onSkillChallengeCompleted(challengeId, result);
+                if (!result.dead && result.consequences?.initiateCombat) {
+                    await window.game.player.triggerCombatFromChallenge(result.enemyTypes);
+                }
+            }
         }
     }
 
-    _applyNPCChallengeOutcome(challengeId, npc, challenge, success, relation) {
-        const outcomeBlock = success ? challenge.onSuccess : challenge.onFailure;
+    _applyNPCChallengeOutcome(challengeId, npc, challenge, success, relation, resolvedOutcome = null) {
+        const outcomeBlock = resolvedOutcome || (success ? challenge.onSuccess : challenge.onFailure);
         if (!outcomeBlock) return;
-
-        // Delegate XP and gold to the existing consequence system
-        const character = window.gameState?.get('character');
-        if (character && window.skillChallengeManager) {
-            window.skillChallengeManager.applyConsequences(
-                character, challenge, outcomeBlock,
-                { success, rollTotal: 0, naturalRoll: 0, dc: 0, succeeded: success }
-            );
-        }
 
         // Relation change via named event key
         if (outcomeBlock.relationChange && window.game?.relationManager && npc) {
@@ -1850,9 +1984,33 @@ class SettlementUI {
         if (outcomeBlock.revealIntel && npc) {
             npc.intelStatus = 'available';
         }
+        this._persistNPC(npc);
+    }
 
-        const msg = outcomeBlock.message || (success ? 'You succeeded.' : 'You failed.');
-        window.gameState?.addMessage(`${npc?.name ?? 'NPC'}: ${msg}`, success ? 'success' : 'info');
+    /** Persist dialogue flags on the settlement and NPC records used by save/load. */
+    _persistNPC(npc) {
+        if (!npc?.id) {
+            return;
+        }
+        const npcs = gameState.get('world.npcs');
+        if (npcs instanceof Map) {
+            npcs.set(npc.id, npc);
+            gameState.set('world.npcs', npcs);
+        }
+        const settlement = this.settlementManager?.currentSettlement;
+        if (!settlement) {
+            return;
+        }
+        settlement.npcs = (settlement.npcs || []).map(entry => entry.id === npc.id ? npc : entry);
+        const settlements = gameState.get('world.settlements') || [];
+        const index = settlements.findIndex(entry => entry.id === settlement.id);
+        if (index >= 0) {
+            settlements[index] = { ...settlements[index], npcs: settlement.npcs };
+        } else {
+            settlements.push(settlement);
+        }
+        gameState.set('world.settlements', settlements);
+        gameState.set('ui.currentSettlement', settlement);
     }
 
     /**

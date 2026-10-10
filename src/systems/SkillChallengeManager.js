@@ -9,10 +9,10 @@
 import { gameState } from '../core/GameState.js';
 import { roll } from '../utils/dice.js';
 import { RULES } from '../core/rulesEngine.js';
-import { addFatigue } from './FatigueManager.js';
-import { subtractHP } from '../utils/damagePrecision.js';
+import { addFatigue, getFatigueModifiers, getFatigueState } from './FatigueManager.js';
 import { SeededRandom } from '../utils/rng.js';
 import { skillRegistry } from './SkillRegistry.js';
+import { Character } from './Character.js';
 
 class SkillChallengeManager {
     constructor() {
@@ -149,16 +149,15 @@ class SkillChallengeManager {
 
         const character = gameState.get('character');
 
-        const companions = this._getActiveCompanions();
         node.passiveChecks.forEach(check => {
-            const skillMod = this.getSkillModifier(character, check.skill, companions, check.attribute);
-            const passiveScore = 10 + skillMod; // Passive = 10 + modifier
+            const { passiveScore } = this.getSkillCheckContext(character, check.skill, check);
 
             if (passiveScore >= check.dc) {
                 // Success - reveal information
                 if (check.reveal) {
-                    this.revealedInfo.add(check.reveal);
-                    const message = this.getRevealMessage(check.reveal, this.currentChallenge.context);
+                    const reveal = this.processText(check.reveal);
+                    this.revealedInfo.add(reveal);
+                    const message = this.getRevealMessage(reveal, this.currentChallenge.context);
                     gameState.addMessage(`💡 ${message}`, 'info');
                 }
 
@@ -183,15 +182,13 @@ class SkillChallengeManager {
      */
     processActiveCheck(check) {
         const character = gameState.get('character');
-        const companions = this._getActiveCompanions();
-        const skillMod = this.getSkillModifier(character, check.skill, companions, check.attribute);
-        const playerMod = skillRegistry.getModifier(character, check.skill, check.attribute);
-        const checkResult = skillRegistry.rollCheck(character, {
+        const checkResult = this.rollSkillCheck(character, {
+            ...check,
             skillId: check.skill,
             attribute: check.attribute,
-            dc: check.dc,
-            modifierAdjustment: skillMod - playerMod
+            dc: check.dc
         });
+        const skillMod = checkResult.modifier;
         const { roll: naturalRoll, total, success } = checkResult;
 
         const result = {
@@ -220,7 +217,7 @@ class SkillChallengeManager {
 
         // Reveal information on success
         if (success && check.onSuccess?.reveal) {
-            this.revealedInfo.add(check.onSuccess.reveal);
+            this.revealedInfo.add(this.processText(check.onSuccess.reveal));
         }
 
         // Critical success/failure
@@ -238,12 +235,9 @@ class SkillChallengeManager {
      * @param {number} choiceIndex - Index of chosen option
      */
     selectChoice(choiceIndex) {
-        if (!this.currentChallenge) {
+        if (!this.currentChallenge || !this.challengeActive) {
             return;
         }
-
-        // Fatigue from skill challenge attempt
-        addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge', gameState.get('character'));
 
         const node = this.getCurrentNode();
         const availableChoices = this.getAvailableChoices(node);
@@ -254,6 +248,7 @@ class SkillChallengeManager {
         }
 
         const choice = availableChoices[choiceIndex];
+        addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge', gameState.get('character'));
 
         // Add player's choice to history
         this.addToHistory('player', choice.text);
@@ -264,18 +259,22 @@ class SkillChallengeManager {
 
             // Use success or failure path
             const path = result.success ? choice.skillCheck.onSuccess : choice.skillCheck.onFailure;
+            if (path?.forceCombat) {
+                this.endChallenge('combat');
+                return;
+            }
 
-            if (path.text) {
+            if (path?.text) {
                 this.addToHistory('npc', this.processText(path.text));
             }
 
-            if (path.nextNode) {
+            if (path?.nextNode) {
                 this.moveToNode(path.nextNode);
                 return;
             }
 
-            if (path.endChallenge) {
-                this.endChallenge(path.endChallenge);
+            if (path?.endChallenge || path?.endConversation) {
+                this.endChallenge(path.endChallenge || path.endConversation);
                 return;
             }
         }
@@ -298,8 +297,8 @@ class SkillChallengeManager {
         // Move to next node
         if (choice.nextNode) {
             this.moveToNode(choice.nextNode);
-        } else if (choice.endChallenge) {
-            this.endChallenge(choice.endChallenge);
+        } else if (choice.endChallenge || choice.endConversation) {
+            this.endChallenge(choice.endChallenge || choice.endConversation);
         }
     }
 
@@ -330,8 +329,8 @@ class SkillChallengeManager {
             setTimeout(() => {
                 if (node.nextNode) {
                     this.moveToNode(node.nextNode);
-                } else if (node.endChallenge) {
-                    this.endChallenge(node.endChallenge);
+                } else if (node.endChallenge || node.endConversation) {
+                    this.endChallenge(node.endChallenge || node.endConversation);
                 }
             }, node.autoProgressDelay || 1000);
         }
@@ -375,8 +374,8 @@ class SkillChallengeManager {
 
         // Check current node for end condition
         const node = this.getCurrentNode();
-        if (node.endChallenge) {
-            this.endChallenge(node.endChallenge);
+        if (node.endChallenge || node.endConversation) {
+            this.endChallenge(node.endChallenge || node.endConversation);
             return true;
         }
 
@@ -454,7 +453,8 @@ class SkillChallengeManager {
 
             if (quest) {
                 quest.objectives.forEach(obj => {
-                    if (obj.type === 'encounter' || obj.type === 'skill_choice') {
+                    if (obj.type === 'encounter' || obj.type === 'skill_choice'
+                        || (obj.type === 'social_challenge' && obj.challengeId === this.currentChallenge.id)) {
                         obj.completed = true;
                         obj.progress = 1;
                     }
@@ -488,8 +488,12 @@ class SkillChallengeManager {
         }
 
         return node.choices.filter(choice => {
+            if (choice.effects?.goldChange < 0
+                && (gameState.get('character')?.gold || 0) < -choice.effects.goldChange) {
+                return false;
+            }
             // Check if requires revealed information
-            if (choice.requiresReveal && !this.revealedInfo.has(choice.requiresReveal)) {
+            if (choice.requiresReveal && !this.revealedInfo.has(this.processText(choice.requiresReveal))) {
                 return false;
             }
 
@@ -557,6 +561,73 @@ class SkillChallengeManager {
 
         console.log(`🎯 Skill [${skillId}]: player ${playerBase} + companions ${companionContribution} + synergy ${synergyBonus}`);
         return playerBase + companionContribution + synergyBonus;
+    }
+
+    /** Shared preview for rolled and passive checks, including party help and fatigue. */
+    getSkillCheckContext(character, skillId, options = {}) {
+        if (skillId === null) {
+            return { attribute: null, skillModifier: 0, modifier: 0, modifierAdjustment: 0,
+                fatigueModifier: 0, advantage: false, disadvantage: false, successChance: 100,
+                passiveScore: RULES.skills.passiveBonus };
+        }
+        const { attribute = null, dc = null, companions = this.getActiveCompanions() } = options;
+        const fatigue = getFatigueModifiers();
+        const partyModifier = this.getSkillModifier(character, skillId, companions, attribute);
+        const skillModifier = skillRegistry.getModifier(character, skillId, attribute);
+        const modifier = partyModifier + fatigue.skillMod;
+        const hasAdvantage = Boolean(options.advantage);
+        const hasDisadvantage = Boolean(options.disadvantage || fatigue.disadvantageSkills);
+        const advantage = hasAdvantage && !hasDisadvantage;
+        const disadvantage = hasDisadvantage && !hasAdvantage;
+        const successes = Array.from({ length: 20 }, (_, index) => index + 1)
+            .filter(value => value + modifier >= dc).length;
+        const probability = successes / 20;
+        const successChance = dc === null ? null : 100 * (advantage
+            ? 1 - (1 - probability) ** 2 : disadvantage ? probability ** 2 : probability);
+        const passiveAdjustment = advantage ? RULES.skills.passiveAdvantageBonus
+            : disadvantage ? RULES.skills.passiveDisadvantageBonus : 0;
+        return {
+            attribute: skillRegistry.resolveAttribute(skillId, attribute),
+            skillModifier,
+            modifier,
+            modifierAdjustment: modifier - skillModifier,
+            fatigueModifier: fatigue.skillMod,
+            advantage,
+            disadvantage,
+            successChance,
+            passiveScore: RULES.skills.passiveBonus + modifier + passiveAdjustment
+        };
+    }
+
+    /** Roll against exactly the context used to display the check. */
+    rollSkillCheck(character, check) {
+        if (check.skillId === null) {
+            return { skill: null, attribute: null, roll: null, naturalRoll: null, rolls: [],
+                modifier: 0, total: 0, dc: 0, success: true, critical: false, criticalFail: false,
+                advantage: false, disadvantage: false };
+        }
+        const context = this.getSkillCheckContext(character, check.skillId, check);
+        return skillRegistry.rollCheck(character, { ...check, ...context });
+    }
+
+    /** Accept both existing authored choice shapes at the generic boundary. */
+    getChallengeOptions(challenge) {
+        return (challenge.options || challenge.choices || []).map(option => ({
+            ...option,
+            baseDC: option.baseDC ?? option.dc,
+            description: option.description || option.text
+        }));
+    }
+
+    /** Authored critical outcomes override the matching normal outcome once. */
+    getOutcome(challenge, stage, success, criticalInfo = null) {
+        const normal = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+        const authoredCritical = success ? stage?.criticalSuccess : stage?.criticalFailure;
+        const terminalCritical = !normal?.nextStage
+            ? (success ? challenge.criticalSuccess : challenge.criticalFailure) : null;
+        const critical = criticalInfo?.isCritical && criticalInfo.type === (success ? 'success' : 'failure')
+            ? authoredCritical || terminalCritical : null;
+        return normal || critical ? { ...normal, ...critical } : null;
     }
 
     /** Level-scaled DC shared by terrain, dungeon, quest, and settlement checks. */
@@ -825,7 +896,9 @@ class SkillChallengeManager {
         }
 
         // NPC-only challenges must not fire during terrain movement
-        if (challenge?.balance?.npcOnly === true) return false;
+        if (challenge?.balance?.npcOnly === true) {
+            return false;
+        }
 
         if (!this.canAttemptChallenge(challengeId)) {
             return false;
@@ -852,8 +925,9 @@ class SkillChallengeManager {
             return false;
         }
 
-        const lastAttempt = this.lastAttemptTimes?.[challengeId] || 0;
-        const cooldown = challenge.balance?.cooldown || 0;
+        const lastAttempt = gameState.get('flags.skillChallengeAttempts')?.[challengeId]
+            ?? this.lastAttemptTimes?.[challengeId] ?? 0;
+        const cooldown = challenge.balance?.cooldown ?? RULES.skillChallenges.defaultCooldownMs;
         return (Date.now() - lastAttempt) >= cooldown;
     }
 
@@ -866,6 +940,10 @@ class SkillChallengeManager {
             this.lastAttemptTimes = {};
         }
         this.lastAttemptTimes[challengeId] = Date.now();
+        gameState.set('flags.skillChallengeAttempts', {
+            ...gameState.get('flags.skillChallengeAttempts'),
+            [challengeId]: this.lastAttemptTimes[challengeId]
+        });
     }
 
     /**
@@ -886,10 +964,20 @@ class SkillChallengeManager {
             goldAwarded: 0,
             damageDealt: 0,
             itemsAwarded: [],
-            consequenceFlags: []
+            consequenceFlags: [],
+            messages: [],
+            conditions: [],
+            xp: 0,
+            gold: 0,
+            damage: 0,
+            items: [],
+            initiateCombat: false,
+            enemyTypes: outcome?.enemyTypes || outcome?.triggerCombat || null
         };
 
-        if (!outcome) return result;
+        if (!outcome) {
+            return result;
+        }
 
         // --- XP ---
         if (outcome.xp && outcome.xp > 0) {
@@ -903,9 +991,10 @@ class SkillChallengeManager {
         }
 
         // --- Gold ---
-        if (outcome.gold && outcome.gold > 0) {
-            character.gold = (character.gold || 0) + outcome.gold;
-            result.goldAwarded = outcome.gold;
+        if (outcome.gold) {
+            const previousGold = character.gold || 0;
+            character.gold = Math.max(0, previousGold + outcome.gold);
+            result.goldAwarded = character.gold - previousGold;
         }
 
         // --- Damage ---
@@ -914,8 +1003,7 @@ class SkillChallengeManager {
             if (typeof character.takeDamage === 'function') {
                 character.takeDamage(dmg, outcome.damageType || 'environmental');
             } else {
-                // Fallback: direct HP reduction for plain objects
-                character.currentHP = subtractHP(character.currentHP || 0, dmg);
+                Character.prototype.takeDamage.call(character, dmg, outcome.damageType);
             }
             result.damageDealt = dmg;
         }
@@ -923,6 +1011,31 @@ class SkillChallengeManager {
         // --- Consequence flags (e.g. revealInformation, questClue) ---
         if (Array.isArray(outcome.consequences)) {
             result.consequenceFlags = [...outcome.consequences];
+            result.initiateCombat = outcome.consequences.includes('initiateCombat');
+        }
+        if (outcome.triggerCombat) {
+            result.initiateCombat = true;
+        }
+
+        if (outcome.condition) {
+            const exhaustion = /^exhaustion_(\d+)$/.exec(outcome.condition);
+            if (exhaustion && RULES.fatigue.enabled) {
+                const state = getFatigueState();
+                const maximum = RULES.fatigue.maxExhaustionLevels;
+                gameState.set('fatigue', {
+                    ...state,
+                    exhaustionLevels: Math.min(maximum, state.exhaustionLevels + Number(exhaustion[1]))
+                });
+                if (gameState.get('fatigue.exhaustionLevels') >= maximum) {
+                    character.currentHP = 0;
+                }
+            } else {
+                character.conditions ||= [];
+                if (!character.conditions.includes(outcome.condition)) {
+                    character.conditions.push(outcome.condition);
+                }
+            }
+            result.conditions.push(outcome.condition);
         }
 
         // --- Loot ---
@@ -1001,6 +1114,13 @@ class SkillChallengeManager {
             }
         }
 
+        result.xp = result.xpAwarded;
+        result.gold = result.goldAwarded;
+        result.damage = result.damageDealt;
+        result.items = result.itemsAwarded;
+        if (outcome.message) {
+            result.messages.push(outcome.message);
+        }
         return result;
     }
 }

@@ -1,0 +1,3856 @@
+{
+  "methodology": "Real seeded world metadata and starting-town quests. Three level evaluations per world are paired, not independent. Validity checked through actual QuestManager room matcher. No travel, rolls, rewards, NPC assignment or legacy-save recovery simulated. Validity counts are exact for the enumerated worlds; withholding CIs describe sampled worlds, not skill/combat win rates. No differences between suites or levels asserted. A reachable metadata target does not prove physically safe access.",
+  "playerEntrySource": {
+    "select": "index.html",
+    "consumers": "src/main.js startNewGame/loadCampaignFeatureOverrides",
+    "configuredCampaignDefault": "nexus-verge",
+    "selectedCampaignDisabledInData": true,
+    "actualConfig": {
+      "mapSize": "medium",
+      "difficulty": "normal",
+      "campaignId": "defeatLichKing"
+    }
+  },
+  "worldHooksEnabled": true,
+  "targetlessNewInvestigations": 0,
+  "results": [
+    {
+      "id": "original-small-core",
+      "n": 100,
+      "config": {
+        "mapSize": "small",
+        "difficulty": "normal",
+        "campaignId": "core"
+      },
+      "overrides": {},
+      "prefix": "approved-skill-route-",
+      "summaries": [
+        {
+          "level": 1,
+          "nWorlds": 100,
+          "offered": 57,
+          "withheld": 43,
+          "targetValid": 57,
+          "withheldFraction": 0.43,
+          "ci95": [
+            0.33296515265122534,
+            0.5270348473487747
+          ],
+          "totalQuestOffers": 257
+        },
+        {
+          "level": 5,
+          "nWorlds": 100,
+          "offered": 57,
+          "withheld": 43,
+          "targetValid": 57,
+          "withheldFraction": 0.43,
+          "ci95": [
+            0.33296515265122534,
+            0.5270348473487747
+          ],
+          "totalQuestOffers": 257
+        },
+        {
+          "level": 10,
+          "nWorlds": 100,
+          "offered": 57,
+          "withheld": 43,
+          "targetValid": 57,
+          "withheldFraction": 0.43,
+          "ci95": [
+            0.33296515265122534,
+            0.5270348473487747
+          ],
+          "totalQuestOffers": 257
+        }
+      ],
+      "controls": [
+        {
+          "seed": 0,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 0,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 0,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 1,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        },
+        {
+          "seed": 1,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        },
+        {
+          "seed": 1,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        }
+      ],
+      "rows": [
+        {
+          "seed": 0,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 0,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 0,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 1,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        },
+        {
+          "seed": 1,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        },
+        {
+          "seed": 1,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-37,149"
+        },
+        {
+          "seed": 2,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,91"
+        },
+        {
+          "seed": 2,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,91"
+        },
+        {
+          "seed": 2,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,91"
+        },
+        {
+          "seed": 3,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-79"
+        },
+        {
+          "seed": 3,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-79"
+        },
+        {
+          "seed": 3,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-79"
+        },
+        {
+          "seed": 4,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 4,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 4,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 5,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 5,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 5,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 6,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 6,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 6,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 7,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "55,-102"
+        },
+        {
+          "seed": 7,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "55,-102"
+        },
+        {
+          "seed": 7,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "55,-102"
+        },
+        {
+          "seed": 8,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-109"
+        },
+        {
+          "seed": 8,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-109"
+        },
+        {
+          "seed": 8,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-109"
+        },
+        {
+          "seed": 9,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,-104"
+        },
+        {
+          "seed": 9,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,-104"
+        },
+        {
+          "seed": 9,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,-104"
+        },
+        {
+          "seed": 10,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 10,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 10,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 11,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 11,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 11,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 12,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,48"
+        },
+        {
+          "seed": 12,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,48"
+        },
+        {
+          "seed": 12,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,48"
+        },
+        {
+          "seed": 13,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,-110"
+        },
+        {
+          "seed": 13,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,-110"
+        },
+        {
+          "seed": 13,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,-110"
+        },
+        {
+          "seed": 14,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-83,-13"
+        },
+        {
+          "seed": 14,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-83,-13"
+        },
+        {
+          "seed": 14,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-83,-13"
+        },
+        {
+          "seed": 15,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 15,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 15,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 16,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 16,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 16,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 17,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-115,38"
+        },
+        {
+          "seed": 17,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-115,38"
+        },
+        {
+          "seed": 17,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-115,38"
+        },
+        {
+          "seed": 18,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 18,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 18,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 19,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,82"
+        },
+        {
+          "seed": 19,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,82"
+        },
+        {
+          "seed": 19,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,82"
+        },
+        {
+          "seed": 20,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-82,11"
+        },
+        {
+          "seed": 20,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-82,11"
+        },
+        {
+          "seed": 20,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-82,11"
+        },
+        {
+          "seed": 21,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 21,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 21,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 22,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,-58"
+        },
+        {
+          "seed": 22,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,-58"
+        },
+        {
+          "seed": 22,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,-58"
+        },
+        {
+          "seed": 23,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "105,51"
+        },
+        {
+          "seed": 23,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "105,51"
+        },
+        {
+          "seed": 23,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "105,51"
+        },
+        {
+          "seed": 24,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 24,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 24,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 25,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-10,134"
+        },
+        {
+          "seed": 25,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-10,134"
+        },
+        {
+          "seed": 25,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-10,134"
+        },
+        {
+          "seed": 26,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 26,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 26,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 27,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 27,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 27,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 28,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 28,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 28,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 29,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "19,109"
+        },
+        {
+          "seed": 29,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "19,109"
+        },
+        {
+          "seed": 29,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "19,109"
+        },
+        {
+          "seed": 30,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 30,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 30,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 31,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,46"
+        },
+        {
+          "seed": 31,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,46"
+        },
+        {
+          "seed": 31,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "76,46"
+        },
+        {
+          "seed": 32,
+          "level": 1,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "56,-104"
+        },
+        {
+          "seed": 32,
+          "level": 5,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "56,-104"
+        },
+        {
+          "seed": 32,
+          "level": 10,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "56,-104"
+        },
+        {
+          "seed": 33,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 33,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 33,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 34,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 34,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 34,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 35,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 35,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 35,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 36,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "87,27"
+        },
+        {
+          "seed": 36,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "87,27"
+        },
+        {
+          "seed": 36,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "87,27"
+        },
+        {
+          "seed": 37,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "13,-21"
+        },
+        {
+          "seed": 37,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "13,-21"
+        },
+        {
+          "seed": 37,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "13,-21"
+        },
+        {
+          "seed": 38,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,43"
+        },
+        {
+          "seed": 38,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,43"
+        },
+        {
+          "seed": 38,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,43"
+        },
+        {
+          "seed": 39,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-48,-41"
+        },
+        {
+          "seed": 39,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-48,-41"
+        },
+        {
+          "seed": 39,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-48,-41"
+        },
+        {
+          "seed": 40,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 40,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 40,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 41,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-79,27"
+        },
+        {
+          "seed": 41,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-79,27"
+        },
+        {
+          "seed": 41,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-79,27"
+        },
+        {
+          "seed": 42,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 42,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 42,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 43,
+          "level": 1,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "39,-86"
+        },
+        {
+          "seed": 43,
+          "level": 5,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "39,-86"
+        },
+        {
+          "seed": 43,
+          "level": 10,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "39,-86"
+        },
+        {
+          "seed": 44,
+          "level": 1,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "23,-23"
+        },
+        {
+          "seed": 44,
+          "level": 5,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "23,-23"
+        },
+        {
+          "seed": 44,
+          "level": 10,
+          "eligibleHooks": 3,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "23,-23"
+        },
+        {
+          "seed": 45,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "120,51"
+        },
+        {
+          "seed": 45,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "120,51"
+        },
+        {
+          "seed": 45,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "120,51"
+        },
+        {
+          "seed": 46,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 46,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 46,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 47,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,138"
+        },
+        {
+          "seed": 47,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,138"
+        },
+        {
+          "seed": 47,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-55,138"
+        },
+        {
+          "seed": 48,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 48,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 48,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 49,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "9,152"
+        },
+        {
+          "seed": 49,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "9,152"
+        },
+        {
+          "seed": 49,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "9,152"
+        },
+        {
+          "seed": 50,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "75,-58"
+        },
+        {
+          "seed": 50,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "75,-58"
+        },
+        {
+          "seed": 50,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "75,-58"
+        },
+        {
+          "seed": 51,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-19"
+        },
+        {
+          "seed": 51,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-19"
+        },
+        {
+          "seed": 51,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-19"
+        },
+        {
+          "seed": 52,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "119,-51"
+        },
+        {
+          "seed": 52,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "119,-51"
+        },
+        {
+          "seed": 52,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "119,-51"
+        },
+        {
+          "seed": 53,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "147,-37"
+        },
+        {
+          "seed": 53,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "147,-37"
+        },
+        {
+          "seed": 53,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "147,-37"
+        },
+        {
+          "seed": 54,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "145,37"
+        },
+        {
+          "seed": 54,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "145,37"
+        },
+        {
+          "seed": 54,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "145,37"
+        },
+        {
+          "seed": 55,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 55,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 55,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 56,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 56,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 56,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 57,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-123,46"
+        },
+        {
+          "seed": 57,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-123,46"
+        },
+        {
+          "seed": 57,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-123,46"
+        },
+        {
+          "seed": 58,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "77,-51"
+        },
+        {
+          "seed": 58,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "77,-51"
+        },
+        {
+          "seed": 58,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "77,-51"
+        },
+        {
+          "seed": 59,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 59,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 59,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 60,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 60,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 60,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 61,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "21,-111"
+        },
+        {
+          "seed": 61,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "21,-111"
+        },
+        {
+          "seed": 61,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "21,-111"
+        },
+        {
+          "seed": 62,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "49,135"
+        },
+        {
+          "seed": 62,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "49,135"
+        },
+        {
+          "seed": 62,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "49,135"
+        },
+        {
+          "seed": 63,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,-38"
+        },
+        {
+          "seed": 63,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,-38"
+        },
+        {
+          "seed": 63,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,-38"
+        },
+        {
+          "seed": 64,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 64,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 64,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 65,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 65,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 65,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 66,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 66,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 66,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 67,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 67,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 67,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 68,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "110,10"
+        },
+        {
+          "seed": 68,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "110,10"
+        },
+        {
+          "seed": 68,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "110,10"
+        },
+        {
+          "seed": 69,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-6"
+        },
+        {
+          "seed": 69,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-6"
+        },
+        {
+          "seed": 69,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-6"
+        },
+        {
+          "seed": 70,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 70,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 70,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 71,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 71,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 71,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 72,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,87"
+        },
+        {
+          "seed": 72,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,87"
+        },
+        {
+          "seed": 72,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-17,87"
+        },
+        {
+          "seed": 73,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,20"
+        },
+        {
+          "seed": 73,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,20"
+        },
+        {
+          "seed": 73,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-73,20"
+        },
+        {
+          "seed": 74,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "6,-71"
+        },
+        {
+          "seed": 74,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "6,-71"
+        },
+        {
+          "seed": 74,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "6,-71"
+        },
+        {
+          "seed": 75,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-21,-8"
+        },
+        {
+          "seed": 75,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-21,-8"
+        },
+        {
+          "seed": 75,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-21,-8"
+        },
+        {
+          "seed": 76,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 76,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 76,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 77,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 77,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 77,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 78,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,55"
+        },
+        {
+          "seed": 78,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,55"
+        },
+        {
+          "seed": 78,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,55"
+        },
+        {
+          "seed": 79,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,-50"
+        },
+        {
+          "seed": 79,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,-50"
+        },
+        {
+          "seed": 79,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "24,-50"
+        },
+        {
+          "seed": 80,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "59,72"
+        },
+        {
+          "seed": 80,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "59,72"
+        },
+        {
+          "seed": 80,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "59,72"
+        },
+        {
+          "seed": 81,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 81,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 81,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 82,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 82,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 82,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 83,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-11,-37"
+        },
+        {
+          "seed": 83,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-11,-37"
+        },
+        {
+          "seed": 83,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-11,-37"
+        },
+        {
+          "seed": 84,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 84,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 84,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 85,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 85,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 85,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 86,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "118,-41"
+        },
+        {
+          "seed": 86,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "118,-41"
+        },
+        {
+          "seed": 86,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "118,-41"
+        },
+        {
+          "seed": 87,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-82"
+        },
+        {
+          "seed": 87,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-82"
+        },
+        {
+          "seed": 87,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-82"
+        },
+        {
+          "seed": 88,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "89,-91"
+        },
+        {
+          "seed": 88,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "89,-91"
+        },
+        {
+          "seed": 88,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "89,-91"
+        },
+        {
+          "seed": 89,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 89,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 89,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 90,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-14"
+        },
+        {
+          "seed": 90,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-14"
+        },
+        {
+          "seed": 90,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "71,-14"
+        },
+        {
+          "seed": 91,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,116"
+        },
+        {
+          "seed": 91,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,116"
+        },
+        {
+          "seed": 91,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-14,116"
+        },
+        {
+          "seed": 92,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-49,-9"
+        },
+        {
+          "seed": 92,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-49,-9"
+        },
+        {
+          "seed": 92,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-49,-9"
+        },
+        {
+          "seed": 93,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 93,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 93,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 94,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,-73"
+        },
+        {
+          "seed": 94,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,-73"
+        },
+        {
+          "seed": 94,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-39,-73"
+        },
+        {
+          "seed": 95,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 95,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 95,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 96,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-45,52"
+        },
+        {
+          "seed": 96,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-45,52"
+        },
+        {
+          "seed": 96,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-45,52"
+        },
+        {
+          "seed": 97,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 97,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 97,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 98,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 98,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 98,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 99,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-7,102"
+        },
+        {
+          "seed": 99,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-7,102"
+        },
+        {
+          "seed": 99,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-7,102"
+        }
+      ]
+    },
+    {
+      "id": "player-entry-default",
+      "n": 20,
+      "config": {
+        "mapSize": "medium",
+        "difficulty": "normal",
+        "campaignId": "defeatLichKing"
+      },
+      "overrides": {
+        "baseDungeons": 250,
+        "poiResolution": {
+          "baseDungeonChance": 0.75
+        },
+        "startingRelation": -5
+      },
+      "prefix": "investigation-target-default-",
+      "summaries": [
+        {
+          "level": 1,
+          "nWorlds": 20,
+          "offered": 18,
+          "withheld": 2,
+          "targetValid": 18,
+          "withheldFraction": 0.1,
+          "ci95": [
+            0,
+            0.23148079707698765
+          ],
+          "totalQuestOffers": 58
+        },
+        {
+          "level": 5,
+          "nWorlds": 20,
+          "offered": 18,
+          "withheld": 2,
+          "targetValid": 18,
+          "withheldFraction": 0.1,
+          "ci95": [
+            0,
+            0.23148079707698765
+          ],
+          "totalQuestOffers": 58
+        },
+        {
+          "level": 10,
+          "nWorlds": 20,
+          "offered": 18,
+          "withheld": 2,
+          "targetValid": 18,
+          "withheldFraction": 0.1,
+          "ci95": [
+            0,
+            0.23148079707698765
+          ],
+          "totalQuestOffers": 58
+        }
+      ],
+      "controls": [
+        {
+          "seed": 0,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 0,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 0,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 1,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        },
+        {
+          "seed": 1,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        },
+        {
+          "seed": 1,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        }
+      ],
+      "rows": [
+        {
+          "seed": 0,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 0,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 0,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "51,58"
+        },
+        {
+          "seed": 1,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        },
+        {
+          "seed": 1,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        },
+        {
+          "seed": 1,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-53,87"
+        },
+        {
+          "seed": 2,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-69"
+        },
+        {
+          "seed": 2,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-69"
+        },
+        {
+          "seed": 2,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,-69"
+        },
+        {
+          "seed": 3,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "41,111"
+        },
+        {
+          "seed": 3,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "41,111"
+        },
+        {
+          "seed": 3,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "41,111"
+        },
+        {
+          "seed": 4,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "101,17"
+        },
+        {
+          "seed": 4,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "101,17"
+        },
+        {
+          "seed": 4,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "101,17"
+        },
+        {
+          "seed": 5,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,21"
+        },
+        {
+          "seed": 5,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,21"
+        },
+        {
+          "seed": 5,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "70,21"
+        },
+        {
+          "seed": 6,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-15,119"
+        },
+        {
+          "seed": 6,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-15,119"
+        },
+        {
+          "seed": 6,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-15,119"
+        },
+        {
+          "seed": 7,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-119,22"
+        },
+        {
+          "seed": 7,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-119,22"
+        },
+        {
+          "seed": 7,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-119,22"
+        },
+        {
+          "seed": 8,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "138,-43"
+        },
+        {
+          "seed": 8,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "138,-43"
+        },
+        {
+          "seed": 8,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "138,-43"
+        },
+        {
+          "seed": 9,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "38,74"
+        },
+        {
+          "seed": 9,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "38,74"
+        },
+        {
+          "seed": 9,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "38,74"
+        },
+        {
+          "seed": 10,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-74"
+        },
+        {
+          "seed": 10,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-74"
+        },
+        {
+          "seed": 10,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "52,-74"
+        },
+        {
+          "seed": 11,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 11,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 11,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 12,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "141,-55"
+        },
+        {
+          "seed": 12,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "141,-55"
+        },
+        {
+          "seed": 12,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "141,-55"
+        },
+        {
+          "seed": 13,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-24,21"
+        },
+        {
+          "seed": 13,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-24,21"
+        },
+        {
+          "seed": 13,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-24,21"
+        },
+        {
+          "seed": 14,
+          "level": 1,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 14,
+          "level": 5,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 14,
+          "level": 10,
+          "eligibleHooks": 0,
+          "offered": 0,
+          "withheld": 1,
+          "targetValid": 0,
+          "totalQuestOffers": 2,
+          "target": null
+        },
+        {
+          "seed": 15,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "10,135"
+        },
+        {
+          "seed": 15,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "10,135"
+        },
+        {
+          "seed": 15,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "10,135"
+        },
+        {
+          "seed": 16,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-87,79"
+        },
+        {
+          "seed": 16,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-87,79"
+        },
+        {
+          "seed": 16,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-87,79"
+        },
+        {
+          "seed": 17,
+          "level": 1,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "86,-6"
+        },
+        {
+          "seed": 17,
+          "level": 5,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "86,-6"
+        },
+        {
+          "seed": 17,
+          "level": 10,
+          "eligibleHooks": 2,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "86,-6"
+        },
+        {
+          "seed": 18,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-108"
+        },
+        {
+          "seed": 18,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-108"
+        },
+        {
+          "seed": 18,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "8,-108"
+        },
+        {
+          "seed": 19,
+          "level": 1,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-8"
+        },
+        {
+          "seed": 19,
+          "level": 5,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-8"
+        },
+        {
+          "seed": 19,
+          "level": 10,
+          "eligibleHooks": 1,
+          "offered": 1,
+          "withheld": 0,
+          "targetValid": 1,
+          "totalQuestOffers": 3,
+          "target": "-25,-8"
+        }
+      ]
+    }
+  ]
+}

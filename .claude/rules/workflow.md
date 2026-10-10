@@ -85,6 +85,14 @@ A plan reaching `Implemented` gets a `docs/CHANGELOG.md` entry in the same chang
 
 ## Agent Infrastructure
 
+### Documentation Handoff
+
+Before completing a task, assess documentation impact. Changes affecting documented player behavior, controls/progression, setup/build/deployment, architecture or integration/save contracts, data schemas, calling mechanics, or agent workflows require a `documentation-agent` handoff once implementation settles. Supply the task's changed files, behavior/decision summary, validation evidence, and affected document targets; finish the resulting updates in the same task and review their diff before reporting completion. Coordinate ownership of shared documents and preserve pre-existing work.
+
+This is an agent-workflow requirement, not a background filesystem watcher. If delegation is unavailable, apply `.claude/skills/documentation-agent/SKILL.md` directly. For changes without documentation impact, record a brief reason rather than editing unrelated documents. A documentation-only pass does not trigger recursive handoffs.
+
+The agent also handles requested thorough reviews (findings only unless repairs are requested) and creates artifacts from user requirements. It owns accuracy, structure, and reader usability; `architect`, `game-designer`, `worldbuilder`, and `product-owner` retain their existing decision rights. Architectural drift is reported, not legitimized by rewriting an accepted ADR. Plan lifecycle ownership and Design Capture rules remain in effect.
+
 ### Decision Record: Skill/Subagent Mirroring
 *Decided: 2026-07-01*
 
@@ -98,7 +106,7 @@ A plan reaching `Implemented` gets a `docs/CHANGELOG.md` entry in the same chang
 
 **Skill parity is test-enforced.** Every repo skill exposed under `.agents/skills/` must have byte-identical `SKILL.md` instructions to its `.claude/skills/` counterpart. `tests/config/agentSkillParity.test.js` fails when a copied skill drifts; symlinked skills satisfy the same check automatically. Platform-specific agent wrappers may differ, but role instructions and decision rights may not.
 
-**Current roster (all fourteen, skill + subagent + Codex custom agent):** `product-owner`, `creative-director`, `game-designer`, `architect`, `backend-dev`, `frontend-dev`, `devils-advocate`, `legal-reviewer`, `worldbuilder`, `data-agent`, `mechanics-master`, `balance-engineer`, `refactor-engineer`, `creative-prompt-engineer`.
+**Current roster (all fifteen, skill + subagent + Codex custom agent):** `product-owner`, `creative-director`, `game-designer`, `architect`, `backend-dev`, `frontend-dev`, `devils-advocate`, `legal-reviewer`, `worldbuilder`, `data-agent`, `mechanics-master`, `balance-engineer`, `refactor-engineer`, `creative-prompt-engineer`, `documentation-agent`.
 
 - **Skills** = personas loaded into the main conversation
 - **Subagents** = isolated autonomous workers via the Agent tool

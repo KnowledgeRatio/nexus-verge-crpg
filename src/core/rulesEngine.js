@@ -653,6 +653,7 @@ export const RULES = {
     // SKILL CHALLENGES
     // ====================
     skillChallenges: {
+        defaultCooldownMs: 300000, // Omitted cooldowns use the existing five-minute baseline; explicit 0 opts out.
         // Balance system for skill challenge rewards
         balancing: {
             // Skill value multipliers - skills with high external value get lower challenge rewards
@@ -1076,8 +1077,18 @@ export const RULES = {
         maxActiveQuests: 10,
         questsPerSettlement: 3,
         maxHookDistanceTiles: 150,
+        investigationFallbackDistanceTiles: 300,
         hookRadius: 150,
         enableWorldHooks: true,
+        proceduralCore: {
+            enabled: true,
+            investigationDC: 12,
+            xpMultiplier: 0.8,
+            goldPerLevel: 20,
+            incompleteRewardMultiplier: 0.5,
+            shipmentQuantity: 3,
+            salvageQuantity: 1
+        },
         questSlotBudget: {
             village: 3,
             town: 3,

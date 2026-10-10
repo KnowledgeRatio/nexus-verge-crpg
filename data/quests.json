@@ -1,4 +1,850 @@
 {
+  "questComposition": {
+    "version": 1,
+    "family": "disrupted_site",
+    "description": "{giverName} asks you to {goalText} at {siteName}. {causeText} {materialText}",
+    "baseline": {
+      "objectiveId": "observe_site",
+      "roomIndex": 0,
+      "facts": [
+        {
+          "id": "site_observed",
+          "text": "You establish the entrance and the signs of the disrupted work at {siteName}."
+        }
+      ]
+    },
+    "dimensions": {
+      "cause": [
+        {
+          "id": "abandonment",
+          "text": "The delivery party reports broken carrying straps.",
+          "requires": {
+            "custody": [
+              "abandoned"
+            ]
+          },
+          "activities": [
+            "interpret"
+          ]
+        },
+        {
+          "id": "occupation",
+          "text": "A dangerous presence blocks the delivery party's route.",
+          "requires": {
+            "hazard": [
+              "occupied"
+            ],
+            "custody": [
+              "withheld"
+            ]
+          }
+        }
+      ],
+      "subject": [
+        {
+          "id": "rations",
+          "itemId": "rations",
+          "name": "provisions",
+          "requires": {
+            "goal": [
+              "recovery"
+            ]
+          },
+          "capabilities": [
+            "goods"
+          ]
+        },
+        {
+          "id": "rope-hempen",
+          "itemId": "rope-hempen",
+          "name": "rope",
+          "requires": {
+            "goal": [
+              "recovery"
+            ]
+          },
+          "capabilities": [
+            "goods"
+          ]
+        },
+        {
+          "id": "torch",
+          "itemId": "torch",
+          "name": "torches",
+          "requires": {
+            "goal": [
+              "recovery"
+            ]
+          },
+          "capabilities": [
+            "goods"
+          ]
+        },
+        {
+          "id": "site",
+          "name": "site access",
+          "requires": {
+            "goal": [
+              "access"
+            ]
+          }
+        }
+      ],
+      "custody": [
+        {
+          "id": "abandoned",
+          "text": "The delivery party left these goods behind.",
+          "requires": {
+            "cause": [
+              "abandonment"
+            ],
+            "goal": [
+              "recovery"
+            ]
+          }
+        },
+        {
+          "id": "withheld",
+          "text": "Any abandoned supplies still belong to the delivery party.",
+          "requires": {
+            "cause": [
+              "occupation"
+            ]
+          }
+        }
+      ],
+      "hazard": [
+        {
+          "id": "unopposed",
+          "text": "The goods lie near the entrance; recovery requires no further fighting.",
+          "requires": {
+            "cause": [
+              "abandonment"
+            ],
+            "goal": [
+              "recovery"
+            ]
+          }
+        },
+        {
+          "id": "occupied",
+          "text": "Defeat the main threat deep inside {siteName}.",
+          "capabilities": [
+            "combat"
+          ],
+          "activities": [
+            "defeat"
+          ]
+        }
+      ],
+      "materialState": [
+        {
+          "id": "intact",
+          "text": "The consignment remains usable.",
+          "requires": {
+            "goal": [
+              "recovery"
+            ]
+          },
+          "activities": [
+            "recover"
+          ]
+        },
+        {
+          "id": "damaged",
+          "text": "Some goods remain usable; sound packaging could save more.",
+          "requires": {
+            "goal": [
+              "recovery"
+            ]
+          },
+          "salvage": true,
+          "activities": [
+            "recover",
+            "salvage"
+          ]
+        },
+        {
+          "id": "unavailable",
+          "text": "No goods need to be recovered.",
+          "requires": {
+            "goal": [
+              "access"
+            ]
+          }
+        }
+      ],
+      "goal": [
+        {
+          "id": "recovery",
+          "questType": "retrieve",
+          "name": "Recover the {subjectName}",
+          "text": "recover the missing {subjectName}",
+          "resolutions": [
+            {
+              "id": "deliver_goods",
+              "fulfilled": true,
+              "label": "Hand over the recovered {subjectName} to {merchantName}",
+              "location": "settlement",
+              "custody": [
+                {
+                  "itemId": "{itemId}",
+                  "sourceId": "consignment",
+                  "minimumQuantity": "{baseQuantity}",
+                  "consume": true
+                }
+              ],
+              "reply": "{merchantName} takes the usable {subjectName} and adds them to the shop's stock.",
+              "effects": [
+                {
+                  "id": "trust_recipient",
+                  "type": "relation",
+                  "participant": "merchant",
+                  "modifier": "questCompleteForNPC"
+                },
+                {
+                  "id": "standing_recipient",
+                  "type": "faction",
+                  "participant": "merchant",
+                  "rewardTier": "easy"
+                },
+                {
+                  "id": "recovered_stock",
+                  "type": "merchant_stock",
+                  "participant": "merchant",
+                  "itemId": "{itemId}",
+                  "quantityFromCustody": "consignment"
+                }
+              ]
+            },
+            {
+              "id": "deliver_explained",
+              "fulfilled": true,
+              "label": "Deliver the goods with evidence of the failed straps",
+              "location": "settlement",
+              "requiresFacts": [
+                "cause_established"
+              ],
+              "custody": [
+                {
+                  "itemId": "{itemId}",
+                  "sourceId": "consignment",
+                  "minimumQuantity": "{baseQuantity}",
+                  "consume": true
+                }
+              ],
+              "reply": "You hand over the usable goods and explain the failed straps. The evidence earns additional personal trust.",
+              "effects": [
+                {
+                  "id": "trust_recipient",
+                  "type": "relation",
+                  "participant": "merchant",
+                  "modifier": "questCompleteForNPC"
+                },
+                {
+                  "id": "standing_recipient",
+                  "type": "faction",
+                  "participant": "merchant",
+                  "rewardTier": "easy"
+                },
+                {
+                  "id": "recovered_stock",
+                  "type": "merchant_stock",
+                  "participant": "merchant",
+                  "itemId": "{itemId}",
+                  "quantityFromCustody": "consignment"
+                },
+                {
+                  "id": "evidence_trust",
+                  "type": "relation",
+                  "participant": "giver",
+                  "modifier": "dialogueSkillCheckPass"
+                }
+              ]
+            },
+            {
+              "id": "report_inconclusive",
+              "label": "Report what you found without fulfilling the commission",
+              "location": "settlement",
+              "requiresObjectives": [
+                "observe_site"
+              ],
+              "incomplete": true,
+              "reply": "You report the signs at {siteName}. The agreed work remains unfinished; this closes the commission with partial payment.",
+              "effects": []
+            }
+          ],
+          "activities": [
+            "observe"
+          ]
+        },
+        {
+          "id": "access",
+          "questType": "kill",
+          "name": "Remove the threat at {siteName}",
+          "text": "remove the threat",
+          "requires": {
+            "cause": [
+              "occupation"
+            ],
+            "hazard": [
+              "occupied"
+            ],
+            "materialState": [
+              "unavailable"
+            ],
+            "subject": [
+              "site"
+            ]
+          },
+          "resolutions": [
+            {
+              "id": "report_cleared",
+              "fulfilled": true,
+              "label": "Report the main threat defeated",
+              "location": "settlement",
+              "reply": "The main threat at {siteName} is defeated. Other dangers remain.",
+              "effects": [
+                {
+                  "id": "trust_giver",
+                  "type": "relation",
+                  "participant": "giver",
+                  "modifier": "questCompleteForNPC"
+                },
+                {
+                  "id": "standing_giver",
+                  "type": "faction",
+                  "participant": "giver",
+                  "rewardTier": "easy"
+                }
+              ]
+            },
+            {
+              "id": "report_inconclusive",
+              "label": "Report what you found without fulfilling the commission",
+              "location": "settlement",
+              "requiresObjectives": [
+                "observe_site"
+              ],
+              "incomplete": true,
+              "reply": "You report the signs at {siteName}. The agreed work remains unfinished; this closes the commission with partial payment.",
+              "effects": []
+            }
+          ],
+          "activities": [
+            "observe"
+          ]
+        }
+      ]
+    },
+    "activities": {
+      "observe": {
+        "id": "observe",
+        "objective": {
+          "id": "observe_site",
+          "type": "observe",
+          "description": "Establish the signs at {siteName}"
+        }
+      },
+      "interpret": {
+        "id": "interpret",
+        "action": {
+          "id": "interpret",
+          "label": "Trace the failed carrying straps (Investigation)",
+          "location": "site",
+          "requiresFacts": [
+            "site_observed"
+          ],
+          "skillId": "investigation",
+          "facts": [
+            {
+              "id": "cause_established",
+              "text": "The broken straps and scrape marks establish accidental abandonment."
+            }
+          ]
+        }
+      },
+      "defeat": {
+        "id": "defeat",
+        "objective": {
+          "id": "defeat_occupation",
+          "type": "defeat_encounter",
+          "description": "Defeat the boss deep inside {siteName}",
+          "requirement": {
+            "source": {
+              "siteId": "{siteId}",
+              "encounterRole": "boss",
+              "encounterKey": "{encounterKey}"
+            }
+          }
+        }
+      },
+      "recover": {
+        "id": "recover",
+        "objective": {
+          "id": "recover_goods",
+          "type": "retrieve",
+          "description": "Acquire the usable {subjectName}",
+          "required": "{baseQuantity}",
+          "requirement": {
+            "itemId": "{itemId}",
+            "sourceId": "consignment"
+          }
+        },
+        "action": {
+          "id": "recover_goods",
+          "label": "Collect the usable {subjectName}",
+          "location": "site",
+          "requiresObjectives": [
+            "observe_site"
+          ],
+          "acquire": {
+            "itemId": "{itemId}",
+            "quantity": "{baseQuantity}",
+            "sourceId": "consignment"
+          },
+          "facts": [
+            {
+              "id": "goods_recovered",
+              "text": "You take custody of the usable goods from this consignment."
+            }
+          ]
+        }
+      },
+      "salvage": {
+        "id": "salvage",
+        "action": {
+          "id": "salvage_goods",
+          "label": "Repack the damaged consignment (Craft)",
+          "location": "site",
+          "requiresActions": [
+            "recover_goods"
+          ],
+          "skillId": "craft",
+          "salvage": {
+            "itemId": "{itemId}",
+            "quantity": "{salvageQuantity}",
+            "sourceId": "consignment"
+          },
+          "facts": [
+            {
+              "id": "goods_salvaged",
+              "text": "Sound packaging lets you carry back more usable goods."
+            }
+          ]
+        }
+      }
+    }
+  },
+  "proceduralBundles": [
+    {
+      "id": "abandoned_consignment",
+      "arrangement": "practical_failure",
+      "name": "Recover the Abandoned Shipment",
+      "description": "{giverName} commissions you to recover a missing shipment for {merchantName}. Locate the goods and return them so {merchantName} can sell the supplies again.",
+      "requiredParticipants": [
+        "merchant"
+      ],
+      "baseline": {
+        "roomIndex": 0,
+        "facts": [
+          {
+            "id": "crate_found",
+            "text": "A consignment lies abandoned near the entrance."
+          },
+          {
+            "id": "packing_torn",
+            "text": "The packing straps are torn."
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "recover_consignment",
+          "label": "Recover the consignment",
+          "location": "site",
+          "requiresFacts": [
+            "crate_found"
+          ],
+          "facts": [
+            {
+              "id": "goods_recovered",
+              "text": "You collect the usable goods."
+            }
+          ]
+        },
+        {
+          "id": "interpret",
+          "label": "Corroborate the cause (Investigation; retries add fatigue)",
+          "location": "site",
+          "requiresFacts": [
+            "packing_torn"
+          ],
+          "facts": [
+            {
+              "id": "drag_marks_accidental",
+              "text": "Drag marks show where the straps failed; the goods were dropped."
+            }
+          ],
+          "skillId": "investigation"
+        }
+      ],
+      "resolutions": [
+        {
+          "id": "return_goods",
+          "label": "Return the recovered goods to {merchantName}",
+          "location": "settlement",
+          "requiresFacts": [
+            "goods_recovered"
+          ],
+          "reply": "The goods are back. {merchantName} can put this shipment on the shelves.",
+          "effects": [
+            {
+              "id": "trust_merchant",
+              "type": "relation",
+              "participant": "merchant",
+              "modifier": "questCompleteForNPC"
+            },
+            {
+              "id": "standing_merchant",
+              "type": "faction",
+              "participant": "merchant",
+              "rewardTier": "easy"
+            },
+            {
+              "id": "recovered_shipment",
+              "type": "merchant_stock",
+              "participant": "merchant",
+              "itemId": "rations"
+            }
+          ]
+        },
+        {
+          "id": "return_goods_explained",
+          "label": "Return the goods with a corroborated account",
+          "location": "settlement",
+          "requiresFacts": ["goods_recovered", "drag_marks_accidental"],
+          "reply": "{merchantName} can put the shipment on the shelves. Your evidence explains the broken straps and earns further trust in your account.",
+          "effects": [
+            {"id": "trust_merchant", "type": "relation", "participant": "merchant", "modifier": "questCompleteForNPC"},
+            {"id": "standing_merchant", "type": "faction", "participant": "merchant", "rewardTier": "easy"},
+            {"id": "recovered_shipment", "type": "merchant_stock", "participant": "merchant", "itemId": "rations"},
+            {"id": "evidence_trust_merchant", "type": "relation", "participant": "merchant", "modifier": "dialogueSkillCheckPass"}
+          ]
+        },
+        {
+          "id": "report_inconclusive",
+          "label": "Report the location without recovering the goods",
+          "location": "settlement",
+          "requiresFacts": [
+            "crate_found"
+          ],
+          "reply": "You found the consignment, but the shipment is still missing from our shelves.",
+          "effects": [],
+          "incomplete": true
+        }
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "disputed_kit",
+      "arrangement": "competing_claims",
+      "name": "Settle the Kit Dispute",
+      "description": "{giverName} asks you to settle a custody dispute between {witnessName} and {claimantName}. Hear both accounts and examine the deposited survey kit’s marks.",
+      "requiredParticipants": [
+        "witness",
+        "claimant"
+      ],
+      "baseline": {
+        "roomIndex": 0,
+        "facts": [
+          {
+            "id": "custody_marks",
+            "text": "The kit bears overlapping custody marks."
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "hear_a",
+          "label": "Hear {witnessName}’s account",
+          "location": "settlement",
+          "requiresFacts": [],
+          "facts": [
+            {
+              "id": "claimant_a_account",
+              "text": "{witnessName} says the kit was deposited for safekeeping."
+            }
+          ],
+          "npcParticipant": "witness"
+        },
+        {
+          "id": "hear_b",
+          "label": "Hear {claimantName}’s account",
+          "location": "settlement",
+          "requiresFacts": [],
+          "facts": [
+            {
+              "id": "claimant_b_account",
+              "text": "{claimantName} says the kit was transferred for their work."
+            }
+          ],
+          "npcParticipant": "claimant"
+        },
+        {
+          "id": "interpret",
+          "label": "Corroborate the cause (Investigation; retries add fatigue)",
+          "location": "site",
+          "requiresFacts": [
+            "custody_marks"
+          ],
+          "facts": [
+            {
+              "id": "claim_a_corroborated",
+              "text": "The dated marks show the kit remained in {witnessName}’s custody; {claimantName}’s mark records a loan for their work."
+            }
+          ],
+          "skillId": "investigation"
+        }
+      ],
+      "resolutions": [
+        {
+          "id": "award_a",
+          "label": "Place the kit with {witnessName}",
+          "location": "settlement",
+          "requiresFacts": [
+            "custody_marks",
+            "claimant_a_account",
+            "claimant_b_account"
+          ],
+          "reply": "The kit is back in {witnessName}’s keeping. {claimantName} still disputes the decision.",
+          "effects": [
+            {
+              "id": "trust_witness",
+              "type": "relation",
+              "participant": "witness",
+              "modifier": "questCompleteForNPC"
+            },
+            {
+              "id": "standing_witness",
+              "type": "faction",
+              "participant": "witness",
+              "rewardTier": "easy"
+            }
+          ]
+        },
+        {
+          "id": "award_a_corroborated",
+          "label": "Support the first claimant with corroborated custody evidence",
+          "location": "settlement",
+          "requiresFacts": ["custody_marks", "claimant_a_account", "claimant_b_account", "claim_a_corroborated"],
+          "reply": "The dated custody marks support returning the kit to {witnessName}. {claimantName} accepts the evidence behind your decision.",
+          "effects": [
+            {"id": "trust_witness", "type": "relation", "participant": "witness", "modifier": "questCompleteForNPC"},
+            {"id": "standing_witness", "type": "faction", "participant": "witness", "rewardTier": "easy"},
+            {"id": "claimant_accepts_evidence", "type": "relation", "participant": "claimant", "modifier": "dialogueSkillCheckPass"}
+          ]
+        },
+        {
+          "id": "award_b",
+          "label": "Place the kit with {claimantName}",
+          "location": "settlement",
+          "requiresFacts": [
+            "custody_marks",
+            "claimant_a_account",
+            "claimant_b_account"
+          ],
+          "reply": "The kit is now in {claimantName}’s keeping. {witnessName} still disagrees, but the decision is made.",
+          "effects": [
+            {
+              "id": "trust_claimant",
+              "type": "relation",
+              "participant": "claimant",
+              "modifier": "questCompleteForNPC"
+            },
+            {
+              "id": "standing_claimant",
+              "type": "faction",
+              "participant": "claimant",
+              "rewardTier": "easy"
+            }
+          ]
+        }
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "handling_mistake",
+      "arrangement": "concealed_account",
+      "name": "Check the Theft Report",
+      "description": "{giverName} asks you to check a report that a consignment was stolen. Examine the site before accepting that account.",
+      "requiredParticipants": [],
+      "baseline": {
+        "roomIndex": 0,
+        "facts": [
+          {
+            "id": "damaged_crate",
+            "text": "A damaged crate remains at the reported site."
+          },
+          {
+            "id": "missing_forced_entry",
+            "text": "There is no sign of forced entry."
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "interpret",
+          "label": "Corroborate the cause (Investigation; retries add fatigue)",
+          "location": "site",
+          "requiresFacts": [
+            "damaged_crate",
+            "missing_forced_entry"
+          ],
+          "facts": [
+            {
+              "id": "handling_damage_corroborated",
+              "text": "The breakage corroborates damage during handling. The supposedly missing goods remain sealed inside the crate."
+            }
+          ],
+          "skillId": "investigation"
+        }
+      ],
+      "resolutions": [
+        {
+          "id": "honest_inconclusive",
+          "label": "Report what you saw without accusing anyone",
+          "location": "settlement",
+          "requiresFacts": [
+            "damaged_crate",
+            "missing_forced_entry"
+          ],
+          "reply": "You checked the site, but we still cannot call this theft.",
+          "effects": [],
+          "incomplete": true
+        },
+        {
+          "id": "confirmed_mistake",
+          "label": "Correct the theft report",
+          "location": "settlement",
+          "requiresFacts": [
+            "handling_damage_corroborated"
+          ],
+          "reply": "The damage happened during handling. I will correct the account instead of accusing someone of theft.",
+          "effects": [
+            {
+              "id": "trust_giver",
+              "type": "relation",
+              "participant": "giver",
+              "modifier": "questCompleteForNPC"
+            },
+            {
+              "id": "standing_giver",
+              "type": "faction",
+              "participant": "giver",
+              "rewardTier": "easy"
+            }
+          ]
+        }
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
+      "id": "delivery_damage",
+      "arrangement": "practical_failure",
+      "name": "Explain the Damaged Delivery",
+      "description": "{giverName} asks you to explain a damaged delivery. Compare {witnessName}’s account with the physical signs.",
+      "requiredParticipants": [
+        "witness"
+      ],
+      "baseline": {
+        "roomIndex": 0,
+        "facts": [
+          {
+            "id": "packing_signs",
+            "text": "Crushed packing lies beside the damaged goods."
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "hear_witness",
+          "label": "Hear {witnessName}’s delivery account",
+          "location": "settlement",
+          "requiresFacts": [],
+          "facts": [
+            {
+              "id": "witness_account",
+              "text": "{witnessName} describes the load shifting before it was unloaded."
+            }
+          ],
+          "npcParticipant": "witness"
+        },
+        {
+          "id": "interpret",
+          "label": "Corroborate the cause (Investigation; retries add fatigue)",
+          "location": "site",
+          "requiresFacts": [
+            "packing_signs",
+            "witness_account"
+          ],
+          "facts": [
+            {
+              "id": "packing_fault_corroborated",
+              "text": "The witness account and pressure marks corroborate a packing fault."
+            }
+          ],
+          "skillId": "investigation"
+        }
+      ],
+      "resolutions": [
+        {
+          "id": "report_unknown",
+          "label": "Report the observations without claiming a cause",
+          "location": "settlement",
+          "requiresFacts": [
+            "packing_signs",
+            "witness_account"
+          ],
+          "reply": "Your report narrows the problem, but does not establish its cause.",
+          "effects": [],
+          "incomplete": true
+        },
+        {
+          "id": "diagnose_packing",
+          "label": "Report the corroborated packing fault",
+          "location": "settlement",
+          "requiresFacts": [
+            "packing_fault_corroborated"
+          ],
+          "reply": "The packing caused the damage. Your evidence gives us a reason to change how we pack.",
+          "effects": [
+            {
+              "id": "trust_giver",
+              "type": "relation",
+              "participant": "giver",
+              "modifier": "questCompleteForNPC"
+            },
+            {
+              "id": "standing_giver",
+              "type": "faction",
+              "participant": "giver",
+              "rewardTier": "easy"
+            }
+          ]
+        }
+      ],
+      "campaignIds": [
+        "core"
+      ]
+    }
+  ],
   "description": "Quest templates for campaign and procedural side quest generation",
   "version": "1.0.0",
   "campaignQuests": [

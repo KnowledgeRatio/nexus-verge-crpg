@@ -173,7 +173,7 @@
             "gold": 15
           },
           "onFailure": {
-            "message": "You break your lockpick. The lock remains intact."
+            "message": "The mechanism catches. You withdraw before damaging your tools; the lock remains shut."
           }
         },
         {
@@ -184,8 +184,7 @@
           "onSuccess": {
             "message": "You smash the door open with brute force!",
             "xp": 50,
-            "gold": 10,
-            "alertEnemies": true
+            "gold": 10
           },
           "onFailure": {
             "message": "You hurt your shoulder trying to break down the door.",
@@ -294,9 +293,9 @@
         },
         {
           "skill": "empathy",
-          "attribute": "composure",
+          "attribute": "presence",
           "baseDC": 16,
-          "description": "Appeal to their better nature",
+          "description": "Reassure the bandits and appeal to their better nature",
           "onSuccess": {
             "message": "You connect with the bandits emotionally. They agree to leave peacefully!",
             "xp": 175,
@@ -659,7 +658,7 @@
         {
           "skill": "lore",
           "attribute": "intellect",
-          "baseDC": 16,
+          "baseDC": 18,
           "description": "Use magical knowledge to solve the puzzle",
           "onSuccess": {
             "message": "You understand the magical principles and solve the puzzle!",
@@ -678,7 +677,7 @@
         {
           "skill": "investigation",
           "attribute": "intellect",
-          "baseDC": 18,
+          "baseDC": 14,
           "description": "Examine the puzzle for patterns",
           "onSuccess": {
             "message": "Through careful observation, you solve the puzzle!",
@@ -692,7 +691,7 @@
         {
           "skill": "craft",
           "attribute": "intellect",
-          "baseDC": 17,
+          "baseDC": 16,
           "description": "Reconfigure the rune sequence as a working mechanism",
           "onSuccess": {
             "message": "Your creative approach reveals a hidden solution!",
@@ -859,9 +858,9 @@
         {
           "id": "follow",
           "skill": "investigation",
-          "attribute": "intellect",
+          "attribute": "intuition",
           "baseDC": 14,
-          "description": "Follow the trail to discover where it leads",
+          "description": "Piece together the trail from fleeting signs",
           "onSuccess": {
             "message": "The signs are everywhere once you know them: a pressed reed, a turned stone, a blood-fleck on bark. You have it.",
             "xp": 60,
@@ -1048,10 +1047,10 @@
         {
           "id": "assess",
           "skill": "perception",
-          "attribute": "intuition",
+          "attribute": "composure",
           "baseDC": 10,
           "passiveRoll": true,
-          "description": "Read the ledge before you commit",
+          "description": "Study the ledge patiently before committing",
           "onSuccess": {
             "message": "The ledge is narrow — six inches, maybe eight. You note where to step.",
             "nextStage": "cross",
@@ -1472,9 +1471,9 @@
         {
           "id": "peak_climb",
           "skill": "athletics",
-          "attribute": "prowess",
+          "attribute": "resilience",
           "baseDC": 18,
-          "description": "Ascend the perilous peak",
+          "description": "Sustain the long climb to the peak",
           "onSuccess": {
             "message": "You reach the summit!",
             "xp": 75,
@@ -1576,7 +1575,7 @@
         {
           "skill": "athletics",
           "attribute": "prowess",
-          "baseDC": 14,
+          "baseDC": 12,
           "description": "Wade across the current",
           "onSuccess": {
             "message": "You power through the current and reach the other side!",
@@ -1608,7 +1607,7 @@
         {
           "skill": "investigation",
           "attribute": "intellect",
-          "baseDC": 12,
+          "baseDC": 14,
           "description": "Find a shallow crossing point",
           "onSuccess": {
             "message": "You discover a safe ford and cross easily!",

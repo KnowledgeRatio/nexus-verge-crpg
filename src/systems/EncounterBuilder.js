@@ -556,6 +556,7 @@ function filterMonsterPool(allMonsters, options) {
  *
  * @param {Object} options
  * @param {string} options.dungeonTypeId - Dungeon type ID
+ * @param {string} [options.bossId] - Already generated boss, validated against the dungeon pool
  * @param {number} options.partyLevel - Party level
  * @param {string} [options.campaignId='core'] - Campaign ID
  * @param {Function} [options.rng] - Optional RNG
@@ -567,11 +568,12 @@ export async function buildBossEncounter(options = {}) {
         partyLevel = 1,
         partySize = 1,
         campaignId = 'core',
+        bossId: requestedBossId = null,
         rng = null
     } = options;
 
     const rand = rng || Math.random.bind(Math);
-    const allMonsters = await loadMonsters();
+    const allMonsters = filterByCampaign(await loadMonsters(), campaignId);
 
     // Load dungeon types to get boss pool
     let bossId = null;
@@ -592,7 +594,13 @@ export async function buildBossEncounter(options = {}) {
                 return partyLevel >= entry.minLevel && partyLevel <= entry.maxLevel;
             });
 
-            if (validBosses.length > 0) {
+            const requestedEntry = requestedBossId && dungeonType.bossPool.find(entry =>
+                (typeof entry === 'string' ? entry : entry.id) === requestedBossId);
+            if (requestedEntry && allMonsters.some(monster => monster.id === requestedBossId)) {
+                bossId = requestedBossId;
+            } else if (requestedBossId) {
+                throw new Error(`Generated boss '${requestedBossId}' is unavailable for this dungeon/campaign`);
+            } else if (validBosses.length > 0) {
                 const chosen = validBosses[Math.floor(rand() * validBosses.length)];
                 bossId = typeof chosen === 'string' ? chosen : chosen.id;
             } else {

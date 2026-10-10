@@ -1,0 +1,1290 @@
+{
+  "methodology": "1,500 real generated dungeons: 500 seeds at each level 1/5/10. Two synthetic dispatch policies per dungeon, 24 eligible movement checks per generated room, 200ms per move. All rooms visited, no combat. Fresh opportunities never starts cooldown; attempt-every-offer records only cooldown and assumes an attempted offer. Both intercept resolution: no actual attempts, conditional stages, rewards, fatigue, paths or choices measured. A challenge containing a skill is an availability offer, not a roll of that skill. Settlement, quest, passive trap tiles, doors and overworld excluded. CI is requested Wald interval for a generated dungeon containing an offer, not combat win rate; zero counts also provide rule-of-three upper bound.",
+  "summaries": [
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 52.002,
+      "p10": 21,
+      "median": 47,
+      "p90": 91,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 15.44,
+      "p10": 0,
+      "median": 11,
+      "p90": 38,
+      "atLeastOneOffer": 0.692,
+      "ci95": [
+        0.6515331430031933,
+        0.7324668569968066
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 23.962,
+      "p10": 3,
+      "median": 19,
+      "p90": 53,
+      "atLeastOneOffer": 0.976,
+      "ci95": [
+        0.9625846626281707,
+        0.9894153373718293
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 30.09,
+      "p10": 7,
+      "median": 28,
+      "p90": 54,
+      "atLeastOneOffer": 0.998,
+      "ci95": [
+        0.9940839219619625,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 34.84,
+      "p10": 9,
+      "median": 31,
+      "p90": 65,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "fresh-opportunities",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 2.512,
+      "p10": 0,
+      "median": 2,
+      "p90": 6,
+      "atLeastOneOffer": 0.67,
+      "ci95": [
+        0.6287840380434959,
+        0.7112159619565042
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 3.566,
+      "p10": 3,
+      "median": 4,
+      "p90": 4,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 0.692,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.692,
+      "ci95": [
+        0.6515331430031933,
+        0.7324668569968066
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 2.014,
+      "p10": 1,
+      "median": 2,
+      "p90": 3,
+      "atLeastOneOffer": 0.976,
+      "ci95": [
+        0.9625846626281707,
+        0.9894153373718293
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 1.684,
+      "p10": 1,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 0.998,
+      "ci95": [
+        0.9940839219619625,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 1.904,
+      "p10": 2,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 1,
+      "policy": "attempt-every-offer",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 0.67,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.67,
+      "ci95": [
+        0.6287840380434959,
+        0.7112159619565042
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 50.122,
+      "p10": 20,
+      "median": 46,
+      "p90": 88,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 16.44,
+      "p10": 0,
+      "median": 12,
+      "p90": 40,
+      "atLeastOneOffer": 0.754,
+      "ci95": [
+        0.7162493620080401,
+        0.7917506379919599
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 24.576,
+      "p10": 3,
+      "median": 19,
+      "p90": 53,
+      "atLeastOneOffer": 0.984,
+      "ci95": [
+        0.9730016228106143,
+        0.9949983771893857
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 30.634,
+      "p10": 7,
+      "median": 28,
+      "p90": 58,
+      "atLeastOneOffer": 0.996,
+      "ci95": [
+        0.9904673813794913,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 33.726,
+      "p10": 8,
+      "median": 30,
+      "p90": 65,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "fresh-opportunities",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 2.202,
+      "p10": 0,
+      "median": 1,
+      "p90": 6,
+      "atLeastOneOffer": 0.648,
+      "ci95": [
+        0.6061370427800424,
+        0.6898629572199576
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 3.538,
+      "p10": 3,
+      "median": 4,
+      "p90": 4,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 0.754,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.754,
+      "ci95": [
+        0.7162493620080401,
+        0.7917506379919599
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 2.028,
+      "p10": 1,
+      "median": 2,
+      "p90": 3,
+      "atLeastOneOffer": 0.984,
+      "ci95": [
+        0.9730016228106143,
+        0.9949983771893857
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 1.75,
+      "p10": 1,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 0.996,
+      "ci95": [
+        0.9904673813794913,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 1.894,
+      "p10": 1,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 5,
+      "policy": "attempt-every-offer",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 0.648,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.648,
+      "ci95": [
+        0.6061370427800424,
+        0.6898629572199576
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 50.214,
+      "p10": 18,
+      "median": 46,
+      "p90": 84,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 15.39,
+      "p10": 0,
+      "median": 11,
+      "p90": 40,
+      "atLeastOneOffer": 0.72,
+      "ci95": [
+        0.6806435123518371,
+        0.7593564876481629
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 23.508,
+      "p10": 3,
+      "median": 18,
+      "p90": 52,
+      "atLeastOneOffer": 0.968,
+      "ci95": [
+        0.9525729198096334,
+        0.9834270801903665
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 29.492,
+      "p10": 7,
+      "median": 26,
+      "p90": 56,
+      "atLeastOneOffer": 0.998,
+      "ci95": [
+        0.9940839219619625,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 33.426,
+      "p10": 9,
+      "median": 30,
+      "p90": 64,
+      "atLeastOneOffer": 0.996,
+      "ci95": [
+        0.9904673813794913,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "fresh-opportunities",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 2.686,
+      "p10": 0,
+      "median": 2,
+      "p90": 7,
+      "atLeastOneOffer": 0.696,
+      "ci95": [
+        0.6556807466735803,
+        0.7363192533264196
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "athletics",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "finesse",
+      "n": 500,
+      "meanOffersContainingSkill": 3.546,
+      "p10": 3,
+      "median": 4,
+      "p90": 4,
+      "atLeastOneOffer": 1,
+      "ci95": [
+        1,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "survival",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "craft",
+      "n": 500,
+      "meanOffersContainingSkill": 0.72,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.72,
+      "ci95": [
+        0.6806435123518371,
+        0.7593564876481629
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "lore",
+      "n": 500,
+      "meanOffersContainingSkill": 1.97,
+      "p10": 1,
+      "median": 2,
+      "p90": 3,
+      "atLeastOneOffer": 0.968,
+      "ci95": [
+        0.9525729198096334,
+        0.9834270801903665
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "investigation",
+      "n": 500,
+      "meanOffersContainingSkill": 1.716,
+      "p10": 1,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 0.998,
+      "ci95": [
+        0.9940839219619625,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "perception",
+      "n": 500,
+      "meanOffersContainingSkill": 1.854,
+      "p10": 1,
+      "median": 2,
+      "p90": 2,
+      "atLeastOneOffer": 0.996,
+      "ci95": [
+        0.9904673813794913,
+        1
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "empathy",
+      "n": 500,
+      "meanOffersContainingSkill": 0,
+      "p10": 0,
+      "median": 0,
+      "p90": 0,
+      "atLeastOneOffer": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "zeroEventsUpper95RuleOfThree": 0.006
+    },
+    {
+      "level": 10,
+      "policy": "attempt-every-offer",
+      "skill": "influence",
+      "n": 500,
+      "meanOffersContainingSkill": 0.696,
+      "p10": 0,
+      "median": 1,
+      "p90": 1,
+      "atLeastOneOffer": 0.696,
+      "ci95": [
+        0.6556807466735803,
+        0.7363192533264196
+      ],
+      "zeroEventsUpper95RuleOfThree": null
+    }
+  ],
+  "traces": [
+    {
+      "level": 1,
+      "seed": 425,
+      "policy": "attempt-every-offer",
+      "type": "beastDen",
+      "rooms": 4,
+      "offerCount": 2,
+      "counts": {
+        "athletics": 0,
+        "finesse": 2,
+        "survival": 0,
+        "craft": 0,
+        "lore": 0,
+        "investigation": 1,
+        "perception": 1,
+        "empathy": 0,
+        "influence": 0
+      },
+      "events": [
+        {
+          "room": "boss_heart_darkness",
+          "category": "boss",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "puzzle_bridge_puzzle",
+          "category": "puzzle",
+          "challenge": "narrow_ledge"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "seed": 69,
+      "policy": "attempt-every-offer",
+      "type": "goblinWarren",
+      "rooms": 13,
+      "offerCount": 6,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 2,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "entrance_collapsed_tunnel",
+          "category": "entrance",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "corridor_narrow_squeeze",
+          "category": "corridor",
+          "challenge": "ancient_text"
+        },
+        {
+          "room": "corridor_narrow_squeeze",
+          "category": "corridor",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "treasure_coin_pile",
+          "category": "treasure",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "combat_feeding_ground",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        },
+        {
+          "room": "puzzle_musical_stones",
+          "category": "puzzle",
+          "challenge": "arcane_puzzle"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "seed": 498,
+      "policy": "attempt-every-offer",
+      "type": "undeadCrypt",
+      "rooms": 17,
+      "offerCount": 7,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 3,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "entrance_ruined_gateway",
+          "category": "entrance",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "entrance_ruined_gateway",
+          "category": "entrance",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "exploration_twisting_passage",
+          "category": "exploration",
+          "challenge": "ancient_text"
+        },
+        {
+          "room": "combat_feeding_ground",
+          "category": "combat",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "puzzle_symbol_door",
+          "category": "puzzle",
+          "challenge": "arcane_puzzle"
+        },
+        {
+          "room": "treasure_offering_chamber",
+          "category": "treasure",
+          "challenge": "votive_record"
+        },
+        {
+          "room": "combat_spider_lair",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "seed": 9,
+      "policy": "attempt-every-offer",
+      "type": "spiderNest",
+      "rooms": 4,
+      "offerCount": 3,
+      "counts": {
+        "athletics": 0,
+        "finesse": 3,
+        "survival": 0,
+        "craft": 0,
+        "lore": 0,
+        "investigation": 1,
+        "perception": 1,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "treasure_supply_cache",
+          "category": "treasure",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "treasure_supply_cache",
+          "category": "treasure",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "combat_ambush_point",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "seed": 92,
+      "policy": "attempt-every-offer",
+      "type": "sunkenRuins",
+      "rooms": 14,
+      "offerCount": 6,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 2,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "entrance_ruined_gateway",
+          "category": "entrance",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "combat_spider_lair",
+          "category": "combat",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "combat_spider_lair",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        },
+        {
+          "room": "treasure_artifact_pedestal",
+          "category": "treasure",
+          "challenge": "arcane_puzzle"
+        },
+        {
+          "room": "exploration_flooded_corridor",
+          "category": "exploration",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "exploration_flooded_corridor",
+          "category": "exploration",
+          "challenge": "ancient_text"
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "seed": 499,
+      "policy": "attempt-every-offer",
+      "type": "banditHideout",
+      "rooms": 10,
+      "offerCount": 7,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 3,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "entrance_collapsed_tunnel",
+          "category": "entrance",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "corridor_winding_passage",
+          "category": "corridor",
+          "challenge": "ancient_text"
+        },
+        {
+          "room": "corridor_winding_passage",
+          "category": "corridor",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "combat_arena",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        },
+        {
+          "room": "combat_arena",
+          "category": "combat",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "boss_heart_darkness",
+          "category": "boss",
+          "challenge": "votive_record"
+        },
+        {
+          "room": "puzzle_musical_stones",
+          "category": "puzzle",
+          "challenge": "arcane_puzzle"
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "seed": 254,
+      "policy": "attempt-every-offer",
+      "type": "spiderNest",
+      "rooms": 5,
+      "offerCount": 2,
+      "counts": {
+        "athletics": 0,
+        "finesse": 2,
+        "survival": 0,
+        "craft": 0,
+        "lore": 0,
+        "investigation": 1,
+        "perception": 1,
+        "empathy": 0,
+        "influence": 0
+      },
+      "events": [
+        {
+          "room": "corridor_narrow_squeeze",
+          "category": "corridor",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "corridor_narrow_squeeze",
+          "category": "corridor",
+          "challenge": "narrow_ledge"
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "seed": 84,
+      "policy": "attempt-every-offer",
+      "type": "banditHideout",
+      "rooms": 9,
+      "offerCount": 6,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 2,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "treasure_coin_pile",
+          "category": "treasure",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "treasure_coin_pile",
+          "category": "treasure",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "combat_gang_hideout",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        },
+        {
+          "room": "exploration_crystal_grotto",
+          "category": "exploration",
+          "challenge": "arcane_puzzle"
+        },
+        {
+          "room": "exploration_abandoned_camp",
+          "category": "exploration",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "exploration_abandoned_camp",
+          "category": "exploration",
+          "challenge": "ancient_text"
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "seed": 488,
+      "policy": "attempt-every-offer",
+      "type": "undeadCrypt",
+      "rooms": 10,
+      "offerCount": 7,
+      "counts": {
+        "athletics": 0,
+        "finesse": 4,
+        "survival": 0,
+        "craft": 1,
+        "lore": 3,
+        "investigation": 2,
+        "perception": 2,
+        "empathy": 0,
+        "influence": 1
+      },
+      "events": [
+        {
+          "room": "treasure_offering_chamber",
+          "category": "treasure",
+          "challenge": "votive_record"
+        },
+        {
+          "room": "treasure_burial_goods",
+          "category": "treasure",
+          "challenge": "trap_detect_disarm"
+        },
+        {
+          "room": "treasure_burial_goods",
+          "category": "treasure",
+          "challenge": "hidden_treasure"
+        },
+        {
+          "room": "combat_ritual_circle",
+          "category": "combat",
+          "challenge": "arcane_puzzle"
+        },
+        {
+          "room": "corridor_stairwell",
+          "category": "corridor",
+          "challenge": "narrow_ledge"
+        },
+        {
+          "room": "combat_guard_post",
+          "category": "combat",
+          "challenge": "sneak_past_guards"
+        },
+        {
+          "room": "corridor_narrow_squeeze",
+          "category": "corridor",
+          "challenge": "ancient_text"
+        }
+      ]
+    }
+  ]
+}

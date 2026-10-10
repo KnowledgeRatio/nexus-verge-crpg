@@ -6,8 +6,13 @@
 import { gameState } from '../core/GameState.js';
 import QuestGenerator from './QuestGenerator.js';
 import { SeededRandom } from '../utils/rng.js';
-import { RULES } from '../core/rulesEngine.js';
+import { getLevelFromXP, RULES } from '../core/rulesEngine.js';
+import Character from './Character.js';
 import { skillRegistry } from './SkillRegistry.js';
+import { addFatigue } from './FatigueManager.js';
+import { isRichQuest, atQuestLocation, questEntries, observeQuestRoom, performQuestAction,
+    applyQuestResolution, ensureQuestState, matchesQuestEncounter, refreshCustodyObjectives,
+    prerequisitesMet } from './ProceduralQuest.js';
 
 class QuestManager {
     constructor(questGenerator) {
@@ -42,6 +47,10 @@ class QuestManager {
             console.error('Quest not found:', questId);
             return false;
         }
+        if (isRichQuest(quest) && (quest.questGiver?.npcId !== npcId
+            || !atQuestLocation(quest, { location: 'settlement' }))) {
+            return false;
+        }
 
         // Check if already at max active quests
         const maxActive = RULES.quests.maxActiveQuests;
@@ -54,6 +63,7 @@ class QuestManager {
         quest.status = 'active';
         quest.acceptedAt = Date.now();
         quest.questGiverId = npcId;
+        ensureQuestState(quest);
 
         // Remove from available
         quests.available = quests.available.filter(q => q.id !== questId);
@@ -90,6 +100,11 @@ class QuestManager {
         }
 
         const quest = quests.active[questIndex];
+        if (quest.resolutionPending) {
+            gameState.addMessage('Finish the current handover before abandoning this commission.', 'warning');
+            return false;
+        }
+        this._releaseQuestCustody(quest);
 
         // Remove from active
         quests.active.splice(questIndex, 1);
@@ -137,6 +152,9 @@ class QuestManager {
         const quest = quests.active[questIndex];
 
         // Check if all objectives are completed
+        if (isRichQuest(quest)) {
+            return { success: false };
+        }
         const allCompleted = quest.objectives.every(obj => obj.completed);
         if (!allCompleted) {
             gameState.addMessage('Quest objectives not yet completed!', 'error');
@@ -227,6 +245,10 @@ class QuestManager {
         const quest = quests.active[questIndex];
 
         // Move to failed
+        if (quest.resolutionPending) {
+            return;
+        }
+        this._releaseQuestCustody(quest);
         quests.active.splice(questIndex, 1);
         quest.status = 'failed';
         quest.failedAt = Date.now();
@@ -243,7 +265,7 @@ class QuestManager {
     /**
    * Award quest rewards to character
    * @param {Object} quest - Quest data
-   * @param {Object} character - Character instance
+   * @param {Object} character - Character instance or restored plain object
    * @returns {Object} Reward summary
    */
     awardRewards(quest, character) {
@@ -257,13 +279,25 @@ class QuestManager {
 
         // Award XP
         if (rewards.xp) {
-            character.addXP(rewards.xp);
+            if (typeof character.gainXP === 'function') {
+                character.gainXP(rewards.xp);
+            } else {
+                character.xp = (character.xp || 0) + rewards.xp;
+                const newLevel = getLevelFromXP(character.xp);
+                if (newLevel > character.level) {
+                    Character.prototype.levelUp.call(character, newLevel);
+                }
+            }
             summary.xp = rewards.xp;
         }
 
         // Award Gold
         if (rewards.gold) {
-            character.addGold(rewards.gold);
+            if (typeof character.addGold === 'function') {
+                character.addGold(rewards.gold);
+            } else {
+                character.gold = (character.gold || 0) + rewards.gold;
+            }
             summary.gold = rewards.gold;
         }
 
@@ -286,7 +320,6 @@ class QuestManager {
 
                 character.inventory = character.inventory || [];
                 character.inventory.push(item);
-                gameState.set('character', character);
                 gameState.addMessage(`📦 Quest reward: ${item.name}!`, 'success');
                 summary.item = item.name;
             } else {
@@ -301,6 +334,7 @@ class QuestManager {
             console.log('Quest reputation reward (not yet implemented):', rewards.reputation);
         }
 
+        gameState.set('character', character);
         return summary;
     }
 
@@ -320,13 +354,19 @@ class QuestManager {
         quests.active.forEach(quest => {
             quest.objectives.forEach(objective => {
                 if (objective.type === 'kill' && !objective.completed) {
-                    const req = objective.requirement;
+                    const req = objective.requirement || {};
+                    if (req.source) {
+                        return;
+                    }
 
                     // Check if this creature type matches
                     const matchesType = req.creatureTypes?.includes(creatureId) || req.anyCreature;
 
                     // Check location constraint (if any)
                     let matchesLocation = true;
+                    if (req.location?.dungeonHookId) {
+                        matchesLocation = `${location?.x},${location?.y}` === req.location.dungeonHookId;
+                    }
                     if (req.location?.nearSettlement) {
                         const settlement = quest.settlement;
                         const distance = Math.sqrt(
@@ -360,7 +400,7 @@ class QuestManager {
    * Update progress on item acquisition
    * @param {string} itemId - Item acquired
    */
-    onItemAcquired(itemId) {
+    onItemAcquired(itemId, source = null) {
         const quests = gameState.get('quests');
         if (!quests || !quests.active) {
             return;
@@ -372,6 +412,13 @@ class QuestManager {
             quest.objectives.forEach(objective => {
                 if (objective.type === 'retrieve' && !objective.completed) {
                     const req = objective.requirement;
+                    if (req.sourceId) {
+                        if (source?.questId === quest.id && source.sourceId === req.sourceId && req.itemId === itemId) {
+                            refreshCustodyObjectives(quest);
+                            updated = true;
+                        }
+                        return;
+                    }
 
                     if (req.itemId === itemId) {
                         objective.progress = 1;
@@ -483,59 +530,97 @@ class QuestManager {
      */
     onRoomEntered(dungeonX, dungeonY, roomIndex, character) {
         const quests = gameState.get('quests');
-        if (!quests?.active?.length) return;
-
-        const hookKey = `${dungeonX},${dungeonY}`;
         let updated = false;
-
-        for (const quest of quests.active) {
-            if (quest.type !== 'investigate') continue;
-
-            for (const obj of (quest.objectives || [])) {
-                if (obj.type !== 'investigate' || obj.completed) continue;
-
-                // Match by targetLocation (generated quests) or dungeonHookId on the quest
-                const targetLoc = obj.targetLocation || quest.dungeonHookId;
-                if (targetLoc !== hookKey) continue;
-
-                // payoffRoom in JSON is 1-indexed; convert to 0-based for comparison
-                const payoffRoomIndex = (obj.payoffRoom ?? obj.payoffRoomIndex ?? 1) - 1;
-                if (roomIndex !== payoffRoomIndex) continue;
-
-                // Run Investigation skill check
-                const dc = obj.investigationDC || 14;
-                const check = skillRegistry.rollCheck(character, {
-                    skillId: 'investigation',
-                    attribute: obj.attribute || 'intellect',
-                    dc
-                });
-                const investMod = check.modifier;
-                const { roll, total } = check;
-                const passed = check.success;
-
-                const rollMsg = `🔍 Investigation check: rolled ${roll} + ${investMod} = ${total} vs DC ${dc}`;
-                gameState.addMessage(rollMsg, 'info');
-
-                if (passed) {
-                    obj.completed = true;
-                    obj.progress = 1;
-                    const completionText = obj.description
-                        ? `✅ ${obj.description} — complete.`
-                        : '✅ You find the evidence. Investigation complete.';
-                    gameState.addMessage(completionText, 'success');
-                    updated = true;
-                } else {
-                    gameState.addMessage(
-                        `You search the room carefully but find nothing conclusive yet. (Need ${dc}, rolled ${total})`,
-                        'warning'
-                    );
-                }
+        for (const quest of quests?.active || []) {
+            if (isRichQuest(quest)) {
+                updated = observeQuestRoom(quest, dungeonX, dungeonY, roomIndex) || updated;
             }
         }
-
+        for (const obj of this._getRoomInvestigations(dungeonX, dungeonY, roomIndex)) {
+            if (obj.investigationAttempted) {
+                gameState.addMessage('Press E to search again. Another search adds fatigue.', 'info');
+                continue;
+            }
+            const dc = obj.investigationDC || 14;
+            const checkConfig = {
+                skillId: 'investigation',
+                attribute: obj.attribute || 'intellect',
+                dc
+            };
+            const manager = globalThis.window?.skillChallengeManager;
+            const check = manager?.rollSkillCheck
+                ? manager.rollSkillCheck(character, checkConfig) : skillRegistry.rollCheck(character, checkConfig);
+            gameState.addMessage(
+                `🔍 Investigation check: rolled ${check.roll} + ${check.modifier} = ${check.total} vs DC ${dc}`, 'info'
+            );
+            obj.investigationAttempted = true;
+            updated = true;
+            this._applyInvestigationResult(obj, check.success);
+        }
         if (updated) {
             gameState.set('quests', quests);
             this.checkQuestCompletion();
+        }
+    }
+
+    /** Find unresolved authored Investigation objectives in this dungeon room. */
+    _getRoomInvestigations(dungeonX, dungeonY, roomIndex) {
+        const hookKey = `${dungeonX},${dungeonY}`;
+        return (gameState.get('quests')?.active || []).filter(quest => quest.type === 'investigate')
+            .flatMap(quest => (quest.objectives || []).filter(obj => obj.type === 'investigate' && !obj.completed
+                && (obj.targetLocation || quest.dungeonHookId) === hookKey
+                && roomIndex === (obj.payoffRoom ?? obj.payoffRoomIndex ?? 1) - 1));
+    }
+
+    /** Deliberately retry a failed room search. Cancelled checks consume no fatigue. */
+    async retryRoomInvestigations(dungeonX, dungeonY, roomIndex, character) {
+        const objectives = this._getRoomInvestigations(dungeonX, dungeonY, roomIndex)
+            .filter(obj => obj.investigationAttempted);
+        const game = globalThis.window?.game;
+        if (!objectives.length || !game?.promptSkillCheck) {
+            return false;
+        }
+        if (this.investigationRetryActive) {
+            return true;
+        }
+        this.investigationRetryActive = true;
+        try {
+            for (const obj of objectives) {
+                const result = await game.promptSkillCheck({
+                    title: 'Search again?',
+                    skill: 'investigation',
+                    attribute: obj.attribute || 'intellect',
+                    dc: obj.investigationDC || 14,
+                    description: obj.description || 'Search the room again for evidence.',
+                    consequences: [{ description: 'Searching again adds fatigue.' }]
+                });
+                if (!result.attempted) {
+                    break;
+                }
+                addFatigue(RULES.fatigue.skillChallengeFatigue, 'skillChallenge', character);
+                obj.investigationAttempted = true;
+                this._applyInvestigationResult(obj, result.success);
+                gameState.set('quests', gameState.get('quests'));
+                this.checkQuestCompletion();
+                if (result.dead) {
+                    break;
+                }
+            }
+        } finally {
+            this.investigationRetryActive = false;
+        }
+        return true;
+    }
+
+    _applyInvestigationResult(objective, success) {
+        if (success) {
+            objective.completed = true;
+            objective.progress = 1;
+            gameState.addMessage(objective.description
+                ? `✅ ${objective.description} — complete.` : '✅ You find the evidence. Investigation complete.', 'success');
+        } else {
+            gameState.addMessage('You find nothing conclusive yet. Press E to search again; another search adds fatigue.',
+                'warning');
         }
     }
 
@@ -622,6 +707,9 @@ class QuestManager {
         const completedIds = [];
 
         quests.active.forEach(quest => {
+            if (isRichQuest(quest)) {
+                return;
+            }
             const allCompleted = quest.objectives.every(obj => obj.completed);
             if (allCompleted && quest.status === 'active') {
                 // Mark as ready to turn in (not auto-complete)
@@ -785,8 +873,72 @@ class QuestManager {
         if (!quest) {
             return false;
         }
+        if (isRichQuest(quest)) {
+            return this.getResolutionOptions(questId).some(option => option.available);
+        }
 
         return quest.objectives.every(obj => obj.completed);
+    }
+
+    getQuestActions(questId) {
+        const quest = this.getQuest(questId);
+        return isRichQuest(quest) ? questEntries(quest, quest.actions) : [];
+    }
+
+    getResolutionOptions(questId) {
+        const quest = this.getQuest(questId);
+        return isRichQuest(quest) ? questEntries(quest, quest.resolutions) : [];
+    }
+
+    recordQuestAction(questId, actionId, npcId = null) {
+        const quest = this.getQuest(questId);
+        this.performingQuestActions ||= new Set();
+        if (!isRichQuest(quest) || this.performingQuestActions.has(questId)) {
+            return { success: false };
+        }
+        this.performingQuestActions.add(questId);
+        try {
+            return performQuestAction(quest, actionId, npcId);
+        } finally {
+            this.performingQuestActions.delete(questId);
+        }
+    }
+
+    resolveQuest(questId, choiceId) {
+        const quest = this.getQuest(questId);
+        return isRichQuest(quest) ? applyQuestResolution(this, quest, choiceId) : { success: false };
+    }
+
+    onQuestEncounterVictory(source) {
+        if (!source || source.outcome && source.outcome !== 'victory') {
+            return [];
+        }
+        const completed = [];
+        for (const quest of gameState.get('quests.active') || []) {
+            ensureQuestState(quest);
+            for (const objective of quest.objectives || []) {
+                if (objective.completed || !['kill', 'defeat_encounter'].includes(objective.type)
+                    || !matchesQuestEncounter(objective.requirement?.source, source)
+                    || !prerequisitesMet(quest, objective)) {
+                    continue;
+                }
+                const receiptId = `${objective.id}:${source.encounterId}`;
+                if (quest.receipts.victories.includes(receiptId)) {
+                    continue;
+                }
+                quest.receipts.victories.push(receiptId);
+                objective.proof = JSON.parse(JSON.stringify(source));
+                objective.progress = objective.required || 1;
+                objective.completed = true;
+                completed.push(objective.id);
+                gameState.addMessage(`Quest Objective Complete: ${objective.description}`, 'success');
+            }
+        }
+        if (completed.length) {
+            gameState.set('quests', gameState.get('quests'));
+            this.checkQuestCompletion();
+        }
+        return completed;
     }
 
     /**
@@ -893,11 +1045,14 @@ class QuestManager {
      */
     _findNPCById(npcId) {
         const world = gameState.get('world');
-        if (!world?.generatedRegions) {
+        if (!world) {
             return null;
         }
+        if (world.npcs instanceof Map && world.npcs.has(npcId)) {
+            return world.npcs.get(npcId);
+        }
 
-        for (const region of world.generatedRegions.values()) {
+        for (const region of world.generatedRegions?.values?.() || []) {
             if (!region?.features) {
                 continue;
             }
@@ -927,6 +1082,39 @@ class QuestManager {
         }
 
         return null;
+    }
+
+    _persistNPCRelations(npc) {
+        const world = gameState.get('world');
+        const sync = candidates => {
+            for (const candidate of candidates || []) {
+                if (candidate.id === npc.id) {
+                    candidate.relations = JSON.parse(JSON.stringify(npc.relations));
+                }
+            }
+        };
+        for (const settlement of Object.values(world.settlements || [])) {
+            sync(settlement.npcs);
+        }
+        for (const region of world.generatedRegions?.values?.() || []) {
+            for (const feature of region.features || []) {
+                sync(feature.npcs);
+            }
+        }
+        if (world.npcs instanceof Map) {
+            world.npcs.set(npc.id, npc);
+            gameState.set('world.npcs', world.npcs);
+        }
+        gameState.set('world.settlements', world.settlements);
+        gameState.set('world.generatedRegions', world.generatedRegions);
+    }
+
+    _releaseQuestCustody(quest) {
+        const character = gameState.get('character');
+        if (character?.inventory?.some(item => item.questSource?.questId === quest.id)) {
+            character.inventory = character.inventory.filter(item => item.questSource?.questId !== quest.id);
+            gameState.set('character', character);
+        }
     }
 }
 

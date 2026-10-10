@@ -1661,6 +1661,19 @@
       ]
     },
     {
+      "id": "rope-hempen",
+      "name": "Hempen Rope (50 ft)",
+      "type": "misc",
+      "description": "Strong rope for climbing",
+      "weight": 10,
+      "value": 10,
+      "rarity": "common",
+      "effect": null,
+      "campaignIds": [
+        "core"
+      ]
+    },
+    {
       "id": "rope",
       "name": "Rope (50 ft)",
       "type": "gear",

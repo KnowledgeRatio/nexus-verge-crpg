@@ -797,6 +797,20 @@ Continuous materials in the same `transitionGroup` can form organic visual bound
 ## Quests
 **File:** `data/quests.json`
 
+### Live procedural bundle contract
+
+The current file contains `sideQuestTemplates`, `campaignQuests`, `proceduralBundles` and `questComposition`. The older schema examples below are illustrative historical shapes; use the live data and [quest rules](../.claude/rules/systems/quests.md) when authoring current content.
+
+`questComposition` declares a version/family, baseline and six component dimensions. Components have explicit cross-dimension `requires`, optional capability requirements and reusable activity references. Generic activities contribute objectives/actions; goals contribute guarded resolutions. Component campaign filtering occurs at load time; activities are shared core content. The generator persists chosen component IDs and fully instantiated content; item/name permutations do not establish structural variety.
+
+Shared records use stable objective IDs, `baseline.objectiveId`, facts/actions/objective prerequisites, optional exclusion predicates and either top-level or legacy procedural participants. Rich content is detected by capability, independent of type/provenance. `defeat_encounter.requirement.source` binds `{siteId,encounterRole,encounterKey}`; live proof additionally records numeric room, target and encounter identity. `target_cleared.sourceObjectiveId` points to that objective's proof.
+
+Recovery action payloads `acquire`/`salvage` declare `{itemId,quantity,sourceId}`. Actual inventory goods carry `questSource:{questId,sourceId}` and a protected quest-item identity. Choice `custody` entries declare item/source, positive quantity or minimum quantity, and consumption. `merchant_stock.quantityFromCustody` names the source whose actual handed-over quantity supplies stock. `resolutionPending`/`resolution.deliveries` and applied-effect/reward receipts prevent repeated transfer/payment. Dungeon-feature `questEncounterVictories` and `questEncounterClears` own actual victory and clearance provenance; the quest does not duplicate encounter state.
+
+Each procedural bundle declares `id`, `campaignIds`, `arrangement`, `name`, `description`, `requiredParticipants`, `baseline`, `actions` and `resolutions`. Baseline facts have `id` and `text`; actions declare `location`, optional `npcParticipant`/`skillId`, prerequisites and acquired facts. Resolutions declare prerequisites, a remembered `reply`, optional `incomplete` commission and generic effects. Supported effects are `relation` (existing modifier and participant), `faction` (supported participant culture and configured reward tier) and `merchant_stock` (existing campaign item and bound merchant).
+
+The generator freezes real participant names into placeholders such as `{giverName}`, `{merchantName}`, `{witnessName}` and `{claimantName}`. Generated records save `procedural.participants`, `evidence.facts/actions/attempts` and their instantiated activities. `resolution` stores the selected choice, reply, rewards and applied effect IDs. Settlement-owned `questStock` stores source quest/effect, item, merchant role and remaining quantity; it is not a second inventory on the quest. Configurable DC, commission and shipment quantity live in `RULES.quests.proceduralCore`.
+
 ### Schema
 ```json
 {

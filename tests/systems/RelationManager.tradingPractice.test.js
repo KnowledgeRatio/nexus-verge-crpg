@@ -9,8 +9,13 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
 import RelationManager from '../../src/systems/RelationManager.js';
-import relationsData from '../../data/relations.json' with { type: 'json' };
+import { skillRegistry } from '../../src/systems/SkillRegistry.js';
+
+const relationsData = JSON.parse(readFileSync(new URL('../../data/relations.json', import.meta.url)));
+const skillsData = JSON.parse(readFileSync(new URL('../../data/skills.json', import.meta.url)));
+skillRegistry.setDefinitions(skillsData.skills);
 
 function makeManager() {
     const manager = new RelationManager();
@@ -82,7 +87,7 @@ describe('RelationManager trading practice pricing', () => {
         const manager = makeManager();
         const item = { value: 100 };
         const npc = makeNpc(0);
-        const character = { practices: ['trading'], getSkillBonus: () => 5 }; // +5 influence -> 5% effect
+        const character = { practices: ['trading'], abilities: { presence: 20, cha: 20 } }; // +5 influence -> 5% effect
 
         // 100 * 1.00 * (1 - 0.05) * (1 - 0.05) = 90.25 -> rounds to 90
         expect(manager.calculateBuyPrice(item, npc, character)).toBe(90);

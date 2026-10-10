@@ -1,0 +1,7 @@
+interface:
+  display_name: "Documentation Agent"
+  short_description: "Maintain, review, and build project documentation"
+  default_prompt: "Use $documentation-agent to synchronize affected documentation with the current change and verify its claims."
+
+policy:
+  allow_implicit_invocation: true

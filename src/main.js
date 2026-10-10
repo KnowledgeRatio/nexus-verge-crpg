@@ -23,6 +23,7 @@ import SettlementManager from './systems/SettlementManager.js';
 import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
+import { isRichQuest } from './systems/ProceduralQuest.js';
 import LootManager from './systems/LootManager.js';
 import MerchantManager from './systems/MerchantManager.js';
 import audioManager from './systems/AudioManager.js';
@@ -35,7 +36,6 @@ import DungeonManager from './systems/DungeonManager.js';
 import { execute as dispatchEffects, executeOption as dispatchOption, isDeferred as checkDeferred, buildContext as buildEffectContext, buildOutOfCombatContext } from './systems/EffectDispatcher.js';
 import DungeonUI from './ui/DungeonUI.js';
 import CompanionManager from './systems/CompanionManager.js';
-import { getFatigueModifiers } from './systems/FatigueManager.js';
 import consequenceManager from './systems/ConsequenceManager.js';
 import { getPassiveACBonus } from './systems/PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getDerivedStatModifier } from './utils/attributeResolver.js';
@@ -1323,7 +1323,8 @@ class Game {
             dungeonTypeId: pendingCombat.dungeonTypeId || dungeon?.dungeonTypeId,
             isBossFight: Boolean(pendingCombat.isBossFight)
         };
-        await this.combatManager.startCombat(player, pendingCombat.enemies, companions);
+        await this.combatManager.startCombat(player, pendingCombat.enemies, companions,
+            pendingCombat.questEncounterSource || null);
 
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
@@ -2860,6 +2861,7 @@ class Game {
             'worldMapModal',
             'characterSheetModal',
             'skillCheckModal',
+            'choiceChallengeModal',
             'skillOutcomeModal',
             'settingsModal',
             'helpModal'
@@ -2868,6 +2870,15 @@ class Game {
         const openModals = modalIds
             .map(id => document.getElementById(id))
             .filter(modal => modal && modal.classList.contains('active'));
+
+        // Resolve the active skill interaction before dismissing any underlying screen.
+        if (openModals.some(modal => modal.id === 'skillCheckModal' || modal.id === 'choiceChallengeModal')) {
+            this.cancelPendingSkillPrompt?.();
+            return;
+        }
+        if (openModals.some(modal => modal.id === 'skillOutcomeModal')) {
+            return; // The outcome's own Escape handler resolves its pending promise.
+        }
 
         // Close all open modals (but skip skill check modal if it's blocking escape)
         openModals.forEach(modal => {
@@ -2960,6 +2971,9 @@ class Game {
             }
 
             const action = actionBtn.dataset.action;
+            if (actionBtn.disabled) {
+                return;
+            }
             const questItem = actionBtn.closest('.quest-item');
             if (!questItem) {
                 return;
@@ -2976,6 +2990,10 @@ class Game {
                     break;
                 case 'complete':
                     this.completeQuest(questId);
+                    break;
+                case 'quest-evidence':
+                case 'quest-resolve':
+                    this.settlementUI.performQuestChoice(questId, actionBtn.dataset.choiceId, action);
                     break;
             }
         });
@@ -3306,7 +3324,7 @@ class Game {
             actionButtons = `
                 <div class="quest-actions">
                     <button class="quest-action-btn" data-action="track">Track</button>
-                    ${allCompleted ? '<button class="quest-action-btn btn-success" data-action="complete">Complete</button>' : ''}
+                    ${allCompleted && !isRichQuest(quest) ? '<button class="quest-action-btn btn-success" data-action="complete">Complete</button>' : ''}
                     <button class="quest-action-btn btn-danger" data-action="abandon">Abandon</button>
                 </div>
             `;
@@ -3326,6 +3344,7 @@ class Game {
                 <div class="quest-objectives">
                     ${objectives}
                 </div>
+                ${this.settlementUI?.renderProceduralQuest(quest, { active: status === 'active' }) || ''}
                 <div class="quest-rewards">
                     ${dungeonText}
                     <span class="quest-reward">🎁 ${rewardText}</span>
@@ -3388,9 +3407,12 @@ class Game {
      * @param {string} questId
      */
     acceptQuestFromBoard(questId) {
-        if (!this.questManager) return;
+        if (!this.questManager) {
+            return;
+        }
 
-        const result = this.questManager.acceptQuest(questId);
+        const quest = this.questManager.getQuest(questId);
+        const result = this.questManager.acceptQuest(questId, quest?.questGiver?.npcId);
         if (result) {
             gameState.addMessage('Quest accepted!', 'success');
             // Re-render the board to remove the accepted quest
@@ -5201,7 +5223,9 @@ class Game {
             gameState.set('ui.pendingCombat', {
                 enemies: encounter.monsters,
                 ...this.dungeonManager.getEncounterContext(),
-                isBossFight: true
+                isBossFight: true,
+                questEncounterSource: bossMonster.isBoss
+                    ? this.dungeonManager.getQuestEncounterSource(bossMonster.species?.id) : null
             });
             gameState.set('ui.currentScreen', 'combatScreen');
         } catch (error) {
@@ -5483,40 +5507,43 @@ class Game {
         const modal = document.getElementById('skillCheckModal');
 
         // Auto-roll the skill check
-        const fatigueMods = getFatigueModifiers();
-        const rollResult = character.rollSkill(skillId, {
+        const rollResult = window.skillChallengeManager.rollSkillCheck(character, {
+            skillId,
             attribute: stage?.attribute || config.attribute,
+            dc,
             advantage: config.advantage || false,
-            disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
+            disadvantage: config.disadvantage || false
         });
 
-        // Apply fatigue skill modifier on top of the roll total
-        const fatigueAdjustedTotal = rollResult.total + fatigueMods.skillMod;
-        const success = fatigueAdjustedTotal >= dc;
+        // The shared resolver already includes party help and fatigue.
+        const fatigueAdjustedTotal = rollResult.total;
+        const success = skillId ? fatigueAdjustedTotal >= dc : true;
 
         // Build roll message
         let rollMessage = '';
-        if (rollResult.advantage) {
+        if (!skillId) {
+            rollMessage = 'Action taken; no roll required';
+        } else if (rollResult.advantage) {
             rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
         } else if (rollResult.disadvantage) {
             rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
         } else {
             rollMessage = `🎲 Rolled ${rollResult.roll}`;
         }
-        if (fatigueMods.skillMod !== 0) {
-            rollMessage += ` + ${skillBonus}${fatigueMods.skillMod > 0 ? ' +' : ' '}${fatigueMods.skillMod} (fatigue) = ${fatigueAdjustedTotal}`;
-        } else {
-            rollMessage += ` + ${skillBonus} = ${fatigueAdjustedTotal}`;
+        if (skillId) {
+            rollMessage += ` + ${rollResult.modifier} = ${fatigueAdjustedTotal}`;
         }
 
         // Check for critical success/failure
         let criticalInfo = null;
-        if (challenge && window.skillChallengeManager) {
+        if (skillId && challenge && window.skillChallengeManager) {
             criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, fatigueAdjustedTotal, dc);
         }
 
         // Log to message system
-        if (success) {
+        if (!skillId) {
+            gameState.addMessage(rollMessage, 'info');
+        } else if (success) {
             if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
                 gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
             } else {
@@ -5534,7 +5561,7 @@ class Game {
         let consequences = null;
         let outcome = null;
         if (challenge && window.skillChallengeManager) {
-            outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+            outcome = window.skillChallengeManager.getOutcome(challenge, stage, success, criticalInfo);
             if (outcome) {
                 consequences = window.skillChallengeManager.applyConsequences(
                     character,
@@ -5562,7 +5589,7 @@ class Game {
 
                 // Check for death from skill challenge damage
                 if (this.checkDeath(character)) {
-                    return;
+                    return { attempted: true, success, dead: true, rollResult, consequences, outcome };
                 }
 
                 // Handle combat initiation
@@ -5576,7 +5603,7 @@ class Game {
         const finalRollResult = {
             ...rollResult,
             dc,
-            modifier: skillBonus,
+            modifier: rollResult.modifier,
             critical: criticalInfo?.isCritical || false,
             criticalType: criticalInfo?.type || null
         };
@@ -5606,6 +5633,7 @@ class Game {
             attribute: rollResult.attribute,
             rollResult: finalRollResult,
             consequences,
+            outcome,
             // Pass enemyTypes for combat initiation from skill challenges
             enemyTypes: consequences?.enemyTypes || (outcome?.enemyTypes || null)
         };
@@ -5617,11 +5645,12 @@ class Game {
     showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus) {
         const modal = document.getElementById('skillCheckModal');
         const skillId = stage?.skill || config.skill;
-        const description = stage?.description || config.description;
+        const description = config.description || stage?.description;
 
         // Populate modal with result
         document.getElementById('skillCheckTitle').textContent = `${config.title || challenge?.name || 'Skill Challenge'  } - Result`;
-        document.getElementById('skillCheckDescription').textContent = description;
+        document.getElementById('skillCheckDescription').textContent = `${description || ''}${config.costGold ? `\nCost: ${config.costGold} gold when attempted.` : ''}`;
+        modal.querySelector('.skill-check-stats').hidden = !skillId;
         document.getElementById('skillCheckType').textContent = `${skillId.toUpperCase()} Check (Passive)`;
         document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
         document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
@@ -5673,12 +5702,15 @@ class Game {
         // Get skill for current stage (sequential challenges) or main config
         const skillId = stage?.skill || config.skill;
         const attribute = stage?.attribute || config.attribute || null;
-        const dc = config.dc ?? stage?.baseDC;
-        const description = stage?.description || config.description;
+        const dc = config.dc ?? stage?.baseDC ?? stage?.dc;
+        const description = config.description || stage?.description;
         const isPassiveRoll = stage?.passiveRoll || config.passiveRoll || false;
 
         // Calculate skill bonus
-        const skillBonus = character.getSkillBonus(skillId, attribute);
+        const checkContext = window.skillChallengeManager.getSkillCheckContext(character, skillId, {
+            attribute, dc, advantage: config.advantage, disadvantage: config.disadvantage
+        });
+        const skillBonus = checkContext.modifier;
 
         // If passive roll, auto-execute immediately
         if (isPassiveRoll) {
@@ -5687,14 +5719,15 @@ class Game {
 
         // Populate modal
         document.getElementById('skillCheckTitle').textContent = config.title || challenge?.name || 'Skill Challenge';
-        document.getElementById('skillCheckDescription').textContent = description;
+        modal.querySelector('.skill-check-stats').hidden = !skillId;
+        document.getElementById('skillCheckDescription').textContent = `${description || ''}${config.costGold ? `\nCost: ${config.costGold} gold when attempted.` : ''}`;
         const attributeLabel = attribute ? ` + ${attribute}` : '';
         document.getElementById('skillCheckType').textContent = `${this.formatSkillName(skillId)}${attributeLabel} Check`;
         document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
         document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
 
         // Calculate success chance (d20 + bonus >= DC)
-        const successChance = Math.max(0, Math.min(100, ((21 - dc + skillBonus) * 5)));
+        const successChance = Math.round(checkContext.successChance * 100) / 100;
         document.getElementById('skillCheckChance').textContent = `${successChance}%`;
 
         // Populate consequences (show outcomes but hide exact rewards)
@@ -5714,7 +5747,7 @@ class Game {
                     consequences.push('<strong>Success:</strong> Gain experience');
                 }
                 if (successData.gold) {
-                    consequences.push('<strong>Success:</strong> Find gold');
+                    consequences.push(successData.gold > 0 ? '<strong>Success:</strong> Find gold' : '<strong>Success:</strong> Pay gold');
                 }
                 if (successData.loot) {
                     consequences.push('<strong>Success:</strong> Discover treasure');
@@ -5732,6 +5765,9 @@ class Game {
                 }
                 if (failureData.condition) {
                     consequences.push(`<strong>Failure:</strong> Suffer ${failureData.condition}`);
+                }
+                if (failureData.gold < 0) {
+                    consequences.push('<strong>Failure:</strong> Pay gold');
                 }
                 if (failureData.consequences) {
                     if (failureData.consequences.includes('initiateCombat')) {
@@ -5770,26 +5806,40 @@ class Game {
 
             // Dynamic button text: "Attempt [Skill Name]"
             const skillDisplayName = this.formatSkillName(skillId);
-            attemptBtn.textContent = `Attempt ${skillDisplayName}`;
+            attemptBtn.textContent = skillId ? `Attempt ${skillDisplayName}` : 'Proceed';
+            attemptBtn.focus();
 
             const handleAttempt = async () => {
                 cleanup();
+                if (config.costGold > 0) {
+                    if ((character.gold || 0) < config.costGold) {
+                        gameState.addMessage('You cannot afford this approach.', 'warning');
+                        resolve({ attempted: false, success: false, rollResult: null, consequences: null });
+                        return;
+                    }
+                    character.gold -= config.costGold;
+                    gameState.set('character', character);
+                    this.updateHUD(character);
+                }
 
-                // Roll skill check using Character.rollSkill() with advantage/disadvantage support
-                const fatigueMods = getFatigueModifiers();
-                const rollResult = character.rollSkill(skillId, {
+                // Resolve the same party, fatigue and roll mode shown in the preview.
+                const rollResult = window.skillChallengeManager.rollSkillCheck(character, {
+                    skillId,
                     attribute,
+                    dc,
                     advantage: config.advantage || false,
-                    disadvantage: (config.disadvantage || false) || fatigueMods.disadvantageSkills
+                    disadvantage: config.disadvantage || false
                 });
 
-                // Apply fatigue skill modifier on top of the roll total
-                const fatigueAdjustedTotal = rollResult.total + fatigueMods.skillMod;
-                const success = fatigueAdjustedTotal >= dc;
+                // The shared resolver already includes party help and fatigue.
+                const fatigueAdjustedTotal = rollResult.total;
+                const success = skillId ? fatigueAdjustedTotal >= dc : true;
 
                 // Show result message with roll details
                 let rollMessage = '';
-                if (rollResult.advantage) {
+                if (!skillId) {
+                    rollMessage = 'Action taken; no roll required';
+                } else if (rollResult.advantage) {
                     rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
                 } else if (rollResult.disadvantage) {
                     rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
@@ -5797,19 +5847,19 @@ class Game {
                     rollMessage = `🎲 Rolled ${rollResult.roll}`;
                 }
 
-                if (fatigueMods.skillMod !== 0) {
-                    rollMessage += ` + ${skillBonus}${fatigueMods.skillMod > 0 ? ' +' : ' '}${fatigueMods.skillMod} (fatigue) = ${fatigueAdjustedTotal}`;
-                } else {
-                    rollMessage += ` + ${skillBonus} = ${fatigueAdjustedTotal}`;
+                if (skillId) {
+                    rollMessage += ` + ${rollResult.modifier} = ${fatigueAdjustedTotal}`;
                 }
 
                 // Check for critical success/failure (if using SkillChallengeManager)
                 let criticalInfo = null;
-                if (challenge && window.skillChallengeManager) {
+                if (skillId && challenge && window.skillChallengeManager) {
                     criticalInfo = window.skillChallengeManager.checkCritical(rollResult.roll, fatigueAdjustedTotal, dc);
                 }
 
-                if (success) {
+                if (!skillId) {
+                    gameState.addMessage(rollMessage, 'info');
+                } else if (success) {
                     if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
                         gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
                     } else {
@@ -5827,7 +5877,7 @@ class Game {
                 let consequences = null;
                 let outcome = null;
                 if (challenge && window.skillChallengeManager) {
-                    outcome = success ? (stage?.onSuccess || challenge.onSuccess) : (stage?.onFailure || challenge.onFailure);
+                    outcome = window.skillChallengeManager.getOutcome(challenge, stage, success, criticalInfo);
                     if (outcome) {
                         consequences = window.skillChallengeManager.applyConsequences(
                             character,
@@ -5855,6 +5905,7 @@ class Game {
 
                         // Check for death from skill challenge damage
                         if (this.checkDeath(character)) {
+                            resolve({ attempted: true, success, dead: true, rollResult, consequences, outcome });
                             return;
                         }
 
@@ -5869,7 +5920,7 @@ class Game {
                 const finalRollResult = {
                     ...rollResult,
                     dc,
-                    modifier: skillBonus,
+                    modifier: rollResult.modifier,
                     critical: criticalInfo?.isCritical || false,
                     criticalType: criticalInfo?.type || null
                 };
@@ -5898,12 +5949,16 @@ class Game {
                     attribute: rollResult.attribute,
                     rollResult: finalRollResult,
                     consequences,
+                    outcome,
                     // Pass enemyTypes for combat initiation from skill challenges
                     enemyTypes: consequences?.enemyTypes || (outcome?.enemyTypes || null)
                 });
             };
 
             const handleCancel = () => {
+                if (!canTurnBack) {
+                    return;
+                }
                 cleanup();
                 resolve({ attempted: false, success: false, rollResult: null, consequences: null, enemyTypes: null });
             };
@@ -5916,7 +5971,16 @@ class Game {
                 }
                 // Reset blocking flag
                 this.skillChallengeBlocking = false;
+                this.cancelPendingSkillPrompt = null;
+                modal.removeEventListener('click', handleBackdrop);
             };
+            const handleBackdrop = event => {
+                if (event.target === modal) {
+                    handleCancel();
+                }
+            };
+            this.cancelPendingSkillPrompt = handleCancel;
+            modal.addEventListener('click', handleBackdrop);
 
             attemptBtn.addEventListener('click', handleAttempt);
             if (canTurnBack) {
@@ -5931,6 +5995,9 @@ class Game {
      * @returns {string} Formatted display name
      */
     formatSkillName(skillId) {
+        if (!skillId) {
+            return 'Action';
+        }
         // Check loaded skills data first
         if (this.skillsData) {
             const skill = this.skillsData.find(s => s.id === skillId);
@@ -5951,7 +6018,7 @@ class Game {
      * @param {Object} challenge - Choice challenge template with options array
      * @returns {Promise<Object>} - { attempted, success, optionChosen, rollResult, consequences }
      */
-    async promptChoiceSkillChallenge(challenge) {
+    async promptChoiceSkillChallenge(challenge, context = {}) {
         const modal = document.getElementById('choiceChallengeModal');
         const character = gameState.get('character');
 
@@ -5963,14 +6030,19 @@ class Game {
         const optionsContainer = document.getElementById('choiceChallengeOptions');
         optionsContainer.innerHTML = '';
 
-        const optionElements = challenge.options.map((option, index) => {
+        const optionElements = window.skillChallengeManager.getChallengeOptions(challenge).map((option, index) => {
             const adjustedDC = window.skillChallengeManager
-                ? window.skillChallengeManager.calculateAdjustedDC(option.baseDC, character.level)
+                ? window.skillChallengeManager.calculateAdjustedDC(option.baseDC, character.level) + (context.dcModifier || 0)
                 : option.baseDC;
-            const skillBonus = character.getSkillBonus(option.skill, option.attribute);
-            const successChance = Math.max(0, Math.min(100, ((21 - adjustedDC + skillBonus) * 5)));
+            const preview = window.skillChallengeManager.getSkillCheckContext(character, option.skill, {
+                attribute: option.attribute, dc: adjustedDC, advantage: option.advantage, disadvantage: option.disadvantage
+            });
+            const skillBonus = preview.modifier;
+            const successChance = Math.round(preview.successChance * 100) / 100;
 
-            const card = document.createElement('div');
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.disabled = (option.costGold || 0) > (character.gold || 0);
             card.className = 'choice-option-card';
             card.dataset.optionIndex = index;
 
@@ -5983,15 +6055,15 @@ class Game {
             }
 
             card.innerHTML = `
-                <div class="choice-option-header">
+                <span class="choice-option-description">${option.description}${option.costGold ? ` (${option.costGold} gold${card.disabled ? '; insufficient gold' : ''})` : ''}</span>
+                <span class="choice-option-header">
                     <span class="choice-option-skill">${this.formatSkillName(option.skill)}${option.attribute ? ` + ${option.attribute}` : ''}</span>
-                    <span class="choice-option-dc">DC ${adjustedDC}</span>
-                </div>
-                <div class="choice-option-description">${option.description}</div>
-                <div class="choice-option-stats">
+                    <span class="choice-option-dc">${option.skill ? `DC ${adjustedDC}` : 'No roll'}</span>
+                </span>
+                <span class="choice-option-stats" ${option.skill ? '' : 'hidden'}>
                     <span class="choice-option-bonus">Bonus: ${skillBonus >= 0 ? '+' : ''}${skillBonus}</span>
                     <span class="choice-option-chance ${chanceClass}">Chance: ${successChance}%</span>
-                </div>
+                </span>
             `;
 
             optionsContainer.appendChild(card);
@@ -6000,6 +6072,7 @@ class Game {
 
         // Show modal
         modal.classList.add('active');
+        optionElements.find(entry => !entry.card.disabled)?.card.focus();
 
         // Wait for player choice
         return new Promise((resolve) => {
@@ -6021,13 +6094,17 @@ class Game {
                     description: `${challenge.description}\n\n${optionData.option.description}`,
                     skill: optionData.option.skill,
                     attribute: optionData.option.attribute,
-                    dc: optionData.adjustedDC
+                    dc: optionData.adjustedDC,
+                    advantage: optionData.option.advantage,
+                    disadvantage: optionData.option.disadvantage,
+                    costGold: optionData.option.costGold
                 };
 
                 // Pass option as stage so onSuccess/onFailure outcomes are found
                 const result = await this.promptSkillCheck(config, challenge, optionData.option);
 
                 resolve({
+                    ...result,
                     attempted: result.attempted,
                     success: result.success,
                     optionChosen: optionData.option,
@@ -6038,6 +6115,9 @@ class Game {
             };
 
             const handleCancel = () => {
+                if (!canTurnBack) {
+                    return;
+                }
                 cleanup();
                 resolve({ attempted: false, success: false, optionChosen: null, rollResult: null, consequences: null });
             };
@@ -6062,7 +6142,16 @@ class Game {
                 if (canTurnBack) {
                     cancelBtn.removeEventListener('click', cancelHandler);
                 }
+                this.cancelPendingSkillPrompt = null;
+                modal.removeEventListener('click', handleBackdrop);
             };
+            const handleBackdrop = event => {
+                if (event.target === modal) {
+                    handleCancel();
+                }
+            };
+            this.cancelPendingSkillPrompt = handleCancel;
+            modal.addEventListener('click', handleBackdrop);
         });
     }
 
@@ -6098,6 +6187,7 @@ class Game {
             const challengeName = document.getElementById('outcomeChallengeName');
             const narrativeEl = document.getElementById('outcomeNarrative');
             const rollDetails = document.getElementById('outcomeRollDetails');
+            rollDetails.hidden = rollResult.roll === null;
             const stageProgress = document.getElementById('outcomeStageProgress');
             const rewardsSection = document.getElementById('outcomeRewards');
             const consequencesSection = document.getElementById('outcomeConsequences');
@@ -6194,7 +6284,7 @@ class Game {
 
             // Rewards (on success)
             const rewardsList = document.getElementById('outcomeRewardsList');
-            if (success && consequences && (consequences.xp > 0 || consequences.gold > 0 || (consequences.items && consequences.items.length > 0))) {
+            if (consequences && (consequences.xp > 0 || consequences.gold > 0 || (consequences.items && consequences.items.length > 0))) {
                 rewardsSection.classList.add('active');
                 let rewardsHTML = '';
                 if (consequences.xp > 0) {
@@ -6215,9 +6305,12 @@ class Game {
 
             // Consequences (damage, conditions on failure)
             const consequencesList = document.getElementById('outcomeConsequencesList');
-            if (consequences && (consequences.damage > 0 || (consequences.conditions && consequences.conditions.length > 0))) {
+            if (consequences && (consequences.gold < 0 || consequences.damage > 0 || (consequences.conditions && consequences.conditions.length > 0))) {
                 consequencesSection.classList.add('active');
                 let consequencesHTML = '';
+                if (consequences.gold < 0) {
+                    consequencesHTML += `<div class="consequence-item"><span class="consequence-icon">💰</span><span class="consequence-value">${consequences.gold} Gold</span></div>`;
+                }
                 if (consequences.damage > 0) {
                     const damageType = outcome?.damageType || 'damage';
                     consequencesHTML += `
@@ -6262,10 +6355,24 @@ class Game {
             const handleClose = () => {
                 modal.classList.remove('active');
                 closeBtn.removeEventListener('click', handleClose);
+                document.removeEventListener('keydown', handleKeydown);
+                modal.removeEventListener('click', handleBackdrop);
                 resolve();
             };
-
+            const handleKeydown = event => {
+                if (event.key === 'Escape') {
+                    handleClose();
+                }
+            };
+            const handleBackdrop = event => {
+                if (event.target === modal) {
+                    handleClose();
+                }
+            };
             closeBtn.addEventListener('click', handleClose);
+            document.addEventListener('keydown', handleKeydown);
+            modal.addEventListener('click', handleBackdrop);
+            closeBtn.focus();
         });
     }
 
@@ -7150,7 +7257,7 @@ class Game {
         }
 
         return `
-            <div class="inventory-item ${isEquipped ? 'equipped' : ''}" data-item-id="${item.id}">
+            <div class="inventory-item ${isEquipped ? 'equipped' : ''}" data-item-id="${item.instanceId || item.id}">
                 <div class="item-icon">${icon}</div>
                 <div class="item-details">
                     <div class="item-name">
@@ -7196,11 +7303,13 @@ class Game {
             }
         }
 
-        if (item.consumable || item.type === 'consumable') {
+        if (!item.questSource && (item.consumable || item.type === 'consumable')) {
             buttons.push('<button class="item-action-btn" data-action="use">Use</button>');
         }
 
-        buttons.push('<button class="item-action-btn" data-action="drop">Drop</button>');
+        if (!item.questSource && item.canDrop !== false) {
+            buttons.push('<button class="item-action-btn" data-action="drop">Drop</button>');
+        }
 
         return buttons.join('');
     }
@@ -7246,7 +7355,8 @@ class Game {
         }
 
         // Find item in inventory OR equipment
-        let item = character.inventory.find(i => i.id === itemId);
+        let item = character.inventory.find(i => i.instanceId === itemId)
+            || character.inventory.find(i => i.id === itemId && !i.questSource);
 
         // If not in inventory, check if it's equipped
         if (!item) {
@@ -7437,6 +7547,10 @@ class Game {
      * Use Item (Consumables)
      */
     useItem(item, character) {
+        if (item.questSource) {
+            gameState.addMessage('These goods are held for a quest. Hand them over through its resolution.', 'warning');
+            return;
+        }
         if (!item.consumable && item.type !== 'consumable') {
             gameState.addMessage(`${item.name} cannot be used.`, 'error');
             return;
@@ -7459,7 +7573,7 @@ class Game {
             if (item.quantity && item.quantity > 1) {
                 item.quantity--;
             } else {
-                const index = character.inventory.findIndex(i => i.id === item.id);
+                const index = character.inventory.indexOf(item);
                 if (index !== -1) {
                     character.inventory.splice(index, 1);
                 }
@@ -7542,6 +7656,10 @@ class Game {
      * Drop Item
      */
     dropItem(item, character) {
+        if (item.questSource || item.canDrop === false) {
+            gameState.addMessage('These goods must be handed over through the quest.', 'warning');
+            return;
+        }
         // Check if item is equipped - must unequip first
         const isEquipped = this.isItemEquipped(item, character);
         if (isEquipped) {
@@ -7553,7 +7671,7 @@ class Game {
             return;
         }
 
-        const index = character.inventory.findIndex(i => i.id === item.id);
+        const index = character.inventory.indexOf(item);
         if (index !== -1) {
             character.inventory.splice(index, 1);
             gameState.addMessage(`Dropped ${item.name}.`, 'info');

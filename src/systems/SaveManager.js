@@ -218,7 +218,7 @@ class SaveManager {
             encounterAccumulator: state.player?.encounterAccumulator || 0,
             flags: { ...(state.flags || {}) },
             stats: { ...(state.stats || {}) },
-            factions: this.serializeMap(state.factions),
+            factions: this.normalizeFactionScores(state.factions),
             playtime: state.stats?.playTime || 0,
             ui: {
                 currentScreen: state.ui?.currentScreen || 'game'
@@ -338,8 +338,7 @@ class SaveManager {
             deaths: saveData.stats?.deaths || 0
         });
 
-        // Restore factions (reconstruct Map)
-        gameState.set('factions', this.deserializeMap(saveData.factions));
+        gameState.set('factions', this.normalizeFactionScores(saveData.factions));
 
         // Restore UI state
         gameState.set('ui.currentScreen', saveData.ui?.currentScreen || 'game');
@@ -399,6 +398,7 @@ class SaveManager {
             fightingStyle: character.fightingStyle || null,
             level: character.level,
             xp: character.xp,
+            pendingLevelUp: character.pendingLevelUp,
             baseAbilities: character.baseAbilities,
             abilities: character.abilities,
             abilityModifiers: character.abilityModifiers,
@@ -506,6 +506,19 @@ class SaveManager {
         }
 
         return compressed;
+    }
+
+    /**
+     * Keep reputation addressable through GameState dot paths, including legacy saves.
+     * @param {Object | Map | Array} factions - Saved or runtime faction scores
+     * @returns {Object} Faction ID to score
+     */
+    normalizeFactionScores(factions) {
+        const entries = factions instanceof Map || Array.isArray(factions)
+            ? Array.from(factions)
+            : Object.entries(factions || {});
+        return Object.fromEntries(entries.filter(entry => Array.isArray(entry)
+            && entry.length === 2 && typeof entry[0] === 'string' && Number.isFinite(entry[1])));
     }
 
     /**

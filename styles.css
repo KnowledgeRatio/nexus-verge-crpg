@@ -5347,12 +5347,36 @@ body {
 }
 
 .choice-option-card {
+    font: inherit;
+    color: var(--text-primary);
+    text-align: left;
+    width: 100%;
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid var(--border-color);
     border-radius: 6px;
     padding: 15px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+
+.choice-option-card:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+}
+
+.choice-option-card:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.choice-option-card > .choice-option-description {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.choice-option-stats[hidden] {
+    display: none;
 }
 
 .choice-option-card:hover {
@@ -8727,5 +8751,60 @@ body {
     .quest-accept-btn {
         font-size: 0.82rem;
         padding: 6px 12px;
+    }
+}
+
+.procedural-quest-progress {
+    margin-block: 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.procedural-quest-progress h4 {
+    margin-block: 0.75rem 0.5rem;
+}
+
+.procedural-quest-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.procedural-quest-choice {
+    flex: 1 1 14rem;
+    min-width: 0;
+}
+
+.procedural-quest-choice button {
+    width: 100%;
+    min-height: 2.75rem;
+    white-space: normal;
+}
+
+.procedural-quest-choice small {
+    display: block;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.procedural-quest-choice button:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.quest-aftermath {
+    color: var(--text-highlight);
+}
+
+.procedural-quest-choice button:focus-visible,
+.trading-item:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+    .procedural-quest-choice {
+        flex-basis: 100%;
     }
 }

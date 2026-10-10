@@ -7,6 +7,7 @@
  */
 
 import { gameState } from '../core/GameState.js';
+import { skillRegistry } from './SkillRegistry.js';
 
 export default class RelationManager {
     constructor() {
@@ -112,6 +113,7 @@ export default class RelationManager {
      * @param {string} modifierKey - Key from config.modifiers (e.g., 'questCompleteForNPC')
      * @param {Object} [options] - Optional overrides
      * @param {number} [options.exactPoints] - Override with exact point value instead of random range
+     * @param {boolean} [options.contributeToFaction=true] - Apply the usual personal-relation spillover
      * @returns {{ points: number, newScore: number, tier: Object }} Change result
      */
     modifyRelation(npc, modifierKey, options = {}) {
@@ -141,7 +143,7 @@ export default class RelationManager {
         npc.relations.score = Math.max(-100, Math.min(100, oldScore + points));
 
         // Faction contribution — stored unrounded to avoid a rounding cliff on small changes
-        if (npc.culture) {
+        if (npc.culture && options.contributeToFaction !== false) {
             const rate = this._getFactionContributionRate();
             const oldFactionScore = gameState.get(`factions.${npc.culture}`) || 0;
             const newFactionScore = Math.max(-100, Math.min(100, oldFactionScore + points * rate));
@@ -174,11 +176,32 @@ export default class RelationManager {
     }
 
     /**
+     * Apply standing directly to a culture in the loaded campaign catalogue.
+     * @param {string} cultureId - Existing culture ID
+     * @param {number} points - Signed standing change
+     * @returns {{ points: number, newScore: number, tier: Object } | null}
+     */
+    modifyFactionReputation(cultureId, points) {
+        const cultures = globalThis.window?.game?.npcGenerator?.culturesData;
+        if (!Number.isFinite(points) || !cultures?.some(culture => culture.id === cultureId)) {
+            return null;
+        }
+
+        const oldScore = gameState.get(`factions.${cultureId}`) || 0;
+        const minimum = this.tierLookup[0].min;
+        const maximum = this.tierLookup[this.tierLookup.length - 1].max;
+        const newScore = Math.max(minimum, Math.min(maximum, oldScore + points));
+        gameState.set(`factions.${cultureId}`, newScore);
+        return { points: newScore - oldScore, newScore, tier: this._getTierForScore(Math.round(newScore)) };
+    }
+
+    /**
      * Apply relation bonus to all NPCs in a settlement when a quest is completed there
      * @param {string} settlementId - Settlement ID
      * @param {string} excludeNpcId - NPC who gave the quest (already gets direct bonus)
+     * @param {Object} [options] - Relation overrides forwarded to each NPC
      */
-    modifySettlementRelations(settlementId, excludeNpcId) {
+    modifySettlementRelations(settlementId, excludeNpcId, options = {}) {
         const world = gameState.get('world');
         if (!world?.generatedRegions) {
             return;
@@ -201,7 +224,7 @@ export default class RelationManager {
                 if (feature.npcs) {
                     for (const npc of feature.npcs) {
                         if (npc.id !== excludeNpcId) {
-                            this.modifyRelation(npc, 'questCompleteInSettlement');
+                            this.modifyRelation(npc, 'questCompleteInSettlement', options);
                         }
                     }
                 }
@@ -296,7 +319,7 @@ export default class RelationManager {
         }
 
         // Influence skill modifier (ability mod + proficiency if proficient)
-        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceBonus = skillRegistry.getModifier(character, 'influence');
         const influenceEffect = influenceBonus * this.config.defaults.influencePercentPerPoint;
 
         // Trading practice — permanent passive discount, additive alongside Influence
@@ -328,7 +351,7 @@ export default class RelationManager {
         }
 
         // Influence skill modifier
-        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceBonus = skillRegistry.getModifier(character, 'influence');
         const influenceEffect = influenceBonus * this.config.defaults.influencePercentPerPoint;
 
         // Trading practice — permanent passive bonus, additive alongside Influence
@@ -366,7 +389,7 @@ export default class RelationManager {
     getPricingSummary(npc, character) {
         const { tier, tierLabel } = this.getRelation(npc);
         const tierPricing = this.config.pricingByTier[tier.id];
-        const influenceBonus = character.getSkillBonus ? character.getSkillBonus('influence') : 0;
+        const influenceBonus = skillRegistry.getModifier(character, 'influence');
         const influencePercent = Math.abs(influenceBonus);
 
         let tierEffect = 'normal prices';

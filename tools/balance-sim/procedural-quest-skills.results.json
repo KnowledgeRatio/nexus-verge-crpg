@@ -1,0 +1,744 @@
+{
+  "methodology": "Exact complete d20 support through live SkillChallengeManager. Legal Dedication Knight preset and custom standard-array Sage; no expertise or companions. Level 5/10 are conditional skill-stat/ASI projections, not earned progression. Fatigue is supplied at roll time; repeat-attempt accumulation and travel are not simulated. This measures optional corroboration, not whole-quest completion or payout. No sampling-error CI applies to exact dice enumeration.",
+  "resolutions": 2640,
+  "cells": [
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 0,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 16,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 75,
+      "modifier": -2,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 15,
+          "dc": 12,
+          "modifier": -2,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 90,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "rolls": [
+            17,
+            13
+          ],
+          "total": 12,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 0,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 16,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 75,
+      "modifier": -2,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 15,
+          "dc": 12,
+          "modifier": -2,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 90,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "rolls": [
+            17,
+            13
+          ],
+          "total": 12,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 0,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 16,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 75,
+      "modifier": -2,
+      "proficient": false,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "rolls": [
+            17
+          ],
+          "total": 15,
+          "dc": 12,
+          "modifier": -2,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": -1,
+          "dc": 12,
+          "modifier": -2,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "knight",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 90,
+      "modifier": -1,
+      "proficient": false,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "rolls": [
+            17,
+            13
+          ],
+          "total": 12,
+          "dc": 12,
+          "modifier": -1,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 0,
+          "dc": 12,
+          "modifier": -1,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 0,
+      "modifier": 5,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "rolls": [
+            14
+          ],
+          "total": 19,
+          "dc": 12,
+          "modifier": 5,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 6,
+          "dc": 12,
+          "modifier": 5,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 25,
+          "dc": 12,
+          "modifier": 5,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 75,
+      "modifier": 4,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "rolls": [
+            14
+          ],
+          "total": 18,
+          "dc": 12,
+          "modifier": 4,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 5,
+          "dc": 12,
+          "modifier": 4,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 24,
+          "dc": 12,
+          "modifier": 4,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 1,
+      "fatigue": 90,
+      "modifier": 5,
+      "proficient": true,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "rolls": [
+            14,
+            7
+          ],
+          "total": 12,
+          "dc": 12,
+          "modifier": 5,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 6,
+          "dc": 12,
+          "modifier": 5,
+          "success": false
+        },
+        {
+          "rolls": [
+            20,
+            20
+          ],
+          "total": 25,
+          "dc": 12,
+          "modifier": 5,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 0,
+      "modifier": 8,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "rolls": [
+            12
+          ],
+          "total": 20,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 9,
+          "dc": 12,
+          "modifier": 8,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 28,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 75,
+      "modifier": 7,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "rolls": [
+            13
+          ],
+          "total": 20,
+          "dc": 12,
+          "modifier": 7,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 8,
+          "dc": 12,
+          "modifier": 7,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 27,
+          "dc": 12,
+          "modifier": 7,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 5,
+      "fatigue": 90,
+      "modifier": 8,
+      "proficient": true,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.7225,
+      "traces": [
+        {
+          "rolls": [
+            12,
+            12
+          ],
+          "total": 20,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 9,
+          "dc": 12,
+          "modifier": 8,
+          "success": false
+        },
+        {
+          "rolls": [
+            20,
+            20
+          ],
+          "total": 28,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 0,
+      "modifier": 9,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.9,
+      "traces": [
+        {
+          "rolls": [
+            12
+          ],
+          "total": 21,
+          "dc": 12,
+          "modifier": 9,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 10,
+          "dc": 12,
+          "modifier": 9,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 29,
+          "dc": 12,
+          "modifier": 9,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 75,
+      "modifier": 8,
+      "proficient": true,
+      "dc": 12,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "rolls": [
+            12
+          ],
+          "total": 20,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        },
+        {
+          "rolls": [
+            1
+          ],
+          "total": 9,
+          "dc": 12,
+          "modifier": 8,
+          "success": false
+        },
+        {
+          "rolls": [
+            20
+          ],
+          "total": 28,
+          "dc": 12,
+          "modifier": 8,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "dedicationSage",
+      "calling": "dedication",
+      "level": 10,
+      "fatigue": 90,
+      "modifier": 9,
+      "proficient": true,
+      "dc": 12,
+      "faces": 400,
+      "exactSuccessProbability": 0.81,
+      "traces": [
+        {
+          "rolls": [
+            12,
+            3
+          ],
+          "total": 12,
+          "dc": 12,
+          "modifier": 9,
+          "success": true
+        },
+        {
+          "rolls": [
+            1,
+            1
+          ],
+          "total": 10,
+          "dc": 12,
+          "modifier": 9,
+          "success": false
+        },
+        {
+          "rolls": [
+            20,
+            20
+          ],
+          "total": 29,
+          "dc": 12,
+          "modifier": 9,
+          "success": true
+        }
+      ]
+    }
+  ]
+}

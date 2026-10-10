@@ -1340,7 +1340,8 @@ export class Character {
      */
     addItem(item, quantity = 1) {
         // Check if item already exists in inventory
-        const existingItem = this.inventory.find(inv => inv.id === item.id);
+        const existingItem = this.inventory.find(inv => inv.id === item.id
+            && !inv.questSource && !item.questSource);
 
         if (existingItem) {
             // Stack consumables and misc items
@@ -1374,7 +1375,7 @@ export class Character {
      */
     removeItem(itemId, quantity = 1) {
         const itemIndex = this.inventory.findIndex(
-            inv => inv.id === itemId || inv.instanceId === itemId
+            inv => !inv.questSource && (inv.id === itemId || inv.instanceId === itemId)
         );
 
         if (itemIndex === -1) {
@@ -1615,6 +1616,7 @@ export class Character {
             fightingStyle: this.fightingStyle,
             level: this.level,
             xp: this.xp,
+            pendingLevelUp: this.pendingLevelUp,
             baseAbilities: this.baseAbilities,
             maxHP: this.maxHP,
             currentHP: this.currentHP,
