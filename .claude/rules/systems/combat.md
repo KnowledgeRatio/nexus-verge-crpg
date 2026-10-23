@@ -6,6 +6,7 @@ paths: src/systems/CombatManager.js
 ## Combatant Schema
 Each `Combatant` has:
 - `conditions: []` — array of condition objects (see below)
+- `conditionImmunities: []` — condition-type strings; the Combatant getter/setter uses the authoritative `character.conditionImmunities` array, including plain restored data. `toJSON()` explicitly copies this array.
 - `masteryEffects: { sapped, slowed, vexed, prone }` — legacy, being migrated to conditions
 - `hasEngaged: false` — set `true` on first melee attack; only engaged enemies count for flee DC and opportunity attacks
 - `team: 'player' | 'enemy' | 'companion'`
@@ -25,6 +26,10 @@ Each `Combatant` has:
 }
 ```
 `addCondition()` prevents stacking. `removeCondition()` checks curability. Cure spells use `removeCurableConditions()` which only removes debuffs.
+
+`addCondition()` returns a boolean and rejects immune types before any stack, refresh or value change. `conditionApplication.js` provides the shared immunity query and rejection message for runtime and plain restored actors. Do not bypass this check or claim that a rejected condition applied.
+
+Generic control handlers report `conditionApplied` and `conditionOutcome` (`applied`, `immune`, `alreadyAffected` or `saved`). Immunity blocks the condition, not otherwise valid damage, resource costs or unrelated effects. Do not show condition-success text, start concentration or consume the one-shot Exposed benefit for an immune control effect. Topple skips its condition save/reaction when the target is immune to prone and reports immunity; the attack damage remains.
 
 ## Flee Formula
 ```

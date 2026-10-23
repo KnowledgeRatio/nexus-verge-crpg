@@ -1,0 +1,4853 @@
+{
+  "methodology": [
+    "Exact conditional Finesse d20 support after synthetic movement segments through real fatigue consumers; no terrain/event generation or movement input pipeline.",
+    "Paired creation-legal Dedication Knight profiles differ only in Finesse versus Empathy choice. Conditional levelUp/ASI projections; no earned progression or specialization.",
+    "Diagnostic DC12/14/16 uses current quest tier numbers but does not imply existing quests offer Finesse routes.",
+    "Real Player.makeCamp and RestManager.longRest at an explicitly supplied settlement fixture. No combat, quest acceptance, retry, reward or turn-in measured.",
+    "Probabilities exhaust all d20 outcomes; no sampling confidence interval. Synthetic routes do not estimate naturally encountered opportunities."
+  ],
+  "sourceHashes": {
+    "src/systems/FatigueManager.js": "c0f404131fe417a177149253c7edc03cf138e84c2e0c7a292aacbcde0a0cc094",
+    "src/systems/RestManager.js": "ba8d6c552ffe7eb119dbf18678c73018747fffa788f2facda8969104b5bb6281",
+    "src/systems/Player.js": "552b78ac811d24c36623cca15d357e4d036d1f60a34a1d6aa3175e18b7f8f360",
+    "src/systems/SkillChallengeManager.js": "bf1d854e765e974b7b2fda237a26ff0de990a04b4a91750ab088833d73eeec46",
+    "src/systems/Character.js": "63cccf95f2918fda7bd71c322cad91581dd853acf99c01d21b8334c51886fbc0",
+    "src/core/rulesEngine.js": "838fdfbb995af427f929f93179d006d3c6c3a94b58fc2347b3cc90906a54a406",
+    "data/classes.json": "f336b687f81ae98588386510d35c47dde4e3567fa8699cf6bab3557fb51387cb",
+    "data/backgrounds.json": "1a3dd690bf272b6d22dcf7c8e9d1c161e8dcf08babbbfa2f05dec3afaa032341"
+  },
+  "routes": [
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 2,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 2,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 2,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 2,
+            "total": 22,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 2,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 2,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 2,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 2,
+            "total": 22,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 2,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 2,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 2,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 2,
+            "total": 22,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 2,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 2,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 2,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 2,
+            "total": 22,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 52.80000000000002,
+        "exhaustionLevels": 1,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 1,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 1,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 1,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 1,
+            "total": 2,
+            "dc": 12,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 3,
+      "finalState": {
+        "current": 62.9999999999998,
+        "exhaustionLevels": 0,
+        "supplies": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [
+        {
+          "tile": 125,
+          "event": "camp",
+          "state": {
+            "current": 60,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 151,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999895,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 176,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999795,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        }
+      ],
+      "check": {
+        "modifier": 2,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 2,
+            "total": 17,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 2,
+            "total": 7,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 2,
+            "total": 22,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 5,
+            "total": 19,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 5,
+            "total": 9,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 4,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 4,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 4,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 4,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 4,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 4,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 4,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 4,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 52.80000000000002,
+        "exhaustionLevels": 1,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 3,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 3,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 3,
+            "total": 23,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 1,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 3,
+      "finalState": {
+        "current": 62.9999999999998,
+        "exhaustionLevels": 0,
+        "supplies": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [
+        {
+          "tile": 125,
+          "event": "camp",
+          "state": {
+            "current": 60,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 151,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999895,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 176,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999795,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        }
+      ],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 4,
+            "total": 18,
+            "dc": 12,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 4,
+            "total": 8,
+            "dc": 12,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 12,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.6,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 5,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 5,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 5,
+            "total": 25,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 4,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 4,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 4,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 4,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 4,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 4,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 4,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 4,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 52.80000000000002,
+        "exhaustionLevels": 1,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 3,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 3,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 3,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 3,
+            "total": 4,
+            "dc": 14,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 3,
+      "finalState": {
+        "current": 62.9999999999998,
+        "exhaustionLevels": 0,
+        "supplies": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [
+        {
+          "tile": 125,
+          "event": "camp",
+          "state": {
+            "current": 60,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 151,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999895,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 176,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999795,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        }
+      ],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.55,
+        "traces": [
+          {
+            "rolls": [
+              15
+            ],
+            "modifier": 4,
+            "total": 19,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              5
+            ],
+            "modifier": 4,
+            "total": 9,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 4,
+            "total": 24,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 16.000000000000007,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 24.000000000000014,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 47.99999999999989,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.75,
+        "traces": [
+          {
+            "rolls": [
+              13
+            ],
+            "modifier": 8,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              3
+            ],
+            "modifier": 8,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 7,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 7,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 7,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 7,
+            "total": 27,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 72.00000000000003,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 7,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 7,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 7,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 7,
+            "total": 27,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 7,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 7,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 7,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 7,
+            "total": 27,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 71.99999999999994,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 7,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 7,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 7,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 7,
+            "total": 27,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 52.80000000000002,
+        "exhaustionLevels": 1,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 6,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 6,
+            "total": 20,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 6,
+            "total": 10,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 6,
+            "total": 26,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 5,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 3,
+      "finalState": {
+        "current": 62.9999999999998,
+        "exhaustionLevels": 0,
+        "supplies": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [
+        {
+          "tile": 125,
+          "event": "camp",
+          "state": {
+            "current": 60,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 151,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999895,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        },
+        {
+          "tile": 176,
+          "event": "camp",
+          "state": {
+            "current": 60.599999999999795,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "wearied"
+          }
+        }
+      ],
+      "check": {
+        "modifier": 7,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 7,
+            "total": 21,
+            "dc": 14,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 7,
+            "total": 11,
+            "dc": 14,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 7,
+            "total": 27,
+            "dc": 14,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 10,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 10,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 15,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 15,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 30,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 30,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 5,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.5,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 5,
+            "total": 21,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 5,
+            "total": 11,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 5,
+            "total": 6,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 67.5,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.45,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 4,
+            "total": 20,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 4,
+            "total": 10,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 4,
+            "total": 5,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": false,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 67.5,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 4,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.45,
+        "traces": [
+          {
+            "rolls": [
+              16
+            ],
+            "modifier": 4,
+            "total": 20,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              6
+            ],
+            "modifier": 4,
+            "total": 10,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              1
+            ],
+            "modifier": 4,
+            "total": 5,
+            "dc": 16,
+            "success": false
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 10,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 10,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 15,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 40,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 15,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 30,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 30,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 120,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 45,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "events": [],
+      "check": {
+        "modifier": 9,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.7,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 9,
+            "total": 23,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 9,
+            "total": 13,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 9,
+            "total": 29,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": false,
+      "camps": 0,
+      "finalState": {
+        "current": 67.5,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 8,
+            "total": 22,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 8,
+            "total": 12,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "trained": true,
+      "tiles": 180,
+      "movementCost": 1.5,
+      "camping": true,
+      "camps": 0,
+      "finalState": {
+        "current": 67.5,
+        "exhaustionLevels": 0,
+        "supplies": 3,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "wearied"
+      },
+      "events": [],
+      "check": {
+        "modifier": 8,
+        "disadvantage": false,
+        "resolutions": 20,
+        "exactSuccessProbability": 0.65,
+        "traces": [
+          {
+            "rolls": [
+              14
+            ],
+            "modifier": 8,
+            "total": 22,
+            "dc": 16,
+            "success": true
+          },
+          {
+            "rolls": [
+              4
+            ],
+            "modifier": 8,
+            "total": 12,
+            "dc": 16,
+            "success": false
+          },
+          {
+            "rolls": [
+              20
+            ],
+            "modifier": 8,
+            "total": 28,
+            "dc": 16,
+            "success": true
+          }
+        ]
+      }
+    }
+  ],
+  "rests": [
+    {
+      "level": 1,
+      "supplies": 0,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "supplies": 0,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "supplies": 3,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "supplies": 3,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 12,
+          "maxHP": 12,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 6,
+          "maxHP": 12,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "supplies": 0,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "supplies": 0,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "supplies": 3,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "supplies": 3,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 44,
+          "maxHP": 44,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 22,
+          "maxHP": 44,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "supplies": 0,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "supplies": 0,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 2,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "supplies": 3,
+      "initialExhaustion": 0,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "supplies": 3,
+      "initialExhaustion": 2,
+      "trace": [
+        {
+          "rest": 1,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 1,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 2,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 2,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 2,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 1,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 3,
+          "hp": 90,
+          "maxHP": 90,
+          "worldClock": 3,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 4,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 4,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 5,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 5,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 1,
+            "supplies": 0,
+            "suppliesZeroStreak": 0,
+            "lastThreshold": "rested"
+          }
+        },
+        {
+          "rest": 6,
+          "hp": 45,
+          "maxHP": 90,
+          "worldClock": 6,
+          "state": {
+            "current": 0,
+            "exhaustionLevels": 0,
+            "supplies": 0,
+            "suppliesZeroStreak": 1,
+            "lastThreshold": "rested"
+          }
+        }
+      ]
+    }
+  ],
+  "exactResolutions": 1440,
+  "restCalls": 72
+}

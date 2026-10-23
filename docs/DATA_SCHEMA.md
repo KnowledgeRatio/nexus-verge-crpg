@@ -22,8 +22,25 @@ This document defines the structure of all JSON data files used in the game.
 11. [Campaigns](#campaigns)
 12. [Names](#names)
 13. [Save Game State](#save-game-state)
+14. [Building Interior Presentation](#building-interior-presentation)
 
 ---
+
+## Building Interior Presentation
+
+**File:** `data/buildingInteriors.json`
+
+Maps `tavern`, `merchant`, `blacksmith` and `greathall` to presentation defaults
+and a `variants` array. Each variant supplies `image` and `alt` and may shallowly
+override `people`, `counterForeground` or other presentation fields. `people`
+slots specify an image, percentage coordinates/width and optional NPC `roles`;
+`counterForeground` clips a duplicated room image to occlude the keeper's lower
+body. Optional `glow` and `ambience` configure lighting decoration and audio
+tracks. These fields do not create NPCs, services or tradable items.
+
+Selection hashes settlement identity plus building type without consuming world
+RNG or writing save state. See the [field reference and variant contract](art/building-interiors/README.md#data-and-implementation)
+for override semantics, identity fallback and the study-only selector.
 
 ## Classes
 **File:** `data/classes.json`
@@ -304,6 +321,13 @@ This document defines the structure of all JSON data files used in the game.
 ---
 
 ## Items
+
+Merchant-only offers in `data/merchantInventory.json` may declare `purchaseEffect: { "type": "restoreSupplies", "amount": 1 }`. The purchase applies directly to `fatigue.supplies`, creates no inventory item and rejects overflow before charging. Positive whole quantities, live row stock, enabled fatigue and valid saved counters are required. `guaranteedStock: true` reserves a slot within the existing eligible merchant inventory budget. Expedition Supplies has provisional base value 35; ordinary relation/Influence pricing applies. This shop offer is not a canonical loot item or a conversion of quest provisions.
+
+Physical trap challenge templates may declare `physicalTrapOnly: true` to exclude them from random room challenges while retaining their authored disarm outcomes. `RULES.dungeon.trapChoicesEnabled` controls distinct trap choices and sparse persistence. Dungeon feature `trapStates` holds source-room/tile receipts replayed during entry rather than complete room saves. Receipts include room identity/dimensions, coordinates, original DC/damage and armed/detected flags. `dungeonTypeSeedDraw` preserves the initial automatic type-selection RNG draw during regeneration. Known avoided traps remain armed; disarmed/triggered traps remain spent. Active dungeon saves still restore the player outside.
+
+Dungeon feature `doorStates` stores sparse shared-passage receipts, keyed by the sorted room-index pair (for example, `"0:2"`). Each receipt contains `roomIndices`, corresponding `roomIds`, `challengeCompleted` and `locked`. Opening or failing a physical door updates both directional tile representations. Regeneration restores receipts only when both room IDs and reciprocal connections still match; incompatible receipts are ignored. Successful passage stays open in both directions, while failure preserves the existing shared lock consequence. These receipts save passage state without serializing full rooms.
+
 **File:** `data/items.json`
 
 ### Schema
@@ -442,6 +466,8 @@ This document defines the structure of all JSON data files used in the game.
 ## Monsters
 **File:** `data/monsters.json`
 
+Optional `conditionImmunities` is an array of exact condition-type strings, such as `"prone"` or `"frightened"`. EncounterBuilder carries it into encounter actors. Combatant reads/writes the source character array and explicitly copies it in `toJSON()`; plain restored actors retain the same data contract. Immune conditions are rejected before stacking or refreshing, while valid damage and resource costs remain. This changes runtime enforcement, not monster content or numerical values.
+
 ### Schema
 ```json
 {
@@ -576,7 +602,18 @@ This document defines the structure of all JSON data files used in the game.
 
 ---
 
+## Hostile Settlement Opportunities
+
+`data/hostileSettlements.json` supplies `messages` plus campaign-filtered `combat`, `exploration`, `social` and `rebuilding` arrays. Templates have `id`, `type`, `campaignIds`, `name`, `description` and `options`, with optional `npcName` and sequential `nodes`. Combat templates declare a fallback `monsterPool` and `monsterPoolsByTier:[{maxLevel,monsterPool}]`; the shared EncounterBuilder uses the frozen first-entry level and configured medium difficulty. Options have `id`, `label`, optional registered `skill`/`attribute`, and `onSuccess`/`onFailure` messages with optional generic skill-challenge `effects`. Node options may declare `decision`, `requiresDecision` and `supportSkill`; decisions gate later options within the same step, and the selected support skill grants advantage on matching rebuilding checks. Current liberation/rebuilding DCs are 12/14/16 at levels 1–3/4–7/8–10.
+
+New-world metadata stores `hostileState:{phase:'hostile',contentPlan:{steps,rebuildSteps}}` on selected existing settlements. Seed-derived content is selected before metadata persistence. First actual entry consumes/removes `contentPlan` and saves `level`, three selected `steps`, three distinct `rebuildSteps`, `index`, `nodeIndex`, `rebuildIndex`, `attempt`, `decisions` and `readyAt`; optional fields include `supportSkill`, `lastResult`, `pendingCombat:{settlementId,stepId,attempt}`, `liberatedAt` and `restoredAt`. Phase-only older hostile receipts use the same seeded content selector as a compatibility fallback. Phases are `hostile`, `rebuilding` and `restored`. The shared `world.worldClock` drives `readyAt`; two ticks gate the first/next project, one gates failed rebuilding retries. Level freezes from the character on first visit. State is plain serializable data mirrored through settlement persistence and metadata/loaded features. Saved interrupted combat receipts are cleared without progression because runtime combat is not saved. Old ordinary worlds are not backfilled. See [hostile settlement validation](reports/2026-10-13-hostile-settlements-validation.md) for scope and limitations.
+
 ## Skills
+
+Finite wilderness provisioning content lives in `data/provisioning.json`: `challenge` defines the skill ID, attribute and textual outcomes; `cues` define IDs, titles, descriptions, action labels, eligible biomes and campaign IDs. Shelter cues use `eligiblePoiTypes`; standalone cues use `eligibleHostTypes:["provisioning"]` and may override the shared `marker` with `{symbol,color}`. Current standalone cue IDs are `wild_plants` and `wild_tracks`. `RULES.provisioning` defines enabled state, DC and supply reward. `generation` controls shelter allocation/spacing/map-size caps; `wilderness` controls standalone enablement, region chance, attempts per region, spacing and settlement exclusion.
+
+New-world generation attaches `provisioning:{id,cueId,attempt:null}` to selected existing sanctuary-resolving metadata features and creates standalone features shaped as `{id,x,y,type:"provisioning",renderLayer:"overlay",name,provisioning:{id,cueId,attempt:null}}`, with stable ID `provisioning:x,y`. Standalone objects use traversable compatible ground without replacing its terrain or granting shelter. Confirmation writes a pending `attempt` before fatigue/roll resolution, then records success/failure/error, the roll and actual restored supplies. Any receipt spends the opportunity permanently for that run; cancellation and full-meter inspection do not write receipts. Canonical metadata owns the saved receipt, not a copied tile or inventory item. Old saved worlds are not backfilled. Standalone objects open through E/touch Interact and draw cue markers over visible terrain, dimmed when spent. Revealed shelter cues retain their rest/interaction UI and available-source badge.
+
 **File:** `data/skills.json`
 
 ### Schema
@@ -797,11 +834,37 @@ Continuous materials in the same `transitionGroup` can form organic visual bound
 ## Quests
 **File:** `data/quests.json`
 
+### Explicit quest standing rewards
+
+`rewards.reputation:{faction,amount}` supports `faction:"settlement"`, `"both"` or `"all"`. Amounts retain their authored values; RelationManager clamps final scores to its existing limits. Targets are existing campaign culture IDs, not new organizations. `settlement` resolves distinct valid cultures from the bound issuer settlement's actual NPC roster, falling back to the giver's culture only when no usable roster exists. `both` unions issuer and actual destination cultures without duplicates; `generationData.targetSettlementId` or the travel objective's `requirement.settlementId` supplies the destination. `all` uses the loaded campaign culture catalogue.
+
+Missing required community data makes the whole standing reward unavailable, rather than partially paying known targets. XP/gold and normal completion remain available with a clear warning. `QuestReputation.js` provides a preview shaped as `{available,reason,changes}`, with each change naming `targetId`, `targetName` and authored `amount`. The saved `reputationRewardReceipt.changes` records actual per-target `{targetId,targetName,amount,previous,current}` after clamping; repeat payout skips recorded targets. Turn-in summaries expose actual change records and any `reputationWarning`.
+
+Rich quests with explicit `faction` resolution effects retain that path and suppress duplicate legacy reputation payout. Personal NPC bonuses still apply; when explicit standing exists they use `contributeToFaction:false` to prevent a second culture award. Quests without explicit standing retain prior personal-to-culture spillover.
+
+### Tracking and received information
+
+`gameState.quests.trackedQuestId` is one active quest ID or `null`. QuestManager validates selection; GameState and SaveManager default missing values to `null` and clear stale IDs on load. Ending the tracked job by completion, failure, expiry or abandonment clears selection.
+
+Offers may declare `intelQuality` (`high`, `medium`, `low`, `none`) and `intelDialogue`, keyed by quality. Composed offers bind these from `questComposition.tracking` during generation, including `{siteName}` in the medium briefing. Generation alone grants no received information: acceptance must display a nonempty selected briefing before saving `trackingIntel:{quality,origin,targetKey,bearing?}`. `origin` records the issuer; low-quality `bearing` is fixed to that origin and the configured eight directions.
+
+`trackingDiscoveries:{"x,y":true}` records actual discovery of bound quest sites. QuestManager refreshes these receipts on visibility/proof changes; getters and renderers do not acquire knowledge. Existing saves without receipts retain unknown guidance unless actual discovery proves the location.
+
+`RULES.quests.tracking` owns enablement, `searchAreaSize`, `qualityModes` and `bearings`. The safe navigation view exposes only the permitted shape: high `exact` coordinates; medium `area` bounds aligned globally to 64×64 tiles with exclusive `maxX/maxY` and no target pin; low `direction` with issuer origin/bearing; or `unknown`. Hidden bindings stay out of nonexact views. Completed required fieldwork switches to exact issuer guidance without forcing optional objectives. See [quest rules](../.claude/rules/systems/quests.md).
+
 ### Live procedural bundle contract
 
 The current file contains `sideQuestTemplates`, `campaignQuests`, `proceduralBundles` and `questComposition`. The older schema examples below are illustrative historical shapes; use the live data and [quest rules](../.claude/rules/systems/quests.md) when authoring current content.
 
 `questComposition` declares a version/family, baseline and six component dimensions. Components have explicit cross-dimension `requires`, optional capability requirements and reusable activity references. Generic activities contribute objectives/actions; goals contribute guarded resolutions. Component campaign filtering occurs at load time; activities are shared core content. The generator persists chosen component IDs and fully instantiated content; item/name permutations do not establish structural variety.
+
+New iteration-enabled composed records also save `iteration.version`, `offeredLevel`, `taskTier`, `risk` and `deadlineObjectives`. Optional `deadlineDuration` is a world-clock interval; acceptance sets `deadlineAt`, and `fulfilledAt` records completed required work. `failureEffects`, `expiryPending`, `expiryEffectsApplied` and `failureStandingApplied` distinguish retryable expiry application from completed once-only failure. Unaccepted offers do not count down. These fields do not retrofit already instantiated boards or legacy content.
+
+`questComposition.outcomes` contributes capability-compatible typed success/failure effects; `informationOutcome` adds a supported `reveal_location` effect only to corroborated resolutions. `local_safety` carries `siteId`, `radius` and `multiplier`; `merchant_availability` carries `settlementId`, `merchantRole`, `itemId` and `availability`; `reveal_location` carries a real `siteId`. ConsequenceManager validates producers/consumers before publication and stores idempotent `world.metadata.questOutcomes` receipts with quest/effect IDs and sequence. Settlement-owned `questAvailability` stores the bound item/role availability state. Discovery updates the actual feature, modified tiles and loaded tile cache; it does not create a new location.
+
+Specialist subject components require real campaign equipment, an eligible merchant and the loaded item-property producer. A `merchant_stock` effect with `qualityScore` creates one deterministically enchanted paid offer, saved as `questStock[].generatedItem` with its instance ID and value. Quality/price premiums are configured in `RULES.quests.iteration`; they are not extra commission or free inventory grants. Dungeon features bound to iteration offers save `questEncounterLevel` when generated; the shared encounter-level lookup uses this frozen level, otherwise the bound iteration offer level, otherwise the current level.
+
+Subject `resolutionReply` optionally replaces fulfilled reporting prose after normal placeholder binding. Outcome descriptions are appended to the persisted reply. Combat capability eligibility also checks actual boss candidates against the configurable offered-level minimum XP budget; no speculative boss identity is persisted by this check.
 
 Shared records use stable objective IDs, `baseline.objectiveId`, facts/actions/objective prerequisites, optional exclusion predicates and either top-level or legacy procedural participants. Rich content is detected by capability, independent of type/provenance. `defeat_encounter.requirement.source` binds `{siteId,encounterRole,encounterKey}`; live proof additionally records numeric room, target and encounter identity. `target_cleared.sourceObjectiveId` points to that objective's proof.
 

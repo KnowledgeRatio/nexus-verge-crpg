@@ -15,6 +15,12 @@ import { getAuraSaveBonus } from './PassiveModifierRegistry.js';
 import { damagePrecisionEnabled, addHP, normalizeHP } from '../utils/damagePrecision.js';
 import { resolveDamageComponents } from './DamageResolver.js';
 import { formatCombatNumber } from '../utils/combatNumberFormat.js';
+import { isConditionImmune, conditionRejectionMessage } from './conditionApplication.js';
+
+function rejectCondition(target, type, ctx) {
+    ctx.addMessage(conditionRejectionMessage(target, type), 'info');
+    return isConditionImmune(target, type) ? 'immune' : 'alreadyAffected';
+}
 
 function applyAbilityDamage(target, amount, config, ability, ctx) {
     if (!damagePrecisionEnabled()) {
@@ -247,11 +253,15 @@ registerHandler('heal', (formula, ability, ctx) => {
  * Effect value: true (boolean flag)
  */
 registerHandler('dodge', (value, ability, ctx) => {
-    ctx.combatant.addCondition('dodging', 'untilStartOfTurn', ctx.combatant.id, {
+    const applied = ctx.combatant.addCondition('dodging', 'untilStartOfTurn', ctx.combatant.id, {
         isBuff: true,
         curable: false,
         icon: '🛡️'
     });
+
+    if (!applied) {
+        return { condition: 'dodging', conditionApplied: false, conditionOutcome: rejectCondition(ctx.combatant, 'dodging', ctx) };
+    }
 
     ctx.addMessage(`🛡️ ${ability.name} (Dodge): ${ctx.character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
     ctx.showFloatingText(ctx.combatant.id, 'DODGING! 🛡️', 'buff');
@@ -633,6 +643,11 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    if (isConditionImmune(defender, config.condition)) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false,
+            conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+    }
+
     // EXPOSED: disadvantage on this save if the target is already suffering a condition
     // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
@@ -646,13 +661,19 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     const condLabel = config.condition.toUpperCase();
     const icon      = config.conditionIcon ?? '💢';
 
+    let conditionApplied = false;
+    let conditionOutcome = 'saved';
     if (saveRoll < saveDC) {
-        defender.addCondition(
+        conditionApplied = defender.addCondition(
             config.condition,
             config.conditionDuration,
             attacker.id,
             { isBuff: false, curable: false, icon, inflictedByTactic: true }
         );
+        if (!conditionApplied) {
+            return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+        }
+        conditionOutcome = 'applied';
         ctx.addMessage(
             `${icon} ${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
@@ -665,7 +686,7 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
         );
     }
 
-    return { dieRoll, saveDC, saveRoll, conditionApplied: saveRoll < saveDC };
+    return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome };
 });
 
 /**
@@ -699,6 +720,11 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    if (isConditionImmune(defender, config.condition)) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false,
+            conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+    }
+
     // EXPOSED: disadvantage on this save if the target is already suffering a condition
     // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
@@ -712,6 +738,8 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     const condLabel = config.condition.toUpperCase();
     const icon      = config.conditionIcon ?? '💢';
 
+    let conditionApplied = false;
+    let conditionOutcome = 'saved';
     if (saveRoll < saveDC) {
         const condOpts = {
             isBuff: false,
@@ -720,7 +748,11 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
             inflictedByTactic: true,
             ...(config.conditionValue !== undefined && { value: config.conditionValue })
         };
-        defender.addCondition(config.condition, config.conditionDuration, attacker.id, condOpts);
+        conditionApplied = defender.addCondition(config.condition, config.conditionDuration, attacker.id, condOpts);
+        if (!conditionApplied) {
+            return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+        }
+        conditionOutcome = 'applied';
         ctx.addMessage(
             `${icon} ${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
@@ -733,7 +765,7 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
         );
     }
 
-    return { dieRoll, saveDC, saveRoll, conditionApplied: saveRoll < saveDC };
+    return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome };
 });
 
 /**
@@ -764,6 +796,12 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     }
     ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
+    const conditionType = config.condition ?? 'pushed';
+    if (isConditionImmune(defender, conditionType)) {
+        return { dieRoll, saveDC, saveRoll: null, conditionApplied: false,
+            conditionOutcome: rejectCondition(defender, conditionType, ctx) };
+    }
+
     // EXPOSED: disadvantage on this save if the target is already suffering a condition
     // from one of the attacker's own tactics (one-shot, see checkExposedDisadvantage doc)
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
@@ -777,13 +815,19 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     const saveRoll = rollDefenderSave(defender, saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const saveLabel = saveType.toUpperCase();
 
+    let conditionApplied = false;
+    let conditionOutcome = 'saved';
     if (saveRoll < saveDC) {
-        defender.addCondition(
+        conditionApplied = defender.addCondition(
             config.condition ?? 'pushed',
             config.conditionDuration ?? 'untilEndOfTurn',
             attacker.id,
             { isBuff: false, curable: false, icon: '💨', inflictedByTactic: true }
         );
+        if (!conditionApplied) {
+            return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome: rejectCondition(defender, conditionType, ctx) };
+        }
+        conditionOutcome = 'applied';
         ctx.addMessage(
             `💨 ${defender.name} is PUSHED back! (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
@@ -796,7 +840,7 @@ registerHandler('onHitPush', (config, ability, ctx) => {
         );
     }
 
-    return { dieRoll, saveDC, saveRoll, conditionApplied: saveRoll < saveDC };
+    return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome };
 });
 
 /**
@@ -820,6 +864,7 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
     const resilienceMod = getAttributeModifierFor(character, 'hp');
     const tempHP = Math.max(1, dieRoll + resilienceMod);
 
+    const previousTempHP = combatant.getCondition('tempHP')?.value ?? 0;
     combatant.addCondition('tempHP', 'combat', combatant.id, {
         value: tempHP,
         isBuff: true,
@@ -829,6 +874,11 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
 
     // Consume bonus action
     combatant.actions.bonusAction = Math.max(0, (combatant.actions.bonusAction ?? 1) - 1);
+
+    if (isConditionImmune(combatant, 'tempHP') || tempHP <= previousTempHP) {
+        return { tempHP: 0, dieRoll, dieSides, conditionApplied: false,
+            conditionOutcome: rejectCondition(combatant, 'tempHP', ctx) };
+    }
 
     ctx.addMessage(
         `⚡ ${ability.name}! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
@@ -871,6 +921,7 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
     const resilienceMod = getAttributeModifierFor(character, 'hp');
     const tempHP = Math.max(1, dieRoll + resilienceMod);
 
+    const previousTempHP = ally.getCondition('tempHP')?.value ?? 0;
     ally.addCondition('tempHP', 'combat', combatant.id, {
         value: tempHP,
         isBuff: true,
@@ -880,6 +931,11 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
 
     // Consume bonus action
     combatant.actions.bonusAction = Math.max(0, (combatant.actions.bonusAction ?? 1) - 1);
+
+    if (isConditionImmune(ally, 'tempHP') || tempHP <= previousTempHP) {
+        return { tempHP: 0, dieRoll, dieSides, allyId: ally.id, conditionApplied: false,
+            conditionOutcome: rejectCondition(ally, 'tempHP', ctx) };
+    }
 
     ctx.addMessage(
         `⚡ ${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
@@ -1001,12 +1057,21 @@ registerHandler('targetedSaveOrCondition', (config, ability, ctx) => {
 
     const prof = attacker.character?.proficiencyBonus ?? 2;
     const dc = 8 + prof + getBlendedAttributeModifier(attacker.character, config.dcContext);
+    if (isConditionImmune(defender, config.condition)) {
+        return { dc, saveRoll: null, conditionApplied: false,
+            conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+    }
     const saveRoll = rollDefenderSave(defender, config.saveType, { combatManager: ctx.combatManager });
     const icon = config.conditionIcon ?? '💢';
-    const conditionApplied = saveRoll < dc;
+    let conditionApplied = false;
+    let conditionOutcome = 'saved';
 
-    if (conditionApplied) {
-        defender.addCondition(config.condition, 'combat', attacker.id, { isBuff: false, curable: true, icon });
+    if (saveRoll < dc) {
+        conditionApplied = defender.addCondition(config.condition, 'combat', attacker.id, { isBuff: false, curable: true, icon });
+        if (!conditionApplied) {
+            return { dc, saveRoll, conditionApplied, conditionOutcome: rejectCondition(defender, config.condition, ctx) };
+        }
+        conditionOutcome = 'applied';
         if (config.concentration) {
             attacker.concentratingOn = { abilityId: ability.id, targetId: defender.id };
         }
@@ -1022,7 +1087,7 @@ registerHandler('targetedSaveOrCondition', (config, ability, ctx) => {
         );
     }
 
-    return { dc, saveRoll, conditionApplied };
+    return { dc, saveRoll, conditionApplied, conditionOutcome };
 });
 
 /**
@@ -1046,11 +1111,16 @@ registerHandler('grantCondition', (config, ability, ctx) => {
         return { skipped: true, reason: 'noAlly' };
     }
 
-    ally.addCondition(config.condition, config.duration, combatant?.id ?? ally.id, {
+    const applied = ally.addCondition(config.condition, config.duration, combatant?.id ?? ally.id, {
         isBuff: config.isBuff ?? true,
         curable: false,
         icon: config.icon ?? '✨'
     });
+
+    if (!applied) {
+        return { allyId: ally.id, condition: config.condition, conditionApplied: false,
+            conditionOutcome: rejectCondition(ally, config.condition, ctx) };
+    }
 
     ctx.addMessage(`✨ ${ability.name}! ${ally.name} is ${config.condition}!`, 'success');
     ctx.showFloatingText(ally.id, `${config.condition.toUpperCase()}! ✨`, 'buff');

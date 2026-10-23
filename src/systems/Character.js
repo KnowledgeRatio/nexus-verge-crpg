@@ -10,6 +10,7 @@ import { getPassiveACBonus } from './PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getDerivedStatModifier } from '../utils/attributeResolver.js';
 import { normalizeNVAttributeKey, normalizeSixAttributeAbilities } from '../utils/attributeConversion.js';
 import { skillRegistry } from './SkillRegistry.js';
+import { recoverRestResources } from './restRecovery.js';
 import { damagePrecisionEnabled, hpToUnits, unitsToHP, normalizeHP, subtractHP, addHP } from '../utils/damagePrecision.js';
 
 export class Character {
@@ -205,7 +206,7 @@ export class Character {
         // Generic uses/recharge tracker for equipment mod effects (e.g. Deflecting),
         // keyed by propertyId (data/itemProperties.json id) — not per-mod hardcoding.
         // Any future mod with `uses`/`recharge` in its effect gets real rate-limiting
-        // for free via _resetEquipmentModChargesByRecharge().
+        // for free via the shared rest resource recovery.
         this.equipmentModCharges = data.equipmentModCharges || {};
         // Hearthcraft meal buff — null when no active meal, cleared at each long rest.
         // Shape: { practiceId, abilityScore, bonusMagnitude, fatigueRateMultiplier }
@@ -1002,62 +1003,6 @@ export class Character {
     }
 
     /**
-     * Look up this character's known ability definitions (from abilities.json), keyed by
-     * `class.id`. Needed to read each ability's `resourceType` when resetting `abilityUses`
-     * on rest — `selectedAbilities`/`knownTactics` only store IDs (mirrors the lookup
-     * CombatManager._findKnownAbility() does for the same reason).
-     * @param {Object} [abilitiesData] - Full abilities.json data ({ abilities: { [classId]: [...] } }).
-     *   Defaults to `window.game.abilitiesData` when available.
-     * @returns {Array<Object>}
-     */
-    _getKnownAbilityDefinitions(abilitiesData) {
-        const data = abilitiesData || (typeof window !== 'undefined' ? window.game?.abilitiesData : null);
-        const callingAbilities = data?.abilities?.[this.class?.id] || [];
-        const knownIds = new Set([...(this.selectedAbilities || []), ...(this.knownTactics || []), ...(this.knownVows || [])]);
-        return callingAbilities.filter(ab => knownIds.has(ab.id));
-    }
-
-    /**
-     * Clear `abilityUses` entries whose ability definition's `resourceType` is in
-     * `resourceTypes`. Leaves entries for other resource types (e.g. `longRest`-gated
-     * abilities untouched by a short rest) and entries whose definition can't be resolved.
-     * @param {string[]} resourceTypes
-     * @param {Object} [abilitiesData]
-     */
-    _resetAbilityUsesByResourceType(resourceTypes, abilitiesData) {
-        if (!this.abilityUses) {
-            return;
-        }
-        const knownAbilities = this._getKnownAbilityDefinitions(abilitiesData);
-        for (const id of Object.keys(this.abilityUses)) {
-            const definition = knownAbilities.find(ab => ab.id === id);
-            if (definition && resourceTypes.includes(definition.resourceType)) {
-                delete this.abilityUses[id];
-            }
-        }
-    }
-
-    /**
-     * Clear equipmentModCharges entries whose property effect's `recharge` (from
-     * itemProperties.json) is in `rechargeTypes`. Generic — any future Forgecraft mod
-     * with `uses`/`recharge` defined in its effect is rate-limited and reset for free,
-     * no per-mod code needed.
-     * @param {string[]} rechargeTypes
-     */
-    _resetEquipmentModChargesByRecharge(rechargeTypes) {
-        if (!this.equipmentModCharges) {
-            return;
-        }
-        const lootManager = typeof window !== 'undefined' ? window.lootManager : null;
-        for (const propId of Object.keys(this.equipmentModCharges)) {
-            const effect = lootManager?.getPropertyEffect(propId);
-            if (effect && rechargeTypes.includes(effect.recharge)) {
-                delete this.equipmentModCharges[propId];
-            }
-        }
-    }
-
-    /**
      * Take a short rest
      * @param {Object} [abilitiesData] - Full abilities.json data, for resourceType lookup.
      *   Defaults to `window.game.abilitiesData`.
@@ -1082,13 +1027,7 @@ export class Character {
 
         this.shortRestsUsed++;
 
-        // Reset only abilities with resourceType: 'shortRest' — longRest-gated abilities
-        // must survive a short rest.
-        this._resetAbilityUsesByResourceType(['shortRest'], abilitiesData);
-        this._resetEquipmentModChargesByRecharge(['shortRest']);
-
-        // Restore Resolve on short rest (Dedication)
-        this.resolvePoints = this.maxResolvePoints;
+        recoverRestResources(this, 'short', abilitiesData);
 
         return {
             success: true,
@@ -1146,10 +1085,7 @@ export class Character {
         // Reset short rests counter
         this.shortRestsUsed = 0;
 
-        // A long rest also resets short-rest resources (standard 5e logic), plus
-        // longRest-gated abilities.
-        this._resetAbilityUsesByResourceType(['shortRest', 'longRest'], abilitiesData);
-        this._resetEquipmentModChargesByRecharge(['shortRest', 'longRest']);
+        recoverRestResources(this, 'long', abilitiesData);
 
         // Recover spell slots
         if (this.spellcasting) {
@@ -1488,7 +1424,7 @@ export class Character {
             return null;
         }
 
-        // Apply item effect (e.g., healing potion)
+        // Apply the supported consumable effect
         let effect = null;
         if (item.effect) {
             effect = this.applyItemEffect(item.effect);
@@ -1508,14 +1444,6 @@ export class Character {
      */
     applyItemEffect(effect) {
         const result = {};
-
-        // Healing effect
-        if (effect.healing) {
-            const healing = roll(effect.healing);
-            this.currentHP = damagePrecisionEnabled() ? addHP(this.currentHP, healing, this.maxHP) : Math.min(this.maxHP, this.currentHP + healing);
-            result.healing = healing;
-            console.log(`💚 Healed ${healing} HP (${this.currentHP}/${this.maxHP})`);
-        }
 
         // Temporary HP
         if (effect.tempHP) {

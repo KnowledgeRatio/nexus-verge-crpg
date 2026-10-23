@@ -11,15 +11,19 @@ import { generateSeedString } from './utils/rng.js';
 
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
 import { renderCharacterAppearance } from './ui/CharacterAppearance.js';
-import SettlementUI from './ui/SettlementUI.js';
+import SettlementUI, { formatQuestReputation } from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
 import Player from './systems/Player.js';
 import CombatManager from './systems/CombatManager.js';
+import { conditionRejectionMessage } from './systems/conditionApplication.js';
 import restManager from './systems/RestManager.js';
+import { getKnownAbilityDefinitions } from './systems/restRecovery.js';
+import ProvisioningManager from './systems/ProvisioningManager.js';
 import saveManager from './systems/SaveManager.js';
 import { playerIdentity } from './systems/PlayerIdentity.js';
 import SettlementManager from './systems/SettlementManager.js';
+import HostileSettlementManager from './systems/HostileSettlementManager.js';
 import NPCGenerator from './systems/NPCGenerator.js';
 import QuestGenerator from './systems/QuestGenerator.js';
 import QuestManager from './systems/QuestManager.js';
@@ -301,18 +305,9 @@ class Game {
             return null;
         }
 
-        // Gather eligible reaction abilities for this hook point — resolved the same way
-        // CombatManager._findKnownAbility() does (union of selectedAbilities/knownTactics/
-        // knownVows against abilitiesData), never via character.abilities (the ability-SCORE
-        // bag, not an array of ability definitions).
         const character = reactor.character;
-        const knownIds = new Set([
-            ...(character?.selectedAbilities || []),
-            ...(character?.knownTactics || []),
-            ...(character?.knownVows || [])
-        ]);
-        const callingAbilities = this.abilitiesData?.abilities?.[character?.class?.id] || [];
-        const knownReactionAbilities = callingAbilities.filter(ab => knownIds.has(ab.id) && ab.actionType === 'reaction');
+        const knownReactionAbilities = getKnownAbilityDefinitions(character, this.abilitiesData)
+            .filter(ability => ability.actionType === 'reaction');
 
         const eligible = knownReactionAbilities.filter(ab => {
             if (hookPoint === 'afterMiss') {
@@ -1171,6 +1166,8 @@ class Game {
             this.settlementUI.settlementManager = this.settlementManager; // Set circular reference
         }
 
+        await this.initializeHostileSettlements(seed, campaignId);
+
         // Initialize Dungeon System
         if (!this.dungeonGenerator) {
             console.log('🏰 Initializing dungeon generation system...');
@@ -1205,6 +1202,7 @@ class Game {
         }
 
         if (!this.player) {
+            await this.initializeProvisioning();
             console.log('👤 Initializing player...');
             this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
             await this.player.spawn();
@@ -1277,6 +1275,14 @@ class Game {
         console.log('✅ Game initialized successfully');
     }
 
+    async initializeHostileSettlements(seed, campaignId) {
+        this.hostileSettlementManager = new HostileSettlementManager({
+            worldSeed: seed, campaignId, skillChallengeManager: this.skillChallengeManager
+        });
+        await this.hostileSettlementManager.init();
+        this.settlementManager.hostileSettlementManager = this.hostileSettlementManager;
+    }
+
     /**
      * Initialize combat screen
      */
@@ -1324,7 +1330,7 @@ class Game {
             isBossFight: Boolean(pendingCombat.isBossFight)
         };
         await this.combatManager.startCombat(player, pendingCombat.enemies, companions,
-            pendingCombat.questEncounterSource || null);
+            pendingCombat.questEncounterSource || null, pendingCombat.settlementSource || null);
 
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
@@ -2200,7 +2206,7 @@ class Game {
             // End turn after dodging
             this.combatManager.endTurn();
         } else {
-            gameState.addMessage('Already dodging!', 'warning');
+            gameState.addMessage(conditionRejectionMessage(combatant, 'dodging'), 'warning');
         }
     }
 
@@ -2934,6 +2940,13 @@ class Game {
         window.questManager = this.questManager;
         // Make consequence manager globally accessible for SettlementManager, DungeonManager, etc.
         window.consequenceManager = consequenceManager;
+        this.consequenceManager = consequenceManager;
+
+        if (this.questSystemSetup) {
+            this.refreshQuestTracking();
+            return;
+        }
+        this.questSystemSetup = true;
 
         // Quest Log Modal elements
         const questLogModal = document.getElementById('questLogModal');
@@ -3002,7 +3015,15 @@ class Game {
         gameState.subscribe('quests', (quests) => {
             this.updateQuestCounts(quests);
             this.renderCurrentQuestTab();
+            this.refreshQuestTracking();
         });
+        gameState.subscribe('world', () => this.refreshQuestTracking());
+        gameState.subscribe('*', event => {
+            if (!event.path) {
+                this.refreshQuestTracking();
+            }
+        });
+        this.refreshQuestTracking();
 
         // Q key to open quest log (when not in combat)
         document.addEventListener('keydown', (e) => {
@@ -3305,10 +3326,18 @@ class Game {
         const rewards = [];
         if (quest.rewards?.xp) rewards.push(`${quest.rewards.xp} XP`);
         if (quest.rewards?.gold) rewards.push(`${quest.rewards.gold} Gold`);
-        if (quest.rewards?.reputation) rewards.push(`+${quest.rewards.reputation.amount} Rep`);
+        const standingReceipt = quest.rewardReceipt?.summary;
+        const reputation = status === 'completed'
+            ? formatQuestReputation({ available: !standingReceipt?.reputationWarning,
+                changes: standingReceipt?.reputation || [] }, true)
+            : formatQuestReputation(this.questManager?.getQuestReputationPreview?.(quest));
+        if (reputation) {
+            rewards.push(escapeAttribute(reputation));
+        }
         const rewardText = rewards.join(' | ');
 
-        const distanceText = quest.distanceTiles ? `📍 ${quest.distanceTiles} tiles` : '';
+        const guidance = this.questManager?.getTrackedQuestGuidance?.();
+        const tracked = guidance?.questId === quest.id;
         const timeLimitBadge = quest.timeLimit
             ? `<span class="quest-time-limit">⚠ ${quest.timeLimit} rooms</span>`
             : '';
@@ -3323,7 +3352,7 @@ class Game {
             );
             actionButtons = `
                 <div class="quest-actions">
-                    <button class="quest-action-btn" data-action="track">Track</button>
+                    ${RULES.quests.tracking?.enabled ? `<button class="quest-action-btn" data-action="track" aria-pressed="${tracked}">${tracked ? 'Untrack' : 'Track'}</button>` : ''}
                     ${allCompleted && !isRichQuest(quest) ? '<button class="quest-action-btn btn-success" data-action="complete">Complete</button>' : ''}
                     <button class="quest-action-btn btn-danger" data-action="abandon">Abandon</button>
                 </div>
@@ -3341,6 +3370,7 @@ class Game {
                     <h3 class="quest-title">${quest.name}</h3>
                 </div>
                 <p class="quest-description">${quest.description}</p>
+                ${this.settlementUI?.renderQuestStakes(quest) || ''}
                 <div class="quest-objectives">
                     ${objectives}
                 </div>
@@ -3348,7 +3378,7 @@ class Game {
                 <div class="quest-rewards">
                     ${dungeonText}
                     <span class="quest-reward">🎁 ${rewardText}</span>
-                    ${distanceText ? `<span class="quest-distance">${distanceText}</span>` : ''}
+                    ${tracked ? `<span class="quest-tracking-guidance">${escapeAttribute(this.questGuidanceText(guidance))}</span>` : ''}
                 </div>
                 ${actionButtons}
             </div>
@@ -3380,7 +3410,7 @@ class Game {
         container.innerHTML = available.map(quest => {
             const archetypeColor = archetypeColors[quest.callingArchetype] || '#7f8c8d';
             const diffColor = difficultyColors[quest.difficulty] || '#7f8c8d';
-            const distanceText = quest.distanceTiles ? `${quest.distanceTiles} tiles` : '';
+            const reputation = formatQuestReputation(this.questManager?.getQuestReputationPreview?.(quest));
             const timeLimitBadge = quest.timeLimit
                 ? `<span class="board-time-limit">⚠ Time-sensitive</span>`
                 : '';
@@ -3393,9 +3423,9 @@ class Game {
                 </div>
                 <div class="quest-board-card-title">${quest.name}</div>
                 <div class="quest-board-card-desc">${quest.description}</div>
+                ${this.settlementUI?.renderQuestStakes(quest) || ''}
                 <div class="quest-board-card-footer">
-                    <span class="quest-reward">${quest.rewards?.xp || 0} XP | ${quest.rewards?.gold || 0} gold</span>
-                    ${distanceText ? `<span class="quest-distance">📍 ${distanceText}</span>` : ''}
+                    <span class="quest-reward">${quest.rewards?.xp || 0} XP | ${quest.rewards?.gold || 0} gold${reputation ? ` | ${escapeAttribute(reputation)}` : ''}</span>
                 </div>
                 <button class="quest-accept-btn" onclick="window.game.acceptQuestFromBoard('${quest.id}')">Accept Quest</button>
             </div>`;
@@ -3445,11 +3475,55 @@ class Game {
     }
 
     /**
-     * Track quest (show marker on map - placeholder)
+     * Toggle the single tracked quest through the quest manager.
      */
     trackQuest(questId) {
-        gameState.addMessage(`Now tracking quest: ${questId}`, 'info');
-        // TODO: Add quest marker to map
+        const guidance = this.questManager?.getTrackedQuestGuidance?.();
+        if (this.questManager?.setTrackedQuest(guidance?.questId === questId ? null : questId)) {
+            this.refreshQuestTracking();
+            this.renderCurrentQuestTab();
+        }
+    }
+
+    questGuidanceText(guidance) {
+        const navigation = guidance?.navigation;
+        if (!navigation || navigation.type === 'unknown') {
+            return navigation?.label || 'Location unknown. Explore or seek information.';
+        }
+        if (navigation.type === 'exact') {
+            return `${navigation.label} (${navigation.x}, ${navigation.y})`;
+        }
+        if (navigation.type === 'area') {
+            return `${navigation.label} — search the marked area.`;
+        }
+        return navigation.label;
+    }
+
+    refreshQuestTracking() {
+        if (this.refreshingQuestTracking) {
+            return;
+        }
+        this.refreshingQuestTracking = true;
+        try {
+            this.questManager?.refreshTrackingIntel?.();
+            const guidance = this.questManager?.getTrackedQuestGuidance?.();
+            for (const panel of document.querySelectorAll('.quest-tracking-hud')) {
+                panel.hidden = !guidance;
+                panel.querySelector('.quest-tracking-name').textContent = guidance?.questName || '';
+                panel.querySelector('.quest-tracking-objective').textContent = guidance?.objectiveText || '';
+                panel.querySelector('.quest-tracking-location').textContent = guidance ? this.questGuidanceText(guidance) : '';
+            }
+            const legend = document.getElementById('worldMapQuestGuidance');
+            if (legend) {
+                legend.hidden = !guidance;
+                legend.textContent = guidance ? `${guidance.questName}: ${guidance.objectiveText} — ${this.questGuidanceText(guidance)}` : '';
+            }
+            if (document.getElementById('worldMapModal')?.classList.contains('active')) {
+                this.renderWorldMap();
+            }
+        } finally {
+            this.refreshingQuestTracking = false;
+        }
     }
 
     /**
@@ -4372,6 +4446,7 @@ class Game {
         this.worldMapOffsetX = 0;
         this.worldMapOffsetY = 0;
         this.worldMapDragging = false;
+        this.worldMapPointerId = null;
         this.worldMapLastMouseX = 0;
         this.worldMapLastMouseY = 0;
 
@@ -4391,16 +4466,23 @@ class Game {
             });
         }
 
-        // Canvas pan with mouse drag
+        // Capture keeps the drag continuous when a finger or mouse leaves the canvas.
         if (worldMapCanvas) {
-            worldMapCanvas.addEventListener('mousedown', (e) => {
+            worldMapCanvas.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 || this.worldMapPointerId !== null) {
+                    return;
+                }
+                e.preventDefault();
+                this.worldMapPointerId = e.pointerId;
+                worldMapCanvas.setPointerCapture(e.pointerId);
                 this.worldMapDragging = true;
                 this.worldMapLastMouseX = e.clientX;
                 this.worldMapLastMouseY = e.clientY;
             });
 
-            worldMapCanvas.addEventListener('mousemove', (e) => {
-                if (this.worldMapDragging) {
+            worldMapCanvas.addEventListener('pointermove', (e) => {
+                if (this.worldMapDragging && this.worldMapPointerId === e.pointerId) {
+                    e.preventDefault();
                     const dx = e.clientX - this.worldMapLastMouseX;
                     const dy = e.clientY - this.worldMapLastMouseY;
                     this.worldMapOffsetX += dx;
@@ -4411,13 +4493,19 @@ class Game {
                 }
             });
 
-            worldMapCanvas.addEventListener('mouseup', () => {
+            const finishPan = e => {
+                if (this.worldMapPointerId !== e.pointerId) {
+                    return;
+                }
+                this.worldMapPointerId = null;
                 this.worldMapDragging = false;
-            });
-
-            worldMapCanvas.addEventListener('mouseleave', () => {
-                this.worldMapDragging = false;
-            });
+                if (worldMapCanvas.hasPointerCapture(e.pointerId)) {
+                    worldMapCanvas.releasePointerCapture(e.pointerId);
+                }
+            };
+            worldMapCanvas.addEventListener('pointerup', finishPan);
+            worldMapCanvas.addEventListener('pointercancel', finishPan);
+            worldMapCanvas.addEventListener('lostpointercapture', finishPan);
 
             // Canvas zoom with mouse wheel
             worldMapCanvas.addEventListener('wheel', (e) => {
@@ -4505,6 +4593,10 @@ class Game {
 
         // Iterate through all generated regions
         world.generatedRegions.forEach((region, regionKey) => {
+            // Saved compressed regions have no terrain tiles until regenerated.
+            if (!region.tiles) {
+                return;
+            }
             const [regionX, regionY] = regionKey.split(',').map(Number);
 
             // Render each tile in the region (tiles are stored as 1D array)
@@ -4548,8 +4640,15 @@ class Game {
                     // Draw feature icons (settlements, sanctuaries)
                     if (tile.feature && this.worldMapZoom >= 3) {
                         if (tile.feature.type === 'settlement') {
-                            ctx.fillStyle = '#8B0000';
+                            const phase = tile.feature.hostileState?.phase;
+                            ctx.fillStyle = phase === 'hostile' ? '#ef6b64'
+                                : phase === 'rebuilding' ? '#e7ba58' : '#8B0000';
                             ctx.fillRect(screenX, screenY, this.worldMapZoom, this.worldMapZoom);
+                            if (['hostile', 'rebuilding'].includes(phase)) {
+                                ctx.fillStyle = '#1a1412';
+                                ctx.font = `${this.worldMapZoom}px monospace`;
+                                ctx.fillText(phase === 'hostile' ? '⚔' : '⚒', screenX, screenY + this.worldMapZoom);
+                            }
                         } else if (tile.feature.type === 'sanctuary') {
                             ctx.fillStyle = '#FFD700';
                             ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
@@ -4558,6 +4657,12 @@ class Game {
                     }
                 }
             }
+        });
+
+        this.mapRenderer?.drawQuestGuidance(ctx, this.questManager?.getTrackedQuestGuidance?.(), {
+            scaleX: this.worldMapZoom, scaleY: this.worldMapZoom,
+            offsetX: this.worldMapOffsetX, offsetY: this.worldMapOffsetY,
+            width: canvas.width, height: canvas.height
         });
 
         // Draw player position
@@ -4637,6 +4742,10 @@ class Game {
      * Setup Character Sheet System
      */
     setupCharacterSheet() {
+        if (this.characterSheetSetup) {
+            return;
+        }
+        this.characterSheetSetup = true;
         const modal = document.getElementById('characterSheetModal');
         const closeBtn = document.getElementById('closeCharacterSheetBtn');
 
@@ -4654,6 +4763,17 @@ class Game {
             }
         });
 
+        const refreshStanding = () => {
+            if (modal?.classList.contains('active')) {
+                this.renderCharacterSheet();
+            }
+        };
+        gameState.subscribe('factions', refreshStanding);
+        gameState.subscribe('*', event => {
+            if (!event.path) {
+                refreshStanding();
+            }
+        });
         console.log('📋 Character sheet system initialized');
     }
 
@@ -5159,7 +5279,7 @@ class Game {
         try {
             const { buildBossEncounter } = await import('./systems/EncounterBuilder.js');
 
-            const playerLevel = character.level || 1;
+            const playerLevel = this.dungeonManager?.getQuestEncounterLevel?.(character.level || 1) ?? (character.level || 1);
             const campaignId = gameState.get('worldConfig.campaignId') || 'core';
             const dungeonState = gameState.get('dungeon');
             const dungeonTypeId = dungeonState?.dungeonTypeId || null;
@@ -5462,6 +5582,12 @@ class Game {
         }
 
         switch (action) {
+            case 'interact':
+                if (!document.querySelector('.modal.active')) {
+                    document.getElementById('quickMenu')?.classList.add('hidden');
+                    this.player?.handleInteraction();
+                }
+                break;
             case 'inventory':
                 this.openInventory();
                 break;
@@ -5695,6 +5821,48 @@ class Game {
      * @param {Object} stage - Optional current stage for sequential challenges
      * @returns {Promise<Object>} - { attempted: boolean, success: boolean, rollResult: Object, consequences: Object }
      */
+    async initializeProvisioning() {
+        this.provisioningManager = new ProvisioningManager({
+            worldGenerator: this.worldGenerator,
+            skillChallengeManager: this.skillChallengeManager || window.skillChallengeManager
+        });
+        await this.provisioningManager.loadData(gameState.get('worldConfig.campaignId'));
+    }
+
+    /** Open the shared skill prompt; only its confirmed action spends the site. */
+    async promptProvisioning() {
+        const position = gameState.get('player.position');
+        const opportunity = position && this.provisioningManager?.getOpportunityAtPosition(position.x, position.y);
+        if (!opportunity?.canAttempt) {
+            if (opportunity?.reason === 'full') {
+                gameState.addMessage('Your supplies are full. You can gather here later.', 'info');
+            } else if (opportunity?.reason === 'spent') {
+                gameState.addMessage('You have already attempted to gather here. This source is spent.', 'info');
+            }
+            return;
+        }
+        const metadata = gameState.get('world.metadata');
+        const sanctuary = opportunity.feature?.type !== 'provisioning';
+        if (sanctuary) {
+            restManager.closeRestMenu();
+        }
+        const { cue, challenge, siteId } = opportunity;
+        await this.promptSkillCheck({
+            title: cue.title,
+            description: `${cue.description} One attempt here per run. Success restores ${RULES.provisioning.suppliesReward} supply. Attempt costs ${RULES.fatigue.skillChallengeFatigue} fatigue before rolling.`,
+            skill: challenge.skillId,
+            attribute: challenge.attribute,
+            dc: challenge.dc,
+            cancelLabel: 'Leave for later',
+            deferRollPreview: true,
+            resolveAttempt: () => gameState.get('world.metadata') === metadata
+                ? this.provisioningManager.attempt(siteId) : { attempted: false }
+        }, challenge);
+        if (sanctuary && gameState.get('world.metadata') === metadata && !gameState.get('combat')?.active) {
+            restManager.openRestMenu();
+        }
+    }
+
     async promptSkillCheck(config, challenge = null, stage = null) {
         const modal = document.getElementById('skillCheckModal');
         const character = gameState.get('character');
@@ -5724,7 +5892,9 @@ class Game {
         const attributeLabel = attribute ? ` + ${attribute}` : '';
         document.getElementById('skillCheckType').textContent = `${this.formatSkillName(skillId)}${attributeLabel} Check`;
         document.getElementById('skillCheckDC').textContent = `DC ${dc}`;
-        document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
+        document.getElementById('skillCheckBonus').textContent = config.deferRollPreview
+            ? 'After fatigue cost' : `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
+        document.getElementById('skillCheckChance').parentElement.hidden = Boolean(config.deferRollPreview);
 
         // Calculate success chance (d20 + bonus >= DC)
         const successChance = Math.round(checkContext.successChance * 100) / 100;
@@ -5787,6 +5957,7 @@ class Game {
         // Show/hide cancel button based on challenge
         const cancelBtn = document.getElementById('cancelSkillCheck');
         const canTurnBack = challenge?.canTurnBack !== false; // Default to true if not specified
+        cancelBtn.textContent = config.cancelLabel || 'Turn Back';
 
         if (canTurnBack) {
             cancelBtn.style.display = 'inline-block';
@@ -5823,7 +5994,15 @@ class Game {
                 }
 
                 // Resolve the same party, fatigue and roll mode shown in the preview.
-                const rollResult = window.skillChallengeManager.rollSkillCheck(character, {
+                const managedAttempt = config.resolveAttempt?.();
+                if (config.resolveAttempt && (!managedAttempt?.attempted || !managedAttempt.rollResult)) {
+                    modal.classList.remove('active');
+                    gameState.addMessage(managedAttempt?.reason === 'error'
+                        ? 'This opportunity could not be resolved.' : 'This opportunity is no longer available.', 'warning');
+                    resolve({ attempted: Boolean(managedAttempt?.attempted), success: false });
+                    return;
+                }
+                const rollResult = config.resolveAttempt ? managedAttempt.rollResult : window.skillChallengeManager.rollSkillCheck(character, {
                     skillId,
                     attribute,
                     dc,
@@ -5874,9 +6053,9 @@ class Game {
                 }
 
                 // Apply consequences if challenge provided
-                let consequences = null;
-                let outcome = null;
-                if (challenge && window.skillChallengeManager) {
+                let consequences = managedAttempt?.consequences || null;
+                let outcome = managedAttempt?.outcome || null;
+                if (challenge && window.skillChallengeManager && !managedAttempt) {
                     outcome = window.skillChallengeManager.getOutcome(challenge, stage, success, criticalInfo);
                     if (outcome) {
                         consequences = window.skillChallengeManager.applyConsequences(
@@ -6284,9 +6463,12 @@ class Game {
 
             // Rewards (on success)
             const rewardsList = document.getElementById('outcomeRewardsList');
-            if (consequences && (consequences.xp > 0 || consequences.gold > 0 || (consequences.items && consequences.items.length > 0))) {
+            if (consequences && (consequences.suppliesRestored > 0 || consequences.xp > 0 || consequences.gold > 0 || (consequences.items && consequences.items.length > 0))) {
                 rewardsSection.classList.add('active');
                 let rewardsHTML = '';
+                if (consequences.suppliesRestored > 0) {
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">🎒</span><span class="reward-value">+${consequences.suppliesRestored} supply</span></div>`;
+                }
                 if (consequences.xp > 0) {
                     rewardsHTML += `<div class="reward-item"><span class="reward-icon">✨</span><span class="reward-value">+${consequences.xp} XP</span></div>`;
                 }
@@ -6379,6 +6561,16 @@ class Game {
     /**
      * Render Complete Character Sheet
      */
+    renderFactionStanding() {
+        return (this.relationManager ? this.npcGenerator?.culturesData || [] : []).map(culture => {
+            const standing = this.relationManager.getFactionStanding(culture.id);
+            return `<div class="char-row">
+                <span class="char-label">${escapeAttribute(culture.name)}:</span>
+                <span class="char-value" style="color:${standing.color}">${standing.score} · ${escapeAttribute(standing.tierLabel)}</span>
+            </div>`;
+        }).join('');
+    }
+
     renderCharacterSheet() {
         const character = gameState.get('character');
         if (!character) {
@@ -6440,15 +6632,8 @@ class Game {
 
             <!-- Faction Standing -->
             <div class="char-section full-width">
-                <h3>Faction Standing</h3>
-                ${(this.relationManager ? (this.npcGenerator?.culturesData || []) : []).map(culture => {
-                    const standing = this.relationManager.getFactionStanding(culture.id);
-                    return `
-                <div class="char-row">
-                    <span class="char-label">${culture.name}:</span>
-                    <span class="char-value" style="color:${standing.color}">${standing.tierLabel}</span>
-                </div>`;
-                }).join('')}
+                <h3>Culture Standing</h3>
+                ${this.renderFactionStanding()}
             </div>
 
             <!-- Ability Scores -->
@@ -7361,7 +7546,7 @@ class Game {
         // If not in inventory, check if it's equipped
         if (!item) {
             for (const slot in character.equipment) {
-                if (character.equipment[slot] && character.equipment[slot].id === itemId) {
+                if (character.equipment[slot] && (character.equipment[slot].instanceId || character.equipment[slot].id) === itemId) {
                     item = character.equipment[slot];
                     break;
                 }
@@ -7476,7 +7661,7 @@ class Game {
         }
 
         // Remove from inventory and equip
-        const index = character.inventory.findIndex(i => i.id === item.id);
+        const index = character.inventory.indexOf(item);
         if (index !== -1) {
             character.inventory.splice(index, 1);
         }
@@ -7510,7 +7695,7 @@ class Game {
         // Find which slot has this item
         let slot = null;
         for (const [slotName, equipped] of Object.entries(character.equipment)) {
-            if (equipped && equipped.id === item.id) {
+            if (equipped === item || (equipped && (equipped.instanceId || equipped.id) === (item.instanceId || item.id))) {
                 slot = slotName;
                 break;
             }
@@ -7556,40 +7741,8 @@ class Game {
             return;
         }
 
-        // Handle potion of healing
-        if (item.id.includes('potion') && item.id.includes('healing')) {
-            const healing = this.rollHealing(item);
-            const oldHP = character.currentHP;
-            character.currentHP = fractionalCombatEnabled()
-                ? addHP(character.currentHP, healing, character.maxHP)
-                : Math.min(character.maxHP, character.currentHP + healing);
-            const actualHealing = fractionalCombatEnabled()
-                ? subtractHP(character.currentHP, oldHP)
-                : character.currentHP - oldHP;
-
-            gameState.addMessage(`You drink ${item.name} and restore ${formatCombatNumber(actualHealing)} HP!`, 'success');
-
-            // Decrease quantity or remove item
-            if (item.quantity && item.quantity > 1) {
-                item.quantity--;
-            } else {
-                const index = character.inventory.indexOf(item);
-                if (index !== -1) {
-                    character.inventory.splice(index, 1);
-                }
-            }
-
-            // Update game state
-            gameState.set('character', character);
-
-            // Re-render inventory
-            this.renderInventory();
-
-            // Update HUD
-            this.updateHUD(character);
-
         // Handle ammo reload (quiverOfArrows → bows, boltCase → crossbows)
-        } else if (item.effect === 'refillAmmo') {
+        if (item.effect === 'refillAmmo') {
             const weapon = character?.equipment?.mainHand;
             if (!weapon || weapon.weaponType !== 'ranged') {
                 gameState.addMessage('No ranged weapon equipped to refill.', 'error');
@@ -7633,23 +7786,6 @@ class Game {
         } else {
             gameState.addMessage(`${item.name} cannot be used yet.`, 'info');
         }
-    }
-
-    /**
-     * Roll Healing for Potion
-     */
-    rollHealing(item) {
-        // Default healing potion: 2d4+2
-        const dice = 2;
-        const sides = 4;
-        const bonus = 2;
-
-        let total = bonus;
-        for (let i = 0; i < dice; i++) {
-            total += Math.floor(Math.random() * sides) + 1;
-        }
-
-        return total;
     }
 
     /**
@@ -8185,6 +8321,8 @@ class Game {
             this.settlementUI.settlementManager = this.settlementManager;
         }
 
+        await this.initializeHostileSettlements(seed, campaignId);
+
         // Initialize dungeon system
         if (!this.dungeonGenerator) {
             console.log('🏰 Initializing dungeon generation system...');
@@ -8218,10 +8356,13 @@ class Game {
         // Reinitialize player at saved position.
         // _loadedPlayerPosition is written by SaveManager.deserializeGameState and is the
         // authoritative position from the save file. Fall back to world.currentLocation.
+        this.setupQuestSystem();
+        this.setupCharacterSheet();
         const savedPosition = gameState.get('_loadedPlayerPosition') ||
                               gameState.get('world.currentLocation') ||
                               { x: 0, y: 0 };
 
+        await this.initializeProvisioning();
         this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
         this.player.x = savedPosition.x;
         this.player.y = savedPosition.y;

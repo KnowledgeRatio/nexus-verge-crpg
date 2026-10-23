@@ -28,6 +28,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { readFileSync } from 'node:fs';
 
 vi.mock('../../src/systems/AudioManager.js', () => ({
     default: {
@@ -39,6 +40,9 @@ vi.mock('../../src/systems/AudioManager.js', () => ({
 import { CombatManager, Combatant } from '../../src/systems/CombatManager.js';
 import { gameState } from '../../src/core/GameState.js';
 import { RULES } from '../../src/core/rulesEngine.js';
+import { Character } from '../../src/systems/Character.js';
+
+const readData = name => JSON.parse(readFileSync(new URL(`../../data/${name}.json`, import.meta.url), 'utf8'));
 
 // window.game / window.lootManager are read via optional chaining deep in CombatManager;
 // `window` itself must exist as a global or those reads throw ReferenceError.
@@ -302,6 +306,55 @@ describe('CombatManager.attack — to-hit roll resolution (NVSystem mode)', () =
 describe('CombatManager.attack — confirmed hit resolves without throwing', () => {
     afterEach(() => {
         window.game = null;
+    });
+
+    function makeTacticAttacker(level, resolvePoints) {
+        const character = new Character({
+            name: 'Exemplar', level,
+            class: readData('classes').classes.find(calling => calling.id === 'dedication'),
+            species: { traits: [], abilityScoreIncrease: {} },
+            specialization: 'exemplar', knownTactics: ['tripAttack'], resolvePoints
+        });
+        const saved = { ...Character.fromJSON(JSON.parse(JSON.stringify(character.toJSON()))) };
+        gameState.set('character', saved);
+        const attacker = new Combatant(saved, 'player', 'atk');
+        attacker.pendingTactic = 'tripAttack';
+        window.game = { abilitiesData: readData('abilities') };
+        return attacker;
+    }
+
+    it.each([3, 5, 10])('a level-%s queued Trip Attack spends its authored Resolve cost once on a hit', async level => {
+        const cm = new CombatManager();
+        const attacker = makeTacticAttacker(level, 2);
+        const defender = new Combatant(makeCharacter({ ac: 1, maxHP: 500, currentHP: 500 }), 'enemy', 'def');
+        vi.spyOn(Math, 'random').mockReturnValue(0.7);
+        await cm.attack(attacker, defender);
+        expect(attacker.character.resolvePoints).toBe(1);
+        expect(lastMessageStartingWith('⚔️ Trip Attack!')).toContain('extra damage');
+        expect(attacker.pendingTactic).toBeNull();
+        expect(attacker.actions.action).toBe(0);
+    });
+
+    it('a queued tactic cannot apply after its Resolve has been exhausted', async () => {
+        const cm = new CombatManager();
+        const attacker = makeTacticAttacker(5, 0);
+        const defender = new Combatant(makeCharacter({ ac: 1, maxHP: 500, currentHP: 500 }), 'enemy', 'def');
+        vi.spyOn(Math, 'random').mockReturnValue(0.7);
+        await cm.attack(attacker, defender);
+        expect(attacker.character.resolvePoints).toBe(0);
+        expect(lastMessageStartingWith('Not enough Resolve!')).toContain('need 1');
+        expect(lastMessageStartingWith('⚔️ Trip Attack!')).toBeNull();
+        expect(attacker.pendingTactic).toBeNull();
+    });
+
+    it('an on-hit tactic does not spend Resolve when the attack misses', async () => {
+        const cm = new CombatManager();
+        const attacker = makeTacticAttacker(5, 2);
+        const defender = new Combatant(makeCharacter({ ac: 99 }), 'enemy', 'def');
+        vi.spyOn(Math, 'random').mockReturnValue(0.05);
+        await cm.attack(attacker, defender);
+        expect(attacker.character.resolvePoints).toBe(2);
+        expect(attacker.pendingTactic).toBeNull();
     });
 
     it('a plain confirmed hit with no pending maneuver does not throw and consumes the action', async () => {

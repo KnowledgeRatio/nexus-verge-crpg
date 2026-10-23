@@ -26,6 +26,7 @@ import { execute } from '../../src/systems/EffectDispatcher.js';
 import { CombatManager, Combatant } from '../../src/systems/CombatManager.js';
 import { getAuraACBonus, getAuraSaveBonus } from '../../src/systems/PassiveModifierRegistry.js';
 import { Character } from '../../src/systems/Character.js';
+import { getKnownAbilityDefinitions } from '../../src/systems/restRecovery.js';
 import { gameState } from '../../src/core/GameState.js';
 import { RULES } from '../../src/core/rulesEngine.js';
 
@@ -409,10 +410,13 @@ describe('Character — knownVows and Conviction dual-bookkeeping', () => {
         expect(character.selectedTraits).toContain('conviction');
     });
 
-    it('_getKnownAbilityDefinitions includes knownVows in the union', () => {
+    it('getKnownAbilityDefinitions includes knownVows in the union', () => {
         const character = makeRealCharacter({ knownVows: ['challenge'] });
-        const abilitiesData = { abilities: { dedication: [{ id: 'challenge', name: 'Challenge' }, { id: 'other', name: 'Other' }] } };
-        const known = character._getKnownAbilityDefinitions(abilitiesData);
+        const abilitiesData = { abilities: { dedication: [
+            { id: 'challenge', name: 'Challenge', subtype: 'vow' },
+            { id: 'other', name: 'Other', subtype: 'vow' }
+        ] } };
+        const known = getKnownAbilityDefinitions(character, abilitiesData);
         expect(known.map(a => a.id)).toEqual(['challenge']);
     });
 });

@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-23",
+  "tool": "OpenAI built-in image_gen",
+  "purpose": "First-person illustrated settlement interiors and separate role figures",
+  "assets": [
+    {
+      "file": "data/graphics/merchant-interior-v1.png",
+      "prompt": "Create a new wide 16:9 illustrated CRPG interior asset, using the reference only for its rich realistic painted materials, warm worn frontier atmosphere and first-person perspective. A modest provision merchant's timber shop, viewed at the customer's eye level immediately across a broad worn wooden counter. The counter's straight far edge runs horizontally at exactly 65 percent of image height; its rich wooden top fills the lower 35 percent. Behind it: orderly shelves with linen bolts, rope coils, leather satchels, ceramic jars, folded blankets and sacks; soft daylight from left and warm lamplight on wood. Leave the center x=50 percent from y=24 to 65 percent clear of foreground objects for a separately composited waist-up merchant. No people anywhere, no faces, no readable writing, no signs, no UI, no watermark. Calm believable inhabited shop through its goods and wear, welcoming but practical, detailed materials like the reference, not low-poly or a dollhouse.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-4e061154-b143-4bf4-bea6-41395411f5b1.png"
+    },
+    {
+      "file": "data/graphics/greathall-interior-v1.png",
+      "prompt": "Create a wide 16:9 first-person photographic illustration for a CRPG interior, matching the reference's richly textured warm worn frontier atmosphere and realistic eye-level perspective. No people or faces, no readable text, no logos, no UI, no watermark, no magical glow, no royal regalia. This is a working community, not a fantasy palace. A stone-and-timber civic reception chamber, viewed standing directly across a broad worn oak reception desk. Its straight rear edge is exactly65% down the image; desk surface fills lower35%. Leave center x50%, y24-65% clear to composite a waist-up local leader. A simple high-backed chair behind central place, records and rolled maps set aside at far left, restrained woven cloth, warm lamplight, heavy beams, lateral hearth, and a noticeboard with indistinct unlettered sheets off to right. Practical authority, no throne, no symbols or insignia.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-71057569-83a9-4ac1-ad2c-a131c29a3b9e.png"
+    },
+    {
+      "file": "data/graphics/greathall-interior-v2.png",
+      "prompt": "Wide 16:9 realistic photographic illustration of a frontier settlement's CIVIC COUNCIL AND RECORDS HALL, seen first-person standing directly across a reception desk from where the local steward would sit. No people. The worn pale oak desk's straight rear edge is at 65% of image height and tabletop occupies the bottom35%. A simple central wooden chair behind the desk; reserve center x50%, y24-65% as a quiet space for a separate waist-up character overlay. Distinct civic architecture: high shallow timber barrel-vault above pale limewashed stone walls, three narrow arched windows behind; shelving of tied scroll bundles and hand-bound record books on the LEFT, a large pinned parchment map and a noticeboard of indistinct unlettered sheets on the RIGHT; plain waiting benches against walls, practical woven runner. Small candle lamps on shelves, restrained warm amber light balanced by soft cool window daylight. Detailed worn stone, linen, paper and wood; grounded, functional and welcoming frontier authority. No bar, no drinking counter, no cask displays, no tavern furniture, no feast or food, no massive fireplace, no throne, no crown, no royal heraldry, no religious iconography, no readable text, no people, no UI, no watermark, no low-poly CGI. Make a civic office/hall, unmistakably different from an inn.",
+      "transparentBackground": false,
+      "references": [],
+      "generatedSource": "exec-d0b683b7-c42f-42fd-a525-c674242c3d7d.png"
+    },
+    {
+      "file": "data/graphics/tavern-interior-v2.png",
+      "prompt": "Create a wide 16:9 first-person photographic illustration for a CRPG interior, matching the reference's richly textured warm worn frontier atmosphere and realistic eye-level perspective. No people or faces, no readable text, no logos, no UI, no watermark, no magical glow, no royal regalia. This is a working community, not a fantasy palace. A second version of the reference tavern, retaining almost exactly its entrance-level camera and compositional anchors: long bar left, keeper space at x28%/y39%; large hearth right centeredx81%/y44%; clear stone central aisle; two foreground tables framing the aisle with empty patron spaces x57%/y78% andx73%/y81%. Make a distinct more rustic frontier inn: rougher pale plaster and oak arch braces, low timber ceiling, blue-grey daylight through leaded rear windows, mismatched stools, patterned burgundy woven bench cushions, clay jugs and warm candles. Rearcounter left and hearth right must stay in similar positions and scale to reference for separate character overlays. No people baked into room.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-c2264ac1-fb0f-44e5-81ee-9c72e64a9e25.png"
+    },
+    {
+      "file": "data/graphics/merchant-keeper-v2.png",
+      "prompt": "Generate ONE realistic illustrated CRPG service-person cutout on a genuinely TRANSPARENT background, square canvas. Reference is only style: fine photographic painted texture on skin and worn cloth. Different person from reference. Frontal customer-eye-level view, looking at viewer naturally; entire head, shoulders and arms contained with small transparent margins; centered body occupies75% canvas width; crop at hips at bottom, empty hands loosely together near waist for placement behind counter. Soft neutral upper-left daylight and subtle warm edge light. No scenery, furniture, floor, props, text, logos, emblems, weapons or magical effects. An older male general merchant with pale weathered skin, receding grey hair and a short neat grey beard. Russet wool waistcoat over undyed linen, a plain leather work apron. Relaxed shrewd welcoming expression and natural hands. Modest working shopkeeper, not aristocrat.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-8618ddf3-e6e7-44b9-9fec-bc0bb78331bf.png"
+    },
+    {
+      "file": "data/graphics/blacksmith-keeper-v2.png",
+      "prompt": "Generate ONE realistic illustrated CRPG service-person cutout on a genuinely TRANSPARENT background, square canvas. Reference is only style: fine photographic painted texture on skin and worn cloth. Different person from reference. Frontal customer-eye-level view, looking at viewer naturally; entire head, shoulders and arms contained with small transparent margins; centered body occupies75% canvas width; crop at hips at bottom, empty hands loosely together near waist for placement behind counter. Soft neutral upper-left daylight and subtle warm edge light. No scenery, furniture, floor, props, text, logos, emblems, weapons or magical effects. An experienced sturdy woman blacksmith with olive skin, black hair tied back out of her face, weathered hands and light soot on her forearms. Plain rolled-sleeve grey linen shirt under a worn brown leather apron, calm practical expression. No hammer, weapon, or ornamental armor.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-cf89efa8-9f31-46cc-bdeb-f23038fa44d2.png"
+    },
+    {
+      "file": "data/graphics/greathall-keeper-v2.png",
+      "prompt": "Generate ONE realistic illustrated CRPG service-person cutout on a genuinely TRANSPARENT background, square canvas. Reference is only style: fine photographic painted texture on skin and worn cloth. Different person from reference. Frontal customer-eye-level view, looking at viewer naturally; entire head, shoulders and arms contained with small transparent margins; centered body occupies75% canvas width; crop at hips at bottom, empty hands loosely together near waist for placement behind counter. Soft neutral upper-left daylight and subtle warm edge light. No scenery, furniture, floor, props, text, logos, emblems, weapons or magical effects. A middle-aged male civic steward with weathered warm brown skin, short dark hair greying at temples and close-cropped beard. Restrained dark green wool tunic over undyed linen with simple leather belt, no regalia. A thoughtful direct gaze, composed practical authority; no crown, armor, medals, symbols or fancy jewelry.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-750a6bab-458c-4d5e-8a91-6121da2a9765.png"
+    },
+    {
+      "file": "data/graphics/merchant-interior-v2.png",
+      "prompt": "Generate a new wide 16:9 photographic illustration for a first-person CRPG interior. Reference image is style only: rich worn tactile wood/stone/cloth, believable warm frontier life, realistic proportions and natural eye-level perspective, no CGI gloss. Camera is the customer standing directly across a counter. The counter's straight rear edge is at 65% of image height, countertop fills bottom35%. Keep center x50%, y24-65% free of foreground clutter for a separate waist-up keeper. No people, faces, readable text, signs, logos, UI, watermark or magical glow. A more established merchant's store in a plaster-and-stone corner room: arched side window with cool daylight, curved timber shelving along the sides, folded dyed wool and linen, pottery, traveling packs, wicker baskets and balanced brass scales at far left. Broad dark polished but visibly worn walnut sales counter, warm small hanging lantern at right. Distinct arrangement from a simple timber general store; central keeper space blank.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-c9953460-df8a-4f9e-a1f0-1d52c18e384e.png"
+    },
+    {
+      "file": "data/graphics/blacksmith-interior-v1.png",
+      "prompt": "Generate a new wide 16:9 photographic illustration for a first-person CRPG interior. Reference image is style only: rich worn tactile wood/stone/cloth, believable warm frontier life, realistic proportions and natural eye-level perspective, no CGI gloss. Camera is the customer standing directly across a counter. The counter's straight rear edge is at 65% of image height, countertop fills bottom35%. Keep center x50%, y24-65% free of foreground clutter for a separate waist-up keeper. No people, faces, readable text, signs, logos, UI, watermark or magical glow. An intimate soot-darkened stone smith's workshop. Amber forge at rear left, worn repair tools along side walls, mundane ironwork, tongs, horseshoes, leather and wood grain, practical heavy oak transaction counter in foreground. Anvil is offset left behind counter, not in center; leave keeper silhouette area empty. Fire contained in forge.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-8f2273a4-b535-4f66-bb23-bf29ac400921.png"
+    },
+    {
+      "file": "data/graphics/blacksmith-interior-v2.png",
+      "prompt": "Generate a new wide 16:9 photographic illustration for a first-person CRPG interior. Reference image is style only: rich worn tactile wood/stone/cloth, believable warm frontier life, realistic proportions and natural eye-level perspective, no CGI gloss. Camera is the customer standing directly across a counter. The counter's straight rear edge is at 65% of image height, countertop fills bottom35%. Keep center x50%, y24-65% free of foreground clutter for a separate waist-up keeper. No people, faces, readable text, signs, logos, UI, watermark or magical glow. A timber-roof smithy with pale limewashed stone lower walls, cool daylight from left side window balanced by warm forge at rear right. Repaired leather bellows, organized iron stock, hand tools and unfinished mundane repair work occupy the side bays. A scarred thick pale ash work counter in foreground. Center behind counter is visually quiet for keeper.",
+      "transparentBackground": false,
+      "references": [
+        "data/graphics/tavern-interior-v1.png"
+      ],
+      "generatedSource": "exec-534acc28-9b20-4364-b11e-f7637d910329.png"
+    },
+    {
+      "file": "data/graphics/merchant-keeper-v1.png",
+      "prompt": "Create ONE isolated waist-up character cutout on a genuinely TRANSPARENT background, square canvas, for a realistic illustrated CRPG shop conversation. Match reference's detailed photographic painted skin, linen and leather, but create a different person. Frontal eye-level view looking directly at customer/viewer, attentive natural expression, entire head and shoulders and arms contained with small transparent margins; body centered and occupying about75% of canvas width, lower edge at hips. Empty hands rest naturally near waist, will be masked behind a counter. Soft neutral daylight from upper left plus subtle warm rim light, no hard cast shadow. NO scenery, counter, chair, floor, text, logo, weapons, magic or objects held. An experienced middle-aged woman provision merchant, warm brown skin, dark hair tied back simply, plain cream linen shirt, faded olive wool waistcoat and practical brown leather apron, friendly watchful expression and believable work-worn hands.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-8f336664-1448-4775-bf98-c7799d0db197.png"
+    },
+    {
+      "file": "data/graphics/blacksmith-keeper-v1.png",
+      "prompt": "Create ONE isolated waist-up character cutout on a genuinely TRANSPARENT background, square canvas, for a realistic illustrated CRPG shop conversation. Match reference's detailed photographic painted skin, linen and leather, but create a different person. Frontal eye-level view looking directly at customer/viewer, attentive natural expression, entire head and shoulders and arms contained with small transparent margins; body centered and occupying about75% of canvas width, lower edge at hips. Empty hands rest naturally near waist, will be masked behind a counter. Soft neutral daylight from upper left plus subtle warm rim light, no hard cast shadow. NO scenery, counter, chair, floor, text, logo, weapons, magic or objects held. An adult broad-shouldered male blacksmith with deep brown skin, close-cropped curly hair, short beard, soot-marked rolled linen sleeves and a worn dark leather work apron. Calm capable expression, small plausible soot traces on hands, no burns, no hammer.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-a96b1c41-43b9-4fdb-b362-9038ecb6fa39.png"
+    },
+    {
+      "file": "data/graphics/greathall-keeper-v1.png",
+      "prompt": "Create ONE isolated waist-up character cutout on a genuinely TRANSPARENT background, square canvas, for a realistic illustrated CRPG shop conversation. Match reference's detailed photographic painted skin, linen and leather, but create a different person. Frontal eye-level view looking directly at customer/viewer, attentive natural expression, entire head and shoulders and arms contained with small transparent margins; body centered and occupying about75% of canvas width, lower edge at hips. Empty hands rest naturally near waist, will be masked behind a counter. Soft neutral daylight from upper left plus subtle warm rim light, no hard cast shadow. NO scenery, counter, chair, floor, text, logo, weapons, magic or objects held. An older woman local civic leader, medium brown skin, greying dark hair tied low, simple well-maintained layered charcoal and muted ochre wool clothing with modest leather belt. Composed attentive expression, no crown, medals, heraldry, armor or royal styling.",
+      "transparentBackground": true,
+      "references": [
+        "data/graphics/tavern-keeper-v1.png"
+      ],
+      "generatedSource": "exec-0453a129-9485-4195-85b2-302b75bd05f8.png"
+    }
+  ]
+}

@@ -5,11 +5,28 @@
 
 import { skillRegistry } from '../systems/SkillRegistry.js';
 import { gameState } from '../core/GameState.js';
+import { getSupplyCapacityRemaining } from '../systems/FatigueManager.js';
 import { SettlementSceneUI } from './SettlementSceneUI.js';
+import { isRichQuest } from '../systems/ProceduralQuest.js';
+import { mountBuildingInterior } from './BuildingInteriorArt.js';
 
 const questText = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 })[char]);
+
+export function formatQuestReputation(preview, actual = false) {
+    if (preview?.available === false) {
+        return 'Standing reward unavailable';
+    }
+    return (preview?.changes || []).map(change => {
+        if (actual && change.amount === 0) {
+            return `${change.targetName}: standing unchanged (${change.current})`;
+        }
+        const signed = `${change.amount >= 0 ? '+' : ''}${change.amount}`;
+        const scores = actual ? ` (${change.previous} → ${change.current})` : '';
+        return `${signed} standing with ${change.targetName}${scores}`;
+    }).join('; ');
+}
 
 class SettlementUI {
     constructor(settlementManager, merchantManager = null) {
@@ -41,6 +58,20 @@ class SettlementUI {
             });
         }
 
+        document.getElementById('settlementModal')?.addEventListener('click', event => {
+            if (event.target.id === 'settlementModal') {
+                this.settlementManager.exitSettlement();
+            }
+        });
+        document.addEventListener('keydown', event => {
+            const modal = document.getElementById('settlementModal');
+            if (event.key === 'Escape' && modal?.style.display === 'flex' &&
+                !document.querySelector('.modal.active')) {
+                this.settlementManager.exitSettlement();
+                event.stopImmediatePropagation();
+            }
+        }, true);
+
         // Building enter buttons
         document.querySelectorAll('.building .enter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -68,6 +99,33 @@ class SettlementUI {
             });
         }
 
+        document.getElementById('buildingModal')?.addEventListener('click', event => {
+            if (event.target.id === 'buildingModal') {
+                this.settlementManager.exitBuilding();
+            }
+        });
+        document.addEventListener('keydown', event => {
+            const building = document.getElementById('buildingModal');
+            const dialogue = document.getElementById('npcDialogueModal');
+            if (event.key === 'Escape' && dialogue?.style.display === 'flex' &&
+                dialogue.classList.contains('in-building-scene') && !document.querySelector('.modal.active')) {
+                this.closeNPCDialogue();
+                event.stopImmediatePropagation();
+                return;
+            }
+            if (event.key === 'Escape' && building?.style.display === 'flex' &&
+                dialogue?.style.display !== 'flex' && !document.querySelector('.modal.active')) {
+                this.settlementManager.exitBuilding();
+                event.stopImmediatePropagation();
+            }
+        }, true);
+
+        document.getElementById('npcDialogueModal')?.addEventListener('click', event => {
+            if (event.target.id === 'npcDialogueModal' && event.target.classList.contains('in-building-scene')) {
+                this.closeNPCDialogue();
+            }
+        });
+
         console.log('🏘️ Settlement UI event listeners initialized');
     }
 
@@ -94,6 +152,10 @@ class SettlementUI {
         // Update settlement info
         this.renderSettlementInfo(settlement);
 
+        if (this.renderHostileSettlement(settlement)) {
+            return;
+        }
+
         // Populate quest board with available quests for this settlement
         if (window.game?.renderQuestBoard) {
             const settlementId = settlement.id || `${settlement.x},${settlement.y}`;
@@ -105,10 +167,78 @@ class SettlementUI {
         this.sceneUI.show(settlement);
     }
 
+    renderHostileSettlement(settlement) {
+        const manager = window.game?.hostileSettlementManager;
+        const restricted = Boolean(manager?.isRestricted(settlement));
+        const modal = document.getElementById('settlementModal');
+        const panel = document.getElementById('hostileSettlementPanel');
+        modal?.querySelectorAll('.town-map, .quest-board, .settlement-scene-toolbar, .settlement-flags-panel')
+            .forEach(element => {
+                element.hidden = restricted;
+            });
+        if (panel) {
+            panel.hidden = !restricted;
+        }
+        if (!restricted) {
+            return false;
+        }
+        this.sceneUI.hide();
+        const host = document.getElementById('settlementSceneHost');
+        if (host) {
+            host.hidden = true;
+        }
+        this.renderSettlementInfo(settlement);
+        if (!panel) {
+            return true;
+        }
+        const view = manager.getView(settlement);
+        const step = view.step;
+        const warning = view.phase === 'hostile'
+            ? 'Hostile settlement — expect combat. Ordinary services are unavailable until recovery is complete.'
+            : 'Liberated — rebuilding. Ordinary services return when all recovery projects are complete.';
+        panel.innerHTML = `
+            <p class="hostile-settlement-warning">${questText(warning)}</p>
+            <h3>${view.phase === 'hostile' ? 'Liberation' : 'Rebuilding'}</h3>
+            ${step ? '' : `<p>${questText(view.description)}</p>`}
+            <p class="hostile-settlement-progress">${questText(view.progress.completed)} / ${questText(view.progress.total)} ${view.phase === 'hostile' ? 'liberation stages' : 'rebuilding projects'} complete</p>
+            ${step ? `<h4>${questText(step.name)}</h4>${step.npcName ? `<p class="hostile-settlement-speaker">${questText(step.npcName)}</p>` : ''}<p>${questText(step.description)}</p>` : ''}
+            ${view.remaining > 0 ? `<p role="status">Return after ${questText(view.remaining)} world week${view.remaining === 1 ? '' : 's'}. A long rest advances this clock by one week; travel, short rests and real-world waiting do not. Accepted urgent quests also advance toward their deadlines.</p>` : ''}
+            ${view.pendingCombat ? '<p role="status">Combat awaits. Leave and return to resume the confrontation.</p>' : ''}
+            <div class="hostile-settlement-options"></div>
+            <p class="hostile-settlement-result" role="status" aria-live="polite">${questText(view.lastResult?.message)}${Number.isFinite(view.lastResult?.total) ? ` (Total ${questText(view.lastResult.total)} · DC ${questText(view.lastResult.dc)})` : ''}</p>`;
+        const options = panel.querySelector('.hostile-settlement-options');
+        for (const option of view.options || []) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'dialogue-option';
+            const check = option.skill ? ` (${option.skill}${option.dc !== undefined ? ` · DC ${option.dc}` : ''})` : '';
+            button.textContent = `${option.label || option.name}${check}`;
+            button.disabled = view.remaining > 0 || Boolean(view.pendingCombat) || Boolean(option.disabled);
+            button.addEventListener('click', async () => {
+                options.querySelectorAll('button').forEach(control => {
+                    control.disabled = true;
+                });
+                try {
+                    await this.settlementManager.performHostileAction(option.id);
+                } finally {
+                    if (this.settlementManager.currentSettlement === settlement &&
+                        !gameState.get('combat.active')) {
+                        this.showSettlementModal(settlement);
+                        const nextAction = document.querySelector('#hostileSettlementPanel:not([hidden]) button:not(:disabled)');
+                        (nextAction || document.getElementById('leaveSettlementBtn'))?.focus();
+                    }
+                }
+            });
+            options.appendChild(button);
+        }
+        return true;
+    }
+
     /**
    * Hide settlement modal and return to game screen
    */
     hideSettlementModal() {
+        this.interiorArt?.dispose();
         this.sceneUI.hide();
     // Hide settlement modal
         const settlementModal = document.getElementById('settlementModal');
@@ -146,7 +276,9 @@ class SettlementUI {
         }
         if (typeEl) {
             const type = settlement.settlementType || 'village';
-            typeEl.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            const phase = settlement.hostileState?.phase;
+            const prefix = phase === 'hostile' ? 'Hostile ' : phase === 'rebuilding' ? 'Rebuilding ' : '';
+            typeEl.textContent = prefix + type.charAt(0).toUpperCase() + type.slice(1);
         }
 
         const popEl = document.getElementById('settlementPopulation');
@@ -183,12 +315,14 @@ class SettlementUI {
 
         // Render building-specific content
         this.renderBuildingContent(buildingType);
+        document.getElementById('closeBuildingBtn')?.focus();
     }
 
     /**
    * Hide building modal and return to settlement town map
    */
     hideBuildingModal() {
+        this.interiorArt?.dispose();
         this.sceneUI.setActive(true);
     // Hide building modal
         const buildingModal = document.getElementById('buildingModal');
@@ -208,6 +342,7 @@ class SettlementUI {
    * @param {string} buildingType - Type of building
    */
     renderBuildingContent(buildingType) {
+        this.interiorArt?.dispose();
         const contentEl = document.getElementById('buildingContent');
         if (!contentEl) return;
 
@@ -250,6 +385,12 @@ class SettlementUI {
 
         html += `</div>`;
         contentEl.innerHTML = html;
+
+        contentEl.closest('.building-container')?.classList.remove('has-building-art');
+        this.interiorArt = mountBuildingInterior(contentEl.querySelector('.building-interior'), buildingType,
+            buildingNPCs, npc => this.showNPCDialogue(npc), {
+                settlement, variantOverride: this.interiorStudyVariant
+            });
 
         contentEl.querySelectorAll('.talk-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -414,6 +555,12 @@ class SettlementUI {
             return;
         }
 
+        modal.classList.toggle('in-building-scene', Boolean(this.settlementManager.currentBuilding &&
+            document.querySelector('#buildingModal .has-building-art')));
+        if (modal.style.display !== 'flex') {
+            this.dialogueReturnFocus = document.activeElement;
+        }
+
         // Get relation info
         const relationManager = window.game?.relationManager;
         const relation = relationManager ? relationManager.getRelation(npc) : null;
@@ -491,6 +638,7 @@ class SettlementUI {
                 });
             });
             modal.style.display = 'flex';
+            modal.querySelector('.dialogue-option')?.focus();
             return;
         }
 
@@ -590,6 +738,7 @@ class SettlementUI {
 
         // Show modal
         modal.style.display = 'flex';
+        modal.querySelector('.dialogue-option')?.focus();
     }
 
     /**
@@ -872,8 +1021,7 @@ class SettlementUI {
     }
 
     hasQuestChoices(quest) {
-        return Boolean(quest && (Array.isArray(quest.actions) || Array.isArray(quest.resolutions)
-            || quest.evidence || quest.baseline || quest.procedural));
+        return isRichQuest(quest);
     }
 
     getQuestParticipants(quest) {
@@ -889,6 +1037,37 @@ class SettlementUI {
                 <span class="objective-text">${questText(objective.description)}</span>
                 <span class="objective-progress">${questText(progress)}/${questText(total)}</span></div>`;
         }).join('');
+    }
+
+    renderQuestStakes(quest) {
+        if (!quest.offeredLevel) {
+            return '';
+        }
+        const deadline = window.questManager?.getQuestDeadlineState?.(quest);
+        const timing = quest.deadlineDuration
+            ? (quest.status === 'completed'
+                ? 'Commission closed.'
+                : quest.status === 'failed'
+                    ? 'Commission failed.'
+                    : quest.status === 'available'
+                        ? `Urgent: ${quest.deadlineDuration} long rests after acceptance.`
+                        : deadline?.suspended
+                            ? 'Required work finished; the deadline is paused for your return.'
+                            : `${deadline?.remaining ?? Math.max(0, (quest.deadlineAt ?? 0) - (gameState.get('world.worldClock') || 0))} long rests remaining.`)
+            : 'No deadline.';
+        const success = [...new Set((quest.resolutions || []).filter(choice => !choice.incomplete)
+            .flatMap(choice => (choice.effects || []).map(effect => effect.description).filter(Boolean)))];
+        const failure = (quest.failureEffects || []).map(effect => effect.description).filter(Boolean);
+        const checks = (quest.actions || []).filter(action => action.skillId && Number.isFinite(action.dc))
+            .map(action => `${action.label}: DC ${action.dc}`);
+        const list = entries => entries.length ? `<ul>${entries.map(entry => `<li>${questText(entry)}</li>`).join('')}</ul>` : '';
+        return `<section class="quest-stakes" aria-label="Quest stakes">
+            <p>Level ${questText(quest.offeredLevel)} commission · ${questText(timing)}</p>
+            ${checks.length ? `<p>Optional checks</p>${list(checks)}` : ''}
+            ${success.length ? `<p>On fulfilment</p>${list(success)}` : ''}
+            ${quest.deadlineDuration ? `<p>If the deadline expires</p>${list(failure)}<p>Expiry also damages personal trust and faction standing.</p>` : ''}
+            <p>Incomplete reporting pays half the commission. Abandonment damages personal trust and faction standing.</p>
+        </section>`;
     }
 
     renderProceduralQuest(quest, { active = true, npc = null } = {}) {
@@ -921,6 +1100,7 @@ class SettlementUI {
         const resolutionHTML = active && (!npc || participants.giver?.npcId === npc.id)
             ? (manager?.getResolutionOptions(quest.id) || []).map(choice => this.renderQuestChoice(quest.id, choice, 'quest-resolve')).join('') : '';
         return `<section class="procedural-quest-progress" aria-label="Evidence and decisions">
+            ${npc ? this.renderQuestStakes(quest) : ''}
             ${npc && quest.objectives?.length ? `<h4>Objectives</h4>${this.renderQuestObjectives(quest)}` : ''}
             <h4>Recorded evidence</h4>${factHTML}
             ${actionHTML ? `<h4>Next steps</h4><div class="procedural-quest-choices">${actionHTML}</div>` : ''}
@@ -1085,7 +1265,8 @@ class SettlementUI {
 
         // Show quest details
         const objectivesText = quest.objectives.map(obj => obj.description).join('; ');
-        const rewardText = `${quest.rewards.xp} XP, ${quest.rewards.gold} gold`;
+        const reputation = formatQuestReputation(window.questManager.getQuestReputationPreview?.(quest));
+        const rewardText = `${quest.rewards.xp} XP, ${quest.rewards.gold} gold${reputation ? `, ${questText(reputation)}` : ''}`;
 
         textEl.innerHTML = `
       <div class="quest-details">
@@ -1094,6 +1275,7 @@ class SettlementUI {
         <p class="quest-description">${quest.description}</p>
         <p class="quest-objectives"><strong>Objectives:</strong> ${objectivesText}</p>
         <p class="quest-rewards"><strong>Rewards:</strong> ${rewardText}</p>
+        ${this.renderQuestStakes(quest)}
       </div>
     `;
 
@@ -1165,9 +1347,16 @@ class SettlementUI {
             return;
         }
 
+        const quest = window.questManager.getQuest(questId);
         const result = window.questManager.completeQuest(questId);
 
         if (result.success) {
+            document.querySelectorAll('#npcDialogueOptions .quest-turn-in').forEach(button => {
+                if (button.dataset.questId === questId) {
+                    button.disabled = true;
+                    button.textContent = `✓ Claimed: ${quest?.name || 'Quest'}`;
+                }
+            });
             const textEl = document.getElementById('npcDialogueText');
             if (textEl) {
                 textEl.innerHTML = `
@@ -1177,6 +1366,8 @@ class SettlementUI {
               <strong>Received:</strong><br>
               ${result.rewards.xp} XP<br>
               ${result.rewards.gold} Gold
+              ${result.rewards.reputation?.length ? `<br>${questText(formatQuestReputation({ changes: result.rewards.reputation }, true))}` : ''}
+              ${result.rewards.reputationWarning ? `<br>Standing reward unavailable: ${questText(result.rewards.reputationWarning)}` : ''}
               ${result.rewards.items && result.rewards.items.length > 0 ? `<br>${  result.rewards.items.join(', ')}` : ''}
             </p>
           </div>
@@ -1185,7 +1376,7 @@ class SettlementUI {
 
             // Show notification
             if (window.showQuestNotification) {
-                window.showQuestNotification('Quest Complete!', result.quest.name, 'success');
+                window.showQuestNotification('Quest Complete!', quest?.name || 'Quest', 'success');
             }
 
             // Close dialogue after showing rewards
@@ -1317,6 +1508,9 @@ class SettlementUI {
         const modal = document.getElementById('npcDialogueModal');
         if (modal) {
             modal.style.display = 'none';
+        }
+        if (this.dialogueReturnFocus?.isConnected) {
+            this.dialogueReturnFocus.focus();
         }
     }
 
@@ -1599,6 +1793,10 @@ class SettlementUI {
             ? this.merchantManager.calculateBuyPrice(this.selectedItem, character, this.currentMerchant)
             : this.merchantManager.calculateSellPrice(this.selectedItem, character, this.currentMerchant);
         const totalPrice = unitPrice * this.tradeQuantity;
+        const supplyPurchase = this.tradeMode === 'buy' && this.selectedItem.purchaseEffect?.type === 'restoreSupplies';
+        const supplyCapacity = getSupplyCapacityRemaining();
+        const supplyAmount = this.selectedItem.purchaseEffect?.amount || 1;
+        const suppliesFit = !supplyPurchase || this.tradeQuantity * supplyAmount <= supplyCapacity;
 
         // Update selected item display
         if (selectedItemEl) {
@@ -1615,6 +1813,7 @@ class SettlementUI {
             <span class="label">Unit Price:</span>
             <span class="value">${unitPrice} gp</span>
           </div>
+          ${supplyPurchase ? `<div class="detail-row"><span class="label">Supply space:</span><span class="value">${supplyCapacity} remaining</span></div>` : ''}
           ${this.selectedItem.weight ? `
             <div class="detail-row">
               <span class="label">Weight:</span>
@@ -1654,11 +1853,13 @@ class SettlementUI {
                 ? (this.selectedItem.stock || 0) >= this.tradeQuantity
                 : (this.selectedItem.quantity || 0) >= this.tradeQuantity;
 
-            tradeBtnEl.disabled = !canAfford || !hasStock;
+            tradeBtnEl.disabled = !canAfford || !hasStock || !suppliesFit;
             tradeBtnEl.textContent = this.tradeMode === 'buy' ? 'BUY' : 'SELL';
             tradeBtnEl.className = `trade-btn${  this.tradeMode === 'sell' ? ' sell-mode' : ''}`;
 
-            if (!canAfford) {
+            if (!suppliesFit) {
+                tradeBtnEl.title = supplyCapacity === 0 ? 'Your supplies are full.' : 'That quantity exceeds your supply space.';
+            } else if (!canAfford) {
                 tradeBtnEl.title = 'Not enough gold';
             } else if (!hasStock) {
                 tradeBtnEl.title = this.tradeMode === 'buy' ? 'Out of stock' : 'Not enough items';

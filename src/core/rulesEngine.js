@@ -8,6 +8,9 @@ export const RULES = {
     settlementPresentation: {
         enabled: true
     },
+    buildingPresentation: {
+        enabled: true
+    },
     combatPresentation: {
         enabled: true,
         loadTimeoutMs: 15000,
@@ -496,6 +499,19 @@ export const RULES = {
         longRestSpellSlots: true   // All spellcasters recover on long rest
     },
 
+    hostileSettlements: {
+        enabled: true,
+        share: 0.10,
+        clusterSize: [2, 4],
+        isolatedShare: 0.15,
+        starterSafeRadius: 96,
+        rebuildDelay: 2,
+        retryDelay: 1,
+        liberationDifficulty: 'medium',
+        rebuildStages: 3,
+        dcByTier: [{ maxLevel: 3, dc: 12 }, { maxLevel: 7, dc: 14 }, { maxLevel: 10, dc: 16 }]
+    },
+
     // ====================
     // FATIGUE SYSTEM
     // ====================
@@ -577,6 +593,28 @@ export const RULES = {
     // ====================
     // MERCHANT & TRADING
     // ====================
+    provisioning: {
+        enabled: true,
+        dc: 12,
+        suppliesReward: 1,
+        generation: {
+            candidateFraction: 0.5,
+            minSpacing: 96,
+            maxSitesByMapSize: { small: 6, medium: 24, large: 54 }
+        },
+        wilderness: {
+            enabled: true,
+            regionChance: 0.75,
+            attemptsPerRegion: 6,
+            minSpacing: 24,
+            settlementExclusion: 32
+        }
+    },
+
+    dungeon: {
+        trapChoicesEnabled: true // Known traps remain armed until disarmed or triggered; sparse edits persist.
+    },
+
     merchant: {
         // Pricing
         chaModifierPercent: 0.01,    // 1% per CHA modifier point
@@ -777,7 +815,7 @@ export const RULES = {
         featureGeneration: {
             // --- SETTLEMENTS ---
             // Total settlements across the world (scales with size)
-            baseSettlements: 150,         // ~150 settlements in medium world
+            baseSettlements: 165,         // Includes the hostile share; no extra settlements on restoration
 
             // Distribution ratios (must sum to 1.0)
             settlementDistribution: {
@@ -1074,6 +1112,12 @@ export const RULES = {
     // ====================
     quests: {
         enabled: true,
+        tracking: {
+            enabled: true,
+            searchAreaSize: 64,
+            qualityModes: { high: 'exact', medium: 'area', low: 'direction', none: 'unknown' },
+            bearings: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+        },
         maxActiveQuests: 10,
         questsPerSettlement: 3,
         maxHookDistanceTiles: 150,
@@ -1088,6 +1132,23 @@ export const RULES = {
             incompleteRewardMultiplier: 0.5,
             shipmentQuantity: 3,
             salvageQuantity: 1
+        },
+        iteration: {
+            enabled: true,
+            minimumBossBudgetFraction: 0.75,
+            tiers: [{ maxLevel: 3, dc: 12, duration: 3 },
+                { maxLevel: 7, dc: 14, duration: 4 },
+                { maxLevel: 10, dc: 16, duration: 5 }],
+            riskMultipliers: { routine: 1, demanding: 1.5, perilous: 2 },
+            factionByRisk: { routine: 10, demanding: 15, perilous: 20 },
+            urgentShare: 0.25,
+            abandonment: { personal: -10, faction: -5 },
+            localSafety: { successMultiplier: 0.75, failureMultiplier: 1.25, radius: 12,
+                minMultiplier: 0.5, maxMultiplier: 1.5 },
+            merchantAvailability: { minimum: 0.5 },
+            specialist: { valuePremiumByRarity: { fine: 1350, great: 3000, heroic: 6000 },
+                scoreByLevel: [{ maxLevel: 3, score: 4 },
+                    { maxLevel: 7, score: 6 }, { maxLevel: 10, score: 8 }] }
         },
         questSlotBudget: {
             village: 3,

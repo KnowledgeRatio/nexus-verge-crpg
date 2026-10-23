@@ -14,7 +14,7 @@ import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { buildEncounter } from './EncounterBuilder.js';
 
-class ConsequenceManager {
+export class ConsequenceManager {
     constructor() {
         // Event handlers — keyed by eventType string.
         // ADR-010: never add quest/ability ID checks here.
@@ -49,6 +49,112 @@ class ConsequenceManager {
     }
 
     // ─── Public API ────────────────────────────────────────────────────────────
+
+    /** Validate immediate typed outcomes against actual world/service bindings. */
+    canApplyQuestEffect(effect, quest) {
+        if (!effect?.id || !quest?.id) {
+            return false;
+        }
+        const feature = (gameState.get('world.metadata')?.features || []).find(entry =>
+            `${entry.x},${entry.y}` === effect.siteId);
+        if (effect.type === 'local_safety') {
+            return Boolean(feature && Number.isFinite(effect.multiplier) && effect.multiplier > 0 &&
+                Number.isFinite(effect.radius) && effect.radius > 0);
+        }
+        if (effect.type === 'reveal_location') {
+            return Boolean(feature);
+        }
+        if (effect.type === 'merchant_availability') {
+            const merchant = globalThis.window?.game?.merchantManager || globalThis.window?.merchantManager;
+            return Boolean(merchant?.canAddQuestStock(effect.settlementId, effect.itemId, effect.merchantRole) &&
+                Number.isFinite(effect.availability) && effect.availability > 0 && effect.availability <= 1);
+        }
+        return false;
+    }
+
+    /** Persist typed receipts and mutate their real consumers once. */
+    applyQuestEffect(effect, quest) {
+        if (!this.canApplyQuestEffect(effect, quest)) {
+            return false;
+        }
+        const metadata = gameState.get('world.metadata');
+        metadata.questOutcomes ||= [];
+        if (metadata.questOutcomes.some(entry => entry.questId === quest.id && entry.effectId === effect.id)) {
+            return true;
+        }
+        const receipt = { ...effect, questId: quest.id, effectId: effect.id,
+            sequence: metadata.questOutcomes.length };
+        if (effect.type === 'merchant_availability') {
+            const settlements = gameState.get('world.settlements');
+            const settlement = settlements.find(entry => entry.id === effect.settlementId);
+            settlement.questAvailability ||= [];
+            settlement.questAvailability.push({ ...receipt });
+            gameState.set('world.settlements', settlements);
+            const live = globalThis.window?.game?.settlementManager?.currentSettlement;
+            if (live?.id === settlement.id) {
+                live.questAvailability = settlement.questAvailability;
+            }
+        } else if (effect.type === 'reveal_location') {
+            const feature = metadata.features.find(entry => `${entry.x},${entry.y}` === effect.siteId);
+            feature.explored = true;
+            const tiles = gameState.get('world.modifiedTiles') || [];
+            const existing = tiles.find(tile => tile.x === feature.x && tile.y === feature.y);
+            if (existing) {
+                existing.explored = true;
+            } else {
+                tiles.push({ x: feature.x, y: feature.y, explored: true });
+            }
+            gameState.set('world.modifiedTiles', tiles);
+            const generator = globalThis.window?.game?.worldGenerator;
+            const cached = generator?.getCachedTile?.(feature.x, feature.y);
+            if (cached) {
+                cached.explored = true;
+            }
+        }
+        metadata.questOutcomes.push(receipt);
+        gameState.set('world.metadata', metadata);
+        const generator = globalThis.window?.game?.worldGenerator;
+        if (generator) {
+            generator.worldMetadata = metadata;
+        }
+        if (effect.type === 'reveal_location') {
+            const questManager = globalThis.window?.game?.questManager || globalThis.window?.questManager;
+            questManager?.refreshTrackingIntel?.();
+        }
+        return true;
+    }
+
+    /** Latest state per area replaces old failures; overlapping areas never multiply quest bonuses. */
+    getEncounterMultiplier(position) {
+        if (!position) {
+            return 1;
+        }
+        const latest = new Map();
+        for (const receipt of (gameState.get('world.metadata')?.questOutcomes || [])) {
+            if (receipt.type === 'local_safety') {
+                latest.set(receipt.siteId, receipt);
+            }
+        }
+        const modifiers = [...latest.values()].filter(receipt => {
+            const [x, y] = receipt.siteId.split(',').map(Number);
+            return Math.hypot(position.x - x, position.y - y) <= receipt.radius;
+        }).map(receipt => receipt.multiplier);
+        if (!modifiers.length) {
+            return 1;
+        }
+        const strongest = modifiers.reduce((selected, value) =>
+            Math.abs(value - 1) > Math.abs(selected - 1) ? value : selected, modifiers[0]);
+        const rules = RULES.quests.iteration?.localSafety;
+        return Math.max(rules?.minMultiplier ?? strongest, Math.min(rules?.maxMultiplier ?? strongest, strongest));
+    }
+
+    getMerchantAvailability(settlementId, merchantRole, itemId) {
+        const settlement = (gameState.get('world.settlements') || []).find(entry => entry.id === settlementId);
+        const latest = (settlement?.questAvailability || []).filter(receipt =>
+            receipt.merchantRole === merchantRole && receipt.itemId === itemId).at(-1);
+        const minimum = RULES.quests.iteration?.merchantAvailability?.minimum;
+        return latest ? Math.max(minimum ?? latest.availability, latest.availability) : 1;
+    }
 
     /**
      * Queue a consequence derived from a worldTag on quest completion.

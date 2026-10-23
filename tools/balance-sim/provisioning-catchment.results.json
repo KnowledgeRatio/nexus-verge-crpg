@@ -1,0 +1,361 @@
+{
+  "methodology": "Real metadata regenerated for the same starter-town samples, with source-count assertions. Distances are Euclidean lower bounds, not traversable paths, detours or accepted intel radii. This tests existing eligible sites before proposing allocation or shelter leads; no new sites or rules.",
+  "catchments": [
+    {
+      "radius": 32,
+      "worlds": 15,
+      "withSource": 0,
+      "withEligibleShelter": 0
+    },
+    {
+      "radius": 64,
+      "worlds": 15,
+      "withSource": 0,
+      "withEligibleShelter": 0
+    },
+    {
+      "radius": 96,
+      "worlds": 15,
+      "withSource": 0,
+      "withEligibleShelter": 1
+    },
+    {
+      "radius": 128,
+      "worlds": 15,
+      "withSource": 0,
+      "withEligibleShelter": 4
+    }
+  ],
+  "hashes": {
+    "src/systems/WorldGenerator.js": "4636f47a7a99a7c4d29ad6fe48d3afaef6f5be841fa205e4ef75d1c25f43b177",
+    "src/core/rulesEngine.js": "17e07dc981339468e045f63d1f2f4de0db619cb79efacaf6e5bf71f9929935ba",
+    "data/provisioning.json": "0ee358665dacf1ed9ab1d81c24cb5a6f2b8bc96025880d2e71ced9915f267b3a"
+  },
+  "rows": [
+    {
+      "seed": 0,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 2,
+      "eligibleShelters": 14,
+      "nearestSource": {
+        "id": "-306,-299",
+        "poiType": "ruins",
+        "distance": 450.45421520949276,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-91,-108",
+        "poiType": "watchtower",
+        "distance": 163.783393541592,
+        "source": false
+      }
+    },
+    {
+      "seed": 1,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 4,
+      "eligibleShelters": 14,
+      "nearestSource": {
+        "id": "-371,378",
+        "poiType": "cave",
+        "distance": 529.9179181722393,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "81,338",
+        "poiType": "watchtower",
+        "distance": 328.49505323520475,
+        "source": false
+      }
+    },
+    {
+      "seed": 2,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 0,
+      "eligibleShelters": 11,
+      "nearestSource": null,
+      "nearestEligibleShelter": {
+        "id": "120,-20",
+        "poiType": "camp",
+        "distance": 110.05453193758083,
+        "source": false
+      }
+    },
+    {
+      "seed": 3,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 5,
+      "eligibleShelters": 15,
+      "nearestSource": {
+        "id": "-200,114",
+        "poiType": "watchtower",
+        "distance": 237.19190542680838,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-200,114",
+        "poiType": "watchtower",
+        "distance": 237.19190542680838,
+        "source": true
+      }
+    },
+    {
+      "seed": 4,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 4,
+      "eligibleShelters": 14,
+      "nearestSource": {
+        "id": "6,198",
+        "poiType": "camp",
+        "distance": 182.27451824103116,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "6,198",
+        "poiType": "camp",
+        "distance": 182.27451824103116,
+        "source": true
+      }
+    },
+    {
+      "seed": 5,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 6,
+      "eligibleShelters": 14,
+      "nearestSource": {
+        "id": "-314,470",
+        "poiType": "ruins",
+        "distance": 561.2628617679954,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-76,-21",
+        "poiType": "cave",
+        "distance": 99.16148445843274,
+        "source": false
+      }
+    },
+    {
+      "seed": 6,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 1,
+      "eligibleShelters": 8,
+      "nearestSource": {
+        "id": "741,582",
+        "poiType": "ruins",
+        "distance": 919.7722544195383,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "235,-17",
+        "poiType": "camp",
+        "distance": 221.472345903501,
+        "source": false
+      }
+    },
+    {
+      "seed": 7,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 3,
+      "eligibleShelters": 13,
+      "nearestSource": {
+        "id": "438,-268",
+        "poiType": "ruins",
+        "distance": 508.6649191756789,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-139,42",
+        "poiType": "ruins",
+        "distance": 157.16551784663199,
+        "source": false
+      }
+    },
+    {
+      "seed": 8,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 3,
+      "eligibleShelters": 10,
+      "nearestSource": {
+        "id": "-166,112",
+        "poiType": "ruins",
+        "distance": 205.7668583615933,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-166,112",
+        "poiType": "ruins",
+        "distance": 205.7668583615933,
+        "source": true
+      }
+    },
+    {
+      "seed": 9,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 3,
+      "eligibleShelters": 16,
+      "nearestSource": {
+        "id": "235,165",
+        "poiType": "watchtower",
+        "distance": 264.88110540391517,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "14,-101",
+        "poiType": "watchtower",
+        "distance": 117.01709276853532,
+        "source": false
+      }
+    },
+    {
+      "seed": 10,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 2,
+      "eligibleShelters": 5,
+      "nearestSource": {
+        "id": "41,-336",
+        "poiType": "watchtower",
+        "distance": 352.88666735936624,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "41,-336",
+        "poiType": "watchtower",
+        "distance": 352.88666735936624,
+        "source": true
+      }
+    },
+    {
+      "seed": 11,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 2,
+      "eligibleShelters": 8,
+      "nearestSource": {
+        "id": "443,268",
+        "poiType": "watchtower",
+        "distance": 495.8154898750139,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "443,268",
+        "poiType": "watchtower",
+        "distance": 495.8154898750139,
+        "source": true
+      }
+    },
+    {
+      "seed": 12,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 1,
+      "eligibleShelters": 6,
+      "nearestSource": {
+        "id": "218,236",
+        "poiType": "ruins",
+        "distance": 298.67038688159226,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "87,197",
+        "poiType": "ruins",
+        "distance": 194.42736432920137,
+        "source": false
+      }
+    },
+    {
+      "seed": 13,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 3,
+      "eligibleShelters": 11,
+      "nearestSource": {
+        "id": "247,-41",
+        "poiType": "ruins",
+        "distance": 237.92856070678022,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "-57,-44",
+        "poiType": "cave",
+        "distance": 94.49338601193207,
+        "source": false
+      }
+    },
+    {
+      "seed": 14,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "sources": 6,
+      "eligibleShelters": 12,
+      "nearestSource": {
+        "id": "46,184",
+        "poiType": "watchtower",
+        "distance": 170.65755183993474,
+        "source": true
+      },
+      "nearestEligibleShelter": {
+        "id": "46,184",
+        "poiType": "watchtower",
+        "distance": 170.65755183993474,
+        "source": true
+      }
+    }
+  ]
+}

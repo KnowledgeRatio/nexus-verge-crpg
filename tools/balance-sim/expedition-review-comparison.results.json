@@ -1,0 +1,2306 @@
+{
+  "levels": [
+    {
+      "level": 1,
+      "before": {
+        "trials": 60,
+        "returned": 46,
+        "dead": 2,
+        "alivePlannerStops": 12,
+        "fights": 150,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 3
+      },
+      "after": {
+        "trials": 60,
+        "returned": 46,
+        "dead": 2,
+        "alivePlannerStops": 12,
+        "fights": 150,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 3
+      },
+      "beforeReturnCI": {
+        "success": 46,
+        "n": 60,
+        "rate": 0.7666666666666667,
+        "wald95": [
+          0.6596448966417823,
+          0.8736884366915512
+        ],
+        "waldMargin": 0.10702177002488446,
+        "wilson95": [
+          0.6456348865960799,
+          0.8556056838156894
+        ]
+      },
+      "afterReturnCI": {
+        "success": 46,
+        "n": 60,
+        "rate": 0.7666666666666667,
+        "wald95": [
+          0.6596448966417823,
+          0.8736884366915512
+        ],
+        "waldMargin": 0.10702177002488446,
+        "wilson95": [
+          0.6456348865960799,
+          0.8556056838156894
+        ]
+      },
+      "delta": 0,
+      "sumMargins": 0.21404354004976892,
+      "exceedsSumMargins": false,
+      "inference": "Descriptive only: repeated worlds, paired trials and changed RNG consumption preclude independent-trial causal attribution."
+    },
+    {
+      "level": 5,
+      "before": {
+        "trials": 60,
+        "returned": 36,
+        "dead": 12,
+        "alivePlannerStops": 12,
+        "fights": 154,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 31
+      },
+      "after": {
+        "trials": 60,
+        "returned": 39,
+        "dead": 9,
+        "alivePlannerStops": 12,
+        "fights": 154,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 30
+      },
+      "beforeReturnCI": {
+        "success": 36,
+        "n": 60,
+        "rate": 0.6,
+        "wald95": [
+          0.47603871572139955,
+          0.7239612842786004
+        ],
+        "waldMargin": 0.12396128427860045,
+        "wilson95": [
+          0.47365824394206846,
+          0.714306969962345
+        ]
+      },
+      "afterReturnCI": {
+        "success": 39,
+        "n": 60,
+        "rate": 0.65,
+        "wald95": [
+          0.5293100390808471,
+          0.770689960919153
+        ],
+        "waldMargin": 0.12068996091915295,
+        "wilson95": [
+          0.5236238380947751,
+          0.7583239827618451
+        ]
+      },
+      "delta": 0.050000000000000044,
+      "sumMargins": 0.2446512451977534,
+      "exceedsSumMargins": false,
+      "inference": "Descriptive only: repeated worlds, paired trials and changed RNG consumption preclude independent-trial causal attribution."
+    },
+    {
+      "level": 10,
+      "before": {
+        "trials": 60,
+        "returned": 35,
+        "dead": 13,
+        "alivePlannerStops": 12,
+        "fights": 138,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 24
+      },
+      "after": {
+        "trials": 60,
+        "returned": 35,
+        "dead": 13,
+        "alivePlannerStops": 12,
+        "fights": 140,
+        "provisionCluesSeen": 0,
+        "provisionAttempts": 0,
+        "suppliesEarned": 0,
+        "shortRests": 26
+      },
+      "beforeReturnCI": {
+        "success": 35,
+        "n": 60,
+        "rate": 0.5833333333333334,
+        "wald95": [
+          0.45858543941509106,
+          0.7080812272515757
+        ],
+        "waldMargin": 0.12474789391824231,
+        "wilson95": [
+          0.45727854313239624,
+          0.6993591351212818
+        ]
+      },
+      "afterReturnCI": {
+        "success": 35,
+        "n": 60,
+        "rate": 0.5833333333333334,
+        "wald95": [
+          0.45858543941509106,
+          0.7080812272515757
+        ],
+        "waldMargin": 0.12474789391824231,
+        "wilson95": [
+          0.45727854313239624,
+          0.6993591351212818
+        ]
+      },
+      "delta": 0,
+      "sumMargins": 0.24949578783648463,
+      "exceedsSumMargins": false,
+      "inference": "Descriptive only: repeated worlds, paired trials and changed RNG consumption preclude independent-trial causal attribution."
+    }
+  ],
+  "totals": {
+    "before": {
+      "trials": 360,
+      "returned": 234,
+      "dead": 54,
+      "alivePlannerStops": 72,
+      "fights": 884,
+      "provisionCluesSeen": 0,
+      "provisionAttempts": 0,
+      "suppliesEarned": 0,
+      "shortRests": 116
+    },
+    "after": {
+      "trials": 360,
+      "returned": 240,
+      "dead": 48,
+      "alivePlannerStops": 72,
+      "fights": 888,
+      "provisionCluesSeen": 0,
+      "provisionAttempts": 0,
+      "suppliesEarned": 0,
+      "shortRests": 118
+    }
+  },
+  "dungeon": {
+    "before": {
+      "trials": 27,
+      "harnessErrors": 0,
+      "returned": 10,
+      "actualDeaths": 6,
+      "pilotEvents": [
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 4,
+              "total": 16,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 4,
+              "total": 5,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 31,
+          "rooms": [
+            0,
+            1
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 20,
+              "modifier": 4,
+              "total": 24,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 9,
+              "modifier": 4,
+              "total": 13,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 7,
+              "modifier": 4,
+              "total": 11,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 4,
+              "total": 16,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "1:7"
+            },
+            {
+              "blockedDoor": "1:5"
+            }
+          ],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 13,
+              "modifier": 4,
+              "total": 17,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 13,
+          "rooms": [
+            0,
+            4,
+            3,
+            2
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 18,
+              "modifier": 7,
+              "total": 25,
+              "dc": 20,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 16,
+              "modifier": 7,
+              "total": 23,
+              "dc": 20,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 19,
+              "modifier": 7,
+              "total": 26,
+              "dc": 20,
+              "success": true
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 4,
+          "actions": [],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 13,
+          "rooms": [
+            0,
+            4,
+            3,
+            2
+          ],
+          "checks": [],
+          "trapCrossings": 1,
+          "trapDamage": 11,
+          "actions": [],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 6,
+              "modifier": 7,
+              "total": 13,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 7,
+              "total": 19,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 6,
+              "modifier": 8,
+              "total": 14,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 8,
+              "total": 16,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 17,
+          "rooms": [
+            0,
+            7,
+            1
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 15,
+              "modifier": 4,
+              "total": 19,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 18,
+              "modifier": 4,
+              "total": 22,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "🪤 Trap Detected!",
+              "skill": "finesse",
+              "roll": 5,
+              "modifier": 0,
+              "total": 5,
+              "dc": 14,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 20,
+              "modifier": 4,
+              "total": 24,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 13,
+              "modifier": 4,
+              "total": 17,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 3,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 1,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true,
+              "completed": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 26,
+          "rooms": [
+            0,
+            4,
+            8
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 4,
+              "total": 7,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 17,
+              "modifier": 4,
+              "total": 21,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 6,
+              "modifier": 4,
+              "total": 10,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "8:5"
+            }
+          ],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 10,
+          "rooms": [
+            0,
+            7,
+            1
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 16,
+              "modifier": 3,
+              "total": 19,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "🪤 Trap Detected!",
+              "skill": "finesse",
+              "roll": 20,
+              "modifier": -1,
+              "total": 19,
+              "dc": 14,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 3,
+              "total": 11,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 0,
+          "actions": [],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 28,
+          "rooms": [
+            0,
+            7,
+            4
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 7,
+              "total": 15,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 2,
+              "modifier": 7,
+              "total": 9,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "7:1"
+            },
+            {
+              "blockedDoor": "4:8"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 13,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 8,
+              "total": 11,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "0:4"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 13,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 37,
+          "rooms": [
+            0,
+            4,
+            8,
+            5
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 8,
+              "total": 16,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 15,
+              "modifier": 8,
+              "total": 23,
+              "dc": 23,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 15,
+              "modifier": 8,
+              "total": 23,
+              "dc": 23,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 16,
+              "modifier": 8,
+              "total": 24,
+              "dc": 23,
+              "success": true
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 16,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "5:10"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 1,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true,
+              "completed": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 31,
+          "rooms": [
+            0,
+            4,
+            8
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 7,
+              "modifier": 8,
+              "total": 15,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "8:5"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "0:4"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        }
+      ],
+      "turnIns": [
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": true,
+          "status": "completed"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": true,
+          "status": "completed"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        }
+      ]
+    },
+    "after": {
+      "trials": 27,
+      "harnessErrors": 0,
+      "returned": 12,
+      "actualDeaths": 6,
+      "pilotEvents": [
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 4,
+              "total": 16,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 4,
+              "total": 5,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 32,
+          "rooms": [
+            0,
+            1
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 20,
+              "modifier": 4,
+              "total": 24,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 9,
+              "modifier": 4,
+              "total": 13,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 7,
+              "modifier": 4,
+              "total": 11,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "1:7"
+            },
+            {
+              "blockedDoor": "1:5"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 13,
+              "modifier": 4,
+              "total": 17,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 13,
+          "rooms": [
+            0,
+            4,
+            3,
+            2
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 18,
+              "modifier": 7,
+              "total": 25,
+              "dc": 20,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 16,
+              "modifier": 7,
+              "total": 23,
+              "dc": 20,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 19,
+              "modifier": 7,
+              "total": 26,
+              "dc": 20,
+              "success": true
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 4,
+          "actions": [],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 13,
+          "rooms": [
+            0,
+            4,
+            3,
+            2
+          ],
+          "checks": [],
+          "trapCrossings": 1,
+          "trapDamage": 11,
+          "actions": [],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 6,
+              "modifier": 7,
+              "total": 13,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 7,
+              "total": 19,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 6,
+              "modifier": 8,
+              "total": 14,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 8,
+              "total": 16,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:4"
+            },
+            {
+              "blockedDoor": "0:1"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "kill",
+              "requirement": {
+                "creatureTypes": [
+                  "bugbear"
+                ],
+                "location": {
+                  "dungeonHookId": "81,103"
+                }
+              },
+              "required": 1,
+              "completed": false,
+              "progress": 0,
+              "description": "Defeat the bugbear chief in Foulbreath Mound",
+              "id": "kill_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 32,
+          "rooms": [
+            0,
+            7,
+            1,
+            4,
+            8
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 15,
+              "modifier": 4,
+              "total": 19,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 18,
+              "modifier": 4,
+              "total": 22,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "🪤 Trap Detected!",
+              "skill": "finesse",
+              "roll": 5,
+              "modifier": 0,
+              "total": 5,
+              "dc": 14,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 4,
+              "total": 5,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 3,
+          "actions": [
+            {
+              "blockedDoor": "8:5"
+            }
+          ],
+          "exit": false,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 31,
+          "rooms": [
+            0,
+            4,
+            8
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 4,
+              "total": 7,
+              "dc": 18,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 17,
+              "modifier": 4,
+              "total": 21,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 4,
+              "modifier": 4,
+              "total": 8,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "8:5"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 43,
+          "rooms": [
+            0,
+            7,
+            1,
+            4,
+            8,
+            5
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 16,
+              "modifier": 3,
+              "total": 19,
+              "dc": 18,
+              "success": true
+            },
+            {
+              "title": "🪤 Trap Detected!",
+              "skill": "finesse",
+              "roll": 20,
+              "modifier": -1,
+              "total": 19,
+              "dc": 14,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 3,
+              "total": 6,
+              "dc": 18,
+              "success": false
+            }
+          ],
+          "trapCrossings": 2,
+          "trapDamage": 4,
+          "actions": [
+            {
+              "blockedDoor": "5:10"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 12,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 28,
+          "rooms": [
+            0,
+            7,
+            4
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 7,
+              "total": 15,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 7,
+              "total": 10,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "7:1"
+            },
+            {
+              "blockedDoor": "4:8"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 13,
+              "progress": 1,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true,
+              "completed": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 3,
+              "modifier": 8,
+              "total": 11,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "0:4"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 13,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 28,
+          "rooms": [
+            0,
+            7,
+            4
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 12,
+              "modifier": 6,
+              "total": 18,
+              "dc": 20,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 11,
+              "modifier": 6,
+              "total": 17,
+              "dc": 20,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "7:1"
+            },
+            {
+              "blockedDoor": "4:8"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 13,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 37,
+          "rooms": [
+            0,
+            4,
+            8,
+            5
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 8,
+              "modifier": 8,
+              "total": 16,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 15,
+              "modifier": 8,
+              "total": 23,
+              "dc": 23,
+              "success": true
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 1,
+          "trapDamage": 12,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "5:10"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 31,
+          "rooms": [
+            0,
+            4,
+            8
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 1,
+              "modifier": 8,
+              "total": 9,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 7,
+              "modifier": 8,
+              "total": 15,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "8:5"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0",
+              "investigationAttempted": true
+            }
+          ],
+          "bossDefeated": false
+        },
+        {
+          "event": "dungeonPilot",
+          "entered": true,
+          "moves": 11,
+          "rooms": [
+            0
+          ],
+          "checks": [
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            },
+            {
+              "title": "Locked Door",
+              "skill": "athletics",
+              "roll": 5,
+              "modifier": 8,
+              "total": 13,
+              "dc": 23,
+              "success": false
+            }
+          ],
+          "trapCrossings": 0,
+          "trapDamage": 0,
+          "actions": [
+            {
+              "blockedDoor": "0:7"
+            },
+            {
+              "blockedDoor": "0:4"
+            }
+          ],
+          "exit": true,
+          "objectives": [
+            {
+              "type": "investigate",
+              "targetLocation": "52,-214",
+              "investigationDC": 15,
+              "progress": 0,
+              "description": "Find evidence in Chamber of the Pale Court",
+              "id": "investigate_0"
+            }
+          ],
+          "bossDefeated": false
+        }
+      ],
+      "turnIns": [
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": true,
+          "status": "completed"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        },
+        {
+          "event": "questTurnIn",
+          "available": [],
+          "result": false,
+          "status": "active"
+        }
+      ]
+    }
+  },
+  "limits": "Same seeds, trial policy, gear and stat snapshots. Repairs alter combat rolls consumed and downstream encounters; this compares journey behavior, not identical encounter sequences. Overland cells stop at dungeon entrances and contain no quest commission. The separate 27 dungeon pilots cannot establish completion-rate balance."
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "mobile": false,
+    "fixture": "Production composition on controlled town/site metadata; real acceptance, journal buttons, renderer and SaveManager; discovery/objective state injected",
+    "initial": {
+      "questId": "quest_composed_2_3_8640",
+      "name": "Recover the rope",
+      "quality": "medium",
+      "briefing": "I can point you toward the area around Test Hall, but you'll need to find the entrance yourself.",
+      "boardText": "\n                \n                    \n                    DEADLY\n                    \n                \n                Recover the rope\n                Leader asks you to recover the missing rope at Test Hall. The delivery party reports broken carrying straps. The consignment remains usable. Check the immediate signs and distinguish the useful goods from damaged packaging.\n                \n                \n                    80 XP | 20 gold\n                \n                Accept Quest\n            "
+    },
+    "medium": {
+      "vm": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "medium",
+        "navigation": {
+          "type": "area",
+          "minX": 64,
+          "minY": 64,
+          "maxX": 128,
+          "maxY": 128,
+          "label": "Search area"
+        }
+      },
+      "receipt": {
+        "quality": "medium",
+        "origin": {
+          "x": 2,
+          "y": 3,
+          "label": "Test Haven"
+        },
+        "targetKey": "91,107"
+      },
+      "hud": "Recover the rope\nEstablish the signs at Test Hall\nSearch area — search the marked area.",
+      "button": "Untrack"
+    },
+    "beforePan": {
+      "x": 637,
+      "y": 295.5
+    },
+    "afterPan": {
+      "x": 417,
+      "y": 55.5
+    },
+    "checks": {
+      "restored": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "medium",
+        "navigation": {
+          "type": "area",
+          "minX": 64,
+          "minY": 64,
+          "maxX": 128,
+          "maxY": 128,
+          "label": "Search area"
+        }
+      },
+      "low": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "low",
+        "navigation": {
+          "type": "direction",
+          "originX": 2,
+          "originY": 3,
+          "bearing": "SE",
+          "label": "Reported SE of Test Haven"
+        }
+      },
+      "moved": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "low",
+        "navigation": {
+          "type": "direction",
+          "originX": 2,
+          "originY": 3,
+          "bearing": "SE",
+          "label": "Reported SE of Test Haven"
+        }
+      },
+      "unknown": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "unlocated",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "none",
+        "navigation": {
+          "type": "unknown",
+          "label": "Location unknown"
+        }
+      },
+      "discovered": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "high",
+        "navigation": {
+          "type": "exact",
+          "x": 91,
+          "y": 107,
+          "label": "Test Hall"
+        }
+      },
+      "returned": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "return",
+        "objectiveId": null,
+        "objectiveText": "Return to the quest giver",
+        "intelQuality": "high",
+        "navigation": {
+          "type": "exact",
+          "x": 2,
+          "y": 3,
+          "label": "Test Haven"
+        }
+      },
+      "cleared": null,
+      "worldRegions": 1,
+      "featureType": "dungeon"
+    },
+    "errors": []
+  },
+  {
+    "mobile": true,
+    "fixture": "Production composition on controlled town/site metadata; real acceptance, journal buttons, renderer and SaveManager; discovery/objective state injected",
+    "initial": {
+      "questId": "quest_composed_2_3_8640",
+      "name": "Recover the rope",
+      "quality": "medium",
+      "briefing": "I can point you toward the area around Test Hall, but you'll need to find the entrance yourself.",
+      "boardText": "\n                \n                    \n                    DEADLY\n                    \n                \n                Recover the rope\n                Leader asks you to recover the missing rope at Test Hall. The delivery party reports broken carrying straps. The consignment remains usable. Check the immediate signs and distinguish the useful goods from damaged packaging.\n                \n                \n                    80 XP | 20 gold\n                \n                Accept Quest\n            "
+    },
+    "medium": {
+      "vm": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "medium",
+        "navigation": {
+          "type": "area",
+          "minX": 64,
+          "minY": 64,
+          "maxX": 128,
+          "maxY": 128,
+          "label": "Search area"
+        }
+      },
+      "receipt": {
+        "quality": "medium",
+        "origin": {
+          "x": 2,
+          "y": 3,
+          "label": "Test Haven"
+        },
+        "targetKey": "91,107"
+      },
+      "hud": "Recover the rope\nEstablish the signs at Test Hall\nSearch area — search the marked area.",
+      "button": "Untrack"
+    },
+    "beforePan": {
+      "x": 164.5,
+      "y": 191
+    },
+    "afterPan": {
+      "x": -49,
+      "y": -49
+    },
+    "checks": {
+      "restored": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "medium",
+        "navigation": {
+          "type": "area",
+          "minX": 64,
+          "minY": 64,
+          "maxX": 128,
+          "maxY": 128,
+          "label": "Search area"
+        }
+      },
+      "low": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "low",
+        "navigation": {
+          "type": "direction",
+          "originX": 2,
+          "originY": 3,
+          "bearing": "SE",
+          "label": "Reported SE of Test Haven"
+        }
+      },
+      "moved": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "low",
+        "navigation": {
+          "type": "direction",
+          "originX": 2,
+          "originY": 3,
+          "bearing": "SE",
+          "label": "Reported SE of Test Haven"
+        }
+      },
+      "unknown": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "unlocated",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "none",
+        "navigation": {
+          "type": "unknown",
+          "label": "Location unknown"
+        }
+      },
+      "discovered": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "objective",
+        "objectiveId": "observe_site",
+        "objectiveText": "Establish the signs at Test Hall",
+        "intelQuality": "high",
+        "navigation": {
+          "type": "exact",
+          "x": 91,
+          "y": 107,
+          "label": "Test Hall"
+        }
+      },
+      "returned": {
+        "questId": "quest_composed_2_3_8640",
+        "questName": "Recover the rope",
+        "stage": "return",
+        "objectiveId": null,
+        "objectiveText": "Return to the quest giver",
+        "intelQuality": "high",
+        "navigation": {
+          "type": "exact",
+          "x": 2,
+          "y": 3,
+          "label": "Test Haven"
+        }
+      },
+      "cleared": null,
+      "worldRegions": 1,
+      "featureType": "dungeon"
+    },
+    "errors": []
+  }
+]

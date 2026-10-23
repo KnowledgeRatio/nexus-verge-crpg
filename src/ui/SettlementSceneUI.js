@@ -35,6 +35,11 @@ export class SettlementSceneUI {
         this.map.hidden = false;
         this.host.hidden = true;
         this.status.textContent = '';
+        if (window.game?.hostileSettlementManager?.isRestricted(this.settlement)) {
+            this.map.hidden = true;
+            this.button.hidden = true;
+            return;
+        }
         this.button.hidden = !RULES.settlementPresentation.enabled;
         this.button.disabled = this.mobile.matches;
         this.button.textContent = this.mobile.matches ? '3D view · desktop' :

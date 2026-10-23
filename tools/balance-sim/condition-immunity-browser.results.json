@@ -1,0 +1,496 @@
+[
+  {
+    "mobile": false,
+    "level": 5,
+    "monster": "shadow",
+    "immunities": [
+      "exhaustion",
+      "frightened",
+      "grappled",
+      "paralyzed",
+      "petrified",
+      "poisoned",
+      "prone",
+      "restrained"
+    ],
+    "mastery": true,
+    "knownTactic": true,
+    "before": {
+      "resolve": 7,
+      "hp": 16
+    },
+    "hp": 6,
+    "resolve": 6,
+    "conditions": [],
+    "log": "Shadow rolls initiative: 1 + 2 = 3\n⚔️ You encounter: Shadow!\n⚔️ Combat begins! Round 1\nTurn order: Immunity check → Shadow\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Shadow!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 12\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nShadow takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\nShadow is immune to frightened.\nShadow is immune to prone.",
+    "float": [
+      {
+        "sourceId": "player_Immunity check",
+        "combatantId": "enemy_0",
+        "text": "-9",
+        "type": "damage",
+        "phase": "impact",
+        "damage": {
+          "raw": 9,
+          "final": 9,
+          "hpDamage": 9,
+          "tempHPUsed": 0,
+          "components": [
+            {
+              "amount": 9,
+              "damageType": "bone",
+              "isMagical": false,
+              "damageFlavor": null,
+              "sourceId": "player_Immunity check",
+              "raw": 9,
+              "modifier": "normal",
+              "final": 9
+            }
+          ],
+          "modifier": "normal"
+        }
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "-1",
+        "type": "damage",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      }
+    ],
+    "card": "Shadow\nHP: 6/16\nAC: 12\n⚔️ Immunity check",
+    "layout": {
+      "viewport": 1440,
+      "innerWidth": 1440,
+      "internalOverflow": [],
+      "overflow": [],
+      "scrollWidth": 1440,
+      "card": {
+        "x": 62,
+        "y": 215.1875,
+        "width": 356,
+        "height": 149
+      },
+      "sidebar": {
+        "x": 920,
+        "y": 124.1875,
+        "width": 500,
+        "height": 755.8125
+      },
+      "content": {
+        "x": 20,
+        "y": 124.1875,
+        "width": 1400,
+        "height": 755.8125
+      },
+      "log": {
+        "x": 936,
+        "y": 796.1875,
+        "width": 468,
+        "height": 400
+      },
+      "footer": "none"
+    },
+    "readableLog": {
+      "visible": true,
+      "height": 400,
+      "text": "Shadow rolls initiative: 1 + 2 = 3\n⚔️ You encounter: Shadow!\n⚔️ Combat begins! Round 1\nTurn order: Immunity check → Shadow\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Shadow!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 12\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nShadow takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\nShadow is immune to frightened.\nShadow is immune to prone."
+    },
+    "readableAction": {
+      "visible": true,
+      "width": 229,
+      "height": 52
+    },
+    "horizontalOverflow": 0,
+    "errors": []
+  },
+  {
+    "mobile": false,
+    "level": 5,
+    "monster": "ogre",
+    "immunities": [],
+    "mastery": true,
+    "knownTactic": true,
+    "before": {
+      "resolve": 7,
+      "hp": 59
+    },
+    "hp": 49,
+    "resolve": 6,
+    "conditions": [
+      {
+        "type": "frightened",
+        "duration": "untilEndOfTurn",
+        "appliedBy": "player_Immunity check",
+        "value": null,
+        "roundsRemaining": 1,
+        "isBuff": false,
+        "curable": false,
+        "icon": "😱",
+        "damageOnTurnStart": null,
+        "inflictedByTactic": true,
+        "affectsAC": false
+      },
+      {
+        "type": "prone",
+        "duration": "rounds",
+        "appliedBy": "player_Immunity check",
+        "value": null,
+        "roundsRemaining": 1,
+        "isBuff": false,
+        "curable": true,
+        "icon": "🔻",
+        "damageOnTurnStart": null,
+        "inflictedByTactic": false,
+        "affectsAC": false
+      }
+    ],
+    "log": "⚔️ Combat begins! Round 1\nTurn order: Immunity check → Ogre\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Ogre!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 11\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nOgre takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\n😱 Ogre is FRIGHTENED! (COMPOSURE save -1 vs DC 14)\n⚔️ Topple! Ogre must make Resilience save DC 16...\nResilience save: 1 + 3 = 4\n💥 Ogre is knocked prone! 🔻",
+    "float": [
+      {
+        "sourceId": "player_Immunity check",
+        "combatantId": "enemy_0",
+        "text": "-9",
+        "type": "damage",
+        "phase": "impact",
+        "damage": {
+          "raw": 9,
+          "final": 9,
+          "hpDamage": 9,
+          "tempHPUsed": 0,
+          "components": [
+            {
+              "amount": 9,
+              "damageType": "bone",
+              "isMagical": false,
+              "damageFlavor": null,
+              "sourceId": "player_Immunity check",
+              "raw": 9,
+              "modifier": "normal",
+              "final": 9
+            }
+          ],
+          "modifier": "normal"
+        }
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "-1",
+        "type": "damage",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "FRIGHTENED! 😱",
+        "type": "condition",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "PRONE! 🔻",
+        "type": "condition",
+        "delay": 300
+      }
+    ],
+    "card": "Ogre\nHP: 49/59\nAC: 11\n⚔️ Immunity check\n😱 🔻",
+    "layout": {
+      "viewport": 1440,
+      "innerWidth": 1440,
+      "internalOverflow": [],
+      "overflow": [],
+      "scrollWidth": 1440,
+      "card": {
+        "x": 62,
+        "y": 215.1875,
+        "width": 356,
+        "height": 149
+      },
+      "sidebar": {
+        "x": 920,
+        "y": 124.1875,
+        "width": 500,
+        "height": 755.8125
+      },
+      "content": {
+        "x": 20,
+        "y": 124.1875,
+        "width": 1400,
+        "height": 755.8125
+      },
+      "log": {
+        "x": 936,
+        "y": 796.1875,
+        "width": 468,
+        "height": 400
+      },
+      "footer": "none"
+    },
+    "readableLog": {
+      "visible": true,
+      "height": 400,
+      "text": "⚔️ Combat begins! Round 1\nTurn order: Immunity check → Ogre\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Ogre!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 11\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nOgre takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\n😱 Ogre is FRIGHTENED! (COMPOSURE save -1 vs DC 14)\n⚔️ Topple! Ogre must make Resilience save DC 16...\nResilience save: 1 + 3 = 4\n💥 Ogre is knocked prone! 🔻"
+    },
+    "readableAction": {
+      "visible": true,
+      "width": 229,
+      "height": 52
+    },
+    "horizontalOverflow": 0,
+    "errors": []
+  },
+  {
+    "mobile": true,
+    "level": 5,
+    "monster": "shadow",
+    "immunities": [
+      "exhaustion",
+      "frightened",
+      "grappled",
+      "paralyzed",
+      "petrified",
+      "poisoned",
+      "prone",
+      "restrained"
+    ],
+    "mastery": true,
+    "knownTactic": true,
+    "before": {
+      "resolve": 7,
+      "hp": 16
+    },
+    "hp": 6,
+    "resolve": 6,
+    "conditions": [],
+    "log": "Shadow rolls initiative: 1 + 2 = 3\n⚔️ You encounter: Shadow!\n⚔️ Combat begins! Round 1\nTurn order: Immunity check → Shadow\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Shadow!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 12\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nShadow takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\nShadow is immune to frightened.\nShadow is immune to prone.",
+    "float": [
+      {
+        "sourceId": "player_Immunity check",
+        "combatantId": "enemy_0",
+        "text": "-9",
+        "type": "damage",
+        "phase": "impact",
+        "damage": {
+          "raw": 9,
+          "final": 9,
+          "hpDamage": 9,
+          "tempHPUsed": 0,
+          "components": [
+            {
+              "amount": 9,
+              "damageType": "bone",
+              "isMagical": false,
+              "damageFlavor": null,
+              "sourceId": "player_Immunity check",
+              "raw": 9,
+              "modifier": "normal",
+              "final": 9
+            }
+          ],
+          "modifier": "normal"
+        }
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "-1",
+        "type": "damage",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      }
+    ],
+    "card": "Shadow\nHP: 6/16\nAC: 12\n⚔️ Immunity check",
+    "layout": {
+      "viewport": 390,
+      "innerWidth": 399,
+      "internalOverflow": [],
+      "overflow": [
+        {
+          "id": "floatingCombatTextContainer",
+          "cls": "",
+          "right": 399
+        }
+      ],
+      "scrollWidth": 399,
+      "card": {
+        "x": 32,
+        "y": 171.1875,
+        "width": 326,
+        "height": 135
+      },
+      "sidebar": {
+        "x": 10,
+        "y": 606.1875,
+        "width": 370,
+        "height": 778
+      },
+      "content": {
+        "x": 10,
+        "y": 100.1875,
+        "width": 370,
+        "height": 733.8125
+      },
+      "log": {
+        "x": 26,
+        "y": 1268.1875,
+        "width": 338,
+        "height": 100
+      },
+      "footer": "none"
+    },
+    "readableLog": {
+      "visible": true,
+      "height": 100,
+      "text": "Shadow rolls initiative: 1 + 2 = 3\n⚔️ You encounter: Shadow!\n⚔️ Combat begins! Round 1\nTurn order: Immunity check → Shadow\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Shadow!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 12\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nShadow takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\nShadow is immune to frightened.\nShadow is immune to prone."
+    },
+    "readableAction": {
+      "visible": true,
+      "width": 164,
+      "height": 52
+    },
+    "horizontalOverflow": 9,
+    "errors": []
+  },
+  {
+    "mobile": true,
+    "level": 5,
+    "monster": "ogre",
+    "immunities": [],
+    "mastery": true,
+    "knownTactic": true,
+    "before": {
+      "resolve": 7,
+      "hp": 59
+    },
+    "hp": 49,
+    "resolve": 6,
+    "conditions": [
+      {
+        "type": "frightened",
+        "duration": "untilEndOfTurn",
+        "appliedBy": "player_Immunity check",
+        "value": null,
+        "roundsRemaining": 1,
+        "isBuff": false,
+        "curable": false,
+        "icon": "😱",
+        "damageOnTurnStart": null,
+        "inflictedByTactic": true,
+        "affectsAC": false
+      },
+      {
+        "type": "prone",
+        "duration": "rounds",
+        "appliedBy": "player_Immunity check",
+        "value": null,
+        "roundsRemaining": 1,
+        "isBuff": false,
+        "curable": true,
+        "icon": "🔻",
+        "damageOnTurnStart": null,
+        "inflictedByTactic": false,
+        "affectsAC": false
+      }
+    ],
+    "log": "⚔️ Combat begins! Round 1\nTurn order: Immunity check → Ogre\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Ogre!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 11\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nOgre takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\n😱 Ogre is FRIGHTENED! (COMPOSURE save -1 vs DC 14)\n⚔️ Topple! Ogre must make Resilience save DC 16...\nResilience save: 1 + 3 = 4\n💥 Ogre is knocked prone! 🔻",
+    "float": [
+      {
+        "sourceId": "player_Immunity check",
+        "combatantId": "enemy_0",
+        "text": "-9",
+        "type": "damage",
+        "phase": "impact",
+        "damage": {
+          "raw": 9,
+          "final": 9,
+          "hpDamage": 9,
+          "tempHPUsed": 0,
+          "components": [
+            {
+              "amount": 9,
+              "damageType": "bone",
+              "isMagical": false,
+              "damageFlavor": null,
+              "sourceId": "player_Immunity check",
+              "raw": 9,
+              "modifier": "normal",
+              "final": 9
+            }
+          ],
+          "modifier": "normal"
+        }
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "-1",
+        "type": "damage",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "FRIGHTENED! 😱",
+        "type": "condition",
+        "sourceId": "player_Immunity check",
+        "effectType": "onHitSaveOrCondition"
+      },
+      {
+        "combatantId": "enemy_0",
+        "text": "PRONE! 🔻",
+        "type": "condition",
+        "delay": 300
+      }
+    ],
+    "card": "Ogre\nHP: 49/59\nAC: 11\n⚔️ Immunity check\n😱 🔻",
+    "layout": {
+      "viewport": 390,
+      "innerWidth": 399,
+      "internalOverflow": [],
+      "overflow": [
+        {
+          "id": "floatingCombatTextContainer",
+          "cls": "",
+          "right": 399
+        }
+      ],
+      "scrollWidth": 399,
+      "card": {
+        "x": 32,
+        "y": 171.1875,
+        "width": 326,
+        "height": 135
+      },
+      "sidebar": {
+        "x": 10,
+        "y": 652.1875,
+        "width": 370,
+        "height": 778
+      },
+      "content": {
+        "x": 10,
+        "y": 100.1875,
+        "width": 370,
+        "height": 733.8125
+      },
+      "log": {
+        "x": 26,
+        "y": 1314.1875,
+        "width": 338,
+        "height": 100
+      },
+      "footer": "none"
+    },
+    "readableLog": {
+      "visible": true,
+      "height": 100,
+      "text": "⚔️ Combat begins! Round 1\nTurn order: Immunity check → Ogre\n📍 Immunity check's turn (HP: 44/44)\nSelect a target to attack\nImmunity check attacks Ogre!\n🐎 Vanguard's Charge! +1 to attack, +1 bonus damage (unengaged target)\nAttack roll: 12 + 5 (ability) + 3 (prof) + 1 (Vanguard's Charge) = 21 vs AC 11\n💥 Hit! Rolled Damage: 1 + 7 (ability) = 9 base damage\nOgre takes 9 HP damage.\nMenacing Attack: 1 HP damage.\n⚔️ Menacing Attack! +1 extra damage (d6)\n😱 Ogre is FRIGHTENED! (COMPOSURE save -1 vs DC 14)\n⚔️ Topple! Ogre must make Resilience save DC 16...\nResilience save: 1 + 3 = 4\n💥 Ogre is knocked prone! 🔻"
+    },
+    "readableAction": {
+      "visible": true,
+      "width": 164,
+      "height": 52
+    },
+    "horizontalOverflow": 9,
+    "errors": []
+  }
+]

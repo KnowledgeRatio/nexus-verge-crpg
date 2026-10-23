@@ -227,24 +227,38 @@ The game is non-grid combat. Movement-only tabletop effects are adapted to meani
 
 ### Settlements
 
-At settlements you can:
+At ordinary or fully restored settlements you can:
 - Rest (especially long rest in safe locations)
 - Buy and sell gear
 - Accept quests
 - Interact with NPCs
 
+Some settlements begin under hostile occupation, usually in neighbouring patches with occasional isolated sites. Their map marker is crossed swords. **Entering starts combat**; victory opens a local exploration challenge and a survivor conversation. Choose a repair or relief crew to help with later rebuilding checks.
+
+Liberation changes the marker to tools, but services remain closed until you finish three local recovery projects, including a relief commission. The first project becomes available after two long rests elsewhere; each completed project takes another two long rests before the next. Failed rebuilding checks delay retry by one long rest. Progress and choices survive saving, and restoration opens the existing settlement rather than adding another town.
+
 ### Quests
 
 - Main campaign quests progress major story beats
 - Side quests offer XP, gold, and item rewards
-- Track objectives and progress in Quest Log (`Q`)
+- Use **Track** in Quest Log (`Q`) to follow one active quest; **Untrack** clears it. The overworld/dungeon HUD and world map show the next required step.
+- Guidance reflects information actually received: an exact entrance, a search area, a reported direction from the giver, or an unknown location. Finding the site makes its location exact. Once required fieldwork is done, guidance returns to the giver; optional investigation is not required for that return step. Tracking survives saving and clears when the job ends.
+- Drag the world map with a mouse, touch or pen to inspect offscreen guidance; mouse-wheel zoom remains available.
+- Newly generated town jobs can combine investigation, combat and recovery, with visible consequences for local danger, supplies or discovered places.
+- Urgent jobs start their countdown when accepted. Long rests advance it; completing the required work stops it before you return for payment. Check the journal before resting or abandoning work.
+- Some jobs unlock a single enchanted item for sale. This is a shop opportunity, with its price shown, rather than a free item reward.
+- Quest standing rewards name the cultures that benefit. Offers preview the reward; turn-in reports the actual change after score limits. The character sheet shows current culture standing. If a required community cannot be identified, completion still pays its other rewards and clearly reports that standing was unavailable.
 
 ## 7. Resources, Rest, and Survival
 
 - HP and resources are limited between fights.
 - Short rest supports tactical sustain.
 - Long rest restores more, but depends on safe context.
+- One long rest advances the shared quest and rebuilding clock by one week. Short rests, travel and real time do not advance it. You can long-rest at a safe inn while fully recovered, still consuming supplies and advancing urgent deadlines; hostile and rebuilding settlements cannot provide that rest.
 - Poor rest and repeated strain can lead to fatigue pressure.
+- Merchants sell Expedition Supplies that refill your supply meter directly, up to its carry limit. One supply supports one camp action or one long rest.
+- New worlds contain edible plants and game tracks on wilderness ground, plus provision clues at some shelters. On a supply object, press **E** or use touch **Interact** to gather with Survival; it does not provide shelter or rest. Shelter clues also open through the rest menu. Each site allows one attempt per run; success adds one supply. Full supplies and cancelling preserve the opportunity. Resting or reloading never refreshes it. Plant/track symbols appear over visible terrain and dim when spent; a green `+` marks an available revealed shelter source. Provisioning is intended to extend travel where buying supplies is difficult.
+- Perception can detect dungeon traps. Avoiding leaves a marked, armed trap; stepping onto it again deals damage once and spends it. Before leaving, press `E` or use **Interact** to attempt Finesse disarming. Successfully disarmed traps are safe.
 
 Use rests proactively, not only at crisis.
 

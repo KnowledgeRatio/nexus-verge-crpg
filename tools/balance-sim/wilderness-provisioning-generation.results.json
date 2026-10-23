@@ -1,0 +1,86 @@
+[
+  {
+    "size": "small",
+    "snapshots": [
+      {
+        "enabled": false,
+        "ms": 1895,
+        "base": "262f165c2db1a983083d05e770afbc5aa2623864ee608f896cd850c58c59f820",
+        "sources": 0,
+        "features": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "enabled": true,
+        "ms": 1512,
+        "base": "262f165c2db1a983083d05e770afbc5aa2623864ee608f896cd850c58c59f820",
+        "sources": 1813,
+        "features": "78507f85dd6c91e0360d7c3f15a6f1b10bbdaa309b04572b97462e41d419f8f5"
+      },
+      {
+        "enabled": true,
+        "ms": 1716,
+        "base": "262f165c2db1a983083d05e770afbc5aa2623864ee608f896cd850c58c59f820",
+        "sources": 1813,
+        "features": "78507f85dd6c91e0360d7c3f15a6f1b10bbdaa309b04572b97462e41d419f8f5"
+      }
+    ],
+    "nearest": 24,
+    "checkedSites": 1813
+  },
+  {
+    "size": "medium",
+    "snapshots": [
+      {
+        "enabled": false,
+        "ms": 5857,
+        "base": "25619a8bb640610b12fdec4864ecb6e21b217f01f50d07444c5500393cf26dc4",
+        "sources": 0,
+        "features": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "enabled": true,
+        "ms": 12807,
+        "base": "25619a8bb640610b12fdec4864ecb6e21b217f01f50d07444c5500393cf26dc4",
+        "sources": 7027,
+        "features": "9561b5b5f405a3694cce7942463d501659833b6a03c612a042b4f1f179a720c5"
+      },
+      {
+        "enabled": true,
+        "ms": 10336,
+        "base": "25619a8bb640610b12fdec4864ecb6e21b217f01f50d07444c5500393cf26dc4",
+        "sources": 7027,
+        "features": "9561b5b5f405a3694cce7942463d501659833b6a03c612a042b4f1f179a720c5"
+      }
+    ],
+    "nearest": 24,
+    "checkedSites": 7027
+  },
+  {
+    "size": "large",
+    "snapshots": [
+      {
+        "enabled": false,
+        "ms": 5988,
+        "base": "4729c19720694579ac310efa028611e2d6a464561cff265cdb52bbce76978da6",
+        "sources": 0,
+        "features": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "enabled": true,
+        "ms": 5079,
+        "base": "4729c19720694579ac310efa028611e2d6a464561cff265cdb52bbce76978da6",
+        "sources": 15607,
+        "features": "7770cf931da7698901ce412c04f3a6e09d552e75d53c64e042f451643bfd9660"
+      },
+      {
+        "enabled": true,
+        "ms": 5516,
+        "base": "4729c19720694579ac310efa028611e2d6a464561cff265cdb52bbce76978da6",
+        "sources": 15607,
+        "features": "7770cf931da7698901ce412c04f3a6e09d552e75d53c64e042f451643bfd9660"
+      }
+    ],
+    "nearest": 24,
+    "checkedSites": 15607
+  }
+]

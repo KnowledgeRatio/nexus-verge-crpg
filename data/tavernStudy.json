@@ -1,0 +1,10 @@
+{
+  "npcs": [
+    { "id": "study-keeper", "name": "Merrick", "role": "innkeeper", "building": "tavern", "personality": "Keeps an eye on the door and a place by the fire.", "dialogue": { "greeting": "Come in. There's warmth enough, and a clean cup if you want one.", "flavorDialogue": ["Most nights, a quiet room is all anyone asks for."] } },
+    { "id": "study-traveller", "name": "Rowan", "role": "citizen", "building": "tavern", "personality": "A traveller letting the road dry from his boots.", "dialogue": { "greeting": "Mind the wet cloak. I've only just come in.", "flavorDialogue": ["I meant to leave at dawn. That was before I found this fire."] } },
+    { "id": "study-craftworker", "name": "Alden", "role": "citizen", "building": "tavern", "personality": "A craftworker enjoying a rare idle evening.", "dialogue": { "greeting": "Pull up a seat. Nothing here needs mending tonight.", "flavorDialogue": ["A sound roof and a warm room. You learn to appreciate both."] } },
+    { "id": "study-merchant", "name": "Ellis", "role": "merchant", "building": "merchant", "shopName": "General Goods", "personality": "Keeps everyday provisions close at hand.", "dialogue": { "greeting": "Welcome. What do you need for the road?", "flavorDialogue": ["Dry provisions and sound equipment. There is always a use for both."], "goodbye": "Safe travels." } },
+    { "id": "study-smith", "name": "Renn", "role": "blacksmith", "building": "blacksmith", "shopName": "The Smithy", "personality": "Sets down a tool to hear what you need.", "dialogue": { "greeting": "Come up to the counter. Looking for something sturdy?", "flavorDialogue": ["Take your time. A tool ought to fit the hand that uses it."], "goodbye": "Mind the forge on your way out." } },
+    { "id": "study-leader", "name": "Morgan", "role": "leader", "building": "greathall", "personality": "Makes time for visitors between the settlement's daily concerns.", "dialogue": { "greeting": "Welcome to the hall. What brings you here?", "flavorDialogue": ["You can usually find someone willing to share news here."], "goodbye": "You are welcome here." } }
+  ]
+}

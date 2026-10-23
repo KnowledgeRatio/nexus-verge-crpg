@@ -2,6 +2,41 @@
   "questComposition": {
     "version": 1,
     "family": "disrupted_site",
+    "tracking": {
+      "intelQuality": "medium",
+      "intelDialogue": {
+        "medium": "I can point you toward the area around {siteName}, but you'll need to find the entrance yourself."
+      }
+    },
+    "progressionText": [
+      "Check the immediate signs and distinguish the useful goods from damaged packaging.",
+      "Reconstruct overlapping handling marks and check which damaged goods can safely be saved.",
+      "Separate misleading damage from older wear and reconstruct a complicated sequence of handling."
+    ],
+    "informationOutcome": {
+      "id": "site_knowledge", "type": "reveal_location", "requiresFacts": ["cause_established"],
+      "description": "Evidence reveals {discoveredSiteName} on your map.",
+      "reply": "The evidence also identifies {discoveredSiteName}; its location is now marked on your map."
+    },
+    "outcomes": [
+      {
+        "id": "safer_surroundings",
+        "effect": { "id": "local_safety", "type": "local_safety", "siteId": "{siteId}",
+          "description": "{safetyReduction}% fewer dangerous encounters within {safetyRadius} tiles of {siteName}." },
+        "failureEffect": { "id": "expired_local_safety", "type": "local_safety", "siteId": "{siteId}",
+          "description": "{safetyIncrease}% more dangerous encounters within {safetyRadius} tiles of {siteName} if the work expires unfinished." }
+      },
+      {
+        "id": "restored_availability",
+        "capabilities": ["goods"],
+        "effect": { "id": "restored_availability", "type": "merchant_availability", "settlementId": "{settlementId}",
+          "merchantRole": "merchant", "itemId": "{itemId}", "availability": 1,
+          "description": "Restore ordinary {subjectName} availability in {settlementName}." },
+        "failureEffect": { "id": "expired_availability", "type": "merchant_availability", "settlementId": "{settlementId}",
+          "merchantRole": "merchant", "itemId": "{itemId}", "availability": "{failureAvailability}",
+          "description": "Half the ordinary {subjectName} stock in {settlementName} if the work expires unfinished." }
+      }
+    ],
     "description": "{giverName} asks you to {goalText} at {siteName}. {causeText} {materialText}",
     "baseline": {
       "objectiveId": "observe_site",
@@ -41,6 +76,16 @@
         }
       ],
       "subject": [
+        {
+          "id": "specialist_equipment",
+          "itemId": "longsword",
+          "name": "specialist weapon consignment",
+          "merchantRole": "blacksmith",
+          "specialist": true,
+          "resolutionReply": "{merchantName} accepts the recovered weapon consignment and offers one enchanted weapon for sale. The purchase price is separate from your commission.",
+          "requires": { "goal": ["recovery"], "materialState": ["intact"] },
+          "capabilities": ["goods", "specialist"]
+        },
         {
           "id": "rations",
           "itemId": "rations",
@@ -928,7 +973,6 @@
       "rewards": {
         "xp": 1000,
         "gold": 250,
-        "item": "potionOfGreaterHealing",
         "reputation": {
           "faction": "settlement",
           "amount": 100

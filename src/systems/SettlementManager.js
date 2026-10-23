@@ -2,6 +2,7 @@
 // Handles settlement entry, state management, and building interactions
 
 import { gameState } from '../core/GameState.js';
+import { SeededRandom } from '../utils/rng.js';
 
 class SettlementManager {
     constructor(worldGenerator, settlementUI = null, npcGenerator = null, questGenerator = null, questManager = null) {
@@ -55,6 +56,9 @@ class SettlementManager {
    * @returns {boolean} True if settlement entered, false otherwise
    */
     async enterSettlement() {
+        if (gameState.get('combat') || gameState.get('dungeon.active')) {
+            return false;
+        }
         const settlement = this.getSettlementAtPlayerPosition();
 
         if (!settlement) {
@@ -64,6 +68,19 @@ class SettlementManager {
 
         // Restore settlement data from persistent storage (flags, localVisitCount, etc.)
         this._restoreSettlementFromPersistent(settlement);
+
+        this.hostileSettlementManager?.ensureSettlement(settlement);
+        if (this.hostileSettlementManager?.isRestricted(settlement)) {
+            this.currentSettlement = settlement;
+            gameState.set('ui.currentSettlement', settlement);
+            this._persistSettlement(settlement);
+            this.showSettlementUI();
+            const view = this.hostileSettlementManager.getView(settlement);
+            if (view.step?.type === 'combat' && !view.pendingCombat) {
+                await this.performHostileAction(view.options[0].id);
+            }
+            return true;
+        }
 
         // Process queued consequences and apply active flags
         let flagEffects = [];
@@ -281,6 +298,11 @@ class SettlementManager {
             return;
         }
 
+        if (this.hostileSettlementManager?.isRestricted(this.currentSettlement)) {
+            gameState.addMessage('Services will reopen when this settlement is rebuilt.', 'warning');
+            return;
+        }
+
         if (!this.settlementUI) {
             console.error('SettlementUI not initialized');
             return;
@@ -377,7 +399,8 @@ class SettlementManager {
         }
 
         // Copy consequence-relevant fields from persistent storage onto live feature object
-        for (const field of ['flags', 'localVisitCount', 'merchantLocked', 'sacked', 'questsGenerated', 'visitedAt', 'questStock']) {
+        for (const field of ['flags', 'localVisitCount', 'merchantLocked', 'sacked', 'questsGenerated', 'visitedAt',
+            'questStock', 'questAvailability', 'hostileState']) {
             if (persisted[field] !== undefined) {
                 settlement[field] = persisted[field];
             }
@@ -394,6 +417,55 @@ class SettlementManager {
             settlements[index] = settlement;
         }
         gameState.set('world.settlements', settlements);
+    }
+
+    async performHostileAction(optionId) {
+        const settlement = this.currentSettlement;
+        if (!settlement || !this.hostileSettlementManager) {
+            return { success: false };
+        }
+        const result = this.hostileSettlementManager.performAction(settlement, optionId);
+        if (result.message) {
+            gameState.addMessage(result.message, result.success ? 'success' : 'warning');
+        }
+        if (result.combat) {
+            // Block input while asynchronous encounter data loads; the receipt stays at this site.
+            gameState.set('combat', { active: true, pending: true });
+            try {
+                const { buildEncounter } = await import('./EncounterBuilder.js');
+                const rng = new SeededRandom(`${gameState.get('seed')}_${JSON.stringify(result.combat.settlementSource)}`);
+                const encounter = await buildEncounter({
+                    partySize: Math.floor(gameState.getEffectivePartySize?.() ?? 1),
+                    partyLevel: this.hostileSettlementManager.getView(settlement).level,
+                    difficulty: result.combat.difficulty,
+                    gameDifficulty: gameState.get('worldConfig.difficulty') || 'normal',
+                    monsterPool: result.combat.monsterPool,
+                    campaignId: gameState.get('worldConfig.campaignId') || 'core',
+                    worldConfig: gameState.get('worldConfig') || {},
+                    rng: () => rng.next()
+                });
+                if (!encounter.monsters?.length) {
+                    throw new Error('No eligible defenders could be generated.');
+                }
+                this.hideSettlementUI();
+                gameState.set('ui.pendingCombat', { enemies: encounter.monsters,
+                    context: 'settlement', terrainId: 'settlement',
+                    settlementSource: result.combat.settlementSource });
+                gameState.set('ui.currentScreen', 'combatScreen');
+            } catch (error) {
+                this.hostileSettlementManager.recordCombatResult(result.combat.settlementSource, 'fled');
+                gameState.set('combat', null);
+                gameState.addMessage(`The encounter could not start: ${error.message}`, 'warning');
+                this.showSettlementUI();
+                return { success: false };
+            }
+        } else if (!this.hostileSettlementManager.isRestricted(settlement)) {
+            await this.enterSettlement();
+        } else {
+            this.settlementUI?.renderHostileSettlement(settlement);
+        }
+        globalThis.window?.game?.updateHUD?.(gameState.get('character'));
+        return result;
     }
 
     /** Restore learned checks and relations without replacing regenerated NPC content. */

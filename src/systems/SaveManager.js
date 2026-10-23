@@ -9,6 +9,7 @@ import { Character } from './Character.js';
 import { skillRegistry } from './SkillRegistry.js';
 import { LocalSaveStore } from './saveStores/LocalSaveStore.js';
 import { CloudSaveStore } from './saveStores/CloudSaveStore.js';
+import { sanitizeTrackedQuestId } from './QuestTracking.js';
 
 function createSaveStore(version) {
     return RULES.saves.backend === 'cloud'
@@ -202,6 +203,7 @@ class SaveManager {
             world: this.serializeWorld(state.world),
             playerPosition: dungeonExitPosition || state.world?.currentLocation || { x: 0, y: 0 },
             quests: {
+                trackedQuestId: sanitizeTrackedQuestId(state.quests),
                 available: state.quests?.available || [],
                 active: state.quests?.active || [],
                 completed: state.quests?.completed || [],
@@ -274,6 +276,7 @@ class SaveManager {
 
         // Restore quests (full state including available, failed, campaignProgress)
         gameState.set('quests', {
+            trackedQuestId: sanitizeTrackedQuestId(saveData.quests),
             available: saveData.quests?.available || [],
             active: saveData.quests?.active || [],
             completed: saveData.quests?.completed || [],

@@ -10,6 +10,9 @@ import { getLevelFromXP, RULES } from '../core/rulesEngine.js';
 import Character from './Character.js';
 import { skillRegistry } from './SkillRegistry.js';
 import { addFatigue } from './FatigueManager.js';
+import { hasExplicitQuestStanding, questStandingPreview, questOriginSettlementId } from './QuestReputation.js';
+import { projectQuestTracking, questTrackingTarget, questIssuer, questBearing,
+    questHasLocationProof, sanitizeTrackedQuestId } from './QuestTracking.js';
 import { isRichQuest, atQuestLocation, questEntries, observeQuestRoom, performQuestAction,
     applyQuestResolution, ensureQuestState, matchesQuestEncounter, refreshCustodyObjectives,
     prerequisitesMet } from './ProceduralQuest.js';
@@ -25,7 +28,58 @@ class QuestManager {
    */
     async initialize() {
         await this.generator.loadData();
+        this.refreshTrackingIntel();
         console.log('📜 Quest system initialized');
+    }
+
+    /** Select a single active quest, or clear tracking with null. */
+    setTrackedQuest(idOrNull) {
+        const quests = gameState.get('quests');
+        if (!quests || (idOrNull !== null && !quests.active?.some(quest => quest.id === idOrNull
+            && !['completed', 'failed'].includes(quest.status)))) {
+            return false;
+        }
+        quests.trackedQuestId = idOrNull;
+        this.refreshTrackingIntel();
+        gameState.set('quests', quests);
+        return true;
+    }
+
+    /** Persist actual discoveries once; render/read paths never acquire knowledge. */
+    refreshTrackingIntel() {
+        const quests = gameState.get('quests');
+        if (!quests) {
+            return false;
+        }
+        let changed = quests.trackedQuestId !== sanitizeTrackedQuestId(quests);
+        quests.trackedQuestId = sanitizeTrackedQuestId(quests);
+        if (RULES.quests.tracking.enabled) {
+            const world = gameState.get('world') || {};
+            for (const quest of quests.active || []) {
+                const targets = [questTrackingTarget(quest), ...(quest.objectives || []).map(objective =>
+                    questTrackingTarget(quest, objective))].filter(Boolean);
+                for (const target of targets) {
+                    if (!quest.trackingDiscoveries?.[target.key]
+                        && questHasLocationProof(quest, target, world, RULES.worldGen.regionSize)) {
+                        quest.trackingDiscoveries ||= {};
+                        quest.trackingDiscoveries[target.key] = true;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) {
+            gameState.set('quests', quests);
+        }
+        return changed;
+    }
+
+    /** Safe navigation VM only: no hidden coordinates outside exact guidance. */
+    getTrackedQuestGuidance() {
+        const quests = gameState.get('quests');
+        const id = sanitizeTrackedQuestId(quests);
+        return projectQuestTracking(quests?.active?.find(quest => quest.id === id),
+            gameState.get('world') || {}, RULES.quests.tracking);
     }
 
     /**
@@ -64,6 +118,9 @@ class QuestManager {
         quest.acceptedAt = Date.now();
         quest.questGiverId = npcId;
         ensureQuestState(quest);
+        if (quest.iteration && quest.deadlineDuration) {
+            quest.deadlineAt = (gameState.get('world.worldClock') || 0) + quest.deadlineDuration;
+        }
 
         // Remove from available
         quests.available = quests.available.filter(q => q.id !== questId);
@@ -71,8 +128,22 @@ class QuestManager {
         // Add to active
         quests.active.push(quest);
 
+        // Only an actually delivered selected briefing authorizes tier guidance.
+        const briefing = quest.intelDialogue?.[quest.intelQuality];
+        if (typeof briefing === 'string' && briefing.trim()) {
+            gameState.addMessage(briefing, 'info');
+            const target = questTrackingTarget(quest);
+            const origin = questIssuer(quest, gameState.get('world') || {});
+            quest.trackingIntel = { quality: quest.intelQuality, origin,
+                targetKey: target?.key || null,
+                ...(quest.intelQuality === 'low' && origin && target
+                    ? { bearing: questBearing(origin, target, RULES.quests.tracking.bearings) } : {}) };
+        }
+
         // Update state
         gameState.set('quests', quests);
+
+        this.refreshTrackingIntel();
 
         // Log message
         gameState.addMessage(`📜 Quest Accepted: ${quest.name}`, 'success');
@@ -87,6 +158,7 @@ class QuestManager {
    * @returns {boolean} Success
    */
     abandonQuest(questId) {
+        this.checkQuestDeadlines();
         const quests = gameState.get('quests');
         if (!quests) {
             return false;
@@ -100,7 +172,7 @@ class QuestManager {
         }
 
         const quest = quests.active[questIndex];
-        if (quest.resolutionPending) {
+        if (quest.resolutionPending || quest.expiryPending) {
             gameState.addMessage('Finish the current handover before abandoning this commission.', 'warning');
             return false;
         }
@@ -115,6 +187,8 @@ class QuestManager {
         quest.failReason = 'abandoned';
         quests.failed.push(quest);
 
+        quests.trackedQuestId = sanitizeTrackedQuestId(quests);
+
         // Update state
         gameState.set('quests', quests);
 
@@ -123,7 +197,11 @@ class QuestManager {
         console.log(`Quest abandoned: ${quest.name}`);
 
         // Apply relation penalty to quest giver NPC
-        this._applyRelationChange(quest, 'questAbandoned');
+        if (quest.iteration) {
+            this._applyIterationFailureStanding(quest);
+        } else {
+            this._applyRelationChange(quest, 'questAbandoned');
+        }
 
         return true;
     }
@@ -161,6 +239,21 @@ class QuestManager {
             return { success: false };
         }
 
+        if (this.completingQuests?.has(questId)) {
+            return { success: false };
+        }
+        this.completingQuests ||= new Set();
+        this.completingQuests.add(questId);
+
+        try {
+            return this._completeOrdinaryQuest(quests, quest, character, questIndex);
+        } finally {
+            this.completingQuests.delete(questId);
+        }
+    }
+
+    _completeOrdinaryQuest(quests, quest, character, questIndex) {
+
         // Award rewards
         const rewardSummary = this.awardRewards(quest, character);
 
@@ -169,6 +262,8 @@ class QuestManager {
         quest.status = 'completed';
         quest.completedAt = Date.now();
         quests.completed.push(quest);
+
+        quests.trackedQuestId = sanitizeTrackedQuestId(quests);
 
         // Update state
         gameState.set('quests', quests);
@@ -232,6 +327,7 @@ class QuestManager {
    * @param {string} reason - Failure reason
    */
     failQuest(questId, reason) {
+        this.checkQuestDeadlines();
         const quests = gameState.get('quests');
         if (!quests) {
             return;
@@ -245,7 +341,7 @@ class QuestManager {
         const quest = quests.active[questIndex];
 
         // Move to failed
-        if (quest.resolutionPending) {
+        if (quest.resolutionPending || quest.expiryPending) {
             return;
         }
         this._releaseQuestCustody(quest);
@@ -255,11 +351,17 @@ class QuestManager {
         quest.failReason = reason;
         quests.failed.push(quest);
 
+        quests.trackedQuestId = sanitizeTrackedQuestId(quests);
+
         gameState.set('quests', quests);
         gameState.addMessage(`Quest Failed: ${quest.name}`, 'error');
 
         // Apply relation penalty to quest giver NPC
-        this._applyRelationChange(quest, 'questFailed');
+        if (quest.iteration) {
+            this._applyIterationFailureStanding(quest);
+        } else {
+            this._applyRelationChange(quest, 'questFailed');
+        }
     }
 
     /**
@@ -268,17 +370,39 @@ class QuestManager {
    * @param {Object} character - Character instance or restored plain object
    * @returns {Object} Reward summary
    */
-    awardRewards(quest, character) {
-        const rewards = quest.rewards || {};
-        const summary = {
+    getQuestReputationPreview(quest) {
+        return questStandingPreview(quest, gameState.get('world') || {},
+            globalThis.window?.game?.npcGenerator?.culturesData,
+            this._findNPCById(quest.questGiver?.npcId || quest.questGiverId),
+            globalThis.window?.game?.relationManager);
+    }
+
+    awardRewards(quest, character, rewardsOverride = null) {
+        this.awardingRewards ||= new Set();
+        if (quest.rewardReceipt?.completed || this.awardingRewards.has(quest)) {
+            return quest.rewardReceipt.summary;
+        }
+        this.awardingRewards.add(quest);
+        try {
+            return this._applyQuestRewards(quest, character, rewardsOverride || quest.rewards || {});
+        } finally {
+            this.awardingRewards.delete(quest);
+        }
+    }
+
+    _applyQuestRewards(quest, character, rewards) {
+        const preview = this.getQuestReputationPreview(quest);
+        quest.rewardReceipt ||= { paid: {}, completed: false, summary: {
             xp: 0,
             gold: 0,
             item: null,
-            reputation: null
-        };
+            reputation: [], reputationWarning: null
+        } };
+        const { paid, summary } = quest.rewardReceipt;
 
         // Award XP
-        if (rewards.xp) {
+        if (rewards.xp && !paid.xp) {
+            paid.xp = true;
             if (typeof character.gainXP === 'function') {
                 character.gainXP(rewards.xp);
             } else {
@@ -292,7 +416,8 @@ class QuestManager {
         }
 
         // Award Gold
-        if (rewards.gold) {
+        if (rewards.gold && !paid.gold) {
+            paid.gold = true;
             if (typeof character.addGold === 'function') {
                 character.addGold(rewards.gold);
             } else {
@@ -302,7 +427,8 @@ class QuestManager {
         }
 
         // Award Item
-        if (rewards.item && rewards.item !== 'random') {
+        if (rewards.item && rewards.item !== 'random' && !paid.item) {
+            paid.item = true;
             const baseItem = window.lootManager?.getItemById(rewards.item);
             if (baseItem) {
                 const item = { ...baseItem, quantity: 1 };
@@ -320,22 +446,63 @@ class QuestManager {
 
                 character.inventory = character.inventory || [];
                 character.inventory.push(item);
-                gameState.addMessage(`📦 Quest reward: ${item.name}!`, 'success');
                 summary.item = item.name;
+                gameState.addMessage(`📦 Quest reward: ${item.name}!`, 'success');
             } else {
                 console.warn(`QuestManager: reward item '${rewards.item}' not found in items`);
                 summary.item = rewards.item;
             }
         }
 
-        // Award Reputation (TODO: Implement faction system)
-        if (rewards.reputation) {
-            summary.reputation = rewards.reputation;
-            console.log('Quest reputation reward (not yet implemented):', rewards.reputation);
+        if (!paid.reputation) {
+            if (!preview.available) {
+                summary.reputationWarning = preview.reason;
+                paid.reputation = true;
+                gameState.addMessage(`Standing reward unavailable: ${preview.reason}`, 'warning');
+            } else {
+                const relations = globalThis.window?.game?.relationManager;
+                if (preview.changes.length) {
+                    quest.reputationRewardReceipt ||= { changes: [] };
+                }
+                for (const target of preview.changes) {
+                    if (quest.reputationRewardReceipt.changes.some(change => change.targetId === target.targetId)) {
+                        continue;
+                    }
+                    const result = relations.previewFactionReputation(target.targetId, target.amount);
+                    if (!result) {
+                        summary.reputationWarning = 'The standing target is no longer available.';
+                        gameState.addMessage(`Standing reward unavailable: ${summary.reputationWarning}`, 'warning');
+                        break;
+                    }
+                    const change = { targetId: target.targetId, targetName: target.targetName,
+                        amount: result.points, previous: result.previousScore, current: result.newScore };
+                    quest.reputationRewardReceipt.changes.push(change);
+                    summary.reputation = [...quest.reputationRewardReceipt.changes];
+                    const applied = relations.modifyFactionReputation(target.targetId, target.amount);
+                    if (!applied) {
+                        quest.reputationRewardReceipt.changes = quest.reputationRewardReceipt.changes
+                            .filter(entry => entry.targetId !== target.targetId);
+                        summary.reputation = [...quest.reputationRewardReceipt.changes];
+                        summary.reputationWarning = 'The standing change could not be applied.';
+                        gameState.addMessage(`Standing reward unavailable: ${summary.reputationWarning}`, 'warning');
+                        break;
+                    }
+                    this.reportQuestStandingChange(change);
+                }
+                paid.reputation = true;
+            }
         }
 
+        quest.rewardReceipt.completed = true;
         gameState.set('character', character);
         return summary;
+    }
+
+    reportQuestStandingChange(change) {
+        const text = change.amount === 0
+            ? `${change.targetName} standing unchanged (${change.current}; standing limit reached).`
+            : `${change.amount > 0 ? '+' : ''}${change.amount} standing with ${change.targetName} (${change.previous} → ${change.current}).`;
+        gameState.addMessage(text, change.amount < 0 ? 'warning' : 'success');
     }
 
     /**
@@ -401,6 +568,7 @@ class QuestManager {
    * @param {string} itemId - Item acquired
    */
     onItemAcquired(itemId, source = null) {
+        this.checkQuestDeadlines();
         const quests = gameState.get('quests');
         if (!quests || !quests.active) {
             return;
@@ -529,6 +697,7 @@ class QuestManager {
      * @param {Object} character - Plain character object from gameState
      */
     onRoomEntered(dungeonX, dungeonY, roomIndex, character) {
+        this.checkQuestDeadlines();
         const quests = gameState.get('quests');
         let updated = false;
         for (const quest of quests?.active || []) {
@@ -881,16 +1050,19 @@ class QuestManager {
     }
 
     getQuestActions(questId) {
+        this.checkQuestDeadlines();
         const quest = this.getQuest(questId);
         return isRichQuest(quest) ? questEntries(quest, quest.actions) : [];
     }
 
     getResolutionOptions(questId) {
+        this.checkQuestDeadlines();
         const quest = this.getQuest(questId);
         return isRichQuest(quest) ? questEntries(quest, quest.resolutions) : [];
     }
 
     recordQuestAction(questId, actionId, npcId = null) {
+        this.checkQuestDeadlines();
         const quest = this.getQuest(questId);
         this.performingQuestActions ||= new Set();
         if (!isRichQuest(quest) || this.performingQuestActions.has(questId)) {
@@ -898,23 +1070,30 @@ class QuestManager {
         }
         this.performingQuestActions.add(questId);
         try {
-            return performQuestAction(quest, actionId, npcId);
+            const result = performQuestAction(quest, actionId, npcId);
+            this.checkQuestDeadlines();
+            return result;
         } finally {
             this.performingQuestActions.delete(questId);
         }
     }
 
     resolveQuest(questId, choiceId) {
+        this.checkQuestDeadlines();
         const quest = this.getQuest(questId);
         return isRichQuest(quest) ? applyQuestResolution(this, quest, choiceId) : { success: false };
     }
 
     onQuestEncounterVictory(source) {
+        this.checkQuestDeadlines();
         if (!source || source.outcome && source.outcome !== 'victory') {
             return [];
         }
         const completed = [];
         for (const quest of gameState.get('quests.active') || []) {
+            if (quest.expiryPending) {
+                continue;
+            }
             ensureQuestState(quest);
             for (const objective of quest.objectives || []) {
                 if (objective.completed || !['kill', 'defeat_encounter'].includes(objective.type)
@@ -939,6 +1118,104 @@ class QuestManager {
             this.checkQuestCompletion();
         }
         return completed;
+    }
+
+    getQuestDeadlineState(quest) {
+        const urgent = Boolean(quest?.iteration && quest.deadlineDuration);
+        const suspended = !quest?.expiryPending && Boolean(quest?.fulfilledAt !== undefined || quest?.resolutionPending
+            || quest?.deadlineObjectives?.length && quest.deadlineObjectives.every(id =>
+                quest.objectives?.some(objective => objective.id === id && objective.completed)));
+        const remaining = quest?.deadlineAt === undefined ? quest?.deadlineDuration ?? null
+            : Math.max(0, quest.deadlineAt - (gameState.get('world.worldClock') || 0));
+        return { urgent, duration: quest?.deadlineDuration || null, remaining, suspended,
+            expired: urgent && !suspended && quest.deadlineAt !== undefined && remaining === 0 };
+    }
+
+    checkQuestDeadlines() {
+        if (this.checkingDeadlines) {
+            return;
+        }
+        this.checkingDeadlines = true;
+        try {
+            const quests = gameState.get('quests');
+            if (!quests) {
+                return;
+            }
+            let changed = false;
+            for (const quest of [...(quests.active || [])]) {
+                const deadline = this.getQuestDeadlineState(quest);
+                if (!deadline.urgent || quest.resolutionPending) {
+                    continue;
+                }
+                if (deadline.suspended && quest.fulfilledAt === undefined) {
+                    quest.fulfilledAt = gameState.get('world.worldClock') || 0;
+                    changed = true;
+                } else if (deadline.expired) {
+                    quest.expiryPending = true;
+                    quest.expiryEffectsApplied ||= [];
+                    const consumer = globalThis.window?.game?.consequenceManager || globalThis.window?.consequenceManager;
+                    const effects = quest.failureEffects || [];
+                    if (effects.some(effect => !quest.expiryEffectsApplied.includes(effect.id)
+                        && !consumer?.canApplyQuestEffect(effect, quest))) {
+                        continue;
+                    }
+                    let succeeded = true;
+                    for (const effect of effects) {
+                        if (quest.expiryEffectsApplied.includes(effect.id)) {
+                            continue;
+                        }
+                        quest.expiryEffectsApplied.push(effect.id);
+                        if (!consumer.applyQuestEffect(effect, quest)) {
+                            quest.expiryEffectsApplied = quest.expiryEffectsApplied.filter(id => id !== effect.id);
+                            succeeded = false;
+                            break;
+                        }
+                    }
+                    if (!succeeded) {
+                        continue;
+                    }
+                    this._releaseQuestCustody(quest);
+                    this._applyIterationFailureStanding(quest);
+                    quest.status = 'failed';
+                    quest.failReason = 'expired';
+                    delete quest.expiryPending;
+                    quests.active = quests.active.filter(entry => entry.id !== quest.id);
+                    quests.failed ||= [];
+                    quests.failed.push(quest);
+                    quests.trackedQuestId = sanitizeTrackedQuestId(quests);
+                    gameState.addMessage(`Commission expired: ${quest.name}`, 'warning');
+                    changed = true;
+                }
+            }
+            if (changed) {
+                gameState.set('quests', quests);
+            }
+        } finally {
+            this.checkingDeadlines = false;
+        }
+    }
+
+    _applyIterationFailureStanding(quest) {
+        if (!quest.iteration || quest.failureStandingApplied) {
+            return;
+        }
+        const giver = quest.participants?.giver || quest.procedural?.participants?.giver;
+        const relations = globalThis.window?.game?.relationManager;
+        const npc = giver && this._findNPCById(giver.npcId);
+        if (!npc || !relations?.modifyFactionReputation) {
+            return;
+        }
+        quest.failureStandingApplied = true;
+        relations.modifyRelation(npc, 'questAbandoned', {
+            exactPoints: RULES.quests.iteration.abandonment.personal, contributeToFaction: false
+        });
+        this._persistNPCRelations(npc);
+        relations.modifyFactionReputation(giver.culture, RULES.quests.iteration.abandonment.faction);
+    }
+
+    getQuestEncounterLevel(fallbackLevel) {
+        return globalThis.window?.game?.dungeonManager?.getQuestEncounterLevel(fallbackLevel)
+            || fallbackLevel || gameState.get('character.level') || 1;
     }
 
     /**
@@ -1003,15 +1280,17 @@ class QuestManager {
             return;
         }
 
-        const npcId = quest.questGiver?.npcId;
+        const npcId = quest.questGiver?.npcId || quest.questGiverId;
         if (!npcId) {
             return;
         }
 
         const npc = this._findNPCById(npcId);
         if (npc) {
-            const result = relationManager.modifyRelation(npc, modifierKey);
+            const result = relationManager.modifyRelation(npc, modifierKey,
+                { contributeToFaction: !hasExplicitQuestStanding(quest) });
             if (result) {
+                this._persistNPCRelations(npc);
                 const sign = result.points >= 0 ? '+' : '';
                 gameState.addMessage(`${sign}${result.points} relation with ${npc.name} [${result.tier.label}]`, result.points >= 0 ? 'success' : 'warning');
             }
@@ -1029,12 +1308,16 @@ class QuestManager {
             return;
         }
 
-        const npcId = quest.questGiver?.npcId;
-        const settlementId = quest.questGiver?.settlementId
+        const npcId = quest.questGiver?.npcId || quest.questGiverId;
+        const settlementId = questOriginSettlementId(quest)
             || (quest.questGiver?.npcId ? quest.questGiver.npcId.split('_').slice(1, 3).join('_') : null);
 
         if (settlementId) {
-            relationManager.modifySettlementRelations(settlementId, npcId);
+            const changed = relationManager.modifySettlementRelations(settlementId, npcId,
+                { contributeToFaction: !hasExplicitQuestStanding(quest) });
+            for (const npc of changed || []) {
+                this._persistNPCRelations(npc);
+            }
         }
     }
 
@@ -1070,8 +1353,8 @@ class QuestManager {
         }
 
         // Also check persistent settlement data
-        if (world.settlements) {
-            for (const settlementData of Object.values(world.settlements)) {
+        if (world.settlements || world.metadata?.settlements) {
+            for (const settlementData of [...Object.values(world.settlements || {}), ...(world.metadata?.settlements || [])]) {
                 if (settlementData.npcs) {
                     const npc = settlementData.npcs.find(n => n.id === npcId);
                     if (npc) {
@@ -1096,6 +1379,9 @@ class QuestManager {
         for (const settlement of Object.values(world.settlements || [])) {
             sync(settlement.npcs);
         }
+        for (const settlement of world.metadata?.settlements || []) {
+            sync(settlement.npcs);
+        }
         for (const region of world.generatedRegions?.values?.() || []) {
             for (const feature of region.features || []) {
                 sync(feature.npcs);
@@ -1106,6 +1392,9 @@ class QuestManager {
             gameState.set('world.npcs', world.npcs);
         }
         gameState.set('world.settlements', world.settlements);
+        if (world.metadata) {
+            gameState.set('world.metadata', world.metadata);
+        }
         gameState.set('world.generatedRegions', world.generatedRegions);
     }
 

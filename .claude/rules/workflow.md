@@ -13,6 +13,14 @@ If you make an editing mistake: fix it with a targeted `Edit` back to the correc
 - No trailing summaries ("I just did X") — the diff speaks for itself.
 - One sentence per update while working. State results, not process.
 
+## Creative Workflow Context
+
+Before proposing, generating, implementing, or reviewing creative work, read `docs/art/visual-direction.md` for visual work (including art, UI presentation, animation, and image/video prompts), `docs/art/audio-identity-direction.md` for audio work (including music, ambience, effects, voice, mixing, and audio prompts), and both for work spanning the two or integrated experience reviews.
+
+For asset generation or prompt changes, also read the applicable `tools/image-gen/style-guide.md` or `tools/audio-gen/style-guide.md` and any linked brief for the target asset or scene. This applies regardless of agent role; include the relevant document paths in delegated creative briefs. Keep this requirement aligned with `AGENTS.md`.
+
+Respect each document's approval and implementation status: proposed direction is not approved policy, and approved direction is not proof of completed assets or runtime behavior. Preserve `docs/world/` canon and existing decision rights; surface conflicts to the responsible domain owner instead of silently inventing or overriding direction.
+
 ## Design Capture
 After a design conversation reaches conclusions, summarize decisions into `docs/plans/YYYY-MM-DD-topic.md`. Ask the user if they want capture before writing the file. Plans are a reference library — not every plan becomes a decision, not every plan moves forward. Don't surface plan files in CLAUDE.md; let them be looked up when relevant.
 

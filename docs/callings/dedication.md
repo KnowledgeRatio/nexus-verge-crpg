@@ -1,6 +1,6 @@
 # Dedication
 
-**This doc describes only what is currently implemented.** For proposed/future changes, see `docs/plans/` — nothing from an in-progress design conversation belongs here until it actually ships. Last verified against code/data: 2026-08-07 (post-implementation of Oath's full identity pass — auras, Vow pool, concentration system — alongside the Exemplar identity pass from 2026-08-05/06).
+**This doc describes only what is currently implemented.** For proposed/future changes, see `docs/plans/` — nothing from an in-progress design conversation belongs here until it actually ships. Full identity pass verified against code/data on 2026-08-07; rest recovery and level-three confirmation verified in scope on 2026-10-13. This is not a new full-calling audit.
 
 ## Identity & Narrative
 
@@ -19,9 +19,17 @@ The two specializations chosen at level 3 diverge in kind, not just degree:
 - Attribute identity: **Prowess + Resilience** under the live default `NVSystem` attribute system (`RULES.attributes.system`), the 1:1 rename of the legacy **STR + CON** identity under the `5EClassic` fallback system. See `.claude/rules/d5e-compliance.md`'s Attribute Systems section — both systems are live, switched by config, not a one-way migration. Dedication is the only calling with a settled NVSystem identity today; Curiosity and Audacity do not have one yet.
 - Save proficiency under NVSystem: Resilience-save only (one proficiency, not two — the legacy STR-save/CON-save both collapse onto Resilience).
 
+Both short and long rests restore Resolve to its maximum through the player rest controls, including saved/restored plain characters. `Character` rest methods and `RestManager` share resource-only recovery in `src/systems/restRecovery.js`; eligible ability uses and equipment charges recharge according to their definitions. Base Calling abilities are eligible by class/level/specialization without requiring `selectedAbilities`; tactics and vows remain restricted to known choices. Long rests also recover resources marked for long-rest recharge. Healing, rest eligibility, supplies and world time remain the callers' responsibility. The local 2026-10-13 repair is covered by ordinary-created-character, restored-character and callback checks; hands-on browser acceptance remains open.
+
+Queued on-hit tactics spend their authored Resolve cost once when the attack hits; an unaffordable tactic cannot apply, and a miss spends no tactic Resolve. Reaction eligibility includes automatic abilities such as Indomitable by class, level and specialization without requiring selected IDs, while preserving known tactic/vow choices and availability checks. These combat paths were repaired locally on 2026-10-13; restored-character and reaction-callback regressions verify them, while hands-on reaction acceptance remains open.
+
+Condition immunity blocks the control part of a tactic, not its valid damage or Resolve cost. For example, a frightened-immune enemy still takes Menacing Attack's extra damage but is not frightened. An immune control effect does not consume the one-shot Exposed benefit or start concentration. The same rule applies to Oath's condition effects; no Calling data or costs changed in the local 2026-10-18 repair.
+
 ## Progression (implemented)
 
 Source: `data/levelProgression.json` (`progressionByClass.dedication`), `data/callingProgression.json`.
+
+Level-three confirmation requires the chosen specialization, attribute increase and branch selections: three tactics for Exemplar, or one aura for Oath. The scalar specialization validation is repaired locally; incomplete selections remain blocked. Actual confirmation and saved progression consumers are covered by regression checks, without implying a played level-1-to-10 campaign.
 
 | Level | Content |
 |---|---|

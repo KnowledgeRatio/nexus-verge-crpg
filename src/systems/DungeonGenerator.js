@@ -9,6 +9,7 @@
  */
 
 import { SeededRandom } from '../utils/rng.js';
+import { RULES } from '../core/rulesEngine.js';
 
 export class DungeonGenerator {
     constructor(seed) {
@@ -65,9 +66,15 @@ export class DungeonGenerator {
         const rng = new SeededRandom(dungeonSeed);
 
         // 1. Select or use existing dungeon type
+        const automaticType = !dungeonFeature.dungeonTypeId;
+        // Replay an initial automatic type draw when the saved feature now has its selected ID.
+        // Explicitly authored type IDs retain their existing seeded stream.
+        const selectedType = automaticType ||
+            (RULES.dungeon?.trapChoicesEnabled && dungeonFeature.dungeonTypeSeedDraw)
+            ? this.selectDungeonType(rng) : null;
         const dungeonType = dungeonFeature.dungeonTypeId
             ? this.dungeonTypes.find(dt => dt.id === dungeonFeature.dungeonTypeId)
-            : this.selectDungeonType(rng);
+            : selectedType;
 
         if (!dungeonType) {
             console.error('No valid dungeon type found');
@@ -76,6 +83,9 @@ export class DungeonGenerator {
 
         dungeonFeature.dungeonType = dungeonType;
         dungeonFeature.dungeonTypeId = dungeonType.id;
+        if (RULES.dungeon?.trapChoicesEnabled && automaticType) {
+            dungeonFeature.dungeonTypeSeedDraw = true;
+        }
 
         // 2. Determine room count from dungeon type data (no artificial cap)
         const minRooms = Math.max(3, dungeonType.minRooms || 5);
@@ -1084,7 +1094,8 @@ export class DungeonGenerator {
 
             // Fallback: pick the entry with the highest maxLevel that's still below player level
             const sorted = [...bossPool].sort((a, b) => (b.maxLevel || 10) - (a.maxLevel || 10));
-            return sorted[0].id;
+            // Level eligibility must not shift every later layout/trap draw during regeneration.
+            return RULES.dungeon?.trapChoicesEnabled ? rng.choice([sorted[0]]).id : sorted[0].id;
         }
 
         // Legacy format: flat string array

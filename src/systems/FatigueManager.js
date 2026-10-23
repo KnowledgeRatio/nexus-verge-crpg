@@ -20,6 +20,34 @@ export function getFatigueState() {
     };
 }
 
+/** Supply slots available without changing fatigue or rest state. */
+export function getSupplyCapacityRemaining() {
+    if (!RULES.fatigue.enabled) {
+        return 0;
+    }
+    const supplies = getFatigueState().supplies;
+    if (!Number.isInteger(supplies) || supplies < 0) {
+        return 0;
+    }
+    return Math.max(0, RULES.fatigue.suppliesMaxCarry - supplies);
+}
+
+/** Restore carried supplies; returns the actual amount restored. */
+export function restoreSupplies(amount) {
+    if (!RULES.fatigue.enabled || !Number.isInteger(amount) || amount <= 0) {
+        return 0;
+    }
+    const restored = Math.min(amount, getSupplyCapacityRemaining());
+    if (restored <= 0) {
+        return 0;
+    }
+    const state = { ...getFatigueState() };
+    state.supplies += restored;
+    gameState.set('fatigue', state);
+    _updateFatigueHUD();
+    return restored;
+}
+
 /** Returns named threshold for a given fatigue % */
 export function getThresholdName(pct) {
     const t = RULES.fatigue.thresholds;

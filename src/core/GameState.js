@@ -5,6 +5,7 @@
 
 import { getNestedProperty, setNestedProperty } from '../utils/helpers.js';
 import { RULES } from './rulesEngine.js';
+import { sanitizeTrackedQuestId } from '../systems/QuestTracking.js';
 
 export class GameState {
     constructor() {
@@ -33,6 +34,7 @@ export class GameState {
 
             // Quests
             quests: {
+                trackedQuestId: null,
                 active: [],
                 completed: [],
                 failed: [],
@@ -276,6 +278,7 @@ export class GameState {
 
         // Initialize quest system
         this.data.quests = {
+            trackedQuestId: null,
             available: [],
             active: [],
             completed: [],
@@ -393,6 +396,7 @@ export class GameState {
         if (questIndex > -1) {
             const quest = this.data.quests.active.splice(questIndex, 1)[0];
             this.data.quests.completed.push(quest);
+            this.data.quests.trackedQuestId = sanitizeTrackedQuestId(this.data.quests);
             this.data.stats.questsCompleted++;
 
             this.notify('quests.active', this.data.quests.active);
@@ -526,6 +530,8 @@ export class GameState {
         // Restore basic data
         this.data = {
             ...savedData,
+            quests: { available: [], active: [], completed: [], failed: [], ...savedData.quests,
+                trackedQuestId: sanitizeTrackedQuestId(savedData.quests) },
             world: {
                 ...savedData.world,
                 generatedRegions: new Map(savedData.world.generatedRegions),
@@ -595,6 +601,7 @@ export class GameState {
                 modifiedTiles: []
             },
             quests: {
+                trackedQuestId: null,
                 active: [],
                 completed: [],
                 failed: [],

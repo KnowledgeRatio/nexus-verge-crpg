@@ -231,7 +231,7 @@ class Player {
 
             if (result.isTrap) {
                 // Trigger trap skill challenge
-                await this.triggerDungeonTrapChallenge();
+                await this.triggerDungeonTrapChallenge(false, true);
             }
 
             if (result.isInteractable) {
@@ -391,7 +391,11 @@ class Player {
             if (settlement) {
                 // Only show notification once per settlement (don't spam every move)
                 if (this.shownSettlementNotification !== settlement.name) {
-                    gameState.addMessage(`🏘️ You arrive at ${settlement.name}. Press E to enter.`, 'info');
+                    const phase = settlement.hostileState?.phase;
+                    const warning = phase === 'hostile' ? ' Hostile occupation — entering starts combat.'
+                        : phase === 'rebuilding' ? ' Liberated; rebuilding is underway.' : '';
+                    gameState.addMessage(`🏘️ You arrive at ${settlement.name}.${warning} Press E to enter.`,
+                        phase === 'hostile' ? 'warning' : 'info');
                     this.shownSettlementNotification = settlement.name;
                 }
             } else {
@@ -551,6 +555,15 @@ class Player {
                 return;
             }
 
+            const trapPosition = gameState.get('dungeon.playerPosition');
+            const knownTrap = trapPosition && this.dungeonManager.getTileInCurrentRoom(
+                trapPosition.x, trapPosition.y
+            );
+            if (RULES.dungeon?.trapChoicesEnabled && knownTrap?.isTrap && knownTrap.trapDetected) {
+                await this.triggerDungeonTrapChallenge(true);
+                return;
+            }
+
             // Failed quest searches can be retried deliberately rather than by room re-entry.
             const dungeon = this.dungeonManager.currentDungeon;
             const roomIndex = gameState.get('dungeon.currentRoomIndex');
@@ -562,6 +575,12 @@ class Player {
 
             // No interactable at current position in dungeon
             gameState.addMessage('Nothing to interact with here.', 'info');
+            return;
+        }
+
+        const provision = window.game?.provisioningManager?.getOpportunityAtPosition(this.x, this.y);
+        if (provision?.feature?.type === 'provisioning') {
+            await window.game.promptProvisioning();
             return;
         }
 
@@ -609,6 +628,14 @@ class Player {
             }
         }
 
+        const site = this.worldGenerator?.worldMetadata?.features?.find(feature =>
+            feature.x === this.x && feature.y === this.y && feature.type === 'sanctuary'
+        );
+        if (site) {
+            await this._enterPoiSanctuary(site);
+            return;
+        }
+
         // Nothing to interact with
         gameState.addMessage('There is nothing to interact with here.', 'info');
     }
@@ -634,6 +661,15 @@ class Player {
 
         feature.originalPoiType = feature.poiType;
         feature.type = feature.resolvedType;
+        // Loaded tile features can be copies; the metadata is authoritative for finite opportunities.
+        const metadata = gameState.get('world.metadata');
+        const canonical = metadata?.features?.find(entry => entry.x === feature.x && entry.y === feature.y);
+        if (canonical) {
+            canonical.originalPoiType = feature.originalPoiType;
+            canonical.type = feature.type;
+            this.worldGenerator.worldMetadata = metadata;
+            gameState.set('world.metadata', metadata);
+        }
         return feature;
     }
 
@@ -646,6 +682,10 @@ class Player {
     async _enterPoiSanctuary(feature) {
         const name = feature.name || 'a peaceful place';
         gameState.addMessage(`✨ You find ${name} — a peaceful place to rest.`, 'success');
+        const provision = window.game?.provisioningManager?.getOpportunityAtPosition(feature.x, feature.y);
+        if (provision?.canAttempt) {
+            gameState.addMessage(`🌿 ${provision.cue.title}: ${provision.cue.description}`, 'info');
+        }
         restManager.openRestMenu();
     }
 
@@ -1106,6 +1146,8 @@ class Player {
                 }
             }
         }
+        const quests = globalThis.window?.game?.questManager || globalThis.window?.questManager;
+        quests?.refreshTrackingIntel?.();
     }
 
     /**
@@ -1128,7 +1170,9 @@ class Player {
             playerState.encounterAccumulator = 0;
             gameState.set('player', playerState);
 
-            const probability = terrainDef.encounterModifier * RULES.movement.baseEncounterProbability;
+            const outcomes = globalThis.window?.game?.consequenceManager || globalThis.window?.consequenceManager;
+            const multiplier = outcomes?.getEncounterMultiplier?.({ x: this.x, y: this.y }) || 1;
+            const probability = terrainDef.encounterModifier * RULES.movement.baseEncounterProbability * multiplier;
             if (Math.random() < probability) {
                 this.triggerCombatEncounter(terrainDef);
             }
@@ -1145,7 +1189,9 @@ class Player {
      * @param {Array<string>} enemyTypes - Optional array of specific enemy IDs to spawn (e.g., ['wolf', 'direwolf', 'bear'])
      */
     async triggerCombatEncounter(terrainDef, enemyTypes = null) {
-        const playerLevel = gameState.get('character.level') || 1;
+        const playerLevel = this.dungeonManager?.isInDungeon?.()
+            ? globalThis.window?.questManager?.getQuestEncounterLevel?.() || gameState.get('character.level') || 1
+            : gameState.get('character.level') || 1;
         const difficulty = gameState.get('worldConfig.difficulty') || 'normal';
         const campaignId = gameState.get('worldConfig.campaignId') || 'core';
         const terrainId = (typeof terrainDef === 'string' ? terrainDef : terrainDef?.id) || 'grassland';
@@ -1189,6 +1235,13 @@ class Player {
      */
     handleFeature(feature) {
         switch (feature.type) {
+            case 'provisioning': {
+                const opportunity = window.game?.provisioningManager?.getOpportunityAtPosition(feature.x, feature.y);
+                if (opportunity?.status === 'available') {
+                    gameState.addMessage(`${opportunity.cue.title}: ${opportunity.cue.description} Press E or use Interact to gather supplies.`, 'info');
+                }
+                break;
+            }
             case 'settlement':
                 gameState.addMessage(`🏘️ You arrive at ${feature.name}, a ${feature.settlementType}.`, 'success');
                 break;
@@ -1395,13 +1448,13 @@ class Player {
      * Flow:
      * 1. Calculate passive perception (10 + perception skill bonus)
      * 2. Compare against trap DC (from tile data or default 13)
-     * 3. If DETECTED: Show modal offering disarm attempt (Sleight of Hand check)
+     * 3. If DETECTED: Show modal offering disarm attempt (Finesse + Composure)
      * 4. If NOT DETECTED: Immediately take damage, then show result
      *
      * The player does NOT get a modal asking "do you want to roll perception?"
      * Detection happens automatically via passive perception.
      */
-    async triggerDungeonTrapChallenge() {
+    async triggerDungeonTrapChallenge(explicitAttempt = false, steppedOnTrap = false) {
         const character = gameState.get('character');
         if (!character) {
             return;
@@ -1422,89 +1475,126 @@ class Player {
                 trapDamageDice = trapTile.trapDamage || trapDamageDice;
             }
         }
+        const steppedOnKnownTrap = RULES.dungeon?.trapChoicesEnabled &&
+            trapTile?.trapDetected && steppedOnTrap && !explicitAttempt;
+        if (this.trapChallengePending || !trapTile?.isTrap ||
+            (trapTile.trapDetected && !explicitAttempt && !steppedOnKnownTrap)) {
+            return;
+        }
+        this.trapChallengePending = true;
+        try {
+        // Capture the source before the asynchronous prompt, never a later player position.
+            const { x: trapX, y: trapY } = dungeonState.playerPosition;
+            const trapRoomIndex = dungeonState.currentRoomIndex;
+            const persistentChoices = RULES.dungeon?.trapChoicesEnabled;
+            let armed = true;
 
-        // Calculate passive perception: 10 + perception skill bonus
-        const { passiveScore: passivePerception } = window.skillChallengeManager.getSkillCheckContext(
-            character, 'perception', { attribute: 'intuition' }
-        );
+            // Calculate passive perception: 10 + perception skill bonus
+            const { passiveScore: passivePerception } = window.skillChallengeManager.getSkillCheckContext(
+                character, 'perception', { attribute: 'intuition' }
+            );
 
-        const detected = passivePerception >= trapDC;
+            const detected = !steppedOnKnownTrap && (trapTile.trapDetected || passivePerception >= trapDC);
 
-        if (detected) {
+            if (detected) {
             // TRAP DETECTED - Show disarm modal
-            gameState.addMessage(`👁️ Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
+                if (!trapTile.trapDetected) {
+                    gameState.addMessage(`👁️ Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
+                }
+                if (persistentChoices) {
+                    this.dungeonManager.recordTrapState(trapRoomIndex, trapX, trapY, true, trapTile);
+                }
 
-            // Offer disarm attempt via skill challenge modal
-            if (window.skillChallengeManager?.terrainChallengesData) {
-                const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.['trap_detect_disarm'];
-                if (challenge && challenge.stages?.length >= 2) {
+                // Offer disarm attempt via skill challenge modal
+                if (window.skillChallengeManager?.terrainChallengesData) {
+                    const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.['trap_detect_disarm'];
+                    if (challenge && challenge.stages?.length >= 2) {
                     // Skip stage 1 (detect) - already detected via passive perception
                     // Go directly to stage 2 (disarm)
-                    const disarmStage = challenge.stages[1];
-                    const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(
-                        disarmStage.baseDC || 14,
-                        character.level
-                    );
+                        const disarmStage = challenge.stages[1];
+                        const adjustedDC = window.skillChallengeManager.calculateAdjustedDC(
+                            disarmStage.baseDC || 14,
+                            character.level
+                        );
 
-                    const config = {
-                        title: '🪤 Trap Detected!',
-                        description: 'You spot a hidden trap mechanism ahead. You can attempt to disarm it.',
-                        skill: disarmStage.skill || 'finesse',
-                        attribute: disarmStage.attribute,
-                        dc: adjustedDC
-                    };
+                        const config = {
+                            title: '🪤 Trap Detected!',
+                            cancelLabel: 'Avoid trap',
+                            description: persistentChoices
+                                ? 'Disarm to secure the passage, or avoid now. Stepping onto it again triggers it. Press E here to disarm before leaving.'
+                                : 'You spot a hidden trap mechanism ahead. You can attempt to disarm it.',
+                            skill: disarmStage.skill || 'finesse',
+                            attribute: disarmStage.attribute,
+                            dc: adjustedDC
+                        };
 
-                    const result = await window.game.promptSkillCheck(config, challenge, disarmStage);
+                        const result = await window.game.promptSkillCheck(config, challenge, disarmStage);
 
-                    if (result.attempted && result.success) {
-                        gameState.addMessage('✅ You carefully disarm the trap!', 'success');
-                    } else if (result.attempted && !result.success) {
-                        // The shared prompt already applied the authored disarm failure once.
-                        gameState.addMessage('💥 The trap triggers during disarm!', 'danger');
-                    } else {
+                        if (result.attempted && result.success) {
+                            armed = false;
+                            gameState.addMessage('✅ You carefully disarm the trap!', 'success');
+                        } else if (result.attempted && !result.success) {
+                            armed = false;
+                            // The shared prompt already applied the authored disarm failure once.
+                            gameState.addMessage('💥 The trap triggers during disarm!', 'danger');
+                        } else {
                         // Player chose not to attempt - carefully step around
-                        gameState.addMessage('🚶 You carefully avoid the trap.', 'info');
+                            gameState.addMessage('🚶 You carefully avoid the trap.', 'info');
+                        }
+                    } else {
+                    // No challenge template - just allow avoiding
+                        gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
                     }
                 } else {
-                    // No challenge template - just allow avoiding
                     gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
                 }
             } else {
-                gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
-            }
-        } else {
             // TRAP NOT DETECTED - Immediate damage, no choice
-            const { roll: rollFn } = await import('../utils/dice.js');
-            const damage = rollFn(trapDamageDice);
-            Character.prototype.takeDamage.call(character, damage, 'blood');
-            gameState.set('character', character);
-            if (window.game) {
-                window.game.updateHUD(character);
-            }
+                armed = false;
+                const { roll: rollFn } = await import('../utils/dice.js');
+                const damage = rollFn(trapDamageDice);
+                Character.prototype.takeDamage.call(character, damage, 'blood');
+                gameState.set('character', character);
+                if (window.game) {
+                    window.game.updateHUD(character);
+                }
 
-            gameState.addMessage(`⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
-            gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
-            window.game?.checkDeath?.(character);
+                gameState.addMessage(steppedOnKnownTrap
+                    ? '⚠️ You step onto the armed trap you previously avoided!'
+                    : `⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
+                gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+                window.game?.checkDeath?.(character);
 
-            // Show floating combat text if available
-            if (window.game?.showFloatingCombatText) {
+                // Show floating combat text if available
+                if (window.game?.showFloatingCombatText) {
                 // Use player's combatant card if in view, otherwise skip
-                const playerCard = document.querySelector('.combatant-card[data-combatant-id="player"]');
-                if (playerCard) {
-                    window.game.showFloatingCombatText('player', `-${damage}`, 'damage');
+                    const playerCard = document.querySelector('.combatant-card[data-combatant-id="player"]');
+                    if (playerCard) {
+                        window.game.showFloatingCombatText('player', `-${damage}`, 'damage');
+                    }
                 }
             }
-        }
 
-        // Mark trap as dealt with (detected or triggered)
-        if (dungeonState?.active && trapTile) {
-            const pos = dungeonState.playerPosition;
-            const room = this.dungeonManager?.getCurrentRoom();
-            if (room?.tiles?.[pos.y]?.[pos.x]) {
-                room.tiles[pos.y][pos.x].trapDetected = true;
-                room.tiles[pos.y][pos.x].isTrap = false; // Don't trigger again
-                gameState.set('dungeon', dungeonState);
+            if (persistentChoices) {
+                this.dungeonManager.recordTrapState(trapRoomIndex, trapX, trapY, armed, trapTile);
+                if (armed) {
+                    gameState.addMessage('🪤 The known trap remains armed. Press E here to disarm it; stepping onto it again will trigger it.', 'info');
+                }
+                return;
             }
+
+            // Legacy mode: all detection choices exhaust the tile.
+            if (dungeonState?.active && trapTile) {
+                const pos = dungeonState.playerPosition;
+                const room = this.dungeonManager?.getCurrentRoom();
+                if (room?.tiles?.[pos.y]?.[pos.x]) {
+                    room.tiles[pos.y][pos.x].trapDetected = true;
+                    room.tiles[pos.y][pos.x].isTrap = false; // Don't trigger again
+                    gameState.set('dungeon', dungeonState);
+                }
+            }
+        } finally {
+            this.trapChallengePending = false;
         }
     }
 
@@ -1589,6 +1679,16 @@ class Player {
             }
         }
 
+        // Physical traps are resolved by their tile, never by a phantom room roll.
+        if (RULES.dungeon?.trapChoicesEnabled) {
+            relevantChallenges = relevantChallenges.filter(id =>
+                !window.skillChallengeManager.terrainChallengesData?.challenges?.[id]?.physicalTrapOnly
+            );
+        }
+        if (!relevantChallenges.length) {
+            return;
+        }
+
         // Pick a random challenge from relevant pool
         const challengeId = relevantChallenges[Math.floor(Math.random() * relevantChallenges.length)];
         const challenge = window.skillChallengeManager.terrainChallengesData?.challenges?.[challengeId];
@@ -1639,7 +1739,8 @@ class Player {
      * Trigger combat encounter within dungeon using dungeon's monster pool
      */
     async triggerDungeonEncounter() {
-        const playerLevel = gameState.get('character.level') || 1;
+        const playerLevel = globalThis.window?.questManager?.getQuestEncounterLevel?.() ||
+            gameState.get('character.level') || 1;
         const encounterContext = this.dungeonManager.getEncounterContext();
 
         // Import rules engine

@@ -31,6 +31,18 @@ Judge work by its player outcome, not by technical output alone. Protect:
 
 The user is the product sponsor and final decision-maker.
 
+## Creative Workflow Context
+
+Before proposing, generating, implementing, or reviewing creative work, read the identity direction relevant to the task:
+
+- Visual work (art, portraits, items, environments, UI presentation, animation, or image/video prompts): `docs/art/visual-direction.md`.
+- Audio work (music, ambience, sound effects, voice, mixing, or audio prompts): `docs/art/audio-identity-direction.md`.
+- Work spanning both, including integrated scenes and experience reviews: read both.
+
+For asset generation or prompt changes, also read the applicable `tools/image-gen/style-guide.md` or `tools/audio-gen/style-guide.md` and any linked brief for the target asset or scene. Apply this requirement to the task regardless of which agent performs it, and include the relevant document paths in delegated creative briefs.
+
+Respect each document's approval and implementation status: proposed direction is not approved policy, and approved direction is not proof of completed assets or runtime behavior. Preserve `docs/world/` canon and existing decision rights; surface conflicts to the responsible domain owner instead of silently inventing or overriding direction.
+
 ## Architecture Constraints
 
 - Follow ADR-000: modifiability first.

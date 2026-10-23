@@ -1,0 +1,9094 @@
+{
+  "methodology": "Exact complete die support through live SkillChallengeManager. Creation-selectable profiles; L5/10 conditional actual levelUp + ASI stat projections, not earned full builds. Curiosity and Audacity full combat completeness unverified. No expertise, companion benefit, travel, quest completion or combat victory claim. Exact support probabilities have no sampling error and no binomial CI.",
+  "rolls": 31680,
+  "cells": [
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.3,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 17,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.2,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 18,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 15,
+          "modifier": -2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            18
+          ],
+          "total": 16,
+          "modifier": -2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": -2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.15,
+      "traces": [
+        {
+          "dice": [
+            19
+          ],
+          "total": 17,
+          "modifier": -2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": -1,
+          "modifier": -2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 12,
+          "modifier": -1,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 12,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.09,
+      "traces": [
+        {
+          "dice": [
+            18,
+            15
+          ],
+          "total": 14,
+          "modifier": -1,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Knight",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": -1,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.04,
+      "traces": [
+        {
+          "dice": [
+            19,
+            17
+          ],
+          "total": 16,
+          "modifier": -1,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 0,
+          "modifier": -1,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 3,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 18,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 3,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 19,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 3,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 20,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 17,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 22,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 18,
+          "modifier": 2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 2,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 19,
+          "modifier": 2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 3,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 12,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 3,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 14,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 3,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 16,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 20,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 21,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 22,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.7225,
+      "traces": [
+        {
+          "dice": [
+            12,
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.5625,
+      "traces": [
+        {
+          "dice": [
+            13,
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.4225,
+      "traces": [
+        {
+          "dice": [
+            14,
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.9,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 21,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 22,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 23,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.81,
+      "traces": [
+        {
+          "dice": [
+            12,
+            3
+          ],
+          "total": 12,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.64,
+      "traces": [
+        {
+          "dice": [
+            13,
+            5
+          ],
+          "total": 14,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 16,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": false,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Dedication Sage",
+      "calling": "dedication",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": false,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 20,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 21,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 22,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.7225,
+      "traces": [
+        {
+          "dice": [
+            12,
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.5625,
+      "traces": [
+        {
+          "dice": [
+            13,
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.4225,
+      "traces": [
+        {
+          "dice": [
+            14,
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 20,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 21,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 7,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 22,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 8,
+          "modifier": 7,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 27,
+          "modifier": 7,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.7225,
+      "traces": [
+        {
+          "dice": [
+            12,
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.5625,
+      "traces": [
+        {
+          "dice": [
+            13,
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.4225,
+      "traces": [
+        {
+          "dice": [
+            14,
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.9,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 21,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 22,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 23,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.81,
+      "traces": [
+        {
+          "dice": [
+            12,
+            3
+          ],
+          "total": 12,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.64,
+      "traces": [
+        {
+          "dice": [
+            13,
+            5
+          ],
+          "total": 14,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 16,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.9,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 21,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.8,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 22,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 23,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.85,
+      "traces": [
+        {
+          "dice": [
+            12
+          ],
+          "total": 20,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.75,
+      "traces": [
+        {
+          "dice": [
+            13
+          ],
+          "total": 21,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 8,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 22,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 9,
+          "modifier": 8,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 28,
+          "modifier": 8,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.81,
+      "traces": [
+        {
+          "dice": [
+            12,
+            3
+          ],
+          "total": 12,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.64,
+      "traces": [
+        {
+          "dice": [
+            13,
+            5
+          ],
+          "total": 14,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Curiosity investigator",
+      "calling": "curiosity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 9,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 16,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 10,
+          "modifier": 9,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 29,
+          "modifier": 9,
+          "dc": 16,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 18,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 19,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 20,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 17,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 22,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 18,
+          "modifier": 2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 19,
+          "modifier": 2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 12,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 14,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 16,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 18,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 19,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 20,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 17,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 22,
+          "modifier": 2,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 18,
+          "modifier": 2,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 2,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.35,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 19,
+          "modifier": 2,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 3,
+          "modifier": 2,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 12,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 14,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 1,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.16,
+      "traces": [
+        {
+          "dice": [
+            17,
+            13
+          ],
+          "total": 16,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 18,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 19,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 20,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.4225,
+      "traces": [
+        {
+          "dice": [
+            14,
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.3025,
+      "traces": [
+        {
+          "dice": [
+            15,
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.2025,
+      "traces": [
+        {
+          "dice": [
+            16,
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 18,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 23,
+          "modifier": 3,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 19,
+          "modifier": 3,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 14,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 3,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.4,
+      "traces": [
+        {
+          "dice": [
+            17
+          ],
+          "total": 20,
+          "modifier": 3,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 4,
+          "modifier": 3,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.4225,
+      "traces": [
+        {
+          "dice": [
+            14,
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.3025,
+      "traces": [
+        {
+          "dice": [
+            15,
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 5,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.2025,
+      "traces": [
+        {
+          "dice": [
+            16,
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "investigation",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.7,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 19,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.6,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 20,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 0,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.5,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 21,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 12,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.65,
+      "traces": [
+        {
+          "dice": [
+            14
+          ],
+          "total": 18,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 14,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.55,
+      "traces": [
+        {
+          "dice": [
+            15
+          ],
+          "total": 19,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20
+          ],
+          "total": 24,
+          "modifier": 4,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 75,
+      "dc": 16,
+      "modifier": 4,
+      "trained": true,
+      "faces": 20,
+      "exactSuccessProbability": 0.45,
+      "traces": [
+        {
+          "dice": [
+            16
+          ],
+          "total": 20,
+          "modifier": 4,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1
+          ],
+          "total": 5,
+          "modifier": 4,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 12,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.49,
+      "traces": [
+        {
+          "dice": [
+            14,
+            7
+          ],
+          "total": 12,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 12,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 12,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 14,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.36,
+      "traces": [
+        {
+          "dice": [
+            15,
+            9
+          ],
+          "total": 14,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 14,
+          "success": false
+        },
+        {
+          "dice": [
+            20,
+            20
+          ],
+          "total": 25,
+          "modifier": 5,
+          "dc": 14,
+          "success": true
+        }
+      ]
+    },
+    {
+      "profile": "Audacity envoy",
+      "calling": "audacity",
+      "level": 10,
+      "skillId": "craft",
+      "fatigue": 90,
+      "dc": 16,
+      "modifier": 5,
+      "trained": true,
+      "faces": 400,
+      "exactSuccessProbability": 0.25,
+      "traces": [
+        {
+          "dice": [
+            16,
+            11
+          ],
+          "total": 16,
+          "modifier": 5,
+          "dc": 16,
+          "success": true
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        },
+        {
+          "dice": [
+            1,
+            1
+          ],
+          "total": 6,
+          "modifier": 5,
+          "dc": 16,
+          "success": false
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "src/core/rulesEngine.js": "838fdfbb995af427f929f93179d006d3c6c3a94b58fc2347b3cc90906a54a406",
+    "src/systems/SkillChallengeManager.js": "bf1d854e765e974b7b2fda237a26ff0de990a04b4a91750ab088833d73eeec46",
+    "src/systems/Character.js": "63cccf95f2918fda7bd71c322cad91581dd853acf99c01d21b8334c51886fbc0",
+    "data/classes.json": "f336b687f81ae98588386510d35c47dde4e3567fa8699cf6bab3557fb51387cb",
+    "data/quests.json": "ae1e2f76869181bee1d7932fd91851d536b8243dfe1a398dc3129df8b875318f"
+  },
+  "currentQuestRules": {
+    "enabled": true,
+    "investigationDC": 12,
+    "xpMultiplier": 0.8,
+    "goldPerLevel": 20,
+    "incompleteRewardMultiplier": 0.5,
+    "shipmentQuantity": 3,
+    "salvageQuantity": 1
+  }
+}

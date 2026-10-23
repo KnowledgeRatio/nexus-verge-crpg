@@ -329,31 +329,22 @@
     ],
 
     "consumables_tier1": [
-      { "itemId": "potionOfHealing", "weight": 70 },
       { "itemId": "healersKit", "weight": 15 },
       { "itemId": "quiverOfArrows", "weight": 10 },
       { "itemId": "boltCase", "weight": 5 }
     ],
 
     "consumables_tier2": [
-      { "itemId": "potionOfHealing", "weight": 50 },
-      { "itemId": "potionOfGreaterHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 15 },
       { "itemId": "quiverOfArrows", "weight": 10 },
       { "itemId": "boltCase", "weight": 5 }
     ],
 
     "consumables_tier3": [
-      { "itemId": "potionOfGreaterHealing", "weight": 40 },
-      { "itemId": "potionOfHealing", "weight": 30 },
-      { "itemId": "potionOfSuperiorHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 10 }
     ],
 
     "consumables_tier4": [
-      { "itemId": "potionOfSuperiorHealing", "weight": 40 },
-      { "itemId": "potionOfGreaterHealing", "weight": 30 },
-      { "itemId": "potionOfSupremeHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 10 }
     ],
 
@@ -445,15 +436,15 @@
   "skillChallengeLootTables": {
     "trapDisarm_common": [
       { "itemId": "gold", "amount": "2d10", "weight": 50 },
-      { "itemId": "quiverOfArrows", "weight": 30 },
-      { "itemId": "potionOfHealing", "weight": 20 }
+      { "itemId": "quiverOfArrows", "weight": 15 },
+      { "itemId": "boltCase", "weight": 15 }
     ],
 
     "trapDisarm_uncommon": [
-      { "itemId": "gold", "amount": "3d20", "weight": 40 },
-      { "itemId": "potionOfGreaterHealing", "weight": 25 },
-      { "itemId": "dagger-plus-1", "weight": 20 },
-      { "itemId": "quiverOfArrows", "weight": 15 }
+      { "itemId": "gold", "amount": "3d20", "weight": 80 },
+      { "itemId": "dagger-plus-1", "weight": 40 },
+      { "itemId": "quiverOfArrows", "weight": 15 },
+      { "itemId": "boltCase", "weight": 15 }
     ],
 
     "hiddenCache_common": [
@@ -464,7 +455,6 @@
 
     "hiddenCache_uncommon": [
       { "itemId": "gold", "amount": "4d20", "weight": 50 },
-      { "itemId": "potionOfHealing", "weight": 25 },
       { "itemId": "healersKit", "weight": 15 },
       { "itemId": "gems", "value": "2d20", "weight": 10 }
     ],
@@ -473,8 +463,7 @@
       { "itemId": "gold", "amount": "5d20", "weight": 30 },
       { "itemId": "longsword-plus-1", "weight": 25 },
       { "itemId": "chainShirt-plus-1", "weight": 20 },
-      { "itemId": "scrollOfIdentify", "weight": 15 },
-      { "itemId": "potionOfGreaterHealing", "count": 2, "weight": 10 }
+      { "itemId": "scrollOfIdentify", "weight": 15 }
     ],
 
     "ancientRuins_veryrare": [
@@ -482,20 +471,17 @@
       { "itemId": "longsword-plus-2", "weight": 20 },
       { "itemId": "breastplate-plus-2", "weight": 20 },
       { "itemId": "cloak-of-protection", "weight": 15 },
-      { "itemId": "potionOfSuperiorHealing", "count": 2, "weight": 10 },
       { "itemId": "scrollOfFireball", "weight": 10 }
     ],
 
     "boulderReward_low": [
       { "itemId": "gold", "amount": "4d10", "weight": 70 },
-      { "itemId": "gems", "value": "1d20", "weight": 20 },
-      { "itemId": "potionOfHealing", "weight": 10 }
+      { "itemId": "gems", "value": "1d20", "weight": 20 }
     ],
 
     "sneakReward_common": [
       { "itemId": "gold", "amount": "2d10", "weight": 80 },
-      { "itemId": "dagger", "weight": 15 },
-      { "itemId": "potionOfHealing", "weight": 5 }
+      { "itemId": "dagger", "weight": 15 }
     ],
 
     "socialReward_common": [
@@ -506,14 +492,12 @@
 
     "socialReward_uncommon": [
       { "itemId": "gold", "amount": "5d20", "weight": 60 },
-      { "itemId": "potionOfHealing", "weight": 25 },
       { "itemId": "gems", "value": "2d20", "weight": 15 }
     ],
 
     "arcaneReward_uncommon": [
       { "itemId": "gold", "amount": "4d20", "weight": 50 },
       { "itemId": "scrollOfIdentify", "weight": 25 },
-      { "itemId": "potionOfHealing", "weight": 15 },
       { "itemId": "componentPouch", "weight": 10 }
     ],
 
@@ -521,7 +505,6 @@
       { "itemId": "gold", "amount": "6d20", "weight": 40 },
       { "itemId": "scrollOfFireball", "weight": 20 },
       { "itemId": "scrollOfDispelMagic", "weight": 15 },
-      { "itemId": "potionOfGreaterHealing", "count": 2, "weight": 15 },
       { "itemId": "wand-of-magic-missiles", "weight": 10 }
     ],
 
@@ -535,7 +518,6 @@
     "wildernessReward_uncommon": [
       { "itemId": "gold", "amount": "3d20", "weight": 40 },
       { "itemId": "rareHide", "weight": 30 },
-      { "itemId": "potionOfHealing", "weight": 20 },
       { "itemId": "healersKit", "weight": 10 }
     ],
 
@@ -543,15 +525,12 @@
       { "itemId": "gold", "amount": "2d20", "weight": 45 },
       { "itemId": "scrollOfIdentify", "weight": 25 },
       { "itemId": "componentPouch", "weight": 15 },
-      { "itemId": "healersKit", "weight": 10 },
-      { "itemId": "potionOfHealing", "weight": 5 }
+      { "itemId": "healersKit", "weight": 10 }
     ],
 
     "sc_ritual_reward": [
       { "itemId": "gold", "amount": "2d12", "weight": 40 },
-      { "itemId": "potionOfHealing", "weight": 30 },
-      { "itemId": "healersKit", "weight": 20 },
-      { "itemId": "potionOfGreaterHealing", "weight": 10 }
+      { "itemId": "healersKit", "weight": 20 }
     ],
 
     "shipwreck_salvage": [

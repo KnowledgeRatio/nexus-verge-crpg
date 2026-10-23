@@ -143,6 +143,7 @@ function makeRealCharacter(overrides = {}) {
         species: { abilityScoreIncrease: {}, traits: [], speed: 30, languages: [], skillProficiencies: [] },
         background: { skillProficiencies: [], feature: null, startingGold: 100 },
         resolvePoints: 3,
+        specialization: 'exemplar',
         knownTactics: ['riposte', 'parry'],
         selectedAbilities: ['indomitable']
     };
@@ -225,6 +226,48 @@ describe('promptReaction — pre-eligibility gating', () => {
 //    knownTactics/knownVows against abilitiesData, no crash, correct ability offered.
 // ---------------------------------------------------------------------------
 describe('promptReaction — FIXED: no longer crashes, offers the correct known reaction ability', () => {
+    it('offers automatic Indomitable on a saved character with no selected ability IDs', async () => {
+        const game = new Game();
+        game.abilitiesData = abilitiesData;
+        const character = JSON.parse(JSON.stringify(makeRealCharacter({ selectedAbilities: [] }).toJSON()));
+        gameState.set('character', character);
+        const attacker = new Combatant(makeRealCharacter(), 'enemy', 'atk');
+        const reactor = new Combatant(character, 'player', 'def');
+        const promise = game.promptReaction('afterFailedSave', attacker, reactor, { dc: 12 });
+        expect(elements.reactionAbilityList.children.length).toBe(1);
+        expect(elements.reactionAbilityList.children[0].innerHTML).toContain('Indomitable');
+        elements.reactionSkipBtn.click();
+        expect(await promise).toBeNull();
+        expect(reactor.actions.reaction).toBe(1);
+    });
+
+    it('using automatic Indomitable consumes one reaction and its short-rest charge', async () => {
+        const game = new Game();
+        game.abilitiesData = abilitiesData;
+        const saved = JSON.parse(JSON.stringify(makeRealCharacter({ selectedAbilities: [] }).toJSON()));
+        const character = { ...Character.fromJSON(saved) };
+        gameState.set('character', character);
+        const attacker = new Combatant(makeRealCharacter(), 'enemy', 'atk');
+        const reactor = new Combatant(character, 'player', 'def');
+        const promise = game.promptReaction('afterFailedSave', attacker, reactor, { saveType: 'str', dc: 12 });
+        mockD20(15);
+        elements.reactionAbilityList.children[0].click();
+        expect(await promise).toMatchObject({ abilityId: 'indomitable', newRoll: 15 });
+        expect(character.abilityUses.indomitable).toBe(1);
+        expect(reactor.actions.reaction).toBe(0);
+        reactor.actions.reaction = 1;
+        expect(await game.promptReaction('afterFailedSave', attacker, reactor, { saveType: 'str' })).toBeNull();
+    });
+
+    it.each([1, 5])('does not offer unavailable automatic Indomitable at level %s', async level => {
+        const game = new Game();
+        game.abilitiesData = abilitiesData;
+        const character = makeRealCharacter({ level, selectedAbilities: [], abilityUses: { indomitable: 1 } });
+        const attacker = new Combatant(makeRealCharacter(), 'enemy', 'atk');
+        const reactor = new Combatant(character, 'player', 'def');
+        expect(await game.promptReaction('afterFailedSave', attacker, reactor, {})).toBeNull();
+        expect(reactor.actions.reaction).toBe(1);
+    });
     it.each([
         ['afterMiss', {}, 'riposte'],
         ['afterHit', { damage: 5, isMelee: true }, 'parry'],
@@ -553,7 +596,8 @@ describe('promptReaction — Intervene resolve-spend sub-picker (real end-to-end
         const game = new Game();
         game.abilitiesData = abilitiesData;
 
-        const oath = makeRealCharacter({ resolvePoints: 2, knownTactics: [], selectedAbilities: [], knownVows: ['intervene'] });
+        const oath = makeRealCharacter({ specialization: 'oath', resolvePoints: 2,
+            knownTactics: [], selectedAbilities: [], knownVows: ['intervene'] });
         gameState.set('character', oath);
         const reactor = new Combatant(oath, 'player', 'oath');
         reactor.actions.reaction = 1;
@@ -583,7 +627,8 @@ describe('promptReaction — Intervene resolve-spend sub-picker (real end-to-end
         const game = new Game();
         game.abilitiesData = abilitiesData;
 
-        const oath = makeRealCharacter({ resolvePoints: 0, knownTactics: [], selectedAbilities: [], knownVows: ['intervene'] });
+        const oath = makeRealCharacter({ specialization: 'oath', resolvePoints: 0,
+            knownTactics: [], selectedAbilities: [], knownVows: ['intervene'] });
         gameState.set('character', oath);
         const reactor = new Combatant(oath, 'player', 'oath');
         reactor.actions.reaction = 1;

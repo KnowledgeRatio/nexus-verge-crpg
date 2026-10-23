@@ -1,0 +1,60 @@
+{
+  "marker": { "symbol": "+", "color": "#a8d67f" },
+  "challenge": {
+    "name": "Gather provisions",
+    "type": "single",
+    "skillId": "survival",
+    "attribute": "intuition",
+    "onSuccess": { "message": "You gather enough provisions for one supply." },
+    "onFailure": { "message": "You find no usable provisions." }
+  },
+  "cues": [
+    {
+      "id": "wild_plants",
+      "title": "Wild food plants",
+      "actionLabel": "Gather plants",
+      "description": "Food-bearing plants grow among the underbrush. Careful gathering may provide supplies for the journey.",
+      "eligibleHostTypes": ["provisioning"],
+      "eligibleBiomes": ["grassland", "plains", "forest", "denseForest", "jungle", "swamp", "savanna"],
+      "marker": { "symbol": "✿", "color": "#a8d67f" },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "wild_tracks",
+      "title": "Fresh game tracks",
+      "actionLabel": "Follow tracks",
+      "description": "Fresh tracks lead through the wild ground. Following them may provide supplies for the journey.",
+      "eligibleHostTypes": ["provisioning"],
+      "eligibleBiomes": ["grassland", "plains", "forest", "denseForest", "hills", "savanna", "tundra", "snowyPlains", "snowForest"],
+      "marker": { "symbol": "⋮", "color": "#d6bf85" },
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "tracks",
+      "title": "Fresh animal tracks",
+      "actionLabel": "Follow tracks",
+      "description": "Fresh hoofprints cross the sheltered ground. Following them may yield provisions for the road.",
+      "eligiblePoiTypes": ["cave", "camp", "ruins"],
+      "eligibleBiomes": ["grassland", "plains", "forest", "denseForest", "hills", "savanna"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "plants",
+      "title": "Edible plants",
+      "actionLabel": "Gather plants",
+      "description": "Clusters of plants grow around the shelter. Careful gathering may yield provisions for the road.",
+      "eligiblePoiTypes": ["cave", "camp", "ruins"],
+      "eligibleBiomes": ["grassland", "plains", "forest", "denseForest", "jungle"],
+      "campaignIds": ["core"]
+    },
+    {
+      "id": "cache",
+      "title": "Abandoned food cache",
+      "actionLabel": "Search cache",
+      "description": "Weathered wrappings lie tucked into a sheltered corner. Some stored provisions may still be usable.",
+      "eligiblePoiTypes": ["camp", "ruins", "watchtower"],
+      "eligibleBiomes": ["grassland", "plains", "forest", "hills", "savanna", "desert", "desertHills", "tundra", "snowyPlains", "mountain", "jungle", "swamp"],
+      "campaignIds": ["core"]
+    }
+  ]
+}

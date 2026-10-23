@@ -1,10 +1,22 @@
 # Nexus Verge — Image Generation Style Guide
 
-This file is injected verbatim into AI image prompts. Each section is used for its matching asset type. Keep instructions direct and unambiguous — this is read by an image model, not a human.
+The generator selects sections from this file for matching asset types. Keep prompt instructions direct and unambiguous — selected sections are read by an image model. Coverage and integration requirements below describe approved direction, not proof that assets or UI already exist.
+
+## Medium Scope
+
+Sponsor-approved direction, 2026-10-23: character portraits, portraits for every creature type, and item images use the oil-painted classic CRPG portrait tradition exemplified by the original Baldur's Gate games. Create original Nexus Verge subjects; the reference specifies medium, brushwork, lighting and mood, not existing characters, compositions, logos or interface frames.
+
+Preserve the detailed illustrated building rooms and their separately composited character-image layers. Do not apply the oil-portrait treatment to existing room backgrounds or automatically replace their service-person cutouts. Terrain retains its separate field-atlas gouache/ink treatment. Animated 3D combat remains compatible with painted portraits; selecting a portrait must not require switching combat to a static presentation.
+
+Coverage intent is every creature type and every item type, plus selectable portraits for both the player character and party members. This is an approved target, not a completed catalogue, selection UI or save contract. See `docs/art/visual-direction.md` for current evidence and outstanding scope.
+
+World canon in `docs/world/WORLD.md`, `COSMOLOGY.md`, `TECHNOLOGY.md` and the subject's authored data takes precedence over generic setting shorthand here. Medium rules do not redefine the Void or exclude canon-authored technology. Do not invent anomalous materials or cultural details merely to satisfy a style motif.
 
 ---
 
 ## Art Style
+
+Apply this oil-painted treatment to character portraits, creature portraits and item art. Preserve anatomically credible faces/forms and readable silhouettes at UI size; brush texture should enrich the subject without obscuring identity. Do not substitute a photorealistic headshot or a rendered 3D-avatar screenshot for a painted portrait.
 
 Illustrative oil painting — gestural, bold, designed. Strong value contrast: peripheral areas dissolve into loose atmospheric shadow while focal subjects are rendered with precision. Concept art aesthetic, not fine art. Visible impasto brushwork throughout. Colour palette: earth tones as the base (ash grey, iron brown, deep slate) with lifted saturation at focal subjects — rich deep green, warm amber, cold slate-blue. No bright saturated fantasy palette, but not washed out. Single warm light source upper-left, cool atmospheric fill from opposite side. Every asset carries evidence of multiple origins: mismatched materials, two-climate details, rift-geometry seams. Equipment shows use — worn, repaired, improvised. Mood: desperate wonder, survival on a living frontier. No photo-realism. No anime. No modern technology. No industrial equipment.
 
@@ -36,13 +48,19 @@ The ground around the structure is one single even painted field, carrying the s
 
 ## Monster Art
 
+Use the same oil-painted visual family as character portraits for every creature type, including creatures represented by animated 3D models in combat. Adapt the crop to anatomy: non-humanoid creatures need not fit a human bust. A creature's type-specific silhouette, material and defining features must remain recognizable. Coverage is not limited to humanoids or player-selectable species.
+
 Three-quarter view, creature fills 70% of frame. Bold readable silhouette — creature type and scale are immediately legible from shape. Background is painterly and atmospheric: aged stone, mist, or deep shadow. Peripheral background is gestural and unresolved; all rendering precision on the creature. Medieval-fantasy setting only: no modern technology, no industrial elements, no electric lighting. Creatures from other dimensions are biologically distinctive in precise ways — unusual proportions, fur adapted to a different climate, eyes built for different light. Render the distinctiveness as a specific physical observation, not exaggeration. No white border, no frame, no bezel.
 
 ## Item Icons
 
+Use original oil-painted item images across the item catalogue, not only exceptional or magical equipment. Keep the painting legible as a small inventory/trading image and a larger inspection image; depict the authored item's identity rather than adding details solely because of rarity. This is an art direction, not evidence of complete generated coverage.
+
 Single item centred on near-black background. No hands, no environment, no border, no frame, no bezel, no vignette border. Bold iconic silhouette — readable at small size. Loose gestural brushwork in secondary areas, precise rendering at defining detail. Materials rendered with clear texture: leather shows worn grain, iron shows hammer marks and light patina, wood shows split grain. Items are used but fully functional — surface wear only, no cracks, breaks, or structural damage. Magic items carry a restrained inner glow — unsettling, not triumphant. Rarity by colour temperature: common = raw iron and worn leather; uncommon = faint blue-silver edge sheen; rare = cold violet edge-light; legendary = deep amber aura with visible heat distortion. Items made from riftborn materials show two incompatible physical properties coexisting in the same surface. Render material impossibility as a precise observed fact, not as magic glow or distortion.
 
 ## Character Portraits
+
+Use the classic Baldur's Gate-era oil-painted portrait tradition: modeled faces, visible painterly strokes, restrained rich colour, dramatic but readable light and atmospheric backgrounds. Provide distinct original identities suitable for player-character and party-member portrait selection. A selected painted identity is complementary to the animated 3D combat appearance, not a replacement for it. Do not imply the portrait selector or correspondence to 3D appearance is already implemented.
 
 Bust portrait, subject centred, face occupying top half of frame. Bold illustrative treatment — subject is designed as well as depicted. Expression: serious and watchful, not smiling. Background is culture-specific but rendered loosely and atmospherically — subject in crisp focus, background is gestural suggestion. Kethara subjects: pragmatic stone-and-timber settlements. Verathi subjects: biome edges where two ecologies meet. Vethri subjects: minimal open terrain near a void boundary. Delhari subjects: structured interiors or transit camps. Sirathi subjects: sparse outposts that look newly built and already grieving. Costume is functional and worn — no ornate decoration unless the character is explicitly nobility. Strong chiaroscuro — face catches the warm light source, peripheral areas fall into atmospheric shadow. No white border, no frame, no bezel.
 

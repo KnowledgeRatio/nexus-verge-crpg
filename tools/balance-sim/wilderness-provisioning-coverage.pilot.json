@@ -1,0 +1,5484 @@
+{
+  "methodology": "Bounded remote-journey diagnostic, not balance clearance. Actual engine, trained Dedication Knight snapshots validated through real progression UI; L1/5/10, one fixed trial, five reused small worlds, starter plus two geographically spread functioning towns. Town fixtures relocate full-health/full-supply characters BEFORE journeys, not played arrival or free recovery during journeys. Town selection uses maximum minimum geographic distance from already chosen towns; no source or biome data. Farthest reachable published quest target, no hidden provisioning navigation. A* terrain foresight; fog observation before source inspection. Only known standalone/revealed shelter sources considered for detours; compare <=3 versus <=8 actual one-way moves, with doubled return budgets. Declined policy visits but refuses gathering. Camp at30; turn back above projected85 fatigue after retracing all outward movement and spending remaining carried supplies. Future combat/skill costs remain uncertain. Main-route moves and detour moves recorded separately. Remote means >=32 straight-line tiles from every functioning settlement. Access logs additionally report shortest actual route among three geographically nearest towns, not guaranteed globally closest route. Real combat, rest, camp, gathering, merchants and inn recovery. No companions, other Callings, natural player navigation, dungeon completion or whole-campaign balance. Geometry observations across levels/policies are correlated routes, not independent worlds. Combat RNG shifts after additional gathering/detours; CI comparisons are descriptive, not causal. Per-world distinct site IDs prevent repeated trials becoming new exposure. Historical result artifacts are untouched.",
+  "seeds": 1,
+  "towns": 3,
+  "levels": [
+    1
+  ],
+  "rows": [
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 16,
+        "y": 16
+      },
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "target": {
+        "x": -7,
+        "y": 154
+      },
+      "quest": {
+        "id": "quest_kill_chief_16_16_1664",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 296,
+      "detourSteps": 0,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 40,
+      "xp": 175,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 0,
+      "visitedProvisionSites": 0,
+      "inspectedPOIs": 0,
+      "prompts": 0,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 155,
+          "terrain": "savanna",
+          "enemyIds": [
+            "voidTrace"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.639999999999866,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Void Trace rolls initiative: 11 + 1 = 12",
+            "R1 ⚔️ You encounter: Void Trace!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Void Trace",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Void Trace!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 11",
+            "R1 💥 Hit! Rolled Damage: 3 + 5 (ability) = 8 base damage",
+            "R1 Void Trace takes 2 HP damage.",
+            "R1 💀 Void Trace is defeated!",
+            "R1 ⚔️ Sap! Void Trace has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 185,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 46.63999999999982,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 72,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999974,
+          "supplies": 2
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999952,
+          "supplies": 1
+        },
+        {
+          "step": 126,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.039999999999903,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 3,
+      "departure": 0,
+      "coverage": {
+        "departure": {
+          "id": "16,16",
+          "x": 16,
+          "y": 16,
+          "type": "town",
+          "fixtureRelocation": true,
+          "geographicIndex": 0
+        },
+        "target": {
+          "offerId": "quest_kill_chief_16_16_1664",
+          "x": -7,
+          "y": 154
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 167,
+        "onwardMainMoves": 148,
+        "outwardMoves": 148,
+        "detourMoves": 0,
+        "outwardMovementFatigue": 60.83999999999987,
+        "remoteMoves": 212,
+        "maxTownDistance": 123.62847568420474,
+        "turnback": {
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [],
+        "selectedDetours": [],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 16,
+        "y": 16
+      },
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "target": {
+        "x": -7,
+        "y": 154
+      },
+      "quest": {
+        "id": "quest_kill_chief_16_16_1664",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 296,
+      "detourSteps": 0,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 40,
+      "xp": 175,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 0,
+      "visitedProvisionSites": 0,
+      "inspectedPOIs": 0,
+      "prompts": 0,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 155,
+          "terrain": "savanna",
+          "enemyIds": [
+            "voidTrace"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.639999999999866,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Void Trace rolls initiative: 11 + 1 = 12",
+            "R1 ⚔️ You encounter: Void Trace!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Void Trace",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Void Trace!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 11",
+            "R1 💥 Hit! Rolled Damage: 3 + 5 (ability) = 8 base damage",
+            "R1 Void Trace takes 2 HP damage.",
+            "R1 💀 Void Trace is defeated!",
+            "R1 ⚔️ Sap! Void Trace has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 185,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 46.63999999999982,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 72,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999974,
+          "supplies": 2
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999952,
+          "supplies": 1
+        },
+        {
+          "step": 126,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.039999999999903,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 3,
+      "departure": 0,
+      "coverage": {
+        "departure": {
+          "id": "16,16",
+          "x": 16,
+          "y": 16,
+          "type": "town",
+          "fixtureRelocation": true,
+          "geographicIndex": 0
+        },
+        "target": {
+          "offerId": "quest_kill_chief_16_16_1664",
+          "x": -7,
+          "y": 154
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 167,
+        "onwardMainMoves": 148,
+        "outwardMoves": 148,
+        "detourMoves": 0,
+        "outwardMovementFatigue": 60.83999999999987,
+        "remoteMoves": 212,
+        "maxTownDistance": 123.62847568420474,
+        "turnback": {
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [],
+        "selectedDetours": [],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 16,
+        "y": 16
+      },
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "target": {
+        "x": -7,
+        "y": 154
+      },
+      "quest": {
+        "id": "quest_kill_chief_16_16_1664",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 296,
+      "detourSteps": 0,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 40,
+      "xp": 175,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 0,
+      "visitedProvisionSites": 0,
+      "inspectedPOIs": 0,
+      "prompts": 0,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 155,
+          "terrain": "savanna",
+          "enemyIds": [
+            "voidTrace"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.639999999999866,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Void Trace rolls initiative: 11 + 1 = 12",
+            "R1 ⚔️ You encounter: Void Trace!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Void Trace",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Void Trace!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 11",
+            "R1 💥 Hit! Rolled Damage: 3 + 5 (ability) = 8 base damage",
+            "R1 Void Trace takes 2 HP damage.",
+            "R1 💀 Void Trace is defeated!",
+            "R1 ⚔️ Sap! Void Trace has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 185,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 46.63999999999982,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 72,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999974,
+          "supplies": 2
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999952,
+          "supplies": 1
+        },
+        {
+          "step": 126,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.039999999999903,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 8,
+      "departure": 0,
+      "coverage": {
+        "departure": {
+          "id": "16,16",
+          "x": 16,
+          "y": 16,
+          "type": "town",
+          "fixtureRelocation": true,
+          "geographicIndex": 0
+        },
+        "target": {
+          "offerId": "quest_kill_chief_16_16_1664",
+          "x": -7,
+          "y": 154
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 167,
+        "onwardMainMoves": 148,
+        "outwardMoves": 148,
+        "detourMoves": 0,
+        "outwardMovementFatigue": 60.83999999999987,
+        "remoteMoves": 212,
+        "maxTownDistance": 123.62847568420474,
+        "turnback": {
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [],
+        "selectedDetours": [],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 16,
+        "y": 16
+      },
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16
+      },
+      "target": {
+        "x": -7,
+        "y": 154
+      },
+      "quest": {
+        "id": "quest_kill_chief_16_16_1664",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 296,
+      "detourSteps": 0,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 40,
+      "xp": 175,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 0,
+      "visitedProvisionSites": 0,
+      "inspectedPOIs": 0,
+      "prompts": 0,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 155,
+          "terrain": "savanna",
+          "enemyIds": [
+            "voidTrace"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.639999999999866,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Void Trace rolls initiative: 11 + 1 = 12",
+            "R1 ⚔️ You encounter: Void Trace!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Void Trace",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Void Trace!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 11",
+            "R1 💥 Hit! Rolled Damage: 3 + 5 (ability) = 8 base damage",
+            "R1 Void Trace takes 2 HP damage.",
+            "R1 💀 Void Trace is defeated!",
+            "R1 ⚔️ Sap! Void Trace has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 185,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 46.63999999999982,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 72,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999974,
+          "supplies": 2
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.239999999999952,
+          "supplies": 1
+        },
+        {
+          "step": 126,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.039999999999903,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 8,
+      "departure": 0,
+      "coverage": {
+        "departure": {
+          "id": "16,16",
+          "x": 16,
+          "y": 16,
+          "type": "town",
+          "fixtureRelocation": true,
+          "geographicIndex": 0
+        },
+        "target": {
+          "offerId": "quest_kill_chief_16_16_1664",
+          "x": -7,
+          "y": 154
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 167,
+        "onwardMainMoves": 148,
+        "outwardMoves": 148,
+        "detourMoves": 0,
+        "outwardMovementFatigue": 60.83999999999987,
+        "remoteMoves": 212,
+        "maxTownDistance": 123.62847568420474,
+        "turnback": {
+          "steps": 148,
+          "projected": 85.47999999999975,
+          "current": 23.839999999999876,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [],
+        "selectedDetours": [],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": -784,
+        "y": -688
+      },
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688
+      },
+      "target": {
+        "x": -758,
+        "y": -722
+      },
+      "quest": {
+        "id": "quest_kill_chief_-784_-688_7126",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": true,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 126,
+      "detourSteps": 6,
+      "camps": 2,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 68,
+      "goldFinal": 46,
+      "xp": 0,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 1,
+      "visitedProvisionSites": 1,
+      "inspectedPOIs": 1,
+      "prompts": 1,
+      "damage": 0,
+      "combats": [],
+      "events": [
+        {
+          "step": 67,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.36000000000002,
+          "supplies": 2
+        },
+        {
+          "step": 92,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.360000000000053,
+          "supplies": 1
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 3,
+      "departure": 1,
+      "coverage": {
+        "departure": {
+          "id": "-784,-688",
+          "x": -784,
+          "y": -688,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 1
+        },
+        "target": {
+          "offerId": "quest_kill_chief_-784_-688_7126",
+          "x": -758,
+          "y": -722
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 60,
+        "onwardMainMoves": 60,
+        "outwardMoves": 60,
+        "detourMoves": 6,
+        "outwardMovementFatigue": 26.76000000000002,
+        "remoteMoves": 35,
+        "maxTownDistance": 42.80186911806539,
+        "turnback": null,
+        "access": [],
+        "sources": [
+          {
+            "id": "provisioning:-759,-714",
+            "x": -759,
+            "y": -714,
+            "type": "provisioning",
+            "firstStep": 41,
+            "nearestTownStraightLine": 36.06937759374287,
+            "reasons": {
+              "fullCapacity": 20,
+              "outsideDetourBudget": 5,
+              "spentOrInspected": 7
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 72,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 2,
+            "fatigue": 18.360000000000024
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 2
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": -784,
+        "y": -688
+      },
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688
+      },
+      "target": {
+        "x": -758,
+        "y": -722
+      },
+      "quest": {
+        "id": "quest_kill_chief_-784_-688_7126",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": true,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 126,
+      "detourSteps": 6,
+      "camps": 2,
+      "shortRests": 0,
+      "attempts": 1,
+      "suppliesEarned": 1,
+      "goldSpent": 34,
+      "goldFinal": 80,
+      "xp": 0,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 1,
+      "visitedProvisionSites": 1,
+      "inspectedPOIs": 1,
+      "prompts": 1,
+      "damage": 0,
+      "combats": [],
+      "events": [
+        {
+          "step": 67,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.36000000000002,
+          "supplies": 2
+        },
+        {
+          "step": 75,
+          "event": "provision",
+          "site": "provisioning:-759,-714",
+          "result": {
+            "attempted": true,
+            "success": true,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 15,
+              "roll": 15,
+              "rolls": [
+                15
+              ],
+              "modifier": 2,
+              "skillModifier": 2,
+              "modifierAdjustment": 0,
+              "total": 17,
+              "dc": 12,
+              "success": true,
+              "critical": false,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 1,
+            "outcome": {
+              "message": "You gather enough provisions for one supply."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You gather enough provisions for one supply."
+              ],
+              "suppliesRestored": 1
+            }
+          }
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.560000000000048,
+          "supplies": 2
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 3,
+      "departure": 1,
+      "coverage": {
+        "departure": {
+          "id": "-784,-688",
+          "x": -784,
+          "y": -688,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 1
+        },
+        "target": {
+          "offerId": "quest_kill_chief_-784_-688_7126",
+          "x": -758,
+          "y": -722
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 60,
+        "onwardMainMoves": 60,
+        "outwardMoves": 60,
+        "detourMoves": 6,
+        "outwardMovementFatigue": 26.76000000000002,
+        "remoteMoves": 35,
+        "maxTownDistance": 42.80186911806539,
+        "turnback": null,
+        "access": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 75,
+            "outward": false,
+            "result": {
+              "attempted": true,
+              "success": true,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 15,
+                "roll": 15,
+                "rolls": [
+                  15
+                ],
+                "modifier": 2,
+                "skillModifier": 2,
+                "modifierAdjustment": 0,
+                "total": 17,
+                "dc": 12,
+                "success": true,
+                "critical": false,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 1,
+              "outcome": {
+                "message": "You gather enough provisions for one supply."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You gather enough provisions for one supply."
+                ],
+                "suppliesRestored": 1
+              }
+            },
+            "nearestTownStraightLine": 36.06937759374287,
+            "shortestOfThreeTownRoutes": 51
+          }
+        ],
+        "sources": [
+          {
+            "id": "provisioning:-759,-714",
+            "x": -759,
+            "y": -714,
+            "type": "provisioning",
+            "firstStep": 41,
+            "nearestTownStraightLine": 36.06937759374287,
+            "reasons": {
+              "fullCapacity": 20,
+              "outsideDetourBudget": 5,
+              "spentOrInspected": 7
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 1
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 72,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 2,
+            "fatigue": 18.360000000000024
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 2
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": -784,
+        "y": -688
+      },
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688
+      },
+      "target": {
+        "x": -758,
+        "y": -722
+      },
+      "quest": {
+        "id": "quest_kill_chief_-784_-688_7126",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": true,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 136,
+      "detourSteps": 16,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 18,
+      "xp": 25,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 1,
+      "visitedProvisionSites": 1,
+      "inspectedPOIs": 1,
+      "prompts": 1,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 99,
+          "terrain": "snowForest",
+          "enemyIds": [
+            "giantRat"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 19.56000000000006,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 14 + 0 = 14",
+            "R1 Giant Rat rolls initiative: 17 + 2 = 19",
+            "R1 ⚔️ You encounter: Giant Rat!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Giant Rat → Knight",
+            "R1 🏰 Substantial cover — enemies claimed position! +3 AC vs your ranged. Your side: +2 AC vs enemy ranged.",
+            "R1 📍 Giant Rat's turn (HP: 6/6)",
+            "R1 Giant Rat is acting...",
+            "R1 Giant Rat uses Bite!",
+            "R1 🎲 Giant Rat rolls 1 + 0 = 1 vs AC 18",
+            "R1 ❌ Critical miss!",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Giant Rat!",
+            "R1 Attack roll: 17 + 3 (ability) + 2 (prof) = 22 vs AC 12",
+            "R1 💥 Hit! Rolled Damage: 8 + 5 (ability) = 13 base damage",
+            "R1 Giant Rat takes 6 HP damage.",
+            "R1 💀 Giant Rat is defeated!",
+            "R1 ⚔️ Sap! Giant Rat has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {},
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 67,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.36000000000002,
+          "supplies": 2
+        },
+        {
+          "step": 92,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.360000000000053,
+          "supplies": 1
+        },
+        {
+          "step": 104,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.280000000000065,
+          "supplies": 0
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 8,
+      "departure": 1,
+      "coverage": {
+        "departure": {
+          "id": "-784,-688",
+          "x": -784,
+          "y": -688,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 1
+        },
+        "target": {
+          "offerId": "quest_kill_chief_-784_-688_7126",
+          "x": -758,
+          "y": -722
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 60,
+        "onwardMainMoves": 60,
+        "outwardMoves": 60,
+        "detourMoves": 16,
+        "outwardMovementFatigue": 26.76000000000002,
+        "remoteMoves": 45,
+        "maxTownDistance": 42.80186911806539,
+        "turnback": null,
+        "access": [],
+        "sources": [
+          {
+            "id": "provisioning:-759,-714",
+            "x": -759,
+            "y": -714,
+            "type": "provisioning",
+            "firstStep": 41,
+            "nearestTownStraightLine": 36.06937759374287,
+            "reasons": {
+              "fullCapacity": 20,
+              "spentOrInspected": 12
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 67,
+            "outward": false,
+            "oneWayMoves": 8,
+            "supplies": 2,
+            "fatigue": 15.36000000000002
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": -784,
+        "y": -688
+      },
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688
+      },
+      "target": {
+        "x": -758,
+        "y": -722
+      },
+      "quest": {
+        "id": "quest_kill_chief_-784_-688_7126",
+        "type": "kill"
+      },
+      "success": true,
+      "reachedTarget": true,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 136,
+      "detourSteps": 16,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 1,
+      "suppliesEarned": 1,
+      "goldSpent": 68,
+      "goldFinal": 52,
+      "xp": 25,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 1,
+      "visitedProvisionSites": 1,
+      "inspectedPOIs": 1,
+      "prompts": 1,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 99,
+          "terrain": "snowForest",
+          "enemyIds": [
+            "giantRat"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 21.560000000000063,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 14 + 0 = 14",
+            "R1 Giant Rat rolls initiative: 17 + 2 = 19",
+            "R1 ⚔️ You encounter: Giant Rat!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Giant Rat → Knight",
+            "R1 🏰 Substantial cover — enemies claimed position! +3 AC vs your ranged. Your side: +2 AC vs enemy ranged.",
+            "R1 📍 Giant Rat's turn (HP: 6/6)",
+            "R1 Giant Rat is acting...",
+            "R1 Giant Rat uses Bite!",
+            "R1 🎲 Giant Rat rolls 1 + 0 = 1 vs AC 18",
+            "R1 ❌ Critical miss!",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Giant Rat!",
+            "R1 Attack roll: 17 + 3 (ability) + 2 (prof) = 22 vs AC 12",
+            "R1 💥 Hit! Rolled Damage: 8 + 5 (ability) = 13 base damage",
+            "R1 Giant Rat takes 6 HP damage.",
+            "R1 💀 Giant Rat is defeated!",
+            "R1 ⚔️ Sap! Giant Rat has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {},
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 67,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.36000000000002,
+          "supplies": 2
+        },
+        {
+          "step": 75,
+          "event": "provision",
+          "site": "provisioning:-759,-714",
+          "result": {
+            "attempted": true,
+            "success": true,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 15,
+              "roll": 15,
+              "rolls": [
+                15
+              ],
+              "modifier": 2,
+              "skillModifier": 2,
+              "modifierAdjustment": 0,
+              "total": 17,
+              "dc": 12,
+              "success": true,
+              "critical": false,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 1,
+            "outcome": {
+              "message": "You gather enough provisions for one supply."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You gather enough provisions for one supply."
+              ],
+              "suppliesRestored": 1
+            }
+          }
+        },
+        {
+          "step": 89,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.560000000000048,
+          "supplies": 2
+        },
+        {
+          "step": 100,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.160000000000064,
+          "supplies": 1
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 8,
+      "departure": 1,
+      "coverage": {
+        "departure": {
+          "id": "-784,-688",
+          "x": -784,
+          "y": -688,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 1
+        },
+        "target": {
+          "offerId": "quest_kill_chief_-784_-688_7126",
+          "x": -758,
+          "y": -722
+        },
+        "rejectedTowns": [],
+        "plannedMainMoves": 60,
+        "onwardMainMoves": 60,
+        "outwardMoves": 60,
+        "detourMoves": 16,
+        "outwardMovementFatigue": 26.76000000000002,
+        "remoteMoves": 45,
+        "maxTownDistance": 42.80186911806539,
+        "turnback": null,
+        "access": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 75,
+            "outward": false,
+            "result": {
+              "attempted": true,
+              "success": true,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 15,
+                "roll": 15,
+                "rolls": [
+                  15
+                ],
+                "modifier": 2,
+                "skillModifier": 2,
+                "modifierAdjustment": 0,
+                "total": 17,
+                "dc": 12,
+                "success": true,
+                "critical": false,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 1,
+              "outcome": {
+                "message": "You gather enough provisions for one supply."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You gather enough provisions for one supply."
+                ],
+                "suppliesRestored": 1
+              }
+            },
+            "nearestTownStraightLine": 36.06937759374287,
+            "shortestOfThreeTownRoutes": 51
+          }
+        ],
+        "sources": [
+          {
+            "id": "provisioning:-759,-714",
+            "x": -759,
+            "y": -714,
+            "type": "provisioning",
+            "firstStep": 41,
+            "nearestTownStraightLine": 36.06937759374287,
+            "reasons": {
+              "fullCapacity": 20,
+              "spentOrInspected": 12
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 1
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:-759,-714",
+            "steps": 67,
+            "outward": false,
+            "oneWayMoves": 8,
+            "supplies": 2,
+            "fatigue": 15.36000000000002
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 816,
+        "y": 496
+      },
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496
+      },
+      "target": {
+        "x": 692,
+        "y": 553
+      },
+      "quest": {
+        "id": "quest_investigate_816_496_9143",
+        "type": "investigate"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 274,
+      "detourSteps": 12,
+      "camps": 3,
+      "shortRests": 1,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 36,
+      "xp": 225,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 2,
+      "visitedProvisionSites": 2,
+      "inspectedPOIs": 2,
+      "prompts": 0,
+      "damage": 6,
+      "combats": [
+        {
+          "step": 72,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 15.759999999999986,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 127,
+          "terrain": "snowForest",
+          "enemyIds": [
+            "goblinArcher"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 17.759999999999934,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Goblin Archer rolls initiative: 1 + 2 = 3",
+            "R1 ⚔️ You encounter: Goblin Archer!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Goblin Archer",
+            "R1 🏰 Substantial cover — your side claimed position! +3 AC vs ranged. Enemies: +2 AC vs your ranged.",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Goblin Archer!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 15",
+            "R1 💥 Hit! Rolled Damage: 2 + 5 (ability) = 7 base damage",
+            "R1 Goblin Archer takes 5.6 HP damage; 2.8 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫",
+            "R1 Goblin Archer takes 0.4 HP damage from ongoing effects."
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 169,
+          "terrain": "savanna",
+          "enemyIds": [
+            "goblinArcher"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 45.359999999999914,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 11 + 0 = 11",
+            "R1 Goblin Archer rolls initiative: 8 + 2 = 10",
+            "R1 ⚔️ You encounter: Goblin Archer!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Goblin Archer",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Goblin Archer!",
+            "R1 Attack roll: 5 + 3 (ability) + 2 (prof) = 10 vs AC 15",
+            "R1 Miss!",
+            "R1 📍 Goblin Archer's turn (HP: 10/10)",
+            "R1 Goblin Archer is acting...",
+            "R1 Goblin Archer uses Shortbow!",
+            "R1 🎲 Goblin Archer rolls 20 + 1 = 21 vs AC 18",
+            "R1 ⭐ Critical hit! Shortbow: 4 bone base damage",
+            "R1 Knight takes 4 HP damage.",
+            "R2 📍 Knight's turn (HP: 8/12)",
+            "R2 Knight attacks Goblin Archer!",
+            "R2 Attack roll: 9 + 3 (ability) + 2 (prof) = 14 vs AC 15",
+            "R2 Miss!",
+            "R2 📍 Goblin Archer's turn (HP: 10/10)",
+            "R2 Goblin Archer is acting...",
+            "R2 Goblin Archer uses Shortbow!",
+            "R2 🎲 Goblin Archer rolls 12 + 1 = 13 vs AC 18",
+            "R2 ❌ Goblin Archer misses!",
+            "R3 📍 Knight's turn (HP: 8/12)",
+            "R3 Knight attacks Goblin Archer!",
+            "R3 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 15",
+            "R3 Miss!",
+            "R3 📍 Goblin Archer's turn (HP: 10/10)",
+            "R3 Goblin Archer is acting...",
+            "R3 Goblin Archer uses Shortbow!",
+            "R3 🎲 Goblin Archer rolls 16 + 1 = 17 vs AC 18",
+            "R3 ❌ Goblin Archer misses!",
+            "R4 📍 Knight's turn (HP: 8/12)",
+            "R4 Knight attacks Goblin Archer!",
+            "R4 Attack roll: 9 + 3 (ability) + 2 (prof) = 14 vs AC 15",
+            "R4 Miss!",
+            "R4 📍 Goblin Archer's turn (HP: 10/10)",
+            "R4 Goblin Archer is acting...",
+            "R4 Goblin Archer uses Shortbow!",
+            "R4 🎲 Goblin Archer rolls 9 + 1 = 10 vs AC 18",
+            "R4 ❌ Goblin Archer misses!",
+            "R5 📍 Knight's turn (HP: 8/12)",
+            "R5 Knight attacks Goblin Archer!",
+            "R5 Attack roll: 10 + 3 (ability) + 2 (prof) = 15 vs AC 15",
+            "R5 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R5 Goblin Archer takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R5 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫",
+            "R5 Goblin Archer takes 0.8 HP damage from ongoing effects.",
+            "R5 📍 Goblin Archer's turn (HP: 4.4/10)",
+            "R5 Goblin Archer is acting...",
+            "R5 Goblin Archer uses Shortbow!",
+            "R5 ⚔️ Goblin Archer has disadvantage (Sapped)! 💫",
+            "R5 🎲 Disadvantage: Rolled 5 and 11, using 5",
+            "R5 🎲 Goblin Archer rolls 5 + 1 = 6 vs AC 18",
+            "R5 ❌ Goblin Archer misses!",
+            "R6 📍 Knight's turn (HP: 8/12)",
+            "R6 Knight attacks Goblin Archer!",
+            "R6 Attack roll: 11 + 3 (ability) + 2 (prof) = 16 vs AC 15",
+            "R6 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R6 😴 You feel wearied. (−1 skill checks)",
+            "R6 Goblin Archer takes 4.4 HP damage.",
+            "R6 💀 Goblin Archer is defeated!",
+            "R6 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 6,
+          "hpAfter": 8,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.6666666666666666
+        },
+        {
+          "step": 261,
+          "terrain": "grassland",
+          "enemyIds": [
+            "commoner",
+            "commoner"
+          ],
+          "hpBefore": 8,
+          "fatigueBefore": 92.16000000000014,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Commoner rolls initiative: 2 + 0 = 2",
+            "R1 Commoner rolls initiative: 16 + 0 = 16",
+            "R1 ⚔️ You encounter: Commoner, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Commoner",
+            "R1 📍 Knight's turn (HP: 8/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 😩 Knight has disadvantage (staggering fatigue)!",
+            "R1 🎲 Disadvantage: Rolled 12 and 12, using 12",
+            "R1 Attack roll: 12 + 3 (ability) + 2 (prof) = 17 vs AC 10",
+            "R1 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R1 Commoner takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Commoner's turn (HP: 6/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 🎲 Commoner rolls 13 + 2 = 15 vs AC 18",
+            "R1 ❌ Commoner misses!",
+            "R1 Commoner takes 0.8 HP damage from ongoing effects.",
+            "R1 📍 Commoner's turn (HP: 0.4/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 ⚔️ Commoner has disadvantage (Sapped)! 💫",
+            "R1 🎲 Disadvantage: Rolled 6 and 20, using 6",
+            "R1 🎲 Commoner rolls 6 + 2 = 8 vs AC 18",
+            "R1 ❌ Commoner misses!",
+            "R2 📍 Knight's turn (HP: 8/12)",
+            "R2 Knight attacks Commoner!",
+            "R2 😩 Knight has disadvantage (staggering fatigue)!",
+            "R2 🎲 Disadvantage: Rolled 4 and 7, using 4",
+            "R2 Attack roll: 4 + 3 (ability) + 2 (prof) = 9 vs AC 10",
+            "R2 Miss!",
+            "R2 📍 Commoner's turn (HP: 6/6)",
+            "R2 Commoner is acting...",
+            "R2 Commoner uses Club!",
+            "R2 🎲 Commoner rolls 17 + 2 = 19 vs AC 18",
+            "R2 💥 Hit! Club: 2 bone base damage",
+            "R2 Knight takes 2 HP damage.",
+            "R2 Commoner takes 0.4 HP damage from ongoing effects.",
+            "R3 📍 Knight's turn (HP: 6/12)",
+            "R3 Knight attacks Commoner!",
+            "R3 😩 Knight has disadvantage (staggering fatigue)!",
+            "R3 🎲 Disadvantage: Rolled 18 and 12, using 12",
+            "R3 Attack roll: 12 + 3 (ability) + 2 (prof) = 17 vs AC 10",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 😩 Exhaustion sets in! (Level 1) — find a safe place to rest.",
+            "R3 Commoner takes 6 HP damage.",
+            "R3 💀 Commoner is defeated!",
+            "R3 ⚔️ Sap! Commoner has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 3,
+          "hpAfter": 6,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.5
+        }
+      ],
+      "events": [
+        {
+          "step": 71,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.359999999999985,
+          "supplies": 2
+        },
+        {
+          "step": 88,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.159999999999961,
+          "supplies": 1
+        },
+        {
+          "step": 123,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.359999999999932,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 131,
+          "projected": 85.31999999999987,
+          "current": 27.759999999999934,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "step": 261,
+          "event": "shortRest",
+          "before": {
+            "hp": 6,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            }
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {}
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 3,
+      "departure": 2,
+      "coverage": {
+        "departure": {
+          "id": "816,496",
+          "x": 816,
+          "y": 496,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 2
+        },
+        "target": {
+          "offerId": "quest_investigate_816_496_9143",
+          "x": 692,
+          "y": 553
+        },
+        "rejectedTowns": [
+          {
+            "id": "816,-592",
+            "x": 816,
+            "y": -592,
+            "reason": "noReachablePublishedQuestTarget"
+          }
+        ],
+        "plannedMainMoves": 183,
+        "onwardMainMoves": 131,
+        "outwardMoves": 131,
+        "detourMoves": 12,
+        "outwardMovementFatigue": 56.759999999999934,
+        "remoteMoves": 206,
+        "maxTownDistance": 104.80935072788114,
+        "turnback": {
+          "steps": 131,
+          "projected": 85.31999999999987,
+          "current": 27.759999999999934,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [
+          {
+            "id": "provisioning:783,499",
+            "x": 783,
+            "y": 499,
+            "type": "provisioning",
+            "firstStep": 28,
+            "nearestTownStraightLine": 33.13608305156178,
+            "reasons": {
+              "fullCapacity": 16,
+              "outsideDetourBudget": 5,
+              "spentOrInspected": 13
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          },
+          {
+            "id": "provisioning:745,503",
+            "x": 745,
+            "y": 503,
+            "type": "provisioning",
+            "firstStep": 82,
+            "nearestTownStraightLine": 71.34423592694787,
+            "reasons": {
+              "outsideDetourBudget": 9,
+              "spentOrInspected": 12
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 181,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 0,
+            "fatigue": 58.1599999999999
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 229,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 0,
+            "fatigue": 79.15999999999997
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 816,
+        "y": 496
+      },
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496
+      },
+      "target": {
+        "x": 692,
+        "y": 553
+      },
+      "quest": {
+        "id": "quest_investigate_816_496_9143",
+        "type": "investigate"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 274,
+      "detourSteps": 12,
+      "camps": 4,
+      "shortRests": 2,
+      "attempts": 2,
+      "suppliesEarned": 1,
+      "goldSpent": 102,
+      "goldFinal": 36,
+      "xp": 225,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 2,
+      "visitedProvisionSites": 2,
+      "inspectedPOIs": 2,
+      "prompts": 0,
+      "damage": 10,
+      "combats": [
+        {
+          "step": 72,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 15.759999999999986,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 127,
+          "terrain": "snowForest",
+          "enemyIds": [
+            "goblinArcher"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 17.759999999999934,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 15 + 0 = 15",
+            "R1 Goblin Archer rolls initiative: 1 + 2 = 3",
+            "R1 ⚔️ You encounter: Goblin Archer!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Goblin Archer",
+            "R1 🏰 Substantial cover — your side claimed position! +3 AC vs ranged. Enemies: +2 AC vs your ranged.",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Goblin Archer!",
+            "R1 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 15",
+            "R1 💥 Hit! Rolled Damage: 2 + 5 (ability) = 7 base damage",
+            "R1 Goblin Archer takes 5.6 HP damage; 2.8 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫",
+            "R1 Goblin Archer takes 0.4 HP damage from ongoing effects."
+          ],
+          "outcome": "victory",
+          "rounds": 1,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 169,
+          "terrain": "savanna",
+          "enemyIds": [
+            "goblinArcher"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 45.359999999999914,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 11 + 0 = 11",
+            "R1 Goblin Archer rolls initiative: 8 + 2 = 10",
+            "R1 ⚔️ You encounter: Goblin Archer!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Goblin Archer",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Goblin Archer!",
+            "R1 Attack roll: 5 + 3 (ability) + 2 (prof) = 10 vs AC 15",
+            "R1 Miss!",
+            "R1 📍 Goblin Archer's turn (HP: 10/10)",
+            "R1 Goblin Archer is acting...",
+            "R1 Goblin Archer uses Shortbow!",
+            "R1 🎲 Goblin Archer rolls 20 + 1 = 21 vs AC 18",
+            "R1 ⭐ Critical hit! Shortbow: 4 bone base damage",
+            "R1 Knight takes 4 HP damage.",
+            "R2 📍 Knight's turn (HP: 8/12)",
+            "R2 Knight attacks Goblin Archer!",
+            "R2 Attack roll: 9 + 3 (ability) + 2 (prof) = 14 vs AC 15",
+            "R2 Miss!",
+            "R2 📍 Goblin Archer's turn (HP: 10/10)",
+            "R2 Goblin Archer is acting...",
+            "R2 Goblin Archer uses Shortbow!",
+            "R2 🎲 Goblin Archer rolls 12 + 1 = 13 vs AC 18",
+            "R2 ❌ Goblin Archer misses!",
+            "R3 📍 Knight's turn (HP: 8/12)",
+            "R3 Knight attacks Goblin Archer!",
+            "R3 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 15",
+            "R3 Miss!",
+            "R3 📍 Goblin Archer's turn (HP: 10/10)",
+            "R3 Goblin Archer is acting...",
+            "R3 Goblin Archer uses Shortbow!",
+            "R3 🎲 Goblin Archer rolls 16 + 1 = 17 vs AC 18",
+            "R3 ❌ Goblin Archer misses!",
+            "R4 📍 Knight's turn (HP: 8/12)",
+            "R4 Knight attacks Goblin Archer!",
+            "R4 Attack roll: 9 + 3 (ability) + 2 (prof) = 14 vs AC 15",
+            "R4 Miss!",
+            "R4 📍 Goblin Archer's turn (HP: 10/10)",
+            "R4 Goblin Archer is acting...",
+            "R4 Goblin Archer uses Shortbow!",
+            "R4 🎲 Goblin Archer rolls 9 + 1 = 10 vs AC 18",
+            "R4 ❌ Goblin Archer misses!",
+            "R5 📍 Knight's turn (HP: 8/12)",
+            "R5 Knight attacks Goblin Archer!",
+            "R5 Attack roll: 10 + 3 (ability) + 2 (prof) = 15 vs AC 15",
+            "R5 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R5 Goblin Archer takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R5 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫",
+            "R5 Goblin Archer takes 0.8 HP damage from ongoing effects.",
+            "R5 📍 Goblin Archer's turn (HP: 4.4/10)",
+            "R5 Goblin Archer is acting...",
+            "R5 Goblin Archer uses Shortbow!",
+            "R5 ⚔️ Goblin Archer has disadvantage (Sapped)! 💫",
+            "R5 🎲 Disadvantage: Rolled 5 and 11, using 5",
+            "R5 🎲 Goblin Archer rolls 5 + 1 = 6 vs AC 18",
+            "R5 ❌ Goblin Archer misses!",
+            "R6 📍 Knight's turn (HP: 8/12)",
+            "R6 Knight attacks Goblin Archer!",
+            "R6 Attack roll: 11 + 3 (ability) + 2 (prof) = 16 vs AC 15",
+            "R6 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R6 😴 You feel wearied. (−1 skill checks)",
+            "R6 Goblin Archer takes 4.4 HP damage.",
+            "R6 💀 Goblin Archer is defeated!",
+            "R6 ⚔️ Sap! Goblin Archer has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 6,
+          "hpAfter": 8,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.6666666666666666
+        },
+        {
+          "step": 261,
+          "terrain": "grassland",
+          "enemyIds": [
+            "commoner",
+            "commoner"
+          ],
+          "hpBefore": 8,
+          "fatigueBefore": 81.16,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Commoner rolls initiative: 2 + 0 = 2",
+            "R1 Commoner rolls initiative: 16 + 0 = 16",
+            "R1 ⚔️ You encounter: Commoner, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Commoner",
+            "R1 📍 Knight's turn (HP: 8/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 😴 Fatigue penalty: -1 to attack roll",
+            "R1 Attack roll: 12 + 3 (ability) + 2 (prof) -1 (fatigue) = 16 vs AC 10",
+            "R1 💥 Hit! Rolled Damage: 5 + 5 (ability) = 10 base damage",
+            "R1 Commoner takes 6 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Commoner's turn (HP: 6/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 🎲 Commoner rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Club: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R2 📍 Knight's turn (HP: 2/12)",
+            "R2 Knight attacks Commoner!",
+            "R2 😴 Fatigue penalty: -1 to attack roll",
+            "R2 Attack roll: 6 + 3 (ability) + 2 (prof) -1 (fatigue) = 10 vs AC 10",
+            "R2 💥 Hit! Rolled Damage: 8 + 5 (ability) = 13 base damage",
+            "R2 Commoner takes 6 HP damage.",
+            "R2 💀 Commoner is defeated!",
+            "R2 ⚔️ Sap! Commoner has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 2,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.16666666666666666
+        }
+      ],
+      "events": [
+        {
+          "step": 71,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.359999999999985,
+          "supplies": 2
+        },
+        {
+          "step": 88,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.159999999999961,
+          "supplies": 1
+        },
+        {
+          "step": 123,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.359999999999932,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 131,
+          "projected": 85.31999999999987,
+          "current": 27.759999999999934,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "step": 184,
+          "event": "provision",
+          "site": "provisioning:745,503",
+          "result": {
+            "attempted": true,
+            "success": true,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 20,
+              "roll": 20,
+              "rolls": [
+                20
+              ],
+              "modifier": 1,
+              "skillModifier": 2,
+              "modifierAdjustment": -1,
+              "total": 21,
+              "dc": 12,
+              "success": true,
+              "critical": true,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 1,
+            "outcome": {
+              "message": "You gather enough provisions for one supply."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You gather enough provisions for one supply."
+              ],
+              "suppliesRestored": 1
+            }
+          }
+        },
+        {
+          "step": 185,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 46.75999999999989,
+          "supplies": 0
+        },
+        {
+          "step": 232,
+          "event": "provision",
+          "site": "provisioning:783,499",
+          "result": {
+            "attempted": true,
+            "success": false,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 8,
+              "roll": 8,
+              "rolls": [
+                8
+              ],
+              "modifier": 1,
+              "skillModifier": 2,
+              "modifierAdjustment": -1,
+              "total": 9,
+              "dc": 12,
+              "success": false,
+              "critical": false,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 0,
+            "outcome": {
+              "message": "You find no usable provisions."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You find no usable provisions."
+              ],
+              "suppliesRestored": 0
+            }
+          }
+        },
+        {
+          "step": 261,
+          "event": "shortRest",
+          "before": {
+            "hp": 2,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            }
+          },
+          "after": {
+            "hp": 6,
+            "resolve": 0,
+            "uses": {}
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        },
+        {
+          "step": 262,
+          "event": "shortRest",
+          "before": {
+            "hp": 6,
+            "resolve": 0,
+            "uses": {}
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {}
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 3,
+      "departure": 2,
+      "coverage": {
+        "departure": {
+          "id": "816,496",
+          "x": 816,
+          "y": 496,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 2
+        },
+        "target": {
+          "offerId": "quest_investigate_816_496_9143",
+          "x": 692,
+          "y": 553
+        },
+        "rejectedTowns": [
+          {
+            "id": "816,-592",
+            "x": 816,
+            "y": -592,
+            "reason": "noReachablePublishedQuestTarget"
+          }
+        ],
+        "plannedMainMoves": 183,
+        "onwardMainMoves": 131,
+        "outwardMoves": 131,
+        "detourMoves": 12,
+        "outwardMovementFatigue": 56.759999999999934,
+        "remoteMoves": 206,
+        "maxTownDistance": 104.80935072788114,
+        "turnback": {
+          "steps": 131,
+          "projected": 85.31999999999987,
+          "current": 27.759999999999934,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 184,
+            "outward": false,
+            "result": {
+              "attempted": true,
+              "success": true,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 20,
+                "roll": 20,
+                "rolls": [
+                  20
+                ],
+                "modifier": 1,
+                "skillModifier": 2,
+                "modifierAdjustment": -1,
+                "total": 21,
+                "dc": 12,
+                "success": true,
+                "critical": true,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 1,
+              "outcome": {
+                "message": "You gather enough provisions for one supply."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You gather enough provisions for one supply."
+                ],
+                "suppliesRestored": 1
+              }
+            },
+            "nearestTownStraightLine": 71.34423592694787,
+            "shortestOfThreeTownRoutes": 78
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 232,
+            "outward": false,
+            "result": {
+              "attempted": true,
+              "success": false,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 8,
+                "roll": 8,
+                "rolls": [
+                  8
+                ],
+                "modifier": 1,
+                "skillModifier": 2,
+                "modifierAdjustment": -1,
+                "total": 9,
+                "dc": 12,
+                "success": false,
+                "critical": false,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 0,
+              "outcome": {
+                "message": "You find no usable provisions."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You find no usable provisions."
+                ],
+                "suppliesRestored": 0
+              }
+            },
+            "nearestTownStraightLine": 33.13608305156178,
+            "shortestOfThreeTownRoutes": 36
+          }
+        ],
+        "sources": [
+          {
+            "id": "provisioning:783,499",
+            "x": 783,
+            "y": 499,
+            "type": "provisioning",
+            "firstStep": 28,
+            "nearestTownStraightLine": 33.13608305156178,
+            "reasons": {
+              "fullCapacity": 16,
+              "outsideDetourBudget": 5,
+              "spentOrInspected": 13
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 0
+          },
+          {
+            "id": "provisioning:745,503",
+            "x": 745,
+            "y": 503,
+            "type": "provisioning",
+            "firstStep": 82,
+            "nearestTownStraightLine": 71.34423592694787,
+            "reasons": {
+              "outsideDetourBudget": 9,
+              "spentOrInspected": 12
+            },
+            "minOneWayPath": 3,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 1
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 181,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 0,
+            "fatigue": 58.1599999999999
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 229,
+            "outward": false,
+            "oneWayMoves": 3,
+            "supplies": 0,
+            "fatigue": 66.15999999999983
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 4
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "noProvision",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 816,
+        "y": 496
+      },
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496
+      },
+      "target": {
+        "x": 692,
+        "y": 553
+      },
+      "quest": {
+        "id": "quest_investigate_816_496_9143",
+        "type": "investigate"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 284,
+      "detourSteps": 32,
+      "camps": 3,
+      "shortRests": 0,
+      "attempts": 0,
+      "suppliesEarned": 0,
+      "goldSpent": 102,
+      "goldFinal": 40,
+      "xp": 150,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 2,
+      "visitedProvisionSites": 2,
+      "inspectedPOIs": 2,
+      "prompts": 0,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 72,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 15.759999999999986,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 164,
+          "terrain": "hills",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 33.759999999999906,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 16 + 0 = 16",
+            "R1 Bandit rolls initiative: 5 + 1 = 6",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Bandit",
+            "R1 🌿 Partial cover — your side claimed position! +2 AC vs ranged. Enemies: +1 AC vs your ranged.",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R1 Miss!",
+            "R1 📍 Bandit's turn (HP: 11/11)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 7 + 2 = 9 vs AC 18",
+            "R1 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 4 + 3 (ability) + 2 (prof) = 9 vs AC 12",
+            "R2 Miss!",
+            "R2 📍 Bandit's turn (HP: 11/11)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 13 + 2 = 15 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 1 + 3 (ability) + 2 (prof) = 6 vs AC 12",
+            "R3 💥 Critical miss!",
+            "R3 📍 Bandit's turn (HP: 11/11)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 11 + 3 (ability) + 2 (prof) = 16 vs AC 12",
+            "R4 💥 Hit! Rolled Damage: 6 + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 8.8 HP damage; 4.4 blood damage pending before defenses.",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.467 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 0.733/11)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 13 and 1, using 1",
+            "R4 🎲 Bandit rolls 1 + 2 = 3 vs AC 18",
+            "R4 ❌ Critical miss!",
+            "R5 📍 Knight's turn (HP: 12/12)",
+            "R5 Knight attacks Bandit!",
+            "R5 Attack roll: 11 + 3 (ability) + 2 (prof) = 16 vs AC 12",
+            "R5 💥 Hit! Rolled Damage: 6 + 5 (ability) = 11 base damage",
+            "R5 Bandit takes 0.733 HP damage.",
+            "R5 💀 Bandit is defeated!",
+            "R5 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 5,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 174,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 45.959999999999894,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 71,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.359999999999985,
+          "supplies": 2
+        },
+        {
+          "step": 88,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.159999999999961,
+          "supplies": 1
+        },
+        {
+          "step": 124,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 15.359999999999925,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 142,
+          "projected": 85.31999999999984,
+          "current": 23.559999999999917,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": false,
+      "radius": 8,
+      "departure": 2,
+      "coverage": {
+        "departure": {
+          "id": "816,496",
+          "x": 816,
+          "y": 496,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 2
+        },
+        "target": {
+          "offerId": "quest_investigate_816_496_9143",
+          "x": 692,
+          "y": 553
+        },
+        "rejectedTowns": [
+          {
+            "id": "816,-592",
+            "x": 816,
+            "y": -592,
+            "reason": "noReachablePublishedQuestTarget"
+          }
+        ],
+        "plannedMainMoves": 183,
+        "onwardMainMoves": 126,
+        "outwardMoves": 142,
+        "detourMoves": 32,
+        "outwardMovementFatigue": 60.55999999999991,
+        "remoteMoves": 216,
+        "maxTownDistance": 102.83968105745953,
+        "turnback": {
+          "steps": 142,
+          "projected": 85.31999999999984,
+          "current": 23.559999999999917,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [],
+        "sources": [
+          {
+            "id": "provisioning:783,499",
+            "x": 783,
+            "y": 499,
+            "type": "provisioning",
+            "firstStep": 28,
+            "nearestTownStraightLine": 33.13608305156178,
+            "reasons": {
+              "fullCapacity": 16,
+              "spentOrInspected": 18
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          },
+          {
+            "id": "provisioning:745,503",
+            "x": 745,
+            "y": 503,
+            "type": "provisioning",
+            "firstStep": 82,
+            "nearestTownStraightLine": 71.34423592694787,
+            "reasons": {
+              "outsideDetourBudget": 1,
+              "spentOrInspected": 20
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 0,
+            "gained": 0
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 86,
+            "outward": true,
+            "oneWayMoves": 8,
+            "supplies": 2,
+            "fatigue": 29.359999999999964
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 224,
+            "outward": false,
+            "oneWayMoves": 8,
+            "supplies": 0,
+            "fatigue": 74.75999999999995
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 3
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "trial": 0,
+      "level": 1,
+      "trained": true,
+      "policy": "local",
+      "chassis": {
+        "level": 1,
+        "hp": 12,
+        "ac": 18,
+        "stats": {
+          "prowess": 16,
+          "resilience": 15,
+          "intellect": 9,
+          "intuition": 11,
+          "presence": 14,
+          "composure": 13
+        },
+        "resolve": 0,
+        "abilities": [],
+        "tactics": [],
+        "practices": [],
+        "gold": 114,
+        "progressionChecks": []
+      },
+      "spawn": {
+        "x": 816,
+        "y": 496
+      },
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496
+      },
+      "target": {
+        "x": 692,
+        "y": 553
+      },
+      "quest": {
+        "id": "quest_investigate_816_496_9143",
+        "type": "investigate"
+      },
+      "success": true,
+      "reachedTarget": false,
+      "terminalPhase": "return",
+      "dead": false,
+      "steps": 266,
+      "detourSteps": 32,
+      "camps": 4,
+      "shortRests": 0,
+      "attempts": 2,
+      "suppliesEarned": 1,
+      "goldSpent": 102,
+      "goldFinal": 24,
+      "xp": 75,
+      "hp": 12,
+      "fatigue": {
+        "current": 0,
+        "supplies": 2,
+        "exhaustionLevels": 0,
+        "suppliesZeroStreak": 0,
+        "lastThreshold": "rested"
+      },
+      "worldClock": 1,
+      "generatedProvisionSites": 1776,
+      "seenProvisionSites": 2,
+      "visitedProvisionSites": 2,
+      "inspectedPOIs": 2,
+      "prompts": 2,
+      "damage": 0,
+      "combats": [
+        {
+          "step": 72,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 15.759999999999986,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        {
+          "step": 112,
+          "terrain": "savanna",
+          "enemyIds": [
+            "zombie"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.75999999999993,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 14 + 0 = 14",
+            "R1 Zombie rolls initiative: 17 + -2 = 15",
+            "R1 ⚔️ You encounter: Zombie!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Zombie → Knight",
+            "R1 📍 Zombie's turn (HP: 22/22)",
+            "R1 Zombie is acting...",
+            "R1 Zombie uses Slam!",
+            "R1 🎲 Zombie rolls 6 + 3 = 9 vs AC 18",
+            "R1 ❌ Zombie misses!",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Zombie!",
+            "R1 Attack roll: 14 + 3 (ability) + 2 (prof) = 19 vs AC 8",
+            "R1 💥 Hit! Rolled Damage: 2 + 5 (ability) = 7 base damage",
+            "R1 Zombie takes 5.6 HP damage; 2.8 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Zombie has disadvantage on next attack! 💫",
+            "R2 Zombie takes 0.934 HP damage from ongoing effects.",
+            "R2 📍 Zombie's turn (HP: 15.466/22)",
+            "R2 Zombie is acting...",
+            "R2 Zombie uses Slam!",
+            "R2 ⚔️ Zombie has disadvantage (Sapped)! 💫",
+            "R2 🎲 Disadvantage: Rolled 3 and 6, using 3",
+            "R2 🎲 Zombie rolls 3 + 3 = 6 vs AC 18",
+            "R2 ❌ Zombie misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Zombie!",
+            "R2 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 8",
+            "R2 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R2 Zombie takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Zombie has disadvantage on next attack! 💫",
+            "R3 Zombie takes 1.733 HP damage from ongoing effects.",
+            "R3 📍 Zombie's turn (HP: 8.933/22)",
+            "R3 Zombie is acting...",
+            "R3 Zombie uses Slam!",
+            "R3 ⚔️ Zombie has disadvantage (Sapped)! 💫",
+            "R3 🎲 Disadvantage: Rolled 20 and 14, using 14",
+            "R3 🎲 Zombie rolls 14 + 3 = 17 vs AC 18",
+            "R3 ❌ Zombie misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Zombie!",
+            "R3 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 8",
+            "R3 ⭐ Critical hit!",
+            "R3 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R3 Zombie takes 8.933 HP damage.",
+            "R3 💀 Zombie is defeated!",
+            "R3 ⚔️ Sap! Zombie has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 3,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      ],
+      "events": [
+        {
+          "step": 71,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.359999999999985,
+          "supplies": 2
+        },
+        {
+          "step": 88,
+          "event": "camp",
+          "lastSupply": false,
+          "fatigue": 15.159999999999961,
+          "supplies": 1
+        },
+        {
+          "step": 94,
+          "event": "provision",
+          "site": "provisioning:745,503",
+          "result": {
+            "attempted": true,
+            "success": false,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 5,
+              "roll": 5,
+              "rolls": [
+                5
+              ],
+              "modifier": 2,
+              "skillModifier": 2,
+              "modifierAdjustment": 0,
+              "total": 7,
+              "dc": 12,
+              "success": false,
+              "critical": false,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 0,
+            "outcome": {
+              "message": "You find no usable provisions."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You find no usable provisions."
+              ],
+              "suppliesRestored": 0
+            }
+          }
+        },
+        {
+          "step": 112,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 19.759999999999934,
+          "supplies": 0
+        },
+        {
+          "event": "reserveTurnback",
+          "steps": 133,
+          "projected": 85.71999999999981,
+          "current": 28.959999999999916,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        {
+          "step": 214,
+          "event": "provision",
+          "site": "provisioning:783,499",
+          "result": {
+            "attempted": true,
+            "success": true,
+            "rollResult": {
+              "skill": "survival",
+              "attribute": "intuition",
+              "naturalRoll": 17,
+              "roll": 17,
+              "rolls": [
+                17
+              ],
+              "modifier": 1,
+              "skillModifier": 2,
+              "modifierAdjustment": -1,
+              "total": 18,
+              "dc": 12,
+              "success": true,
+              "critical": false,
+              "criticalFail": false,
+              "advantage": false,
+              "disadvantage": false
+            },
+            "suppliesRestored": 1,
+            "outcome": {
+              "message": "You gather enough provisions for one supply."
+            },
+            "consequences": {
+              "xpAwarded": 0,
+              "goldAwarded": 0,
+              "damageDealt": 0,
+              "itemsAwarded": [],
+              "xp": 0,
+              "gold": 0,
+              "damage": 0,
+              "items": [],
+              "conditions": [],
+              "messages": [
+                "You gather enough provisions for one supply."
+              ],
+              "suppliesRestored": 1
+            }
+          }
+        },
+        {
+          "step": 215,
+          "event": "camp",
+          "lastSupply": true,
+          "fatigue": 51.35999999999984,
+          "supplies": 0
+        },
+        {
+          "event": "inn",
+          "success": true,
+          "before": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {
+              "steadyNerve": 1
+            },
+            "supplies": 3
+          },
+          "after": {
+            "hp": 12,
+            "resolve": 0,
+            "uses": {},
+            "supplies": 2
+          },
+          "recovery": {
+            "recharged": [
+              "steadyNerve"
+            ],
+            "resolveBefore": 0,
+            "resolveAfter": 0
+          }
+        }
+      ],
+      "gather": true,
+      "radius": 8,
+      "departure": 2,
+      "coverage": {
+        "departure": {
+          "id": "816,496",
+          "x": 816,
+          "y": 496,
+          "type": "village",
+          "fixtureRelocation": true,
+          "geographicIndex": 2
+        },
+        "target": {
+          "offerId": "quest_investigate_816_496_9143",
+          "x": 692,
+          "y": 553
+        },
+        "rejectedTowns": [
+          {
+            "id": "816,-592",
+            "x": 816,
+            "y": -592,
+            "reason": "noReachablePublishedQuestTarget"
+          }
+        ],
+        "plannedMainMoves": 183,
+        "onwardMainMoves": 117,
+        "outwardMoves": 133,
+        "detourMoves": 32,
+        "outwardMovementFatigue": 55.95999999999991,
+        "remoteMoves": 198,
+        "maxTownDistance": 97.86214794290997,
+        "turnback": {
+          "steps": 133,
+          "projected": 85.71999999999981,
+          "current": 28.959999999999916,
+          "supplies": 0,
+          "exhaustionLevels": 0,
+          "suppliesZeroStreak": 0,
+          "lastThreshold": "rested"
+        },
+        "access": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 94,
+            "outward": true,
+            "result": {
+              "attempted": true,
+              "success": false,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 5,
+                "roll": 5,
+                "rolls": [
+                  5
+                ],
+                "modifier": 2,
+                "skillModifier": 2,
+                "modifierAdjustment": 0,
+                "total": 7,
+                "dc": 12,
+                "success": false,
+                "critical": false,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 0,
+              "outcome": {
+                "message": "You find no usable provisions."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You find no usable provisions."
+                ],
+                "suppliesRestored": 0
+              }
+            },
+            "nearestTownStraightLine": 71.34423592694787,
+            "shortestOfThreeTownRoutes": 78
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 214,
+            "outward": false,
+            "result": {
+              "attempted": true,
+              "success": true,
+              "rollResult": {
+                "skill": "survival",
+                "attribute": "intuition",
+                "naturalRoll": 17,
+                "roll": 17,
+                "rolls": [
+                  17
+                ],
+                "modifier": 1,
+                "skillModifier": 2,
+                "modifierAdjustment": -1,
+                "total": 18,
+                "dc": 12,
+                "success": true,
+                "critical": false,
+                "criticalFail": false,
+                "advantage": false,
+                "disadvantage": false
+              },
+              "suppliesRestored": 1,
+              "outcome": {
+                "message": "You gather enough provisions for one supply."
+              },
+              "consequences": {
+                "xpAwarded": 0,
+                "goldAwarded": 0,
+                "damageDealt": 0,
+                "itemsAwarded": [],
+                "xp": 0,
+                "gold": 0,
+                "damage": 0,
+                "items": [],
+                "conditions": [],
+                "messages": [
+                  "You gather enough provisions for one supply."
+                ],
+                "suppliesRestored": 1
+              }
+            },
+            "nearestTownStraightLine": 33.13608305156178,
+            "shortestOfThreeTownRoutes": 36
+          }
+        ],
+        "sources": [
+          {
+            "id": "provisioning:783,499",
+            "x": 783,
+            "y": 499,
+            "type": "provisioning",
+            "firstStep": 28,
+            "nearestTownStraightLine": 33.13608305156178,
+            "reasons": {
+              "fullCapacity": 16,
+              "spentOrInspected": 18
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 1
+          },
+          {
+            "id": "provisioning:745,503",
+            "x": 745,
+            "y": 503,
+            "type": "provisioning",
+            "firstStep": 82,
+            "nearestTownStraightLine": 71.34423592694787,
+            "reasons": {
+              "outsideDetourBudget": 1,
+              "spentOrInspected": 20
+            },
+            "minOneWayPath": 8,
+            "selected": 1,
+            "attempted": 1,
+            "gained": 0
+          }
+        ],
+        "selectedDetours": [
+          {
+            "id": "provisioning:745,503",
+            "steps": 86,
+            "outward": true,
+            "oneWayMoves": 8,
+            "supplies": 2,
+            "fatigue": 29.359999999999964
+          },
+          {
+            "id": "provisioning:783,499",
+            "steps": 206,
+            "outward": false,
+            "oneWayMoves": 8,
+            "supplies": 0,
+            "fatigue": 59.759999999999835
+          }
+        ],
+        "sourceCount": 1776
+      },
+      "suppliesSpentAtCamp": 4
+    }
+  ],
+  "cells": [
+    {
+      "level": 1,
+      "radius": 3,
+      "gather": false,
+      "n": 3,
+      "noPublicTarget": 0,
+      "returnRate": {
+        "k": 3,
+        "n": 3,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.43849391955098227,
+          1
+        ]
+      },
+      "targetRate": {
+        "k": 1,
+        "n": 3,
+        "p": 0.3333333333333333,
+        "margin": 0.533444432872781,
+        "wald95": [
+          0,
+          0.8667777662061142
+        ],
+        "wilson95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "combatWinRate": {
+        "k": 7,
+        "n": 7,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.6456611570247934,
+          1
+        ]
+      },
+      "onwardMainMoves": {
+        "min": 60,
+        "median": 131,
+        "max": 148,
+        "mean": 113
+      },
+      "detourMoves": {
+        "min": 0,
+        "median": 6,
+        "max": 12,
+        "mean": 6
+      },
+      "remoteMoves": {
+        "min": 35,
+        "median": 206,
+        "max": 212,
+        "mean": 151
+      },
+      "gains": 0,
+      "traces": {
+        "medianWin": {
+          "step": 261,
+          "terrain": "grassland",
+          "enemyIds": [
+            "commoner",
+            "commoner"
+          ],
+          "hpBefore": 8,
+          "fatigueBefore": 92.16000000000014,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Commoner rolls initiative: 2 + 0 = 2",
+            "R1 Commoner rolls initiative: 16 + 0 = 16",
+            "R1 ⚔️ You encounter: Commoner, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Commoner",
+            "R1 📍 Knight's turn (HP: 8/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 😩 Knight has disadvantage (staggering fatigue)!",
+            "R1 🎲 Disadvantage: Rolled 12 and 12, using 12",
+            "R1 Attack roll: 12 + 3 (ability) + 2 (prof) = 17 vs AC 10",
+            "R1 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R1 Commoner takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Commoner's turn (HP: 6/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 🎲 Commoner rolls 13 + 2 = 15 vs AC 18",
+            "R1 ❌ Commoner misses!",
+            "R1 Commoner takes 0.8 HP damage from ongoing effects.",
+            "R1 📍 Commoner's turn (HP: 0.4/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 ⚔️ Commoner has disadvantage (Sapped)! 💫",
+            "R1 🎲 Disadvantage: Rolled 6 and 20, using 6",
+            "R1 🎲 Commoner rolls 6 + 2 = 8 vs AC 18",
+            "R1 ❌ Commoner misses!",
+            "R2 📍 Knight's turn (HP: 8/12)",
+            "R2 Knight attacks Commoner!",
+            "R2 😩 Knight has disadvantage (staggering fatigue)!",
+            "R2 🎲 Disadvantage: Rolled 4 and 7, using 4",
+            "R2 Attack roll: 4 + 3 (ability) + 2 (prof) = 9 vs AC 10",
+            "R2 Miss!",
+            "R2 📍 Commoner's turn (HP: 6/6)",
+            "R2 Commoner is acting...",
+            "R2 Commoner uses Club!",
+            "R2 🎲 Commoner rolls 17 + 2 = 19 vs AC 18",
+            "R2 💥 Hit! Club: 2 bone base damage",
+            "R2 Knight takes 2 HP damage.",
+            "R2 Commoner takes 0.4 HP damage from ongoing effects.",
+            "R3 📍 Knight's turn (HP: 6/12)",
+            "R3 Knight attacks Commoner!",
+            "R3 😩 Knight has disadvantage (staggering fatigue)!",
+            "R3 🎲 Disadvantage: Rolled 18 and 12, using 12",
+            "R3 Attack roll: 12 + 3 (ability) + 2 (prof) = 17 vs AC 10",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 😩 Exhaustion sets in! (Level 1) — find a safe place to rest.",
+            "R3 Commoner takes 6 HP damage.",
+            "R3 💀 Commoner is defeated!",
+            "R3 ⚔️ Sap! Commoner has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 3,
+          "hpAfter": 6,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.5
+        },
+        "loss": null,
+        "extreme": {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      }
+    },
+    {
+      "level": 1,
+      "radius": 3,
+      "gather": true,
+      "n": 3,
+      "noPublicTarget": 0,
+      "returnRate": {
+        "k": 3,
+        "n": 3,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.43849391955098227,
+          1
+        ]
+      },
+      "targetRate": {
+        "k": 1,
+        "n": 3,
+        "p": 0.3333333333333333,
+        "margin": 0.533444432872781,
+        "wald95": [
+          0,
+          0.8667777662061142
+        ],
+        "wilson95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "combatWinRate": {
+        "k": 7,
+        "n": 7,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.6456611570247934,
+          1
+        ]
+      },
+      "onwardMainMoves": {
+        "min": 60,
+        "median": 131,
+        "max": 148,
+        "mean": 113
+      },
+      "detourMoves": {
+        "min": 0,
+        "median": 6,
+        "max": 12,
+        "mean": 6
+      },
+      "remoteMoves": {
+        "min": 35,
+        "median": 206,
+        "max": 212,
+        "mean": 151
+      },
+      "gains": 2,
+      "traces": {
+        "medianWin": {
+          "step": 261,
+          "terrain": "grassland",
+          "enemyIds": [
+            "commoner",
+            "commoner"
+          ],
+          "hpBefore": 8,
+          "fatigueBefore": 81.16,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Commoner rolls initiative: 2 + 0 = 2",
+            "R1 Commoner rolls initiative: 16 + 0 = 16",
+            "R1 ⚔️ You encounter: Commoner, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Commoner",
+            "R1 📍 Knight's turn (HP: 8/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 😴 Fatigue penalty: -1 to attack roll",
+            "R1 Attack roll: 12 + 3 (ability) + 2 (prof) -1 (fatigue) = 16 vs AC 10",
+            "R1 💥 Hit! Rolled Damage: 5 + 5 (ability) = 10 base damage",
+            "R1 Commoner takes 6 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Commoner's turn (HP: 6/6)",
+            "R1 Commoner is acting...",
+            "R1 Commoner uses Club!",
+            "R1 🎲 Commoner rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Club: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R2 📍 Knight's turn (HP: 2/12)",
+            "R2 Knight attacks Commoner!",
+            "R2 😴 Fatigue penalty: -1 to attack roll",
+            "R2 Attack roll: 6 + 3 (ability) + 2 (prof) -1 (fatigue) = 10 vs AC 10",
+            "R2 💥 Hit! Rolled Damage: 8 + 5 (ability) = 13 base damage",
+            "R2 Commoner takes 6 HP damage.",
+            "R2 💀 Commoner is defeated!",
+            "R2 ⚔️ Sap! Commoner has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 2,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 0.16666666666666666
+        },
+        "loss": null,
+        "extreme": {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      }
+    },
+    {
+      "level": 1,
+      "radius": 8,
+      "gather": false,
+      "n": 3,
+      "noPublicTarget": 0,
+      "returnRate": {
+        "k": 3,
+        "n": 3,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.43849391955098227,
+          1
+        ]
+      },
+      "targetRate": {
+        "k": 1,
+        "n": 3,
+        "p": 0.3333333333333333,
+        "margin": 0.533444432872781,
+        "wald95": [
+          0,
+          0.8667777662061142
+        ],
+        "wilson95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "combatWinRate": {
+        "k": 7,
+        "n": 7,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.6456611570247934,
+          1
+        ]
+      },
+      "onwardMainMoves": {
+        "min": 60,
+        "median": 126,
+        "max": 148,
+        "mean": 111.33333333333333
+      },
+      "detourMoves": {
+        "min": 0,
+        "median": 16,
+        "max": 32,
+        "mean": 16
+      },
+      "remoteMoves": {
+        "min": 45,
+        "median": 212,
+        "max": 216,
+        "mean": 157.66666666666666
+      },
+      "gains": 0,
+      "traces": {
+        "medianWin": {
+          "step": 174,
+          "terrain": "savanna",
+          "enemyIds": [
+            "wolf",
+            "commoner"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 45.959999999999894,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 17 + 0 = 17",
+            "R1 Wolf rolls initiative: 11 + 2 = 13",
+            "R1 Commoner rolls initiative: 17 + 0 = 17",
+            "R1 ⚔️ You encounter: Wolf, Commoner!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Knight → Commoner → Wolf",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Commoner!",
+            "R1 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 10",
+            "R1 ⭐ Critical hit!",
+            "R1 💥 Hit! Rolled Damage: 8 + 2 (crit) + 5 (ability) = 15 base damage",
+            "R1 Commoner takes 3 HP damage.",
+            "R1 💀 Commoner is defeated!",
+            "R1 ⚔️ Sap! Commoner has disadvantage on next attack! 💫",
+            "R1 📍 Wolf's turn (HP: 12/12)",
+            "R1 Wolf is acting...",
+            "R1 Wolf uses Bite!",
+            "R1 🎲 Wolf rolls 11 + 3 = 14 vs AC 18",
+            "R1 ❌ Wolf misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Wolf!",
+            "R2 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 13",
+            "R2 ⭐ Critical hit!",
+            "R2 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R2 Wolf takes 10.4 HP damage; 5.2 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Wolf has disadvantage on next attack! 💫",
+            "R2 Wolf takes 1.6 HP damage from ongoing effects.",
+            "R2 😴 You feel wearied. (−1 skill checks)"
+          ],
+          "outcome": "victory",
+          "rounds": 2,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        "loss": null,
+        "extreme": {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      }
+    },
+    {
+      "level": 1,
+      "radius": 8,
+      "gather": true,
+      "n": 3,
+      "noPublicTarget": 0,
+      "returnRate": {
+        "k": 3,
+        "n": 3,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.43849391955098227,
+          1
+        ]
+      },
+      "targetRate": {
+        "k": 1,
+        "n": 3,
+        "p": 0.3333333333333333,
+        "margin": 0.533444432872781,
+        "wald95": [
+          0,
+          0.8667777662061142
+        ],
+        "wilson95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "combatWinRate": {
+        "k": 6,
+        "n": 6,
+        "p": 1,
+        "margin": 0,
+        "wald95": [
+          1,
+          1
+        ],
+        "wilson95": [
+          0.6096569663469354,
+          0.9999999999999999
+        ]
+      },
+      "onwardMainMoves": {
+        "min": 60,
+        "median": 117,
+        "max": 148,
+        "mean": 108.33333333333333
+      },
+      "detourMoves": {
+        "min": 0,
+        "median": 16,
+        "max": 32,
+        "mean": 16
+      },
+      "remoteMoves": {
+        "min": 45,
+        "median": 198,
+        "max": 212,
+        "mean": 151.66666666666666
+      },
+      "gains": 2,
+      "traces": {
+        "medianWin": {
+          "step": 112,
+          "terrain": "savanna",
+          "enemyIds": [
+            "zombie"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 26.75999999999993,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 14 + 0 = 14",
+            "R1 Zombie rolls initiative: 17 + -2 = 15",
+            "R1 ⚔️ You encounter: Zombie!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Zombie → Knight",
+            "R1 📍 Zombie's turn (HP: 22/22)",
+            "R1 Zombie is acting...",
+            "R1 Zombie uses Slam!",
+            "R1 🎲 Zombie rolls 6 + 3 = 9 vs AC 18",
+            "R1 ❌ Zombie misses!",
+            "R1 📍 Knight's turn (HP: 12/12)",
+            "R1 Knight attacks Zombie!",
+            "R1 Attack roll: 14 + 3 (ability) + 2 (prof) = 19 vs AC 8",
+            "R1 💥 Hit! Rolled Damage: 2 + 5 (ability) = 7 base damage",
+            "R1 Zombie takes 5.6 HP damage; 2.8 blood damage pending before defenses.",
+            "R1 ⚔️ Sap! Zombie has disadvantage on next attack! 💫",
+            "R2 Zombie takes 0.934 HP damage from ongoing effects.",
+            "R2 📍 Zombie's turn (HP: 15.466/22)",
+            "R2 Zombie is acting...",
+            "R2 Zombie uses Slam!",
+            "R2 ⚔️ Zombie has disadvantage (Sapped)! 💫",
+            "R2 🎲 Disadvantage: Rolled 3 and 6, using 3",
+            "R2 🎲 Zombie rolls 3 + 3 = 6 vs AC 18",
+            "R2 ❌ Zombie misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Zombie!",
+            "R2 Attack roll: 13 + 3 (ability) + 2 (prof) = 18 vs AC 8",
+            "R2 💥 Hit! Rolled Damage: 1 + 5 (ability) = 6 base damage",
+            "R2 Zombie takes 4.8 HP damage; 2.4 blood damage pending before defenses.",
+            "R2 ⚔️ Sap! Zombie has disadvantage on next attack! 💫",
+            "R3 Zombie takes 1.733 HP damage from ongoing effects.",
+            "R3 📍 Zombie's turn (HP: 8.933/22)",
+            "R3 Zombie is acting...",
+            "R3 Zombie uses Slam!",
+            "R3 ⚔️ Zombie has disadvantage (Sapped)! 💫",
+            "R3 🎲 Disadvantage: Rolled 20 and 14, using 14",
+            "R3 🎲 Zombie rolls 14 + 3 = 17 vs AC 18",
+            "R3 ❌ Zombie misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Zombie!",
+            "R3 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 8",
+            "R3 ⭐ Critical hit!",
+            "R3 💥 Hit! Rolled Damage: 1 + 7 (crit) + 5 (ability) = 13 base damage",
+            "R3 Zombie takes 8.933 HP damage.",
+            "R3 💀 Zombie is defeated!",
+            "R3 ⚔️ Sap! Zombie has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 3,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        },
+        "loss": null,
+        "extreme": {
+          "step": 75,
+          "terrain": "grassland",
+          "enemyIds": [
+            "bandit"
+          ],
+          "hpBefore": 12,
+          "fatigueBefore": 16.639999999999972,
+          "resolveBefore": 0,
+          "trace": [
+            "R1 Knight rolls initiative: 18 + 0 = 18",
+            "R1 Bandit rolls initiative: 20 + 1 = 21",
+            "R1 ⚔️ You encounter: Bandit!",
+            "R1 ⚔️ Combat begins! Round 1",
+            "R1 Turn order: Bandit → Knight",
+            "R1 📍 Bandit's turn (HP: 16/16)",
+            "R1 Bandit is acting...",
+            "R1 Bandit uses Scimitar!",
+            "R1 🎲 Bandit rolls 20 + 2 = 22 vs AC 18",
+            "R1 ⭐ Critical hit! Scimitar: 6 bone base damage",
+            "R1 Knight takes 6 HP damage.",
+            "R1 📍 Knight's turn (HP: 6/12)",
+            "R1 💚 Steady Nerve (Heal): Knight heals for 6 HP! [1d8(8) + level(1) + con(0)]",
+            "R1 Knight attacks Bandit!",
+            "R1 Attack roll: 2 + 3 (ability) + 2 (prof) = 7 vs AC 12",
+            "R1 Miss!",
+            "R2 📍 Bandit's turn (HP: 16/16)",
+            "R2 Bandit is acting...",
+            "R2 Bandit uses Scimitar!",
+            "R2 🎲 Bandit rolls 11 + 2 = 13 vs AC 18",
+            "R2 ❌ Bandit misses!",
+            "R2 📍 Knight's turn (HP: 12/12)",
+            "R2 Knight attacks Bandit!",
+            "R2 Attack roll: 3 + 3 (ability) + 2 (prof) = 8 vs AC 12",
+            "R2 Miss!",
+            "R3 📍 Bandit's turn (HP: 16/16)",
+            "R3 Bandit is acting...",
+            "R3 Bandit uses Scimitar!",
+            "R3 🎲 Bandit rolls 4 + 2 = 6 vs AC 18",
+            "R3 ❌ Bandit misses!",
+            "R3 📍 Knight's turn (HP: 12/12)",
+            "R3 Knight attacks Bandit!",
+            "R3 Attack roll: 19 + 3 (ability) + 2 (prof) = 24 vs AC 12",
+            "R3 💥 Hit! Rolled Damage: 4 + 5 (ability) = 9 base damage",
+            "R3 Bandit takes 7.2 HP damage; 3.6 blood damage pending before defenses.",
+            "R3 ⚔️ Sap! Bandit has disadvantage on next attack! 💫",
+            "R4 Bandit takes 1.2 HP damage from ongoing effects.",
+            "R4 📍 Bandit's turn (HP: 7.6/16)",
+            "R4 Bandit is acting...",
+            "R4 Bandit uses Scimitar!",
+            "R4 ⚔️ Bandit has disadvantage (Sapped)! 💫",
+            "R4 🎲 Disadvantage: Rolled 8 and 6, using 6",
+            "R4 🎲 Bandit rolls 6 + 2 = 8 vs AC 18",
+            "R4 ❌ Bandit misses!",
+            "R4 📍 Knight's turn (HP: 12/12)",
+            "R4 Knight attacks Bandit!",
+            "R4 Attack roll: 20 + 3 (ability) + 2 (prof) = 25 vs AC 12",
+            "R4 ⭐ Critical hit!",
+            "R4 💥 Hit! Rolled Damage: 4 + 2 (crit) + 5 (ability) = 11 base damage",
+            "R4 Bandit takes 7.6 HP damage.",
+            "R4 💀 Bandit is defeated!",
+            "R4 ⚔️ Sap! Bandit has disadvantage on next attack! 💫"
+          ],
+          "outcome": "victory",
+          "rounds": 4,
+          "hpAfter": 12,
+          "resolveAfter": 0,
+          "abilityUses": {
+            "steadyNerve": 1
+          },
+          "margin": 1
+        }
+      }
+    }
+  ],
+  "geometry": [
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 0,
+      "level": 1,
+      "radius": 3,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16,
+        "type": "town",
+        "fixtureRelocation": true,
+        "geographicIndex": 0
+      },
+      "target": {
+        "offerId": "quest_kill_chief_16_16_1664",
+        "x": -7,
+        "y": 154
+      },
+      "seen": [],
+      "reachableUnderPolicy": [],
+      "mainMoves": 148,
+      "plannedMoves": 167
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 0,
+      "level": 1,
+      "radius": 8,
+      "town": {
+        "id": "16,16",
+        "x": 16,
+        "y": 16,
+        "type": "town",
+        "fixtureRelocation": true,
+        "geographicIndex": 0
+      },
+      "target": {
+        "offerId": "quest_kill_chief_16_16_1664",
+        "x": -7,
+        "y": 154
+      },
+      "seen": [],
+      "reachableUnderPolicy": [],
+      "mainMoves": 148,
+      "plannedMoves": 167
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 1,
+      "level": 1,
+      "radius": 3,
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688,
+        "type": "village",
+        "fixtureRelocation": true,
+        "geographicIndex": 1
+      },
+      "target": {
+        "offerId": "quest_kill_chief_-784_-688_7126",
+        "x": -758,
+        "y": -722
+      },
+      "seen": [
+        "provisioning:-759,-714"
+      ],
+      "reachableUnderPolicy": [
+        "provisioning:-759,-714"
+      ],
+      "mainMoves": 60,
+      "plannedMoves": 60
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 1,
+      "level": 1,
+      "radius": 8,
+      "town": {
+        "id": "-784,-688",
+        "x": -784,
+        "y": -688,
+        "type": "village",
+        "fixtureRelocation": true,
+        "geographicIndex": 1
+      },
+      "target": {
+        "offerId": "quest_kill_chief_-784_-688_7126",
+        "x": -758,
+        "y": -722
+      },
+      "seen": [
+        "provisioning:-759,-714"
+      ],
+      "reachableUnderPolicy": [
+        "provisioning:-759,-714"
+      ],
+      "mainMoves": 60,
+      "plannedMoves": 60
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 2,
+      "level": 1,
+      "radius": 3,
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496,
+        "type": "village",
+        "fixtureRelocation": true,
+        "geographicIndex": 2
+      },
+      "target": {
+        "offerId": "quest_investigate_816_496_9143",
+        "x": 692,
+        "y": 553
+      },
+      "seen": [
+        "provisioning:783,499",
+        "provisioning:745,503"
+      ],
+      "reachableUnderPolicy": [
+        "provisioning:745,503",
+        "provisioning:783,499"
+      ],
+      "mainMoves": 131,
+      "plannedMoves": 183
+    },
+    {
+      "seed": "wilderness-remote-0",
+      "departure": 2,
+      "level": 1,
+      "radius": 8,
+      "town": {
+        "id": "816,496",
+        "x": 816,
+        "y": 496,
+        "type": "village",
+        "fixtureRelocation": true,
+        "geographicIndex": 2
+      },
+      "target": {
+        "offerId": "quest_investigate_816_496_9143",
+        "x": 692,
+        "y": 553
+      },
+      "seen": [
+        "provisioning:783,499",
+        "provisioning:745,503"
+      ],
+      "reachableUnderPolicy": [
+        "provisioning:745,503",
+        "provisioning:783,499"
+      ],
+      "mainMoves": 126,
+      "plannedMoves": 183
+    }
+  ],
+  "worldSites": [
+    {
+      "seed": "wilderness-remote-0",
+      "generated": 1776,
+      "seen": [
+        "provisioning:-759,-714",
+        "provisioning:783,499",
+        "provisioning:745,503"
+      ],
+      "attempted": [
+        "provisioning:-759,-714",
+        "provisioning:745,503",
+        "provisioning:783,499"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "level": 1,
+      "radius": 3,
+      "returnDelta": 0,
+      "statisticallyDistinguishable": false
+    },
+    {
+      "level": 1,
+      "radius": 8,
+      "returnDelta": 0,
+      "statisticallyDistinguishable": false
+    }
+  ],
+  "startHashes": {
+    "tools/balance-sim/wilderness-provisioning-coverage.js": "1fed0572f41301d5bb5d641820c654787a311bf9b4e2092b4ca60e149aad552b",
+    "tools/balance-sim/expedition-review.js": "e9b58022475bb4631114ad57cf769bc15e55d6219b70086596ad5c8621d876cb",
+    "src/systems/WorldGenerator.js": "0b2e4bc46b00ade8f78dec25aad0b2b93b8fc64b44a8201692da052fb34dd57d",
+    "src/systems/ProvisioningManager.js": "7405c55e0b36ba34aa01796d1dc807608c7c6005c5eeee6b9ab57db34783bfa2",
+    "src/systems/Player.js": "9088e965de7959e0d237432251ebae420929858fddbd6e84aa457124fd090fea",
+    "src/systems/FatigueManager.js": "02c56d8fffe590caaf86d2c83e4c8da67ae4ed26175050003fbc822833fe04b8",
+    "src/systems/CombatManager.js": "868cd941c6b9b36ad66eab202b761a47b20984243de2589a3c314d6fe4302fb2",
+    "src/systems/RestManager.js": "77fafcc373c8531fa5b56ddb2e1e6d9d2b7e41197774098ca111379b4501b789",
+    "src/core/rulesEngine.js": "8f4d3e54d0682afff82e675259ac7e1e5b68d60b182370560d216d601a735241",
+    "data/provisioning.json": "c949479e6f956c69cb044e09e6e885cacdb4062920bedb358b6be75726e7e6cb"
+  },
+  "endHashes": {
+    "tools/balance-sim/wilderness-provisioning-coverage.js": "1fed0572f41301d5bb5d641820c654787a311bf9b4e2092b4ca60e149aad552b",
+    "tools/balance-sim/expedition-review.js": "e9b58022475bb4631114ad57cf769bc15e55d6219b70086596ad5c8621d876cb",
+    "src/systems/WorldGenerator.js": "0b2e4bc46b00ade8f78dec25aad0b2b93b8fc64b44a8201692da052fb34dd57d",
+    "src/systems/ProvisioningManager.js": "7405c55e0b36ba34aa01796d1dc807608c7c6005c5eeee6b9ab57db34783bfa2",
+    "src/systems/Player.js": "9088e965de7959e0d237432251ebae420929858fddbd6e84aa457124fd090fea",
+    "src/systems/FatigueManager.js": "02c56d8fffe590caaf86d2c83e4c8da67ae4ed26175050003fbc822833fe04b8",
+    "src/systems/CombatManager.js": "868cd941c6b9b36ad66eab202b761a47b20984243de2589a3c314d6fe4302fb2",
+    "src/systems/RestManager.js": "77fafcc373c8531fa5b56ddb2e1e6d9d2b7e41197774098ca111379b4501b789",
+    "src/core/rulesEngine.js": "8f4d3e54d0682afff82e675259ac7e1e5b68d60b182370560d216d601a735241",
+    "data/provisioning.json": "c949479e6f956c69cb044e09e6e885cacdb4062920bedb358b6be75726e7e6cb"
+  },
+  "changedFilesDuringRun": []
+}

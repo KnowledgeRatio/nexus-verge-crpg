@@ -1,0 +1,60 @@
+{
+  "tavern": {
+    "variants": [
+      { "image": "data/graphics/tavern-interior-v1.png", "alt": "A timber-beamed tavern common room, with a long bar on the left, a stone hearth on the right and tables around an open central aisle." },
+      { "image": "data/graphics/tavern-interior-v2.png", "alt": "Another frontier tavern common room, with a bar to the left, a warm hearth to the right and tables ready for company." }
+    ],
+    "caption": "The common room · select a name to talk",
+    "glow": { "x": 81, "y": 44 },
+    "people": [
+      { "roles": ["innkeeper"], "image": "data/graphics/tavern-keeper-v1.png", "x": 28, "y": 39, "width": 9 },
+      { "image": "data/graphics/tavern-patron-v1.png", "x": 57, "y": 78, "width": 18 },
+      { "image": "data/graphics/tavern-guest-v1.png", "x": 73, "y": 81, "width": 18 }
+    ],
+    "ambience": [
+      { "label": "Inhabited room", "tracks": [
+        { "url": "data/sound/tavern-voices-v2.wav", "volume": 0.55 },
+        { "url": "data/sound/tavern-activity-v2.wav", "volume": 0.14 }
+      ] }
+    ]
+  },
+  "merchant": {
+    "variants": [
+      { "image": "data/graphics/merchant-interior-v1.png", "counterForeground": 62, "alt": "A first-person view across a frontier merchant's counter, with stocked shelves and practical supplies behind it." },
+      { "image": "data/graphics/merchant-interior-v2.png", "counterForeground": 64.5, "alt": "A different frontier general shop, seen from the customer's side of the counter.", "people": [
+        { "roles": ["merchant"], "image": "data/graphics/merchant-keeper-v2.png", "x": 50, "y": 69.5, "width": 28 }
+      ] }
+    ],
+    "caption": "At the counter · select the merchant to talk or trade",
+    "counterForeground": 65,
+    "people": [
+      { "roles": ["merchant"], "image": "data/graphics/merchant-keeper-v1.png", "x": 50, "y": 67, "width": 28 }
+    ]
+  },
+  "blacksmith": {
+    "variants": [
+      { "image": "data/graphics/blacksmith-interior-v1.png", "counterForeground": 66, "alt": "A first-person view across a smith's work counter, with a glowing forge and tools in the workshop behind it." },
+      { "image": "data/graphics/blacksmith-interior-v2.png", "counterForeground": 73, "alt": "Another frontier smithy, seen across its sturdy counter with weapons and tools along the walls.", "people": [
+        { "roles": ["blacksmith"], "image": "data/graphics/blacksmith-keeper-v2.png", "x": 50, "y": 78, "width": 28 }
+      ] }
+    ],
+    "caption": "At the smith's counter · select the smith to talk or trade",
+    "counterForeground": 65,
+    "people": [
+      { "roles": ["blacksmith"], "image": "data/graphics/blacksmith-keeper-v1.png", "x": 50, "y": 71, "width": 28 }
+    ]
+  },
+  "greathall": {
+    "variants": [
+      { "image": "data/graphics/greathall-interior-v1.png", "counterForeground": 64, "alt": "A first-person view across a reception desk in the settlement's great hall, with records and banners behind it." },
+      { "image": "data/graphics/greathall-interior-v2.png", "counterForeground": 75, "alt": "A council records room with maps and books, viewed from the visitor's side of its reception desk.", "people": [
+        { "roles": ["leader"], "image": "data/graphics/greathall-keeper-v2.png", "x": 50, "y": 80, "width": 28 }
+      ] }
+    ],
+    "caption": "The great hall · select the settlement leader to talk",
+    "counterForeground": 65,
+    "people": [
+      { "roles": ["leader"], "image": "data/graphics/greathall-keeper-v1.png", "x": 50, "y": 69, "width": 28 }
+    ]
+  }
+}

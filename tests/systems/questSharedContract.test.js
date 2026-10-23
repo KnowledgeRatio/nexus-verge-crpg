@@ -23,7 +23,9 @@ describe('Shared objective, encounter and custody contract', () => {
     let relationManager;
     let town;
     beforeEach(() => {
-        previous = { state: gameState.data, definitions: skillRegistry.definitions };
+        previous = { state: gameState.data, definitions: skillRegistry.definitions, iteration: RULES.quests.iteration.enabled };
+        // Characterize the saved pre-iteration commission independently of new offer scaling.
+        RULES.quests.iteration.enabled = false;
         skillRegistry.setDefinitions(data('skills').skills);
         town = { id: '2,3', x: 2, y: 3, name: 'Town', settlementType: 'town', npcs: [
             { id: 'giver', name: 'Commissioner', role: 'leader', culture: 'kethara', offersQuest: true },
@@ -58,6 +60,7 @@ describe('Shared objective, encounter and custody contract', () => {
         manager = new QuestManager(generator);
     });
     afterEach(() => {
+        RULES.quests.iteration.enabled = previous.iteration;
         gameState.data = previous.state;
         skillRegistry.setDefinitions(previous.definitions);
         vi.restoreAllMocks();

@@ -15,6 +15,7 @@ import { getAttributeModifierFor, getBlendedAttributeModifier } from '../utils/a
 import { damagePrecisionEnabled, hpToUnits, unitsToHP, normalizeHP, subtractHP, addHP, partitionDamage } from '../utils/damagePrecision.js';
 import { previewDamageComponents, resolveDamageComponents, resolveDamageModifier as resolvePreciseDamageModifier } from './DamageResolver.js';
 import { formatCombatNumber } from '../utils/combatNumberFormat.js';
+import { isConditionImmune, conditionRejectionMessage } from './conditionApplication.js';
 
 function resolveDamageModifier(combatant, damageType, isMagical = false) {
     if (!RULES.combat.damageReductionSystem.enabled) return 'normal';
@@ -112,6 +113,7 @@ class CombatManager {
         this.enemyCombatants = [];
         this.companionCombatants = [];
         this.encounterSource = null;
+        this.settlementSource = null;
         this.encounterPosition = null;
 
         // Cover type for current encounter ('partial', 'substantial', or null)
@@ -137,7 +139,7 @@ class CombatManager {
      * @param {Array} enemies - Array of enemy characters
      * @param {Array} companions - Array of companion characters (defaults to empty for backward compatibility)
      */
-    async startCombat(player, enemies, companions = [], encounterSource = null) {
+    async startCombat(player, enemies, companions = [], encounterSource = null, settlementSource = null) {
         // Capture provenance before asynchronous setup or subsequent movement can change it.
         const actualBoss = enemies.find(enemy => enemy.isBoss);
         const actualSource = actualBoss && window.game?.dungeonManager?.getQuestEncounterSource?.(
@@ -148,6 +150,9 @@ class CombatManager {
             sourceFields.every(key => encounterSource[key] === actualSource[key]) ? { ...actualSource } : null;
         const encounterPosition = gameState.get('player.position');
         this.encounterPosition = encounterPosition ? { ...encounterPosition } : null;
+        this.settlementSource = settlementSource && enemies.length > 0 &&
+            settlementSource.settlementId === `${encounterPosition?.x},${encounterPosition?.y}`
+            ? { ...settlementSource } : null;
         // Ensure weapon mastery data is loaded before applying effects
         await this.loadWeaponMasteryData();
         console.log('⚔️ Starting combat encounter!');
@@ -587,11 +592,13 @@ class CombatManager {
                             damageOnTurnStart: trait.condition.damageOnTurnStart ?? null
                         }
                     );
-                    if (applied || trait.condition.stackable) {
+                    if (applied) {
                         gameState.addMessage(
                             `${trait.condition.icon || '🌑'} ${combatant.name}'s ${trait.name} seeps into ${traitTarget.name}!`,
                             'warning'
                         );
+                    } else {
+                        gameState.addMessage(conditionRejectionMessage(traitTarget, trait.condition.type), 'info');
                     }
                 }
             }
@@ -1297,6 +1304,8 @@ class CombatManager {
                 if (backlashAdded) {
                     attacker.ac -= 1;
                     gameState.addMessage(`💢 ${attacker.name} attacks their Challenger anyway! (-1 AC)`, 'warning');
+                } else if (isConditionImmune(attacker, 'tauntBacklash')) {
+                    gameState.addMessage(conditionRejectionMessage(attacker, 'tauntBacklash'), 'info');
                 }
             }
         }
@@ -1666,7 +1675,6 @@ class CombatManager {
                 const maneuverContext = buildAbilityContext(attacker.character, attacker, this);
                 maneuverContext.attacker = attacker;
                 maneuverContext.defender = defender;
-                maneuverContext.resolveSpent = 0;
                 await dispatchAbilityEffects(pendingAbility, pendingAbility.effects, maneuverContext);
             }
             // Always clear pending maneuver after a hit
@@ -1733,6 +1741,8 @@ class CombatManager {
                 if (harriedAdded) {
                     gameState.addMessage(`⚔️ ${defender.name} is harried! Ranged attacks have disadvantage! 🎯`, 'warning');
                     gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'HARRIED! 🎯', type: 'condition' });
+                } else if (isConditionImmune(defender, 'harried')) {
+                    gameState.addMessage(conditionRejectionMessage(defender, 'harried'), 'info');
                 }
             }
 
@@ -1927,7 +1937,7 @@ class CombatManager {
 
                 gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SAPPED! 💫', type: 'condition', delay: 300 });
             } else {
-                gameState.addMessage(`⚔️ ${defender.name} is already sapped!`, 'info');
+                gameState.addMessage(conditionRejectionMessage(defender, 'sapped'), 'info');
             }
         }
 
@@ -1948,64 +1958,69 @@ class CombatManager {
 
                 gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SLOWED! 🐌', type: 'condition', delay: 300 });
             } else {
-                gameState.addMessage(`⚔️ Slow effect already active on ${defender.name}`, 'info');
+                gameState.addMessage(conditionRejectionMessage(defender, 'slowed'), 'info');
             }
         }
 
         // WEAPON MASTERY: Topple (onHit)
         // Force a physical-resilience save or knock prone.
         if (attackTotal >= defender.ac && this.hasWeaponMastery(attacker, weapon, 'topple')) {
-            const saveDC = 8 + proficiency + attackBonus;
-            const saveRoll = rollD20().result;
-            const saveModifier = getAttributeModifierFor(defender.character, 'resilienceSave');
-            let saveTotal = saveRoll + saveModifier + getAuraSaveBonus(this, defender);
-            let toppleSaved = saveTotal >= saveDC;
-
-            gameState.addMessage(
-                `⚔️ Topple! ${defender.name} must make Resilience save DC ${saveDC}...`,
-                'warning'
-            );
-            gameState.addMessage(
-                `Resilience save: ${saveRoll} + ${saveModifier} = ${saveTotal}`,
-                'info'
-            );
-
-            // REACTION HOOK: afterFailedSave — same Indomitable-reroll opportunity as
-            // executeSpecialMonsterAction()'s save (ADR-010, generic dispatch).
-            if (!toppleSaved && defender.team === 'player' && window.game?.promptReaction) {
-                const reactionResult = await window.game.promptReaction('afterFailedSave', attacker, defender, {
-                    saveType: RULES.attributes.system === 'NVSystem' ? 'resilience' : 'con',
-                    saveDC,
-                    saveRoll: saveTotal
-                });
-                if (reactionResult?.newTotal !== undefined) {
-                    saveTotal = reactionResult.newTotal;
-                    toppleSaved = saveTotal >= saveDC;
-                    gameState.addMessage(
-                        `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${toppleSaved ? 'Success!' : 'Still fails.'}`,
-                        toppleSaved ? 'success' : 'warning'
-                    );
-                }
-            }
-
-            if (!toppleSaved) {
-                const added = defender.addCondition('prone', 'rounds', attacker.id, {
-                    value: null,
-                    roundsRemaining: 1,
-                    isBuff: false,
-                    curable: true,
-                    icon: '🔻'
-                });
-
-                if (added) {
-                    gameState.addMessage(`💥 ${defender.name} is knocked prone! 🔻`, 'error');
-
-                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'PRONE! 🔻', type: 'condition', delay: 300 });
-                } else {
-                    gameState.addMessage(`💥 ${defender.name} is already prone!`, 'info');
-                }
+            if (isConditionImmune(defender, 'prone')) {
+                gameState.addMessage(conditionRejectionMessage(defender, 'prone'), 'info');
             } else {
-                gameState.addMessage(`${defender.name} resists being knocked prone.`, 'info');
+                const saveDC = 8 + proficiency + attackBonus;
+                const saveRoll = rollD20().result;
+                const saveModifier = getAttributeModifierFor(defender.character, 'resilienceSave');
+                let saveTotal = saveRoll + saveModifier + getAuraSaveBonus(this, defender);
+                let toppleSaved = saveTotal >= saveDC;
+
+                gameState.addMessage(
+                    `⚔️ Topple! ${defender.name} must make Resilience save DC ${saveDC}...`,
+                    'warning'
+                );
+                gameState.addMessage(
+                    `Resilience save: ${saveRoll} + ${saveModifier} = ${saveTotal}`,
+                    'info'
+                );
+
+                // REACTION HOOK: afterFailedSave — same Indomitable-reroll opportunity as
+                // executeSpecialMonsterAction()'s save (ADR-010, generic dispatch).
+                if (!toppleSaved && defender.team === 'player' && window.game?.promptReaction) {
+                    const reactionResult = await window.game.promptReaction('afterFailedSave', attacker, defender, {
+                        saveType: RULES.attributes.system === 'NVSystem' ? 'resilience' : 'con',
+                        saveDC,
+                        saveRoll: saveTotal
+                    });
+                    if (reactionResult?.newTotal !== undefined) {
+                        saveTotal = reactionResult.newTotal;
+                        toppleSaved = saveTotal >= saveDC;
+                        gameState.addMessage(
+                            `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${toppleSaved ? 'Success!' : 'Still fails.'}`,
+                            toppleSaved ? 'success' : 'warning'
+                        );
+                    }
+                }
+
+                if (!toppleSaved) {
+                    const added = defender.addCondition('prone', 'rounds', attacker.id, {
+                        value: null,
+                        roundsRemaining: 1,
+                        isBuff: false,
+                        curable: true,
+                        icon: '🔻'
+                    });
+
+                    if (added) {
+                        gameState.addMessage(`💥 ${defender.name} is knocked prone! 🔻`, 'error');
+
+                        gameState.notify('combat.floatingText', { combatantId: defender.id,
+                            text: 'PRONE! 🔻', type: 'condition', delay: 300 });
+                    } else {
+                        gameState.addMessage(conditionRejectionMessage(defender, 'prone'), 'info');
+                    }
+                } else {
+                    gameState.addMessage(`${defender.name} resists being knocked prone.`, 'info');
+                }
             }
         }
 
@@ -2022,7 +2037,7 @@ class CombatManager {
             if (added) {
                 gameState.addMessage(`⚔️ Vex! ${attacker.name} has advantage on next attack vs ${defender.name}! ⚡`, 'success');
             } else {
-                gameState.addMessage(`⚔️ ${attacker.name} is already vexed!`, 'info');
+                gameState.addMessage(conditionRejectionMessage(attacker, 'vexed'), 'info');
             }
         }
 
@@ -2045,7 +2060,7 @@ class CombatManager {
 
                     gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'PUSHED! 💨', type: 'condition', delay: 300 });
                 } else {
-                    gameState.addMessage(`⚔️ ${defender.name} is already pushed!`, 'info');
+                    gameState.addMessage(conditionRejectionMessage(defender, 'pushed'), 'info');
                 }
             } else {
                 gameState.addMessage(`${defender.name} is too large to push!`, 'info');
@@ -2342,19 +2357,24 @@ class CombatManager {
             return;
         }
 
-        gameState.addMessage(
-            `🛡️ ${combatant.name} takes the Dodge action, focusing entirely on avoiding attacks!`,
-            combatant.team === 'player' ? 'success' : 'warning'
-        );
-
         // Apply dodging condition until start of next turn
-        combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
+        const applied = combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
             value: null,
             isBuff: true,
             curable: false,
             icon: '🛡️'
         });
 
+        combatant.consumeAction('action');
+        if (!applied) {
+            gameState.addMessage(conditionRejectionMessage(combatant, 'dodging'), 'info');
+            this.updateGameState();
+            return;
+        }
+        gameState.addMessage(
+            `🛡️ ${combatant.name} takes the Dodge action, focusing entirely on avoiding attacks!`,
+            combatant.team === 'player' ? 'success' : 'warning'
+        );
         gameState.notify('combat.floatingText', { sourceId: combatant.id, combatantId: combatant.id,
             text: 'DODGING! 🛡️', type: 'buff', effectType: 'dodge' });
 
@@ -2363,7 +2383,6 @@ class CombatManager {
             'info'
         );
 
-        combatant.consumeAction('action');
         this.updateGameState();
     }
 
@@ -2405,11 +2424,18 @@ class CombatManager {
 
         // Apply 'disengaged' condition — clears at start of this combatant's NEXT turn
         // appliedBy = combatant.id so the untilStartOfTurn cleanup fires when their turn starts
-        combatant.addCondition('disengaged', 'untilStartOfTurn', combatant.id, {
+        const applied = combatant.addCondition('disengaged', 'untilStartOfTurn', combatant.id, {
             isBuff: true,
             curable: false,
             icon: null   // No visible icon — internal-use only
         });
+
+        if (!applied && isConditionImmune(combatant, 'disengaged')) {
+            const reason = conditionRejectionMessage(combatant, 'disengaged');
+            gameState.addMessage(reason, 'info');
+            this.updateGameState();
+            return { success: false, reason, actionCost };
+        }
 
         // Snapshot and clear engagement
         const wasEngagedWith = Array.from(combatant.engagedWith);
@@ -2663,8 +2689,16 @@ class CombatManager {
      */
     endCombat(result) {
         const encounterSource = this.encounterSource;
+        const settlementSource = this.settlementSource;
         this.encounterSource = null;
+        this.settlementSource = null;
         this.active = false;
+
+        if (settlementSource) {
+            const defeated = this.enemyCombatants.length > 0 && this.enemyCombatants.every(enemy => enemy.hp <= 0);
+            window.game?.hostileSettlementManager?.recordCombatResult(settlementSource,
+                result === 'victory' && !defeated ? 'fled' : result);
+        }
 
         // Reset combat movement warning flag
         if (window.game?.player) {
@@ -3328,6 +3362,7 @@ class Combatant {
         this.damageResistances     = character.damageResistances     ?? [];
         this.damageImmunities      = character.damageImmunities      ?? [];
         this.damageVulnerabilities = character.damageVulnerabilities ?? [];
+        this.conditionImmunities   = [...(character.conditionImmunities ?? [])];
 
         // Engagement tracking for flee mechanic and opportunity attacks.
         // Contains IDs of combatants this combatant is currently engaged with (bidirectional, many-to-many).
@@ -3362,6 +3397,15 @@ class Combatant {
         return this.engagedWith.size > 0;
     }
 
+    // Keep the source character authoritative when runtime effects replace its array.
+    get conditionImmunities() {
+        return this.character.conditionImmunities ?? [];
+    }
+
+    set conditionImmunities(value) {
+        this.character.conditionImmunities = value;
+    }
+
     /**
      * Add a condition to this combatant
      * @param {string} type - Condition type (e.g., 'slowed', 'poisoned', 'blessed')
@@ -3370,6 +3414,10 @@ class Combatant {
      * @param {Object} options - { value, roundsRemaining, isBuff, curable, icon }
      */
     addCondition(type, duration, appliedBy, options = {}) {
+        // Check before mutation, including stack/refresh and stronger temporary HP.
+        if (isConditionImmune(this, type)) {
+            return false;
+        }
         const {
             value = null,
             roundsRemaining = 1,
@@ -3778,6 +3826,7 @@ class Combatant {
             ac: this.ac,
             initiative: this.initiative,
             actions: { ...this.actions },
+            conditionImmunities: [...this.conditionImmunities],
             conditions: damagePrecisionEnabled() ? this.conditions.map(condition => ({ ...condition,
                 ...(condition.periodicDamage ? { periodicDamage: { tranches: condition.periodicDamage.tranches.map(tranche => ({
                     ...tranche, ticksUnits: [...tranche.ticksUnits]

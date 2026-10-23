@@ -43,6 +43,7 @@
     "trap_detect_disarm": {
       "id": "trap_detect_disarm",
       "name": "Trap Detection & Disarm",
+      "physicalTrapOnly": true,
       "description": "You notice suspicious markings on the floor ahead...",
       "type": "sequential",
       "balance": {

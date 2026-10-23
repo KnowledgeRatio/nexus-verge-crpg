@@ -10,7 +10,13 @@ Integration/acceptance is tracked in [#51](https://github.com/KnowledgeRatio/nex
 Open `settlement-study.html` on the local preview server for quick review, or
 enter a settlement in `index.html` for the actual game integration. The study
 reuses the real settlement/building modal markup, manager and UI with temporary
-fixtures; its empty NPC/quest lists are not a generated campaign walkthrough.
+fixtures, including six NPCs across all four building types, with existing
+dialogue/rest/trading interactions. Open `settlement-study.html?building=merchant`
+for a counter view; `building` also accepts `tavern`, `blacksmith` and `greathall`.
+The study's **Interior version** control or `&variant=1` / `&variant=2` compares
+the two images per building. `?view=3d` no longer activates an interior view.
+These fixtures
+are not a generated campaign walkthrough and do not write a saved campaign.
 
 `SettlementSceneUI` mounts the scene from `SettlementUI.showSettlementModal`.
 The four configured buttons call the existing `SettlementManager.enterBuilding`
@@ -27,8 +33,13 @@ additional non-enterable buildings and two market stalls frame the village
 square. Town and city replace the rough paving and improvised shopfronts with
 regular cut-stone, closer civic frontages, benches and planters. Two additional
 civilians walk repeatable routes around the urban foreground; reduced-motion
-mode leaves them stationary. Building interiors and named NPC interactions
-retain the existing UI.
+mode leaves them stationary. Building interiors retain the existing NPC/service
+UI. The [illustrated interiors](../building-interiors/README.md), added locally
+on 2026-10-23, offer two stable room variants per building with character-image
+layers and actual named NPC conversations. The merchant, smith and great hall
+use first-person counter/desk compositions. The sponsor accepted the retained
+tavern soundscape; the 3D interior experiment is historical. The full NPC list
+remains available under **Everyone here**; the outdoor scene is unchanged.
 
 Desktop opens the scene by default while services remain accessible during
 loading. The toggle restores the service list. Mobile uses that list directly.
@@ -39,7 +50,7 @@ inhabitants, camera, carried equipment and movement timing.
 
 The preview server allowlist includes only the named study/game HTML pages and
 existing public asset paths. Example launch from the repository uses
-`tools/audio-gen/preview_server.py`; the current review instance is on port 8766.
+`tools/audio-gen/preview_server.py`; the current review instance is on port 8779.
 
 This POC does not establish final art quality, production delivery performance,
 named NPC likenesses, world-state architectural overlays or full campaign

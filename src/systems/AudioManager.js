@@ -15,6 +15,7 @@ class AudioManager {
         this.sounds = {};
         this.music = {};
         this.currentMusic = null;
+        this.ambience = new Map();
         this.audioContext = null;
 
         // Initialize Web Audio API for better performance
@@ -377,6 +378,9 @@ class AudioManager {
      * Update volumes for all audio instances
      */
     updateAllVolumes() {
+        for (const [audio, volume] of this.ambience) {
+            audio.volume = this.masterVolume * this.musicVolume * volume;
+        }
         // Update sound effects
         for (const sound of Object.values(this.sounds)) {
             const targetVolume = this.masterVolume * this.sfxVolume;
@@ -409,6 +413,9 @@ class AudioManager {
      * Stop all playing sounds and music
      */
     stopAll() {
+        for (const audio of this.ambience.keys()) {
+            audio.pause();
+        }
         // Stop sound effects
         for (const sound of Object.values(this.sounds)) {
             sound.audio.pause();
@@ -429,6 +436,22 @@ class AudioManager {
      */
     getMasterVolume() {
         return this.masterVolume;
+    }
+
+    registerAmbience(audio, volume) {
+        this.ambience.set(audio, volume);
+        audio.volume = this.masterVolume * this.musicVolume * volume;
+        return () => {
+            audio.pause();
+            this.ambience.delete(audio);
+        };
+    }
+
+    setAmbienceVolume(audio, volume) {
+        if (this.ambience.has(audio)) {
+            this.ambience.set(audio, volume);
+            audio.volume = this.masterVolume * this.musicVolume * volume;
+        }
     }
 
     /**

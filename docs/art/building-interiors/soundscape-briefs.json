@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-23",
+  "status": "Generation attempted; ElevenLabs creative_generate_in_flow returned internal error for each request. No usable audio returned; integration unchanged. Do not infer failed requests were uncharged.",
+  "model": "eleven_text_to_sound_v2",
+  "nodeType": "sfx",
+  "settings": "Tool default settings; duration and loop parameters were not exposed by the invoked convenience tool.",
+  "direction": "Approved starting briefs; generated takes still require listening and loop validation. Preserve approved tavern audio.",
+  "prompts": {
+    "merchant": "Quiet frontier merchant shop from customer side of wooden counter. Soft cloth and leather handling, occasional parcel resting on wood, faint muffled street activity beyond door. Warm short timber room reflections, rounded natural midrange, sparse irregular activity with breathing space. Seamless ambient bed, stable listener. No intelligible speech, music, bells, cash register, sharp close clicks, exaggerated bass or hiss.",
+    "blacksmith": "Working frontier smithy heard from customer counter, forge several metres behind smith. Low rounded bellows breath and subdued forge body, spaced light hammer strikes on worked iron from rear room, occasional metal settling. Natural stone and timber reflections; restrained irregular labour with quiet intervals. Seamless stable ambience. No music, speech, machinery, piercing ringing, loud impacts, close crackle or cinematic bass.",
+    "greathall": "Modest frontier council records hall from reception desk. Quiet spacious stone and timber room, sparse soft bootsteps several metres away, occasional paper handling, faint indistinct conversation in distance. Warm restrained human presence and short natural reflections, irregular details with ample quiet. Seamless stable ambience. No intelligible words, crowds, music, grand cathedral echo, regal fanfare, hiss or close microphone."
+  }
+}

@@ -62,10 +62,6 @@
           {
             "id": "leatherArmor",
             "chance": 0.2
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.1
           }
         ]
       },
@@ -352,10 +348,6 @@
           {
             "id": "hideArmor",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.2
           }
         ]
       },
@@ -431,10 +423,6 @@
           {
             "id": "leatherArmor",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.1
           }
         ]
       },
@@ -749,10 +737,6 @@
           },
           {
             "id": "battleaxe",
-            "chance": 0.3
-          },
-          {
-            "id": "potionOfHealing",
             "chance": 0.3
           }
         ]
@@ -1895,10 +1879,6 @@
           {
             "id": "leatherArmor",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.2
           }
         ]
       },
@@ -1993,14 +1973,6 @@
       "lootTable": {
         "dropChance": 0.7,
         "items": [
-          {
-            "id": "potionOfHealing",
-            "chance": 0.3
-          },
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.1
-          }
         ]
       },
       "habitats": {
@@ -2183,10 +2155,6 @@
           {
             "id": "hideArmor",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.2
           }
         ]
       },
@@ -2374,10 +2342,6 @@
           {
             "id": "battleaxe",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.2
           }
         ]
       },
@@ -2498,10 +2462,6 @@
           {
             "id": "chainShirt",
             "chance": 0.2
-          },
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.15
           }
         ]
       },
@@ -2689,10 +2649,6 @@
           {
             "id": "shield",
             "chance": 0.2
-          },
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.15
           }
         ]
       },
@@ -2812,10 +2768,6 @@
       "lootTable": {
         "dropChance": 0.4,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.3
-          }
         ]
       },
       "attackType": "ranged",
@@ -2898,10 +2850,6 @@
           {
             "id": "battleaxe",
             "chance": 0.3
-          },
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.2
           }
         ]
       },
@@ -3004,10 +2952,6 @@
       "lootTable": {
         "dropChance": 0.5,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.3
-          }
         ]
       },
       "habitats": {
@@ -3113,10 +3057,6 @@
       "lootTable": {
         "dropChance": 0.3,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.3
-          }
         ]
       },
       "attackType": "melee",
@@ -3192,10 +3132,6 @@
       "lootTable": {
         "dropChance": 0.7,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.3
-          }
         ]
       },
       "habitats": {
@@ -3328,10 +3264,6 @@
       "lootTable": {
         "dropChance": 1,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.5
-          }
         ]
       },
       "attackType": "both",
@@ -3448,10 +3380,6 @@
       "lootTable": {
         "dropChance": 1,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.6
-          }
         ]
       },
       "attackType": "both",
@@ -3558,10 +3486,6 @@
       "lootTable": {
         "dropChance": 1,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.7
-          }
         ]
       },
       "attackType": "both",
@@ -3645,10 +3569,6 @@
           {
             "id": "dagger",
             "chance": 0.2
-          },
-          {
-            "id": "potionOfHealing",
-            "chance": 0.1
           }
         ]
       },
@@ -3860,10 +3780,6 @@
       "lootTable": {
         "dropChance": 0.6,
         "items": [
-          {
-            "id": "potionOfHealing",
-            "chance": 0.3
-          }
         ]
       },
       "habitats": {
@@ -3967,10 +3883,6 @@
       "lootTable": {
         "dropChance": 0.7,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.35
-          }
         ]
       },
       "habitats": {
@@ -4075,10 +3987,6 @@
       "lootTable": {
         "dropChance": 0.8,
         "items": [
-          {
-            "id": "potionOfGreaterHealing",
-            "chance": 0.4
-          }
         ]
       },
       "habitats": {

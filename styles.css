@@ -1798,6 +1798,13 @@ body {
     gap: 15px;
 }
 
+.rest-btn[hidden],
+#provisioningCue[hidden],
+.skill-check-stats[hidden],
+.skill-check-stats [hidden] {
+    display: none;
+}
+
 .rest-btn {
     display: flex;
     flex-direction: column;
@@ -2363,7 +2370,165 @@ body {
     border-left: 4px solid var(--accent-color);
 }
 
-/* NPC List Grid */
+/* Illustrated building interiors */
+.building-container.has-building-art {
+    max-width: 1280px;
+    padding: clamp(12px, 2vw, 28px);
+}
+.has-building-art .building-content { padding: 0; min-height: 0; }
+.has-building-art .building-interior > h3,
+.has-building-art .building-description { display: none; }
+.has-building-art .building-actions { margin-top: 12px; padding-top: 12px; }
+.building-art { margin: 0; border-radius: 8px; overflow: hidden; background: var(--bg-primary); }
+.building-art[hidden] { display: none; }
+.building-art-stage { position: relative; isolation: isolate; }
+.building-art-stage[hidden], .building-3d-host[hidden], .building-3d-people[hidden],
+.building-view-controls button[hidden] { display: none; }
+.building-view-controls, .building-3d-people {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+}
+.building-view-controls button, .building-3d-people button, .building-sound-choice select {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-highlight);
+    font: inherit;
+    cursor: pointer;
+}
+.building-view-controls [aria-pressed="true"] { border-color: var(--warning-color); }
+.building-view-controls a { color: var(--warning-color); padding: 0.6rem; }
+.building-view-controls button:focus-visible, .building-3d-people button:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+}
+.building-3d-host { height: clamp(320px, 55vw, 680px); position: relative; }
+.building-3d-host canvas { display: block; width: 100%; height: 100%; }
+.building-view-status { padding: 0 12px; color: var(--text-secondary); }
+.building-view-status:empty { display: none; }
+.building-sound-choice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.building-sound-choice[hidden] { display: none; }
+.building-art-stage > img { display: block; width: 100%; height: auto; }
+.building-art-stage > .building-art-foreground {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    height: 100%;
+    pointer-events: none;
+}
+.building-art-counter .building-art-person { z-index: 1; }
+.building-art-counter-talk { transform: translateX(-50%); z-index: 3; }
+.building-art figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-highlight);
+}
+.building-art-person {
+    position: absolute;
+    left: var(--person-x);
+    top: var(--person-y);
+    width: var(--person-width);
+    transform: translate(-50%, -100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.building-art-person > img {
+    display: block;
+    width: 100%;
+    pointer-events: none;
+}
+.building-art-person > img[hidden] { display: none; }
+.building-art-talk, .building-ambience-toggle {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--warning-color);
+    border-radius: 4px;
+    color: var(--text-highlight);
+    background: var(--bg-primary);
+    font: inherit;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+.building-art-talk {
+    position: absolute;
+    top: 100%;
+    max-width: 180%;
+    font-size: clamp(0.7rem, 1vw, 0.95rem);
+    box-shadow: 0 2px 8px var(--bg-primary);
+}
+.building-art-talk:hover, .building-ambience-toggle:hover { background: var(--bg-tertiary); }
+.building-art-talk:focus-visible, .building-ambience-toggle:focus-visible,
+.building-people-list > summary:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+}
+.building-people-list { margin-top: 12px; }
+.building-people-list > summary { padding: 12px; cursor: pointer; color: var(--text-highlight); }
+.building-art-glow {
+    position: absolute;
+    width: 19%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, var(--warning-color), transparent 70%);
+    mix-blend-mode: screen;
+    opacity: 0.15;
+    pointer-events: none;
+    animation: building-hearth-glow 4s ease-in-out infinite alternate;
+}
+@keyframes building-hearth-glow {
+    from { opacity: 0.08; }
+    to { opacity: 0.22; }
+}
+.npc-dialogue-modal.in-building-scene {
+    justify-content: flex-end;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.2);
+}
+.in-building-scene .dialogue-container {
+    width: min(440px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+    .building-art-glow { animation: none; }
+}
+@media (max-width: 767px) {
+    .building-art-stage { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; }
+    .building-art-person {
+        position: static;
+        transform: none;
+        width: calc(33.333% - 8px);
+        margin: 0 auto;
+        justify-content: flex-end;
+    }
+    .building-art-person > img { height: 110px; width: 100%; object-fit: contain; }
+    .building-art-talk { position: static; width: 100%; max-width: none; font-size: 0.85rem; }
+    .building-art-glow { display: none; }
+    .building-art-counter { display: block; padding-bottom: 0; }
+    .building-art-counter .building-art-person {
+        position: absolute;
+        transform: translate(-50%, -100%);
+        width: 36%;
+        margin: 0;
+    }
+    .building-art-counter .building-art-person > img { height: auto; }
+    .building-art-counter .building-art-counter-talk {
+        position: absolute;
+        width: auto;
+        max-width: 70%;
+    }
+    .has-building-art .npc-list { grid-template-columns: minmax(0, 1fr); }
+    .npc-dialogue-modal.in-building-scene { align-items: flex-end; padding: 8px; }
+}
 .npc-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -4203,6 +4368,7 @@ body {
     display: block;
     cursor: grab;
     image-rendering: pixelated;
+    touch-action: none;
 }
 
 #worldMapCanvas:active {
@@ -6246,13 +6412,31 @@ body {
     }
 
     /* Trading mobile */
+    .trading-container {
+        padding: 16px;
+    }
+
     .trading-body {
-        flex-direction: column;
+        grid-template-columns: minmax(0, 1fr);
+        overflow-y: auto;
+        min-height: 0;
     }
 
     .items-panel,
     .transaction-panel {
         width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .trading-items-list {
+        max-height: 30vh;
+    }
+
+    .trading-item {
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+        padding: 10px;
+        gap: 8px;
     }
 
     /* Character sheet mobile */
@@ -8806,5 +8990,146 @@ body {
 @media (max-width: 767px) {
     .procedural-quest-choice {
         flex-basis: 100%;
+    }
+}
+/* Hostile settlement recovery shares the settlement modal and dialogue controls. */
+.settlement-modal [hidden] {
+    display: none !important;
+}
+
+.hostile-settlement-panel {
+    padding: 1rem;
+    border: 1px solid var(--warning-color);
+    background: var(--bg-secondary);
+    overflow-wrap: anywhere;
+}
+
+.hostile-settlement-warning {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.hostile-settlement-panel h3,
+.hostile-settlement-panel h4 {
+    margin: 1rem 0 .5rem;
+}
+
+.hostile-settlement-progress,
+.hostile-settlement-speaker {
+    color: var(--accent-color);
+}
+
+.hostile-settlement-options {
+    display: grid;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.hostile-settlement-options button {
+    min-height: 2.75rem;
+    white-space: normal;
+    text-align: left;
+}
+
+.hostile-settlement-options button:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.hostile-settlement-options button:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+.hostile-settlement-result:empty {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .hostile-settlement-panel { padding: .75rem; }
+}
+
+.quest-tracking-hud {
+    display: flex;
+    flex-wrap: wrap;
+    flex: none;
+    gap: .25rem .75rem;
+    padding: .5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    font: .8rem/1.4 var(--font-mono);
+    overflow-wrap: anywhere;
+}
+
+.quest-tracking-hud[hidden],
+.quest-tracking-guidance[hidden] {
+    display: none;
+}
+
+.quest-tracking-name,
+.quest-tracking-guidance {
+    color: var(--text-highlight);
+}
+
+.quest-tracking-guidance {
+    padding: .5rem;
+    font: .8rem/1.4 var(--font-mono);
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+    .quest-tracking-hud { padding: .4rem .5rem; }
+    .quest-tracking-location { flex-basis: 100%; }
+}
+
+/* Keep card combat feedback reachable when the action list grows. */
+#combatScreen .combat-container,
+#combatScreen .combat-content {
+    min-height: 0;
+}
+
+#combatScreen .combat-sidebar {
+    overflow-y: auto;
+}
+
+#combatScreen .sidebar-section {
+    flex-shrink: 0;
+}
+
+#combatScreen .sidebar-section:has(#combatLog) {
+    flex: none;
+}
+
+#combatScreen.active ~ .app-footer {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    #combatScreen .combat-content {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #combatScreen .combatants-display {
+        flex: none;
+        padding: 0;
+        overflow: visible;
+    }
+
+    #combatScreen .team {
+        flex: none;
+        max-width: none;
+    }
+
+    #combatScreen .combat-sidebar {
+        flex: none;
+        min-width: 0;
+        max-width: none;
+        max-height: none;
+        overflow: visible;
+    }
+
+    #combatScreen #combatLog {
+        min-height: 6rem;
     }
 }

@@ -56,7 +56,7 @@ describe('Quest reward turn-in with real and restored characters', () => {
             const unsubscribe = gameState.subscribe('character', published);
             try {
                 expect(manager.completeQuest('earned-reward')).toEqual({ success: true,
-                    rewards: { xp: 100, gold: 25, item: null, reputation: null } });
+                    rewards: { xp: 100, gold: 25, item: null, reputation: [], reputationWarning: null } });
                 expect(character.xp).toBe(xpBefore + 100);
                 expect(character.gold).toBe(42);
                 expect(character.level).toBe(level);

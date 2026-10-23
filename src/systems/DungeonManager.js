@@ -11,6 +11,7 @@
 
 import { gameState } from '../core/GameState.js';
 import { SeededRandom } from '../utils/rng.js';
+import { RULES } from '../core/rulesEngine.js';
 
 export class DungeonManager {
     constructor(dungeonGenerator, worldGenerator) {
@@ -26,6 +27,25 @@ export class DungeonManager {
      */
     setMonstersData(monstersData) {
         this.monstersData = monstersData;
+    }
+
+    getQuestEncounterLevel(fallbackLevel = gameState.get('character.level') || 1, siteId = null) {
+        const feature = this.currentDungeon;
+        siteId ||= feature ? `${feature.x},${feature.y}` : null;
+        const canonical = gameState.get('world.metadata.features')?.find(entry => `${entry.x},${entry.y}` === siteId);
+        if (canonical?.questEncounterLevel) {
+            return canonical.questEncounterLevel;
+        }
+        if (feature && `${feature.x},${feature.y}` === siteId && feature.questEncounterLevel) {
+            return feature.questEncounterLevel;
+        }
+        const quests = gameState.get('quests') || {};
+        return [...(quests.active || []), ...(quests.available || [])]
+            .find(quest => quest.iteration && quest.dungeonHookId === siteId)?.offeredLevel || fallbackLevel;
+    }
+
+    getEncounterLevel(fallbackLevel, siteId) {
+        return this.getQuestEncounterLevel(fallbackLevel, siteId);
     }
 
     /** Read the same seeded type that actual entry will select, without generating or pinning rooms. */
@@ -99,9 +119,34 @@ export class DungeonManager {
         // 2. Generate dungeon if not already generated
         if (!dungeonFeature.generated) {
             const character = gameState.get('character');
-            const playerLevel = character?.level || 1;
+            const playerLevel = this.getQuestEncounterLevel(character?.level || 1,
+                `${dungeonFeature.x},${dungeonFeature.y}`);
+            if ([...(gameState.get('quests.active') || []), ...(gameState.get('quests.available') || [])]
+                .some(quest => quest.iteration && quest.dungeonHookId === `${dungeonFeature.x},${dungeonFeature.y}`)) {
+                dungeonFeature.questEncounterLevel = playerLevel;
+                const canonical = gameState.get('world.metadata.features')?.find(entry =>
+                    entry.x === dungeonFeature.x && entry.y === dungeonFeature.y);
+                if (canonical) {
+                    canonical.questEncounterLevel = playerLevel;
+                    gameState.set('world.metadata', gameState.get('world.metadata'));
+                }
+            }
+            const canonical = gameState.get('world.metadata.features')?.find(entry =>
+                entry.x === dungeonFeature.x && entry.y === dungeonFeature.y);
+            if (canonical?.dungeonTypeSeedDraw) {
+                dungeonFeature.dungeonTypeSeedDraw = true;
+            }
             await this.dungeonGenerator.generateDungeon(dungeonFeature, playerLevel);
+            if (canonical && dungeonFeature.dungeonTypeSeedDraw) {
+                canonical.dungeonTypeSeedDraw = true;
+                gameState.set('world.metadata', gameState.get('world.metadata'));
+            }
         }
+
+        if (RULES.dungeon?.trapChoicesEnabled) {
+            this.restoreTrapStates(dungeonFeature);
+        }
+        this.restoreDoorStates(dungeonFeature);
 
         // 3. Set current dungeon context
         this.currentDungeon = dungeonFeature;
@@ -326,7 +371,8 @@ export class DungeonManager {
             result.isExit = true;
         }
 
-        if (tile.isTrap && !tile.trapDetected) {
+        if (tile.isTrap && (!tile.trapDetected ||
+            (RULES.dungeon?.trapChoicesEnabled && (dx !== 0 || dy !== 0)))) {
             result.isTrap = true;
         }
 
@@ -336,6 +382,52 @@ export class DungeonManager {
         }
 
         return result;
+    }
+
+    /** Persist a touched physical trap without saving complete room layouts. */
+    recordTrapState(roomIndex, x, y, armed, expectedTile = null) {
+        const state = gameState.get('dungeon');
+        const room = state?.rooms?.[roomIndex];
+        const tile = room?.tiles?.[y]?.[x];
+        if (!state?.active || !tile?.isTrap || (expectedTile && tile !== expectedTile)) {
+            return false;
+        }
+        const receipt = { roomId: room.id, x, y, roomIndex, isTrap: armed,
+            roomWidth: room.tiles[0]?.length, roomHeight: room.tiles.length,
+            trapDetected: true, trapDC: tile.trapDC, trapDamage: tile.trapDamage };
+        tile.isTrap = armed;
+        tile.trapDetected = true;
+        const feature = this.currentDungeon;
+        const canonical = gameState.get('world.metadata.features')?.find(entry =>
+            entry.x === feature?.x && entry.y === feature?.y);
+        for (const target of new Set([feature, canonical].filter(Boolean))) {
+            target.trapStates ||= {};
+            target.trapStates[`${roomIndex}:${x}:${y}`] = receipt;
+        }
+        if (canonical) {
+            gameState.set('world.metadata', gameState.get('world.metadata'));
+        }
+        gameState.set('dungeon', state);
+        return true;
+    }
+
+    /** Replay only receipts bound to the same room template and safe floor coordinate. */
+    restoreTrapStates(feature) {
+        const canonical = gameState.get('world.metadata.features')?.find(entry =>
+            entry.x === feature.x && entry.y === feature.y);
+        const receipts = canonical?.trapStates || feature.trapStates || {};
+        feature.trapStates = receipts;
+        for (const receipt of Object.values(receipts)) {
+            const room = feature.rooms?.[receipt.roomIndex];
+            const tile = room?.tiles?.[receipt.y]?.[receipt.x];
+            if (!tile || room.id !== receipt.roomId || room.tiles.length !== receipt.roomHeight ||
+                room.tiles[0]?.length !== receipt.roomWidth || tile.isWall || tile.isDoor || tile.isExit ||
+                (tile.isInteractable && tile.featureType !== 'trap')) {
+                continue;
+            }
+            Object.assign(tile, { isTrap: receipt.isTrap, trapDetected: true,
+                trapDC: receipt.trapDC, trapDamage: receipt.trapDamage, featureType: 'trap' });
+        }
     }
 
     /**
@@ -365,6 +457,13 @@ export class DungeonManager {
         if (!targetRoom) {
             return { success: false };
         }
+
+        const doors = this.getConnectionDoors(dungeonState.rooms, dungeonState.currentRoomIndex, roomIndex);
+        if (doors.some(door => door.locked)) {
+            return { success: false };
+        }
+        // Even a passage without a rolled challenge has been opened for both directions.
+        this.setDoorConnectionState(roomIndex, { challengeCompleted: true, locked: false });
 
         // Update dungeon state
         dungeonState.currentRoomIndex = roomIndex;
@@ -603,16 +702,9 @@ export class DungeonManager {
      * Mark the current door tile as permanently locked (failed skill challenge)
      */
     markDoorLocked() {
-        const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) {
-            return;
-        }
-
-        const pos = dungeonState.playerPosition;
-        const room = this.getCurrentRoom();
-        if (room?.tiles?.[pos.y]?.[pos.x]?.isDoor) {
-            room.tiles[pos.y][pos.x].locked = true;
-            gameState.set('dungeon', dungeonState);
+        const destination = this.getDoorDestination();
+        if (destination !== null) {
+            this.setDoorConnectionState(destination, { challengeCompleted: true, locked: true });
         }
     }
 
@@ -620,16 +712,68 @@ export class DungeonManager {
      * Mark the current door's skill challenge as completed (won't trigger again)
      */
     markDoorChallengeCompleted() {
-        const dungeonState = gameState.get('dungeon');
-        if (!dungeonState?.active) {
+        const destination = this.getDoorDestination();
+        if (destination !== null) {
+            this.setDoorConnectionState(destination, { challengeCompleted: true, locked: false });
+        }
+    }
+
+    /** Return both tile representations of a generated room connection. */
+    getConnectionDoors(rooms, from, to) {
+        return [[from, to], [to, from]].flatMap(([source, destination]) =>
+            (rooms?.[source]?.tiles || []).flat().filter(tile => tile?.isDoor && tile.connectsTo === destination));
+    }
+
+    /** Update a physical passage and persist its sparse state across dungeon regeneration. */
+    setDoorConnectionState(destination, changes) {
+        const state = gameState.get('dungeon');
+        if (!state?.active || !state.rooms?.[destination]) {
             return;
         }
+        const source = state.currentRoomIndex;
+        const doors = this.getConnectionDoors(state.rooms, source, destination);
+        if (!doors.length) {
+            return;
+        }
+        for (const door of doors) {
+            Object.assign(door, changes);
+        }
+        const roomIndices = [source, destination].sort((a, b) => a - b);
+        const receipt = { roomIndices, roomIds: roomIndices.map(index => state.rooms[index].id),
+            challengeCompleted: doors.some(door => door.challengeCompleted), locked: doors.some(door => door.locked) };
+        const feature = this.currentDungeon;
+        const canonical = gameState.get('world.metadata.features')?.find(entry =>
+            entry.x === feature?.x && entry.y === feature?.y);
+        for (const target of new Set([feature, canonical].filter(Boolean))) {
+            target.doorStates ||= {};
+            target.doorStates[roomIndices.join(':')] = receipt;
+        }
+        if (canonical) {
+            gameState.set('world.metadata', gameState.get('world.metadata'));
+        }
+        gameState.set('dungeon', state);
+    }
 
-        const pos = dungeonState.playerPosition;
-        const room = this.getCurrentRoom();
-        if (room?.tiles?.[pos.y]?.[pos.x]?.isDoor) {
-            room.tiles[pos.y][pos.x].challengeCompleted = true;
-            gameState.set('dungeon', dungeonState);
+    /** Restore saved physical passages only when their generated endpoints still match. */
+    restoreDoorStates(feature) {
+        const canonical = gameState.get('world.metadata.features')?.find(entry =>
+            entry.x === feature.x && entry.y === feature.y);
+        const receipts = canonical?.doorStates || feature.doorStates || {};
+        feature.doorStates = receipts;
+        for (const receipt of Object.values(receipts)) {
+            if (!Array.isArray(receipt.roomIndices) || receipt.roomIndices.length !== 2 ||
+                receipt.roomIndices.some((index, end) => !feature.rooms?.[index] ||
+                    feature.rooms[index].id !== receipt.roomIds?.[end])) {
+                continue;
+            }
+            const [from, to] = receipt.roomIndices;
+            if (!feature.rooms[from].connections?.includes(to) || !feature.rooms[to].connections?.includes(from)) {
+                continue;
+            }
+            for (const door of this.getConnectionDoors(feature.rooms, from, to)) {
+                Object.assign(door, { challengeCompleted: receipt.challengeCompleted === true,
+                    locked: receipt.locked === true });
+            }
         }
     }
 

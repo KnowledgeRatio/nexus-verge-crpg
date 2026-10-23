@@ -9,6 +9,7 @@ import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/
 import { gameState } from '../core/GameState.js';
 import { questEffectTypes } from './ProceduralQuest.js';
 import { skillRegistry } from './SkillRegistry.js';
+import { getXPForCR } from './EncounterBuilder.js';
 
 class QuestGenerator {
     constructor(worldSeed, campaignId = null) {
@@ -44,6 +45,9 @@ class QuestGenerator {
             proceduralBundles: filterByCampaign(this.rawQuestData.proceduralBundles || [], campaignId),
             questComposition: this.rawQuestData.questComposition ? {
                 ...this.rawQuestData.questComposition,
+                outcomes: filterByCampaign(this.rawQuestData.questComposition.outcomes || [], campaignId),
+                informationOutcome: this.rawQuestData.questComposition.informationOutcome
+                    ? filterByCampaign([this.rawQuestData.questComposition.informationOutcome], campaignId)[0] || null : null,
                 dimensions: Object.fromEntries(Object.entries(this.rawQuestData.questComposition.dimensions)
                     .map(([key, entries]) => [key, filterByCampaign(entries, campaignId)]))
             } : null
@@ -489,8 +493,8 @@ class QuestGenerator {
         if (!giver || !game?.relationManager?.modifyFactionReputation) {
             return null;
         }
-        const merchant = npcs.find(npc => npc.role === 'merchant');
-        const participants = { giver, merchant };
+        let merchant = npcs.find(npc => npc.role === 'merchant');
+        let participants = { giver, merchant };
         const combinations = this.getCompatibleCompositions();
         const candidates = [];
         for (const site of [...hooks].sort((a, b) => a.x - b.x || a.y - b.y)) {
@@ -501,11 +505,16 @@ class QuestGenerator {
             const dungeonType = game?.dungeonManager?.getQuestDungeonType?.(site) || site.dungeonType
                 || game?.dungeonManager?.dungeonGenerator?.dungeonTypes?.find(type => type.id === site.dungeonTypeId);
             const bossPool = dungeonType?.bossPool || [];
-            const hasBoss = bossPool.some(entry => typeof entry === 'string'
+            const hasBoss = RULES.quests.iteration?.enabled ? this._hasAppropriateQuestBoss(site, bossPool, playerLevel)
+                : bossPool.some(entry => typeof entry === 'string'
                 || (entry.id && playerLevel >= (entry.minLevel || 1) && playerLevel <= (entry.maxLevel || 10)));
             for (const components of combinations) {
+                const candidateMerchant = npcs.find(npc => npc.role === (components.subject.merchantRole || 'merchant'));
+                const candidateParticipants = { giver, merchant: candidateMerchant };
                 const capabilities = new Set(Object.values(components).flatMap(component => component.capabilities || []));
                 if (capabilities.has('combat') && (!hasBoss
+                    || RULES.quests.iteration?.enabled && site.generated
+                        && (!site.questEncounterLevel || site.questEncounterLevel !== playerLevel)
                     || history.some(quest => ['available', 'active', 'ready_to_turn_in'].includes(quest.status)
                         && quest.type === 'kill' && quest.dungeonHookId === siteId)
                     || [...(site.questEncounterClears || []), ...(site.questEncounterVictories || [])]
@@ -514,8 +523,14 @@ class QuestGenerator {
                     || !game?.dungeonManager?.clearQuestEncounter)) {
                     continue;
                 }
-                if (capabilities.has('goods') && (!merchant || !game?.merchantManager?.canAddQuestStock(
-                    settlementId, components.subject.itemId, merchant.role))) {
+                if (capabilities.has('goods') && (!candidateMerchant || !game?.merchantManager?.canAddQuestStock(
+                    settlementId, components.subject.itemId, candidateMerchant.role))) {
+                    continue;
+                }
+                const specialistScore = RULES.quests.iteration?.specialist.scoreByLevel.find(entry => playerLevel <= entry.maxLevel)?.score;
+                if (components.subject.specialist && (!RULES.quests.iteration?.enabled
+                    || !game?.merchantManager?.canAddQuestSpecialistStock(settlementId, components.subject.itemId,
+                        candidateMerchant.role, specialistScore, playerLevel))) {
                     continue;
                 }
                 const requested = new Set(Object.values(components).flatMap(component => component.activities || []));
@@ -529,12 +544,12 @@ class QuestGenerator {
                     continue;
                 }
                 if ((components.goal.resolutions || []).some(choice => (choice.effects || []).some(effect =>
-                    !questEffectTypes.includes(effect.type) || !participants[effect.participant]
+                    !questEffectTypes.includes(effect.type) || !candidateParticipants[effect.participant]
                     || (effect.type === 'faction' && !Number.isFinite(RULES.reputation.questRewards[effect.rewardTier]))
                     || (effect.type === 'relation' && !game.relationManager.config?.modifiers?.[effect.modifier])))) {
                     continue;
                 }
-                candidates.push({ site, components, activities });
+                candidates.push({ site, components, activities, merchant: candidateMerchant });
             }
         }
         if (!candidates.length) {
@@ -548,7 +563,10 @@ class QuestGenerator {
             .map(quest => quest.procedural.arrangement));
         const distinct = candidates.filter(candidate =>
             !arrangements.has(candidate.activities.map(activity => activity.id).join('>')));
-        const { site, components, activities } = rng.choice(distinct.length ? distinct : fresh.length ? fresh : candidates);
+        const selected = rng.choice(distinct.length ? distinct : fresh.length ? fresh : candidates);
+        const { site, components, activities } = selected;
+        merchant = selected.merchant;
+        participants = { giver, merchant };
         const siteId = `${site.x},${site.y}`;
         const quantity = RULES.quests.proceduralCore.shipmentQuantity;
         const salvageQuantity = components.materialState.salvage
@@ -560,7 +578,7 @@ class QuestGenerator {
             subjectName: components.subject.name, causeText: components.cause.text,
             custodyText: components.custody.text, hazardText: components.hazard.text,
             materialText: components.materialState.text, goalText: components.goal.text, baseQuantity, salvageQuantity,
-            encounterKey: `${siteId}:boss`
+            encounterKey: `${siteId}:boss`, settlementId, settlementName: settlement.name
         };
         context.goalText = this.fillTemplate(context.goalText, context);
         const bind = value => {
@@ -596,17 +614,113 @@ class QuestGenerator {
                 : requiredObjectives.filter(id => id !== grammar.baseline.objectiveId);
         }
         for (const choice of resolutions.filter(choice => choice.fulfilled)) {
+            if (components.subject.resolutionReply) {
+                choice.reply = bind(components.subject.resolutionReply);
+            }
             choice.requiresObjectives = requiredObjectives;
             if (components.hazard.capabilities?.includes('combat')) {
                 choice.effects.push({ id: 'cleared_occupation', type: 'target_cleared', sourceObjectiveId: 'defeat_occupation' });
             }
         }
         const distance = site.questHook?.distanceTiles ?? Math.round(Math.hypot(site.x - settlement.x, site.y - settlement.y));
+        const iteration = RULES.quests.iteration;
+        const tier = iteration?.tiers.find(entry => playerLevel <= entry.maxLevel);
+        const risk = combatObjectives.length ? 'perilous' : salvageQuantity || components.subject.specialist ? 'demanding' : 'routine';
+        const riskMultiplier = iteration?.enabled ? iteration.riskMultipliers[risk] : 1;
+        if (iteration?.enabled) {
+            for (const action of actions.filter(entry => entry.skillId)) {
+                action.dc = tier.dc;
+            }
+            for (const choice of resolutions) {
+                for (const effect of choice.effects || []) {
+                    if (effect.type === 'faction') {
+                        effect.amount = iteration.factionByRisk[risk];
+                    }
+                    if (effect.type === 'merchant_stock' && components.subject.specialist) {
+                        delete effect.quantityFromCustody;
+                        effect.quantity = 1;
+                        effect.qualityScore = iteration.specialist.scoreByLevel.find(entry => playerLevel <= entry.maxLevel).score;
+                        effect.description = `One enchanted ${components.subject.name} offered for sale by ${merchant.name}.`;
+                    }
+                }
+            }
+        }
+        const urgentCount = history.filter(quest => quest.iteration && quest.deadlineDuration).length;
+        const offerCount = history.filter(quest => quest.iteration).length + 1;
+        const urgent = iteration?.enabled && urgentCount + 1 <= Math.floor(offerCount * iteration.urgentShare)
+            && rng.next() < iteration.urgentShare;
+        const questId = `quest_composed_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`;
+        const profile = iteration?.enabled ? { id: questId, iteration: { version: 1 }, offeredLevel: playerLevel,
+            taskTier: iteration.tiers.indexOf(tier) + 1, risk, settlementId,
+            dungeonHookId: siteId } : null;
+        const consequence = globalThis.window?.game?.consequenceManager || globalThis.window?.consequenceManager;
+        if (profile) {
+            Object.assign(context, { safetyRadius: iteration.localSafety.radius,
+                failureAvailability: iteration.merchantAvailability.minimum,
+                safetyReduction: Math.round((1 - iteration.localSafety.successMultiplier) * 100),
+                safetyIncrease: Math.round((iteration.localSafety.failureMultiplier - 1) * 100) });
+        }
+        const capabilities = new Set(Object.values(components).flatMap(component => component.capabilities || []));
+        const outcomes = profile ? (grammar.outcomes || []).filter(outcome =>
+            (outcome.capabilities || []).every(capability => capabilities.has(capability))).map(outcome => {
+            const effect = bind(outcome.effect);
+            const failureEffect = bind(outcome.failureEffect);
+            if (effect.type === 'local_safety') {
+                Object.assign(effect, { multiplier: iteration.localSafety.successMultiplier, radius: iteration.localSafety.radius });
+                Object.assign(failureEffect, { multiplier: iteration.localSafety.failureMultiplier, radius: iteration.localSafety.radius });
+            }
+            return { effect, failureEffect };
+        }).filter(outcome => consequence?.canApplyQuestEffect(outcome.effect, profile)
+            && consequence.canApplyQuestEffect(outcome.failureEffect, profile)) : [];
+        const outcome = outcomes.length ? rng.choice(outcomes) : null;
+        if (outcome) {
+            for (const choice of resolutions.filter(entry => entry.fulfilled)) {
+                choice.effects.push(outcome.effect);
+                if (outcome.effect.description) {
+                    choice.reply += ` ${outcome.effect.description}`;
+                }
+            }
+        }
+        const knownFacts = gameState.get('world.metadata.features') || [];
+        const information = grammar.informationOutcome;
+        const discovery = profile && information ? knownFacts.filter(feature => !feature.explored
+            && `${feature.x},${feature.y}` !== siteId && ['dungeon', 'poi'].includes(feature.type)
+            && !gameState.get('world.modifiedTiles')?.some(tile => tile.x === feature.x && tile.y === feature.y && tile.explored)
+            && !game?.worldGenerator?.getCachedTile?.(feature.x, feature.y)?.explored
+            && Math.hypot(feature.x - site.x, feature.y - site.y) <= RULES.quests.investigationFallbackDistanceTiles)
+            .sort((a, b) => Math.hypot(a.x - site.x, a.y - site.y) - Math.hypot(b.x - site.x, b.y - site.y)
+                || a.x - b.x || a.y - b.y)[0] : null;
+        if (discovery) {
+            context.discoveredSiteName = discovery.name || 'a nearby frontier site';
+            const effect = { ...bind(information), siteId: `${discovery.x},${discovery.y}` };
+            delete effect.reply;
+            delete effect.requiresFacts;
+            if (consequence?.canApplyQuestEffect(effect, profile)) {
+                for (const choice of resolutions.filter(entry => entry.fulfilled
+                    && (information.requiresFacts || []).every(fact => entry.requiresFacts?.includes(fact)))) {
+                    choice.effects.push(effect);
+                    choice.reply += ` ${bind(information.reply)}`;
+                }
+            }
+        }
+        if (profile) {
+            for (const choice of resolutions) {
+                for (const effect of choice.effects || []) {
+                    const beneficiary = participants[effect.participant]?.name || giver.name;
+                    effect.description ||= effect.type === 'faction' ? `Gain ${effect.amount} faction standing with ${beneficiary}'s people.`
+                        : effect.type === 'relation' ? `${beneficiary} trusts you more.`
+                            : effect.type === 'merchant_stock' ? `Deliver usable ${components.subject.name} into ${beneficiary}'s finite shop stock.`
+                                : effect.type === 'target_cleared' ? `The defeated main threat at ${site.name} stays cleared.` : '';
+                }
+            }
+        }
         return {
-            id: `quest_composed_${settlement.x}_${settlement.y}_${rng.nextInt(1000, 9999)}`,
+            id: questId,
             type: components.goal.questType, family: grammar.family,
             name: bind(components.goal.name),
-            description: bind(grammar.description),
+            description: `${bind(grammar.description)}${profile ? ` ${grammar.progressionText?.[profile.taskTier - 1] || ''}` : ''}`,
+            ...(grammar.tracking ? { intelQuality: grammar.tracking.intelQuality,
+                intelDialogue: bind(grammar.tracking.intelDialogue || {}) } : {}),
             settlementId, dungeonHookId: siteId, dungeonName: site.name, distanceTiles: distance,
             questGiverId: giver.id,
             questGiver: { npcId: giver.id, npcName: giver.name, role: giver.role, settlementId },
@@ -616,11 +730,40 @@ class QuestGenerator {
                     .map(([role, npc]) => [role, { npcId: npc.id, name: npc.name, culture: npc.culture, role: npc.role }])) },
             evidence: { siteSearched: false, facts: [], actions: [], attempts: {} },
             baseline: bind(grammar.baseline), actions, resolutions, objectives,
-            rewards: { xp: Math.round(RULES.quests.baseXPReward * RULES.quests.proceduralCore.xpMultiplier * playerLevel),
-                gold: RULES.quests.proceduralCore.goldPerLevel * playerLevel },
+            ...(profile ? { ...profile,
+                deadlineObjectives: requiredObjectives,
+                ...(urgent ? { deadlineDuration: tier.duration,
+                    failureEffects: outcome ? [outcome.failureEffect] : [] } : {}) } : {}),
+            rewards: { xp: Math.round(RULES.quests.baseXPReward * RULES.quests.proceduralCore.xpMultiplier * playerLevel * riskMultiplier),
+                gold: Math.round(RULES.quests.proceduralCore.goldPerLevel * playerLevel * riskMultiplier) },
             difficulty: combatObjectives.length ? 'deadly' : this._getDifficultyLabel(distance, playerLevel),
             status: 'available', worldTag: null, pendingBind: null
         };
+    }
+
+    /** Validate every possible live boss draw, without previewing or fixing seeded rooms. */
+    _hasAppropriateQuestBoss(site, bossPool, offeredLevel) {
+        if (!bossPool.length) {
+            return false;
+        }
+        let candidates;
+        if (site.generated) {
+            candidates = site.rooms?.filter(room => room.isBossRoom).map(room => room.boss).filter(Boolean) || [];
+        } else if (typeof bossPool[0] === 'object') {
+            const eligible = bossPool.filter(entry => offeredLevel >= (entry.minLevel || 1)
+                && offeredLevel <= (entry.maxLevel || 10));
+            candidates = eligible.length ? eligible.map(entry => entry.id)
+                : [[...bossPool].sort((a, b) => (b.maxLevel || 10) - (a.maxLevel || 10))[0].id];
+        } else {
+            candidates = bossPool;
+        }
+        const floor = RULES.quests.iteration.minimumBossBudgetFraction
+            * RULES.encounters.encounterXPThresholds[offeredLevel].deadly;
+        return Boolean(candidates.length && candidates.every(id => {
+            const monster = this.monsterData?.monsters?.find(entry => entry.id === id);
+            return monster && getXPForCR(monster.challengeRating ?? monster.cr ?? 0)
+                * RULES.encounters.bossBuffs.xpMultiplier >= floor;
+        }));
     }
 
     _generateProceduralQuest(settlement, playerLevel, hooks, rng) {
@@ -1047,6 +1190,7 @@ class QuestGenerator {
             questGiver: { role: npcRole },
             generationData: {
                 targetSettlement: targetSettlement.name,
+                targetSettlementId: targetSettlement.id || `${targetSettlement.x},${targetSettlement.y}`,
                 targetNpcRole,
                 distance
             }

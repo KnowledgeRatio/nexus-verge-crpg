@@ -55,7 +55,8 @@ The retained source is not loaded by the game; no endorsement is implied.
 
 ## Sound Effects
 
-All sound effects used in this game are sourced from Thomas Devlin and require proper attribution:
+The original 13 sound effects are sourced from Thomas Devlin and require proper attribution.
+The generated tavern ambience is recorded separately below.
 
 ### Thomas Devlin - Music & Audio
 **Source:** https://tommusic.itch.io/
@@ -66,10 +67,10 @@ All sound effects used in this game are sourced from Thomas Devlin and require p
 - All combat sound effects in `data/sound/` directory
 - All movement footstep sounds
 - All UI interaction sounds
-- All audio assets (13 files total)
+- Original sound-effect assets (13 files total; excludes generated tavern ambience)
 
 **Attribution Statement:**
-All audio created by Thomas Devlin. For more works and licensing information, visit https://tommusic.itch.io/
+Original sound effects created by Thomas Devlin. For more works and licensing information, visit https://tommusic.itch.io/
 
 **Note:** If you have specific license information from Thomas Devlin (e.g., Creative Commons, royalty-free with attribution, commercial license, etc.), please update this section with complete license details including:
 - License type (e.g., CC BY 4.0, royalty-free, etc.)
@@ -80,7 +81,7 @@ All audio created by Thomas Devlin. For more works and licensing information, vi
 
 ## Sound Asset Inventory
 
-All sound files are created by Thomas Devlin (https://tommusic.itch.io/)
+The 13 sound files listed below are created by Thomas Devlin (https://tommusic.itch.io/).
 
 ### Combat Sounds
 | File | Purpose |
@@ -111,11 +112,11 @@ All sound files are created by Thomas Devlin (https://tommusic.itch.io/)
 
 ## Attribution Statement
 
-**All Audio by Thomas Devlin**
+**Original Sound Effects by Thomas Devlin**
 
 Website: https://tommusic.itch.io/
 
-All audio assets (13 files) in this game are created by Thomas Devlin. We gratefully acknowledge Thomas's contribution to this project.
+The original sound-effect assets (13 files) are created by Thomas Devlin. We gratefully acknowledge Thomas's contribution to this project.
 
 **Support Thomas:** https://tommusic.itch.io/
 
@@ -313,6 +314,49 @@ Generated dungeon masonry and flagstone textures are stored under
 `data/graphics/combat/textures/`. Their generation prompts, dimensions and hashes
 are recorded under `docs/art/combat-study/`. The game also retains its existing
 HTML, Canvas, CSS and Unicode presentation paths.
+
+`data/graphics/tavern-interior-v1.png` is a fixed-view tavern backdrop generated
+on 2026-10-23 with OpenAI's built-in image generation tool. Its exact prompt and
+prototype scope are retained in `docs/art/tavern-study/`. This entry records AI
+generation provenance; it does not assign a third-party licence or assert
+exclusive rights to the generated image.
+
+`data/graphics/tavern-keeper-v1.png`, `tavern-patron-v1.png` and
+`tavern-guest-v1.png` are transparent person illustrations generated with
+OpenAI image generation on 2026-10-23. They are shared visual stand-ins, not
+likenesses of generated NPCs. The same provenance limitation applies.
+
+The illustrated-building expansion adds `data/graphics/tavern-interior-v2.png`,
+`merchant-interior-v1.png` / `-v2.png`, `blacksmith-interior-v1.png` / `-v2.png`,
+and `greathall-interior-v1.png` / `-v2.png`, plus two transparent keeper images
+per merchant, blacksmith and great hall (`{building}-keeper-v1.png` / `-v2.png`).
+These were generated with OpenAI image generation on 2026-10-23. Keepers are
+reusable illustrative stand-ins, not generated-NPC likenesses. The current
+catalogue and provenance are documented in `docs/art/building-interiors/`;
+no third-party licence or exclusive rights are asserted by this entry.
+
+`data/sound/tavern-ambience-v1.wav` was generated with ElevenLabs
+`eleven_text_to_sound_v2` on 2026-10-23, generation `Wuv02Xke4rAqXC6amv42`.
+The eight-second source was converted to PCM with `afconvert` and given a
+0.3-second overlap crossfade, producing a 7.7-second, 44,100 Hz stereo loop.
+Its source terms have not been independently verified; this entry records
+provenance rather than licence clearance. See `docs/art/tavern-study/README.md`.
+
+`data/sound/tavern-voices-v2.wav` and `tavern-activity-v2.wav` are 30-second
+ElevenLabs-generated audition stems from 2026-10-23, flow
+`xodcX5C2kTM26WLbci1e`, generations `EDWAA0bgpn7mn5rG0LMN` and
+`o1OausvqpDiro3uGL8Wn` respectively. MP3 outputs were converted to PCM WAV with
+`afconvert`, without an additional crossfade. Exact prompts/settings and source
+terms limitations are recorded in `docs/art/tavern-study/audio-v2-provenance.md`.
+
+The historical `data/graphics/interiors/tavern-common-room-v1.glb` is original procedural room
+geometry authored by `tools/tavern-art/build-room.mjs`, with original procedural
+wood and the existing generated `dungeon-masonry-v1.png` and
+`dungeon-flagstone-v1.png` embedded as textures.
+The archived 3D tavern experiment separately reuses the original traveller models and attributed
+CC0-derived animation sources above, with original procedural seated skeleton
+poses and head gestures. The room GLB contains no resident meshes;
+no new external model or texture source is introduced.
 
 ---
 

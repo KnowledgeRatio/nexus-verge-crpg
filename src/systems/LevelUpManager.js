@@ -843,10 +843,13 @@ export default class LevelUpManager {
         // Check required choices
         for (const choice of this.availableChoices) {
             if (choice.required) {
-                if (choice.type === 'specialization' && !this.currentSelections.specialization) {
-                    confirmBtn.disabled = true;
-                    hint.textContent = `Select a ${choice.label || 'specialization'}`;
-                    return;
+                if (choice.type === 'specialization') {
+                    if (!this.currentSelections.specialization) {
+                        confirmBtn.disabled = true;
+                        hint.textContent = `Select a ${choice.label || 'specialization'}`;
+                        return;
+                    }
+                    continue;
                 }
 
                 // Tactic choice: only required when the matching spec is selected in THIS

@@ -116,6 +116,11 @@
 
             <!-- Party Health Bar (visible when party size > 1) -->
             <div id="partyHealthBar" class="party-health-bar hidden" aria-live="polite" aria-label="Party health status"></div>
+            <div id="questTrackingHUD" class="quest-tracking-hud" role="status" hidden>
+                <strong class="quest-tracking-name"></strong>
+                <span class="quest-tracking-objective"></span>
+                <span class="quest-tracking-location"></span>
+            </div>
 
             <!-- Main Game Area -->
             <div class="game-container">
@@ -151,6 +156,11 @@
                     </div>
                 </div>
 
+                <div id="dungeonQuestTrackingHUD" class="quest-tracking-hud" role="status" hidden>
+                    <strong class="quest-tracking-name"></strong>
+                    <span class="quest-tracking-objective"></span>
+                    <span class="quest-tracking-location"></span>
+                </div>
                 <div class="dungeon-content">
                     <!-- Dungeon Room View -->
                     <div class="dungeon-room-container">
@@ -267,6 +277,7 @@
                     <div id="restCharacterStatus" class="rest-status"></div>
 
                     <div id="restInfo" class="rest-info"></div>
+                    <div id="provisioningCue" class="rest-info" hidden></div>
 
                     <div class="rest-actions">
                         <button id="shortRestBtn" class="rest-btn short-rest-btn">
@@ -275,11 +286,15 @@
                         </button>
                         <button id="longRestBtn" class="rest-btn long-rest-btn">
                             <span class="btn-title">Long Rest</span>
-                            <span class="btn-desc">Fully restore HP and abilities</span>
+                            <span class="btn-desc">Recover · One world week · Advances urgent deadlines</span>
                         </button>
                         <button id="makeCampBtn" class="rest-btn make-camp-btn">
                             <span class="btn-title">🏕️ Make Camp</span>
                             <span class="btn-desc">Recover 15% fatigue · Costs 1 supply</span>
+                        </button>
+                        <button id="gatherProvisionsBtn" class="rest-btn make-camp-btn" hidden>
+                            <span class="btn-title">Gather provisions</span>
+                            <span class="btn-desc">Survival check · One attempt at this site</span>
                         </button>
                     </div>
                 </div>
@@ -399,9 +414,10 @@
                         <h2 id="settlementName">Oakvale</h2>
                         <span id="settlementType" class="settlement-type">Village</span>
                     </div>
-                    <button class="close-btn" id="closeSettlementBtn">&times;</button>
+                    <button class="close-btn" id="closeSettlementBtn" aria-label="Leave settlement">&times;</button>
                 </div>
                 <p id="settlementPopulation" class="settlement-population">Population: 234</p>
+                <section id="hostileSettlementPanel" class="hostile-settlement-panel" aria-label="Settlement recovery" hidden></section>
                 <div class="settlement-scene-toolbar">
                     <button id="settlementSceneToggle" class="menu-btn secondary" aria-pressed="true">Use service list</button>
                     <span id="settlementSceneStatus" role="status" aria-live="polite"></span>
@@ -762,6 +778,7 @@
                     <h2>World Map</h2>
                     <button class="close-btn" id="closeWorldMapBtn">&times;</button>
                 </div>
+                <p id="worldMapQuestGuidance" class="quest-tracking-guidance" role="status" hidden></p>
                 <div class="world-map-body">
                     <canvas id="worldMapCanvas"></canvas>
                 </div>
@@ -855,8 +872,8 @@
                         <!-- Rest System -->
                         <section class="help-section">
                             <h3>💤 Rest System</h3>
-                            <p><strong>Short Rest:</strong> Roll all hit dice for healing. Maximum 2 per long rest. Can be taken anywhere safe.</p>
-                            <p><strong>Long Rest:</strong> Fully restore HP, recover half hit dice, restore spell slots, reset short rest counter. <em>Requires tavern/inn or sanctuary.</em></p>
+                            <p><strong>Short Rest:</strong> Roll all hit dice for healing. Maximum 2 per long rest. Can be taken anywhere safe. Does not advance the world clock.</p>
+                            <p><strong>Long Rest:</strong> Fully restore HP, recover half hit dice, restore spell slots, reset short rest counter. Advances the world clock by one week, including urgent quest deadlines and rebuilding projects. Consumes supplies even when fully recovered. <em>Requires tavern/inn or sanctuary.</em></p>
                             <p><strong>Sanctuaries:</strong> Safe rest locations (☼) scattered across wilderness. Allow long rests without settlements.</p>
                         </section>
 
@@ -1207,6 +1224,11 @@
 
         <!-- Quick Menu Bar (Mouse-Clickable) -->
         <div id="quickMenu" class="quick-menu hidden">
+            <button class="quick-menu-btn" data-action="interact" title="Interact (E)">
+                <span class="quick-menu-kbd">E</span>
+                <span class="quick-menu-icon">🖐️</span>
+                <span class="quick-menu-label">Interact</span>
+            </button>
             <button class="quick-menu-btn" data-action="inventory" title="Inventory (I)">
                 <span class="quick-menu-kbd">I</span>
                 <span class="quick-menu-icon">🎒</span>

@@ -10,10 +10,60 @@ import { getAttributeModifierFor } from '../utils/attributeResolver.js';
 import { applyLongRestFatigue, getFatigueState } from './FatigueManager.js';
 import { damagePrecisionEnabled, normalizeHP, addHP } from '../utils/damagePrecision.js';
 import { formatCombatNumber } from '../utils/combatNumberFormat.js';
+import { recoverRestResources } from './restRecovery.js';
 
 class RestManager {
     constructor() {
         this.isResting = false;
+        this.abilitiesData = null;
+    }
+
+    async loadRecoveryAbilities() {
+        const character = gameState.get('character');
+        if (!Object.keys(character.abilityUses || {}).length) {
+            return null;
+        }
+        const loaded = globalThis.window?.game?.abilitiesData || this.abilitiesData;
+        if (loaded) {
+            return loaded;
+        }
+        const response = await fetch('data/abilities.json');
+        if (!response.ok) {
+            throw new Error('Unable to load rest recovery abilities');
+        }
+        this.abilitiesData = await response.json();
+        return this.abilitiesData;
+    }
+
+    async prepareRest(type) {
+        if (this.isResting) {
+            return { canRest: false, reason: 'A rest is already in progress.' };
+        }
+        const check = () => type === 'short' ? this.canShortRest() : this.canLongRest();
+        const eligibility = check();
+        if (!eligibility.canRest) {
+            return eligibility;
+        }
+        const restingCharacter = gameState.get('character');
+        const restingWorld = gameState.get('world');
+        this.isResting = true;
+        try {
+            const abilitiesData = await this.loadRecoveryAbilities();
+            if (gameState.get('character') !== restingCharacter || gameState.get('world') !== restingWorld) {
+                this.isResting = false;
+                return { canRest: false, reason: 'The game changed while preparing this rest. Please try again.' };
+            }
+            const result = { ...check(), abilitiesData };
+            if (!result.canRest) {
+                this.isResting = false;
+            }
+            return result;
+        } catch {
+            this.isResting = false;
+            const reason = 'Rest recovery data could not load. Please try again.';
+            gameState.addMessage(reason, 'error');
+            return { canRest: false, reason };
+        }
     }
 
     /**
@@ -56,8 +106,6 @@ class RestManager {
             return { canRest: false, reason: 'Cannot rest during combat!' };
         }
 
-        const character = gameState.get('character');
-
         // Check if in a tavern/inn (if required by rules)
         if (RULES.rest.longRestRequiresTavern) {
             const playerPos = gameState.get('player.position');
@@ -72,29 +120,7 @@ class RestManager {
             }
         }
 
-        // Check if rest is needed
-        if (character.currentHP >= character.maxHP &&
-            character.hitDice.current >= character.hitDice.max &&
-            character.shortRestsUsed === 0) {
-
-            // Check spell slots for casters
-            if (character.spellcasting) {
-                let needsSlots = false;
-                for (const level in character.spellcasting.spellSlots) {
-                    const slots = character.spellcasting.spellSlots[level];
-                    if (slots.current < slots.max) {
-                        needsSlots = true;
-                        break;
-                    }
-                }
-                if (!needsSlots) {
-                    return { canRest: false, reason: "You don't need to rest - you're fully recovered!" };
-                }
-            } else {
-                return { canRest: false, reason: "You don't need to rest - you're fully recovered!" };
-            }
-        }
-
+        // Long rests also advance accepted quest deadlines and settlement rebuilding.
         return { canRest: true, reason: '' };
     }
 
@@ -112,6 +138,12 @@ class RestManager {
         const world = gameState.get('world');
         if (!world || !world.generatedRegions) {
             console.log('🏨 Tavern check: No world data');
+            return false;
+        }
+
+        const settlements = [...(world.settlements || []), ...(world.metadata?.settlements || [])];
+        const settlement = settlements.find(site => site.x === playerPos.x && site.y === playerPos.y);
+        if (RULES.hostileSettlements.enabled && ['hostile', 'rebuilding'].includes(settlement?.hostileState?.phase)) {
             return false;
         }
 
@@ -143,6 +175,9 @@ class RestManager {
 
         // Check if tile has a settlement feature (any settlement has tavern/inn)
         if (tile.feature && tile.feature.type === 'settlement') {
+            if (RULES.hostileSettlements.enabled && ['hostile', 'rebuilding'].includes(tile.feature.hostileState?.phase)) {
+                return false;
+            }
             console.log('   ✅ Found settlement feature on current tile');
             return true;
         }
@@ -182,7 +217,10 @@ class RestManager {
                 const checkTile = checkRegion.tiles[checkLocalY]?.[checkLocalX];
 
                 if (checkTile && checkTile.feature) {
-                    if (checkTile.feature.type === 'settlement' || checkTile.feature.type === 'sanctuary') {
+                    if (checkTile.feature.type === 'sanctuary' ||
+                        (checkTile.feature.type === 'settlement' &&
+                            (!RULES.hostileSettlements.enabled ||
+                                !['hostile', 'rebuilding'].includes(checkTile.feature.hostileState?.phase)))) {
                         return true;
                     }
                 }
@@ -198,7 +236,7 @@ class RestManager {
      * @returns {Object} Result of the rest
      */
     async shortRest(hitDiceToSpend = null) {
-        const canRest = this.canShortRest();
+        const canRest = await this.prepareRest('short');
         if (!canRest.canRest) {
             return { success: false, reason: canRest.reason };
         }
@@ -224,6 +262,7 @@ class RestManager {
 
         // Increment short rests used
         character.shortRestsUsed++;
+        recoverRestResources(character, 'short', canRest.abilitiesData);
 
         // Update game state
         gameState.set('character', character);
@@ -246,7 +285,7 @@ class RestManager {
      * @returns {Object} Result of the rest
      */
     async longRest() {
-        const canRest = this.canLongRest();
+        const canRest = await this.prepareRest('long');
         if (!canRest.canRest) {
             return { success: false, reason: canRest.reason };
         }
@@ -272,6 +311,7 @@ class RestManager {
 
         // Reset short rests counter
         character.shortRestsUsed = 0;
+        recoverRestResources(character, 'long', canRest.abilitiesData);
 
         // Recover spell slots
         if (character.spellcasting) {
@@ -287,6 +327,8 @@ class RestManager {
         const world = gameState.get('world');
         world.worldClock = (world.worldClock || 0) + (RULES.quests.clockUnitsPerLongRest || 1);
         gameState.set('world', world);
+        globalThis.window?.game?.questManager?.checkQuestDeadlines?.();
+        gameState.addMessage('One week passes on the Verge. Urgent quest deadlines and rebuilding both advance.', 'info');
 
         // Add messages
         gameState.addMessage('You take a long rest at the inn...', 'info');
@@ -375,6 +417,13 @@ class RestManager {
                     this.updateRestUI();
                 }
             });
+        }
+
+        const gatherBtn = document.getElementById('gatherProvisionsBtn');
+        if (gatherBtn) {
+            const button = gatherBtn.cloneNode(true);
+            gatherBtn.parentNode.replaceChild(button, gatherBtn);
+            button.addEventListener('click', () => window.game?.promptProvisioning?.());
         }
 
         // Close button
@@ -498,13 +547,42 @@ class RestManager {
             }
         }
 
+        const position = gameState.get('player.position');
+        const opportunity = position && window.game?.provisioningManager?.getOpportunityAtPosition(
+            position.x, position.y
+        );
+        const cueEl = document.getElementById('provisioningCue');
+        const gatherBtn = document.getElementById('gatherProvisionsBtn');
+        const visibleOpportunity = opportunity && RULES.provisioning.enabled && RULES.fatigue.enabled;
+        if (cueEl) {
+            cueEl.hidden = !visibleOpportunity;
+            cueEl.textContent = visibleOpportunity ? `${opportunity.cue.title}: ${opportunity.cue.description}` : '';
+        }
+        if (gatherBtn) {
+            gatherBtn.hidden = !visibleOpportunity;
+            if (visibleOpportunity) {
+                gatherBtn.disabled = !opportunity.canAttempt;
+                gatherBtn.querySelector('.btn-title').textContent = opportunity.cue.actionLabel || 'Gather provisions';
+                const reasons = {
+                    full: 'Supplies full — leave this opportunity for later.',
+                    spent: 'This opportunity has already been attempted.',
+                    unsafe: 'Unavailable during combat or dungeon exploration.',
+                    disabled: 'Provisioning is disabled.'
+                };
+                const label = reasons[opportunity.reason] ||
+                    `Survival · DC ${opportunity.challenge.dc} · +${RULES.provisioning.suppliesReward} supply · One attempt`;
+                gatherBtn.querySelector('.btn-desc').textContent = label;
+                gatherBtn.title = label;
+            }
+        }
+
         // Update info text
         const infoEl = document.getElementById('restInfo');
         if (infoEl) {
             const isInTavern = this.isPlayerInTavern();
             infoEl.innerHTML = `
-                <p><strong>Short Rest:</strong> Roll all your hit dice to recover HP. Max ${RULES.rest.shortRestsPerLongRest} per long rest.</p>
-                <p><strong>Long Rest:</strong> Fully restore HP, regain all spell slots, and reset short rest counter. ${RULES.rest.longRestRequiresTavern ? '(Requires tavern or inn)' : ''}</p>
+                <p><strong>Short Rest:</strong> Roll all your hit dice to recover HP. Restore Resolve and abilities/equipment charges that recharge on a short rest. Max ${RULES.rest.shortRestsPerLongRest} per long rest. Does not advance the world clock.</p>
+                <p><strong>Long Rest:</strong> Fully restore HP, regain all spell slots, restore Resolve and short/long-rest ability and equipment charges, and reset short rest counter. ${RULES.rest.longRestRequiresTavern ? '(Requires a safe inn or sanctuary)' : ''} Advances the world clock by one week, consumes supplies and advances accepted urgent quest deadlines. Available even when fully recovered.</p>
                 ${RULES.rest.longRestRequiresTavern && !isInTavern ?
         '<p class="warning">⚠️ You are not in a tavern. Find an inn to take a long rest.</p>' :
         ''}

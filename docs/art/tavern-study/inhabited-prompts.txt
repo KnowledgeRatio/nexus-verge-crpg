@@ -1,0 +1,15 @@
+Generated 2026-10-23 with built-in imagegen; transparent_background=true for all three.
+
+Shared prompt:
+Use case: stylized-concept. Asset: transparent character layer for a photorealistic fantasy tavern game scene. [SUBJECT] Realistic human proportions and restrained expression, high fidelity cinematic physically based 3D render / photographic materials. Camera slightly above eye level, subtle downward view suitable for placement in a room seen from its entrance. Single figure centred filling frame with narrow clear margins, nothing cropped except specified waist-up. Truly transparent background, no room, floor, furniture, ground shadow, text, outline, glow, UI or watermark. Natural cloth texture, frontier medieval baseline, no shiny armour, no modern objects. Original anonymous person, not a portrait of a real person.
+
+keeper: One middle-aged innkeeper, practical linen shirt, worn dark apron, sleeves rolled, holding a pewter mug and cleaning cloth, attentive relaxed stance. Waist-up cutout ending at belt, both elbows within frame, facing camera slightly three-quarter. Warm candlelight from left and hearth rim light right.
+
+patron: One adult frontier traveller in a weathered olive cloak, linen tunic, patched brown trousers and worn boots, relaxed standing posture holding a ceramic cup at waist, looking slightly left toward a companion. Full body head to boots, no weapon. Warm hearth light from right, soft cool ambient fill.
+
+guest: One older adult frontier craftworker with grey hair, dark ochre wool vest, linen sleeves, slate trousers and leather boots, relaxed standing posture, hands loosely clasped, looking slightly right in quiet conversation. Full body head to boots, no weapon. Warm hearth light from right, soft cool ambient fill.
+
+Audio prompt (ElevenLabs eleven_text_to_sound_v2):
+Quiet medieval tavern ambience: gentle hearth crackle, low indistinct conversation from a few patrons, occasional soft ceramic mugs on wood. Warm intimate room acoustics, calm consistent level, no intelligible words, music, singing, shouting or loud events. Seamless steady loop.
+
+Successful generation: Wuv02Xke4rAqXC6amv42. Source was 8 seconds, loop=false in returned settings. Converted MP3 to stereo 44100Hz 16-bit PCM using macOS afconvert; crossfaded last 0.3 seconds into first 0.3 seconds, rotated join to end, yielding a 7.7 second looping WAV. Runtime HTMLAudioElement.loop=true.

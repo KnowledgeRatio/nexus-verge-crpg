@@ -182,8 +182,19 @@ export default class RelationManager {
      * @returns {{ points: number, newScore: number, tier: Object } | null}
      */
     modifyFactionReputation(cultureId, points) {
+        const change = this.previewFactionReputation(cultureId, points);
+        if (!change) {
+            return null;
+        }
+        gameState.set(`factions.${cultureId}`, change.newScore);
+        return change;
+    }
+
+    /** Resolve the actual clamped change without mutating standing or NPC relations. */
+    previewFactionReputation(cultureId, points) {
         const cultures = globalThis.window?.game?.npcGenerator?.culturesData;
-        if (!Number.isFinite(points) || !cultures?.some(culture => culture.id === cultureId)) {
+        if (!this.config || !this.tierLookup.length || !Number.isFinite(points)
+            || !cultures?.some(culture => culture.id === cultureId)) {
             return null;
         }
 
@@ -191,8 +202,8 @@ export default class RelationManager {
         const minimum = this.tierLookup[0].min;
         const maximum = this.tierLookup[this.tierLookup.length - 1].max;
         const newScore = Math.max(minimum, Math.min(maximum, oldScore + points));
-        gameState.set(`factions.${cultureId}`, newScore);
-        return { points: newScore - oldScore, newScore, tier: this._getTierForScore(Math.round(newScore)) };
+        return { points: newScore - oldScore, previousScore: oldScore,
+            newScore, tier: this._getTierForScore(Math.round(newScore)) };
     }
 
     /**
@@ -203,34 +214,22 @@ export default class RelationManager {
      */
     modifySettlementRelations(settlementId, excludeNpcId, options = {}) {
         const world = gameState.get('world');
-        if (!world?.generatedRegions) {
-            return;
-        }
-
-        // Find settlement NPCs across all regions
-        for (const region of world.generatedRegions.values()) {
-            if (!region?.features) {
+        const settlements = [...Object.values(world?.settlements || {}), ...(world?.metadata?.settlements || []),
+            ...Array.from(world?.generatedRegions?.values?.() || []).flatMap(region => region.features || [])];
+        const changed = new Map();
+        for (const settlement of settlements) {
+            if (settlement.id !== settlementId && `${settlement.x},${settlement.y}` !== settlementId) {
                 continue;
             }
-
-            for (const feature of region.features) {
-                if (feature.type !== 'settlement') {
-                    continue;
+            for (const entry of settlement.npcs || []) {
+                if (entry.id !== excludeNpcId && !changed.has(entry.id)) {
+                    const npc = world.npcs instanceof Map ? world.npcs.get(entry.id) || entry : entry;
+                    this.modifyRelation(npc, 'questCompleteInSettlement', options);
+                    changed.set(npc.id, npc);
                 }
-                if (feature.id !== settlementId && `${feature.x},${feature.y}` !== settlementId) {
-                    continue;
-                }
-
-                if (feature.npcs) {
-                    for (const npc of feature.npcs) {
-                        if (npc.id !== excludeNpcId) {
-                            this.modifyRelation(npc, 'questCompleteInSettlement', options);
-                        }
-                    }
-                }
-                return;
             }
         }
+        return [...changed.values()];
     }
 
     /**

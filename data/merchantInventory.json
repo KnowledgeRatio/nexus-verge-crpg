@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "merchantItems": [
     {
+      "id": "expedition-supplies",
+      "name": "Expedition Supplies",
+      "type": "misc",
+      "description": "Restores 1 supply, used for one Make Camp action or one long rest. Packed directly into your expedition stores; carry limit applies.",
+      "value": 35,
+      "rarity": "common",
+      "purchaseEffect": { "type": "restoreSupplies", "amount": 1 },
+      "guaranteedStock": true,
+      "campaignIds": ["core"]
+    },
+    {
       "id": "rations",
       "name": "Rations (1 day)",
       "type": "consumable",
@@ -24,36 +35,6 @@
       "value": 2,
       "rarity": "common",
       "effect": null,
-      "campaignIds": [
-        "core"
-      ]
-    },
-    {
-      "id": "potion-healing",
-      "name": "Potion of Healing",
-      "type": "consumable",
-      "description": "Restores 2d4+2 hit points",
-      "weight": 0.5,
-      "value": 50,
-      "rarity": "common",
-      "effect": {
-        "healing": "2d4+2"
-      },
-      "campaignIds": [
-        "core"
-      ]
-    },
-    {
-      "id": "potion-greater-healing",
-      "name": "Potion of Greater Healing",
-      "type": "consumable",
-      "description": "Restores 4d4+4 hit points",
-      "weight": 0.5,
-      "value": 150,
-      "rarity": "uncommon",
-      "effect": {
-        "healing": "4d4+4"
-      },
       "campaignIds": [
         "core"
       ]

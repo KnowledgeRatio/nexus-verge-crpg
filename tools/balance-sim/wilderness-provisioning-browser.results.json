@@ -1,0 +1,104 @@
+[
+  {
+    "mobile": false,
+    "sources": 1773,
+    "site": {
+      "x": -774,
+      "y": -730
+    },
+    "terrain": "snowForest",
+    "overlay": "overlay",
+    "visibleChanged": true,
+    "supply": 3,
+    "fatigue": 2,
+    "attempt": {
+      "status": "success",
+      "suppliesRestored": 1,
+      "rollResult": {
+        "skill": "survival",
+        "attribute": "intuition",
+        "naturalRoll": 20,
+        "roll": 20,
+        "rolls": [
+          20
+        ],
+        "modifier": 2,
+        "skillModifier": 2,
+        "modifierAdjustment": 0,
+        "total": 22,
+        "dc": 12,
+        "success": true,
+        "critical": true,
+        "criticalFail": false,
+        "advantage": false,
+        "disadvantage": false
+      }
+    },
+    "rest": false,
+    "full": true,
+    "failed": {
+      "status": "failure",
+      "supply": 2,
+      "fatigue": 4
+    },
+    "modalFit": {
+      "x": 482.5,
+      "y": 144.24298095703125,
+      "width": 475,
+      "height": 571.5140380859375
+    },
+    "save": "spent",
+    "errors": []
+  },
+  {
+    "mobile": true,
+    "sources": 1773,
+    "site": {
+      "x": -774,
+      "y": -730
+    },
+    "terrain": "snowForest",
+    "overlay": "overlay",
+    "visibleChanged": true,
+    "supply": 3,
+    "fatigue": 2,
+    "attempt": {
+      "status": "success",
+      "suppliesRestored": 1,
+      "rollResult": {
+        "skill": "survival",
+        "attribute": "intuition",
+        "naturalRoll": 20,
+        "roll": 20,
+        "rolls": [
+          20
+        ],
+        "modifier": 2,
+        "skillModifier": 2,
+        "modifierAdjustment": 0,
+        "total": 22,
+        "dc": 12,
+        "success": true,
+        "critical": true,
+        "criticalFail": false,
+        "advantage": false,
+        "disadvantage": false
+      }
+    },
+    "rest": false,
+    "full": true,
+    "failed": {
+      "status": "failure",
+      "supply": 2,
+      "fatigue": 4
+    },
+    "modalFit": {
+      "x": 19.444931030273438,
+      "y": 86.26797485351562,
+      "width": 360.09449768066406,
+      "height": 629.4640808105469
+    },
+    "save": "spent",
+    "errors": []
+  }
+]

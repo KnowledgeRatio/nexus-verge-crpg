@@ -1,0 +1,6479 @@
+{
+  "methodology": "Three independent seeded small worlds, paired levels1/5/10, one ascending-coordinate visit order. Actual loaded World/NPC/Settlement/public QuestGenerator, DungeonManager/Generator, Loot/Merchant/Relation/Consequence consumers. No naturally walked journeys, accepted quests or combat winrates. Small bounded census; not broad replayability or journey balance clearance.",
+  "playedJourneys": 0,
+  "independentWorlds": 3,
+  "summaries": [
+    {
+      "level": 1,
+      "settlements": 114,
+      "offers": 192,
+      "townsWithComposed": 74,
+      "townsWithInvestigationOrComposed": 108,
+      "zeroOfferBoards": 6,
+      "composed": 74,
+      "combatComposed": 53,
+      "specialist": 9,
+      "urgent": 14
+    },
+    {
+      "level": 5,
+      "settlements": 114,
+      "offers": 196,
+      "townsWithComposed": 74,
+      "townsWithInvestigationOrComposed": 108,
+      "zeroOfferBoards": 6,
+      "composed": 74,
+      "combatComposed": 53,
+      "specialist": 9,
+      "urgent": 14
+    },
+    {
+      "level": 10,
+      "settlements": 114,
+      "offers": 198,
+      "townsWithComposed": 73,
+      "townsWithInvestigationOrComposed": 108,
+      "zeroOfferBoards": 6,
+      "composed": 73,
+      "combatComposed": 30,
+      "specialist": 6,
+      "urgent": 13
+    }
+  ],
+  "cells": [
+    {
+      "seed": 0,
+      "level": 1,
+      "towns": [
+        {
+          "id": "-784,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-720,784",
+          "offers": []
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,-592",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-400",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-336,-112",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-48,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-48,-176",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,-624",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,-240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "176,-112",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "336,-784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "432,496",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,80",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,48",
+          "offers": []
+        },
+        {
+          "id": "816,-272",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,176",
+          "offers": []
+        },
+        {
+          "id": "816,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,752",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "level": 1,
+      "towns": [
+        {
+          "id": "-752,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-560,-688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-464,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,624",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-112,-464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "112,-208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,-720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "272,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,400",
+          "offers": []
+        },
+        {
+          "id": "432,-432",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,176",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,80",
+          "offers": []
+        },
+        {
+          "id": "464,304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,464",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,-688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,112",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,208",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,-272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,-432",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,208",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-80",
+          "offers": []
+        },
+        {
+          "id": "816,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,336",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "level": 1,
+      "towns": [
+        {
+          "id": "-784,-720",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,304",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,816",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-752,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,112",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,-784",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-528,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-496,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,-752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-208",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-48",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-208,272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-656",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,-240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,752",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,-368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,400",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,720",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,688",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "368,336",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,-560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,432",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 1,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "level": 5,
+      "towns": [
+        {
+          "id": "-784,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-720,784",
+          "offers": []
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,-592",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-400",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-336,-112",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-48,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-48,-176",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,-624",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,-240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "176,-112",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "336,-784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "432,496",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,80",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,48",
+          "offers": []
+        },
+        {
+          "id": "816,-272",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,176",
+          "offers": []
+        },
+        {
+          "id": "816,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,752",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "level": 5,
+      "towns": [
+        {
+          "id": "-752,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-560,-688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-464,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,624",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-112,-464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "112,-208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,-720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "272,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,400",
+          "offers": []
+        },
+        {
+          "id": "432,-432",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,176",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,80",
+          "offers": []
+        },
+        {
+          "id": "464,304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,464",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,-688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,112",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,208",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,-272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,-432",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,208",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-80",
+          "offers": []
+        },
+        {
+          "id": "816,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,336",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "level": 5,
+      "towns": [
+        {
+          "id": "-784,-720",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,304",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,816",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-752,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,112",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,-784",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-528,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-496,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,-752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-208",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-48",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-208,272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-656",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,-240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,752",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,-368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,400",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,720",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "272,688",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,336",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,-560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,432",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 5,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 0,
+      "level": 10,
+      "towns": [
+        {
+          "id": "-784,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-720,784",
+          "offers": []
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,-592",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-400",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-336,-112",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-272,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-48,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-48,-176",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,-624",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,-240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "176,-112",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "336,-784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,240",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,496",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,-272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,80",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "592,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-496",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,48",
+          "offers": []
+        },
+        {
+          "id": "816,-272",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,176",
+          "offers": []
+        },
+        {
+          "id": "816,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,752",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "level": 10,
+      "towns": [
+        {
+          "id": "-752,48",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-560,-688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,624",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-112,-464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-80,752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "48,368",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "80,656",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,-208",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,-560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,-720",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "304,400",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,-432",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,176",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,80",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "464,304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "496,816",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,-688",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,112",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "560,208",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "592,-272",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,-432",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "624,304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,208",
+          "offers": []
+        },
+        {
+          "id": "720,-304",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "720,-80",
+          "offers": []
+        },
+        {
+          "id": "816,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,336",
+          "offers": []
+        },
+        {
+          "id": "816,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "level": 10,
+      "towns": [
+        {
+          "id": "-784,-720",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,304",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-784,816",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "-752,-144",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,16",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-720,112",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-688,464",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-656,560",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-624,-784",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-528,-528",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-496,240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-464,-752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-208",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-432,-48",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-304,-336",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-240,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-208,272",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "demanding",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-656",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-144,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-80,-240",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "-16,752",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "16,16",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,-368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,400",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "social",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "112,720",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "240,272",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,368",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "272,688",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "routine",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,-80",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": true,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "368,336",
+          "offers": [
+            {
+              "type": "investigate",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "432,-560",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "688,432",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": true
+            }
+          ]
+        },
+        {
+          "id": "688,784",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,-304",
+          "offers": [
+            {
+              "type": "kill",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": false,
+              "risk": null,
+              "urgent": false,
+              "level": null,
+              "specialist": false
+            },
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "752,80",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        },
+        {
+          "id": "816,-144",
+          "offers": [
+            {
+              "type": "retrieve",
+              "composed": true,
+              "risk": "perilous",
+              "urgent": false,
+              "level": 10,
+              "specialist": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

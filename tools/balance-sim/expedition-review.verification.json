@@ -1,0 +1,59 @@
+[
+  {
+    "level": 1,
+    "seed": "expedition-review-0",
+    "trial": 0,
+    "policy": "noProvision",
+    "equalFields": [
+      "success",
+      "dead",
+      "steps",
+      "camps",
+      "shortRests",
+      "suppliesEarned",
+      "goldSpent",
+      "goldFinal",
+      "xp",
+      "hp"
+    ],
+    "combats": 1
+  },
+  {
+    "level": 5,
+    "seed": "expedition-review-0",
+    "trial": 0,
+    "policy": "noProvision",
+    "equalFields": [
+      "success",
+      "dead",
+      "steps",
+      "camps",
+      "shortRests",
+      "suppliesEarned",
+      "goldSpent",
+      "goldFinal",
+      "xp",
+      "hp"
+    ],
+    "combats": 3
+  },
+  {
+    "level": 10,
+    "seed": "expedition-review-0",
+    "trial": 0,
+    "policy": "noProvision",
+    "equalFields": [
+      "success",
+      "dead",
+      "steps",
+      "camps",
+      "shortRests",
+      "suppliesEarned",
+      "goldSpent",
+      "goldFinal",
+      "xp",
+      "hp"
+    ],
+    "combats": 2
+  }
+]

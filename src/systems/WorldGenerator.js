@@ -10,6 +10,7 @@ import { gameState } from '../core/GameState.js';
 import NPCGenerator from './NPCGenerator.js';
 import { clamp } from '../utils/helpers.js';
 import { filterByCampaign } from '../utils/campaignFilter.js';
+import { selectHostileSettlementContent } from './hostileSettlementContent.js';
 
 class WorldGenerator {
     constructor(worldSeed, config = {}) {
@@ -32,6 +33,7 @@ class WorldGenerator {
 
         // Base RNG for discrete decisions
         this.baseRNG = new SeededRandom(worldSeed);
+        this._newHostileSettlements = new Set();
 
         // NPC Generator
         this.npcGenerator = new NPCGenerator(worldSeed);
@@ -137,6 +139,7 @@ class WorldGenerator {
             features,
             generated: Date.now()
         };
+        this.restoreRevealedLocations(region);
 
         // Store region in gameState
         const regions = gameState.get('world.generatedRegions') || new Map();
@@ -1017,6 +1020,19 @@ class WorldGenerator {
     /**
      * Get tile at world coordinates
      */
+    restoreRevealedLocations(region) {
+        const revealed = (gameState.get('world.modifiedTiles') || []).filter(entry => entry.explored === true);
+        for (const entry of revealed) {
+            const tile = region.tiles?.find(candidate => candidate.x === entry.x && candidate.y === entry.y);
+            if (tile) {
+                tile.explored = true;
+                if (tile.feature) {
+                    tile.feature.explored = true;
+                }
+            }
+        }
+    }
+
     async getTile(worldX, worldY) {
         const { regionX, regionY, localX, localY } = this.getRegionCoords(worldX, worldY);
         const region = await this.generateRegion(regionX, regionY);
@@ -1261,6 +1277,7 @@ class WorldGenerator {
             features: features,
             modifications: compressedData.modifications || []
         };
+        this.restoreRevealedLocations(region);
 
         // Store in cache
         const cacheKey = `${regionX},${regionY}`;
@@ -1360,7 +1377,7 @@ class WorldGenerator {
                 // Roads can cross water (bridges) but not ocean or mountains
                 const canPlaceRoad = terrain !== 'ocean' &&
                                      terrain !== 'mountain' &&
-                                     !tile.feature;
+                                     (!tile.feature || tile.feature.renderLayer === 'overlay');
 
                 if (canPlaceRoad) {
                     // Use bridge for water tiles (rivers), road for land
@@ -1404,14 +1421,21 @@ class WorldGenerator {
         // 1. Pre-generate all settlement locations (deterministic)
         console.log('🏘️ Generating settlements...');
         await this.preGenerateSettlements();
+        this.assignHostileSettlements();
+        await this.prepareHostileSettlementContent();
 
         // 2. Pre-generate all feature locations (dungeons, shrines, sanctuaries)
         console.log('🏛️ Generating features...');
         await this.preGenerateFeatures();
 
+        // Separate stream: provisioning enriches existing sites without changing world layout.
+        await this.placeProvisioningOpportunities();
+
         // 3. Generate roads connecting all settlements (upfront)
         console.log('🛣️ Generating road network...');
         await this.preGenerateRoads();
+
+        await this.placeWildernessProvisioning();
 
         // Mark as generated
         this.worldMetadata.generated = true;
@@ -1426,6 +1450,266 @@ class WorldGenerator {
         console.log(`   - ${this.worldMetadata.features.length} features`);
 
         return this.worldMetadata;
+    }
+
+    /**
+     * Assign a bounded hostile subset of existing settlements in nearby patches.
+     * Uses a separate seed stream, only for new finite worlds; saved states are retained.
+     */
+    assignHostileSettlements() {
+        const config = {
+            ...RULES.hostileSettlements,
+            ...RULES.worldGen.campaignOverrides?.hostileSettlements
+        };
+        if (!config.enabled || !RULES.worldGen.finiteWorld.enabled || this.worldMetadata.generated) {
+            return;
+        }
+        const settlements = this.worldMetadata.settlements;
+        // An existing receipt means this metadata has already been assigned.
+        if (settlements.some(settlement => settlement.hostileState)) {
+            return;
+        }
+        const start = Math.floor(RULES.worldGen.regionSize / 2);
+        const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+        const origin = { x: start, y: start };
+        const ordered = [...settlements].sort((a, b) => a.x - b.x || a.y - b.y);
+        const starter = [...ordered].sort((a, b) => distance(a, origin) - distance(b, origin))[0];
+        const candidates = ordered.filter(settlement => settlement !== starter &&
+            distance(settlement, origin) > config.starterSafeRadius);
+        const quota = Math.min(candidates.length, Math.round(settlements.length * clamp(config.share, 0, 1)));
+        if (!quota) {
+            return;
+        }
+        const rng = new SeededRandom(`${this.worldSeed}_hostile_settlements`);
+        const remaining = new Set(candidates);
+        const selected = new Set();
+        const isolatedCount = Math.round(quota * clamp(config.isolatedShare, 0, 1));
+        const clusteredCount = quota - isolatedCount;
+        while (selected.size < clusteredCount) {
+            const anchor = rng.choice([...remaining]);
+            const clusterSize = Math.min(
+                rng.nextInt(...config.clusterSize), clusteredCount - selected.size
+            );
+            const neighbours = [...remaining].sort((a, b) => distance(a, anchor) - distance(b, anchor));
+            for (const settlement of neighbours.slice(0, clusterSize)) {
+                selected.add(settlement);
+                remaining.delete(settlement);
+            }
+        }
+        // Prefer solitary sites whose closest neighbour remains a normal settlement.
+        // Farthest-from-patch ordering keeps these from filling gaps inside a patch.
+        const nearestNeighbours = new Map([...remaining].map(settlement => {
+            let nearest = null;
+            let closest = Infinity;
+            for (const other of ordered) {
+                const separation = distance(other, settlement);
+                if (other !== settlement && separation < closest) {
+                    closest = separation;
+                    nearest = other;
+                }
+            }
+            return [settlement, nearest];
+        }));
+        while (selected.size < quota) {
+            const isolated = [...remaining].filter(settlement => !selected.has(nearestNeighbours.get(settlement)));
+            const pool = isolated.length ? isolated : [...remaining];
+            const separation = new Map(pool.map(settlement => [settlement,
+                Math.min(...[...selected].map(other => distance(settlement, other)))
+            ]));
+            const settlement = rng.shuffle(pool).sort((a, b) => separation.get(b) - separation.get(a))[0];
+            selected.add(settlement);
+            remaining.delete(settlement);
+        }
+        for (const settlement of selected) {
+            settlement.hostileState = { phase: 'hostile' };
+        }
+        this._newHostileSettlements = selected;
+    }
+
+    /** Freeze seed-derived story variants before new world metadata is persisted. */
+    async prepareHostileSettlementContent() {
+        if (this.worldMetadata.generated) {
+            return;
+        }
+        const sites = [...this._newHostileSettlements].filter(settlement =>
+            settlement.hostileState?.phase === 'hostile' &&
+            !settlement.hostileState.contentPlan && !settlement.hostileState.steps);
+        if (!sites.length) {
+            return;
+        }
+        const response = await fetch('data/hostileSettlements.json');
+        if (response.ok === false) {
+            throw new Error(`Failed to load hostile settlement content: ${response.status}`);
+        }
+        const data = await response.json();
+        const content = {};
+        for (const key of ['combat', 'exploration', 'social', 'rebuilding']) {
+            content[key] = filterByCampaign(data[key], this.config.campaignId);
+        }
+        for (const settlement of sites) {
+            const plan = selectHostileSettlementContent(
+                this.worldSeed, settlement.id || `${settlement.x},${settlement.y}`,
+                content, RULES.hostileSettlements.rebuildStages
+            );
+            if (plan.steps.some(step => !step) || plan.rebuildSteps.length < RULES.hostileSettlements.rebuildStages) {
+                throw new Error(`Incomplete hostile settlement content for campaign ${this.config.campaignId}`);
+            }
+            settlement.hostileState.contentPlan = plan;
+        }
+    }
+
+    /**
+     * Add finite, spaced provisioning opportunities to existing wilderness sanctuaries.
+     * Called only for new world metadata; saved worlds are never backfilled.
+     * @returns {Promise<void>}
+     */
+    async placeProvisioningOpportunities() {
+        const config = RULES.provisioning;
+        if (!config?.enabled || this.worldMetadata.generated) {
+            return;
+        }
+        const placement = config.generation;
+        const maxSites = placement?.maxSitesByMapSize?.[this.config.mapSize] || 0;
+        if (maxSites <= 0) {
+            return;
+        }
+
+        let cues;
+        try {
+            const response = await fetch('data/provisioning.json');
+            const data = await response.json();
+            cues = filterByCampaign(data?.cues, this.config.campaignId);
+        } catch (error) {
+            console.warn('⚠️ Provisioning data unavailable; no opportunities placed:', error);
+            return;
+        }
+        if (!Array.isArray(cues) || !cues.length) {
+            return;
+        }
+
+        const features = this.worldMetadata.features || [];
+        const placed = features.filter(feature => feature.provisioning);
+        const candidates = [];
+        for (const feature of features) {
+            if (feature.provisioning || feature.type !== 'poi' || feature.resolvedType !== 'sanctuary') {
+                continue;
+            }
+            const rng = new SeededRandom(`${this.worldSeed}_provisioning_${feature.x},${feature.y}`);
+            if (rng.next() >= placement.candidateFraction) {
+                continue;
+            }
+            const biome = this._sampleTerrainAt(feature.x, feature.y);
+            const eligible = cues.filter(cue =>
+                cue.eligiblePoiTypes?.includes(feature.poiType) && cue.eligibleBiomes?.includes(biome)
+            ).sort((a, b) => a.id.localeCompare(b.id));
+            if (!eligible.length) {
+                continue;
+            }
+            candidates.push({ feature, cue: rng.choice(eligible), priority: rng.next() });
+        }
+        candidates.sort((a, b) => a.priority - b.priority || a.feature.id.localeCompare(b.feature.id));
+        for (const { feature, cue } of candidates) {
+            if (placed.length >= maxSites) {
+                break;
+            }
+            const tooClose = placed.some(other =>
+                Math.hypot(feature.x - other.x, feature.y - other.y) < placement.minSpacing);
+            if (tooClose) {
+                continue;
+            }
+            feature.provisioning = { id: feature.id, cueId: cue.id, attempt: null };
+            placed.push(feature);
+        }
+    }
+
+    /** Seed finite gathering objects without changing the terrain or existing locations. */
+    async placeWildernessProvisioning() {
+        const config = RULES.provisioning?.wilderness;
+        if (!RULES.provisioning?.enabled || !config?.enabled || this.worldMetadata.generated) {
+            return;
+        }
+        let cues;
+        try {
+            const response = await fetch('data/provisioning.json');
+            const data = await response.json();
+            cues = filterByCampaign(data?.cues || [], this.config.campaignId)
+                .filter(cue => cue.eligibleHostTypes?.includes('provisioning'));
+            await this.loadTerrainData();
+        } catch (error) {
+            console.warn('⚠️ Wilderness provisioning unavailable:', error);
+            return;
+        }
+        if (!cues.length) {
+            return;
+        }
+        cues.sort((a, b) => a.id.localeCompare(b.id));
+        const features = this.worldMetadata.features;
+        const settlements = this.worldMetadata.settlements || [];
+        const occupied = new Set([...features, ...settlements].map(site => `${site.x},${site.y}`));
+        const roads = new Set(this.worldMetadata.roads.flatMap(road => road.path.map(p => `${p.x},${p.y}`)));
+        const terrainById = new Map(this.terrainTypes.terrains.map(terrain => [terrain.id, terrain]));
+        const spacing = config.minSpacing;
+        const cellSize = Math.max(1, spacing);
+        const buckets = new Map();
+        const bucketKey = (x, y) => `${Math.floor(x / cellSize)},${Math.floor(y / cellSize)}`;
+        const remember = site => {
+            const key = bucketKey(site.x, site.y);
+            if (!buckets.has(key)) {
+                buckets.set(key, []);
+            }
+            buckets.get(key).push(site);
+        };
+        for (const feature of features.filter(site => site.provisioning)) {
+            remember(feature);
+        }
+        const tooClose = (x, y) => {
+            const bx = Math.floor(x / cellSize), by = Math.floor(y / cellSize);
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    if (buckets.get(`${bx + dx},${by + dy}`)?.some(site =>
+                        Math.hypot(site.x - x, site.y - y) < spacing)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        const regionSize = RULES.worldGen.regionSize;
+        const usedRegions = new Set(features.filter(site => site.type === 'provisioning')
+            .map(site => `${Math.floor(site.x / regionSize)},${Math.floor(site.y / regionSize)}`));
+        for (let rx = this.worldBounds.minX; rx <= this.worldBounds.maxX; rx++) {
+            for (let ry = this.worldBounds.minY; ry <= this.worldBounds.maxY; ry++) {
+                if (usedRegions.has(`${rx},${ry}`)) {
+                    continue;
+                }
+                const rng = new SeededRandom(`${this.worldSeed}_wilderness_provisioning_${rx},${ry}`);
+                if (rng.next() >= config.regionChance) {
+                    continue;
+                }
+                for (let attempt = 0; attempt < config.attemptsPerRegion; attempt++) {
+                    const x = rx * regionSize + rng.nextInt(0, regionSize - 1);
+                    const y = ry * regionSize + rng.nextInt(0, regionSize - 1);
+                    const coordinate = `${x},${y}`;
+                    if (occupied.has(coordinate) || roads.has(coordinate) || tooClose(x, y) ||
+                        settlements.some(site => Math.hypot(site.x - x, site.y - y) < config.settlementExclusion)) {
+                        continue;
+                    }
+                    const tile = this.generateTile(x, y, new SeededRandom(`${this.worldSeed}_supply_ground_${coordinate}`));
+                    const eligible = cues.filter(cue => cue.eligibleBiomes?.includes(tile.terrain));
+                    if (!terrainById.get(tile.terrain)?.traversable || !eligible.length) {
+                        continue;
+                    }
+                    const cue = rng.choice(eligible);
+                    const id = `provisioning:${coordinate}`;
+                    const feature = { id, x, y, type: 'provisioning', renderLayer: 'overlay', name: cue.title,
+                        provisioning: { id, cueId: cue.id, attempt: null } };
+                    features.push(feature);
+                    occupied.add(coordinate);
+                    remember(feature);
+                    break;
+                }
+            }
+        }
     }
 
     /**

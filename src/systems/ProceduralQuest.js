@@ -1,11 +1,14 @@
 import { gameState } from '../core/GameState.js';
+import { sanitizeTrackedQuestId } from './QuestTracking.js';
 import { RULES } from '../core/rulesEngine.js';
 import { skillRegistry } from './SkillRegistry.js';
 import { addFatigue } from './FatigueManager.js';
 
 export const isRichQuest = quest => Boolean(quest && (quest.procedural
     || quest.actions?.length || quest.resolutions?.length || quest.baseline));
-export const questEffectTypes = ['faction', 'relation', 'merchant_stock', 'target_cleared'];
+export const questEffectTypes = ['faction', 'relation', 'merchant_stock', 'target_cleared',
+    'local_safety', 'merchant_availability', 'reveal_location'];
+const delegatedEffects = ['local_safety', 'merchant_availability', 'reveal_location'];
 
 export function ensureQuestState(quest) {
     quest.evidence ||= {};
@@ -79,7 +82,7 @@ export function atQuestLocation(quest, entry) {
 }
 
 export function questEntries(quest, entries) {
-    if (!quest || !['active', 'ready_to_turn_in'].includes(quest.status)) {
+    if (!quest || quest.expiryPending || !['active', 'ready_to_turn_in'].includes(quest.status)) {
         return [];
     }
     ensureQuestState(quest);
@@ -93,7 +96,7 @@ export function questEntries(quest, entries) {
 }
 
 export function observeQuestRoom(quest, dungeonX, dungeonY, roomIndex) {
-    if (!quest.baseline || quest.dungeonHookId !== `${dungeonX},${dungeonY}` || roomIndex !== quest.baseline.roomIndex
+    if (quest.expiryPending || !quest.baseline || quest.dungeonHookId !== `${dungeonX},${dungeonY}` || roomIndex !== quest.baseline.roomIndex
         || !atQuestLocation(quest, { location: 'site', roomIndex })) {
         return false;
     }
@@ -245,7 +248,7 @@ export function applyQuestResolution(manager, quest, choiceId) {
             continue;
         }
         const participant = getQuestParticipants(quest)[effect.participant];
-        if (effect.type !== 'target_cleared' && !participant) {
+        if (!delegatedEffects.includes(effect.type) && effect.type !== 'target_cleared' && !participant) {
             return { success: false };
         }
         if (!questEffectTypes.includes(effect.type)) {
@@ -255,10 +258,11 @@ export function applyQuestResolution(manager, quest, choiceId) {
             ?.some(culture => culture.id === participant.culture)) {
             return { success: false };
         }
-        if (effect.type === 'faction' && !Number.isFinite(RULES.reputation.questRewards[effect.rewardTier])) {
+        if (effect.type === 'faction' && !Number.isFinite(effect.amount ?? RULES.reputation.questRewards[effect.rewardTier])) {
             return { success: false };
         }
-        if (effect.type === 'faction' && !relations?.modifyFactionReputation) {
+        if (effect.type === 'faction' && (!relations?.modifyFactionReputation || !relations.config
+            || !relations.tierLookup?.length)) {
             return { success: false };
         }
         if (effect.type === 'relation' && (!relations?.config?.modifiers?.[effect.modifier]
@@ -270,6 +274,15 @@ export function applyQuestResolution(manager, quest, choiceId) {
             return { success: false };
         }
         if (effect.type === 'merchant_stock' && !merchants?.canAddQuestStock(quest.settlementId, effect.itemId, participant.role)) {
+            return { success: false };
+        }
+        if (effect.type === 'merchant_stock' && effect.qualityScore
+            && !merchants?.canAddQuestSpecialistStock(quest.settlementId, effect.itemId,
+                participant.role, effect.qualityScore, quest.offeredLevel)) {
+            return { success: false };
+        }
+        if (delegatedEffects.includes(effect.type)
+            && !(globalThis.window?.game?.consequenceManager || globalThis.window?.consequenceManager)?.canApplyQuestEffect(effect, quest)) {
             return { success: false };
         }
         if (effect.type === 'target_cleared') {
@@ -297,8 +310,19 @@ export function applyQuestResolution(manager, quest, choiceId) {
             pending.appliedEffects.push(effect.id);
             let applied;
             if (effect.type === 'faction') {
-                applied = relations.modifyFactionReputation(participant.culture,
-                    RULES.reputation.questRewards[effect.rewardTier]);
+                const amount = effect.amount ?? RULES.reputation.questRewards[effect.rewardTier];
+                const result = relations.previewFactionReputation(participant.culture, amount);
+                const culture = globalThis.window.game.npcGenerator.culturesData.find(entry => entry.id === participant.culture);
+                const change = { effectId: effect.id, targetId: participant.culture, targetName: culture.name || culture.id,
+                    amount: result.points, previous: result.previousScore, current: result.newScore };
+                pending.reputationChanges ||= [];
+                pending.reputationChanges.push(change);
+                applied = relations.modifyFactionReputation(participant.culture, amount);
+                if (applied) {
+                    manager.reportQuestStandingChange(change);
+                } else {
+                    pending.reputationChanges = pending.reputationChanges.filter(entry => entry.effectId !== effect.id);
+                }
             } else if (effect.type === 'relation') {
                 const npc = manager._findNPCById(participant.npcId);
                 applied = relations.modifyRelation(npc, effect.modifier,
@@ -308,9 +332,12 @@ export function applyQuestResolution(manager, quest, choiceId) {
                 }
             } else if (effect.type === 'merchant_stock') {
                 applied = merchants.addQuestStock(quest.settlementId, quest.id, effect.id, effect.itemId,
-                    participant.role, effectQuantity(effect));
+                    participant.role, effectQuantity(effect), effect.qualityScore
+                        ? { qualityScore: effect.qualityScore, level: quest.offeredLevel } : {});
             } else if (effect.type === 'target_cleared') {
                 applied = dungeons.clearQuestEncounter(effectProof(effect), quest.id, effect.id);
+            } else if (delegatedEffects.includes(effect.type)) {
+                applied = (globalThis.window?.game?.consequenceManager || globalThis.window?.consequenceManager)?.applyQuestEffect(effect, quest);
             }
             if (!applied) {
                 pending.appliedEffects = pending.appliedEffects.filter(id => id !== effect.id);
@@ -325,9 +352,15 @@ export function applyQuestResolution(manager, quest, choiceId) {
                 gold: Math.round((quest.rewards?.gold || 0) * multiplier)
             };
             pending.rewards = { ...rewards, item: null, reputation: null };
-            pending.rewards = manager.awardRewards({ ...quest, rewards }, character);
+            pending.rewards = manager.awardRewards(quest, character, rewards);
         }
         const rewards = pending.rewards;
+        const effectChanges = (pending.reputationChanges || []).map(change => ({ targetId: change.targetId,
+            targetName: change.targetName, amount: change.amount, previous: change.previous, current: change.current }));
+        rewards.reputation = [...effectChanges, ...(rewards.reputation || [])];
+        if (quest.rewardReceipt) {
+            quest.rewardReceipt.summary = rewards;
+        }
         quest.resolution = { choiceId, result: choice.reply, reply: choice.reply,
             appliedEffects: pending.appliedEffects, deliveries: pending.deliveries, rewards };
         delete quest.resolutionPending;
@@ -336,6 +369,7 @@ export function applyQuestResolution(manager, quest, choiceId) {
         const state = gameState.get('quests');
         state.active = state.active.filter(entry => entry.id !== quest.id);
         state.completed.push(quest);
+        state.trackedQuestId = sanitizeTrackedQuestId(state);
         gameState.set('quests', state);
         gameState.addMessage(`${quest.name}: ${choice.reply} (+${rewards.xp} XP, +${rewards.gold} Gold)`, 'success');
         return { success: true, quest, rewards };

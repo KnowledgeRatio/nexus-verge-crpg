@@ -1,0 +1,404 @@
+[
+  {
+    "mobile": false,
+    "fixture": "Real authored skill quest generated and assigned to controlled NPC roster; real accept/track/turn-in buttons, skill completion events injected (not naturally played trap journey), real relations/pricing/save/load",
+    "initial": {
+      "questId": "quest_2_3_933400",
+      "offer": "Disarm the Traps\n\nDIFFICULTY: NORMAL\n\nTest Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.\n\nObjectives: Detect traps with Perception; Disarm traps with Finesse\n\nRewards:\n250 XP, 100 gold, +40 standing with Kethara; +40 standing with Vaethori",
+      "preview": {
+        "available": true,
+        "reason": null,
+        "changes": [
+          {
+            "targetId": "kethara",
+            "targetName": "Kethara",
+            "amount": 40
+          },
+          {
+            "targetId": "vaethori",
+            "targetName": "Vaethori",
+            "amount": 40
+          }
+        ]
+      },
+      "beforePrice": 96,
+      "beforeRelation": {
+        "score": 15,
+        "effectiveScore": 15,
+        "tier": {
+          "id": "neutral",
+          "label": "Neutral",
+          "min": 0,
+          "max": 19,
+          "color": "#aaaaaa"
+        },
+        "tierLabel": "Neutral",
+        "color": "#aaaaaa",
+        "tone": "neutral"
+      }
+    },
+    "active": {
+      "tracked": "quest_2_3_933400",
+      "journal": "NORMAL\nDisarm the Traps\n\nTest Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.\n\n☐\n[░░░░░░░░░░]\nDetect traps with Perception\n0/1\n☐\n[░░░░░░░░░░]\nDisarm traps with Finesse\n0/1\n🎁 250 XP | 100 Gold | +40 standing with Kethara; +40 standing with Vaethori\nLocation unknown\nUNTRACK\nABANDON"
+    },
+    "complete": {
+      "text": "You did it.\n\nReceived:\n250 XP\n100 Gold\n+5 standing with Kethara (95 → 100); +40 standing with Vaethori (0 → 40)",
+      "factions": {
+        "kethara": 100,
+        "vaethori": 40
+      },
+      "tracked": null,
+      "quest": {
+        "id": "quest_2_3_933400",
+        "templateId": "skill-challenge-trap",
+        "name": "Disarm the Traps",
+        "description": "Test Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.",
+        "type": "skill",
+        "difficulty": "normal",
+        "objectives": [
+          {
+            "id": "obj_0",
+            "type": "skill",
+            "description": "Detect traps with Perception",
+            "progress": 1,
+            "required": 1,
+            "completed": true,
+            "requirement": {
+              "skill": "perception",
+              "dc": 15,
+              "count": 1
+            }
+          },
+          {
+            "id": "obj_1",
+            "type": "skill",
+            "description": "Disarm traps with Finesse",
+            "progress": 1,
+            "required": 1,
+            "completed": true,
+            "requirement": {
+              "skill": "finesse",
+              "dc": 13,
+              "count": 1
+            }
+          }
+        ],
+        "rewards": {
+          "xp": 250,
+          "gold": 100,
+          "reputation": {
+            "faction": "settlement",
+            "amount": 40
+          }
+        },
+        "status": "completed",
+        "questGiver": {
+          "npcId": "giver",
+          "npcName": "Test Guard",
+          "settlementId": "2,3",
+          "role": "guard"
+        },
+        "settlement": {
+          "id": "2_3",
+          "name": "Test Haven",
+          "x": 2,
+          "y": 3
+        },
+        "generationData": {
+          "skillChallengeId": "trap_detect_disarm"
+        },
+        "acceptedAt": 1792363097669,
+        "completedAt": 1792363099706,
+        "questGiverId": "giver",
+        "evidence": {
+          "facts": [],
+          "actions": [],
+          "attempts": {}
+        },
+        "receipts": {
+          "acquisitions": [],
+          "victories": []
+        },
+        "rewardReceipt": {
+          "paid": {
+            "xp": true,
+            "gold": true,
+            "reputation": true
+          },
+          "completed": true,
+          "summary": {
+            "xp": 250,
+            "gold": 100,
+            "item": null,
+            "reputation": [
+              {
+                "targetId": "kethara",
+                "targetName": "Kethara",
+                "amount": 5,
+                "previous": 95,
+                "current": 100
+              },
+              {
+                "targetId": "vaethori",
+                "targetName": "Vaethori",
+                "amount": 40,
+                "previous": 0,
+                "current": 40
+              }
+            ],
+            "reputationWarning": null
+          }
+        },
+        "reputationRewardReceipt": {
+          "changes": [
+            {
+              "targetId": "kethara",
+              "targetName": "Kethara",
+              "amount": 5,
+              "previous": 95,
+              "current": 100
+            },
+            {
+              "targetId": "vaethori",
+              "targetName": "Vaethori",
+              "amount": 40,
+              "previous": 0,
+              "current": 40
+            }
+          ]
+        }
+      },
+      "price": 91,
+      "relation": {
+        "score": 15,
+        "effectiveScore": 21,
+        "tier": {
+          "id": "friendly",
+          "label": "Friendly",
+          "min": 20,
+          "max": 39,
+          "color": "#44bb44"
+        },
+        "tierLabel": "Friendly",
+        "color": "#44bb44",
+        "tone": "warm"
+      },
+      "xp": 250,
+      "gold": 214
+    },
+    "restored": {
+      "retryBefore": false,
+      "retryAfter": false,
+      "unchanged": true,
+      "sheet": "Loading appearance choices…\nCharacter Info\nName:\nStanding check\nSpecies:\nVarath\nClass:\nDedication\nBackground:\nSoldier\nLevel:\n1\nExperience:\n250 XP\nCulture Standing\nKethara:\n100 · Allied\nVaethori:\n40 · Trusted\nVerathi:\n0 · Neutral\nDelhari:\n0 · Neutral\nSirathi:\n0 · Neutral\nVethri:\n0 · Neutral\nAbility Scores\nPROWESS\n16\n+3\nRESILIENCE\n15\n+2\nINTELLECT\n9\n-1\nINTUITION\n11\n+0\nCOMPOSURE\n13\n+1\nPRESENCE\n14\n+2\nCombat Stats\nArmor Class:\n18\nHit Points:\n12 / 12\nHit Dice:\n1d10\nInitiative:\n+0\nSpeed:\n30 ft\nProficiency Bonus:\n+2\nMain Hand Attack:\n+0 (1d8)\nSaving Throws\nRESILIENCE\n+4\nINTUITION\n+0\nCOMPOSURE\n+1\nSkills\nAthletics\n+5\nFinesse\n+3\nSurvival\n+2\nCraft\n-1\nLore\n-1\nInvestigation\n-1\nPerception\n+2\nEmpathy\n+1\nInfluence\n+4\nEquipment\nMain Hand:\nSword\nOff Hand:\nShield\nArmor:\nChain Mail\nHelmet:\nEmpty\nArtifact:\nEmpty\nProficiencies\nArmor:\nlight, medium, heavy, shields\nWeapons:\nsimple, martial\nTools:\nNone\nLanguages:\ncommon\nWeapon Masteries\n🔻\nTopple\nWhen you hit, force a CON save or knock the target prone. Prone creatures have disadvantage on attacks, and melee attackers have advantage against them.\n💫\nSap\nWhen you hit, the target has disadvantage on its next attack roll.\n⚡\nVex\nWhen you hit and deal damage, you have advantage on your next attack roll against that target.\nAbilities\n\nLoading abilities...\n\nClass Features\nFighting Style: Dueling\n+2 bonus to damage rolls when wielding a melee weapon in one hand and no other weapons.\nSteady Nerve\nAs a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + Resilience modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn). Once per short rest.\nWeapon Mastery\nYou master 3 weapons of your choice. You can use the mastery property of any weapon you're proficient with and have mastered.\nRacial Traits\nVersatile\nYou gain +1 to all ability scores, reflecting Varath adaptability.",
+      "factions": {
+        "kethara": 100,
+        "vaethori": 40
+      },
+      "gold": 214,
+      "xp": 250
+    },
+    "errors": []
+  },
+  {
+    "mobile": true,
+    "fixture": "Real authored skill quest generated and assigned to controlled NPC roster; real accept/track/turn-in buttons, skill completion events injected (not naturally played trap journey), real relations/pricing/save/load",
+    "initial": {
+      "questId": "quest_2_3_933400",
+      "offer": "Disarm the Traps\n\nDIFFICULTY: NORMAL\n\nTest Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.\n\nObjectives: Detect traps with Perception; Disarm traps with Finesse\n\nRewards:\n250 XP, 100 gold, +40 standing with Kethara; +40 standing with Vaethori",
+      "preview": {
+        "available": true,
+        "reason": null,
+        "changes": [
+          {
+            "targetId": "kethara",
+            "targetName": "Kethara",
+            "amount": 40
+          },
+          {
+            "targetId": "vaethori",
+            "targetName": "Vaethori",
+            "amount": 40
+          }
+        ]
+      },
+      "beforePrice": 96,
+      "beforeRelation": {
+        "score": 15,
+        "effectiveScore": 15,
+        "tier": {
+          "id": "neutral",
+          "label": "Neutral",
+          "min": 0,
+          "max": 19,
+          "color": "#aaaaaa"
+        },
+        "tierLabel": "Neutral",
+        "color": "#aaaaaa",
+        "tone": "neutral"
+      }
+    },
+    "active": {
+      "tracked": "quest_2_3_933400",
+      "journal": "NORMAL\nDisarm the Traps\n\nTest Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.\n\n☐\n[░░░░░░░░░░]\nDetect traps with Perception\n0/1\n☐\n[░░░░░░░░░░]\nDisarm traps with Finesse\n0/1\n🎁 250 XP | 100 Gold | +40 standing with Kethara; +40 standing with Vaethori\nLocation unknown\nUNTRACK\nABANDON"
+    },
+    "complete": {
+      "text": "You did it.\n\nReceived:\n250 XP\n100 Gold\n+5 standing with Kethara (95 → 100); +40 standing with Vaethori (0 → 40)",
+      "factions": {
+        "kethara": 100,
+        "vaethori": 40
+      },
+      "tracked": null,
+      "quest": {
+        "id": "quest_2_3_933400",
+        "templateId": "skill-challenge-trap",
+        "name": "Disarm the Traps",
+        "description": "Test Guard reports that traps have been set near Test Haven. Use your skills to find and disable them.",
+        "type": "skill",
+        "difficulty": "normal",
+        "objectives": [
+          {
+            "id": "obj_0",
+            "type": "skill",
+            "description": "Detect traps with Perception",
+            "progress": 1,
+            "required": 1,
+            "completed": true,
+            "requirement": {
+              "skill": "perception",
+              "dc": 15,
+              "count": 1
+            }
+          },
+          {
+            "id": "obj_1",
+            "type": "skill",
+            "description": "Disarm traps with Finesse",
+            "progress": 1,
+            "required": 1,
+            "completed": true,
+            "requirement": {
+              "skill": "finesse",
+              "dc": 13,
+              "count": 1
+            }
+          }
+        ],
+        "rewards": {
+          "xp": 250,
+          "gold": 100,
+          "reputation": {
+            "faction": "settlement",
+            "amount": 40
+          }
+        },
+        "status": "completed",
+        "questGiver": {
+          "npcId": "giver",
+          "npcName": "Test Guard",
+          "settlementId": "2,3",
+          "role": "guard"
+        },
+        "settlement": {
+          "id": "2_3",
+          "name": "Test Haven",
+          "x": 2,
+          "y": 3
+        },
+        "generationData": {
+          "skillChallengeId": "trap_detect_disarm"
+        },
+        "acceptedAt": 1792363106449,
+        "completedAt": 1792363108313,
+        "questGiverId": "giver",
+        "evidence": {
+          "facts": [],
+          "actions": [],
+          "attempts": {}
+        },
+        "receipts": {
+          "acquisitions": [],
+          "victories": []
+        },
+        "rewardReceipt": {
+          "paid": {
+            "xp": true,
+            "gold": true,
+            "reputation": true
+          },
+          "completed": true,
+          "summary": {
+            "xp": 250,
+            "gold": 100,
+            "item": null,
+            "reputation": [
+              {
+                "targetId": "kethara",
+                "targetName": "Kethara",
+                "amount": 5,
+                "previous": 95,
+                "current": 100
+              },
+              {
+                "targetId": "vaethori",
+                "targetName": "Vaethori",
+                "amount": 40,
+                "previous": 0,
+                "current": 40
+              }
+            ],
+            "reputationWarning": null
+          }
+        },
+        "reputationRewardReceipt": {
+          "changes": [
+            {
+              "targetId": "kethara",
+              "targetName": "Kethara",
+              "amount": 5,
+              "previous": 95,
+              "current": 100
+            },
+            {
+              "targetId": "vaethori",
+              "targetName": "Vaethori",
+              "amount": 40,
+              "previous": 0,
+              "current": 40
+            }
+          ]
+        }
+      },
+      "price": 91,
+      "relation": {
+        "score": 15,
+        "effectiveScore": 21,
+        "tier": {
+          "id": "friendly",
+          "label": "Friendly",
+          "min": 20,
+          "max": 39,
+          "color": "#44bb44"
+        },
+        "tierLabel": "Friendly",
+        "color": "#44bb44",
+        "tone": "warm"
+      },
+      "xp": 250,
+      "gold": 214
+    },
+    "restored": {
+      "retryBefore": false,
+      "retryAfter": false,
+      "unchanged": true,
+      "sheet": "Loading appearance choices…\nCharacter Info\nName:\nStanding check\nSpecies:\nVarath\nClass:\nDedication\nBackground:\nSoldier\nLevel:\n1\nExperience:\n250 XP\nCulture Standing\nKethara:\n100 · Allied\nVaethori:\n40 · Trusted\nVerathi:\n0 · Neutral\nDelhari:\n0 · Neutral\nSirathi:\n0 · Neutral\nVethri:\n0 · Neutral\nAbility Scores\nPROWESS\n16\n+3\nRESILIENCE\n15\n+2\nINTELLECT\n9\n-1\nINTUITION\n11\n+0\nCOMPOSURE\n13\n+1\nPRESENCE\n14\n+2\nCombat Stats\nArmor Class:\n18\nHit Points:\n12 / 12\nHit Dice:\n1d10\nInitiative:\n+0\nSpeed:\n30 ft\nProficiency Bonus:\n+2\nMain Hand Attack:\n+0 (1d8)\nSaving Throws\nRESILIENCE\n+4\nINTUITION\n+0\nCOMPOSURE\n+1\nSkills\nAthletics\n+5\nFinesse\n+3\nSurvival\n+2\nCraft\n-1\nLore\n-1\nInvestigation\n-1\nPerception\n+2\nEmpathy\n+1\nInfluence\n+4\nEquipment\nMain Hand:\nSword\nOff Hand:\nShield\nArmor:\nChain Mail\nHelmet:\nEmpty\nArtifact:\nEmpty\nProficiencies\nArmor:\nlight, medium, heavy, shields\nWeapons:\nsimple, martial\nTools:\nNone\nLanguages:\ncommon\nWeapon Masteries\n🔻\nTopple\nWhen you hit, force a CON save or knock the target prone. Prone creatures have disadvantage on attacks, and melee attackers have advantage against them.\n💫\nSap\nWhen you hit, the target has disadvantage on its next attack roll.\n⚡\nVex\nWhen you hit and deal damage, you have advantage on your next attack roll against that target.\nAbilities\n\nLoading abilities...\n\nClass Features\nFighting Style: Dueling\n+2 bonus to damage rolls when wielding a melee weapon in one hand and no other weapons.\nSteady Nerve\nAs a bonus action, choose one of the following options: Heal (regain 1d8 + your Dedication level + Resilience modifier HP), Attack (make one weapon attack), Dash (double movement this turn), Disengage (movement doesn't provoke opportunity attacks), or Dodge (attackers have disadvantage until start of your next turn). Once per short rest.\nWeapon Mastery\nYou master 3 weapons of your choice. You can use the mastery property of any weapon you're proficient with and have mastered.\nRacial Traits\nVersatile\nYou gain +1 to all ability scores, reflecting Varath adaptability.",
+      "factions": {
+        "kethara": 100,
+        "vaethori": 40
+      },
+      "gold": 214,
+      "xp": 250
+    },
+    "errors": []
+  }
+]

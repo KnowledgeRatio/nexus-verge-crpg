@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import QuestGenerator from '../../src/systems/QuestGenerator.js';
 import { gameState } from '../../src/core/GameState.js';
 import { skillRegistry } from '../../src/systems/SkillRegistry.js';
+import { RULES } from '../../src/core/rulesEngine.js';
 
 const data = name => JSON.parse(readFileSync(new URL(`../../data/${name}.json`, import.meta.url), 'utf8'));
 
@@ -27,7 +28,7 @@ describe('Compatible quest composition', () => {
             relationManager: { modifyFactionReputation: vi.fn(), config: data('relations') },
             merchantManager: { canAddQuestStock: vi.fn(() => true) },
             dungeonManager: { canClearQuestEncounter: vi.fn(), clearQuestEncounter: vi.fn(),
-                dungeonGenerator: { dungeonTypes: [{ id: 'cave', bossPool: [{ id: 'actual_boss', minLevel: 1, maxLevel: 10 }] }] } }
+                dungeonGenerator: { dungeonTypes: [{ id: 'cave', bossPool: [{ id: 'wraith', minLevel: 1, maxLevel: 10 }] }] } }
         } });
         generator = new QuestGenerator('composition-proof', 'nexus-verge');
         generator.questData = data('quests');
@@ -66,6 +67,10 @@ describe('Compatible quest composition', () => {
         const quest = await offer({ cause: 'abandonment', hazard: 'unopposed', materialState: 'intact',
             subject: 'rope-hempen', goal: 'recovery' }, level);
         expect(quest).toBeDefined();
+        expect(quest.intelQuality).toBe('medium');
+        expect(quest.intelDialogue.medium).toContain(hook.name);
+        expect(quest.intelDialogue.medium).not.toContain('{siteName}');
+        expect(quest.trackingIntel).toBeUndefined();
         expect(quest.objectives.map(obj => obj.type)).toEqual(['observe', 'retrieve']);
         expect(quest.actions.find(action => action.acquire).acquire).toEqual({
             itemId: 'rope-hempen', sourceId: 'consignment', quantity: 3
@@ -75,6 +80,18 @@ describe('Compatible quest composition', () => {
         expect(JSON.stringify(quest)).not.toMatch(/\{\w+\}/);
     });
 
+    it('preserves legacy generated combat destinations when iteration is disabled', async () => {
+        const enabled = RULES.quests.iteration.enabled;
+        try {
+            hook.generated = true;
+            expect(await offer({ cause: 'occupation', goal: 'access' })).toBeUndefined();
+            RULES.quests.iteration.enabled = false;
+            expect(await offer({ cause: 'occupation', goal: 'access' })).toBeDefined();
+        } finally {
+            RULES.quests.iteration.enabled = enabled;
+        }
+    });
+
     it('publishes a boss-role access quest without phantom goods or named targets', async () => {
         const quest = await offer({ cause: 'occupation', goal: 'access' });
         expect(quest).toBeDefined();
@@ -82,9 +99,9 @@ describe('Compatible quest composition', () => {
         expect(quest.objectives.find(obj => obj.type === 'defeat_encounter').requirement.source).toEqual({
             siteId: '4,7', encounterRole: 'boss', encounterKey: '4,7:boss'
         });
-        expect(quest.resolutions.find(choice => choice.fulfilled).effects).toContainEqual({
+        expect(quest.resolutions.find(choice => choice.fulfilled).effects).toContainEqual(expect.objectContaining({
             id: 'cleared_occupation', type: 'target_cleared', sourceObjectiveId: 'defeat_occupation'
-        });
+        }));
         expect(quest.actions.some(action => action.acquire)).toBe(false);
         expect(quest.resolutions.some(choice => choice.custody)).toBe(false);
         expect(JSON.stringify(quest)).not.toContain('invented_metadata_species');

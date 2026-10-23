@@ -1,0 +1,548 @@
+{
+  "messages": {
+    "mustVisit": "You must be at this settlement and outside combat to help.",
+    "unavailable": "This work is not available yet.",
+    "restored": "The settlement is open again. The survivors have made a home here."
+  },
+  "combat": [
+    {
+      "id": "barricade",
+      "monsterPoolsByTier": [
+        { "maxLevel": 3, "monsterPool": ["bandit", "banditCrossbowman"] },
+        { "maxLevel": 7, "monsterPool": ["scout", "spy", "berserker"] },
+        { "maxLevel": 10, "monsterPool": ["veteran", "ogre", "berserker"] }
+      ],
+      "type": "combat",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Break the occupation",
+      "description": "Armed occupiers bar the road between shuttered homes.",
+      "monsterPool": [
+        "bandit",
+        "banditCrossbowman"
+      ],
+      "options": [
+        {
+          "id": "fight",
+          "label": "Confront the occupiers"
+        }
+      ]
+    },
+    {
+      "id": "square",
+      "monsterPoolsByTier": [
+        { "maxLevel": 3, "monsterPool": ["bandit", "goblin"] },
+        { "maxLevel": 7, "monsterPool": ["orc", "bugbear", "ogre"] },
+        { "maxLevel": 10, "monsterPool": ["veteran", "ogre", "troll"] }
+      ],
+      "type": "combat",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Take back the square",
+      "description": "The occupiers muster at the settlement's abandoned meeting place.",
+      "monsterPool": [
+        "bandit",
+        "goblin"
+      ],
+      "options": [
+        {
+          "id": "fight",
+          "label": "Confront the occupiers"
+        }
+      ]
+    },
+    {
+      "id": "watch",
+      "monsterPoolsByTier": [
+        { "maxLevel": 3, "monsterPool": ["goblin", "goblinArcher"] },
+        { "maxLevel": 7, "monsterPool": ["bugbear", "scout", "berserker"] },
+        { "maxLevel": 10, "monsterPool": ["veteran", "ogre", "troll"] }
+      ],
+      "type": "combat",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Silence the hostile watch",
+      "description": "A hostile watch controls the well and the paths out of town.",
+      "monsterPool": [
+        "goblin",
+        "goblinArcher"
+      ],
+      "options": [
+        {
+          "id": "fight",
+          "label": "Confront the occupiers"
+        }
+      ]
+    }
+  ],
+  "exploration": [
+    {
+      "id": "water",
+      "type": "exploration",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Recover the water route",
+      "description": "Broken channels conceal the settlement's last usable well.",
+      "options": [
+        {
+          "id": "observe",
+          "label": "Find a safe approach (investigation)",
+          "skill": "investigation",
+          "onSuccess": {
+            "message": "You secure the route and bring the survivors together."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "repair",
+          "label": "Work through the obstacle (craft)",
+          "skill": "craft",
+          "onSuccess": {
+            "message": "Your careful work opens a protected route."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ]
+    },
+    {
+      "id": "shelters",
+      "type": "exploration",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Reach the hidden shelters",
+      "description": "Barricades and damaged homes cut survivors off from one another.",
+      "options": [
+        {
+          "id": "observe",
+          "label": "Find a safe approach (survival)",
+          "skill": "survival",
+          "onSuccess": {
+            "message": "You secure the route and bring the survivors together."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "repair",
+          "label": "Work through the obstacle (athletics)",
+          "skill": "athletics",
+          "onSuccess": {
+            "message": "Your careful work opens a protected route."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ]
+    },
+    {
+      "id": "stores",
+      "type": "exploration",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Secure the hidden stores",
+      "description": "The stores were concealed before the occupation. Recover them before they spoil.",
+      "options": [
+        {
+          "id": "observe",
+          "label": "Find a safe approach (perception)",
+          "skill": "perception",
+          "onSuccess": {
+            "message": "You secure the route and bring the survivors together."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "repair",
+          "label": "Work through the obstacle (finesse)",
+          "skill": "finesse",
+          "onSuccess": {
+            "message": "Your careful work opens a protected route."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ]
+    }
+  ],
+  "social": [
+    {
+      "id": "keeper",
+      "type": "social",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "The well keeper",
+      "npcName": "The well keeper",
+      "description": "Water kept us alive. Who will guard it now?",
+      "nodes": [
+        {
+          "description": "Water kept us alive. Who will guard it now?",
+          "options": [
+            {
+              "id": "listen",
+              "label": "Hear what the survivors need (Empathy)",
+              "skill": "empathy",
+              "onSuccess": {
+                "message": "They tell you which families and buildings need immediate help."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            },
+            {
+              "id": "rally",
+              "label": "Ask them to gather their neighbours (Influence)",
+              "skill": "influence",
+              "onSuccess": {
+                "message": "The survivors step forward to plan a common future."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            }
+          ]
+        },
+        {
+          "description": "We can organise a repair crew or a relief crew. Where should our scarce hands begin? Your choice determines which work they can help you with.",
+          "options": [
+            {
+              "id": "repair_crew",
+              "label": "Train a repair crew: advantage on rebuilding Craft checks",
+              "onSuccess": {
+                "message": "The repair crew prepares tools and salvaged timber."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "repair_crew",
+              "supportSkill": "craft"
+            },
+            {
+              "id": "relief_crew",
+              "label": "Organise a relief crew: advantage on rebuilding Survival checks",
+              "onSuccess": {
+                "message": "The relief crew begins mapping supplies and safe deliveries."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "relief_crew",
+              "supportSkill": "survival"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "organiser",
+      "type": "social",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "A shelter organiser",
+      "npcName": "A shelter organiser",
+      "description": "We hid together. Some want to leave; some will fight for these homes.",
+      "nodes": [
+        {
+          "description": "We hid together. Some want to leave; some will fight for these homes.",
+          "options": [
+            {
+              "id": "listen",
+              "label": "Hear what the survivors need (Empathy)",
+              "skill": "empathy",
+              "onSuccess": {
+                "message": "They tell you which families and buildings need immediate help."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            },
+            {
+              "id": "rally",
+              "label": "Ask them to gather their neighbours (Influence)",
+              "skill": "influence",
+              "onSuccess": {
+                "message": "The survivors step forward to plan a common future."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            }
+          ]
+        },
+        {
+          "description": "We can organise a repair crew or a relief crew. Where should our scarce hands begin? Your choice determines which work they can help you with.",
+          "options": [
+            {
+              "id": "repair_crew",
+              "label": "Train a repair crew: advantage on rebuilding Craft checks",
+              "onSuccess": {
+                "message": "The repair crew prepares tools and salvaged timber."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "repair_crew",
+              "supportSkill": "craft"
+            },
+            {
+              "id": "relief_crew",
+              "label": "Organise a relief crew: advantage on rebuilding Survival checks",
+              "onSuccess": {
+                "message": "The relief crew begins mapping supplies and safe deliveries."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "relief_crew",
+              "supportSkill": "survival"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "steward",
+      "type": "social",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "The stores steward",
+      "npcName": "The stores steward",
+      "description": "We have enough to begin again, if we can agree what comes first.",
+      "nodes": [
+        {
+          "description": "We have enough to begin again, if we can agree what comes first.",
+          "options": [
+            {
+              "id": "listen",
+              "label": "Hear what the survivors need (Empathy)",
+              "skill": "empathy",
+              "onSuccess": {
+                "message": "They tell you which families and buildings need immediate help."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            },
+            {
+              "id": "rally",
+              "label": "Ask them to gather their neighbours (Influence)",
+              "skill": "influence",
+              "onSuccess": {
+                "message": "The survivors step forward to plan a common future."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            }
+          ]
+        },
+        {
+          "description": "We can organise a repair crew or a relief crew. Where should our scarce hands begin? Your choice determines which work they can help you with.",
+          "options": [
+            {
+              "id": "repair_crew",
+              "label": "Train a repair crew: advantage on rebuilding Craft checks",
+              "onSuccess": {
+                "message": "The repair crew prepares tools and salvaged timber."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "repair_crew",
+              "supportSkill": "craft"
+            },
+            {
+              "id": "relief_crew",
+              "label": "Organise a relief crew: advantage on rebuilding Survival checks",
+              "onSuccess": {
+                "message": "The relief crew begins mapping supplies and safe deliveries."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "relief_crew",
+              "supportSkill": "survival"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rebuilding": [
+    {
+      "id": "roofs",
+      "type": "rebuilding",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Make the shelters sound",
+      "description": "Repair broken roofs and brace the walls before families return.",
+      "options": [
+        {
+          "id": "plan",
+          "label": "Plan and organise the work (craft)",
+          "skill": "craft",
+          "onSuccess": {
+            "message": "The work is completed and the settlement is one step closer to opening again."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "hands",
+          "label": "Take a practical approach (athletics)",
+          "skill": "athletics",
+          "onSuccess": {
+            "message": "You finish the work alongside the survivors."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ]
+    },
+    {
+      "id": "well",
+      "type": "rebuilding",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "Restore the well",
+      "description": "Clear the fouled channel and repair the settlement's water supply.",
+      "options": [
+        {
+          "id": "plan",
+          "label": "Plan and organise the work (craft)",
+          "skill": "craft",
+          "onSuccess": {
+            "message": "The work is completed and the settlement is one step closer to opening again."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "hands",
+          "label": "Take a practical approach (investigation)",
+          "skill": "investigation",
+          "onSuccess": {
+            "message": "You finish the work alongside the survivors."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ]
+    },
+    {
+      "id": "relief",
+      "type": "commission",
+      "campaignIds": [
+        "core"
+      ],
+      "name": "A local relief commission",
+      "description": "The survivors ask you to organise a safe delivery from the recovered stores.",
+      "options": [
+        {
+          "id": "plan",
+          "label": "Plan and organise the work (survival)",
+          "skill": "survival",
+          "onSuccess": {
+            "message": "The work is completed and the settlement is one step closer to opening again."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        },
+        {
+          "id": "hands",
+          "label": "Take a practical approach (perception)",
+          "skill": "perception",
+          "onSuccess": {
+            "message": "You finish the work alongside the survivors."
+          },
+          "onFailure": {
+            "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+          }
+        }
+      ],
+      "npcName": "The relief organiser",
+      "nodes": [
+        {
+          "description": "The relief organiser asks: should our delivery feed the families first or supply the workers? Either group can help with the delivery, but in different ways.",
+          "options": [
+            {
+              "id": "families",
+              "label": "Feed the families: organise a Survival delivery",
+              "onSuccess": {
+                "message": "Families gather to guide the delivery."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "families_first"
+            },
+            {
+              "id": "workers",
+              "label": "Supply the workers: organise a Craft delivery",
+              "onSuccess": {
+                "message": "Workers prepare carts for the delivery."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              },
+              "decision": "workers_first"
+            }
+          ]
+        },
+        {
+          "description": "Complete the delivery through the damaged streets.",
+          "options": [
+            {
+              "id": "guide",
+              "requiresDecision": "families_first",
+              "label": "Guide supplies to sheltered families (Survival)",
+              "skill": "survival",
+              "onSuccess": {
+                "message": "The families receive the supplies and can return safely."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            },
+            {
+              "id": "carts",
+              "requiresDecision": "workers_first",
+              "label": "Repair carts and distribute workers' supplies (Craft)",
+              "skill": "craft",
+              "onSuccess": {
+                "message": "The workers receive their tools and can begin restoring services."
+              },
+              "onFailure": {
+                "message": "The work stalls. What you have already secured holds; choose another approach when you can."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -663,6 +663,13 @@ class MapRenderer {
             }
         }
 
+        this.drawQuestGuidance(this.ctx, globalThis.window?.questManager?.getTrackedQuestGuidance?.(), {
+            scaleX: this.config.tileWidth, scaleY: this.config.tileHeight,
+            offsetX: -this.cameraX * this.config.tileWidth,
+            offsetY: -this.cameraY * this.config.tileHeight,
+            width: this.canvas.width, height: this.canvas.height
+        });
+
         // Render player last (on top)
         const playerScreenX = playerPosition.x - this.cameraX;
         const playerScreenY = playerPosition.y - this.cameraY;
@@ -675,6 +682,61 @@ class MapRenderer {
                 this.drawTile(playerScreenX, playerScreenY, this.playerSymbol, this.playerColor);
             }
         }
+    }
+
+    drawQuestGuidance(ctx, guidance, view) {
+        if (!RULES.quests.tracking?.enabled || !guidance || guidance.navigation?.type === 'unknown') {
+            return;
+        }
+        const navigation = guidance.navigation;
+        const project = (x, y) => ({ x: x * view.scaleX + view.offsetX, y: y * view.scaleY + view.offsetY });
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, view.width, view.height);
+        ctx.clip();
+        ctx.strokeStyle = '#d5a425';
+        ctx.fillStyle = '#d5a425';
+        ctx.lineWidth = 2;
+        if (navigation.type === 'area') {
+            const corner = project(navigation.minX, navigation.minY);
+            const width = (navigation.maxX - navigation.minX) * view.scaleX;
+            const height = (navigation.maxY - navigation.minY) * view.scaleY;
+            ctx.globalAlpha = 0.12;
+            ctx.fillRect(corner.x, corner.y, width, height);
+            ctx.globalAlpha = 1;
+            ctx.setLineDash([6, 4]);
+            ctx.strokeRect(corner.x, corner.y, width, height);
+        } else if (navigation.type === 'exact') {
+            const point = project(navigation.x + 0.5, navigation.y + 0.5);
+            const size = Math.max(5, Math.min(view.scaleX, view.scaleY) / 3);
+            ctx.beginPath();
+            ctx.moveTo(point.x, point.y - size);
+            ctx.lineTo(point.x + size, point.y);
+            ctx.lineTo(point.x, point.y + size);
+            ctx.lineTo(point.x - size, point.y);
+            ctx.closePath();
+            ctx.stroke();
+        } else if (navigation.type === 'direction') {
+            const vectors = { N: [0, -1], NE: [1, -1], E: [1, 0], SE: [1, 1],
+                S: [0, 1], SW: [-1, 1], W: [-1, 0], NW: [-1, -1] };
+            const vector = vectors[navigation.bearing];
+            if (vector) {
+                const origin = project(navigation.originX + 0.5, navigation.originY + 0.5);
+                const length = 24;
+                const dx = vector[0] / Math.hypot(...vector);
+                const dy = vector[1] / Math.hypot(...vector);
+                const tipX = origin.x + dx * length;
+                const tipY = origin.y + dy * length;
+                ctx.beginPath();
+                ctx.moveTo(origin.x, origin.y);
+                ctx.lineTo(tipX, tipY);
+                ctx.lineTo(tipX - dx * 7 + dy * 5, tipY - dy * 7 - dx * 5);
+                ctx.moveTo(tipX, tipY);
+                ctx.lineTo(tipX - dx * 7 - dy * 5, tipY - dy * 7 + dx * 5);
+                ctx.stroke();
+            }
+        }
+        ctx.restore();
     }
 
     /**
@@ -708,7 +770,7 @@ class MapRenderer {
         }
 
         // Check for features (settlements, dungeons, etc.)
-        if (tile.feature) {
+        if (tile.feature && tile.feature.renderLayer !== 'overlay') {
             this.renderFeature(screenX, screenY, tile.feature, visible, tile.x, tile.y);
             // Fall through to tag overlay below (no early return)
         } else {
@@ -733,6 +795,10 @@ class MapRenderer {
                 const dimmedColor = this.dimColor(terrain.color, 0.4);
                 this.drawTile(screenX, screenY, terrain.symbol, dimmedColor, null);
             }
+        }
+
+        if (tile.feature?.renderLayer === 'overlay') {
+            this.renderFeatureOverlay(screenX, screenY, tile.feature, visible);
         }
 
         // World-tag overlay: draw a small dot in the top-right corner of this tile
@@ -803,6 +869,13 @@ class MapRenderer {
                 const townTerrain = getTerrain('town');
                 symbol = townTerrain?.symbol || '🏘️';
                 color = townTerrain?.color || '#d4af37';
+                if (feature.hostileState?.phase === 'hostile') {
+                    symbol = '⚔';
+                    color = '#ff4444';
+                } else if (feature.hostileState?.phase === 'rebuilding') {
+                    symbol = '⚒';
+                    color = '#ffaa44';
+                }
                 break;
             }
 
@@ -858,6 +931,7 @@ class MapRenderer {
                 );
                 this.drawImageTile(screenX, screenY, tileImage, opacity, imageOptions);
                 this.drawRevealStateBadge(screenX, screenY, feature);
+                this.drawProvisioningBadge(screenX, screenY, feature, visible);
                 return;
             }
         }
@@ -868,28 +942,57 @@ class MapRenderer {
 
         this.drawTile(screenX, screenY, symbol, color);
         this.drawRevealStateBadge(screenX, screenY, feature);
+        this.drawProvisioningBadge(screenX, screenY, feature, visible);
     }
 
-    /**
-     * Reveal-state corner badge (Unified POI System, new 2026-08-09).
-     *
-     * Distinguishes three POI states at a glance, reusing the same
-     * corner-dot idiom as renderTile()'s `_modifiedTilesMap` quest-tag dot —
-     * a second, independent overlay, drawn in the opposite corner
-     * (bottom-right vs. the quest-tag dot's top-right) so the two never
-     * collide on a tile that carries both.
-     *
-     * Gated purely on `feature.type` — generic dispatch, never a per-poiType
-     * or per-resolvedType branch. The undiscovered badge is intentionally
-     * identical regardless of what the POI will resolve to, so it cannot
-     * leak the hidden outcome.
-     *
-     * Always-on: cheap (a single fillRect) and core to the reveal mechanic's
-     * legibility, so this does not gate behind
-     * `RULES.terrainRendering.poiMarkers.usePaintedArt` — that flag only
-     * controls whether painted art vs. ASCII is used for the base tile, and
-     * players need the state distinction in ASCII mode too.
-     */
+    /** Draw a visible gathering marker over its terrain. */
+    renderFeatureOverlay(screenX, screenY, feature, visible) {
+        if (!visible || feature.type !== 'provisioning' || !RULES.provisioning?.enabled || !RULES.fatigue.enabled) {
+            return;
+        }
+        // Tile caches can outlive a saved attempt; the manager reads canonical receipts.
+        const manager = globalThis.window?.game?.provisioningManager;
+        const opportunity = manager?.getOpportunityAtPosition(feature.x, feature.y);
+        const marker = opportunity?.cue?.marker || manager?.data?.marker;
+        if (!opportunity || !marker) {
+            return;
+        }
+        const spent = opportunity.status !== 'available';
+        this.ctx.save();
+        this.ctx.globalAlpha = spent ? 0.4 : 1;
+        this.ctx.fillStyle = marker.color;
+        this.ctx.font = `bold ${Math.max(12, this.config.tileWidth * 0.7)}px monospace`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.strokeStyle = '#000000';
+        this.ctx.lineWidth = Math.max(2, this.config.tileWidth / 12);
+        const x = (screenX + 0.5) * this.config.tileWidth;
+        const y = (screenY + 0.5) * this.config.tileHeight;
+        this.ctx.strokeText(marker.symbol, x, y);
+        this.ctx.fillText(marker.symbol, x, y);
+        this.ctx.restore();
+    }
+
+    drawProvisioningBadge(screenX, screenY, feature, visible) {
+        if (!visible || feature.type !== 'sanctuary' || !RULES.provisioning?.enabled || !RULES.fatigue.enabled) {
+            return;
+        }
+        const manager = globalThis.window?.game?.provisioningManager;
+        const opportunity = manager?.getOpportunityAtPosition(feature.x, feature.y);
+        const marker = opportunity?.cue?.marker || manager?.data?.marker;
+        if (!opportunity || opportunity.status !== 'available' || !marker) {
+            return;
+        }
+        this.ctx.save();
+        this.ctx.fillStyle = marker.color;
+        this.ctx.font = `bold ${Math.max(10, this.config.tileWidth / 2)}px monospace`;
+        this.ctx.textAlign = 'left';
+        this.ctx.textBaseline = 'top';
+        this.ctx.fillText(marker.symbol, screenX * this.config.tileWidth, screenY * this.config.tileHeight);
+        this.ctx.restore();
+    }
+
+    /** Draw the reveal-state corner badge without exposing unresolved POI outcomes. */
     drawRevealStateBadge(screenX, screenY, feature) {
         const REVEAL_BADGE_COLORS = {
             poi: 'rgba(180, 180, 180, 0.55)',
