@@ -4,11 +4,13 @@
  */
 
 import { skillRegistry } from '../systems/SkillRegistry.js';
+import { iconMarkup } from './Iconography.js';
 import { gameState } from '../core/GameState.js';
 import { getSupplyCapacityRemaining } from '../systems/FatigueManager.js';
 import { SettlementSceneUI } from './SettlementSceneUI.js';
 import { isRichQuest } from '../systems/ProceduralQuest.js';
 import { mountBuildingInterior } from './BuildingInteriorArt.js';
+import { mountSettlementAmbience } from './SettlementAmbience.js';
 
 const questText = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -126,7 +128,7 @@ class SettlementUI {
             }
         });
 
-        console.log('🏘️ Settlement UI event listeners initialized');
+        console.log('Settlement UI event listeners initialized');
     }
 
     /**
@@ -134,7 +136,8 @@ class SettlementUI {
    * @param {Object} settlement - Settlement data
    */
     showSettlementModal(settlement) {
-    // Hide game screen
+        this.squareAmbience?.dispose();
+        // Hide game screen
         const gameScreen = document.getElementById('gameScreen');
         if (gameScreen) {
             gameScreen.style.display = 'none';
@@ -165,6 +168,23 @@ class SettlementUI {
         // Render active consequence flags
         this.renderSettlementFlags(settlement);
         this.sceneUI.show(settlement);
+        this.mountSquareAmbience(settlement);
+    }
+
+    mountSquareAmbience(settlement) {
+        this.squareAmbience?.dispose();
+        if (!settlement) {
+            return;
+        }
+        const restricted = this.settlementManager?.hostileSettlementManager?.isRestricted(settlement)
+            || window.game?.hostileSettlementManager?.isRestricted(settlement);
+        const host = document.querySelector('#settlementModal .settlement-scene-toolbar');
+        if (!host || restricted || this.settlementManager?.currentBuilding) {
+            return;
+        }
+        this.squareAmbience = mountSettlementAmbience(host, settlement, {
+            campaignId: gameState.get('worldConfig.campaignId')
+        });
     }
 
     renderHostileSettlement(settlement) {
@@ -182,6 +202,8 @@ class SettlementUI {
         if (!restricted) {
             return false;
         }
+        this.squareAmbience?.dispose();
+        this.interiorArt?.dispose();
         this.sceneUI.hide();
         const host = document.getElementById('settlementSceneHost');
         if (host) {
@@ -238,6 +260,7 @@ class SettlementUI {
    * Hide settlement modal and return to game screen
    */
     hideSettlementModal() {
+        this.squareAmbience?.dispose();
         this.interiorArt?.dispose();
         this.sceneUI.hide();
     // Hide settlement modal
@@ -292,6 +315,7 @@ class SettlementUI {
    * @param {string} buildingType - Type of building ('tavern', 'merchant', etc.)
    */
     showBuildingModal(buildingType) {
+        this.squareAmbience?.dispose();
         this.sceneUI.setActive(false);
         const buildingModal = document.getElementById('buildingModal');
         if (!buildingModal) {
@@ -335,6 +359,7 @@ class SettlementUI {
         if (settlementModal) {
             settlementModal.style.display = 'flex';
         }
+        this.mountSquareAmbience(this.settlementManager?.currentSettlement);
     }
 
     /**
@@ -389,12 +414,14 @@ class SettlementUI {
         contentEl.closest('.building-container')?.classList.remove('has-building-art');
         this.interiorArt = mountBuildingInterior(contentEl.querySelector('.building-interior'), buildingType,
             buildingNPCs, npc => this.showNPCDialogue(npc), {
-                settlement, variantOverride: this.interiorStudyVariant
+                settlement, variantOverride: this.interiorStudyVariant,
+                previewConfig: this.interiorStudyConfig,
+                campaignId: gameState.get('worldConfig.campaignId')
             });
 
         contentEl.querySelectorAll('.talk-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const npcId = e.target.dataset.npcId;
+                const npcId = e.currentTarget.dataset.npcId;
                 const npc = buildingNPCs.find(n => n.id === npcId);
                 if (npc) this.showNPCDialogue(npc);
             });
@@ -403,7 +430,7 @@ class SettlementUI {
         if (buildingType === 'greathall') {
             contentEl.querySelectorAll('.recruit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    const idx = parseInt(e.target.dataset.candidateIndex);
+                    const idx = parseInt(e.currentTarget.dataset.candidateIndex);
                     await this._recruitCandidate(idx);
                 });
             });
@@ -613,7 +640,7 @@ class SettlementUI {
         }
 
         // Debug logging for NPC quest status
-        console.log(`💬 Showing dialogue for ${npc.name} (${npc.role}) [${relation?.tierLabel || 'unknown'}]`);
+        console.log(`Showing dialogue for ${npc.name} (${npc.role}) [${relation?.tierLabel || 'unknown'}]`);
         console.log(`   - offersQuest: ${npc.offersQuest}, canOfferQuest: ${canOfferQuest}`);
         console.log('   - questIds:', npc.questIds);
         console.log(`   - relation: ${relation?.score || 0} (effective: ${relation?.effectiveScore || 0})`);
@@ -626,7 +653,7 @@ class SettlementUI {
         if (!canSpeak) {
             optionsHTML += `
         <button class="dialogue-option" data-action="goodbye">
-          👋 Leave
+           Leave
         </button>
       `;
             if (optionsEl) {
@@ -634,7 +661,7 @@ class SettlementUI {
             }
             modal.querySelectorAll('.dialogue-option').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    this.handleDialogueOption(e.target.dataset.action, npc);
+                    this.handleDialogueOption(e.currentTarget.dataset.action, npc);
                 });
             });
             modal.style.display = 'flex';
@@ -646,7 +673,7 @@ class SettlementUI {
         if (npc.dialogue.flavorDialogue && npc.dialogue.flavorDialogue.length > 0) {
             optionsHTML += `
         <button class="dialogue-option" data-action="flavor">
-          💬 Chat
+           Chat
         </button>
       `;
         }
@@ -663,21 +690,21 @@ class SettlementUI {
 
         // Quest option (gated by relation tier)
         if (npc.offersQuest && npc.questIds && npc.questIds.length > 0 && canOfferQuest) {
-            console.log('   ✅ Adding "Ask about work" button');
+            console.log('Adding "Ask about work"button');
             optionsHTML += `
         <button class="dialogue-option quest-option" data-action="quest">
-          ❗ Ask about work
+           Ask about work
         </button>
       `;
         } else if (npc.offersQuest && npc.questIds && npc.questIds.length > 0 && !canOfferQuest) {
-            console.log('   ⛔ NPC has quests but relation too low to offer');
+            console.log('NPC has quests but relation too low to offer');
         }
 
         // Trade option (gated by relation tier)
         if ((npc.role === 'merchant' || npc.role === 'blacksmith') && canTrade) {
             optionsHTML += `
         <button class="dialogue-option" data-action="trade">
-          💰 Trade
+           Trade
         </button>
       `;
         }
@@ -686,7 +713,7 @@ class SettlementUI {
         if (npc.role === 'innkeeper') {
             optionsHTML += `
         <button class="dialogue-option" data-action="rest">
-          🛏️ Rest
+           Rest
         </button>
       `;
         }
@@ -697,7 +724,7 @@ class SettlementUI {
             if (challenges.length > 0) {
                 optionsHTML += `
           <button class="dialogue-option skill-challenge-option" data-action="skill-challenge">
-            ⚡ Test Your Skills
+             Test Your Skills
           </button>
         `;
             }
@@ -707,13 +734,13 @@ class SettlementUI {
         if (npc.intelStatus === 'available') {
             optionsHTML += `
         <button class="dialogue-option intel-option" data-action="intel">
-          🗺️ Ask about local dangers
+           Ask about local dangers
         </button>
       `;
         } else if (npc.intelStatus === 'revealed') {
             optionsHTML += `
         <button class="dialogue-option intel-option" data-action="intel-recall">
-          🗺️ Tell me again about the area
+           Tell me again about the area
         </button>
       `;
         }
@@ -721,7 +748,7 @@ class SettlementUI {
         // Goodbye option
         optionsHTML += `
       <button class="dialogue-option" data-action="goodbye">
-        👋 Goodbye
+         Goodbye
       </button>
     `;
 
@@ -732,7 +759,7 @@ class SettlementUI {
         // Add event listeners
         modal.querySelectorAll('.dialogue-option').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.handleDialogueOption(e.target.dataset.action, npc);
+                this.handleDialogueOption(e.currentTarget.dataset.action, npc);
             });
         });
 
@@ -784,7 +811,7 @@ class SettlementUI {
                 // Check if settlement has been sacked — merchants have fled
                 const currentSettlement = gameState.get('ui.currentSettlement');
                 if (currentSettlement?.merchantLocked) {
-                    gameState.addMessage('💀 The merchants have fled. There is nothing to trade here.', 'warning');
+                    gameState.addMessage('The merchants have fled. There is nothing to trade here.', 'warning');
                     break;
                 }
                 // Open trading UI
@@ -857,10 +884,10 @@ class SettlementUI {
 
         if (passiveEmpathy >= dc) {
             npc.intelStatus = 'available';
-            console.log(`🔍 Passive Empathy passed for ${npc.name} (${passiveEmpathy} >= DC ${dc}) — intel available`);
+            console.log(`Passive Empathy passed for ${npc.name} (${passiveEmpathy} >= DC ${dc}) — intel available`);
         } else {
             npc.intelStatus = 'locked';
-            console.log(`🔍 Passive Empathy failed for ${npc.name} (${passiveEmpathy} < DC ${dc}) — intel locked permanently`);
+            console.log(`Passive Empathy failed for ${npc.name} (${passiveEmpathy} < DC ${dc}) — intel locked permanently`);
         }
         this._persistNPC(npc);
     }
@@ -895,7 +922,7 @@ class SettlementUI {
                 npc.intelStatus = 'available';
             }
 
-            console.log(`🔍 Passive ${check.skill} (${check.flag}): ${passiveScore} vs DC ${dc} → ${passed ? 'pass' : 'fail'}`);
+            console.log(`Passive ${check.skill} (${check.flag}): ${passiveScore} vs DC ${dc} → ${passed ? 'pass' : 'fail'}`);
         }
         this._persistNPC(npc);
     }
@@ -935,7 +962,7 @@ class SettlementUI {
 
         // Show roll result in message log
         gameState.addMessage(
-            `🎲 Influence check: rolled ${roll} + ${influenceMod} = ${total} vs DC ${dc} — ${passed ? 'SUCCESS' : 'FAILED'}`,
+            `Influence check: rolled ${roll} + ${influenceMod} = ${total} vs DC ${dc} — ${passed ? 'SUCCESS' : 'FAILED'}`,
             passed ? 'success' : 'warning'
         );
 
@@ -1033,7 +1060,7 @@ class SettlementUI {
             const total = objective.required ?? objective.count ?? 1;
             const progress = objective.completed ? total : (objective.progress ?? 0);
             return `<div class="objective-item ${objective.completed ? 'completed' : ''}" data-objective-id="${questText(objective.id)}">
-                <span class="objective-checkbox">${objective.completed ? '☑' : '☐'}</span>
+                <span class="objective-checkbox" role="img" aria-label="${objective.completed ? 'Complete' : 'Pending'}">${objective.completed ? iconMarkup('outcome.success') : ''}</span>
                 <span class="objective-text">${questText(objective.description)}</span>
                 <span class="objective-progress">${questText(progress)}/${questText(total)}</span></div>`;
         }).join('');
@@ -1152,7 +1179,7 @@ class SettlementUI {
         }
 
         // Debug logging
-        console.log(`🔍 Checking quests for NPC: ${npc.name} (ID: ${npc.id})`);
+        console.log(`Checking quests for NPC: ${npc.name} (ID: ${npc.id})`);
         console.log(`   - offersQuest: ${npc.offersQuest}`);
         console.log('   - questIds:', npc.questIds);
         console.log('   - availableQuests in manager:', window.questManager.availableQuests?.length || 0);
@@ -1177,7 +1204,7 @@ class SettlementUI {
             for (const quest of readyToTurnIn) {
                 optionsHTML += `
           <button class="dialogue-option quest-turn-in" data-quest-id="${quest.id}">
-            ✅ Turn in: ${quest.name}
+             Turn in: ${quest.name}
           </button>
         `;
             }
@@ -1193,7 +1220,7 @@ class SettlementUI {
             // Add event listeners for turn-in
             optionsEl.querySelectorAll('.quest-turn-in').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    this.turnInQuest(e.target.dataset.questId, npc);
+                    this.turnInQuest(e.currentTarget.dataset.questId, npc);
                 });
             });
 
@@ -1211,7 +1238,7 @@ class SettlementUI {
                 const difficultyIcon = this.getQuestDifficultyIcon(quest.difficulty);
                 optionsHTML += `
           <button class="dialogue-option quest-offer" data-quest-id="${quest.id}">
-            ${difficultyIcon} ${quest.name}
+            ${quest.name} (${difficultyIcon})
           </button>
         `;
             }
@@ -1227,7 +1254,7 @@ class SettlementUI {
             // Add event listeners for quest details
             optionsEl.querySelectorAll('.quest-offer').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    this.showQuestDetails(e.target.dataset.questId, npc);
+                    this.showQuestDetails(e.currentTarget.dataset.questId, npc);
                 });
             });
 
@@ -1282,16 +1309,16 @@ class SettlementUI {
         // Show accept/decline options
         optionsEl.innerHTML = `
       <button class="dialogue-option btn-primary" data-action="accept-quest" data-quest-id="${questId}">
-        ✅ Accept Quest
+         Accept Quest
       </button>
       <button class="dialogue-option" data-action="decline-quest">
-        ❌ Decline
+         Decline
       </button>
     `;
 
         // Add event listeners
         optionsEl.querySelector('[data-action="accept-quest"]')?.addEventListener('click', (e) => {
-            this.acceptQuest(e.target.dataset.questId, npc);
+            this.acceptQuest(e.currentTarget.dataset.questId, npc);
         });
 
         optionsEl.querySelector('[data-action="decline-quest"]')?.addEventListener('click', () => {
@@ -1354,7 +1381,7 @@ class SettlementUI {
             document.querySelectorAll('#npcDialogueOptions .quest-turn-in').forEach(button => {
                 if (button.dataset.questId === questId) {
                     button.disabled = true;
-                    button.textContent = `✓ Claimed: ${quest?.name || 'Quest'}`;
+                    button.textContent = `Claimed: ${quest?.name || 'Quest'}`;
                 }
             });
             const textEl = document.getElementById('npcDialogueText');
@@ -1398,12 +1425,12 @@ class SettlementUI {
    */
     getQuestDifficultyIcon(difficulty) {
         const icons = {
-            'easy': '⭐',
-            'normal': '⭐⭐',
-            'hard': '⭐⭐⭐',
-            'deadly': '💀'
+            'easy': 'Easy',
+            'normal': 'Normal',
+            'hard': 'Hard',
+            'deadly': 'Deadly'
         };
-        return icons[difficulty?.toLowerCase()] || '❓';
+        return icons[difficulty?.toLowerCase()] || 'Unknown';
     }
 
     /**
@@ -1428,18 +1455,18 @@ class SettlementUI {
         panel.style.display = '';
 
         const FLAG_META = {
-            vendetta_active:   { icon: '⚔️', label: 'Vendetta Active',    desc: 'Hostile agents may ambush you on entry.' },
-            watch_suspicious:  { icon: '👁️', label: 'Under Suspicion',    desc: 'Merchants have raised prices by 25%.' },
-            cursed:            { icon: '💀', label: 'Cursed',             desc: 'Long rests here restore only half your hit dice.' },
-            settlement_sacked: { icon: '💥', label: 'Settlement Sacked',  desc: 'The quest board is bare. Merchants have fled.' },
-            disease_spreading: { icon: '🤒', label: 'Disease Spreading',  desc: 'Resting here risks catching the disease.' }
+            vendetta_active:   { icon: 'action.attack', label: 'Vendetta Active',    desc: 'Hostile agents may ambush you on entry.' },
+            watch_suspicious:  { icon: 'outcome.warning', label: 'Under Suspicion',    desc: 'Merchants have raised prices by 25%.' },
+            cursed:            { icon: 'outcome.failure', label: 'Cursed',             desc: 'Long rests here restore only half your hit dice.' },
+            settlement_sacked: { icon: 'outcome.failure', label: 'Settlement Sacked',  desc: 'The quest board is bare. Merchants have fled.' },
+            disease_spreading: { icon: 'outcome.warning', label: 'Disease Spreading',  desc: 'Resting here risks catching the disease.' }
         };
 
         const VERB_LABELS = {
-            confront:  '⚔️ Confront',
-            negotiate: '🤝 Negotiate',
-            cleanse:   '✨ Cleanse',
-            outlast:   '⏳ Outlast'
+            confront:  'Confront',
+            negotiate: 'Negotiate',
+            cleanse:   'Cleanse',
+            outlast:   'Outlast'
         };
 
         const rulesConsequences = window.RULES?.consequences || {};
@@ -1452,7 +1479,7 @@ class SettlementUI {
         };
 
         list.innerHTML = activeFlags.map(flag => {
-            const meta   = FLAG_META[flag.type] || { icon: '⚠️', label: flag.type, desc: '' };
+            const meta   = FLAG_META[flag.type] || { icon: 'outcome.warning', label: flag.type, desc: '' };
             const verbs  = flagTypeDefs[flag.type]?.validVerbs || [];
             const verbBtns = verbs.map(v =>
                 `<button class="flag-verb-btn" data-flag="${flag.type}" data-verb="${v}">${VERB_LABELS[v] || v}</button>`
@@ -1461,7 +1488,7 @@ class SettlementUI {
             return `
 <div class="flag-card" data-flag-type="${flag.type}">
   <div class="flag-card-header">
-    <span class="flag-icon">${meta.icon}</span>
+    <span class="flag-icon">${iconMarkup(meta.icon)}</span>
     <span class="flag-label">${meta.label}</span>
   </div>
   <div class="flag-description">${meta.desc}</div>
@@ -1727,7 +1754,7 @@ class SettlementUI {
             <div class="trading-item-description">${item.description || ''}</div>
             ${item.questStock ? '<div class="trading-item-stock">Recovered shipment</div>' : ''}
             <div class="trading-item-stats">
-              ${item.weight ? `<span class="trading-item-weight">⚖️ ${item.weight} lb</span>` : ''}
+              ${item.weight ? `<span class="trading-item-weight"> ${item.weight} lb</span>` : ''}
               ${item.rarity ? `<span class="item-rarity ${item.rarity}">${item.rarity}</span>` : ''}
             </div>
           </div>
@@ -2070,7 +2097,7 @@ class SettlementUI {
             const difficultyStars = this.getChallengeDifficultyStars(challenge);
             optionsHTML += `
         <button class="dialogue-option skill-challenge-offer" data-challenge-id="${challenge.id}">
-          ${difficultyStars} ${challenge.name}
+          ${challenge.name} (${difficultyStars})
         </button>
       `;
         }
@@ -2086,7 +2113,7 @@ class SettlementUI {
         // Add event listeners
         optionsEl.querySelectorAll('.skill-challenge-offer').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.startSkillChallenge(e.target.dataset.challengeId, npc);
+                this.startSkillChallenge(e.currentTarget.dataset.challengeId, npc);
             });
         });
 
@@ -2222,29 +2249,29 @@ class SettlementUI {
     getChallengeDifficultyStars(challenge) {
         const dc = challenge.baseDC || challenge.stages?.[0]?.baseDC || 10;
         if (dc >= 20) {
-            return '⭐⭐⭐';
+            return 'Hard';
         } // Hard
         if (dc >= 15) {
-            return '⭐⭐';
+            return 'Medium';
         } // Medium
-        return '⭐'; // Easy
+        return 'Easy'; // Easy
     }
 
     /**
    * Get icon for item type
    * @param {string} type - Item type
-   * @returns {string} Emoji icon
+   * @returns {string} SVG markup
    */
     getItemIcon(type) {
         const icons = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'consumable': '🧪',
-            'misc': '📦',
-            'tool': '🔧',
-            'shield': '🛡️'
+            'weapon': 'equipment.weapons',
+            'armor': 'equipment.armour',
+            'consumable': 'equipment.potion',
+            'misc': 'navigation.inventory',
+            'tool': 'equipment.tool',
+            'shield': 'equipment.shield'
         };
-        return icons[type] || '📦';
+        return iconMarkup(icons[type] || 'navigation.inventory');
     }
 
 }

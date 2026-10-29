@@ -8,6 +8,8 @@ import { selectHostileSettlementContent } from '../../src/systems/hostileSettlem
 const content = JSON.parse(fs.readFileSync('data/hostileSettlements.json', 'utf8'));
 
 const original = RULES.hostileSettlements;
+const presentationEnabled = RULES.buildingPresentation.proceduralPeople.enabled;
+const soundscapesEnabled = RULES.settlementSoundscapes.enabled;
 const overrides = RULES.worldGen.campaignOverrides;
 const finiteEnabled = RULES.worldGen.finiteWorld.enabled;
 const hostiles = generator => generator.worldMetadata.settlements.filter(s => s.hostileState);
@@ -28,6 +30,8 @@ function grid(seed = 'hostile-world') {
 }
 
 beforeEach(() => {
+    RULES.buildingPresentation.proceduralPeople.enabled = false;
+    RULES.settlementSoundscapes.enabled = false;
     RULES.hostileSettlements = {
         enabled: true, share: 0.1, clusterSize: [2, 4], isolatedShare: 0.15, starterSafeRadius: 96, rebuildStages: 3
     };
@@ -38,6 +42,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    RULES.buildingPresentation.proceduralPeople.enabled = presentationEnabled;
+    RULES.settlementSoundscapes.enabled = soundscapesEnabled;
     RULES.hostileSettlements = original;
     RULES.worldGen.campaignOverrides = overrides;
     RULES.worldGen.finiteWorld.enabled = finiteEnabled;

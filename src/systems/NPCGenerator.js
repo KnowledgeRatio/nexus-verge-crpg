@@ -59,7 +59,7 @@ class NPCGenerator {
             // Filter name pools by campaign (if they have campaignIds)
             this.nameData = this.filterNameData(rawNameData, campaignId);
 
-            console.log(`📋 NPC data loaded successfully (campaign: ${campaignId})`);
+            console.log(`NPC data loaded successfully (campaign: ${campaignId})`);
         } catch (error) {
             console.error('Failed to load NPC data:', error);
             throw error;
@@ -118,7 +118,7 @@ class NPCGenerator {
         // Assign intel flags (limited per settlement, role-weighted)
         this.assignIntelFlags(npcs, rng);
 
-        console.log(`👥 Generated ${npcs.length} NPCs for ${settlement.name} (${settlementType})`);
+        console.log(`Generated ${npcs.length} NPCs for ${settlement.name} (${settlementType})`);
         return npcs;
     }
 
@@ -258,7 +258,8 @@ class NPCGenerator {
         const namePool = culture ? culture.namePool : this.weightedPick(this.speciesData, rng).namePool;
 
         // Generate name
-        const name = this.generateName(role, settlementType, rng, namePool);
+        const identity = {};
+        const name = this.generateName(role, settlementType, rng, namePool, identity);
 
         // Generate personality
         const personality = rng.choice(RULES.npc.personalityTypes);
@@ -283,6 +284,7 @@ class NPCGenerator {
         return {
             id,
             name,
+            gender: identity.gender,
             role,
             personality,
             culture: culture?.id ?? null,
@@ -338,7 +340,7 @@ class NPCGenerator {
         }
 
         if (selected.length > 0) {
-            console.log(`🔍 Assigned intel to ${selected.length} NPCs: ${selected.map(n => n.name).join(', ')}`);
+            console.log(`Assigned intel to ${selected.length} NPCs: ${selected.map(n => n.name).join(', ')}`);
         }
     }
 
@@ -361,16 +363,20 @@ class NPCGenerator {
         let selected = list[0];
         for (const entry of list) {
             cumulative += entry.npcWeight;
-            if (roll < cumulative) { selected = entry; break; }
+            if (roll < cumulative) {
+                selected = entry;
+                break;
+            }
         }
         return selected;
     }
 
-    generateName(role, settlementType, rng, namePool) {
+    generateName(role, settlementType, rng, namePool, identity = {}) {
         // Determine gender
         const gender = rng.next() < 0.5 ? 'male' : 'female';
 
         const firstNamePool = this.nameData[`${namePool}FirstNames`];
+        identity.gender = gender;
         const firstName = Array.isArray(firstNamePool)
             ? rng.choice(firstNamePool)
             : firstNamePool?.[gender]
@@ -392,6 +398,22 @@ class NPCGenerator {
 
         // Most NPCs just have first name + last name
         return `${firstName} ${lastName}`;
+    }
+
+    /** Recover only the original naming choice, never infer identity from a saved name. */
+    async reconcileNPCGenders(settlement) {
+        const missing = (settlement.npcs || []).filter(npc => npc.gender === undefined);
+        if (!missing.length) {
+            return;
+        }
+        const replay = await this.generateNPCsForSettlement(settlement);
+        const byId = new Map(replay.map(npc => [npc.id, npc]));
+        for (const npc of missing) {
+            const original = byId.get(npc.id);
+            if (original?.name === npc.name) {
+                npc.gender = original.gender;
+            }
+        }
     }
 
     /**

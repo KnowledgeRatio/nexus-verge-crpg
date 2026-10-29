@@ -4082,7 +4082,7 @@
             "stackBehavior": "addValue",
             "isBuff": false,
             "curable": false,
-            "icon": "🌑"
+            "icon": "condition.voidPresence"
           }
         }
       ],
@@ -4177,7 +4177,7 @@
             "stackBehavior": "addValue",
             "isBuff": false,
             "curable": false,
-            "icon": "🌑"
+            "icon": "condition.voidPresence"
           }
         }
       ],
@@ -4277,7 +4277,7 @@
             "stackBehavior": "addValue",
             "isBuff": false,
             "curable": false,
-            "icon": "🌑"
+            "icon": "condition.voidPresence"
           }
         }
       ],
@@ -4378,7 +4378,7 @@
             "stackBehavior": "addValue",
             "isBuff": false,
             "curable": false,
-            "icon": "🌑"
+            "icon": "condition.voidPresence"
           }
         }
       ],
@@ -4498,7 +4498,7 @@
             "stackBehavior": "addValue",
             "isBuff": false,
             "curable": false,
-            "icon": "🌑"
+            "icon": "condition.voidPresence"
           }
         }
       ],

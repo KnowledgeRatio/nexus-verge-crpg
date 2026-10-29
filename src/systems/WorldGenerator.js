@@ -11,6 +11,8 @@ import NPCGenerator from './NPCGenerator.js';
 import { clamp } from '../utils/helpers.js';
 import { filterByCampaign } from '../utils/campaignFilter.js';
 import { selectHostileSettlementContent } from './hostileSettlementContent.js';
+import { loadBuildingPresentation, prepareBuildingPresentation, assignBuildingPeople } from './BuildingPresentation.js';
+import { loadSettlementSoundscapes, prepareSettlementSoundscapes } from './SettlementSoundscapes.js';
 
 class WorldGenerator {
     constructor(worldSeed, config = {}) {
@@ -18,7 +20,7 @@ class WorldGenerator {
         this.config = {
             mapSize: config.mapSize || 'medium',
             difficulty: config.difficulty || 'normal',
-            campaignId: config.campaignId || 'default',
+            campaignId: config.campaignId || 'core',
             ...config
         };
 
@@ -627,6 +629,7 @@ class WorldGenerator {
                     settlement.npcs = []; // Fallback to no NPCs
                 }
 
+                await this.prepareSettlementPresentation([settlement]);
                 features.push(settlement);
             }
         }
@@ -781,7 +784,7 @@ class WorldGenerator {
             const response = await fetch(`data/dungeons.json?v=${Date.now()}`);
             this.dungeonData = await response.json();
         } catch (e) {
-            console.warn('⚠️ Could not load dungeons.json:', e);
+            console.warn('Could not load dungeons.json:', e);
             this.dungeonData = null;
         }
     }
@@ -807,13 +810,13 @@ class WorldGenerator {
             const data = await response.json();
             const types = filterByCampaign(data?.poiTypes, this.config.campaignId);
             if (!Array.isArray(types) || types.length === 0) {
-                console.warn('⚠️ data/pois.json has no valid "poiTypes" array for this campaign — POI generation disabled this session.');
+                console.warn('data/pois.json has no valid "poiTypes" array for this campaign — POI generation disabled this session.');
                 this.poiData = null;
                 return;
             }
             this.poiData = { types };
         } catch (e) {
-            console.warn('⚠️ Could not load pois.json — POI generation disabled this session:', e);
+            console.warn('Could not load pois.json — POI generation disabled this session:', e);
             this.poiData = null;
         }
     }
@@ -1110,7 +1113,7 @@ class WorldGenerator {
         toDelete.forEach(key => generatedRegions.delete(key));
 
         if (toDelete.length > 0) {
-            console.log(`🧹 Pruned ${toDelete.length} regions from cache (settlement data preserved)`);
+            console.log(`Pruned ${toDelete.length} regions from cache (settlement data preserved)`);
         }
     }
 
@@ -1134,7 +1137,7 @@ class WorldGenerator {
 
             // If this settlement is NOT already in persistent storage, add it
             if (!existingSettlementIds.has(settlementId)) {
-                console.log(`💾 Persisting settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
+                console.log(`Persisting settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
                 settlements.push({
                     ...settlement,
                     id: settlementId,
@@ -1152,7 +1155,7 @@ class WorldGenerator {
                 // Update existing settlement with latest state
                 const index = settlements.findIndex(s => s.id === settlementId);
                 if (index !== -1) {
-                    console.log(`💾 Updating settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
+                    console.log(`Updating settlement: ${settlement.name} at (${settlement.x}, ${settlement.y})`);
                     settlements[index] = {
                         ...settlements[index],
                         ...settlement,
@@ -1190,7 +1193,7 @@ class WorldGenerator {
                 const persisted = persistedByCoords.get(settlementId);
 
                 if (persisted) {
-                    console.log(`♻️ Restoring settlement: ${persisted.name} at (${persisted.x}, ${persisted.y})`);
+                    console.log(`Restoring settlement: ${persisted.name} at (${persisted.x}, ${persisted.y})`);
                     // Replace with persisted data
                     features[i] = persisted;
                 }
@@ -1204,12 +1207,12 @@ class WorldGenerator {
      */
     loadSavedRegions(savedRegions) {
         if (!savedRegions || !(savedRegions instanceof Map)) {
-            console.warn('⚠️ No saved regions to load');
+            console.warn('No saved regions to load');
             return;
         }
 
         // Set regions directly in gameState (they're already there from deserialization)
-        console.log(`📂 Loaded ${savedRegions.size} regions from save`);
+        console.log(`Loaded ${savedRegions.size} regions from save`);
     }
 
     /**
@@ -1220,7 +1223,7 @@ class WorldGenerator {
      * @returns {Object} Full region with merged data
      */
     async regenerateAndMerge(regionX, regionY, compressedData) {
-        console.log(`🔄 Regenerating region ${regionX},${regionY} from seed and merging saved data`);
+        console.log(`Regenerating region ${regionX},${regionY} from seed and merging saved data`);
 
         // Ensure terrain data is loaded
         await this.loadTerrainData();
@@ -1286,7 +1289,7 @@ class WorldGenerator {
             generatedRegions.set(cacheKey, region);
         }
 
-        console.log(`✅ Region ${regionX},${regionY} regenerated with ${features.length} features`);
+        console.log(`Region ${regionX},${regionY} regenerated with ${features.length} features`);
 
         return region;
     }
@@ -1401,38 +1404,41 @@ class WorldGenerator {
      * Terrain tiles generated on-demand (deterministic)
      */
     async generateWorldMetadata() {
-        console.log('🌍 Generating finite world metadata...');
+        console.log('Generating finite world metadata...');
         const start = performance.now();
 
         // Check if already generated
         if (this.worldMetadata.generated) {
-            console.log('✅ World metadata already generated, skipping');
+            await this.prepareSettlementPresentation(this.worldMetadata.settlements, true);
+            console.log('World metadata already generated, skipping');
             return this.worldMetadata;
         }
 
         // Check if metadata exists in gameState (loaded from save)
         const savedMetadata = gameState.get('world.metadata');
         if (savedMetadata && savedMetadata.generated) {
-            console.log('📂 Loading world metadata from save');
+            console.log('Loading world metadata from save');
             this.worldMetadata = savedMetadata;
+            await this.prepareSettlementPresentation(this.worldMetadata.settlements, true);
             return this.worldMetadata;
         }
 
         // 1. Pre-generate all settlement locations (deterministic)
-        console.log('🏘️ Generating settlements...');
+        console.log('Generating settlements...');
         await this.preGenerateSettlements();
+        await this.prepareSettlementPresentation(this.worldMetadata.settlements);
         this.assignHostileSettlements();
         await this.prepareHostileSettlementContent();
 
         // 2. Pre-generate all feature locations (dungeons, shrines, sanctuaries)
-        console.log('🏛️ Generating features...');
+        console.log('Generating features...');
         await this.preGenerateFeatures();
 
         // Separate stream: provisioning enriches existing sites without changing world layout.
         await this.placeProvisioningOpportunities();
 
         // 3. Generate roads connecting all settlements (upfront)
-        console.log('🛣️ Generating road network...');
+        console.log('Generating road network...');
         await this.preGenerateRoads();
 
         await this.placeWildernessProvisioning();
@@ -1444,12 +1450,94 @@ class WorldGenerator {
         gameState.set('world.metadata', this.worldMetadata);
 
         const elapsed = performance.now() - start;
-        console.log(`✅ World metadata generated in ${(elapsed / 1000).toFixed(2)}s`);
+        console.log(`World metadata generated in ${(elapsed / 1000).toFixed(2)}s`);
         console.log(`   - ${this.worldMetadata.settlements.length} settlements`);
         console.log(`   - ${this.worldMetadata.roads.length} road segments`);
         console.log(`   - ${this.worldMetadata.features.length} features`);
 
         return this.worldMetadata;
+    }
+
+    async prepareSettlementPresentation(settlements, legacy = false) {
+        await this.prepareSettlementSoundscapes(settlements);
+        if (!RULES.buildingPresentation.proceduralPeople.enabled) {
+            return;
+        }
+        try {
+            const catalogue = await loadBuildingPresentation(this.config.campaignId);
+            this.worldMetadata.buildingPresentationCatalogueVersion ??=
+                gameState.get('world.metadata.buildingPresentationCatalogueVersion') ?? catalogue.version;
+            const persisted = gameState.get('world.settlements') || [];
+            const regions = gameState.get('world.generatedRegions');
+            const regionSettlements = regions instanceof Map ? [...regions.values()]
+                .flatMap(region => (region.features || []).filter(feature => feature.type === 'settlement')) : [];
+            for (const settlement of settlements) {
+                const saved = persisted.find(candidate => candidate.x === settlement.x && candidate.y === settlement.y);
+                const regionCopies = regionSettlements.filter(candidate => candidate.x === settlement.x && candidate.y === settlement.y);
+                const savedReceipt = saved?.buildingPresentation || regionCopies.find(candidate => candidate.buildingPresentation)?.buildingPresentation;
+                if (savedReceipt) {
+                    settlement.buildingPresentation = savedReceipt;
+                }
+                if (saved?.id && !settlement.id) {
+                    settlement.id = saved.id;
+                }
+                prepareBuildingPresentation(settlement, { seed: this.worldSeed, catalogue, legacy,
+                    catalogueVersion: this.worldMetadata.buildingPresentationCatalogueVersion });
+                // Restored NPC copies are reconciled by SettlementManager before visual binding.
+                if (!legacy && settlement.npcs?.length) {
+                    assignBuildingPeople(settlement, catalogue);
+                }
+                if (saved) {
+                    saved.buildingPresentation = settlement.buildingPresentation;
+                }
+                for (const copy of regionCopies) {
+                    copy.buildingPresentation = settlement.buildingPresentation;
+                }
+            }
+            gameState.set('world.metadata', this.worldMetadata);
+            gameState.set('world.settlements', persisted);
+            if (regions instanceof Map) {
+                gameState.set('world.generatedRegions', regions);
+            }
+        } catch (error) {
+            console.warn('Building presentation could not be prepared:', error);
+        }
+    }
+
+    async prepareSettlementSoundscapes(settlements) {
+        if (!RULES.settlementSoundscapes.enabled) {
+            return;
+        }
+        try {
+            const catalogue = await loadSettlementSoundscapes(this.config.campaignId);
+            this.worldMetadata.soundscapeCatalogueVersion ??=
+                gameState.get('world.metadata.soundscapeCatalogueVersion') ?? catalogue.version;
+            const persisted = gameState.get('world.settlements') || [];
+            const regions = gameState.get('world.generatedRegions');
+            const copies = regions instanceof Map ? [...regions.values()]
+                .flatMap(region => (region.features || []).filter(feature => feature.type === 'settlement')) : [];
+            for (const settlement of settlements || []) {
+                const saved = persisted.find(candidate => candidate.x === settlement.x && candidate.y === settlement.y);
+                const regionCopies = copies.filter(candidate => candidate.x === settlement.x && candidate.y === settlement.y);
+                settlement.soundscapes = saved?.soundscapes || settlement.soundscapes
+                    || regionCopies.find(candidate => candidate.soundscapes)?.soundscapes;
+                prepareSettlementSoundscapes(settlement, { seed: this.worldSeed, catalogue,
+                    catalogueVersion: this.worldMetadata.soundscapeCatalogueVersion });
+                if (saved) {
+                    saved.soundscapes = settlement.soundscapes;
+                }
+                for (const copy of regionCopies) {
+                    copy.soundscapes = settlement.soundscapes;
+                }
+            }
+            gameState.set('world.metadata', this.worldMetadata);
+            gameState.set('world.settlements', persisted);
+            if (regions instanceof Map) {
+                gameState.set('world.generatedRegions', regions);
+            }
+        } catch (error) {
+            console.warn('Settlement soundscapes could not be prepared:', error);
+        }
     }
 
     /**
@@ -1580,7 +1668,7 @@ class WorldGenerator {
             const data = await response.json();
             cues = filterByCampaign(data?.cues, this.config.campaignId);
         } catch (error) {
-            console.warn('⚠️ Provisioning data unavailable; no opportunities placed:', error);
+            console.warn('Provisioning data unavailable; no opportunities placed:', error);
             return;
         }
         if (!Array.isArray(cues) || !cues.length) {
@@ -1636,7 +1724,7 @@ class WorldGenerator {
                 .filter(cue => cue.eligibleHostTypes?.includes('provisioning'));
             await this.loadTerrainData();
         } catch (error) {
-            console.warn('⚠️ Wilderness provisioning unavailable:', error);
+            console.warn('Wilderness provisioning unavailable:', error);
             return;
         }
         if (!cues.length) {
@@ -1913,7 +2001,7 @@ class WorldGenerator {
         for (const id of poiTypeIds) poisPlaced[id] = 0;
 
         if (poiTypeIds.length === 0) {
-            console.warn('⚠️ No POI type data available (data/pois.json missing/malformed) — skipping POI generation.');
+            console.warn('No POI type data available (data/pois.json missing/malformed) — skipping POI generation.');
         } else {
             const poiTargetCounts = {};
             for (const typeData of this.poiData.types) {
@@ -2054,7 +2142,7 @@ class WorldGenerator {
         let totalConnections = 0;
         let skippedDuplicates = 0;
 
-        console.log(`🛣️ Road generation starting with ${this.worldMetadata.settlements.length} settlements`);
+        console.log(`Road generation starting with ${this.worldMetadata.settlements.length} settlements`);
 
         // For each settlement, connect to nearest 2-4 settlements
         for (const settlement of this.worldMetadata.settlements) {
@@ -2107,7 +2195,7 @@ class WorldGenerator {
         for (const road of roads) {
             totalRoadTiles += road.path.length;
         }
-        console.log(`   📏 Total road tiles: ${totalRoadTiles}`);
+        console.log(`   Total road tiles: ${totalRoadTiles}`);
     }
 
     /**

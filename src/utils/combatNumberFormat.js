@@ -24,7 +24,7 @@ export function healthBarAttributes(hp, maxHP) {
 }
 
 export function conditionDescription(condition, sourceName = id => id) {
-    const base = `${condition.icon} ${condition.type}`;
+    const base = condition.name || condition.type || 'Condition';
     if (!fractionalCombatEnabled() || !condition.periodicDamage?.tranches?.length) {
         return base;
     }

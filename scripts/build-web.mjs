@@ -126,6 +126,7 @@ await addFilesUnder('legal', file => /\.(md|json|xml)$/.test(file));
 await addFilesUnder('data', file =>
     /^data\/[^/]+\.json$/.test(file) && !/(Study|\.example)\.json$/.test(file));
 await addFilesUnder('data/skillChallenges', file => file.endsWith('.json'));
+await addFilesUnder('data/icons', file => /\.(svg|json)$/.test(file));
 await addFilesUnder('data/graphics', file =>
     /^data\/graphics\/[^/]+\.png$/.test(file));
 await addFilesUnder('data/sound', file => file.endsWith('.wav'));
@@ -204,6 +205,27 @@ await mkdir(appOutput, { recursive: true });
 
 let appBytes = 0;
 for (const relative of [...appFiles].sort()) appBytes += await copy(relative, appOutput);
+
+// Private audition mixes are available locally but must not advertise unavailable
+// audio controls in a public package. Apply this to variants as well as base rooms.
+const interiorsFile = path.join(appOutput, 'data/buildingInteriors.json');
+const interiorsSource = await readFile(interiorsFile, 'utf8');
+const publishedInteriors = JSON.stringify(JSON.parse(interiorsSource, (key, value) => {
+    if (key !== 'ambience' || !Array.isArray(value)) return value;
+    const published = value.filter(mix => !mix.localOnly);
+    return published.length ? published : undefined;
+}), null, 2) + '\n';
+await writeFile(interiorsFile, publishedInteriors);
+appBytes += Buffer.byteLength(publishedInteriors) - Buffer.byteLength(interiorsSource);
+
+// Exterior soundscapes share the same private-audition boundary as room mixes.
+const soundscapesFile = path.join(appOutput, 'data/settlementSoundscapes.json');
+const soundscapesSource = await readFile(soundscapesFile, 'utf8');
+const publishedSoundscapes = JSON.stringify(JSON.parse(soundscapesSource, (key, value) =>
+    Array.isArray(value) && value.some(entry => entry?.tracks)
+        ? value.filter(mix => !mix.localOnly) : value), null, 2) + '\n';
+await writeFile(soundscapesFile, publishedSoundscapes);
+appBytes += Buffer.byteLength(publishedSoundscapes) - Buffer.byteLength(soundscapesSource);
 
 const indexFile = path.join(appOutput, 'index.html');
 let index = await readFile(indexFile, 'utf8');

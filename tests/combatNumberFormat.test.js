@@ -14,7 +14,7 @@ describe('fractional combat presentation', () => {
             expect(formatCombatNumber(value)).toBe(String(value));
         }
         expect(healthBarAttributes(0.001, 100)).toBe('');
-        expect(conditionDescription({ icon: '🩸', type: 'bleeding' })).toBe('🩸 bleeding');
+        expect(conditionDescription({ icon: '🩸', type: 'bleeding' })).toBe('bleeding');
     });
 
     it('keeps positive ticks and living health visible at the precision boundary', () => {
@@ -33,6 +33,7 @@ describe('fractional combat presentation', () => {
             { sourceId: 'b', damageType: 'blood', ticksUnits: [100, 100, 100], cursor: 1 }
         ] } };
         const description = conditionDescription(condition, id => ({ a: 'Dagger', b: 'Sword' })[id]);
+        expect(description).toMatch(/^bleeding: /);
         expect(description).toContain('next turn 0.234, pending 0.6 blood damage before defenses');
         expect(description).toContain('final tick in 3 target turns');
         expect(description).toContain('Sources: Dagger, Sword');
@@ -40,5 +41,15 @@ describe('fractional combat presentation', () => {
 
     it('escapes untrusted source names in HTML attributes', () => {
         expect(escapeAttribute('"<script>&')).toBe('&quot;&lt;script&gt;&amp;');
+    });
+
+    it('keeps semantic IDs and legacy glyphs out of descriptions after save restoration', () => {
+        for (const enabled of [true, false]) {
+            RULES.combat.damageOverTime = { enabled, unitsPerHP: 1000 };
+            for (const icon of ['condition.prone', '🔻', null, undefined]) {
+                const restored = JSON.parse(JSON.stringify({ type: 'prone', name: 'Prone', icon }));
+                expect(conditionDescription(restored)).toBe('Prone');
+            }
+        }
     });
 });

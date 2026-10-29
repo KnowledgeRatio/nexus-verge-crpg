@@ -127,8 +127,8 @@ describe('Bug 1 regression — weapon.damage is a plain string in items.json, no
 
             // 0.99 on a real 1d12 rolls 12; the pre-fix fallback (damageDice stuck at the
             // unarmed default of 4) would have rolled a 4 here instead.
-            expect(lastMessageStartingWith(enabled ? '💥 Hit! Rolled Damage:' : '💥 Hit! Damage:'))
-                .toBe(enabled ? '💥 Hit! Rolled Damage: 12 = 12 base damage' : '💥 Hit! Damage: 12 = 12');
+            expect(lastMessageStartingWith(enabled ? 'Hit! Rolled Damage:' : 'Hit! Damage:'))
+                .toBe(enabled ? 'Hit! Rolled Damage: 12 = 12 base damage' : 'Hit! Damage: 12 = 12');
 
             // damageType also comes from a sibling field (weapon.damageType), not weapon.damage.type —
             // confirmed via the resistance message, which only fires if the real type ("blood") matched.

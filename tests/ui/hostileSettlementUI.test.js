@@ -101,7 +101,7 @@ it('distinguishes settlement phases with symbols as well as colour', () => {
         terrainTypes: [{ id: 'town', symbol: 'T', color: '#d4af37' }],
         drawTile: vi.fn(), drawRevealStateBadge: vi.fn(), drawProvisioningBadge: vi.fn()
     });
-    for (const [phase, symbol] of [['hostile', '⚔'], ['rebuilding', '⚒'], ['restored', 'T']]) {
+    for (const [phase, symbol] of [['hostile', 'map.hostile'], ['rebuilding', 'map.rebuilding'], ['restored', 'T']]) {
         renderer.renderFeature(0, 0, { type: 'settlement', hostileState: { phase } }, true, 1, 1);
         expect(renderer.drawTile.mock.lastCall[2]).toBe(symbol);
     }

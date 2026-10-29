@@ -1,5 +1,7 @@
 import { RULES } from '../core/rulesEngine.js';
 import { mountBuildingAmbience } from './BuildingAmbience.js';
+import { loadBuildingPresentation, resolveBuildingPresentation } from '../systems/BuildingPresentation.js';
+import { loadSettlementSoundscapes, resolveSettlementSoundscape } from '../systems/SettlementSoundscapes.js';
 
 let interiors;
 
@@ -19,7 +21,8 @@ export function selectBuildingInterior(catalogue, buildingType, settlement = {},
     return { ...base, ...variants[index], variantIndex: index };
 }
 
-export function mountBuildingInterior(host, buildingType, npcs, onTalk, { settlement, variantOverride } = {}) {
+export function mountBuildingInterior(host, buildingType, npcs, onTalk,
+    { settlement, variantOverride, previewConfig, campaignId } = {}) {
     const lifetime = new window.AbortController();
     const { signal } = lifetime;
     let ambience;
@@ -34,19 +37,26 @@ export function mountBuildingInterior(host, buildingType, npcs, onTalk, { settle
             return;
         }
         try {
-            interiors ??= fetch('data/buildingInteriors.json').then(response => {
-                if (!response.ok) {
-                    throw new Error('Building artwork unavailable');
-                }
-                return response.json();
-            });
-            const config = selectBuildingInterior(await interiors, buildingType, settlement, variantOverride);
+            if (!previewConfig && !RULES.buildingPresentation.proceduralPeople?.enabled) {
+                interiors ??= fetch('data/buildingInteriors.json').then(response => {
+                    if (!response.ok) {
+                        throw new Error('Building artwork unavailable');
+                    }
+                    return response.json();
+                });
+            }
+            const config = previewConfig || (RULES.buildingPresentation.proceduralPeople?.enabled
+                ? resolveBuildingPresentation(await loadBuildingPresentation(campaignId), buildingType, settlement, npcs)
+                : selectBuildingInterior(await interiors, buildingType, settlement, variantOverride));
             if (!config || signal.aborted || !host.isConnected) {
                 return;
             }
             figure = document.createElement('figure');
             figure.className = 'building-art';
             figure.dataset.variant = String(config.variantIndex + 1);
+            if (config.id) {
+                figure.dataset.roomId = config.id;
+            }
             figure.hidden = true;
             const stage = document.createElement('div');
             stage.className = 'building-art-stage';
@@ -101,23 +111,30 @@ export function mountBuildingInterior(host, buildingType, npcs, onTalk, { settle
             }
             const remaining = [...npcs];
             for (const slot of config.people || []) {
-                const index = remaining.findIndex(npc => !slot.roles || slot.roles.includes(npc.role));
+                const index = remaining.findIndex(npc => slot.npcId !== undefined
+                    ? npc.id === slot.npcId : !slot.roles || slot.roles.includes(npc.role));
                 if (index < 0) {
                     continue;
                 }
                 const [npc] = remaining.splice(index, 1);
                 const person = document.createElement('div');
                 person.className = 'building-art-person';
+                person.dataset.npcId = npc.id;
+                if (slot.id) {
+                    person.dataset.slotId = slot.id;
+                }
                 person.style.setProperty('--person-x', `${slot.x}%`);
                 person.style.setProperty('--person-y', `${slot.y}%`);
                 person.style.setProperty('--person-width', `${slot.width}%`);
                 const portrait = document.createElement('img');
+                portrait.decoding = 'async';
                 portrait.src = slot.image;
                 portrait.alt = '';
                 portrait.addEventListener('error', () => portrait.hidden = true, { once: true, signal });
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'building-art-talk';
+                button.dataset.npcId = npc.id;
                 button.textContent = npc.name;
                 button.setAttribute('aria-label', `Talk to ${npc.name}`);
                 button.addEventListener('click', () => onTalk(npc), { signal });
@@ -137,7 +154,20 @@ export function mountBuildingInterior(host, buildingType, npcs, onTalk, { settle
             title.textContent = config.caption;
             caption.append(title);
             if (config.ambience) {
-                ambience = mountBuildingAmbience(caption, config.ambience, signal);
+                let selection = { mixes: config.ambience };
+                if (RULES.settlementSoundscapes?.enabled) {
+                    try {
+                        selection = resolveSettlementSoundscape(
+                            await loadSettlementSoundscapes(campaignId), settlement, buildingType);
+                    } catch {
+                        // Room art and the existing mix remain usable if the new catalogue is unavailable.
+                    }
+                }
+                if (signal.aborted || !host.isConnected) {
+                    return;
+                }
+                ambience = mountBuildingAmbience(caption, selection.mixes, signal,
+                    { initialMixId: selection.initialMixId });
             }
             figure.append(stage, caption);
             host.prepend(figure);

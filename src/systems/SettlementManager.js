@@ -2,7 +2,10 @@
 // Handles settlement entry, state management, and building interactions
 
 import { gameState } from '../core/GameState.js';
+import { loadBuildingPresentation, prepareBuildingPresentation, assignBuildingPeople } from './BuildingPresentation.js';
 import { SeededRandom } from '../utils/rng.js';
+import { RULES } from '../core/rulesEngine.js';
+import { loadSettlementSoundscapes, prepareSettlementSoundscapes } from './SettlementSoundscapes.js';
 
 class SettlementManager {
     constructor(worldGenerator, settlementUI = null, npcGenerator = null, questGenerator = null, questManager = null) {
@@ -14,7 +17,7 @@ class SettlementManager {
         this.currentSettlement = null;
         this.currentBuilding = null;
 
-        console.log('🏘️ SettlementManager initialized with:', {
+        console.log('SettlementManager initialized with:', {
             npcGenerator: !!this.npcGenerator,
             questGenerator: !!this.questGenerator,
             questManager: !!this.questManager
@@ -98,7 +101,7 @@ class SettlementManager {
         gameState.set('ui.currentSettlement', settlement);
 
         // Debug: Check settlement state
-        console.log(`🏘️ Entering ${settlement.name}`);
+        console.log(`Entering ${settlement.name}`);
         console.log(`   - Has NPCs: ${settlement.npcs ? 'yes' : 'no'}`);
         console.log(`   - NPC count: ${settlement.npcs?.length || 0}`);
         console.log(`   - Has quests generated: ${settlement.questsGenerated ? 'yes' : 'no'}`);
@@ -106,11 +109,11 @@ class SettlementManager {
 
         // Generate NPCs if they don't exist
         if (!settlement.npcs || settlement.npcs.length === 0) {
-            console.log('👥 Generating NPCs for first visit...');
+            console.log('Generating NPCs for first visit...');
 
             if (this.npcGenerator) {
                 settlement.npcs = await this.npcGenerator.generateNPCsForSettlement(settlement);
-                console.log(`👥 Generated ${settlement.npcs.length} NPCs`);
+                console.log(`Generated ${settlement.npcs.length} NPCs`);
             } else {
                 settlement.npcs = [];
                 console.warn('NPCGenerator not initialized');
@@ -118,15 +121,22 @@ class SettlementManager {
         }
 
         this._restoreNPCsFromPersistent(settlement);
+        try {
+            await this.npcGenerator?.reconcileNPCGenders?.(settlement);
+        } catch (error) {
+            console.warn('Saved NPC identity could not be reconciled; existing settlement services remain available:', error);
+        }
+        await this._prepareBuildingPresentation(settlement);
+        await this._prepareSoundscapes(settlement);
         this._persistSettlement(settlement);
 
         // Generate quests if they haven't been generated yet (separate from NPC check)
         if (!settlement.questsGenerated && this.questGenerator && this.questManager) {
-            console.log('📜 Generating quests for first visit...');
+            console.log('Generating quests for first visit...');
 
             const playerLevel = gameState.get('character.level') || 1;
             const quests = await this.questGenerator.generateQuestsForSettlement(settlement, playerLevel);
-            console.log(`📜 Generated ${quests.length} quests`);
+            console.log(`Generated ${quests.length} quests`);
 
             // Process pendingBind: mark dungeon hooks as bound in world.metadata before assigning to NPCs
             for (const quest of quests) {
@@ -149,11 +159,11 @@ class SettlementManager {
             for (const quest of quests) {
                 // Add to available quests in gameState
                 questState.available.push(quest);
-                console.log(`📜 Added quest "${quest.name}" to available quests (giver: ${quest.questGiver?.npcName})`);
+                console.log(`Added quest "${quest.name}" to available quests (giver: ${quest.questGiver?.npcName})`);
             }
 
             gameState.set('quests', questState);
-            console.log(`📜 Total available quests: ${questState.available.length}`);
+            console.log(`Total available quests: ${questState.available.length}`);
 
             // Mark quests as generated
             settlement.questsGenerated = true;
@@ -246,7 +256,7 @@ class SettlementManager {
                     });
                 }
 
-                console.log(`📜 Assigned quest "${quest.name}" to ${selectedNPC.name} (${selectedNPC.role})`);
+                console.log(`Assigned quest "${quest.name}" to ${selectedNPC.name} (${selectedNPC.role})`);
             } else {
                 console.warn(`No suitable NPC found for quest: ${quest.name}`);
             }
@@ -400,7 +410,7 @@ class SettlementManager {
 
         // Copy consequence-relevant fields from persistent storage onto live feature object
         for (const field of ['flags', 'localVisitCount', 'merchantLocked', 'sacked', 'questsGenerated', 'visitedAt',
-            'questStock', 'questAvailability', 'hostileState']) {
+            'questStock', 'questAvailability', 'hostileState', 'buildingPresentation', 'soundscapes']) {
             if (persisted[field] !== undefined) {
                 settlement[field] = persisted[field];
             }
@@ -417,6 +427,66 @@ class SettlementManager {
             settlements[index] = settlement;
         }
         gameState.set('world.settlements', settlements);
+        if (settlement.soundscapes) {
+            const metadata = gameState.get('world.metadata');
+            const stored = metadata?.settlements?.find(saved => saved.x === settlement.x && saved.y === settlement.y);
+            if (stored) {
+                stored.soundscapes = settlement.soundscapes;
+                gameState.set('world.metadata', metadata);
+            }
+        }
+        if (settlement.buildingPresentation) {
+            const metadata = gameState.get('world.metadata');
+            const metadataSettlement = metadata?.settlements?.find(saved => saved.x === settlement.x && saved.y === settlement.y);
+            if (metadataSettlement) {
+                metadataSettlement.buildingPresentation = settlement.buildingPresentation;
+                gameState.set('world.metadata', metadata);
+            }
+            const npcs = gameState.get('world.npcs') || new Map();
+            for (const npc of settlement.npcs || []) {
+                npcs.set(npc.id, npc);
+            }
+            gameState.set('world.npcs', npcs);
+        }
+    }
+
+    async _prepareBuildingPresentation(settlement) {
+        if (!RULES.buildingPresentation.proceduralPeople.enabled) {
+            return;
+        }
+        try {
+            const catalogue = await loadBuildingPresentation(gameState.get('worldConfig.campaignId') || 'core');
+            const metadata = gameState.get('world.metadata') || {};
+            const prepared = metadata.settlements?.find(saved => saved.x === settlement.x && saved.y === settlement.y);
+            settlement.buildingPresentation ??= prepared?.buildingPresentation;
+            metadata.buildingPresentationCatalogueVersion ??= catalogue.version;
+            prepareBuildingPresentation(settlement, {
+                seed: gameState.get('seed'), catalogue, legacy: !settlement.buildingPresentation,
+                catalogueVersion: metadata.buildingPresentationCatalogueVersion
+            });
+            assignBuildingPeople(settlement, catalogue);
+            gameState.set('world.metadata', metadata);
+        } catch (error) {
+            console.warn('Building presentation unavailable; settlement services remain available:', error);
+        }
+    }
+
+    async _prepareSoundscapes(settlement) {
+        if (!RULES.settlementSoundscapes.enabled) {
+            return;
+        }
+        try {
+            const catalogue = await loadSettlementSoundscapes(gameState.get('worldConfig.campaignId') || 'core');
+            const metadata = gameState.get('world.metadata') || {};
+            const stored = metadata.settlements?.find(saved => saved.x === settlement.x && saved.y === settlement.y);
+            settlement.soundscapes ??= stored?.soundscapes;
+            metadata.soundscapeCatalogueVersion ??= catalogue.version;
+            prepareSettlementSoundscapes(settlement, { seed: gameState.get('seed'), catalogue,
+                catalogueVersion: metadata.soundscapeCatalogueVersion });
+            gameState.set('world.metadata', metadata);
+        } catch (error) {
+            console.warn('Settlement soundscapes unavailable; services remain available:', error);
+        }
     }
 
     async performHostileAction(optionId) {
@@ -479,7 +549,7 @@ class SettlementManager {
             if (!saved) {
                 continue;
             }
-            for (const field of ['passiveFlags', 'intelStatus', 'relations', 'questIds']) {
+            for (const field of ['passiveFlags', 'intelStatus', 'relations', 'questIds', 'buildingAppearance', 'gender']) {
                 if (saved[field] !== undefined) {
                     npc[field] = JSON.parse(JSON.stringify(saved[field]));
                 }
@@ -521,7 +591,7 @@ class SettlementManager {
             window.game.worldGenerator.worldMetadata = metadata;
         }
 
-        console.log(`🗺️ [SettlementManager] Bound dungeon (${dungeonX},${dungeonY}) to quest ${questId} (item: ${itemName})`);
+        console.log(`[SettlementManager] Bound dungeon (${dungeonX},${dungeonY}) to quest ${questId} (item: ${itemName})`);
     }
 }
 

@@ -1,0 +1,190 @@
+{
+  "mixes": [
+    {
+      "context": "village",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-village-lane-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "village",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-village-workyard-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "town",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-town-market-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "town",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-town-workcourt-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "city",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-city-market-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "city",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-city-street-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "tavern",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-tavern-v2.wav",
+          "duration": 30,
+          "volume": 0.6,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "tavern",
+      "index": "1",
+      "media": [
+        {
+          "src": "tavern-voices-v2.wav",
+          "duration": 30,
+          "volume": 0.55,
+          "loop": true
+        },
+        {
+          "src": "tavern-activity-v2.wav",
+          "duration": 30,
+          "volume": 0.14,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "merchant",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-merchant-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "merchant",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-merchant-v1.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "blacksmith",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-blacksmith-v1.wav",
+          "duration": 30,
+          "volume": 0.35,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "blacksmith",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-blacksmith-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "greathall",
+      "index": "0",
+      "media": [
+        {
+          "src": "settlement-greathall-v1.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "context": "greathall",
+      "index": "1",
+      "media": [
+        {
+          "src": "settlement-greathall-v2.wav",
+          "duration": 30,
+          "volume": 0.4,
+          "loop": true
+        }
+      ]
+    }
+  ],
+  "lifecycle": [
+    "village exterior stops at doorway, return muted",
+    "town exterior stops at doorway, return muted",
+    "city exterior stops at doorway, return muted",
+    "tavern stops on exit",
+    "merchant stops on exit",
+    "blacksmith stops on exit",
+    "greathall stops on exit",
+    "visibility event stops playback",
+    "hostile view removes exterior controls"
+  ],
+  "errors": []
+}

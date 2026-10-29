@@ -96,7 +96,7 @@
             "saveType": "resilience",
             "condition": "prone",
             "conditionDuration": "combat",
-            "conditionIcon": "🔻"
+            "conditionIcon": "condition.prone"
           }
         },
         "campaignIds": ["core"]
@@ -142,7 +142,7 @@
             "saveType": "composure",
             "condition": "frightened",
             "conditionDuration": "untilEndOfTurn",
-            "conditionIcon": "😱",
+            "conditionIcon": "condition.frightened",
             "dcContext": "menacingAttackDC"
           }
         },
@@ -256,7 +256,7 @@
             "saveType": "resilience",
             "condition": "disarmed",
             "conditionDuration": "untilStartOfTurn",
-            "conditionIcon": "🗡️",
+            "conditionIcon": "condition.disarmed",
             "conditionValue": -2
           }
         },
@@ -347,7 +347,7 @@
             "dcContext": "challengeDC",
             "condition": "taunted",
             "concentration": true,
-            "conditionIcon": "😤"
+            "conditionIcon": "condition.taunted"
           }
         },
         "campaignIds": ["core"]

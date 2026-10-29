@@ -484,9 +484,9 @@ export class GameState {
                 this.data.character.maxHP = 9999;
                 this.data.character.currentHP = 9999;
             }
-            console.log('🔧 Dev Mode ENABLED - 9999 HP, no combat encounters');
+            console.log('Dev Mode ENABLED - 9999 HP, no combat encounters');
         } else {
-            console.log('🔧 Dev Mode DISABLED');
+            console.log('Dev Mode DISABLED');
         }
 
         this.notify('devMode', this.data.devMode);
@@ -687,7 +687,7 @@ export class GameState {
             this.data.spells = spells.spells;
 
             console.log('[DEBUG loadStaticData] weaponMasteries hardcoded:', this.data.weaponMasteries);
-            console.log('✅ Static game data loaded');
+            console.log('Static game data loaded');
         } catch (error) {
             console.error('Failed to load static game data:', error);
         }
@@ -731,7 +731,7 @@ export class GameState {
             this.data.stats.playTime += 1000; // Add 1 second
         }, 1000);
 
-        console.log('⏱️ Playtime tracking started');
+        console.log('Playtime tracking started');
     }
 
     /**
@@ -750,7 +750,7 @@ export class GameState {
             this.sessionStartTime = null;
         }
 
-        console.log('⏱️ Playtime tracking stopped');
+        console.log('Playtime tracking stopped');
     }
 
     /**

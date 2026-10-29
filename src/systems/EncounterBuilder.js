@@ -340,7 +340,7 @@ export async function buildEncounter(options = {}) {
     }
 
     if (availableMonsters.length === 0) {
-        console.warn('⚠️ EncounterBuilder: No monsters available at all!');
+        console.warn('EncounterBuilder: No monsters available at all!');
         return { monsters: [], totalXP: 0, adjustedXP: 0, difficultyRating: difficultyTier, isBoss };
     }
 
@@ -460,7 +460,7 @@ async function buildMinionGroup(allMonsters, options) {
             dungeonPool = dungeonType.monsterPool;
         }
     } catch (e) {
-        console.warn('⚠️ Could not load dungeon types for minion selection');
+        console.warn('Could not load dungeon types for minion selection');
     }
 
     // Filter for minion-appropriate monsters (low CR relative to party level)
@@ -614,11 +614,11 @@ export async function buildBossEncounter(options = {}) {
             }
         }
     } catch (e) {
-        console.warn('⚠️ Could not load dungeon types for boss selection:', e);
+        console.warn('Could not load dungeon types for boss selection:', e);
     }
 
     if (!bossId) {
-        console.warn('⚠️ No boss ID found, falling back to regular deadly encounter');
+        console.warn('No boss ID found, falling back to regular deadly encounter');
         return buildEncounter({
             partySize, partyLevel,
             difficulty: 'deadly',
@@ -632,7 +632,7 @@ export async function buildBossEncounter(options = {}) {
     // Find the boss monster data
     const bossMonster = allMonsters.find(m => m.id === bossId);
     if (!bossMonster) {
-        console.warn(`⚠️ Boss monster "${bossId}" not found in monsters.json`);
+        console.warn(`Boss monster "${bossId}" not found in monsters.json`);
         return buildEncounter({
             partySize, partyLevel,
             difficulty: 'deadly',
@@ -675,7 +675,7 @@ export async function buildBossEncounter(options = {}) {
     // If encounter is too deadly, remove minions one by one until under budget
     const finalMinions = [...minions];
     while (adjustedXP > maxBossXP && finalMinions.length > 0) {
-        console.warn(`⚠️ Boss encounter too deadly (${adjustedXP} XP > ${maxBossXP} max) - removing minion`);
+        console.warn(`Boss encounter too deadly (${adjustedXP} XP > ${maxBossXP} max) - removing minion`);
         finalMinions.pop();
 
         // Recalculate XP

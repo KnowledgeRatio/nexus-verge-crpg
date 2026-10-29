@@ -93,7 +93,7 @@ When implementing a feature:
 5. **Wire into GameState** - What state needs persisting? Use `gameState.get/set`. Consider save/load compatibility.
 6. **Integrate with existing systems** - How does this connect to CombatManager, QuestManager, Character, etc.?
 7. **Handle edge cases** - Null equipment, level 1 characters, empty arrays, missing data, division by zero.
-8. **Add debug logging** - Follow existing emoji convention: `console.log('⚔️ Attack roll: ${roll}')`.
+8. **Add debug logging** - Use plain text with clear context, such as `console.log('Attack roll:', roll)`. Do not add emoji to logs or player-facing prose; interface symbols use the shared semantic icon catalogue.
 9. **Expose to window** - For debug: `window.game.newSystem = this;`
 
 ## What You Do

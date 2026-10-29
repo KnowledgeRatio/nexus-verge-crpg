@@ -63,7 +63,9 @@ selection and save/load flows, not merely counting image files.
 
 The sponsor-approved tavern audio remains a separate decision. The
 [merchant, smith and great-hall sound briefs](building-interiors/soundscape-briefs.json)
-record approved starting briefs and the exact submitted requests. All three
-generation requests returned internal errors without usable media. Generation
-and audition remain outstanding; no runtime audio changed, and no new sound
-acceptance is claimed.
+record approved starting briefs and the original failed requests. Those requests
+returned internal errors without usable media on 2026-10-23. The connector
+subsequently returned usable generations on 2026-10-24. The sponsor then accepted
+the three selected local soundscapes and signed off issue #59 that day. They
+remain excluded from public builds; listening acceptance does not establish
+release clearance or acceptance of the broader audio identity. Tavern audio is unchanged.

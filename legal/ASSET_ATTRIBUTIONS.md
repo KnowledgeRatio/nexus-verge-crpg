@@ -335,6 +335,17 @@ reusable illustrative stand-ins, not generated-NPC likenesses. The current
 catalogue and provenance are documented in `docs/art/building-interiors/`;
 no third-party licence or exclusive rights are asserted by this entry.
 
+The 2026-10-24 procedural-people expansion adds separately generated transparent
+barkeep, merchant and patron illustrations for independent assignment to NPCs.
+The exact generated files, prompts, references and any processing are recorded
+in the [procedural people generation manifest](../docs/art/building-interiors/procedural-people-generation-manifest.json).
+These use OpenAI image generation and the project's written illustrated-interior
+direction, with no reference images submitted. The manifest records 19 outputs
+copied unchanged into the project. Reused 2026-10-23 images retain their provenance above. This entry
+records generation history; it does not assert third-party licence clearance,
+exclusive rights or a likeness of a real person. Final delivered coverage and
+validation are recorded in the [implementation report](../docs/reports/2026-10-24-procedural-building-people.md).
+
 `data/sound/tavern-ambience-v1.wav` was generated with ElevenLabs
 `eleven_text_to_sound_v2` on 2026-10-23, generation `Wuv02Xke4rAqXC6amv42`.
 The eight-second source was converted to PCM with `afconvert` and given a
@@ -348,6 +359,62 @@ ElevenLabs-generated audition stems from 2026-10-23, flow
 `o1OausvqpDiro3uGL8Wn` respectively. MP3 outputs were converted to PCM WAV with
 `afconvert`, without an additional crossfade. Exact prompts/settings and source
 terms limitations are recorded in `docs/art/tavern-study/audio-v2-provenance.md`.
+
+### Settlement soundscape candidates — local review only
+
+On 2026-10-24, the connected ElevenLabs creative tools generated twelve
+30-second candidates using `eleven_text_to_sound_v2`, flow
+`ScDJRu6ck1X1AZIIxbbR`, with `loop: true` and `prompt_influence: 0.65`.
+Three selected candidates are retained under ignored `data/audio/local/`:
+
+| Local audition file | Source generation | Take |
+| --- | --- | --- |
+| `settlement-merchant-v1.wav` | `6wK6m6tBRHGlFFFotznL` | 3 |
+| `settlement-blacksmith-v1.wav` | `zwhdkskf4hfy5nkJXACD` | 2 |
+| `settlement-greathall-v1.wav` | `U3tmpNxQOyFT2loBa9yt` | 4 |
+
+MP3 sources were decoded with `afconvert` to signed 16-bit PCM WAV and adjusted
+using constant gain toward -42 dBFS RMS. No additional sounds, compression,
+resampling or crossfade were applied. Source/output hashes, generation records
+and measurements are retained in the
+[generation manifest](../docs/art/building-interiors/soundscape-generation-manifest.json).
+Measured signal quality and the provider loop flag do not establish listening
+approval. The sponsor separately accepted the three selected local outputs and
+signed off issue #59 on 2026-10-24; this is listening acceptance, not release
+clearance. The existing tavern files are unchanged by this addition.
+
+These candidates are for local in-game audition only, excluded from public
+builds and source distribution, and are not offered under the repository MIT
+or SRD CC BY licences. Generation-account commercial entitlement has not been
+independently established; a reported paid subscription does not identify the
+connected account's applicable entitlement.
+
+Terms checked 2026-10-24: [ElevenCreative Terms, Exhibit 4 section 2](https://elevenlabs.io/creative-terms)
+permits incorporation into games subject to the underlying agreement and plan,
+but restricts standalone distribution, isolated audio files and sound libraries.
+The [UK/EEA Terms, section 1(c)](https://elevenlabs.io/terms-of-use-eu) distinguishes
+paid commercial use from free noncommercial use; the applicable agreement
+depends on the account holder. Before commercial release, retain entitlement
+evidence and review the intended game delivery against those terms. Public
+isolated audio or reusable-library distribution requires separate express
+permission. Listening approval is separate from release clearance. This record
+does not assert exclusive rights or grant downstream asset reuse rights.
+
+### Additional settlement soundscape variations — private candidates
+
+Ten further takes were generated on 2026-10-24 through connected ElevenLabs
+creative tools, model `eleven_text_to_sound_v2`, flow `n4eCU5QS1N4N2ABJD7g6`:
+one alternative per building and two exterior takes per village/town/city.
+Requests used 30 seconds, `loop: true` and `prompt_influence: 0.65`. Exact prompts,
+generation IDs, original MP3s, decoded WAVs, constant-gain processing and hashes
+are recorded in the [variants manifest](../docs/art/building-interiors/soundscape-variants-generation-manifest.json).
+Final `settlement-*-v2.wav` files remain under ignored `data/audio/local/` and are
+excluded from public packages together with their `localOnly` catalogue entries.
+Provider-reported total generation cost is $0.1818; this is not an invoice audit
+or evidence of account entitlement. These candidates have no sponsor listening
+approval. Existing accepted files remain unchanged. The same private-review and
+release boundaries above apply; this entry makes no new licence or exclusive-rights
+claim. See the [implementation report](../docs/reports/2026-10-24-soundscape-variety.md).
 
 The historical `data/graphics/interiors/tavern-common-room-v1.glb` is original procedural room
 geometry authored by `tools/tavern-art/build-room.mjs`, with original procedural

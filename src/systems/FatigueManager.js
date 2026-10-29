@@ -125,10 +125,10 @@ export function addFatigue(amount, _source = 'movement', character = null) {
         state.exhaustionLevels = Math.min(maxExhaustionLevel, state.exhaustionLevels + 1);
         newPct = RULES.fatigue.exhaustionTriggerResetTo;
         const msg = state.exhaustionLevels >= maxExhaustionLevel
-            ? '☠️ Total exhaustion — death approaches.'
-            : `😩 Exhaustion sets in! (Level ${state.exhaustionLevels}) — find a safe place to rest.`;
+            ? 'Total exhaustion — death approaches.'
+            : `Exhaustion sets in! (Level ${state.exhaustionLevels}) — find a safe place to rest.`;
         gameState.addMessage(msg, 'error');
-        _showFloatingFatigueText('SPENT! 💀');
+        _showFloatingFatigueText('SPENT!');
     } else {
         const newThreshold = getThresholdName(newPct);
         if (newThreshold !== prevThreshold) {
@@ -157,7 +157,7 @@ export function removeFatigue(amount) {
     gameState.set('fatigue', state);
 
     if (prev > 0) {
-        gameState.addMessage(`🏕️ You make camp and rest. Fatigue reduced to ${Math.round(state.current)}%.`, 'success');
+        gameState.addMessage(`You make camp and rest. Fatigue reduced to ${Math.round(state.current)}%.`, 'success');
     }
     _updateFatigueHUD();
 }
@@ -185,19 +185,19 @@ export function applyLongRestFatigue() {
         state.supplies -= RULES.fatigue.suppliesPerLongRest;
         suppliesConsumed = RULES.fatigue.suppliesPerLongRest;
         state.suppliesZeroStreak = 0;
-        gameState.addMessage(`🎒 Supplies consumed. ${state.supplies} remaining.`, 'info');
+        gameState.addMessage(`Supplies consumed. ${state.supplies} remaining.`, 'info');
     } else {
         // No supplies
         state.suppliesZeroStreak++;
         hpRecoveryMultiplier = RULES.fatigue.suppliesZeroHPRecovery;
-        gameState.addMessage('⚠️ No supplies! HP recovery halved.', 'warning');
+        gameState.addMessage('No supplies! HP recovery halved.', 'warning');
 
         if (state.suppliesZeroStreak >= RULES.fatigue.suppliesZeroExhaustionRests) {
             const maxExhaustionLevel = RULES.fatigue.maxExhaustionLevels;
             state.exhaustionLevels = Math.min(maxExhaustionLevel, state.exhaustionLevels + 1);
             state.suppliesZeroStreak = 0;
             exhaustionGained = 1;
-            gameState.addMessage(`😩 Hunger sets in — Exhaustion Level ${state.exhaustionLevels} gained.`, 'error');
+            gameState.addMessage(`Hunger sets in — Exhaustion Level ${state.exhaustionLevels} gained.`, 'error');
         }
     }
 
@@ -210,9 +210,9 @@ export function applyLongRestFatigue() {
         state.exhaustionLevels--;
         exhaustionCleared = 1;
         if (state.exhaustionLevels === 0) {
-            gameState.addMessage('✅ Exhaustion cleared.', 'success');
+            gameState.addMessage('Exhaustion cleared.', 'success');
         } else {
-            gameState.addMessage(`😴 Exhaustion reduced to Level ${state.exhaustionLevels}.`, 'info');
+            gameState.addMessage(`Exhaustion reduced to Level ${state.exhaustionLevels}.`, 'info');
         }
     }
 
@@ -254,12 +254,12 @@ export function calcMovementFatigue(movementCost, character) {
 
 function _onThresholdCrossed(name) {
     const messages = {
-        wearied: { msg: '😴 You feel wearied. (−1 skill checks)', type: 'warning', float: 'WEARIED 😴' },
-        tired: { msg: '😩 You feel tired. (−1 skills & attacks)', type: 'warning', float: 'TIRED 😩' },
+        wearied: { msg: 'You feel wearied. (−1 skill checks)', type: 'warning', float: 'WEARIED' },
+        tired: { msg: 'You feel tired. (−1 skills & attacks)', type: 'warning', float: 'TIRED' },
         staggering: {
-            msg: '⚠️ You are staggering with exhaustion! (Disadvantage on attacks & skills)',
+            msg: 'You are staggering with exhaustion! (Disadvantage on attacks & skills)',
             type: 'error',
-            float: 'STAGGERING ⚠️'
+            float: 'STAGGERING'
         }
     };
     const entry = messages[name];

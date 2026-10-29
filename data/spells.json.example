@@ -47,7 +47,7 @@
         }
       },
       "visualFeedback": {
-        "icon": "✨",
+        "icon": "resource.resolve",
         "message": "{casterName} fires {count} glowing missiles!",
         "animation": "missiles"
       }
@@ -101,7 +101,7 @@
         }
       },
       "visualFeedback": {
-        "icon": "🔥",
+        "icon": "damage.fire",
         "message": "{casterName} unleashes a massive fireball!",
         "animation": "explosion"
       }
@@ -166,7 +166,7 @@
         }
       },
       "visualFeedback": {
-        "icon": "✝️",
+        "icon": "action.heal",
         "message": "{casterName} blesses {targetNames}!",
         "animation": "goldGlow"
       }

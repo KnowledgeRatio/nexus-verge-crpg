@@ -23,12 +23,21 @@ This document defines the structure of all JSON data files used in the game.
 12. [Names](#names)
 13. [Save Game State](#save-game-state)
 14. [Building Interior Presentation](#building-interior-presentation)
+15. [Interface Icon References](#interface-icon-references)
 
 ---
 
+## Interface Icon References
+
+Presentation `icon` fields in abilities, monsters and traits, and terrain `symbol` fields, use semantic catalogue IDs such as `condition.prone`, `equipment.weapons` and `terrain.water`, not emoji glyphs. These are presentation references and do not define mechanics. Source geometry and aliases live in `src/ui/iconCatalogue.js`; `src/ui/Iconography.js` handles DOM/canvas rendering and legacy saved glyphs.
+
+Runtime conditions require a truthy `icon` for symbol visibility: null, empty, undefined and false stay hidden even for recognized types. For visible conditions, a recognized type takes precedence over its stored icon and aliases resolve to canonical IDs; unknown types with unrecognized icons use a generic buff/debuff mark. Rendering does not mutate saved condition payloads. Keep prose descriptions free of SVG markup and catalogue IDs.
+
+Generated `data/icons/catalogue.json` maps each semantic ID to `{ label, file, master }`; aliases have their own exported SVG filenames and identify the shared master. Regenerate via `node scripts/generate-icons.mjs`. See the [iconography library](art/iconography/README.md) for authoring and validation status.
+
 ## Building Interior Presentation
 
-**File:** `data/buildingInteriors.json`
+**Files:** `data/buildingInteriors.json`, `data/buildingPeople.json`
 
 Maps `tavern`, `merchant`, `blacksmith` and `greathall` to presentation defaults
 and a `variants` array. Each variant supplies `image` and `alt` and may shallowly
@@ -38,9 +47,74 @@ slots specify an image, percentage coordinates/width and optional NPC `roles`;
 body. Optional `glow` and `ambience` configure lighting decoration and audio
 tracks. These fields do not create NPCs, services or tradable items.
 
-Selection hashes settlement identity plus building type without consuming world
-RNG or writing save state. See the [field reference and variant contract](art/building-interiors/README.md#data-and-implementation)
-for override semantics, identity fallback and the study-only selector.
+With `RULES.buildingPresentation.proceduralPeople.enabled`, rooms have stable
+`id`, `introducedVersion` and `campaignIds`; `legacyVariantIds` freezes the old
+two-room mapping. Slots add stable `id` and composition `profile`. Their `image`
+remains the fixed-art rollback value; procedural rendering resolves the NPC's
+saved artwork from the separate people catalogue.
+
+`buildingPeople.json` contains integer `version` and `people[]`. Each entry has
+`id`, `image`, eligible `roles[]`, compatible `profiles[]`, `campaignIds` and
+`introducedVersion`. Optional `identityConstraints` maps explicit NPC fields to
+allowed values; missing NPC fields impose no constraint. Role/profile matching
+does not infer gender or anatomy from names or culture. Campaign filtering occurs
+once on load; version filtering uses the saved catalogue version.
+
+All 28 current artwork entries specify `identityConstraints.gender` as `["male"]`
+or `["female"]`. Generated NPCs now persist `gender` from the existing naming
+draw; this captures the original choice without another RNG draw or changing
+names. On settlement entry, saved gender restores before artwork assignment.
+For an old NPC missing gender, the generator replays the original seeded roster
+and copies gender only when both ID and name match. Unmatched/custom records
+remain unspecified; names and culture are not used to guess gender.
+
+`settlement.buildingPresentation` stores `schemaVersion`, `algorithmVersion`,
+`catalogueVersion`, a separate presentation `seed`, and `buildings[type]` records
+with `roomId` and `slots` mapping slot IDs to NPC IDs or deliberate `null` omissions.
+Each NPC stores `buildingAppearance: { artworkId }`, also permitting `null`.
+`world.metadata.buildingPresentationCatalogueVersion` pins new assignments in a
+saved world. Room receipts are prepared during finite-world generation; people
+bind after actual NPC restoration/creation. The renderer only resolves receipts.
+Persistent settlements, metadata and NPC Map copies are reconciled through the
+existing state/save paths, including the explicit appearance restoration field.
+
+Catalogue ordering does not affect fresh selection; existing saved IDs survive
+pool expansion. Future additions must increment catalogue `version` and set
+their `introducedVersion` accordingly. Missing or incompatible saved artwork IDs
+receive deterministic repairs, including a one-time gender mismatch correction;
+failed image requests do not reroll saved identity. Old saves receive missing
+receipts through ordinary load/entry paths, preserving the legacy room mapping
+where available. No migration script is required. See the
+[field reference and variant contract](art/building-interiors/README.md#data-and-implementation)
+for presentation fallback, authoring and study controls.
+
+### Settlement and building soundscapes
+
+`data/settlementSoundscapes.json` contains integer `version` and `village`, `town`,
+`city` arrays of exterior mixes. Building pools remain in the base
+`data/buildingInteriors.json` entries' `ambience` arrays. A mix has stable `id`,
+`label`, `campaignIds`, `introducedVersion`, optional `settlementTypes`, optional
+`localOnly`, and `tracks[]` with `url`/`volume`. Current local pools contain two
+mixes per size and two per building. The soundscape loader campaign-filters once;
+resolution filters by settlement size and saved catalogue version.
+
+`settlement.soundscapes` stores `schemaVersion: 1`, `catalogueVersion`,
+`exteriorMixId` and `buildings` mapping building types to mix IDs (or `null`).
+`world.metadata.soundscapeCatalogueVersion` pins additions for unvisited places.
+Selection sorts stable IDs and uses a separate world/settlement/context seed,
+independent of room artwork and gameplay RNG. World generation prepares receipts;
+ordinary load/settlement entry fills missing keys and reconciles saved copies.
+Keep IDs stable; future additions increment the catalogue version and set their
+introduction version accordingly.
+
+Unavailable saved mix IDs are retained, including private IDs loaded in a public
+build. Resolution uses the first sorted available compatible mix without rewriting
+that receipt, or exposes no controls when the pool is empty. Manual Sound selection
+is local to the mounted controls and does not change the saved choice. Playback
+always starts muted. `RULES.settlementSoundscapes.enabled` gates exterior ambience
+and seeded mix resolution; existing building ambience remains the fallback path.
+The build strips `localOnly` mixes from both catalogues and excludes ignored local
+audio. See the [variety report](reports/2026-10-24-soundscape-variety.md).
 
 ## Classes
 **File:** `data/classes.json`

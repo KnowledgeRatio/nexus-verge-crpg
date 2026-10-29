@@ -1,0 +1,275 @@
+{
+  "version": 2,
+  "village": [
+    {
+      "id": "village-lane-v2",
+      "label": "Quiet lane",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-village-lane-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "id": "village-workyard-v2",
+      "label": "Village workyard",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-village-workyard-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    }
+  ],
+  "town": [
+    {
+      "id": "town-market-v2",
+      "label": "Town market",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-market-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "id": "town-workcourt-v2",
+      "label": "Town workcourt",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-workcourt-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "id": "town-music-kethara-v1",
+      "label": "Kethara · strings and frame drum",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "kethara"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-kethara-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "town-music-vaethori-v1",
+      "label": "Vaethori · reed and strings",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "vaethori"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-vaethori-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "town-music-verathi-v1",
+      "label": "Verathi · answering strings and reed",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "verathi"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-verathi-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "town-music-sirathi-v1",
+      "label": "Sirathi · solo strings",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "sirathi"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-town-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-sirathi-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    }
+  ],
+  "city": [
+    {
+      "id": "city-street-v2",
+      "label": "City street",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-street-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "id": "city-market-v2",
+      "label": "City market",
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1,
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-market-v2.wav",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "id": "city-music-kethara-v1",
+      "label": "Kethara · strings and frame drum",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "kethara"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-kethara-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "city-music-vaethori-v1",
+      "label": "Vaethori · reed and strings",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "vaethori"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-vaethori-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "city-music-verathi-v1",
+      "label": "Verathi · answering strings and reed",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "verathi"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-verathi-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "id": "city-music-sirathi-v1",
+      "label": "Sirathi · solo strings",
+      "campaignIds": [
+        "nexus-verge"
+      ],
+      "introducedVersion": 2,
+      "cultureIds": [
+        "sirathi"
+      ],
+      "localOnly": true,
+      "tracks": [
+        {
+          "url": "data/audio/local/settlement-city-market-v2.wav",
+          "volume": 0.4
+        },
+        {
+          "url": "data/audio/local/settlement-music-sirathi-v1.wav",
+          "volume": 0.6
+        }
+      ]
+    }
+  ]
+}

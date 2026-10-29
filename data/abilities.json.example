@@ -27,7 +27,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "💪",
+        "icon": "action.heal",
         "message": "{casterName} takes a deep breath and recovers {amount} HP!",
         "animation": "greenGlow"
       }
@@ -60,7 +60,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "⚡",
+        "icon": "action.react",
         "message": "{casterName} surges with energy and gains an extra action!",
         "animation": "blueGlow"
       }
@@ -94,7 +94,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🌀",
+        "icon": "action.dodge",
         "message": "{casterName} whirls away from the attack!",
         "animation": "spinDodge"
       }

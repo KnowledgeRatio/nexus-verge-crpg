@@ -55,9 +55,9 @@ class SkillChallengeManager {
             }
             this.terrainChallengesData = await response.json();
             this.buildTerrainIndex();
-            console.log(`✅ Loaded ${Object.keys(this.terrainChallengesData.challenges || {}).length} terrain challenges`);
+            console.log(`Loaded ${Object.keys(this.terrainChallengesData.challenges || {}).length} terrain challenges`);
         } catch (error) {
-            console.error('❌ Failed to load terrain challenges:', error);
+            console.error('Failed to load terrain challenges:', error);
             this.terrainChallengesData = { challenges: {}, balancing: { triggerFrequencyModifiers: { terrain_base: 0.1 } } };
         }
     }
@@ -73,7 +73,7 @@ class SkillChallengeManager {
             this.skillsData = skillsJson.skills || [];
             skillRegistry.setDefinitions(this.skillsData);
         } catch (error) {
-            console.error('❌ Failed to load skills.json:', error);
+            console.error('Failed to load skills.json:', error);
             this.skillsData = [];
         }
     }
@@ -86,7 +86,7 @@ class SkillChallengeManager {
             const response = await fetch(`data/skillChallenges/bandit-negotiation.json?v=${Date.now()}`);
             const challengeData = await response.json();
             this.challenges.set(challengeData.id, challengeData);
-            console.log(`⚔️  Loaded skill challenge: ${challengeData.id}`);
+            console.log(`Loaded skill challenge: ${challengeData.id}`);
         } catch (error) {
             console.error('Failed to load skill challenges:', error);
         }
@@ -158,7 +158,7 @@ class SkillChallengeManager {
                     const reveal = this.processText(check.reveal);
                     this.revealedInfo.add(reveal);
                     const message = this.getRevealMessage(reveal, this.currentChallenge.context);
-                    gameState.addMessage(`💡 ${message}`, 'info');
+                    gameState.addMessage(`${message}`, 'info');
                 }
 
                 // Unlock additional dialogue options
@@ -168,9 +168,9 @@ class SkillChallengeManager {
                     });
                 }
 
-                console.log(`✓ Passive ${check.skill} (${passiveScore} vs DC ${check.dc})`);
+                console.log(`Passed passive ${check.skill} (${passiveScore} vs DC ${check.dc})`);
             } else {
-                console.log(`✗ Passive ${check.skill} (${passiveScore} vs DC ${check.dc})`);
+                console.log(`Failed passive ${check.skill} (${passiveScore} vs DC ${check.dc})`);
             }
         });
     }
@@ -205,8 +205,8 @@ class SkillChallengeManager {
 
         // Log to challenge history
         const skillName = check.skill.charAt(0).toUpperCase() + check.skill.slice(1);
-        const emoji = success ? '✓' : '✗';
-        this.addToHistory('system', `${emoji} ${skillName}: ${naturalRoll} + ${skillMod} = ${total} vs DC ${check.dc}`);
+        const resultLabel = success ? 'Success' : 'Failure';
+        this.addToHistory('system', `${resultLabel}: ${skillName}: ${naturalRoll} + ${skillMod} = ${total} vs DC ${check.dc}`);
 
         // Apply tension changes
         if (success && check.onSuccess?.tensionChange) {
@@ -351,9 +351,9 @@ class SkillChallengeManager {
         this.tension = Math.max(0, Math.min(100, this.tension + change));
 
         if (change > 0) {
-            gameState.addMessage(`⚠️  Tension rises (${Math.floor(this.tension)}/100)`, 'warning');
+            gameState.addMessage(`Tension rises (${Math.floor(this.tension)}/100)`, 'warning');
         } else if (change < 0) {
-            gameState.addMessage(`😌 Tension eases (${Math.floor(this.tension)}/100)`, 'info');
+            gameState.addMessage(`Tension eases (${Math.floor(this.tension)}/100)`, 'info');
         }
 
         console.log(`Tension: ${oldTension} → ${this.tension} (${change > 0 ? '+' : ''}${change})`);
@@ -394,7 +394,7 @@ class SkillChallengeManager {
         // Handle different outcomes
         switch (outcome) {
             case 'combat':
-                gameState.addMessage('⚔️  Negotiations failed - combat begins!', 'error');
+                gameState.addMessage('Negotiations failed - combat begins!', 'error');
                 this.triggerCombat(context);
                 break;
 
@@ -402,12 +402,12 @@ class SkillChallengeManager {
             case 'peaceful_wronged':
             case 'peaceful_opportunists':
             case 'peaceful':
-                gameState.addMessage('✅ Peaceful resolution achieved.', 'success');
+                gameState.addMessage('Peaceful resolution achieved.', 'success');
                 this.completeQuestObjective(context, outcome);
                 break;
 
             case 'bribe_accepted':
-                gameState.addMessage('💰 They accept your offer and depart.', 'success');
+                gameState.addMessage('They accept your offer and depart.', 'success');
                 this.completeQuestObjective(context, outcome);
                 break;
 
@@ -559,7 +559,7 @@ class SkillChallengeManager {
         // --- trueParty synergy bonus ---
         const synergyBonus = this._getSynergyBonus();
 
-        console.log(`🎯 Skill [${skillId}]: player ${playerBase} + companions ${companionContribution} + synergy ${synergyBonus}`);
+        console.log(`Skill [${skillId}]: player ${playerBase} + companions ${companionContribution} + synergy ${synergyBonus}`);
         return playerBase + companionContribution + synergyBonus;
     }
 
@@ -757,7 +757,7 @@ class SkillChallengeManager {
      * @param {Object} critData - Critical success data
      */
     handleCriticalSuccess(critData) {
-        gameState.addMessage('🎲 CRITICAL SUCCESS!', 'success');
+        gameState.addMessage('CRITICAL SUCCESS!', 'success');
 
         if (critData.tensionChange) {
             this.modifyTension(critData.tensionChange);
@@ -773,7 +773,7 @@ class SkillChallengeManager {
      * @param {Object} critData - Critical failure data
      */
     handleCriticalFailure(critData) {
-        gameState.addMessage('🎲 CRITICAL FAILURE!', 'error');
+        gameState.addMessage('CRITICAL FAILURE!', 'error');
 
         if (critData.tensionChange) {
             this.modifyTension(critData.tensionChange);
@@ -857,7 +857,7 @@ class SkillChallengeManager {
                 }
             }
         }
-        console.log(`✅ Built terrain index for ${Object.keys(this.terrainChallengeIndex).length} terrain types`);
+        console.log(`Built terrain index for ${Object.keys(this.terrainChallengeIndex).length} terrain types`);
     }
 
     /**
@@ -1045,7 +1045,7 @@ class SkillChallengeManager {
             if (Math.random() < chance) {
                 const lootManager = window.lootManager;
                 if (!lootManager) {
-                    console.warn('⚠️ SkillChallengeManager.applyConsequences: window.lootManager not available');
+                    console.warn('SkillChallengeManager.applyConsequences: window.lootManager not available');
                 } else {
                     const rolls = lootSpec.rolls ?? 1;
                     const playerLevel = character.level || 1;

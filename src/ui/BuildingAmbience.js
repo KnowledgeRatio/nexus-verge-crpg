@@ -1,4 +1,10 @@
-export function mountBuildingAmbience(host, mixes, signal) {
+export function mountBuildingAmbience(host, mixes, parentSignal, { initialMixId, levelLabelText = 'Room level' } = {}) {
+    if (!mixes?.length || parentSignal.aborted) {
+        return { dispose() {} };
+    }
+    const lifetime = new window.AbortController();
+    const { signal } = lifetime;
+    parentSignal.addEventListener('abort', () => lifetime.abort(), { once: true, signal });
     const manager = window.game?.audioManager;
     const label = document.createElement('label');
     label.className = 'building-sound-choice';
@@ -10,6 +16,8 @@ export function mountBuildingAmbience(host, mixes, signal) {
         option.textContent = mix.label;
         select.append(option);
     });
+    const initialIndex = mixes.findIndex(mix => mix.id === initialMixId);
+    select.value = String(initialIndex < 0 ? 0 : initialIndex);
     label.append(select);
     label.hidden = mixes.length === 1;
     const button = document.createElement('button');
@@ -17,7 +25,7 @@ export function mountBuildingAmbience(host, mixes, signal) {
     button.className = 'building-ambience-toggle';
     const levelLabel = document.createElement('label');
     levelLabel.className = 'building-sound-choice';
-    levelLabel.textContent = 'Room level ';
+    levelLabel.textContent = `${levelLabelText} `;
     const level = document.createElement('input');
     level.type = 'range';
     level.min = '0';
@@ -98,6 +106,11 @@ export function mountBuildingAmbience(host, mixes, signal) {
         if (wanted || tracks.some(track => !track.audio.paused)) {
             stop();
         } else {
+            // A failed media element retains its network/decode error. Recreate
+            // the mix so retry actually requests the source again.
+            if (failure) {
+                prepare();
+            }
             void play();
         }
     }, { signal });
@@ -126,5 +139,5 @@ export function mountBuildingAmbience(host, mixes, signal) {
     }, { signal });
     host.append(label, button, levelLabel);
     prepare();
-    return { dispose: release };
+    return { dispose: () => lifetime.abort() };
 }

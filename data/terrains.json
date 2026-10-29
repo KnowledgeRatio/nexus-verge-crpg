@@ -188,7 +188,7 @@
     {
       "id": "sanctuary",
       "name": "Sanctuary",
-      "symbol": "⛩️",
+      "symbol": "map.sanctuary",
       "color": "#f0e68c",
       "tileImage": "sanctuary-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a small roadside waystation shelter — a simple wood-and-stone lean-to with a modest hearth-ring and bench — set on a small cleared patch of open ground. No people, animals, other structures, roads, or water.",
@@ -284,7 +284,7 @@
     {
       "id": "town",
       "name": "Town",
-      "symbol": "🏘️",
+      "symbol": "map.settlement",
       "color": "#d4af37",
       "tileImage": "town-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a dense cluster of medieval stone-and-timber rooftops along narrow winding streets, roof materials varied between thatch and slate. No people, animals, banners, roads leading off the tile, or water.",
@@ -414,7 +414,7 @@
     {
       "id": "cave",
       "name": "Cave Entrance",
-      "symbol": "🕳️",
+      "symbol": "map.dungeon",
       "color": "#3d3d3d",
       "tileImage": "cave-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a rocky outcrop with a single dark cave opening at its centre, bare stone surface with sparse scrub growth at the edges. No light source, glow, bones, carvings, treasure, or creatures — the opening reads as a plain unlit gap in the rock, not clearly safe or clearly dangerous.",
@@ -432,7 +432,7 @@
     {
       "id": "ruins",
       "name": "Ruins",
-      "symbol": "🏛️",
+      "symbol": "map.ruins",
       "color": "#7a7a7a",
       "tileImage": "ruins-cartographic-v1.png",
       "imageDescription": "Directly overhead view of weathered stone wall fragments and a broken foundation outline scattered with rubble. One small wall fragment carries a single riftborn material-impossibility accent — stone showing the sharp fracture pattern of shattered glass in one patch that flows smoothly into unbroken, liquid-poured continuity in the next, confined to that one fragment. No visible entrance stairway, glow, carvings, bones, or creatures elsewhere in the frame — the ruin reads as simply old, not clearly safe or clearly dangerous.",
@@ -450,7 +450,7 @@
     {
       "id": "temple",
       "name": "Shrine",
-      "symbol": "🛕",
+      "symbol": "map.temple",
       "color": "#c9a86a",
       "tileImage": "temple-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a single small wayside stone shrine — drawn strictly as a flat architectural roof plan seen from vertically above, exactly as a floor plan is drawn: the building is one solid pale flat quadrilateral of stone roof lying flat on the ground plane, its four edges square to the viewer, with a row of small round column tops reading as a line of pale dots along one edge and one small darker altar rectangle set just beside them. Every surface lies flat in the picture plane; the walls are hidden beneath the roof and no side face, gable end, elevation, or cast shadow is visible anywhere. The building is large in frame and dominates the tile: its roof spans a full half of the tile width and a third of its height, centred, so it remains an obvious solid pale rectangle when the image is reduced to 32 pixels. A few small plain stone and metal votive tokens rest on the slab, unremarkable and non-luminous. One structure only: no additional buildings, outbuildings, hamlet, village, enclosing walls, or second shrine anywhere in the frame. The surrounding ground is flat muted olive-green open sward, quiet and much lower in detail than the building, carrying the same even painted grass texture and the same tone at the centre, at all four edges, and in all four corners alike. The image is a swatch cropped from the middle of a much larger continuous painted field: the grass runs off all four sides mid-stroke, and the outermost pixels are ordinary grass identical to the middle. No trees, no canopy, no scrub, no roads, no water. At thumbnail size this must read as one solid pale rectangle sitting on a mid-toned green field. Every shape in the tile lies flat in the picture plane, as on a surveyor's plan. No glass, no glazing, no domes, spheres, or orbs, no crystal, no reflective or iridescent surfaces, and no anomalous or out-of-place objects anywhere in the frame. No glow, worshippers, clergy, incense, candles, flowers, banners, dark stains, bones, or creatures — the shrine reads as simply old and quiet, not clearly safe or clearly dangerous.",
@@ -467,7 +467,7 @@
     {
       "id": "monastery",
       "name": "Cloister",
-      "symbol": "⛪",
+      "symbol": "map.sanctuary",
       "color": "#8a8f99",
       "tileImage": "monastery-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a single small hill farmstead of plain slate-roofed stone halls, arranged in a rough square around one open pale gravel yard, so the building group reads as a hollow rectangle with a light open centre. The roofs form a single band one room deep, spanning about three fifths of the tile width, centred, with clear open ground on all four sides, and the roof line is the tallest thing in the frame. Along one outer side lie a few narrow stepped terrace planting beds, uniform and without ornament, painted as flat stacked bands. Roofs are plain flat rectangles of slate and walls are plain unmarked stone. One farmstead only, with no other buildings, hamlet or village anywhere in the frame. The surrounding ground is flat pale cold grey stony open ground with sparse dark lichen flecks, quiet and much lower in detail than the buildings, carrying the same tone and texture at the centre, at all four edges and in all four corners alike, running off every side mid-stroke as if cropped from a much larger painted field. The ground is one flat level plane throughout, lit evenly from no particular direction. Every shape in the tile lies flat in the picture plane, as on a surveyor's plan. No glass, glazing, domes, spheres, crystal, or out-of-place objects anywhere in the frame. No glow, people, banners, or creatures — the buildings read as simply a plain walled steading, not clearly safe or clearly dangerous.",
@@ -484,7 +484,7 @@
     {
       "id": "camp",
       "name": "Camp",
-      "symbol": "⛺",
+      "symbol": "map.camp",
       "color": "#cd853f",
       "tileImage": "camp-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a very sparse small camp on open ground: two weathered canvas tents, one cold ash-grey firepit ring, and one or two plain wooden supply crates, every one of them drawn strictly as a flat plan seen from vertically above. Each tent is a flat elongated hexagonal canvas shape lying flat on the ground plane, divided down its long axis by one straight ridge line into two equal flat panels, with four short guy-rope lines running out to small stake dots — the shape of a tent as traced on a floor plan, lying entirely in the picture plane. Each crate is one small flat square. The firepit is one small flat dark circle. No more than five painted marks in total across the entire tile — each mark large, widely separated, with open ground between them. This is the sparsest tile in the set and must not be filled in. A single small camp only: no buildings, outbuildings, hamlet, village, palisade, wagons, or second camp anywhere in the frame. The surrounding ground is flat bare dust-tan trodden earth, quiet and much lower in detail than the tents, carrying the same even painted earth texture and the same tone at the centre, at all four edges, and in all four corners alike. The image is a swatch cropped from the middle of a much larger continuous painted field: the ground runs off all four sides mid-stroke, and the outermost pixels are ordinary trodden earth identical to the middle. No trees, no crops, no roads, no water. At thumbnail size this must read as a few small scattered marks on an open field, never as one solid mass. The canvas is plain and weathered, pitched over a straight ridge pole. Every shape in the tile lies flat in the picture plane, as on a surveyor's plan. No visible flame, smoke, banners, bones, or people — the camp reads as simply unoccupied, not clearly safe or clearly dangerous.",
@@ -501,7 +501,7 @@
     {
       "id": "watchtower",
       "name": "Watchtower",
-      "symbol": "🗼",
+      "symbol": "map.tower",
       "color": "#6b7280",
       "tileImage": "watchtower-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a single small round fortified stone tower standing alone on open ground, weathered but structurally intact. Seen from directly above the tower is one small hard-edged ring of cool grey stone with an evenly notched crenellated rim; the rooftop enclosed inside the ring is a pale solid stone floor, filled in light and flat like the rest of the plan. The tower is large in frame and dominates the tile: its ring spans a full two fifths of the tile width, centred, a bold heavy mark that stays obvious when the image is reduced to 32 pixels. One structure only: no courtyard, no attached wall, no palisade, no outbuildings, no second tower, and no hamlet or village anywhere in the frame. The surrounding ground is flat muted olive-brown upland grass, quiet and much lower in detail than the tower, carrying the same tone, the same texture, and the same mark density at the centre, at all four edges, and in all four corners alike. The image is a swatch cropped from the middle of a much larger continuous painted field: the ground runs off all four sides mid-stroke, and the outermost pixels are ordinary ground identical to the middle. No trees, no roads, no water. The ground is one flat level plane throughout, lit evenly from no particular direction, every part of it at the same height as every other part. Every shape in the tile lies flat in the picture plane, as on a surveyor's plan. No glass, no glazing, no domes, spheres, or orbs, no crystal, no reflective or iridescent surfaces, and no anomalous or out-of-place objects anywhere in the frame. No banners, guards, fire, glow, or creatures — the tower reads as simply a fortified structure, not clearly safe or clearly dangerous.",
@@ -518,7 +518,7 @@
     {
       "id": "villa",
       "name": "Villa",
-      "symbol": "🏡",
+      "symbol": "map.house",
       "color": "#c98a5a",
       "tileImage": "villa-cartographic-v1.png",
       "imageDescription": "Directly overhead view of a single modest countryside villa on open ground, composed as two clearly unequal zones: a solid warm terracotta-red tiled roof mass occupying one side of the tile, and beside it — not surrounding it — one bounded rectangular patch of broad, regular, deep-green ornamental garden beds inside a low stone wall. The two zones are deliberately asymmetric and different in colour, so the tile reads at thumbnail size as one warm red mass with a darker green patch set off to one side. Garden beds are broad and generously spaced, painted as loose hand-brushed rows with natural irregularity, never mechanically ruled or grid-aligned. One structure only: no additional buildings, outbuildings, cottages, hamlet, village, or second courtyard anywhere in the frame. The surrounding ground is flat pale straw-gold open grass, quiet and much lower in detail than the villa, filling the tile to every edge — no trees, no crop fields, no roads, no water. Every shape in the tile lies flat in the picture plane, as on a surveyor's plan. No glass, no glazing, no domes, spheres, or orbs, no crystal, no reflective or iridescent surfaces, and no anomalous or out-of-place objects anywhere in the frame. No people, banners, glow, or creatures — the estate reads as simply a rural dwelling, not clearly safe or clearly dangerous.",
@@ -563,7 +563,7 @@
     {
       "id": "denseForest",
       "name": "Dense Forest",
-      "symbol": "♣",
+      "symbol": "map.tree",
       "color": "#1a3a0f",
       "tileImage": "denseForest-cartographic-atlas-v1.png",
       "imageDescription": "Continuous closed dense-forest canopy in cooler near-black teal than open forest. Canopy clusters must touch and overlap edge-to-edge with almost no gaps between them, so the pale ground substrate is barely visible anywhere in the image — this is a noticeably denser, more closed canopy than a normal forest, not a scattering of separated tree clumps with visible ground between them. Expressed with four to seven broad tightly overlapping canopy-mass ink clusters per notional world square, at a contrast band one step above forest's baseline. No clearing, path, water, mountain, or landmarks.",
@@ -647,7 +647,7 @@
     {
       "id": "jungle",
       "name": "Jungle",
-      "symbol": "♠",
+      "symbol": "map.tree",
       "color": "#2d6b22",
       "tileImage": "jungle-cartographic-atlas-v1.png",
       "imageDescription": "Continuous dense tropical-jungle canopy in deep saturated humid green, the most saturated hue in the terrain set. Canopy-mass clusters must touch and overlap edge-to-edge with almost no gaps between them, so the ground substrate is barely visible anywhere in the image — this must read as the single densest, most fully covered canopy in the whole terrain set, denser than denseForest. Expressed with five to eight broad densely overlapping broad-leaf canopy-mass ink clusters per notional world square and trailing vine-stroke accents filling any remaining small gaps, at the highest ink density and contrast band in its terrain group. This is a flat colour-field swatch, not a framed painting — there must be no border, frame, vignette, or aged-paper edge of any kind; canopy clusters must reach and touch all four edges and all four corners with zero exception, as if the visible canvas is a cropped sample cut from the middle of a much larger continuous canopy. No clearing, path, water, mountain, or landmarks.",
@@ -820,7 +820,7 @@
     {
       "id": "dungeonExit",
       "name": "Dungeon Exit",
-      "symbol": "▲",
+      "symbol": "map.exit",
       "color": "#ffd700",
       "tileImage": null,
       "traversable": true,
@@ -994,7 +994,7 @@
     {
       "id": "dungeonMushroom",
       "name": "Mushroom Grove",
-      "symbol": "♠",
+      "symbol": "map.mushroom",
       "color": "#9370db",
       "tileImage": null,
       "traversable": true,
@@ -1028,7 +1028,7 @@
     {
       "id": "snowForest",
       "name": "Snow Forest",
-      "symbol": "♣",
+      "symbol": "map.tree",
       "color": "#4a6741",
       "tileImage": "snowForest-cartographic-atlas-v1.png",
       "imageDescription": "Continuous closed conifer-forest canopy in cold slate-teal-green, expressed with four to seven broad overlapping canopy-mass ink clusters per notional world square and pale snow-load edge-dab accents along each canopy silhouette, at a medium-high contrast band. No clearing, path, open ground, water, or landmarks.",

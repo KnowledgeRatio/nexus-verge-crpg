@@ -41,7 +41,7 @@ export default class DialogueManager {
                 }
             };
 
-            console.log('💬 DialogueManager initialized');
+            console.log('DialogueManager initialized');
         } catch (e) {
             console.error('Failed to load dialogue data:', e);
         }

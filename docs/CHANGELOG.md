@@ -4,6 +4,46 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## 2026-10-24 — Local settlement soundscape variety
+
+Buildings now have two local mixes each; villages, towns and cities each have two
+exterior candidates. Separate seeded saved IDs choose defaults independently of
+room art, with temporary manual selectors and opt-in playback. Exterior sound
+stops at scene/visibility boundaries and returns muted. Ten new private candidates
+preserve the four accepted mixes; public builds strip private entries/binaries.
+The [variety report](reports/2026-10-24-soundscape-variety.md) records validation
+and audition instructions: 51 agent-run focused checks and a final 12-test rerun
+pass; fourteen mixes pass browser playback/lifecycle checks, build/private stripping
+and 12 legal checks pass. Both broad test attempts were interrupted after slow
+failures, so complete regression validation remains incomplete. New takes await sponsor listening approval; broader
+audio identity and release clearance remain separate. Nothing committed or deployed.
+
+## 2026-10-24 — Procedural building people, initial local slice
+
+Sponsor-authorised independent room/character pools are enabled for taverns,
+shops, smithies and halls. Stable saved IDs and separate presentation seeds keep
+return visits consistent without changing NPC generation or gameplay RNG.
+Existing two-room sets remain; role/composition filtering, duplicate suppression,
+old-save receipts and complete NPC-list fallback preserve service access.
+The delivered pool contains six barkeeps, twelve patrons, six merchants and two
+each of smiths/leaders. The full code suite passed 1,707 tests/153 files; final
+asset checks, 160-composition browser matrix, corrected 40-counter rerun and
+independent creative review passed. A controlled 41-settlement sample verified
+pool variety and real save/load persistence; this is not whole-campaign acceptance.
+See the [implementation report](reports/2026-10-24-procedural-building-people.md)
+for evidence and remaining visual limits. The larger proposed expansion is not
+marked implemented. Nothing committed or deployed.
+
+Same-day follow-up saves the existing name-generation gender draw and applies
+male/female constraints to all 28 existing images, without new assets or changed
+names/RNG. Old generated NPCs recover gender only through matching seeded ID/name
+replay; incompatible saved artwork is deterministically repaired. Study selectors
+use the same compatibility rules. Follow-up evidence is recorded separately in
+the linked report: all 1,715 tests/155 files pass, build passes, and a controlled
+41-settlement browser sample verifies gender-consistent assignments and save/load,
+including recovery of an old-save mismatch. The initial unrestricted composition
+matrix remains historical.
+
 ## 2026-10-18 — Quest culture-standing rewards
 
 The reputation slice of [#39](https://github.com/KnowledgeRatio/nexus-verge-crpg/issues/39) connects explicit ordinary quest rewards to real culture communities: issuer, issuer plus destination, or the campaign catalogue. Bound NPC rosters select cultures without duplicates; missing required communities warn without partial standing payout while other rewards/completion proceed. Authored amounts retain existing score clamps. Saved actual-change receipts prevent repeated awards; rich faction resolutions and personal bonuses avoid duplicate culture payout. UI previews name cultures and turn-in reports actual changes; the character sheet shows live scores.

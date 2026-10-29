@@ -1,0 +1,254 @@
+{
+  "version": 1,
+  "date": "2026-10-24",
+  "tool": "built-in image_gen.imagegen",
+  "model": "Not exposed by tool",
+  "referenceImagesSubmitted": [],
+  "directionSources": [
+    "docs/art/visual-direction.md",
+    "tools/image-gen/style-guide.md",
+    "docs/art/building-interiors/prompts.md",
+    "docs/world/WORLD.md",
+    "docs/world/PEOPLES.md"
+  ],
+  "processing": "None. Generated PNG files copied unchanged into project.",
+  "identityScope": "Anonymous adult visual representations; no inference from NPC name/culture, no canon identity or gameplay changes.",
+  "inspection": "All 19 individual outputs inspected for anatomy, clothing, crop and style. Root agent confirmed pilot barkeep in both taverns and existing merchant cross-room combinations; first patron browser composite and sampled outside-silhouette alpha passed. Full final combination review belongs to integration validation.",
+  "reusedAssets": [
+    "data/graphics/tavern-keeper-v1.png",
+    "data/graphics/tavern-patron-v1.png",
+    "data/graphics/tavern-guest-v1.png",
+    "data/graphics/merchant-keeper-v1.png",
+    "data/graphics/merchant-keeper-v2.png"
+  ],
+  "assets": [
+    {
+      "id": "tavern-keeper-v2",
+      "roles": [
+        "innkeeper"
+      ],
+      "path": "data/graphics/tavern-keeper-v2.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent illustrated game character cutout, one anonymous adult barkeep for a frontier tavern. Create a distinct older woman with deep brown skin, short greying tightly curled hair, broad face, attentive calm expression, sturdy build, faded slate-blue linen sleeves and a worn brown work apron. She holds a small plain pewter tankard and folded cloth near her waist; both hands anatomically natural and inside frame. High-detail photographic illustration with tactile worn linen/leather, matching detailed illustrated fantasy interiors, not oil-painted portrait or cartoon. Eye-level frontal view with slight natural turn; head to waist crop, shoulders and elbows wholly inside canvas; person fills width with narrow transparent margins, flat waist crop meets bottom edge. Warm soft front-left practical light, restrained cool fill from right; no hard cast shadow. Genuine transparent alpha background, no black/white/checkerboard backdrop, no halo, no room or furniture, no other people, no text or insignia, no modern objects. This is a separate compositing asset; no counter included.",
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-43a9325a-d71d-4742-afd4-4d40316fc6a5.png",
+      "transparent_background": true,
+      "composition": "tavern-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-keeper-v3",
+      "roles": [
+        "innkeeper"
+      ],
+      "path": "data/graphics/tavern-keeper-v3.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: An older pale-skinned bald man with a close white beard, lean build, weathered olive wool waistcoat over oatmeal linen sleeves, faded cloth apron; holds a folded drying cloth.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-fa98f3d8-81c6-4e7d-9880-0818bb664106.png",
+      "composition": "tavern-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-keeper-v4",
+      "roles": [
+        "innkeeper"
+      ],
+      "path": "data/graphics/tavern-keeper-v4.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A middle-aged woman with tawny skin, long black hair tied in a practical braid, angular face, russet linen shirt and dark work apron; holds a small plain ceramic cup.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-e6527668-059f-4d3c-8be9-8172c2c079fb.png",
+      "composition": "tavern-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-keeper-v5",
+      "roles": [
+        "innkeeper"
+      ],
+      "path": "data/graphics/tavern-keeper-v5.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A broad middle-aged man with dark brown skin, shaved head and short black beard, faded moss-green rolled sleeves and tan leather apron; holds a small plain wooden mug.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-d64368a0-90ea-4ff2-8cea-e011cbd02f4c.png",
+      "composition": "tavern-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-keeper-v6",
+      "roles": [
+        "innkeeper"
+      ],
+      "path": "data/graphics/tavern-keeper-v6.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A young adult woman with pale freckled skin, tied-back auburn hair, square face, cream linen sleeves under faded plum waistcoat and grey work apron; clasps a drying cloth at waist.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-ed2a4df5-ff77-415c-bfa6-06f8a59dd485.png",
+      "composition": "tavern-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "merchant-keeper-v3",
+      "roles": [
+        "merchant"
+      ],
+      "path": "data/graphics/merchant-keeper-v3.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: An older lean man with warm brown skin, short silver hair and clean-shaven angular face, faded blue-grey wool waistcoat over oatmeal linen sleeves; both hands loosely clasped near waist.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-00104499-0777-43c6-bee0-145e3d20baee.png",
+      "composition": "counter-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "merchant-keeper-v4",
+      "roles": [
+        "merchant"
+      ],
+      "path": "data/graphics/merchant-keeper-v4.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A middle-aged woman with dark brown skin, black hair in a compact bun, round face, muted ochre tunic and plain dark leather apron; holds a small folded cloth at waist.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-6c1b2856-bbfa-4c9d-8d64-b728ea364c8d.png",
+      "composition": "counter-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "merchant-keeper-v5",
+      "roles": [
+        "merchant"
+      ],
+      "path": "data/graphics/merchant-keeper-v5.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A pale middle-aged man with red-brown beard and receding hair, sturdy build, dull green wool vest with visible repairs and rolled linen sleeves; empty hands relaxed near waist.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-f8c55f81-4a27-4943-8c82-e5c92f31b3c2.png",
+      "composition": "counter-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "merchant-keeper-v6",
+      "roles": [
+        "merchant"
+      ],
+      "path": "data/graphics/merchant-keeper-v6.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Head-to-waist portrait crop, upper body fills canvas width with narrow transparent margins; head, elbows and hands fully within frame, flat lower waist crop meets bottom edge. Subject: A young adult woman with warm olive skin, straight black bobbed hair and long face, dark slate wool outer vest over muted russet linen sleeves; holds a closed plain leather ledger at waist, no readable marks.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-08b97380-9873-4994-802b-384f61bb0b72.png",
+      "composition": "counter-waist",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v2",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v2.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: An older woman with silver hair in a braid, pale lined skin, long muted indigo wool coat over practical brown trousers, worn boots, holding a simple ceramic mug.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-bd8d2423-b31e-458a-8f1c-4b0990f6ce98.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v3",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v3.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A young adult man with dark brown skin and short tight curls, lean build, rust-red linen tunic, grey wool shoulder wrap, brown trousers and worn leather boots, hands loosely clasped. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-3dec9586-d2a8-4b9d-922d-0ce927d0a599.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v4",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v4.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A middle-aged woman with tawny skin, black hair tied back, stocky build, dull olive tunic and patched tan sleeveless coat, dark trousers and worn boots, holding a cloth travel pouch. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-45725613-83dd-4545-bb24-995c1aa39f17.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v5",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v5.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: An older bald man with medium-brown skin and a grey moustache, long slate-grey wool coat, plain linen collar, brown trousers and boots, hands relaxed together. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-5fa5f0a9-cdf7-432a-86bc-3c3e7f232e87.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v6",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v6.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A young adult pale freckled woman with short copper hair, muted ochre tunic, dark brown belt and charcoal trousers, worn boots, holding a plain cup. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-20b15fdf-7371-442c-8643-8f732681f337.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v7",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v7.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A middle-aged dark-skinned woman with greying short curls, practical dark plum wool vest over natural linen, long divided travel skirt and sturdy boots, relaxed empty hands. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-659afedc-791d-4289-8c05-714089bd7405.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v8",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v8.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A middle-aged pale man with long dark hair tied low and short beard, desaturated blue shoulder cloak, brown tunic and trousers, scuffed boots, holding plain wooden mug. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-d08889f7-b5a4-443e-b33f-435cb88e9705.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v9",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v9.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A young adult man with tawny skin and straight cropped black hair, unshaven chin, sage-grey wool jacket, flax linen shirt and dark trousers, worn boots, arms relaxed. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-b857d7dd-0423-4f28-9bd4-1d0b6d18e6ce.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v10",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v10.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: An older pale woman with short white hair, broad build, faded russet wool shawl, brown tunic and practical dark trousers, worn boots, holding a modest leather pouch. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-d4b88d31-d816-4df8-85b9-c8119e91eebf.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    },
+    {
+      "id": "tavern-patron-v11",
+      "roles": [
+        "patron"
+      ],
+      "path": "data/graphics/tavern-patron-v11.png",
+      "prompt": "Use case: stylized-concept. Asset: one anonymous adult person as separate transparent compositing cutout for detailed illustrated frontier game interiors. High-detail photographic illustration, believable anatomy, tactile worn linen/wool/leather, restrained earth colours, no oil-portrait brushwork or cartoon. Warm soft front-left light with subtle cool right fill; calm attentive expression. Eye-level front/slight three-quarter view. Genuine transparent alpha, no background or floor, no baked shadow, no halo, no furniture, no other people, no text, no insignia, no modern objects. Full standing body head to boots, portrait 2:3 canvas; person occupies nearly full height, compact silhouette centred; both feet fully visible resting at same level near bottom edge, arms relaxed near waist, no broad gestures; no ground shadow or furniture. Subject: A middle-aged man with deep brown skin, narrow face, salt-and-pepper beard and short hair, ochre-brown vest over grey linen sleeves, dark trousers and boots, hands loosely clasped. CRITICAL CUTOUT: all pixels outside the exact body/clothes/boots silhouette MUST have alpha zero. No atmospheric gradient, no rim glow, no soft backdrop cloud, no studio background. Transparent empty space around the isolated person. Full body silhouette only.",
+      "transparent_background": true,
+      "source": "/Users/joshuamcdonald/.codex/generated_images/01a16e90-5b94-7271-bfb7-4ceff430645d/exec-7688f7bc-6690-4052-8da1-5d98a91ff1de.png",
+      "composition": "tavern-standing",
+      "referenceImagesSubmitted": []
+    }
+  ]
+}

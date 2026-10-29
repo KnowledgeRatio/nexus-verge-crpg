@@ -59,7 +59,7 @@ class QuestGenerator {
             monsters: filterByCampaign(this.rawMonsterData.monsters, campaignId)
         };
 
-        console.log(`🎯 Quest data filtered for campaign: ${campaignId}`);
+        console.log(`Quest data filtered for campaign: ${campaignId}`);
         console.log(`   - ${this.questData.sideQuestTemplates?.length || 0} quest templates`);
         console.log(`   - ${this.monsterData.monsters?.length || 0} monsters`);
     }
@@ -93,7 +93,7 @@ class QuestGenerator {
             // Apply campaign filtering
             this.applyFiltering();
 
-            console.log('📜 Quest data loaded successfully');
+            console.log('Quest data loaded successfully');
         } catch (error) {
             console.error('Failed to load quest data:', error);
             throw error;
@@ -146,7 +146,7 @@ class QuestGenerator {
    * @returns {Array<Object>} Generated quest instances
    */
     async generateQuestsForSettlement(settlement, playerLevel) {
-        console.log('📜 QuestGenerator.generateQuestsForSettlement() called');
+        console.log('QuestGenerator.generateQuestsForSettlement() called');
         console.log(`   - Settlement: ${settlement.name} (${settlement.settlementType})`);
         console.log(`   - Player level: ${playerLevel}`);
 
@@ -181,7 +181,7 @@ class QuestGenerator {
                 || this._generateInvestigateChain(settlement, playerLevel, investigationHooks, rng)
         ].filter(Boolean).slice(0, budget);
 
-        console.log(`📜 Generated ${quests.length} quests for ${settlement.name}`);
+        console.log(`Generated ${quests.length} quests for ${settlement.name}`);
         return quests;
     }
 
@@ -1395,8 +1395,8 @@ class QuestGenerator {
                 expression = expression.replace(new RegExp(key, 'g'), value);
             }
 
-            console.log(`📊 Evaluating formula: "${formula}" with variables:`, variables);
-            console.log(`📊 Result expression: "${expression}"`);
+            console.log(`Evaluating formula: "${formula}" with variables:`, variables);
+            console.log(`Result expression: "${expression}"`);
 
             // Evaluate safely (basic math only)
 

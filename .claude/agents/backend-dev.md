@@ -93,6 +93,6 @@ Implement the mechanic with:
 - Rules engine configuration entries
 - GameState persistence
 - Edge case handling (null equipment, level 1, empty arrays)
-- Debug logging with emoji convention
+- Plain-text debug logging with clear context; shared semantic icon catalogue for interface symbols
 
 Update your agent memory with implementation patterns, bug fixes, and formula references.

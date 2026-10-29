@@ -6,6 +6,8 @@ import { gameState } from '../../src/core/GameState.js';
 
 const data = JSON.parse(fs.readFileSync('data/provisioning.json', 'utf8'));
 const original = RULES.provisioning;
+const presentationEnabled = RULES.buildingPresentation.proceduralPeople.enabled;
+const soundscapesEnabled = RULES.settlementSoundscapes.enabled;
 const site = (x, extra = {}) => ({ id: `${x},0`, x, y: 0, type: 'poi', poiType: 'camp', resolvedType: 'sanctuary', ...extra });
 
 function world(seed = 'provisions') {
@@ -16,11 +18,15 @@ function world(seed = 'provisions') {
 }
 
 beforeEach(() => {
+    RULES.buildingPresentation.proceduralPeople.enabled = false;
+    RULES.settlementSoundscapes.enabled = false;
     RULES.provisioning = { enabled: true, generation: { maxSitesByMapSize: { small: 4 }, minSpacing: 80, candidateFraction: 1 } };
     vi.stubGlobal('fetch', vi.fn(async () => ({ json: async () => data })));
 });
 
 afterEach(() => {
+    RULES.buildingPresentation.proceduralPeople.enabled = presentationEnabled;
+    RULES.settlementSoundscapes.enabled = soundscapesEnabled;
     RULES.provisioning = original;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();

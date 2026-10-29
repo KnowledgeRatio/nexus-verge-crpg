@@ -22,10 +22,12 @@ Each `Combatant` has:
   roundsRemaining: number,
   isBuff: boolean,
   curable: boolean,
-  icon: string            // emoji for UI
+  icon: string | null     // semantic catalogue ID; null or '' deliberately hides the symbol
 }
 ```
 `addCondition()` prevents stacking. `removeCondition()` checks curability. Cure spells use `removeCurableConditions()` which only removes debuffs.
+
+Presentation resolves through `src/ui/Iconography.js`: a truthy stored `icon` is required for visibility; null, empty, undefined and false stay hidden even for known types. Once visible, known condition types take precedence over stored icon values and aliases resolve to canonical IDs. Unrecognized supplied icons on unknown types use a generic buff/debuff mark. Supported legacy saved glyphs resolve at this read boundary without mutating conditions. Names and descriptions remain prose; do not embed SVG or semantic IDs into combat messages.
 
 `addCondition()` returns a boolean and rejects immune types before any stack, refresh or value change. `conditionApplication.js` provides the shared immunity query and rejection message for runtime and plain restored actors. Do not bypass this check or claim that a rejected condition applied.
 

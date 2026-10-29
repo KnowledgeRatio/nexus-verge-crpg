@@ -4,6 +4,7 @@
  */
 
 import { gameState } from './core/GameState.js';
+import { iconMarkup, iconId, setIcon, conditionMarkup, conditionIconId, drawIcon, hydrateIcons } from './ui/Iconography.js';
 import { RULES } from './core/rulesEngine.js';
 import { formatCombatNumber, fractionalCombatEnabled, healthBarAttributes, conditionDescription, escapeAttribute } from './utils/combatNumberFormat.js';
 import { addHP, subtractHP } from './utils/damagePrecision.js';
@@ -100,7 +101,8 @@ class Game {
      * Initialize the game
      */
     async init() {
-        console.log('🎮 Nexus Verge - Starting...');
+        hydrateIcons(document);
+        console.log('Nexus Verge - Starting...');
 
         // Show main menu
         this.showScreen('mainMenu');
@@ -152,7 +154,7 @@ class Game {
             }
         });
 
-        console.log('✅ Game initialized');
+        console.log('Game initialized');
     }
 
     /**
@@ -181,7 +183,7 @@ class Game {
         tilesWide = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, tilesWide));
         tilesHigh = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, tilesHigh));
 
-        console.log(`📐 Optimal viewport: ${tilesWide}x${tilesHigh} tiles (${tilesWide * TILE_WIDTH}x${tilesHigh * TILE_HEIGHT}px)`);
+        console.log(`Optimal viewport: ${tilesWide}x${tilesHigh} tiles (${tilesWide * TILE_WIDTH}x${tilesHigh * TILE_HEIGHT}px)`);
 
         return {
             width: tilesWide,
@@ -221,7 +223,7 @@ class Game {
                     );
                 }
 
-                console.log(`🔄 Viewport resized to ${newSize.width}x${newSize.height} tiles`);
+                console.log(`Viewport resized to ${newSize.width}x${newSize.height} tiles`);
             }
         }, 250);
     }
@@ -237,7 +239,7 @@ class Game {
         setTimeout(() => {
             const combatantCard = document.querySelector(`.combatant-card[data-combatant-id="${combatantId}"]`);
             if (!combatantCard) {
-                console.warn(`⚠️ Combatant card not found for ID: ${combatantId}`);
+                console.warn(`Combatant card not found for ID: ${combatantId}`);
                 return;
             }
 
@@ -377,21 +379,21 @@ class Game {
             // Build context text
             if (hookPoint === 'afterMiss') {
                 ctxEl.textContent = `${attacker.name} just missed ${defender.name}!`;
-                titleEl.textContent = '⚡ Reaction: Counter-Attack';
+                titleEl.textContent = 'Reaction: Counter-Attack';
             } else if (hookPoint === 'afterFailedSave') {
                 ctxEl.textContent = `${defender.name} failed a ${ctx.saveType?.toUpperCase() || ''} save (${ctx.saveRoll ?? '?'} vs DC ${ctx.saveDC ?? '?'})!`;
-                titleEl.textContent = '⚡ Reaction: Reroll Save';
+                titleEl.textContent = 'Reaction: Reroll Save';
             } else if (hookPoint === 'allyAttacked') {
                 const dmg = formatCombatNumber(ctx.damage ?? '?');
                 ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
-                titleEl.textContent = '⚡ Reaction: Reprisal';
+                titleEl.textContent = 'Reaction: Reprisal';
             } else if (hookPoint === 'allyWouldDrop0') {
                 ctxEl.textContent = `${attacker.name}'s hit would drop ${defender.name}!`;
-                titleEl.textContent = '⚡ Reaction: Intervene';
+                titleEl.textContent = 'Reaction: Intervene';
             } else {
                 const dmg = formatCombatNumber(ctx.damage ?? '?');
                 ctxEl.textContent = `${attacker.name} hit ${defender.name} for ${dmg} damage!`;
-                titleEl.textContent = '⚡ Reaction: Defend';
+                titleEl.textContent = 'Reaction: Defend';
             }
 
             // Render ability buttons
@@ -589,7 +591,7 @@ class Game {
         if (screen) {
             screen.classList.add('active');
             this.currentScreen = screenName;
-            console.log(`📺 Showing screen: ${screenName}`);
+            console.log(`Showing screen: ${screenName}`);
 
             // Initialize screen-specific content
             if (screenName === 'characterCreation') {
@@ -783,7 +785,7 @@ class Game {
                 if (campaign.featureGeneration) {
                     // Merge campaign overrides into RULES
                     RULES.worldGen.campaignOverrides = { ...campaign.featureGeneration };
-                    console.log(`📜 Loaded campaign overrides for "${campaign.name}":`, campaign.featureGeneration);
+                    console.log(`Loaded campaign overrides for "${campaign.name}":`, campaign.featureGeneration);
                 } else {
                     RULES.worldGen.campaignOverrides = {};
                 }
@@ -879,11 +881,11 @@ class Game {
         const summaryEl = document.getElementById('worldbuilderSummary');
         summaryEl.innerHTML = `
             <strong>World Summary:</strong><br>
-            🏘️ ${villages} villages, ${towns} towns, ${cities} cities<br>
-            📍 ${pois} points of interest (~${poiDungeonEstimate} resolve to dungeon, ~${poiSanctuaryEstimate} to sanctuary)<br>
+             ${villages} villages, ${towns} towns, ${cities} cities<br>
+             ${pois} points of interest (~${poiDungeonEstimate} resolve to dungeon, ~${poiSanctuaryEstimate} to sanctuary)<br>
             <br>
             <strong>Total: ${totalFeatures} features</strong>
-            ${ratioSum !== 100 ? `<br><span style="color: var(--warning-color);">⚠️ Settlement ratios sum to ${ratioSum}% (should be 100%)</span>` : ''}
+            ${ratioSum !== 100 ? `<br><span style="color: var(--warning-color);">Settlement ratios sum to ${ratioSum}% (should be 100%)</span>` : ''}
         `;
     }
 
@@ -934,7 +936,7 @@ class Game {
         worldConfig.fatigueEnabled = fatigueEnabled;
         gameState.set('worldConfig', worldConfig);
 
-        console.log('⚙️ Worldbuilder settings applied:', this.worldbuilderOverrides);
+        console.log('Worldbuilder settings applied:', this.worldbuilderOverrides);
     }
 
     /**
@@ -951,7 +953,7 @@ class Game {
             return;
         }
 
-        console.log('🌱 Starting new game:', { seed, mapSize, difficulty, campaign });
+        console.log('Starting new game:', { seed, mapSize, difficulty, campaign });
 
         // Initialize game state
         gameState.initNewGame(seed, {
@@ -974,7 +976,7 @@ class Game {
         // Get campaign ID from game state or world config
         const worldConfig = gameState.get('worldConfig');
         const campaignId = worldConfig?.campaignId || 'nexus-verge';
-        console.log(`🎯 Starting character creation for campaign: ${campaignId}`);
+        console.log(`Starting character creation for campaign: ${campaignId}`);
         await this.characterCreationUI.init(campaignId);
     }
 
@@ -982,7 +984,7 @@ class Game {
      * Initialize game screen
      */
     async initGameScreen() {
-        console.log('🎮 Initializing game screen...');
+        console.log('Initializing game screen...');
 
         const character = gameState.get('character');
         if (!character) {
@@ -1004,23 +1006,23 @@ class Game {
         }
 
         if (!this.worldGenerator) {
-            console.log('🌍 Initializing world generator...');
+            console.log('Initializing world generator...');
             this.worldGenerator = new WorldGenerator(seed, worldConfig);
 
             // Generate world metadata upfront (finite world system)
             if (RULES.worldGen.finiteWorld.enabled && RULES.worldGen.finiteWorld.preGenerateMetadata) {
-                console.log('🗺️ Pre-generating world metadata (settlements, roads, features)...');
+                console.log('Pre-generating world metadata (settlements, roads, features)...');
                 try {
                     await this.worldGenerator.generateWorldMetadata();
                 } catch (error) {
-                    console.error('❌ Failed to generate world metadata:', error);
+                    console.error('Failed to generate world metadata:', error);
                     gameState.addMessage('Warning: World generation encountered an error. Some features may be missing.', 'warning');
                 }
             }
         }
 
         if (!this.mapRenderer) {
-            console.log('🎨 Initializing map renderer...');
+            console.log('Initializing map renderer...');
             const viewportSize = this.calculateOptimalViewport();
             this.mapRenderer = new MapRenderer('gameCanvas', {
                 tileWidth: 16,  // 16x16 pixel art tiles
@@ -1035,7 +1037,7 @@ class Game {
         }
 
         if (!this.settlementUI) {
-            console.log('🏘️ Initializing settlement UI...');
+            console.log('Initializing settlement UI...');
             this.settlementUI = new SettlementUI(null); // Will set manager reference after creation
         }
 
@@ -1064,7 +1066,7 @@ class Game {
 
         // Initialize RelationManager before NPCs (NPCs reference startingScore)
         if (!this.relationManager) {
-            console.log('📊 Initializing relation manager...');
+            console.log('Initializing relation manager...');
             this.relationManager = new RelationManager();
             await this.relationManager.init(campaignId);
             window.game = window.game || {};
@@ -1073,7 +1075,7 @@ class Game {
 
         // Initialize DialogueManager
         if (!this.dialogueManager) {
-            console.log('💬 Initializing dialogue manager...');
+            console.log('Initializing dialogue manager...');
             this.dialogueManager = new DialogueManager();
             await this.dialogueManager.init();
             window.game = window.game || {};
@@ -1081,25 +1083,25 @@ class Game {
         }
 
         if (!this.npcGenerator) {
-            console.log('👥 Initializing NPC generator...');
+            console.log('Initializing NPC generator...');
             this.npcGenerator = new NPCGenerator(seed, campaignId);
             await this.npcGenerator.loadData();
         }
 
         if (!this.questGenerator) {
-            console.log('📜 Initializing quest generator...');
+            console.log('Initializing quest generator...');
             this.questGenerator = new QuestGenerator(seed, campaignId);
             await this.questGenerator.loadData();
         }
 
         if (!this.questManager) {
-            console.log('📜 Initializing quest manager...');
+            console.log('Initializing quest manager...');
             this.questManager = new QuestManager(this.questGenerator);
             await this.questManager.initialize();
         }
 
         if (!this.levelUpManager) {
-            console.log('⭐ Initializing level-up manager...');
+            console.log('Initializing level-up manager...');
             this.levelUpManager = new LevelUpManager();
             await this.levelUpManager.initialize();
             // Make globally accessible for UI
@@ -1107,7 +1109,7 @@ class Game {
         }
 
         if (!this.lootManager) {
-            console.log('💰 Initializing loot manager...');
+            console.log('Initializing loot manager...');
             this.lootManager = new LootManager(seed, campaignId);
             await this.lootManager.loadData();
             // Make lootManager globally accessible for combat
@@ -1115,7 +1117,7 @@ class Game {
         }
 
         if (!this.merchantManager) {
-            console.log('🏪 Initializing merchant manager...');
+            console.log('Initializing merchant manager...');
             this.merchantManager = new MerchantManager(seed, campaignId);
             await this.merchantManager.loadData();
             // Pass merchant manager to settlement UI
@@ -1123,7 +1125,7 @@ class Game {
         }
 
         if (!this.skillChallengeManager) {
-            console.log('💬 Initializing skill challenge manager...');
+            console.log('Initializing skill challenge manager...');
             this.skillChallengeManager = new SkillChallengeManager();
             await Promise.all([
                 this.skillChallengeManager.loadChallenges(),
@@ -1135,7 +1137,7 @@ class Game {
         }
 
         if (!this.skillChallengeManager.challenges) {
-            console.log('🎲 Initializing skill challenge system...');
+            console.log('Initializing skill challenge system...');
             const skillChallengesData = await fetch('data/skillChallenges.json').then(r => r.json());
             await this.skillChallengeManager.loadChallenges(skillChallengesData);
             // Make globally accessible for UI
@@ -1155,7 +1157,7 @@ class Game {
         }
 
         if (!this.settlementManager) {
-            console.log('🏘️ Initializing settlement system...');
+            console.log('Initializing settlement system...');
             this.settlementManager = new SettlementManager(
                 this.worldGenerator,
                 this.settlementUI,
@@ -1170,13 +1172,13 @@ class Game {
 
         // Initialize Dungeon System
         if (!this.dungeonGenerator) {
-            console.log('🏰 Initializing dungeon generation system...');
+            console.log('Initializing dungeon generation system...');
             this.dungeonGenerator = new DungeonGenerator(worldConfig.seed);
             await this.dungeonGenerator.loadData();
         }
 
         if (!this.dungeonUI) {
-            console.log('🏰 Initializing dungeon UI...');
+            console.log('Initializing dungeon UI...');
             this.dungeonUI = new DungeonUI('dungeonCanvas', {
                 zoomIndex: this.mapRenderer?.getZoomIndex()
             });
@@ -1188,13 +1190,13 @@ class Game {
         }
 
         if (!this.dungeonManager) {
-            console.log('🏰 Initializing dungeon manager...');
+            console.log('Initializing dungeon manager...');
             this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
         }
 
         // Initialize CompanionManager
         if (!this.companionManager) {
-            console.log('👥 Initializing companion manager...');
+            console.log('Initializing companion manager...');
             this.companionManager = new CompanionManager();
             await this.companionManager.initialize(seed);
             window.game = window.game || {};
@@ -1203,7 +1205,7 @@ class Game {
 
         if (!this.player) {
             await this.initializeProvisioning();
-            console.log('👤 Initializing player...');
+            console.log('Initializing player...');
             this.player = new Player(this.worldGenerator, this.mapRenderer, this.settlementManager, this.dungeonManager);
             await this.player.spawn();
 
@@ -1272,7 +1274,7 @@ class Game {
         // Start game loop
         this.startGameLoop();
 
-        console.log('✅ Game initialized successfully');
+        console.log('Game initialized successfully');
     }
 
     async initializeHostileSettlements(seed, campaignId) {
@@ -1287,7 +1289,7 @@ class Game {
      * Initialize combat screen
      */
     async initCombatScreen() {
-        console.log('⚔️ Initializing combat screen...');
+        console.log('Initializing combat screen...');
 
         // Initialize combat manager if needed
         if (!this.combatManager) {
@@ -1335,7 +1337,7 @@ class Game {
         // Clear pending combat
         gameState.set('ui.pendingCombat', null);
 
-        console.log('✅ Combat screen initialized');
+        console.log('Combat screen initialized');
     }
 
     /**
@@ -1356,7 +1358,7 @@ class Game {
             return;
         }
 
-        console.log('🏰 Initializing dungeon screen...');
+        console.log('Initializing dungeon screen...');
 
         const dungeonState = gameState.get('dungeon');
         if (!dungeonState?.active) {
@@ -1391,7 +1393,7 @@ class Game {
         }
 
         this.dungeonScreenInitialized = true;
-        console.log('✅ Dungeon screen initialized');
+        console.log('Dungeon screen initialized');
     }
 
     /**
@@ -1523,13 +1525,24 @@ class Game {
                 ? `${names.slice(0, MAX_NAMES).join(', ')} +${names.length - MAX_NAMES}`
                 : names.join(', ');
             const tooltip = `Engaged with: ${names.join(', ')}. Fleeing triggers opportunity attacks.`;
-            return `<div class="combatant-engaged-badge" title="${tooltip}" data-engaged-ids="${engagedIds.join(',')}">⚔️ ${display}</div>`;
+            return `<div class="combatant-engaged-badge" title="${tooltip}" data-engaged-ids="${engagedIds.join(',')}">${iconMarkup('action.attack')} ${display}</div>`;
+        };
+
+        const buildConditionBadges = (combatant) => {
+            const badges = (combatant.conditions || []).filter(conditionIconId).map(condition => {
+                const name = condition.name || condition.type;
+                const duration = Number.isFinite(condition.roundsRemaining)
+                    ? `${condition.roundsRemaining} turn${condition.roundsRemaining === 1 ? '' : 's'}`
+                    : ({ untilStartOfTurn: 'until next turn starts', untilEndOfTurn: 'until turn ends' })[condition.duration];
+                const label = duration ? `${name} (${duration})` : name;
+                const detail = conditionDescription(condition, id => combatantById[id]?.name);
+                return `<span class="combatant-condition" tabindex="0" title="${escapeAttribute(detail)}" aria-label="${escapeAttribute(`${label}. ${detail}`)}">${conditionMarkup(condition)} <span>${escapeAttribute(label)}</span></span>`;
+            });
+            return badges.length ? `<div class="combatant-conditions">${badges.join(' ')}</div>` : '';
         };
 
         playerDiv.innerHTML = playerCombatants.map(c => {
-            const conditionsDisplay = c.conditions && c.conditions.length > 0
-                ? `<div class="combatant-conditions" title="${fractionalCombatEnabled() ? escapeAttribute(c.conditions.map(cond => conditionDescription(cond, id => combatantById[id]?.name)).join(', ')) : c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
-                : '';
+            const conditionsDisplay = buildConditionBadges(c);
 
             // Ammo display for ranged weapons (player card only)
             let ammoDisplay = '';
@@ -1538,10 +1551,10 @@ class Game {
                 const ammoCount = mainHand.ammoCount;
                 const ammoCapacity = mainHand.ammoCapacity ?? 20;
                 if (ammoCount === null || ammoCount === undefined) {
-                    ammoDisplay = '<div class="ammo-count">🏹 &mdash;</div>';
+                    ammoDisplay = `<div class="ammo-count">${iconMarkup('equipment.bow')} &mdash;</div>`;
                 } else {
                     const ammoClass = ammoCount <= 3 ? 'ammo-count ammo-low' : 'ammo-count';
-                    ammoDisplay = `<div class="${ammoClass}">🏹 ${ammoCount} / ${ammoCapacity}</div>`;
+                    ammoDisplay = `<div class="${ammoClass}">${iconMarkup('equipment.bow')} ${ammoCount} / ${ammoCapacity}</div>`;
                 }
             }
 
@@ -1590,9 +1603,7 @@ class Game {
         // Render enemy combatants (clickable for targeting)
         const enemyCombatants = combatState.combatants.filter(c => c.team === 'enemy');
         enemyDiv.innerHTML = enemyCombatants.map(c => {
-            const conditionsDisplay = c.conditions && c.conditions.length > 0
-                ? `<div class="combatant-conditions" title="${fractionalCombatEnabled() ? escapeAttribute(c.conditions.map(cond => conditionDescription(cond, id => combatantById[id]?.name)).join(', ')) : c.conditions.map(cond => `${cond.icon} ${cond.type}`).join(', ')}">${c.conditions.map(cond => cond.icon).join(' ')}</div>`
-                : '';
+            const conditionsDisplay = buildConditionBadges(c);
             const enemyEngagedIds = Array.isArray(c.engagedWith) ? c.engagedWith : [];
             const enemyCardClasses = [
                 'combatant-card',
@@ -1639,13 +1650,13 @@ class Game {
             // Team icon and class
             let teamIcon, teamColorClass;
             if (c.team === 'player') {
-                teamIcon = '🛡️';
+                teamIcon = iconMarkup('equipment.shield');
                 teamColorClass = 'turn-entry-player';
             } else if (c.team === 'companion') {
-                teamIcon = '⚔️';
+                teamIcon = iconMarkup('action.attack');
                 teamColorClass = 'turn-entry-companion';
             } else {
-                teamIcon = '💀';
+                teamIcon = iconMarkup('outcome.failure');
                 teamColorClass = 'turn-entry-enemy';
             }
 
@@ -1800,7 +1811,7 @@ class Game {
         const cunningDisengage = isAudacity && characterLevel >= 2;
         const disengageAvailable = cunningDisengage ? hasBonusAction : hasAction;
         const playerEngagedCount = currentCombatant.engagedWith?.size ?? 0;
-        const disengageLabel = cunningDisengage ? '🏃 Disengage (Bonus)' : '🏃 Disengage';
+        const disengageLabel = `${iconMarkup('action.disengage')} ${cunningDisengage ? 'Disengage (Bonus)' : 'Disengage'}`;
         const disengageTooltipBase = cunningDisengage
             ? 'Bonus Action — Disengage: clear all melee engagement. No opportunity attacks this turn.'
             : 'Disengage: Clear all melee engagement. No opportunity attacks this turn. [Action]';
@@ -1817,9 +1828,9 @@ class Game {
         // Cover indicator (shown when combat terrain has cover effects)
         const combatCoverType = combatState?.coverType;
         const coverDisplay = combatCoverType === 'partial'
-            ? '<div class="cover-indicator partial-cover">🌿 Partial Cover — +2 AC vs enemy ranged</div>'
+            ? '<div class="cover-indicator partial-cover">Partial Cover — +2 AC vs enemy ranged</div>'
             : combatCoverType === 'substantial'
-                ? '<div class="cover-indicator substantial-cover">🏰 Substantial Cover — +3 AC vs enemy ranged</div>'
+                ? '<div class="cover-indicator substantial-cover">Substantial Cover — +3 AC vs enemy ranged</div>'
                 : '';
 
         actionsEl.innerHTML = `
@@ -1838,26 +1849,26 @@ class Game {
                     <div style="font-size: 18px; font-weight: bold; color: ${currentCombatant.actions.reaction > 0 ? 'var(--success)' : 'var(--text-muted)'};">${currentCombatant.actions.reaction}</div>
                 </div>
             </div>
-            ${pendingTactic ? `<div style="text-align:center; padding: 4px 8px; margin-bottom: 8px; background: rgba(255,200,0,0.15); border: 1px solid var(--warning-color); border-radius: 4px; font-size: 12px; color: var(--warning-color);">⚔️ Queued: <strong>${pendingTactic}</strong> — Attack to trigger</div>` : ''}
+            ${pendingTactic ? `<div style="text-align:center; padding: 4px 8px; margin-bottom: 8px; background: rgba(255,200,0,0.15); border: 1px solid var(--warning-color); border-radius: 4px; font-size: 12px; color: var(--warning-color);">Queued: <strong>${pendingTactic}</strong> — Attack to trigger</div>` : ''}
             <div class="action-buttons">
                 <button class="action-btn" onclick="window.game.selectAction('attack')"
                         ${!hasAction ? 'disabled' : ''}>
-                    ⚔️ Attack
+                    ${iconMarkup('action.attack')} Attack
                 </button>
                 ${hasOffHandWeapon ? `
                     <button class="action-btn" onclick="window.game.selectAction('attackOffHand')"
                             ${!hasBonusAction ? 'disabled' : ''}>
-                        ⚔️ Attack (Off-Hand)
+                        ${iconMarkup('action.attack')} Attack (Off-Hand)
                     </button>
                 ` : ''}
                 <button class="action-btn" onclick="window.game.selectAction('improvisedStrike')"
                         title="Improvised strike with your equipped item. 1d4 bludgeoning, STR only, no proficiency."
                         ${!hasAction ? 'disabled' : ''}>
-                    ✊ Strike
+                    ${iconMarkup('action.strike')} Strike
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('dodge')"
                         ${!hasAction ? 'disabled' : ''}>
-                    🛡️ Dodge
+                    ${iconMarkup('action.dodge')} Dodge
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('disengage')"
                         ${!disengageAvailable ? 'disabled' : ''}
@@ -1865,22 +1876,22 @@ class Game {
                     ${disengageLabel}
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('ability')">
-                    ✨ Ability
+                    ${iconMarkup('action.ability')} Ability
                 </button>
                 <button class="action-btn" onclick="window.game.selectAction('spell')"
                         ${!hasAction ? 'disabled' : ''}>
-                    🔮 Spell
+                    ${iconMarkup('action.spell')} Spell
                 </button>
                 <button class="action-btn ${fleeHasDownedWarning ? 'flee-warning' : ''}" onclick="window.game.selectAction('flee')"
                         ${fleeBlocked ? 'disabled' : ''}
                         title="${fleeTooltip}">
-                    🏃 Flee
+                    ${iconMarkup('action.flee')} Flee
                 </button>
                 ${showCunningFlee ? `
                     <button class="action-btn" onclick="window.game.selectAction('cunningFlee')"
                             ${cunningFleeBlocked ? 'disabled' : ''}
                             title="${cunningFleeTooltip}">
-                        🏃 Flee (Cunning)
+                        ${iconMarkup('action.flee')} Flee (Cunning)
                     </button>
                 ` : ''}
             </div>
@@ -1981,10 +1992,10 @@ class Game {
         if (this.combatSceneUI?.isBusy()) {
             return;
         }
-        console.log('🎯 Target clicked:', targetId);
+        console.log('Target clicked:', targetId);
 
         if (!this.combatManager || !this.combatManager.active) {
-            console.log('⚠️ Combat not active');
+            console.log('Combat not active');
             return;
         }
 
@@ -2046,14 +2057,14 @@ class Game {
                 // Generic deferred weapon attack from any ability (e.g. Steady Nerve Attack option)
                 const pending = this._pendingAction;
                 if (!pending) {
-                    gameState.addMessage('❌ No pending ability attack!', 'error');
+                    gameState.addMessage('No pending ability attack!', 'error');
                     this.selectedAction = null;
                     return;
                 }
 
                 const requiredAction = pending.actionType === 'bonusAction' ? 'bonusAction' : 'action';
                 if (!attacker.hasAction(requiredAction)) {
-                    gameState.addMessage(`❌ No ${requiredAction} available!`, 'error');
+                    gameState.addMessage(`No ${requiredAction} available!`, 'error');
                     this.selectedAction = null;
                     this._pendingAction = null;
                     return;
@@ -2075,7 +2086,7 @@ class Game {
                 // Sync combat state
                 this.syncCombatState();
 
-                gameState.addMessage(`💪 ${pending.abilityName || 'Ability'} attack complete!`, 'success');
+                gameState.addMessage(` ${pending.abilityName || 'Ability'} attack complete!`, 'success');
                 this._pendingAction = null;
                 break;
             }
@@ -2084,7 +2095,7 @@ class Game {
                 // dispatches straight to targetedSaveOrCondition once a target is chosen.
                 const pending = this._pendingAction;
                 if (!pending) {
-                    gameState.addMessage('❌ No pending ability!', 'error');
+                    gameState.addMessage('No pending ability!', 'error');
                     this.selectedAction = null;
                     return;
                 }
@@ -2092,7 +2103,7 @@ class Game {
                 const requiredAction = pending.actionType === 'bonusAction' ? 'bonusAction'
                     : pending.actionType === 'reaction' ? 'reaction' : 'action';
                 if (!attacker.hasAction(requiredAction)) {
-                    gameState.addMessage(`❌ No ${requiredAction} available!`, 'error');
+                    gameState.addMessage(`No ${requiredAction} available!`, 'error');
                     this.selectedAction = null;
                     this._pendingAction = null;
                     return;
@@ -2100,7 +2111,7 @@ class Game {
 
                 const fullAbility = this.abilitiesData?.abilities?.[character.class?.id]?.find(a => a.id === pending.abilityId);
                 if (!fullAbility?.effects?.targetedSaveOrCondition) {
-                    gameState.addMessage('❌ Ability data not found!', 'error');
+                    gameState.addMessage('Ability data not found!', 'error');
                     this.selectedAction = null;
                     this._pendingAction = null;
                     return;
@@ -2182,14 +2193,14 @@ class Game {
         const added = combatant.addCondition('dodging', 'untilStartOfTurn', combatant.id, {
             isBuff: true,
             curable: false,
-            icon: '🛡️'
+            icon: 'condition.dodging'
         });
 
         if (added) {
-            gameState.addMessage(`🛡️ ${combatant.name} takes the Dodge action! Attackers have disadvantage until the start of your next turn.`, 'success');
+            gameState.addMessage(` ${combatant.name} takes the Dodge action! Attackers have disadvantage until the start of your next turn.`, 'success');
             gameState.notify('combat.floatingText', {
                 sourceId: combatant.id, combatantId: combatant.id,
-                text: 'DODGING! 🛡️', type: 'buff', effectType: 'dodge'
+                text: 'DODGING! ', type: 'buff', effectType: 'dodge'
             });
 
             // Consume action
@@ -2238,7 +2249,7 @@ class Game {
         // Resolve pool: show only for Dedication at L3+
         if (resolveDisplay) {
             if (character.maxResolvePoints > 0) {
-                resolveDisplay.textContent = `⚔️ Resolve: ${character.resolvePoints}/${character.maxResolvePoints}`;
+                resolveDisplay.textContent = `Resolve: ${character.resolvePoints}/${character.maxResolvePoints}`;
                 resolveDisplay.style.display = 'inline';
             } else {
                 resolveDisplay.style.display = 'none';
@@ -2287,7 +2298,7 @@ class Game {
             }
             if (resolveDisplay) {
                 if (updatedChar.maxResolvePoints > 0) {
-                    resolveDisplay.textContent = `⚔️ Resolve: ${updatedChar.resolvePoints}/${updatedChar.maxResolvePoints}`;
+                    resolveDisplay.textContent = `Resolve: ${updatedChar.resolvePoints}/${updatedChar.maxResolvePoints}`;
                     resolveDisplay.style.display = 'inline';
                 } else {
                     resolveDisplay.style.display = 'none';
@@ -2369,16 +2380,17 @@ class Game {
             container.title = `Fatigue: ${Math.round(current)}% — Exhaustion Levels: ${exhaustionLevels}`;
         }
 
-        // Exhaustion icons (💀 per level)
+        // Keep severity explicit at compact HUD sizes.
         const icons = document.getElementById('exhaustionIcons');
         if (icons) {
-            icons.textContent = '💀'.repeat(exhaustionLevels);
+            icons.innerHTML = exhaustionLevels > 0 ? `${iconMarkup('condition.exhaustion')} <span>Exhaustion ${exhaustionLevels}</span>` : '';
         }
 
         // Supplies counter
         const suppliesEl = document.getElementById('suppliesDisplay');
         if (suppliesEl) {
-            suppliesEl.textContent = `🎒 ${supplies}`;
+            suppliesEl.innerHTML = `${iconMarkup('resource.supplies')} <span>${supplies}</span>`;
+            suppliesEl.setAttribute('aria-label', `Supplies: ${supplies}`);
             suppliesEl.className = 'supplies-display';
             if (supplies === 0)     {
                 suppliesEl.classList.add('empty');
@@ -2531,7 +2543,7 @@ class Game {
             <div class="action-buttons">
                 <button class="action-btn" onclick="window.game.selectCompanionAction('attack', '${companionId}')"
                         ${!hasAction ? 'disabled' : ''}>
-                    ⚔️ Attack
+                    ${iconMarkup('action.attack')} Attack
                 </button>
             </div>
             <button class="menu-btn" style="width: 100%; margin-top: 15px;"
@@ -2602,7 +2614,7 @@ class Game {
             return false;
         }
 
-        gameState.addMessage('💀 You have perished...', 'error');
+        gameState.addMessage('You have perished...', 'error');
 
         // Show game over modal (reuse same pattern as CombatManager)
         const modalOverlay = document.getElementById('modalOverlay');
@@ -2612,7 +2624,7 @@ class Game {
             const fallenSection = this.buildFallenCompanionsHTML?.() || '';
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
-                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
+                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">GAME OVER </h2>
                     <p style="font-size: 1.2rem; margin-bottom: 30px;">You have succumbed to your injuries.</p>
                     <p style="color: var(--text-secondary); margin-bottom: 20px;">Your adventure ends here.</p>
                     ${fallenSection}
@@ -2766,7 +2778,7 @@ class Game {
 
         slotsContainer.innerHTML = `
             <div style="padding: 40px; text-align: center;">
-                <h3 style="margin-bottom: 20px;">📤 Import Save</h3>
+                <h3 style="margin-bottom: 20px;">Import Save</h3>
                 <p style="margin-bottom: 30px; color: var(--text-secondary);">
                     Upload a <strong>.json save file</strong> to continue your adventure
                 </p>
@@ -2775,7 +2787,7 @@ class Game {
                        onchange="window.game.importSaveFileFromMenu(event)">
                 <button class="menu-btn" onclick="document.getElementById('importSaveInputMenu').click()"
                         style="margin: 0 auto; font-size: 18px; padding: 15px 40px;">
-                    📤 Upload Save File
+                     Upload Save File
                 </button>
                 <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
                     Save files are created using the in-game save menu (press . or ESC during gameplay)
@@ -2847,7 +2859,7 @@ class Game {
             }
         });
 
-        console.log('💾 Save/Load system initialized');
+        console.log('Save/Load system initialized');
     }
 
     /**
@@ -2890,8 +2902,8 @@ class Game {
         openModals.forEach(modal => {
             // Don't close skill check modal if canTurnBack is false
             if (modal.id === 'skillCheckModal' && this.skillChallengeBlocking) {
-                console.log('⚠️ Cannot escape this skill challenge - you must attempt it!');
-                gameState.addMessage('⚠️ You cannot turn back - you must attempt this challenge!', 'warning');
+                console.log('Cannot escape this skill challenge - you must attempt it!');
+                gameState.addMessage('You cannot turn back - you must attempt this challenge!', 'warning');
                 return;
             }
             // Don't close skill outcome modal (results screen) - let the close button handle it
@@ -3032,7 +3044,7 @@ class Game {
             }
         });
 
-        console.log('📜 Quest system initialized');
+        console.log('Quest system initialized');
     }
 
     /**
@@ -3059,14 +3071,14 @@ class Game {
             const { enemyTypes, context, angered } = e.detail;
 
             if (angered) {
-                gameState.addMessage('⚔️ You angered them! They attack with fury!', 'danger');
+                gameState.addMessage('You angered them! They attack with fury!', 'danger');
             }
 
             // Trigger combat encounter
             await this.player.triggerCombatFromChallenge(enemyTypes);
         });
 
-        console.log('💬 Social challenge system initialized');
+        console.log('Social challenge system initialized');
     }
 
     /**
@@ -3193,8 +3205,8 @@ class Game {
                 const tensionSpan = document.createElement('span');
                 tensionSpan.className = `choice-tension-indicator ${choice.tensionChange > 0 ? 'increase' : 'decrease'}`;
                 tensionSpan.textContent = choice.tensionChange > 0
-                    ? `⚠️ Increases tension (+${choice.tensionChange})`
-                    : `😌 Eases tension (${choice.tensionChange})`;
+                    ? `Increases tension (+${choice.tensionChange})`
+                    : `Eases tension (${choice.tensionChange})`;
                 choiceBtn.appendChild(tensionSpan);
             }
 
@@ -3315,7 +3327,7 @@ class Game {
 
             return `
                 <div class="objective-item ${completed ? 'completed' : ''}">
-                    <span class="objective-checkbox">${completed ? '☑' : '☐'}</span>
+                    <span class="objective-checkbox" role="img" aria-label="${completed ? 'Complete' : 'Pending'}">${completed ? iconMarkup('outcome.success') : ''}</span>
                     <span class="quest-obj-bar">[${bar}]</span>
                     <span class="objective-text">${obj.description}</span>
                     <span class="objective-progress">${progress}/${total}</span>
@@ -3339,7 +3351,7 @@ class Game {
         const guidance = this.questManager?.getTrackedQuestGuidance?.();
         const tracked = guidance?.questId === quest.id;
         const timeLimitBadge = quest.timeLimit
-            ? `<span class="quest-time-limit">⚠ ${quest.timeLimit} rooms</span>`
+            ? `<span class="quest-time-limit"> ${quest.timeLimit} rooms</span>`
             : '';
         const dungeonText = quest.dungeonName
             ? `<span class="quest-dungeon-name">${quest.dungeonName}</span>`
@@ -3377,7 +3389,7 @@ class Game {
                 ${this.settlementUI?.renderProceduralQuest(quest, { active: status === 'active' }) || ''}
                 <div class="quest-rewards">
                     ${dungeonText}
-                    <span class="quest-reward">🎁 ${rewardText}</span>
+                    <span class="quest-reward"> ${rewardText}</span>
                     ${tracked ? `<span class="quest-tracking-guidance">${escapeAttribute(this.questGuidanceText(guidance))}</span>` : ''}
                 </div>
                 ${actionButtons}
@@ -3412,7 +3424,7 @@ class Game {
             const diffColor = difficultyColors[quest.difficulty] || '#7f8c8d';
             const reputation = formatQuestReputation(this.questManager?.getQuestReputationPreview?.(quest));
             const timeLimitBadge = quest.timeLimit
-                ? `<span class="board-time-limit">⚠ Time-sensitive</span>`
+                ? `<span class="board-time-limit">Time-sensitive</span>`
                 : '';
 
             return `<div class="quest-board-card">
@@ -3892,7 +3904,7 @@ class Game {
                         return;
                     }
                     combatant.pendingTactic = tacticId;
-                    gameState.addMessage(`⚔️ ${ability.name} queued! Resolve spent when it triggers.`, 'success');
+                    gameState.addMessage(` ${ability.name} queued! Resolve spent when it triggers.`, 'success');
                 }
                 this.combatManager.updateGameState();
             }
@@ -3904,7 +3916,7 @@ class Game {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
             if (required && !combatant.hasAction(required)) {
-                gameState.addMessage(`❌ No ${ability.actionType} available!`, 'error');
+                gameState.addMessage(`No ${ability.actionType} available!`, 'error');
                 return;
             }
         }
@@ -4071,7 +4083,7 @@ class Game {
             const actionMap = { action: 'action', bonusAction: 'bonusAction', reaction: 'reaction' };
             const required = actionMap[ability.actionType];
             if (required && !combatant.hasAction(required)) {
-                gameState.addMessage(`❌ No ${ability.actionType} available!`, 'error');
+                gameState.addMessage(`No ${ability.actionType} available!`, 'error');
                 return;
             }
         }
@@ -4220,7 +4232,7 @@ class Game {
         }
 
         if (!this.canUseAbilityOutOfCombat(ability, character)) {
-            gameState.addMessage(`❌ ${ability.name} has no uses remaining`, 'error');
+            gameState.addMessage(` ${ability.name} has no uses remaining`, 'error');
             return;
         }
 
@@ -4253,7 +4265,7 @@ class Game {
         );
 
         if (options.length === 0) {
-            gameState.addMessage(`❌ ${ability.name} has no options usable outside combat`, 'error');
+            gameState.addMessage(` ${ability.name} has no options usable outside combat`, 'error');
             return;
         }
 
@@ -4423,7 +4435,7 @@ class Game {
             }
         });
 
-        console.log('⭐ Level-up system initialized');
+        console.log('Level-up system initialized');
     }
 
     /**
@@ -4523,7 +4535,7 @@ class Game {
             }
         });
 
-        console.log('🗺️ World map system initialized');
+        console.log('World map system initialized');
     }
 
     /**
@@ -4644,15 +4656,27 @@ class Game {
                             ctx.fillStyle = phase === 'hostile' ? '#ef6b64'
                                 : phase === 'rebuilding' ? '#e7ba58' : '#8B0000';
                             ctx.fillRect(screenX, screenY, this.worldMapZoom, this.worldMapZoom);
-                            if (['hostile', 'rebuilding'].includes(phase)) {
-                                ctx.fillStyle = '#1a1412';
-                                ctx.font = `${this.worldMapZoom}px monospace`;
-                                ctx.fillText(phase === 'hostile' ? '⚔' : '⚒', screenX, screenY + this.worldMapZoom);
+                            if (this.worldMapZoom >= 8) {
+                                const marker = phase === 'hostile' ? 'action.attack'
+                                    : phase === 'rebuilding' ? 'service.forge' : 'map.settlement';
+                                drawIcon(ctx, marker, screenX, screenY, this.worldMapZoom, '#f0e4ca');
                             }
                         } else if (tile.feature.type === 'sanctuary') {
-                            ctx.fillStyle = '#FFD700';
-                            ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
-                                this.worldMapZoom / 2, this.worldMapZoom / 2);
+                            if (this.worldMapZoom >= 8) {
+                                drawIcon(ctx, 'map.sanctuary', screenX, screenY, this.worldMapZoom, '#FFD700');
+                            } else {
+                                ctx.fillStyle = '#FFD700';
+                                ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
+                                    this.worldMapZoom / 2, this.worldMapZoom / 2);
+                            }
+                        } else if (tile.feature.type === 'dungeon') {
+                            if (this.worldMapZoom >= 8) {
+                                drawIcon(ctx, 'map.dungeon', screenX, screenY, this.worldMapZoom, '#f0e4ca');
+                            } else {
+                                ctx.fillStyle = '#f0e4ca';
+                                ctx.fillRect(screenX + this.worldMapZoom / 4, screenY + this.worldMapZoom / 4,
+                                    this.worldMapZoom / 2, this.worldMapZoom / 2);
+                            }
                         }
                     }
                 }
@@ -4774,7 +4798,7 @@ class Game {
                 refreshStanding();
             }
         });
-        console.log('📋 Character sheet system initialized');
+        console.log('Character sheet system initialized');
     }
 
     /**
@@ -4877,7 +4901,7 @@ class Game {
                 html += `
                     <div class="terrain-item">
                         <div class="terrain-symbol" style="background-color: ${color}; color: ${this.getContrastColor(color)};">
-                            ${symbol}
+                            ${iconId(symbol, null) ? iconMarkup(symbol) : escapeAttribute(symbol)}
                         </div>
                         <div class="terrain-info">
                             <div class="terrain-name">${name}${propsText}</div>
@@ -4972,7 +4996,7 @@ class Game {
                     // Store setting for when mapRenderer is initialized
                     localStorage.setItem('nexusVerge_usePixelArt', enabled.toString());
                 }
-                console.log(`🎨 Pixel art ${enabled ? 'enabled' : 'disabled'}`);
+                console.log(`Pixel art ${enabled ? 'enabled' : 'disabled'}`);
             });
         }
 
@@ -5263,7 +5287,7 @@ class Game {
             minimapCanvas.height = 200;
         }
 
-        console.log('🏰 Dungeon system UI setup complete');
+        console.log('Dungeon system UI setup complete');
     }
 
     /**
@@ -5292,7 +5316,7 @@ class Game {
             });
 
             if (!encounter.monsters || encounter.monsters.length === 0) {
-                console.warn(`⚠️ Failed to build boss encounter for "${bossId}"`);
+                console.warn(`Failed to build boss encounter for "${bossId}"`);
                 return;
             }
 
@@ -5325,13 +5349,13 @@ class Game {
                             bossMonster.name = `${targetType.charAt(0).toUpperCase() + targetType.slice(1)} Chief`;
                         }
                         bossMonster.isNamedBoss = true;
-                        gameState.addMessage(`⚔️ A powerful ${bossMonster.name} — your quarry — commands this dungeon.`, 'warning');
-                        console.log(`⚔️ Kill-chief promotion applied to ${bossMonster.name} (quest: ${killChiefQuest.id})`);
+                        gameState.addMessage(`A powerful ${bossMonster.name} — your quarry — commands this dungeon.`, 'warning');
+                        console.log(`Kill-chief promotion applied to ${bossMonster.name} (quest: ${killChiefQuest.id})`);
                     }
                 }
             }
 
-            gameState.addMessage(`☠️ ${bossMonster.name} attacks!`, 'danger');
+            gameState.addMessage(` ${bossMonster.name} attacks!`, 'danger');
 
             if (encounter.monsters.length > 1) {
                 const minionNames = encounter.monsters.slice(1).map(m => m.name).join(', ');
@@ -5382,12 +5406,12 @@ class Game {
         const bossStatusEl = document.getElementById('dungeonBossStatus');
         if (bossStatusEl) {
             if (dungeonState.bossDefeated) {
-                bossStatusEl.textContent = '✓ Boss Defeated';
+                bossStatusEl.textContent = 'Boss Defeated';
                 bossStatusEl.style.color = 'var(--success-color)';
             } else {
                 const currentRoom = dungeonState.rooms?.[dungeonState.currentRoomIndex];
                 if (currentRoom?.isBossRoom) {
-                    bossStatusEl.textContent = '⚠️ BOSS ROOM';
+                    bossStatusEl.textContent = 'BOSS ROOM';
                     bossStatusEl.style.color = 'var(--danger-color)';
                 } else {
                     bossStatusEl.textContent = '';
@@ -5459,18 +5483,18 @@ class Game {
                 btn.classList.add('entrance');
             }
 
-            let icon = '🚪';
+            let icon = 'map.door';
             if (conn.isBoss) {
-                icon = '☠️';
+                icon = 'map.boss';
             }
             if (conn.isEntrance) {
-                icon = '▲';
+                icon = 'map.exit';
             }
 
             const status = conn.explored ? '' : '(unexplored)';
 
             btn.innerHTML = `
-                <span class="room-icon">${icon}</span>
+                <span class="room-icon">${iconMarkup(icon)}</span>
                 <span class="room-name">${conn.name}</span>
                 <span class="room-status">${status}</span>
             `;
@@ -5566,7 +5590,7 @@ class Game {
         // Show quick menu immediately if already on game screen
         showQuickMenu();
 
-        console.log('✅ Quick Menu initialized');
+        console.log('Quick Menu initialized');
     }
 
     /**
@@ -5577,7 +5601,7 @@ class Game {
 
         // Prevent actions during combat (except help)
         if (combat && combat.active && action !== 'help') {
-            gameState.addMessage('⚠️ Cannot access this during combat!', 'warning');
+            gameState.addMessage('Cannot access this during combat!', 'warning');
             return;
         }
 
@@ -5650,11 +5674,11 @@ class Game {
         if (!skillId) {
             rollMessage = 'Action taken; no roll required';
         } else if (rollResult.advantage) {
-            rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+            rollMessage = `Advantage: Rolled ${rollResult.rolls.join('and ')}, using ${rollResult.roll}`;
         } else if (rollResult.disadvantage) {
-            rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+            rollMessage = `Disadvantage: Rolled ${rollResult.rolls.join('and ')}, using ${rollResult.roll}`;
         } else {
-            rollMessage = `🎲 Rolled ${rollResult.roll}`;
+            rollMessage = `Rolled ${rollResult.roll}`;
         }
         if (skillId) {
             rollMessage += ` + ${rollResult.modifier} = ${fatigueAdjustedTotal}`;
@@ -5671,15 +5695,15 @@ class Game {
             gameState.addMessage(rollMessage, 'info');
         } else if (success) {
             if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
-                gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
+                gameState.addMessage(`CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
             } else {
-                gameState.addMessage(`✅ Success! ${rollMessage} vs DC ${dc}`, 'success');
+                gameState.addMessage(`Success! ${rollMessage} vs DC ${dc}`, 'success');
             }
         } else {
             if (criticalInfo?.isCritical && criticalInfo.type === 'failure') {
-                gameState.addMessage(`💥 CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
+                gameState.addMessage(`CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
             } else {
-                gameState.addMessage(`❌ Failed! ${rollMessage} vs DC ${dc}`, 'danger');
+                gameState.addMessage(`Failed! ${rollMessage} vs DC ${dc}`, 'danger');
             }
         }
 
@@ -5782,7 +5806,7 @@ class Game {
         document.getElementById('skillCheckBonus').textContent = `${skillBonus >= 0 ? '+' : ''}${skillBonus}`;
 
         // Show roll result
-        const successChance = success ? '✅ SUCCESS' : '❌ FAILED';
+        const successChance = success ? 'SUCCESS' : 'FAILED';
         document.getElementById('skillCheckChance').textContent = successChance;
 
         // Show consequences
@@ -5791,9 +5815,9 @@ class Game {
         const resultMessages = [];
 
         if (success) {
-            resultMessages.push(`<strong style="color: var(--success-color);">✅ ${outcome?.message || 'Success!'}</strong>`);
+            resultMessages.push(`<strong style="color: var(--success-color);"> ${outcome?.message || 'Success!'}</strong>`);
         } else {
-            resultMessages.push(`<strong style="color: var(--error-color);">❌ ${outcome?.message || 'Failed!'}</strong>`);
+            resultMessages.push(`<strong style="color: var(--error-color);"> ${outcome?.message || 'Failed!'}</strong>`);
         }
 
         consequencesList.innerHTML = resultMessages.join('<br>');
@@ -6019,11 +6043,11 @@ class Game {
                 if (!skillId) {
                     rollMessage = 'Action taken; no roll required';
                 } else if (rollResult.advantage) {
-                    rollMessage = `🎲 Advantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+                    rollMessage = `Advantage: Rolled ${rollResult.rolls.join('and ')}, using ${rollResult.roll}`;
                 } else if (rollResult.disadvantage) {
-                    rollMessage = `🎲 Disadvantage: Rolled ${rollResult.rolls.join(' and ')}, using ${rollResult.roll}`;
+                    rollMessage = `Disadvantage: Rolled ${rollResult.rolls.join('and ')}, using ${rollResult.roll}`;
                 } else {
-                    rollMessage = `🎲 Rolled ${rollResult.roll}`;
+                    rollMessage = `Rolled ${rollResult.roll}`;
                 }
 
                 if (skillId) {
@@ -6040,15 +6064,15 @@ class Game {
                     gameState.addMessage(rollMessage, 'info');
                 } else if (success) {
                     if (criticalInfo?.isCritical && criticalInfo.type === 'success') {
-                        gameState.addMessage(`🌟 CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
+                        gameState.addMessage(`CRITICAL SUCCESS! ${rollMessage} vs DC ${dc}`, 'success');
                     } else {
-                        gameState.addMessage(`✅ Success! ${rollMessage} vs DC ${dc}`, 'success');
+                        gameState.addMessage(`Success! ${rollMessage} vs DC ${dc}`, 'success');
                     }
                 } else {
                     if (criticalInfo?.isCritical && criticalInfo.type === 'failure') {
-                        gameState.addMessage(`💥 CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
+                        gameState.addMessage(`CRITICAL FAILURE! ${rollMessage} vs DC ${dc}`, 'danger');
                     } else {
-                        gameState.addMessage(`❌ Failed! ${rollMessage} vs DC ${dc}`, 'danger');
+                        gameState.addMessage(`Failed! ${rollMessage} vs DC ${dc}`, 'danger');
                     }
                 }
 
@@ -6107,8 +6131,8 @@ class Game {
                 // Show outcome screen if this is a skill challenge (not just a simple skill check)
                 if (challenge) {
                     const triggersCombat = consequences?.initiateCombat || false;
-                    console.log('🎭 Calling showSkillChallengeOutcome with outcome:', outcome);
-                    console.log('🎭 Outcome keys:', outcome ? Object.keys(outcome) : 'null');
+                    console.log('Calling showSkillChallengeOutcome with outcome:', outcome);
+                    console.log('Outcome keys:', outcome ? Object.keys(outcome) : 'null');
                     await this.showSkillChallengeOutcome({
                         challenge,
                         stage,
@@ -6390,16 +6414,16 @@ class Game {
 
             // Set icon and title
             if (isCriticalSuccess) {
-                icon.textContent = '🌟';
+                setIcon(icon, 'outcome.success');
                 title.textContent = 'Critical Success!';
             } else if (isCriticalFailure) {
-                icon.textContent = '💥';
+                setIcon(icon, 'outcome.failure');
                 title.textContent = 'Critical Failure!';
             } else if (success) {
-                icon.textContent = '✅';
+                setIcon(icon, 'outcome.success');
                 title.textContent = 'Success!';
             } else {
-                icon.textContent = '❌';
+                setIcon(icon, 'outcome.failure');
                 title.textContent = 'Failed!';
             }
 
@@ -6408,11 +6432,11 @@ class Game {
             challengeName.textContent = (challenge?.name || 'Skill Challenge') + stageName;
 
             // Narrative text
-            console.log('🎭 Outcome modal - outcome object:', outcome);
-            console.log('🎭 Outcome message:', outcome?.message);
+            console.log('Outcome modal - outcome object:', outcome);
+            console.log('Outcome message:', outcome?.message);
             const narrativeText = outcome?.message ||
                 (success ? 'You succeed in your endeavor.' : 'Your attempt fails.');
-            console.log('🎭 Final narrative text:', narrativeText);
+            console.log('Final narrative text:', narrativeText);
             narrativeEl.textContent = narrativeText;
 
             // Roll details breakdown
@@ -6441,7 +6465,7 @@ class Game {
                 stageProgress.classList.add('active');
                 stageList.innerHTML = stageHistory.map((s, i) => {
                     const stageClass = s.success ? 'completed' : 'failed';
-                    const stageIcon = s.success ? '✅' : '❌';
+                    const stageIcon = iconMarkup(s.success ? 'outcome.success' : 'outcome.failure');
                     const resultClass = s.success ? 'pass' : 'fail';
                     const resultText = s.success ?
                         `${s.rollResult.total} ≥ ${s.dc}` :
@@ -6467,17 +6491,17 @@ class Game {
                 rewardsSection.classList.add('active');
                 let rewardsHTML = '';
                 if (consequences.suppliesRestored > 0) {
-                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">🎒</span><span class="reward-value">+${consequences.suppliesRestored} supply</span></div>`;
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">${iconMarkup('resource.supplies')}</span><span class="reward-value">+${consequences.suppliesRestored} supply</span></div>`;
                 }
                 if (consequences.xp > 0) {
-                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">✨</span><span class="reward-value">+${consequences.xp} XP</span></div>`;
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">${iconMarkup('resource.xp')}</span><span class="reward-value">+${consequences.xp} XP</span></div>`;
                 }
                 if (consequences.gold > 0) {
-                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">💰</span><span class="reward-value">+${consequences.gold} Gold</span></div>`;
+                    rewardsHTML += `<div class="reward-item"><span class="reward-icon">${iconMarkup('resource.gold')}</span><span class="reward-value">+${consequences.gold} Gold</span></div>`;
                 }
                 if (consequences.items && consequences.items.length > 0) {
                     consequences.items.forEach(item => {
-                        rewardsHTML += `<div class="reward-item"><span class="reward-icon">📦</span><span class="reward-value">${item.name}</span></div>`;
+                        rewardsHTML += `<div class="reward-item"><span class="reward-icon">${iconMarkup('navigation.inventory')}</span><span class="reward-value">${item.name}</span></div>`;
                     });
                 }
                 rewardsList.innerHTML = rewardsHTML;
@@ -6491,13 +6515,13 @@ class Game {
                 consequencesSection.classList.add('active');
                 let consequencesHTML = '';
                 if (consequences.gold < 0) {
-                    consequencesHTML += `<div class="consequence-item"><span class="consequence-icon">💰</span><span class="consequence-value">${consequences.gold} Gold</span></div>`;
+                    consequencesHTML += `<div class="consequence-item"><span class="consequence-icon">${iconMarkup('resource.gold')}</span><span class="consequence-value">${consequences.gold} Gold</span></div>`;
                 }
                 if (consequences.damage > 0) {
                     const damageType = outcome?.damageType || 'damage';
                     consequencesHTML += `
                         <div class="consequence-item">
-                            <span class="consequence-icon">💔</span>
+                            <span class="consequence-icon">${iconMarkup('resource.health')}</span>
                             <span class="consequence-text">Took</span>
                             <span class="consequence-value">${formatCombatNumber(consequences.damage)} ${damageType}</span>
                         </div>
@@ -6507,7 +6531,7 @@ class Game {
                     consequences.conditions.forEach(condition => {
                         consequencesHTML += `
                             <div class="consequence-item">
-                                <span class="consequence-icon">🌀</span>
+                                <span class="consequence-icon">${iconMarkup('outcome.warning')}</span>
                                 <span class="consequence-text">Afflicted:</span>
                                 <span class="consequence-value">${condition}</span>
                             </div>
@@ -6578,7 +6602,7 @@ class Game {
         }
 
         // Debug logging for fighting style
-        console.log('🎯 Rendering character sheet');
+        console.log('Rendering character sheet');
         console.log('Fighting Style:', character.fightingStyle);
         console.log('Ability Uses:', character.abilityUses);
         console.log('Weapon Masteries:', character.weaponMasteries);
@@ -7041,42 +7065,42 @@ class Game {
             'cleave': {
                 name: 'Cleave',
                 description: 'When you hit with a melee attack, make an additional attack against a second creature within reach. The additional attack deals ability modifier damage (minimum 1).',
-                icon: '⚔️'
+                icon: 'action.attack'
             },
             'graze': {
                 name: 'Graze',
                 description: 'If your attack misses, you can deal ability modifier damage to the target anyway.',
-                icon: '⚔️'
+                icon: 'action.attack'
             },
             'nick': {
                 name: 'Nick',
                 description: 'When attacking with this Light weapon, make a free attack with a different Light weapon in your other hand. Don\'t add ability modifier to the extra attack\'s damage (unless negative).',
-                icon: '⚔️'
+                icon: 'action.attack'
             },
             'push': {
                 name: 'Push',
                 description: 'When you hit, push the target (Large or smaller) away. They cannot make melee attacks on their next turn.',
-                icon: '💨'
+                icon: 'condition.pushed'
             },
             'sap': {
                 name: 'Sap',
                 description: 'When you hit, the target has disadvantage on its next attack roll.',
-                icon: '💫'
+                icon: 'condition.sapped'
             },
             'slow': {
                 name: 'Slow',
                 description: 'When you hit, reduce the target\'s AC by 1 until the start of your next turn. This effect does not stack.',
-                icon: '🐌'
+                icon: 'condition.slowed'
             },
             'topple': {
                 name: 'Topple',
                 description: 'When you hit, force a CON save or knock the target prone. Prone creatures have disadvantage on attacks, and melee attackers have advantage against them.',
-                icon: '🔻'
+                icon: 'condition.prone'
             },
             'vex': {
                 name: 'Vex',
                 description: 'When you hit and deal damage, you have advantage on your next attack roll against that target.',
-                icon: '⚡'
+                icon: 'action.ability'
             }
         };
 
@@ -7084,13 +7108,13 @@ class Game {
             const mastery = masteryDescriptions[masteryId] || {
                 name: masteryId,
                 description: 'Unknown mastery',
-                icon: '❓'
+                icon: 'navigation.help'
             };
 
             return `
                 <div class="mastery-item">
                     <div class="mastery-header">
-                        <span class="mastery-icon">${mastery.icon}</span>
+                        <span class="mastery-icon">${iconMarkup(mastery.icon)}</span>
                         <span class="mastery-name">${mastery.name}</span>
                     </div>
                     <div class="mastery-description">${mastery.description}</div>
@@ -7152,7 +7176,7 @@ class Game {
             }
         });
 
-        console.log('🎒 Inventory system initialized');
+        console.log('Inventory system initialized');
     }
 
     /**
@@ -7207,7 +7231,7 @@ class Game {
             if (validItems.length !== character.inventory.length) {
                 character.inventory = validItems;
                 gameState.set('character', character);
-                console.log(`🧹 Cleaned up ${character.inventory.length - validItems.length} invalid items from inventory`);
+                console.log(`Cleaned up ${character.inventory.length - validItems.length} invalid items from inventory`);
             }
         }
 
@@ -7504,23 +7528,23 @@ class Game {
      */
     getItemIcon(item) {
         const icons = {
-            weapon: '⚔️',
-            sword: '⚔️',
-            axe: '🪓',
-            bow: '🏹',
-            armor: '🛡️',
-            shield: '🛡️',
-            helmet: '⛑️',
-            potion: '🧪',
-            consumable: '🧪',
-            scroll: '📜',
-            ring: '💍',
-            amulet: '📿',
-            artifact: '✨',
-            misc: '📦'
+            weapon: 'equipment.weapons',
+            sword: 'equipment.weapons',
+            axe: 'equipment.axe',
+            bow: 'equipment.bow',
+            armor: 'equipment.armour',
+            shield: 'equipment.shield',
+            helmet: 'equipment.helmet',
+            potion: 'equipment.potion',
+            consumable: 'equipment.potion',
+            scroll: 'equipment.scroll',
+            ring: 'equipment.ring',
+            amulet: 'equipment.amulet',
+            artifact: 'equipment.artifact',
+            misc: 'navigation.inventory'
         };
 
-        return icons[item.type] || icons[item.weaponType] || icons.misc;
+        return iconMarkup(icons[item.type] || icons[item.weaponType] || icons.misc);
     }
 
     /**
@@ -7601,7 +7625,7 @@ class Game {
         // VALIDATION: Off-hand weapons must have Light property
         if (item.type === 'weapon' && slot === 'offHand') {
             if (!item.properties || !item.properties.includes('light')) {
-                gameState.addMessage('❌ Only weapons with the Light property can be equipped in the off-hand.', 'error');
+                gameState.addMessage('Only weapons with the Light property can be equipped in the off-hand.', 'error');
                 return;
             }
         }
@@ -7610,7 +7634,7 @@ class Game {
         if (slot === 'offHand') {
             const mainHandItem = character.equipment.mainHand;
             if (mainHandItem?.twoHanded) {
-                gameState.addMessage(`❌ Cannot use an off-hand item while wielding ${mainHandItem.name} — it requires both hands.`, 'error');
+                gameState.addMessage(`Cannot use an off-hand item while wielding ${mainHandItem.name} — it requires both hands.`, 'error');
                 return;
             }
         }
@@ -7624,7 +7648,7 @@ class Game {
         } else if (item.type === 'armor') {
             // Check armor proficiency (HARD REQUIREMENT)
             if (!this.isCharacterProficientWithArmor(character, item)) {
-                gameState.addMessage(`❌ You are not proficient with ${item.armorType} armor. You cannot wear this armor.`, 'error');
+                gameState.addMessage(`You are not proficient with ${item.armorType} armor. You cannot wear this armor.`, 'error');
                 return; // Prevent equipping armor without proficiency (per D&D 5e rules)
             }
 
@@ -7634,13 +7658,13 @@ class Game {
                 const charStrength = character.abilities[requirementAttribute];
                 if (charStrength < item.strengthRequirement) {
                     const requirementLabel = RULES.attributes.system === 'NVSystem' ? 'Prowess' : 'Strength';
-                    gameState.addMessage(`❌ You need ${item.strengthRequirement} ${requirementLabel} to wear ${item.name} (you have ${charStrength}). You cannot wear this armor.`, 'error');
+                    gameState.addMessage(`You need ${item.strengthRequirement} ${requirementLabel} to wear ${item.name} (you have ${charStrength}). You cannot wear this armor.`, 'error');
                     return; // Prevent equipping armor below strength requirement
                 }
             }
         } else if (item.type === 'shield') {
             if (!this.isCharacterProficientWithShield(character)) {
-                gameState.addMessage('❌ You are not proficient with shields. You cannot use this shield.', 'error');
+                gameState.addMessage('You are not proficient with shields. You cannot use this shield.', 'error');
                 return; // Prevent equipping shield without proficiency
             }
         }
@@ -7752,7 +7776,7 @@ class Game {
             if (item.ammoType && weapon.ammunition && item.ammoType !== weapon.ammunition) {
                 const itemLabel = item.ammoType === 'arrow' ? 'arrows' : 'bolts';
                 const weaponLabel = weapon.ammunition === 'arrow' ? 'arrows' : 'bolts';
-                gameState.addMessage(`❌ ${weapon.name} uses ${weaponLabel}, not ${itemLabel}.`, 'error');
+                gameState.addMessage(` ${weapon.name} uses ${weaponLabel}, not ${itemLabel}.`, 'error');
                 return;
             }
             const capacity = weapon.ammoCapacity ?? 20;
@@ -7773,9 +7797,8 @@ class Game {
             }
             character.inventory = inventory;
 
-            const icon = item.ammoType === 'bolt' ? '🏹' : '🏹';
             gameState.set('character', character);
-            gameState.addMessage(`${icon} Reloaded: ${weapon.name} now has ${weapon.ammoCount}/${capacity} ammo.`, 'success');
+            gameState.addMessage(`Reloaded: ${weapon.name} now has ${weapon.ammoCount}/${capacity} ammo.`, 'success');
 
             // Re-render inventory
             this.renderInventory();
@@ -7867,7 +7890,7 @@ class Game {
                 </div>
                 <div id="saveSlotList">${this.renderSlotPlaceholder()}</div>
                 <button class="menu-btn" onclick="window.game.exportCurrentGame()" style="width: 100%; margin-top: 20px;">
-                    📥 Download Backup File
+                     Download Backup File
                 </button>
             </div>
         `;
@@ -7891,7 +7914,7 @@ class Game {
                         ${playerIdentity.getUsername()}
                     </div>
                     <button class="menu-btn" onclick="window.game.showRecoveryCode()" style="width: 100%; font-size: 14px;">
-                        🔑 Show Recovery Code
+                         Show Recovery Code
                     </button>
                 </div>
             `;
@@ -7899,7 +7922,7 @@ class Game {
 
         return `
             <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--warning, #d0a020);">
-                <h3 style="margin: 0 0 10px 0;">☁️ Enable Cloud Saves</h3>
+                <h3 style="margin: 0 0 10px 0;">Enable Cloud Saves</h3>
                 <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
                     Pick a player name. You'll get a recovery code — you need <strong>both</strong> to reach your saves from another device.
                 </p>
@@ -7937,12 +7960,12 @@ class Game {
 
     renderSlotRow(slot, mode) {
         const action = mode === 'save'
-            ? `<button class="menu-btn" onclick="window.game.saveToSlot(${slot.slotId})">💾 Save</button>`
-            : `<button class="menu-btn" onclick="window.game.loadFromSlot(${slot.slotId})" ${slot.isEmpty ? 'disabled' : ''}>📂 Load</button>`;
+            ? `<button class="menu-btn" onclick="window.game.saveToSlot(${slot.slotId})">${iconMarkup('system.save')} Save</button>`
+            : `<button class="menu-btn" onclick="window.game.loadFromSlot(${slot.slotId})" ${slot.isEmpty ? 'disabled' : ''}>${iconMarkup('system.load')} Load</button>`;
 
         const remove = slot.isEmpty
             ? ''
-            : `<button class="menu-btn" onclick="window.game.deleteSaveSlot(${slot.slotId})" style="margin-left: 8px;">🗑️</button>`;
+            : `<button class="menu-btn" onclick="window.game.deleteSaveSlot(${slot.slotId})" style="margin-left: 8px;" aria-label="Delete save slot ${slot.slotId}">${iconMarkup('system.delete')}</button>`;
 
         const detail = slot.isEmpty
             ? '<span style="color: var(--text-secondary);">Empty</span>'
@@ -7978,7 +8001,7 @@ class Game {
                 <div id="loadSlotList">${this.renderSlotPlaceholder()}</div>
                 <input type="file" id="importSaveInput" accept=".json" style="display: none;" onchange="window.game.importSaveFile(event)">
                 <button class="menu-btn" onclick="document.getElementById('importSaveInput').click()" style="width: 100%; margin-top: 20px;">
-                    📤 Upload Backup File
+                     Upload Backup File
                 </button>
             </div>
         `;
@@ -7996,7 +8019,7 @@ class Game {
 
         return `
             <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-                <h3 style="margin: 0 0 10px 0;">☁️ Load From Another Device</h3>
+                <h3 style="margin: 0 0 10px 0;">Load From Another Device</h3>
                 <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
                     Enter the player name and recovery code you used before. Both must match exactly.
                 </p>
@@ -8203,7 +8226,7 @@ class Game {
      * Reinitialize game systems after loading
      */
     async reinitializeGameAfterLoad() {
-        console.log('🔄 Reinitializing game after load...');
+        console.log('Reinitializing game after load...');
 
         const seed = gameState.get('seed');
         const worldConfig = gameState.get('worldConfig');
@@ -8221,8 +8244,9 @@ class Game {
         // This avoids regenerating everything on load
         const savedMetadata = gameState.get('world.metadata');
         if (savedMetadata && savedMetadata.generated) {
-            console.log('📂 Restoring world metadata from save...');
+            console.log('Restoring world metadata from save...');
             this.worldGenerator.worldMetadata = savedMetadata;
+            await this.worldGenerator.prepareSettlementPresentation(savedMetadata.settlements || [], true);
         }
 
         // Load saved regions into WorldGenerator cache (preserves explored/visible state)
@@ -8252,7 +8276,7 @@ class Game {
 
         // Initialize RelationManager before NPCs
         if (!this.relationManager) {
-            console.log('📊 Initializing relation manager...');
+            console.log('Initializing relation manager...');
             this.relationManager = new RelationManager();
             await this.relationManager.init(campaignId);
             window.game = window.game || {};
@@ -8261,7 +8285,7 @@ class Game {
 
         // Initialize DialogueManager
         if (!this.dialogueManager) {
-            console.log('💬 Initializing dialogue manager...');
+            console.log('Initializing dialogue manager...');
             this.dialogueManager = new DialogueManager();
             await this.dialogueManager.init();
             window.game = window.game || {};
@@ -8270,27 +8294,27 @@ class Game {
 
         // Initialize NPC generator
         if (!this.npcGenerator) {
-            console.log('👥 Initializing NPC generator...');
+            console.log('Initializing NPC generator...');
             this.npcGenerator = new NPCGenerator(seed, campaignId);
             await this.npcGenerator.loadData();
         }
 
         // Initialize quest systems
         if (!this.questGenerator) {
-            console.log('📜 Initializing quest generator...');
+            console.log('Initializing quest generator...');
             this.questGenerator = new QuestGenerator(seed, campaignId);
             await this.questGenerator.loadData();
         }
 
         if (!this.questManager) {
-            console.log('📜 Initializing quest manager...');
+            console.log('Initializing quest manager...');
             this.questManager = new QuestManager(this.questGenerator);
             await this.questManager.initialize();
         }
 
         // Initialize merchant manager
         if (!this.merchantManager) {
-            console.log('🏪 Initializing merchant manager...');
+            console.log('Initializing merchant manager...');
             this.merchantManager = new MerchantManager(seed, campaignId);
             await this.merchantManager.loadData();
             this.settlementUI.merchantManager = this.merchantManager;
@@ -8310,7 +8334,7 @@ class Game {
 
         // Initialize settlement manager with all dependencies
         if (!this.settlementManager) {
-            console.log('🏘️ Initializing settlement system...');
+            console.log('Initializing settlement system...');
             this.settlementManager = new SettlementManager(
                 this.worldGenerator,
                 this.settlementUI,
@@ -8325,13 +8349,13 @@ class Game {
 
         // Initialize dungeon system
         if (!this.dungeonGenerator) {
-            console.log('🏰 Initializing dungeon generation system...');
+            console.log('Initializing dungeon generation system...');
             this.dungeonGenerator = new DungeonGenerator(seed);
             await this.dungeonGenerator.loadData();
         }
 
         if (!this.dungeonUI) {
-            console.log('🏰 Initializing dungeon UI...');
+            console.log('Initializing dungeon UI...');
             this.dungeonUI = new DungeonUI('dungeonCanvas', {
                 zoomIndex: this.mapRenderer?.getZoomIndex()
             });
@@ -8344,7 +8368,7 @@ class Game {
         }
 
         if (!this.dungeonManager) {
-            console.log('🏰 Initializing dungeon manager...');
+            console.log('Initializing dungeon manager...');
             this.dungeonManager = new DungeonManager(this.dungeonGenerator, this.worldGenerator);
         }
 
@@ -8401,7 +8425,7 @@ class Game {
         }
 
         gameState.addMessage('Game loaded successfully!', 'success');
-        console.log(`✅ Game reinitialized after load — player at (${this.player?.x}, ${this.player?.y})`);
+        console.log(`Game reinitialized after load — player at (${this.player?.x}, ${this.player?.y})`);
     }
 
     /**
@@ -8491,7 +8515,7 @@ class Game {
     async placeDevDungeon() {
         const playerPos = gameState.get('player.position');
         if (!playerPos) {
-            console.warn('🧪 DEV MODE: Cannot place dungeon - no player position');
+            console.warn('DEV MODE: Cannot place dungeon - no player position');
             return;
         }
 
@@ -8506,7 +8530,7 @@ class Game {
         // Check if dungeon already exists at this location
         const existingDungeon = metadata.features.find(f => f.x === devDungeonX && f.y === devDungeonY);
         if (existingDungeon) {
-            console.log(`🧪 DEV MODE: Dungeon already exists at (${devDungeonX}, ${devDungeonY})`);
+            console.log(`DEV MODE: Dungeon already exists at (${devDungeonX}, ${devDungeonY})`);
             return;
         }
 
@@ -8533,11 +8557,11 @@ class Game {
         const tile = await this.worldGenerator.getTile(devDungeonX, devDungeonY);
         if (tile) {
             tile.feature = devDungeon;
-            console.log(`🧪 DEV MODE: Linked dungeon feature to tile at (${devDungeonX}, ${devDungeonY})`);
+            console.log(`DEV MODE: Linked dungeon feature to tile at (${devDungeonX}, ${devDungeonY})`);
         }
 
-        console.log(`🧪 DEV MODE: Placed test dungeon at (${devDungeonX}, ${devDungeonY}) - 3 tiles east of spawn`);
-        gameState.addMessage('🧪 DEV MODE: Test dungeon placed 3 tiles to your right →', 'warning');
+        console.log(`DEV MODE: Placed test dungeon at (${devDungeonX}, ${devDungeonY}) - 3 tiles east of spawn`);
+        gameState.addMessage('DEV MODE: Test dungeon placed 3 tiles to your right →', 'warning');
     }
 
     /**
@@ -8650,7 +8674,7 @@ class Game {
         // Setup Hearthcraft modal
         this.setupHearthcraftModal();
 
-        console.log('✅ Rest system UI initialized');
+        console.log('Rest system UI initialized');
     }
 
     // ========== FORGECRAFT SYSTEM ==========
@@ -8701,7 +8725,7 @@ class Game {
 
         character.bankedForagingRolls = rolls;
         gameState.set('character', character);
-        gameState.addMessage(`🌲 Foraging: banked ${rolls} bonus loot roll${rolls === 1 ? '' : 's'} for your next find.`, 'info');
+        gameState.addMessage(`Foraging: banked ${rolls} bonus loot roll${rolls === 1 ? '' : 's'} for your next find.`, 'info');
     }
 
     async openForgecraftModal() {
@@ -8757,7 +8781,7 @@ class Game {
             modal.classList.add('active');
         }
 
-        gameState.addMessage('🔨 Forgecraft: You may modify your equipment during this rest.', 'info');
+        gameState.addMessage('Forgecraft: You may modify your equipment during this rest.', 'info');
     }
 
     closeForgecraftModal() {
@@ -8809,8 +8833,8 @@ class Game {
                 <div>
                     <div class="forgecraft-slot-name">${slot.label}</div>
                     <div class="forgecraft-slot-item">${item.name || item.id}</div>
-                    ${modName ? `<div class="forgecraft-slot-mod">✨ ${modName}</div>` : ''}
-                    ${droppedProps ? `<div class="forgecraft-slot-props">⚡ ${droppedProps}</div>` : ''}
+                    ${modName ? `<div class="forgecraft-slot-mod"> ${modName}</div>` : ''}
+                    ${droppedProps ? `<div class="forgecraft-slot-props"> ${droppedProps}</div>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -8864,7 +8888,7 @@ class Game {
         // Wipe warning — shown if item has dropped magic properties that forgecraft will clear
         const hasDroppedProps = item.magicProperties?.length > 0;
         const wipeWarningHtml = hasDroppedProps
-            ? `<div class="forgecraft-wipe-warning">⚠️ Applying a modification will permanently remove this item's existing properties: ${item.magicProperties.map(p => this.getPropertyDisplayName(p)).join(', ')}.</div>`
+            ? `<div class="forgecraft-wipe-warning">Applying a modification will permanently remove this item's existing properties: ${item.magicProperties.map(p => this.getPropertyDisplayName(p)).join(', ')}.</div>`
             : '';
 
         // Add "Remove Mod" option if slot has a mod
@@ -8872,7 +8896,7 @@ class Game {
         if (currentMod) {
             removeHtml = `<div class="forgecraft-mod-card" onclick="window.game.applyForgecraftMod('${slotId}', null)"
                                style="border-color: var(--error-color);">
-                <div class="forgecraft-mod-name" style="color: var(--error-color);">✖ Remove Modification</div>
+                <div class="forgecraft-mod-name" style="color: var(--error-color);">Remove Modification</div>
                 <div class="forgecraft-mod-desc">Remove the current modification from this item.</div>
             </div>`;
         }
@@ -8885,10 +8909,10 @@ class Game {
 
             return `<div class="forgecraft-mod-card ${isActive ? 'active' : ''} ${isLocked || atMaxMods ? 'locked' : ''}"
                          ${!isLocked && !atMaxMods ? `onclick="window.game.applyForgecraftMod('${slotId}', '${mod.id}')"` : ''}>
-                <div class="forgecraft-mod-name">${mod.name} ${isActive ? '✨' : ''}</div>
+                <div class="forgecraft-mod-name">${mod.name}${isActive ? ' (Applied)' : ''}</div>
                 <div class="forgecraft-mod-desc">${mod.description}</div>
-                ${isLocked ? `<div class="forgecraft-mod-level">🔒 Requires level ${mod.levelRequired}</div>` : ''}
-                ${atMaxMods && !isActive ? `<div class="forgecraft-mod-level">⚠️ Max modified items reached (${this.forgecraftMaxMods})</div>` : ''}
+                ${isLocked ? `<div class="forgecraft-mod-level">Requires level ${mod.levelRequired}</div>` : ''}
+                ${atMaxMods && !isActive ? `<div class="forgecraft-mod-level">Max modified items reached (${this.forgecraftMaxMods})</div>` : ''}
             </div>`;
         }).join('');
     }
@@ -8907,14 +8931,14 @@ class Game {
             // Remove mod
             const oldMod = character.equipmentMods[slotId];
             delete character.equipmentMods[slotId];
-            gameState.addMessage(`🔨 Removed ${this.getForgecraftModName(oldMod?.modId)} modification.`, 'info');
+            gameState.addMessage(`Removed ${this.getForgecraftModName(oldMod?.modId)} modification.`, 'info');
         } else {
             // Apply mod — wipe item's dropped magicProperties first (forgecraft replaces them)
             if (character.equipment[slotId]) {
                 character.equipment[slotId].magicProperties = [];
             }
             character.equipmentMods[slotId] = { modId: modId, practiceId: 'forgecraft' };
-            gameState.addMessage(`🔨 Applied ${this.getForgecraftModName(modId)} to ${character.equipment[slotId]?.name || slotId}!`, 'success');
+            gameState.addMessage(`Applied ${this.getForgecraftModName(modId)} to ${character.equipment[slotId]?.name || slotId}!`, 'success');
         }
 
         gameState.set('character', character);
@@ -8972,7 +8996,7 @@ class Game {
         };
 
         this.gameLoopId = requestAnimationFrame(gameLoop);
-        console.log('🔄 Game loop started');
+        console.log('Game loop started');
     }
 
     /**
@@ -8982,7 +9006,7 @@ class Game {
         if (this.gameLoopId) {
             cancelAnimationFrame(this.gameLoopId);
             this.gameLoopId = null;
-            console.log('⏸️ Game loop stopped');
+            console.log('Game loop stopped');
         }
     }
 
@@ -9198,7 +9222,7 @@ class Game {
         const scoreLabel = this._hearthcraftMode === 'uniformChoice'
             ? this._hearthcraftChoice?.toUpperCase()
             : 'individual scores';
-        gameState.addMessage(`🍲 Hearthcraft: meal prepared — +1 ${scoreLabel} and reduced fatigue until next long rest.`, 'success');
+        gameState.addMessage(`Hearthcraft: meal prepared — +1 ${scoreLabel} and reduced fatigue until next long rest.`, 'success');
 
         this.closeHearthcraftModal();
         this.updateHUD(gameState.get('character'));
@@ -9218,7 +9242,7 @@ class Game {
             let lootSummary = '';
             if (totalGold > 0 || allLootItems.length > 0) {
                 lootSummary = '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: left;">';
-                lootSummary += '<h3 style="color: var(--accent-color); margin-bottom: 10px;">💰 Loot:</h3>';
+                lootSummary += '<h3 style="color: var(--accent-color); margin-bottom: 10px;">Loot:</h3>';
 
                 if (totalGold > 0) {
                     lootSummary += `<p style="color: var(--warning-color); margin: 5px 0;">+${totalGold} gold</p>`;
@@ -9238,7 +9262,7 @@ class Game {
 
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
-                    <h2 style="color: var(--success-color); font-size: 3rem; margin-bottom: 20px;">🎉 VICTORY! 🎉</h2>
+                    <h2 style="color: var(--success-color); font-size: 3rem; margin-bottom: 20px;">VICTORY! </h2>
                     <p style="font-size: 1.2rem; margin-bottom: 20px;">All enemies defeated!</p>
 
                     <div style="margin: 20px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px;">
@@ -9248,7 +9272,7 @@ class Game {
                         <p style="color: var(--text-secondary); margin: 5px 0;">
                             Total XP: ${totalXP}
                         </p>
-                        ${leveledUp ? '<p style="color: var(--warning-color); font-size: 1.2rem; margin-top: 10px;">⭐ LEVEL UP! ⭐</p>' : ''}
+                        ${leveledUp ? '<p style="color: var(--warning-color); font-size: 1.2rem; margin-top: 10px;">LEVEL UP! </p>' : ''}
                     </div>
 
                     ${lootSummary}
@@ -9268,12 +9292,12 @@ class Game {
                     continueBtn.addEventListener('click', () => {
                         modalOverlay.classList.remove('active');
 
-                        gameState.addMessage('🎉 Victory! All enemies defeated!', 'success');
+                        gameState.addMessage('Victory! All enemies defeated!', 'success');
                         gameState.addMessage(`+${xpGained} XP (${totalXP} total)`, 'success');
 
                         if (leveledUp) {
                             const character = gameState.get('character');
-                            gameState.addMessage(`🎉 Level Up! You are now level ${character.level}!`, 'success');
+                            gameState.addMessage(`Level Up! You are now level ${character.level}!`, 'success');
                         }
 
                         lootMessages.forEach(msg => {
@@ -9303,7 +9327,7 @@ class Game {
 
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px;">
-                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">💀 GAME OVER 💀</h2>
+                    <h2 style="color: var(--danger-color); font-size: 3rem; margin-bottom: 20px;">GAME OVER </h2>
                     <p style="font-size: 1.2rem; margin-bottom: 30px;">You have been defeated in combat.</p>
                     <p style="color: var(--text-secondary); margin-bottom: 20px;">Your adventure ends here.</p>
                     ${fallenSection}
@@ -9488,7 +9512,7 @@ class Game {
             }
         }
 
-        console.log(`⚔️ Combat stats recalculated - AC: ${character.ac}, Main Hand Attack: +${character.mainHandAttackBonus}, Off Hand Attack: +${character.offHandAttackBonus}`);
+        console.log(`Combat stats recalculated - AC: ${character.ac}, Main Hand Attack: +${character.mainHandAttackBonus}, Off Hand Attack: +${character.offHandAttackBonus}`);
     }
 
 }

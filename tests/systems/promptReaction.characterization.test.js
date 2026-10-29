@@ -429,7 +429,7 @@ describe('CombatManager.attack — afterHit hook applies a resolved Parry damage
             expect.objectContaining({ damage: 6, isMelee: true })
         );
         expect(defender.hp).toBe(defender.maxHP - (6 - 3));
-        expect(lastMessageStartingWith('🛡️ Parry!')).toContain('reduces damage by 3');
+        expect(lastMessageStartingWith('Parry!')).toContain('reduces damage by 3');
     });
 
     it('final damage floors at 0 when the reduction exceeds the roll', async () => {
@@ -518,7 +518,7 @@ describe('CombatManager.executeSpecialMonsterAction — afterFailedSave hook (In
             'afterFailedSave', combatant, target,
             expect.objectContaining({ saveType: 'dex', saveDC: 15, saveRoll: 1 })
         );
-        expect(lastMessageStartingWith('🔁 Reroll result:')).toContain('20 vs DC 15 — Success!');
+        expect(lastMessageStartingWith('Reroll result:')).toContain('20 vs DC 15 — Success!');
     });
 
     it('does not prompt the hook when the save succeeds', async () => {

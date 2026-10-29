@@ -48,7 +48,7 @@ class MerchantManager {
                 blacksmithItems: filterByCampaign(rawData.blacksmithItems, campaignId)
             };
 
-            console.log(`📦 Merchant inventory data loaded (campaign: ${campaignId})`);
+            console.log(`Merchant inventory data loaded (campaign: ${campaignId})`);
         } catch (error) {
             console.error('Failed to load merchant inventory data:', error);
             throw error;
@@ -131,7 +131,7 @@ class MerchantManager {
                     sourceQuestId: entry.sourceQuestId, effectId: entry.effectId, merchantRole: merchantType } });
         }
 
-        console.log(`🏪 Generated ${inventory.length} items for ${merchantType} in ${settlement.name}`);
+        console.log(`Generated ${inventory.length} items for ${merchantType} in ${settlement.name}`);
         return inventory;
     }
 

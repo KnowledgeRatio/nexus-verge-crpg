@@ -104,10 +104,10 @@ class LootManager {
                 ...(this.lootTables.skillChallengeLootTables || {})
             };
 
-            console.log(`✅ LootManager: Loaded ${Object.keys(this.allItems).length} items (campaign: ${campaignId})`);
-            console.log(`✅ LootManager: Loaded loot tables for ${Object.keys(this.lootTables.monsterLootTables.byCreatureType).length} creature types`);
+            console.log(`LootManager: Loaded ${Object.keys(this.allItems).length} items (campaign: ${campaignId})`);
+            console.log(`LootManager: Loaded loot tables for ${Object.keys(this.lootTables.monsterLootTables.byCreatureType).length} creature types`);
         } catch (error) {
-            console.error('❌ LootManager: Failed to load data:', error);
+            console.error('LootManager: Failed to load data:', error);
             throw error;
         }
     }
@@ -148,7 +148,7 @@ class LootManager {
             lootTable = this.lootTables.monsterLootTables.byCreatureType['humanoid'];
         }
         if (!lootTable || !lootTable[levelTier]) {
-            console.warn(`⚠️ LootManager: No loot table for ${monsterType} at level tier ${levelTier}`);
+            console.warn(`LootManager: No loot table for ${monsterType} at level tier ${levelTier}`);
             return loot;
         }
 
@@ -251,7 +251,7 @@ class LootManager {
     rollOnTable(tableName, rollCount = 1, rng, playerLevel, qualityScore = 0) {
         const table = this.allTables[tableName];
         if (!table) {
-            console.warn(`⚠️ LootManager: Table "${tableName}" not found`);
+            console.warn(`LootManager: Table "${tableName}" not found`);
             return [];
         }
 
@@ -296,7 +296,7 @@ class LootManager {
     rollOnTableWithRarityFilter(tableId, rollCount = 1, playerLevel = 1, rarityFilter = null) {
         const table = this.allTables[tableId];
         if (!table) {
-            console.warn(`⚠️ LootManager: Table "${tableId}" not found`);
+            console.warn(`LootManager: Table "${tableId}" not found`);
             return [];
         }
 
@@ -325,7 +325,7 @@ class LootManager {
             : table;
 
         if (filteredTable.length === 0) {
-            console.warn(`⚠️ LootManager: No entries remain after rarity filter for "${tableId}" at level ${playerLevel}`);
+            console.warn(`LootManager: No entries remain after rarity filter for "${tableId}" at level ${playerLevel}`);
             return [];
         }
 
@@ -350,7 +350,7 @@ class LootManager {
                                 results.push({ ...item });
                             }
                         } else {
-                            console.warn(`⚠️ LootManager: Item "${entry.itemId}" not found in allItems`);
+                            console.warn(`LootManager: Item "${entry.itemId}" not found in allItems`);
                         }
                     }
                     break;
@@ -372,7 +372,7 @@ class LootManager {
     resolveItem(entry, rng, playerLevel, qualityScore = 0) {
         const itemTemplate = this.allItems[entry.itemId];
         if (!itemTemplate) {
-            console.warn(`⚠️ LootManager: Item "${entry.itemId}" not found in items database`);
+            console.warn(`LootManager: Item "${entry.itemId}" not found in items database`);
             return null;
         }
 
@@ -410,7 +410,7 @@ class LootManager {
 
         const goldTable = this.lootTables.goldTables.byLevelAndCR[levelTier];
         if (!goldTable || !goldTable[crBracket]) {
-            console.warn(`⚠️ LootManager: No gold table for level ${levelTier}, CR ${crBracket}`);
+            console.warn(`LootManager: No gold table for level ${levelTier}, CR ${crBracket}`);
             return 0;
         }
 
@@ -427,7 +427,7 @@ class LootManager {
     rollDiceString(diceString, rng) {
         const match = diceString.match(/(\d+)d(\d+)/);
         if (!match) {
-            console.warn(`⚠️ LootManager: Invalid dice string "${diceString}"`);
+            console.warn(`LootManager: Invalid dice string "${diceString}"`);
             return 1;
         }
 

@@ -57,7 +57,7 @@ class SaveManager {
             const result = await this.store.write(slotId, saveData, this.buildSlotMetadata(slotId, saveData));
 
             const elapsed = performance.now() - startTime;
-            console.log(`💾 Game saved to slot ${slotId} in ${elapsed.toFixed(2)}ms`);
+            console.log(`Game saved to slot ${slotId} in ${elapsed.toFixed(2)}ms`);
 
             return {
                 success: true,
@@ -115,7 +115,7 @@ class SaveManager {
             this.deserializeGameState(saveData);
 
             const elapsed = performance.now() - startTime;
-            console.log(`📂 Game loaded from slot ${slotId} in ${elapsed.toFixed(2)}ms`);
+            console.log(`Game loaded from slot ${slotId} in ${elapsed.toFixed(2)}ms`);
 
             return {
                 success: true,
@@ -147,7 +147,7 @@ class SaveManager {
 
             const result = await this.store.remove(slotId);
 
-            console.log(`🗑️ Save slot ${slotId} deleted`);
+            console.log(`Save slot ${slotId} deleted`);
 
             return {
                 success: true,
@@ -465,7 +465,7 @@ class SaveManager {
 
         const originalSize = allRegions?.size || 0;
         const compressedSize = JSON.stringify(Array.from(compressedRegions.entries())).length;
-        console.log(`💾 Compressed ${originalSize} regions to ${(compressedSize / 1024).toFixed(2)} KB`);
+        console.log(`Compressed ${originalSize} regions to ${(compressedSize / 1024).toFixed(2)} KB`);
 
         return {
             regions: this.serializeMap(compressedRegions),
@@ -605,7 +605,7 @@ class SaveManager {
             a.click();
             URL.revokeObjectURL(url);
 
-            console.log(`💾 Save exported to ${filename}`);
+            console.log(`Save exported to ${filename}`);
 
             return {
                 success: true,
@@ -641,10 +641,10 @@ class SaveManager {
 
             // Version check
             if (saveData.version !== this.version) {
-                console.warn(`⚠️ Save version mismatch: ${saveData.version} vs ${this.version}`);
+                console.warn(`Save version mismatch: ${saveData.version} vs ${this.version}`);
             }
 
-            console.log(`📂 Save imported from ${file.name}`);
+            console.log(`Save imported from ${file.name}`);
 
             return {
                 success: true,
@@ -685,7 +685,7 @@ class SaveManager {
 
         const allRegions = world.generatedRegions || world.regions;
 
-        console.log(`💾 Exporting ${allRegions?.size || 0} regions (FULL DATA)`);
+        console.log(`Exporting ${allRegions?.size || 0} regions (FULL DATA)`);
 
         return {
             regions: this.serializeMap(allRegions), // ALL data, no compression

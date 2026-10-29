@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="setup-section">
-                    <button id="worldbuilderBtn" class="menu-btn secondary" style="width: 100%;">⚙️ Worldbuilder (Advanced)</button>
+                    <button id="worldbuilderBtn" class="menu-btn secondary" style="width: 100%;">Worldbuilder (Advanced)</button>
                 </div>
 
                 <div class="menu-buttons">
@@ -85,7 +85,7 @@
                 <div class="hud-left">
                     <span id="charName">Thorin</span>
                     <span id="charLevel">Level 1 Fighter</span>
-                    <span id="devModeIndicator" style="display: none; color: #ffff00; font-weight: bold; margin-left: 10px;">🔧 DEV MODE</span>
+                    <span id="devModeIndicator" style="display: none; color: #ffff00; font-weight: bold; margin-left: 10px;">DEV MODE</span>
                 </div>
                 <div class="hud-center">
                     <span id="location">Ironhill</span>
@@ -94,13 +94,13 @@
                 <div class="hud-right">
                     <span id="hpDisplay">HP: 12/12</span>
                     <span id="acDisplay">AC: 16</span>
-                    <span id="resolveDisplay" style="display: none;">⚔️ Resolve: 0/0</span>
+                    <span id="resolveDisplay" style="display: none;">Resolve: 0/0</span>
                     <span id="xpDisplay" class="xp-display">XP: 0/300</span>
                     <div class="xp-progress-bar">
                         <div id="xpProgressBar" class="xp-progress-fill" style="width: 0%;"></div>
                     </div>
                     <button id="levelUpBtn" class="level-up-button" style="display: none;">
-                        ⭐ Level Up Available!
+                         Level Up Available!
                     </button>
                     <!-- Fatigue HUD (shown when fatigue system enabled) -->
                     <div id="fatigueHUD" class="fatigue-hud" style="display: none;">
@@ -109,7 +109,7 @@
                         </div>
                         <span id="fatigueLabel" class="fatigue-label">Rested</span>
                         <span id="exhaustionIcons" class="exhaustion-icons"></span>
-                        <span id="suppliesDisplay" class="supplies-display">🎒 3</span>
+                        <span id="suppliesDisplay" class="supplies-display" aria-label="Supplies: 3"><span class="nv-icon" data-icon="resource.supplies"></span> 3</span>
                     </div>
                 </div>
             </div>
@@ -171,29 +171,29 @@
                     <div class="dungeon-sidebar">
                         <!-- Minimap -->
                         <div class="dungeon-section">
-                            <h3>🗺️ Dungeon Map</h3>
+                            <h3>Dungeon Map</h3>
                             <canvas id="dungeonMinimap"></canvas>
                         </div>
 
                         <!-- Room Navigation -->
                         <div class="dungeon-section">
-                            <h3>🚪 Connections</h3>
+                            <h3>Connections</h3>
                             <div id="dungeonNavigation" class="dungeon-navigation"></div>
                         </div>
 
                         <!-- Dungeon Actions -->
                         <div class="dungeon-section">
-                            <h3>⚔️ Actions</h3>
+                            <h3>Actions</h3>
                             <div class="dungeon-actions">
                                 <button id="dungeonExitBtn" class="action-btn" disabled>
-                                    🌤️ Exit Dungeon
+                                     Exit Dungeon
                                 </button>
                             </div>
                         </div>
 
                         <!-- Message Log -->
                         <div class="dungeon-section flex-grow">
-                            <h3>📜 Log</h3>
+                            <h3>Log</h3>
                             <div id="dungeonMessageLog" class="message-log"></div>
                         </div>
                     </div>
@@ -232,12 +232,12 @@
                     <!-- Combatants Display -->
                     <div class="combatants-display">
                         <div class="team player-team">
-                            <h3>🛡️ Allies</h3>
+                            <h3>Allies</h3>
                             <div id="playerCombatants"></div>
                         </div>
 
                         <div class="team enemy-team">
-                            <h3>⚔️ Enemies</h3>
+                            <h3>Enemies</h3>
                             <div id="enemyCombatants"></div>
                         </div>
                     </div>
@@ -289,7 +289,7 @@
                             <span class="btn-desc">Recover · One world week · Advances urgent deadlines</span>
                         </button>
                         <button id="makeCampBtn" class="rest-btn make-camp-btn">
-                            <span class="btn-title">🏕️ Make Camp</span>
+                            <span class="btn-title">Make Camp</span>
                             <span class="btn-desc">Recover 15% fatigue · Costs 1 supply</span>
                         </button>
                         <button id="gatherProvisionsBtn" class="rest-btn make-camp-btn" hidden>
@@ -305,7 +305,7 @@
         <div id="forgecraftModal" class="modal">
             <div class="modal-dialog forgecraft-dialog">
                 <div class="modal-header">
-                    <h2>🔨 Forgecraft</h2>
+                    <h2>Forgecraft</h2>
                     <button class="close-btn" id="closeForgecraftBtn">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -337,7 +337,7 @@
         <div id="hearthcraftModal" class="modal">
             <div class="modal-dialog hearthcraft-dialog">
                 <div class="modal-header">
-                    <h2>🍲 Hearthcraft</h2>
+                    <h2>Hearthcraft</h2>
                     <button class="close-btn" id="closeHearthcraftBtn">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -401,7 +401,7 @@
                         <div id="loadMenuSlots" class="save-menu-slots"></div>
                     </div>
 
-                    <p class="modal-hint">💡 Press '.' (period) to open save/load menu | Press ESC to close</p>
+                    <p class="modal-hint">Press '.' (period) to open save/load menu | Press ESC to close</p>
                 </div>
             </div>
         </div>
@@ -428,12 +428,12 @@
                     <!-- Top Row: Tavern & Blacksmith -->
                     <div class="building-row">
                         <div class="building tavern" data-building="tavern">
-                            <div class="building-icon">🏠</div>
+                            <div class="building-icon"><span class="nv-icon" data-icon="service.rest"></span></div>
                             <h3>Tavern</h3>
                             <button class="enter-btn">ENTER</button>
                         </div>
                         <div class="building blacksmith" data-building="blacksmith">
-                            <div class="building-icon">⚒️</div>
+                            <div class="building-icon"><span class="nv-icon" data-icon="service.forge"></span></div>
                             <h3>Blacksmith</h3>
                             <button class="enter-btn">ENTER</button>
                         </div>
@@ -442,12 +442,12 @@
                     <!-- Bottom Row: Merchant & Great Hall -->
                     <div class="building-row">
                         <div class="building merchant" data-building="merchant">
-                            <div class="building-icon">🏪</div>
+                            <div class="building-icon"><span class="nv-icon" data-icon="service.trade"></span></div>
                             <h3>Merchant</h3>
                             <button class="enter-btn">ENTER</button>
                         </div>
                         <div class="building greathall" data-building="greathall">
-                            <div class="building-icon">🏛️</div>
+                            <div class="building-icon"><span class="nv-icon" data-icon="map.settlement"></span></div>
                             <h3>Great Hall</h3>
                             <button class="enter-btn">ENTER</button>
                         </div>
@@ -456,7 +456,7 @@
 
                 <!-- Quest Board -->
                 <div class="quest-board">
-                    <div class="quest-board-header">📋 Quest Board</div>
+                    <div class="quest-board-header">Quest Board</div>
                     <div class="quest-board-cards" id="questBoardCards">
                         <div class="quest-board-empty">No quests posted.</div>
                     </div>
@@ -464,7 +464,7 @@
 
                 <!-- Settlement Flags / Consequence Panel -->
                 <div class="settlement-flags-panel" id="settlementFlagsPanel" style="display:none;">
-                    <div class="flags-panel-header">⚠️ Settlement Troubles</div>
+                    <div class="flags-panel-header">Settlement Troubles</div>
                     <div class="flags-list" id="settlementFlagsList"></div>
                 </div>
 
@@ -625,7 +625,7 @@
                         <div id="inventoryItemsList" class="inventory-items-list">
                             <!-- Items will be rendered here dynamically -->
                             <div class="inventory-item" data-item-id="longsword">
-                                <div class="item-icon">⚔️</div>
+                                <div class="item-icon"><span class="nv-icon" data-icon="equipment.weapons"></span></div>
                                 <div class="item-details">
                                     <div class="item-name">Longsword</div>
                                     <div class="item-description">1d8 slashing, Versatile (1d10)</div>
@@ -641,7 +641,7 @@
                             </div>
 
                             <div class="inventory-item" data-item-id="potion-healing">
-                                <div class="item-icon">🧪</div>
+                                <div class="item-icon"><span class="nv-icon" data-icon="equipment.potion"></span></div>
                                 <div class="item-details">
                                     <div class="item-name">Potion of Healing <span class="item-quantity">x3</span></div>
                                     <div class="item-description">Restores 2d4+2 hit points</div>
@@ -766,7 +766,7 @@
                 </div>
 
                 <div class="quest-footer">
-                    <p class="quest-hint">💡 Press 'Q' to open quest log anytime</p>
+                    <p class="quest-hint">Press 'Q'to open quest log anytime</p>
                 </div>
             </div>
         </div>
@@ -795,7 +795,7 @@
                         <div class="legend-item"><span class="legend-color" style="background: #8B0000;"></span> Settlements</div>
                         <div class="legend-item"><span class="legend-color" style="background: #FF0000;"></span> You</div>
                     </div>
-                    <p class="map-hint">💡 Press 'M' to open world map anytime | Drag to pan, scroll to zoom</p>
+                    <p class="map-hint">Press 'M'to open world map anytime | Drag to pan, scroll to zoom</p>
                 </div>
             </div>
         </div>
@@ -817,14 +817,14 @@
         <div id="helpModal" class="modal">
             <div class="modal-dialog help-dialog">
                 <div class="modal-header">
-                    <h2>📖 Game Manual</h2>
+                    <h2>Game Manual</h2>
                     <button class="close-btn" id="closeHelpBtn">&times;</button>
                 </div>
                 <div class="modal-body help-body">
                     <div class="help-content">
                         <!-- Quick Reference -->
                         <section class="help-section">
-                            <h3>⌨️ Controls</h3>
+                            <h3>Controls</h3>
                             <div class="help-grid">
                                 <div class="help-item"><kbd>W A S D</kbd> / <kbd>Arrow Keys</kbd> - Move</div>
                                 <div class="help-item"><kbd>E</kbd> - Enter settlement</div>
@@ -843,7 +843,7 @@
 
                         <!-- Exploration -->
                         <section class="help-section">
-                            <h3>🗺️ Exploration</h3>
+                            <h3>Exploration</h3>
                             <p><strong>World Generation:</strong> Each game seed creates a unique procedural world with 18 terrain types, settlements, dungeons, and points of interest.</p>
                             <p><strong>Fog of War:</strong> Unexplored areas are hidden. Explored tiles remain visible but dimmed. Your vision radius reveals nearby areas.</p>
                             <p><strong>Random Encounters:</strong> Moving through terrain has a chance to trigger combat encounters. Terrain difficulty affects encounter rate (1% base, scaled by terrain).</p>
@@ -852,7 +852,7 @@
 
                         <!-- Combat -->
                         <section class="help-section">
-                            <h3>⚔️ Combat</h3>
+                            <h3>Combat</h3>
                             <p><strong>Initiative:</strong> Turn order determined by d20 + Intuition modifier. Combat is turn-based with action economy.</p>
                             <p><strong>Actions:</strong> Each turn you have an Action, Bonus Action, and Reaction (not yet implemented).</p>
                             <p><strong>Attacking:</strong> Roll d20 + ability modifier + proficiency bonus vs enemy AC. Natural 20 = critical hit (double damage dice).</p>
@@ -862,7 +862,7 @@
 
                         <!-- Character Progression -->
                         <section class="help-section">
-                            <h3>📈 Character Progression</h3>
+                            <h3>Character Progression</h3>
                             <p><strong>Experience:</strong> Gain XP from combat victories based on enemy CR. Level up when reaching XP thresholds (follows 5e SRD progression).</p>
                             <p><strong>HP & Hit Dice:</strong> HP = calling hit die + Resilience modifier per level. Hit dice are used during short rests for healing.</p>
                             <p><strong>Abilities:</strong> Six ability scores (STR, DEX, CON, INT, WIS, CHA) determine modifiers for all rolls and stats.</p>
@@ -871,15 +871,15 @@
 
                         <!-- Rest System -->
                         <section class="help-section">
-                            <h3>💤 Rest System</h3>
+                            <h3>Rest System</h3>
                             <p><strong>Short Rest:</strong> Roll all hit dice for healing. Maximum 2 per long rest. Can be taken anywhere safe. Does not advance the world clock.</p>
                             <p><strong>Long Rest:</strong> Fully restore HP, recover half hit dice, restore spell slots, reset short rest counter. Advances the world clock by one week, including urgent quest deadlines and rebuilding projects. Consumes supplies even when fully recovered. <em>Requires tavern/inn or sanctuary.</em></p>
-                            <p><strong>Sanctuaries:</strong> Safe rest locations (☼) scattered across wilderness. Allow long rests without settlements.</p>
+                            <p><strong>Sanctuaries:</strong> Safe rest locations scattered across wilderness. Allow long rests without settlements.</p>
                         </section>
 
                         <!-- Trading & Economy -->
                         <section class="help-section">
-                            <h3>💰 Trading & Economy</h3>
+                            <h3>Trading & Economy</h3>
                             <p><strong>Merchants:</strong> Found in settlements. Sell weapons, armor, consumables, and equipment.</p>
                             <p><strong>Charisma Pricing:</strong> Your CHA modifier affects prices (±1% per modifier point). Higher CHA = better deals.</p>
                             <p><strong>Inventory:</strong> Carrying capacity = STR × 15 lbs. Equip items from inventory to use them.</p>
@@ -888,7 +888,7 @@
 
                         <!-- Quests -->
                         <section class="help-section">
-                            <h3>📜 Quests</h3>
+                            <h3>Quests</h3>
                             <p><strong>Quest Givers:</strong> NPCs in settlements offer quests based on their roles (leaders, merchants, innkeepers, guards).</p>
                             <p><strong>Quest Types:</strong> Kill, Retrieve, Deliver, Explore, Skill Challenges. Objectives tracked automatically.</p>
                             <p><strong>Rewards:</strong> XP, gold, items, reputation. Campaign quests advance the main storyline.</p>
@@ -897,7 +897,7 @@
 
                         <!-- 5e SRD Rules -->
                         <section class="help-section">
-                            <h3>🎲 5e SRD Rules</h3>
+                            <h3> 5e SRD Rules</h3>
                             <p><strong>Proficiency Bonus:</strong> Starts at +2, increases with level. Applies to proficient skills, saves, and attacks.</p>
                             <p><strong>Armor Class (AC):</strong> Unarmoured AC is 10 + Intuition modifier; armour limits or replaces that modifier, and shields add their bonus.</p>
                             <p><strong>Ability Modifiers:</strong> (Ability Score - 10) ÷ 2, rounded down. Applied to relevant rolls.</p>
@@ -907,7 +907,7 @@
 
                         <!-- Terrain Reference -->
                         <section class="help-section">
-                            <h3>🗺️ Terrain Reference</h3>
+                            <h3>Terrain Reference</h3>
                             <p>All terrain symbols and their meanings:</p>
                             <div class="terrain-reference" id="terrainReference">
                                 <!-- Terrain data will be loaded dynamically from terrains.json -->
@@ -917,7 +917,7 @@
 
                         <!-- Tips -->
                         <section class="help-section">
-                            <h3>💡 Tips & Tricks</h3>
+                            <h3>Tips & Tricks</h3>
                             <ul class="help-tips">
                                 <li>Save frequently using <kbd>.</kbd> menu. 5 save slots available.</li>
                                 <li>Rest at settlements before long journeys. Sanctuaries are rare but valuable.</li>
@@ -989,7 +989,7 @@
             <div class="skill-outcome-content">
                 <!-- Outcome Header with Icon -->
                 <div class="outcome-header" id="outcomeHeader">
-                    <span id="outcomeIcon">✅</span>
+                    <span id="outcomeIcon"><span class="nv-icon" data-icon="outcome.success"></span></span>
                     <h2 id="outcomeTitle">Challenge Complete</h2>
                 </div>
 
@@ -1009,7 +1009,7 @@
                         <h4>Roll Details</h4>
                         <div class="roll-breakdown">
                             <div class="roll-item">
-                                <span class="roll-label">🎲 Dice Roll</span>
+                                <span class="roll-label">Dice Roll</span>
                                 <span class="roll-value dice" id="outcomeRollDice">14</span>
                             </div>
                             <div class="roll-item">
@@ -1057,7 +1057,7 @@
 
                     <!-- Combat Warning -->
                     <div class="outcome-combat-warning" id="outcomeCombatWarning">
-                        <span class="combat-warning-icon">⚔️</span>
+                        <span class="combat-warning-icon"><span class="nv-icon" data-icon="action.attack"></span></span>
                         <div class="combat-warning-text">
                             <strong>Combat Initiated!</strong>
                             <span>Prepare for battle when you continue.</span>
@@ -1076,13 +1076,13 @@
         <div id="settingsModal" class="modal">
             <div class="modal-dialog">
                 <div class="modal-header">
-                    <h2>⚙️ Settings</h2>
+                    <h2>Settings</h2>
                     <button class="close-btn" id="closeSettingsBtn">&times;</button>
                 </div>
                 <div class="modal-body">
                     <!-- Graphics Section -->
                     <div class="settings-section">
-                        <h3>🎨 Graphics</h3>
+                        <h3>Graphics</h3>
 
                         <div class="setting-item setting-toggle">
                             <div class="setting-text">
@@ -1110,7 +1110,7 @@
 
                     <!-- Audio Section -->
                     <div class="settings-section">
-                        <h3>🔊 Audio</h3>
+                        <h3>Audio</h3>
 
                         <div class="setting-item">
                             <label for="masterVolumeSlider">
@@ -1148,14 +1148,14 @@
         <div id="worldbuilderModal" class="modal">
             <div class="modal-dialog worldbuilder-dialog">
                 <div class="modal-header">
-                    <h2>⚙️ Worldbuilder</h2>
+                    <h2>Worldbuilder</h2>
                     <button class="close-btn" id="closeWorldbuilderBtn">&times;</button>
                 </div>
                 <div class="modal-body">
                     <p class="worldbuilder-intro">Customize world generation parameters. Values shown are calculated for your selected map size.</p>
 
                     <div class="worldbuilder-section">
-                        <h3>🏘️ Settlements</h3>
+                        <h3>Settlements</h3>
                         <div class="worldbuilder-row">
                             <label for="wbSettlements">Total Settlements:</label>
                             <input type="number" id="wbSettlements" min="10" max="1000" value="150">
@@ -1175,7 +1175,7 @@
                     </div>
 
                     <div class="worldbuilder-section">
-                        <h3>📍 Points of Interest</h3>
+                        <h3>Points of Interest</h3>
                         <div class="worldbuilder-row">
                             <label for="wbPOIs">Total POIs:</label>
                             <input type="number" id="wbPOIs" min="0" max="2000" value="300">
@@ -1188,7 +1188,7 @@
                     </div>
 
                     <div class="worldbuilder-section">
-                        <h3>⚙️ Gameplay</h3>
+                        <h3>Gameplay</h3>
                         <div class="worldbuilder-row">
                             <label for="wbFatigueEnabled">Travel Fatigue:</label>
                             <select id="wbFatigueEnabled">
@@ -1212,7 +1212,7 @@
 
         <!-- Quest Notification Toast -->
         <div id="questNotification" class="quest-toast">
-            <div class="toast-icon">📜</div>
+            <div class="toast-icon"><span class="nv-icon" data-icon="navigation.journal"></span></div>
             <div class="toast-content">
                 <h4 id="toastTitle">Quest Update</h4>
                 <p id="toastMessage">Message here</p>
@@ -1226,48 +1226,48 @@
         <div id="quickMenu" class="quick-menu hidden">
             <button class="quick-menu-btn" data-action="interact" title="Interact (E)">
                 <span class="quick-menu-kbd">E</span>
-                <span class="quick-menu-icon">🖐️</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="action.interact"></span></span>
                 <span class="quick-menu-label">Interact</span>
             </button>
             <button class="quick-menu-btn" data-action="inventory" title="Inventory (I)">
                 <span class="quick-menu-kbd">I</span>
-                <span class="quick-menu-icon">🎒</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="navigation.inventory"></span></span>
                 <span class="quick-menu-label">Inventory</span>
             </button>
             <button class="quick-menu-btn" data-action="character" title="Character Sheet (C)">
                 <span class="quick-menu-kbd">C</span>
-                <span class="quick-menu-icon">📜</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="navigation.party"></span></span>
                 <span class="quick-menu-label">Character</span>
             </button>
             <button class="quick-menu-btn" data-action="quests" title="Quest Log (Q)">
                 <span class="quick-menu-kbd">Q</span>
-                <span class="quick-menu-icon">📋</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="navigation.journal"></span></span>
                 <span class="quick-menu-label">Quests</span>
                 <span class="quick-menu-badge" id="questBadge" style="display: none;">0</span>
             </button>
             <button class="quick-menu-btn" data-action="rest" title="Rest (R)">
                 <span class="quick-menu-kbd">R</span>
-                <span class="quick-menu-icon">💤</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="service.rest"></span></span>
                 <span class="quick-menu-label">Rest</span>
             </button>
             <button class="quick-menu-btn" data-action="map" title="World Map (M)">
                 <span class="quick-menu-kbd">M</span>
-                <span class="quick-menu-icon">🗺️</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="navigation.map"></span></span>
                 <span class="quick-menu-label">Map</span>
             </button>
             <button class="quick-menu-btn" data-action="save" title="Save/Load (.)">
                 <span class="quick-menu-kbd">.</span>
-                <span class="quick-menu-icon">💾</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="system.save"></span></span>
                 <span class="quick-menu-label">Save</span>
             </button>
             <button class="quick-menu-btn" data-action="help" title="Help (H)">
                 <span class="quick-menu-kbd">H</span>
-                <span class="quick-menu-icon">❓</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="navigation.help"></span></span>
                 <span class="quick-menu-label">Help</span>
             </button>
             <button class="quick-menu-btn" data-action="settings" title="Settings (`)">
                 <span class="quick-menu-kbd">`</span>
-                <span class="quick-menu-icon">⚙️</span>
+                <span class="quick-menu-icon"><span class="nv-icon" data-icon="system.settings"></span></span>
                 <span class="quick-menu-label">Settings</span>
             </button>
             <!-- Hide/Show Chevron Button -->
@@ -1275,8 +1275,8 @@
         </div>
 
         <!-- Mobile Quick Menu Toggle Button -->
-        <button id="quickMenuToggle" class="quick-menu-toggle" title="Toggle Quick Menu">
-            ☰
+        <button id="quickMenuToggle" class="quick-menu-toggle" title="Toggle Quick Menu" aria-label="Toggle Quick Menu">
+            <span class="nv-icon" data-icon="navigation.menu"></span>
         </button>
 
         <!-- Legal / Licensing Modal -->
@@ -1289,7 +1289,7 @@
                 <div class="modal-body legal-body">
                     <!-- SRD Attribution Section -->
                     <section class="legal-section">
-                        <h3>📜 5e System Reference Document (SRD 5.2)</h3>
+                        <h3> 5e System Reference Document (SRD 5.2)</h3>
                         <div class="legal-content">
                             <p class="srd-statement">
                                 This work includes material taken from the <strong>System Reference Document 5.2</strong> ("SRD 5.2")
@@ -1309,14 +1309,14 @@
                                 Nexus Verge is not affiliated with or endorsed by Wizards of the Coast LLC.</strong>
                             </p>
                             <div class="legal-links">
-                                <a href="legal/SRD_ATTRIBUTION.md" target="_blank">📄 Full SRD Attribution</a>
+                                <a href="legal/SRD_ATTRIBUTION.md" target="_blank">Full SRD Attribution</a>
                             </div>
                         </div>
                     </section>
 
                     <!-- Project License Section -->
                     <section class="legal-section">
-                        <h3>⚖️ Project License</h3>
+                        <h3>Project License</h3>
                         <div class="legal-content">
                             <p>
                                 <strong>Nexus Verge</strong> original code and content is licensed under the
@@ -1329,14 +1329,14 @@
                                 <li>Procedural generation algorithms</li>
                             </ul>
                             <div class="legal-links">
-                                <a href="LICENSE" target="_blank">📄 View License</a>
+                                <a href="LICENSE" target="_blank">View License</a>
                             </div>
                         </div>
                     </section>
 
                     <!-- Third-Party Dependencies Section -->
                     <section class="legal-section">
-                        <h3>📦 Third-Party Dependencies</h3>
+                        <h3>Third-Party Dependencies</h3>
                         <div class="legal-content">
                             <p>
                                 This project uses <strong>zero runtime dependencies</strong>. The game is built with
@@ -1349,15 +1349,15 @@
                                 <li><strong>ESLint</strong> (v9.39.2) — MIT License</li>
                             </ul>
                             <div class="legal-links">
-                                <a href="legal/THIRD_PARTY_NOTICES.md" target="_blank">📄 Full Third-Party Notices</a>
-                                <a href="legal/sbom/npm-dependencies.json" target="_blank">📋 SBOM (JSON)</a>
+                                <a href="legal/THIRD_PARTY_NOTICES.md" target="_blank">Full Third-Party Notices</a>
+                                <a href="legal/sbom/npm-dependencies.json" target="_blank">SBOM (JSON)</a>
                             </div>
                         </div>
                     </section>
 
                     <!-- Asset Attributions Section -->
                     <section class="legal-section">
-                        <h3>🎵 Asset Attributions</h3>
+                        <h3>Asset Attributions</h3>
                         <div class="legal-content">
                             <h4>Audio by Thomas Devlin</h4>
                             <p>
@@ -1376,19 +1376,19 @@
                                 </a>
                             </p>
                             <p class="legal-note">
-                                <em>⚠️ Audio license type is pending verification with the creator.
+                                <em>Audio license type is pending verification with the creator.
                                 See <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">ASSET_ATTRIBUTIONS.md</a> for details.</em>
                             </p>
                             <div class="legal-links">
-                                <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">📄 Full Asset Attributions</a>
-                                <a href="https://tommusic.itch.io/" target="_blank" rel="noopener noreferrer">🔗 Thomas Devlin Music</a>
+                                <a href="legal/ASSET_ATTRIBUTIONS.md" target="_blank">Full Asset Attributions</a>
+                                <a href="https://tommusic.itch.io/" target="_blank" rel="noopener noreferrer">Thomas Devlin Music</a>
                             </div>
                         </div>
                     </section>
 
                     <!-- Open Source Compliance Section -->
                     <section class="legal-section">
-                        <h3>✅ Open Source Compliance</h3>
+                        <h3>Open Source Compliance</h3>
                         <div class="legal-content">
                             <p>
                                 We are committed to open source compliance. All required notices and attributions
@@ -1405,7 +1405,7 @@
 
                     <!-- Contact Section -->
                     <section class="legal-section">
-                        <h3>📧 Contact</h3>
+                        <h3>Contact</h3>
                         <div class="legal-content">
                             <p>
                                 For licensing questions, compliance issues, or to report attribution errors:
@@ -1423,7 +1423,7 @@
         <div id="levelUpModal" class="modal level-up-modal">
             <div class="modal-dialog level-up-dialog">
                 <div class="modal-header">
-                    <h2>⭐ Level Up!</h2>
+                    <h2>Level Up!</h2>
                     <button class="close-btn" id="closeLevelUpBtn">&times;</button>
                 </div>
 
@@ -1520,7 +1520,7 @@
         <!-- Reaction Prompt Modal (shown mid-combat to offer a reaction ability) -->
         <div id="reactionModal" class="modal reaction-modal">
             <div class="modal-content reaction-modal-content">
-                <h3 id="reactionModalTitle">⚡ Reaction Opportunity</h3>
+                <h3 id="reactionModalTitle">Reaction Opportunity</h3>
                 <p id="reactionModalContext" class="reaction-context"></p>
                 <div id="reactionAbilityList" class="reaction-ability-list">
                     <!-- Reaction ability buttons rendered dynamically -->
@@ -1538,7 +1538,7 @@
         <!-- Sworn Strike Prompt Modal (shown after a melee hit for Oath spec) -->
         <div id="swornStrikeModal" class="modal reaction-modal">
             <div class="modal-content reaction-modal-content">
-                <h3>⚔️ Sworn Strike</h3>
+                <h3>Sworn Strike</h3>
                 <p id="swornStrikeContext" class="reaction-context"></p>
                 <p id="swornStrikeResolveInfo" style="font-size:0.85rem; color: var(--text-muted); margin-bottom: 8px;"></p>
                 <div id="swornStrikeButtons" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:8px;">
@@ -1558,7 +1558,7 @@
                     <button id="footerLegalLink" class="footer-link" onclick="document.getElementById('legalModal').classList.add('active')">Legal / Licensing</button>
                 </div>
                 <div class="footer-right">
-                    <span>Made with ❤️ for 5e fans</span>
+                    <span>Made for 5e fans</span>
                 </div>
             </div>
         </footer>

@@ -303,7 +303,7 @@ describe('CombatManager.attack — Taunted mechanics', () => {
         mockDie(8, 5);
         await cm.attack(attacker, other);
 
-        expect(lastMessageStartingWith('😤')).toContain('disadvantage (Taunted)');
+        expect(lastMessageStartingWith('Fixture has disadvantage (Taunted)!')).toContain('disadvantage (Taunted)');
     });
 
     it('applies tauntBacklash (-1 AC, self-clearing) when attacking the Challenge source anyway', async () => {

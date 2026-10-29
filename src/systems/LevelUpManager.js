@@ -80,7 +80,7 @@ export default class LevelUpManager {
             // Get modal reference
             this.modal = document.getElementById('levelUpModal');
 
-            console.log('✅ LevelUpManager initialized');
+            console.log('LevelUpManager initialized');
         } catch (error) {
             console.error('Failed to initialize LevelUpManager:', error);
         }
@@ -938,7 +938,7 @@ export default class LevelUpManager {
                 for (const abilityId of autoGrant) {
                     if (!character.selectedAbilities.includes(abilityId)) {
                         character.selectedAbilities.push(abilityId);
-                        console.log(`  ✨ Auto-granted ability: ${abilityId}`);
+                        console.log(`  Auto-granted ability: ${abilityId}`);
                     }
                 }
             }
@@ -952,7 +952,7 @@ export default class LevelUpManager {
                 for (const traitId of autoGrantTraits) {
                     if (!character.selectedTraits.includes(traitId)) {
                         character.selectedTraits.push(traitId);
-                        console.log(`  ✨ Auto-granted trait: ${traitId}`);
+                        console.log(`  Auto-granted trait: ${traitId}`);
                     }
                 }
             }
@@ -1013,7 +1013,7 @@ export default class LevelUpManager {
                 character[curKey] = maxValue; // Start at full
                 character[`${res.id}Recharge`] = res.recharge || 'shortRest';
 
-                console.log(`  💎 Granted resource: ${res.id} = ${maxValue} (recharge: ${res.recharge || 'shortRest'}) [formula: "${formulaStr}" → ${evalFormula} = ${maxValue}]`);
+                console.log(`  Granted resource: ${res.id} = ${maxValue} (recharge: ${res.recharge || 'shortRest'}) [formula: "${formulaStr}" → ${evalFormula} = ${maxValue}]`);
             }
         }
 
@@ -1025,9 +1025,9 @@ export default class LevelUpManager {
             if (idx >= 0) {
                 companions[idx] = character;
                 gameState.set('party.companions', companions);
-                console.log(`✅ Companion ${character.name} leveled up to ${character.level}`);
+                console.log(`Companion ${character.name} leveled up to ${character.level}`);
             } else {
-                console.warn(`⚠️ LevelUpManager: companion id ${character.id} not found in party.companions`);
+                console.warn(`LevelUpManager: companion id ${character.id} not found in party.companions`);
             }
         } else {
             // Player level-up: existing behavior
@@ -1035,7 +1035,7 @@ export default class LevelUpManager {
         }
 
         // Show success message
-        gameState.addMessage(`🎉 Level ${character.level}! You are now stronger!`, 'success');
+        gameState.addMessage(`Level ${character.level}! You are now stronger!`, 'success');
 
         // Close modal
         this.closeModal();

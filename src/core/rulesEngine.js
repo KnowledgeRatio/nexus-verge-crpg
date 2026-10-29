@@ -5,11 +5,15 @@
  */
 
 export const RULES = {
+    settlementSoundscapes: {
+        enabled: true
+    },
     settlementPresentation: {
         enabled: true
     },
     buildingPresentation: {
-        enabled: true
+        enabled: true,
+        proceduralPeople: { enabled: true }
     },
     combatPresentation: {
         enabled: true,
@@ -120,7 +124,7 @@ export const RULES = {
             ticks: 3,
             damageTypes: ['blood'],
             conditionType: 'bleeding',
-            conditionIcon: '🩸',
+            conditionIcon: 'condition.bleeding',
             curable: true
         },
 

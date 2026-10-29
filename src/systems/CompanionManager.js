@@ -68,7 +68,7 @@ export default class CompanionManager {
         // CombatManager fires: gameState.notify('combat.ended', { outcome })
         gameState.subscribe('combat.ended', (result) => this.handlePostCombat(result));
 
-        console.log('👥 CompanionManager initialized');
+        console.log('CompanionManager initialized');
     }
 
     // =========================================================================
@@ -87,7 +87,7 @@ export default class CompanionManager {
         }
 
         if (party.companions.length >= this.config.maxCompanions) {
-            console.warn(`👥 Cannot recruit — party at cap (${this.config.maxCompanions} companions)`);
+            console.warn(`Cannot recruit — party at cap (${this.config.maxCompanions} companions)`);
             return false;
         }
 
@@ -98,7 +98,7 @@ export default class CompanionManager {
         // Recompute synergies after roster change
         this.getActiveSynergies();
 
-        console.log(`👥 ${companion.name} added to party (${party.companions.length}/${this.config.maxCompanions})`);
+        console.log(`${companion.name} added to party (${party.companions.length}/${this.config.maxCompanions})`);
         return true;
     }
 
@@ -124,7 +124,7 @@ export default class CompanionManager {
 
         const idx = party.companions.findIndex(c => c.id === companionId);
         if (idx < 0) {
-            console.warn(`👥 dismissCompanion: companion ${companionId} not found`);
+            console.warn(`dismissCompanion: companion ${companionId} not found`);
             return;
         }
 
@@ -153,13 +153,13 @@ export default class CompanionManager {
                 cause:      'combat'
             });
             gameState.set('fallenCompanions', fallen);
-            console.log(`💀 ${companion.name} added to fallenCompanions`);
+            console.log(`${companion.name} added to fallenCompanions`);
         }
 
         // Recompute synergies after roster change
         this.getActiveSynergies();
 
-        console.log(`👥 ${companion.name} dismissed (reason: ${reason})`);
+        console.log(`${companion.name} dismissed (reason: ${reason})`);
     }
 
     /**
@@ -316,7 +316,7 @@ export default class CompanionManager {
             factionId: null
         };
 
-        console.log(`👥 Created companion: ${name} (${callingId}, motivation: ${motivationId})`);
+        console.log(`Created companion: ${name} (${callingId}, motivation: ${motivationId})`);
         return character;
     }
 
@@ -369,13 +369,13 @@ export default class CompanionManager {
         const motivationId = companion.companionMeta.motivationId;
         const archetype = this.companionData?.motivationArchetypes?.[motivationId];
         if (!archetype) {
-            console.warn(`👥 applyRelationshipEvent: unknown motivationId "${motivationId}"`);
+            console.warn(`applyRelationshipEvent: unknown motivationId "${motivationId}"`);
             return null;
         }
 
         const eventData = archetype.relationshipEvents?.[eventId];
         if (!eventData) {
-            console.warn(`👥 applyRelationshipEvent: unknown eventId "${eventId}" for motivation "${motivationId}"`);
+            console.warn(`applyRelationshipEvent: unknown eventId "${eventId}" for motivation "${motivationId}"`);
             return null;
         }
 
@@ -406,7 +406,7 @@ export default class CompanionManager {
             }
         }
 
-        console.log(`👥 Relationship [${companion.name}] ${eventId}: ${oldValue} → ${newValue} (${oldTier}→${newTier})`);
+        console.log(`Relationship [${companion.name}] ${eventId}: ${oldValue} → ${newValue} (${oldTier}→${newTier})`);
 
         return { oldValue, newValue, tierChanged, newTier };
     }
@@ -462,7 +462,7 @@ export default class CompanionManager {
                         `${companion.name} is deeply unhappy. They may leave if things don't improve.`,
                         'warning'
                     );
-                    console.log(`👥 Ultimatum pending: ${companion.name} (relationship ${rel})`);
+                    console.log(`Ultimatum pending: ${companion.name} (relationship ${rel})`);
                 } else {
                     // Already warned — dismiss
                     gameState.addMessage(
@@ -535,13 +535,13 @@ export default class CompanionManager {
         const companions = gameState.get('party.companions') || [];
         const companion = companions.find(c => c.id === companionId);
         if (!companion || !companion.companionMeta) {
-            console.warn(`👥 processRestActivity: companion ${companionId} not found`);
+            console.warn(`processRestActivity: companion ${companionId} not found`);
             return { relationshipDelta: 0, sideEffect: null };
         }
 
         const activity = this.companionData?.restActivities?.[activityId];
         if (!activity) {
-            console.warn(`👥 processRestActivity: unknown activityId "${activityId}"`);
+            console.warn(`processRestActivity: unknown activityId "${activityId}"`);
             return { relationshipDelta: 0, sideEffect: null };
         }
 
@@ -600,7 +600,7 @@ export default class CompanionManager {
 
         const activityLabel = activity.label || activityId;
         gameState.addMessage(`${companion.name}: ${activityLabel} (+${relationshipDelta} relationship)`, 'info');
-        console.log(`👥 Rest activity [${companion.name}] ${activityId}: delta ${relationshipDelta}`);
+        console.log(`Rest activity [${companion.name}] ${activityId}: delta ${relationshipDelta}`);
 
         return { relationshipDelta, sideEffect };
     }
@@ -667,7 +667,7 @@ export default class CompanionManager {
         // Notify UI without storing in gameState data (transient compute)
         gameState.notify('party.activeSynergies', synergies);
 
-        console.log(`👥 Synergies: vanguard=${synergies.vanguard} arcane=${synergies.arcaneAssembly} rogues=${synergies.bandOfRogues} trueParty=${synergies.trueParty}`);
+        console.log(`Synergies: vanguard=${synergies.vanguard} arcane=${synergies.arcaneAssembly} rogues=${synergies.bandOfRogues} trueParty=${synergies.trueParty}`);
         return synergies;
     }
 
@@ -715,7 +715,7 @@ export default class CompanionManager {
                         companion,
                         pendingChoice: 'specialization'
                     });
-                    console.log(`👥 ${companion.name} needs specialization choice at level 3`);
+                    console.log(`${companion.name} needs specialization choice at level 3`);
                     continue;
                 }
             }
@@ -723,7 +723,7 @@ export default class CompanionManager {
             // ASI levels: auto-pick primary ability score
             if (RULES.progression.asiLevels?.includes(newLevel)) {
                 this._autoApplyASI(companion, newLevel);
-                console.log(`👥 ${companion.name} auto-ASI at level ${newLevel}`);
+                console.log(`${companion.name} auto-ASI at level ${newLevel}`);
                 continue;
             }
 
@@ -747,7 +747,7 @@ export default class CompanionManager {
         const companions = gameState.get('party.companions') || [];
         const companion = companions.find(c => c.id === companionId);
         if (!companion) {
-            console.warn(`👥 applyCompanionLevelUp: companion ${companionId} not found`);
+            console.warn(`applyCompanionLevelUp: companion ${companionId} not found`);
             return;
         }
 
@@ -763,7 +763,7 @@ export default class CompanionManager {
 
         gameState.set('party.companions', companions);
         gameState.addMessage(`${companion.name} reached level ${companion.level}!`, 'success');
-        console.log(`👥 ${companion.name} leveled up to ${companion.level}`);
+        console.log(`${companion.name} leveled up to ${companion.level}`);
     }
 
     /**
@@ -840,7 +840,7 @@ export default class CompanionManager {
             return;
         }
 
-        console.log(`👥 Post-combat [${outcome}]: ${downedCompanions.length} downed companion(s), resolution: ${resolution}`);
+        console.log(`Post-combat [${outcome}]: ${downedCompanions.length} downed companion(s), resolution: ${resolution}`);
 
         if (resolution === 'stabilize') {
             // Auto-stabilize: free, no resource cost
@@ -920,7 +920,7 @@ export default class CompanionManager {
         party.candidates = candidates;
         gameState.set('party', party);
 
-        console.log(`👥 Generated ${candidates.length} settlement candidates for ${settlementId}`);
+        console.log(`Generated ${candidates.length} settlement candidates for ${settlementId}`);
         return candidates;
     }
 }

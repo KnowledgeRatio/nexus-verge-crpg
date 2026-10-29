@@ -45,7 +45,7 @@ class Player {
         // Bind input handlers
         this.bindInput();
 
-        console.log('🎮 Player system initialized');
+        console.log('Player system initialized');
     }
 
     /**
@@ -61,7 +61,7 @@ class Player {
         gameState.set('world.currentLocation', { x: this.x, y: this.y });
         gameState.addMessage('You awaken in an unfamiliar land...', 'info');
 
-        console.log(`📍 Player spawned at (${this.x}, ${this.y})`);
+        console.log(`Player spawned at (${this.x}, ${this.y})`);
 
         // Mark spawn area as explored
         await this.updateVisibility();
@@ -146,7 +146,7 @@ class Player {
         if (gameState.get('combat')?.active) {
             // Show warning message once per combat
             if (!this.shownCombatMovementWarning) {
-                gameState.addMessage('⚔️ Cannot move during combat!', 'warning');
+                gameState.addMessage('Cannot move during combat!', 'warning');
                 this.shownCombatMovementWarning = true;
             }
             return;
@@ -222,11 +222,11 @@ class Player {
                 const dungeonState = gameState.get('dungeon');
                 const currentRoom = dungeonState.rooms[dungeonState.currentRoomIndex];
                 const targetRoom = dungeonState.rooms[result.connectsTo];
-                gameState.addMessage(`🚪 A door leads to ${targetRoom?.name || 'another room'}. Press E to enter.`, 'info');
+                gameState.addMessage(`A door leads to ${targetRoom?.name || 'another room'}. Press E to enter.`, 'info');
             }
 
             if (result.isExit) {
-                gameState.addMessage('🌤️ Stairs lead back to the surface. Press E to exit dungeon.', 'info');
+                gameState.addMessage('Stairs lead back to the surface. Press E to exit dungeon.', 'info');
             }
 
             if (result.isTrap) {
@@ -235,7 +235,7 @@ class Player {
             }
 
             if (result.isInteractable) {
-                gameState.addMessage(`💡 You see a ${result.featureType}. Press E to interact.`, 'info');
+                gameState.addMessage(`You see a ${result.featureType}. Press E to interact.`, 'info');
             }
 
             // Check for dungeon skill challenges (room-based, separate from traps)
@@ -307,7 +307,7 @@ class Player {
 
                         if (result.attempted && result.success) {
                             // Successful skill check, allow movement
-                            gameState.addMessage('✅ Skill check success! You cross the dangerous terrain.', 'success');
+                            gameState.addMessage('Skill check success! You cross the dangerous terrain.', 'success');
                         } else if (result.attempted && !result.success) {
                             // Failed skill check - apply consequences
                             this.applySkillCheckFailure(skillCheckConfig.consequences);
@@ -323,7 +323,7 @@ class Player {
                             r.replace(/([A-Z])/g, ' $1').trim().toLowerCase()
                         );
                         gameState.addMessage(
-                            `⛔ ${terrainDef.name} is impassable! You need: ${formattedReqs.join(' OR ')}`,
+                            `${terrainDef.name} is impassable! You need: ${formattedReqs.join(' OR ')}`,
                             'danger'
                         );
                         return false;
@@ -356,7 +356,7 @@ class Player {
 
         // Show terrain description when entering a NEW terrain type
         if (!this.lastTerrainType || this.lastTerrainType !== tile.terrain) {
-            gameState.addMessage(`⛰️ ${terrainDef.name}: ${terrainDef.description}`, 'info');
+            gameState.addMessage(`${terrainDef.name}: ${terrainDef.description}`, 'info');
             this.lastTerrainType = tile.terrain;
         }
 
@@ -394,7 +394,7 @@ class Player {
                     const phase = settlement.hostileState?.phase;
                     const warning = phase === 'hostile' ? ' Hostile occupation — entering starts combat.'
                         : phase === 'rebuilding' ? ' Liberated; rebuilding is underway.' : '';
-                    gameState.addMessage(`🏘️ You arrive at ${settlement.name}.${warning} Press E to enter.`,
+                    gameState.addMessage(`You arrive at ${settlement.name}.${warning} Press E to enter.`,
                         phase === 'hostile' ? 'warning' : 'info');
                     this.shownSettlementNotification = settlement.name;
                 }
@@ -412,7 +412,7 @@ class Player {
                 const dungeonKey = `${dungeonFeature.x}_${dungeonFeature.y}`;
                 if (this.shownDungeonNotification !== dungeonKey) {
                     const dungeonName = dungeonFeature.dungeonType?.name || 'a dungeon';
-                    gameState.addMessage(`⚔️ You discover the entrance to ${dungeonName}. Press E to enter.`, 'warning');
+                    gameState.addMessage(`You discover the entrance to ${dungeonName}. Press E to enter.`, 'warning');
                     this.shownDungeonNotification = dungeonKey;
                 }
             } else {
@@ -471,7 +471,7 @@ class Player {
         if (dist <= radius) {
             if (!this.nearBanditCamp) {
                 const dungeonName = socialQuest.dungeonName || 'the bandit camp';
-                gameState.addMessage(`🏕️ You spot ${dungeonName} ahead. Press E to approach.`, 'warning');
+                gameState.addMessage(`You spot ${dungeonName} ahead. Press E to approach.`, 'warning');
                 this.nearBanditCamp = true;
             }
         } else {
@@ -486,7 +486,7 @@ class Player {
     async handleInteraction() {
         // Don't allow interaction during combat
         if (gameState.get('combat')?.active) {
-            gameState.addMessage('⚔️ Cannot interact during combat!', 'error');
+            gameState.addMessage('Cannot interact during combat!', 'error');
             return;
         }
 
@@ -514,7 +514,7 @@ class Player {
 
                 // Check if door is permanently locked from a failed challenge
                 if (doorTile?.locked) {
-                    gameState.addMessage('🔒 This door is locked. You cannot open it.', 'warning');
+                    gameState.addMessage('This door is locked. You cannot open it.', 'warning');
                     return;
                 }
 
@@ -537,7 +537,7 @@ class Player {
                         if (!challengeResult.success) {
                             // FAILED - permanently lock this door
                             this.dungeonManager.markDoorLocked();
-                            gameState.addMessage('🔒 The door remains locked. You cannot open it.', 'danger');
+                            gameState.addMessage('The door remains locked. You cannot open it.', 'danger');
                             return;
                         }
                         // SUCCESS - fall through to normal door passage
@@ -681,10 +681,10 @@ class Player {
      */
     async _enterPoiSanctuary(feature) {
         const name = feature.name || 'a peaceful place';
-        gameState.addMessage(`✨ You find ${name} — a peaceful place to rest.`, 'success');
+        gameState.addMessage(`You find ${name} — a peaceful place to rest.`, 'success');
         const provision = window.game?.provisioningManager?.getOpportunityAtPosition(feature.x, feature.y);
         if (provision?.canAttempt) {
-            gameState.addMessage(`🌿 ${provision.cue.title}: ${provision.cue.description}`, 'info');
+            gameState.addMessage(`${provision.cue.title}: ${provision.cue.description}`, 'info');
         }
         restManager.openRestMenu();
     }
@@ -726,7 +726,7 @@ class Player {
 
         if (window.skillChallengeManager) {
             const dungeonName = socialQuest.dungeonName || 'the camp';
-            gameState.addMessage(`🏕️ You approach ${dungeonName}. A grizzled leader steps forward...`, 'warning');
+            gameState.addMessage(`You approach ${dungeonName}. A grizzled leader steps forward...`, 'warning');
 
             const context = {
                 questId: socialQuest.id,
@@ -738,7 +738,7 @@ class Player {
 
             await window.skillChallengeManager.startChallenge('bandit_negotiation', context);
         } else {
-            gameState.addMessage('⚠️ Social challenge system not available.', 'error');
+            gameState.addMessage('Social challenge system not available.', 'error');
         }
     }
 
@@ -865,7 +865,7 @@ class Player {
 
         // Check if combat was initiated
         if (result.consequences?.initiateCombat) {
-            gameState.addMessage('⚔️ Combat begins!', 'danger');
+            gameState.addMessage('Combat begins!', 'danger');
 
             // Hide skill challenge modal during combat
             const skillCheckModal = document.getElementById('skillCheckModal');
@@ -959,7 +959,7 @@ class Player {
 
             // Check if combat was initiated
             if (result.consequences?.initiateCombat) {
-                gameState.addMessage('⚔️ Combat begins!', 'danger');
+                gameState.addMessage('Combat begins!', 'danger');
 
                 // Hide skill challenge modal during combat
                 const skillCheckModal = document.getElementById('skillCheckModal');
@@ -1033,7 +1033,7 @@ class Player {
                     } // Stage not found, end challenge
                 } else {
                     // Final stage completed
-                    gameState.addMessage(`✨ Challenge complete: ${challenge.name}`, 'success');
+                    gameState.addMessage(`Challenge complete: ${challenge.name}`, 'success');
                     completed = true;
 
                     // Clear pending challenge
@@ -1062,8 +1062,8 @@ class Player {
         const tile = await this.worldGenerator.getTile(location.x, location.y);
 
         if (!tile) {
-            console.error('⚠️ Cannot trigger combat - no tile data at location:', location);
-            gameState.addMessage('⚠️ Combat encounter failed to trigger', 'warning');
+            console.error('Cannot trigger combat - no tile data at location:', location);
+            gameState.addMessage('Combat encounter failed to trigger', 'warning');
             return;
         }
 
@@ -1097,7 +1097,7 @@ class Player {
 
         // Check if combat was initiated
         if (result.consequences?.initiateCombat) {
-            gameState.addMessage('⚔️ Combat begins!', 'danger');
+            gameState.addMessage('Combat begins!', 'danger');
 
             // Hide skill challenge modal during combat
             const skillCheckModal = document.getElementById('skillCheckModal');
@@ -1216,11 +1216,11 @@ class Player {
         });
 
         if (!encounter.monsters || encounter.monsters.length === 0) {
-            console.warn('⚠️ EncounterBuilder returned no monsters, skipping encounter');
+            console.warn('EncounterBuilder returned no monsters, skipping encounter');
             return;
         }
 
-        console.log(`⚔️ Encounter: ${encounter.monsters.map(m => m.name).join(', ')} (${encounter.difficultyRating}, ${encounter.totalXP} XP)`);
+        console.log(`Encounter: ${encounter.monsters.map(m => m.name).join(', ')} (${encounter.difficultyRating}, ${encounter.totalXP} XP)`);
 
         // Set combat state IMMEDIATELY to block further movement
         gameState.set('combat', { active: true, pending: true });
@@ -1243,17 +1243,17 @@ class Player {
                 break;
             }
             case 'settlement':
-                gameState.addMessage(`🏘️ You arrive at ${feature.name}, a ${feature.settlementType}.`, 'success');
+                gameState.addMessage(`You arrive at ${feature.name}, a ${feature.settlementType}.`, 'success');
                 break;
 
             case 'dungeon':
-                gameState.addMessage(`⚠️ You discover a dangerous dungeon! (Difficulty: ${feature.difficulty})`, 'warning');
+                gameState.addMessage(`You discover a dangerous dungeon! (Difficulty: ${feature.difficulty})`, 'warning');
                 break;
 
             case 'poi':
                 if (!feature.discovered) {
                     feature.discovered = true;
-                    gameState.addMessage(`✨ You discover a ${feature.poiType}!`, 'success');
+                    gameState.addMessage(`You discover a ${feature.poiType}!`, 'success');
                 }
                 break;
         }
@@ -1298,16 +1298,16 @@ class Player {
     makeCamp() {
         // Block Make Camp during active combat
         if (gameState.get('combat')?.active) {
-            gameState.addMessage('⚔️ Cannot make camp during combat!', 'error');
+            gameState.addMessage('Cannot make camp during combat!', 'error');
             return;
         }
         const fatigueState = getFatigueState();
         if (fatigueState.current <= 0) {
-            gameState.addMessage('🏕️ You are well rested — no need to make camp.', 'info');
+            gameState.addMessage('You are well rested — no need to make camp.', 'info');
             return;
         }
         if (fatigueState.supplies <= 0) {
-            gameState.addMessage('🏕️ You have no supplies to make camp.', 'warning');
+            gameState.addMessage('You have no supplies to make camp.', 'warning');
             return;
         }
         // Deduct 1 supply then recover fatigue
@@ -1315,12 +1315,12 @@ class Player {
         updatedFatigue.supplies -= 1;
         gameState.set('fatigue', updatedFatigue);
         removeFatigue(RULES.fatigue.makeCampFatigueRecovery);
-        gameState.addMessage(`🏕️ Made camp. (-1 supply, ${updatedFatigue.supplies} remaining)`, 'success');
+        gameState.addMessage(`Made camp. (-1 supply, ${updatedFatigue.supplies} remaining)`, 'success');
     }
 
     interact() {
         // Interact with nearby objects/NPCs - TODO: Implement interaction system
-        gameState.addMessage('👋 Interact with nearby objects (not yet implemented)', 'info');
+        gameState.addMessage('Interact with nearby objects (not yet implemented)', 'info');
     }
 
     showHelp() {
@@ -1339,18 +1339,18 @@ class Player {
     canTraverseSpecialTerrain(terrainId) {
         const character = gameState.get('character');
         if (!character) {
-            console.log('🌊 No character found');
+            console.log('No character found');
             return false;
         }
 
         // Get terrain definition from data
         const terrainDef = this.worldGenerator.terrainTypes.terrains.find(t => t.id === terrainId);
         if (!terrainDef) {
-            console.log(`🌊 Unknown terrain type: ${terrainId}`);
+            console.log(`Unknown terrain type: ${terrainId}`);
             return false;
         }
 
-        console.log('🌊 Checking terrain traversal:', {
+        console.log('Checking terrain traversal:', {
             terrainId,
             marinerTraversable: terrainDef.marinerTraversable,
             fightingStyle: character.fightingStyle,
@@ -1368,7 +1368,7 @@ class Player {
             // Check if wielding a shield
             const isWieldingShield = character.equipment?.offHand?.type === 'shield';
 
-            console.log('🌊 Mariner check:', {
+            console.log('Mariner check:', {
                 isWearingHeavyArmor,
                 isWieldingShield,
                 canTraverse: !isWearingHeavyArmor && !isWieldingShield
@@ -1376,15 +1376,15 @@ class Player {
 
             if (!isWearingHeavyArmor && !isWieldingShield) {
                 // Use custom message from terrain data, or fallback
-                const message = terrainDef.marinerMessage || `🌊 Traversing ${terrainDef.name} with Mariner training!`;
-                gameState.addMessage(`🌊 ${message}`, 'success');
+                const message = terrainDef.marinerMessage || `Traversing ${terrainDef.name} with Mariner training!`;
+                gameState.addMessage(`${message}`, 'success');
                 return true;
             } else {
                 if (isWearingHeavyArmor) {
-                    gameState.addMessage('🌊 Mariner: Remove heavy armor to swim!', 'warning');
+                    gameState.addMessage('Mariner: Remove heavy armor to swim!', 'warning');
                 }
                 if (isWieldingShield) {
-                    gameState.addMessage('🌊 Mariner: Unequip shield to swim!', 'warning');
+                    gameState.addMessage('Mariner: Unequip shield to swim!', 'warning');
                 }
             }
         }
@@ -1499,7 +1499,7 @@ class Player {
             if (detected) {
             // TRAP DETECTED - Show disarm modal
                 if (!trapTile.trapDetected) {
-                    gameState.addMessage(`👁️ Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
+                    gameState.addMessage(`Your keen senses detect a trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'warning');
                 }
                 if (persistentChoices) {
                     this.dungeonManager.recordTrapState(trapRoomIndex, trapX, trapY, true, trapTile);
@@ -1518,7 +1518,7 @@ class Player {
                         );
 
                         const config = {
-                            title: '🪤 Trap Detected!',
+                            title: 'Trap Detected!',
                             cancelLabel: 'Avoid trap',
                             description: persistentChoices
                                 ? 'Disarm to secure the passage, or avoid now. Stepping onto it again triggers it. Press E here to disarm before leaving.'
@@ -1532,21 +1532,21 @@ class Player {
 
                         if (result.attempted && result.success) {
                             armed = false;
-                            gameState.addMessage('✅ You carefully disarm the trap!', 'success');
+                            gameState.addMessage('You carefully disarm the trap!', 'success');
                         } else if (result.attempted && !result.success) {
                             armed = false;
                             // The shared prompt already applied the authored disarm failure once.
-                            gameState.addMessage('💥 The trap triggers during disarm!', 'danger');
+                            gameState.addMessage('The trap triggers during disarm!', 'danger');
                         } else {
                         // Player chose not to attempt - carefully step around
-                            gameState.addMessage('🚶 You carefully avoid the trap.', 'info');
+                            gameState.addMessage('You carefully avoid the trap.', 'info');
                         }
                     } else {
                     // No challenge template - just allow avoiding
-                        gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
+                        gameState.addMessage('You spot and avoid the trap.', 'info');
                     }
                 } else {
-                    gameState.addMessage('🚶 You spot and avoid the trap.', 'info');
+                    gameState.addMessage('You spot and avoid the trap.', 'info');
                 }
             } else {
             // TRAP NOT DETECTED - Immediate damage, no choice
@@ -1560,9 +1560,9 @@ class Player {
                 }
 
                 gameState.addMessage(steppedOnKnownTrap
-                    ? '⚠️ You step onto the armed trap you previously avoided!'
-                    : `⚠️ You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
-                gameState.addMessage(`💥 The trap deals ${damage} damage!`, 'danger');
+                    ? 'You step onto the armed trap you previously avoided!'
+                    : `You trigger a hidden trap! (Passive Perception ${passivePerception} vs DC ${trapDC})`, 'danger');
+                gameState.addMessage(`The trap deals ${damage} damage!`, 'danger');
                 window.game?.checkDeath?.(character);
 
                 // Show floating combat text if available
@@ -1578,7 +1578,7 @@ class Player {
             if (persistentChoices) {
                 this.dungeonManager.recordTrapState(trapRoomIndex, trapX, trapY, armed, trapTile);
                 if (armed) {
-                    gameState.addMessage('🪤 The known trap remains armed. Press E here to disarm it; stepping onto it again will trigger it.', 'info');
+                    gameState.addMessage('The known trap remains armed. Press E here to disarm it; stepping onto it again will trigger it.', 'info');
                 }
                 return;
             }
@@ -1767,7 +1767,7 @@ class Player {
         }
 
         if (enemies.length === 0) {
-            console.warn('⚠️ Failed to generate dungeon enemies');
+            console.warn('Failed to generate dungeon enemies');
             return;
         }
 
@@ -1845,7 +1845,7 @@ class Player {
 
         // If no monsters match pool, fallback to any monster
         if (dungeonMonsters.length === 0) {
-            console.warn('⚠️ No monsters in dungeon pool, using fallback');
+            console.warn('No monsters in dungeon pool, using fallback');
             dungeonMonsters = monsterData.monsters;
         }
 
@@ -1924,7 +1924,7 @@ class Player {
                     const damage = roll(consequence.dice);
                     Character.prototype.takeDamage.call(character, damage, consequence.damageType);
                     gameState.addMessage(
-                        `💥 ${consequence.damageType} damage: ${damage} HP!`,
+                        `${consequence.damageType} damage: ${damage} HP!`,
                         'danger'
                     );
                     break;
@@ -1941,7 +1941,7 @@ class Player {
                         character.currentHP = 0;
                     }
                     gameState.addMessage(
-                        `😓 You gain Exhaustion level ${consequence.level}!`,
+                        `You gain Exhaustion level ${consequence.level}!`,
                         'warning'
                     );
                     break;
@@ -1963,7 +1963,7 @@ class Player {
                             character.ac = Character.prototype.calculateAC.call({ ...character,
                                 baseAC: character.baseAC ?? 10, armorBonus: character.armorBonus ?? 0 });
                             gameState.addMessage(
-                                `🌊 Your ${lostItem.name} was swept away by the current!`,
+                                `Your ${lostItem.name} was swept away by the current!`,
                                 'danger'
                             );
                         }
@@ -1976,7 +1976,7 @@ class Player {
                         character.conditions.push('injured');
                     }
                     gameState.addMessage(
-                        '🩹 You suffer an injury!',
+                        'You suffer an injury!',
                         'danger'
                     );
                     break;
@@ -1984,7 +1984,7 @@ class Player {
                 case 'death':
                     character.currentHP = 0;
                     gameState.addMessage(
-                        '💀 You fall to your death...',
+                        'You fall to your death...',
                         'danger'
                     );
                     break;

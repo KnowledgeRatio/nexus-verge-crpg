@@ -4,6 +4,7 @@
  * Supports hybrid ASCII/pixel art tile rendering
  */
 import { RULES } from '../core/rulesEngine.js';
+import { drawIcon, iconId } from '../ui/Iconography.js';
 import {
     getAtlasSampleRect,
     shouldOverlayTerrainTransition,
@@ -76,7 +77,7 @@ class MapRenderer {
         this.playerAvatarImage = null;
         this.playerAvatarFilename = null;
         this.playerAvatarLoading = false;
-        console.log('🎨 MapRenderer initialized', {
+        console.log('MapRenderer initialized', {
             canvas: `${this.canvas.width}x${this.canvas.height}px`,
             viewport: `${this.config.viewportWidth}x${this.config.viewportHeight} tiles`,
             tileSize: `${this.config.tileWidth}x${this.config.tileHeight}px`,
@@ -167,7 +168,7 @@ class MapRenderer {
         const fontSize = Math.floor(newSize * 0.875); // 14px for 16px tiles
         this.config.font = `${fontSize}px "Courier New", monospace`;
 
-        console.log(`🔍 Zoom set to ${newSize}x${newSize}px (level ${index + 1}/${this.zoomLevels.length})`);
+        console.log(`Zoom set to ${newSize}x${newSize}px (level ${index + 1}/${this.zoomLevels.length})`);
         return true;
     }
 
@@ -193,7 +194,7 @@ class MapRenderer {
     setPixelArtEnabled(enabled) {
         this.usePixelArt = enabled;
         this.saveGraphicsSetting(enabled);
-        console.log(`🎨 Pixel art ${enabled ? 'enabled' : 'disabled'}`);
+        console.log(`Pixel art ${enabled ? 'enabled' : 'disabled'}`);
 
         // Pre-load tiles if enabling
         if (enabled && this.tileImages.size === 0) {
@@ -257,7 +258,7 @@ class MapRenderer {
         img.onerror = () => {
             this.playerAvatarImage = null;
             this.playerAvatarLoading = false;
-            console.warn(`⚠️ Failed to load player avatar image: ${filename}`);
+            console.warn(`Failed to load player avatar image: ${filename}`);
         };
 
         img.src = imagePath;
@@ -275,7 +276,7 @@ class MapRenderer {
         // Only load images for terrains with tileImage defined
         const terrainsWithImages = this.terrainTypes.filter(t => t.tileImage);
 
-        console.log(`🖼️ Pre-loading ${terrainsWithImages.length} tile images from terrains.json...`);
+        console.log(`Pre-loading ${terrainsWithImages.length} tile images from terrains.json...`);
 
         const loadPromises = terrainsWithImages.map(terrain =>
             this.loadTileImage(terrain.id, terrain.tileImage)
@@ -283,10 +284,10 @@ class MapRenderer {
         await Promise.allSettled(loadPromises);
 
         const loaded = Array.from(this.tileImages.keys());
-        console.log(`✅ Loaded ${this.tileImages.size} tile images: ${loaded.join(', ')}`);
+        console.log(`Loaded ${this.tileImages.size} tile images: ${loaded.join(', ')}`);
 
         if (this.tileImages.size === 0) {
-            console.log('ℹ️ No tile images found - using ASCII rendering');
+            console.log('No tile images found - using ASCII rendering');
         }
     }
 
@@ -335,14 +336,14 @@ class MapRenderer {
             img.onload = () => {
                 this.tileImages.set(tileId, img);
                 this.tilesLoading.delete(tileId);
-                console.log(`✅ Loaded tile: ${tileId} (${filename})`);
+                console.log(`Loaded tile: ${tileId} (${filename})`);
                 resolve(img);
             };
 
             img.onerror = () => {
                 this.failedTiles.add(tileId);
                 this.tilesLoading.delete(tileId);
-                console.warn(`⚠️ Failed to load tile image: ${filename} for ${tileId}`);
+                console.warn(`Failed to load tile image: ${filename} for ${tileId}`);
                 resolve(null);
             };
 
@@ -383,17 +384,17 @@ class MapRenderer {
                     this.terrainMap.set(terrain.id, terrain);
                 });
 
-                console.log(`✅ Loaded ${this.terrainTypes.length} terrain types:`,
+                console.log(`Loaded ${this.terrainTypes.length} terrain types:`,
                     Array.from(this.terrainMap.keys()).join(', '));
 
                 // Debug: Check if beach is loaded
                 if (this.terrainMap.has('beach')) {
-                    console.log('✅ Beach terrain found in terrainMap:', this.terrainMap.get('beach'));
+                    console.log('Beach terrain found in terrainMap:', this.terrainMap.get('beach'));
                 } else {
-                    console.error('❌ Beach terrain NOT found in terrainMap!');
+                    console.error('Beach terrain NOT found in terrainMap!');
                 }
             } catch (error) {
-                console.error('❌ Failed to load terrain data:', error);
+                console.error('Failed to load terrain data:', error);
                 throw error;
             }
         }
@@ -434,7 +435,15 @@ class MapRenderer {
             this.ctx.fillRect(pixelX, pixelY, this.config.tileWidth, this.config.tileHeight);
         }
 
-        // Draw character - center it in the 16x16 tile
+        // Share the same vector symbols as the DOM; retain ordinary terrain text.
+        const semanticId = iconId(symbol, null);
+        if (semanticId) {
+            const size = Math.min(this.config.tileWidth, this.config.tileHeight) * 0.9;
+            drawIcon(this.ctx, semanticId, pixelX + (this.config.tileWidth - size) / 2,
+                pixelY + (this.config.tileHeight - size) / 2, size, fgColor);
+            return;
+        }
+        // Draw character - center it in the tile
         this.ctx.fillStyle = fgColor;
         this.ctx.font = this.config.font;
         this.ctx.textBaseline = 'middle';
@@ -759,11 +768,11 @@ class MapRenderer {
         if (!terrain) {
             // Unknown terrain type - log error ONCE for beach, always for others
             if (tile.terrain === 'beach' && !this.hasWarnedAboutBeach) {
-                console.error('❌ BEACH TERRAIN NOT FOUND! terrainMap has:', Array.from(this.terrainMap.keys()));
-                console.error('❌ Beach tile data:', tile);
+                console.error('BEACH TERRAIN NOT FOUND! terrainMap has:', Array.from(this.terrainMap.keys()));
+                console.error('Beach tile data:', tile);
                 this.hasWarnedAboutBeach = true;
             } else if (tile.terrain !== 'beach') {
-                console.warn(`⚠️ Unknown terrain type: "${tile.terrain}" at (${tile.x}, ${tile.y})`);
+                console.warn(`Unknown terrain type: "${tile.terrain}" at (${tile.x}, ${tile.y})`);
             }
             this.drawTile(screenX, screenY, '?', '#ff0000', '#440000');
             return;
@@ -835,8 +844,8 @@ class MapRenderer {
      * Looks up symbols from terrains.json for data-driven rendering.
      *
      * `sanctuary`/`dungeon`/`poi` features attempt painted art first (falling
-     * back to ASCII/emoji when no tileImage is authored yet or art is toggled
-     * off). `settlement` remains ASCII-only — out of scope for this change.
+     * back to shared drawn symbols when no tileImage is authored yet or art is
+     * toggled off). Settlements use the shared map symbol family.
      *
      * Reveal-art decision (symmetric, Unified POI System design, revised
      * 2026-08-09): once a `poi` feature has been entered and retyped to
@@ -844,7 +853,7 @@ class MapRenderer {
      * rather than a generic sanctuary/dungeon icon — the reveal is purely
      * mechanical/textual, never a visual downgrade. Both branches resolve via
      * `feature.originalPoiType` first, falling back to the generic
-     * sanctuary/dungeon terrain (or the plain 'D' ASCII marker for dungeon)
+     * sanctuary/dungeon terrain (or the shared dungeon marker)
      * only for the dead legacy non-finite-world fallback path, where
      * `originalPoiType` was never set.
      *
@@ -867,13 +876,13 @@ class MapRenderer {
             case 'settlement': {
                 // Look up town terrain from terrains.json
                 const townTerrain = getTerrain('town');
-                symbol = townTerrain?.symbol || '🏘️';
+                symbol = townTerrain?.symbol || 'map.settlement';
                 color = townTerrain?.color || '#d4af37';
                 if (feature.hostileState?.phase === 'hostile') {
-                    symbol = '⚔';
+                    symbol = 'map.hostile';
                     color = '#ff4444';
                 } else if (feature.hostileState?.phase === 'rebuilding') {
-                    symbol = '⚒';
+                    symbol = 'map.rebuilding';
                     color = '#ffaa44';
                 }
                 break;
@@ -884,9 +893,9 @@ class MapRenderer {
                 // reveal (mirrors the sanctuary branch below). Only the dead
                 // legacy non-finite-world fallback path lacks
                 // originalPoiType, which correctly falls through to the
-                // plain 'D' ASCII marker.
+                // shared dungeon marker.
                 imageTerrain = getTerrain(feature.originalPoiType) ?? null;
-                symbol = imageTerrain?.symbol || 'D';
+                symbol = imageTerrain?.symbol || 'map.dungeon';
                 color = imageTerrain?.color || '#8b0000';
                 break;
             }
@@ -896,7 +905,7 @@ class MapRenderer {
                 // reveal, falling back to the generic sanctuary terrain only
                 // for the dead legacy fallback path (no originalPoiType).
                 imageTerrain = getTerrain(feature.originalPoiType) ?? getTerrain('sanctuary');
-                symbol = imageTerrain?.symbol || '⛩️';
+                symbol = imageTerrain?.symbol || 'map.sanctuary';
                 color = imageTerrain?.color || '#f0e68c';
                 break;
             }
@@ -918,7 +927,7 @@ class MapRenderer {
         // Painted-art path: sanctuary/dungeon/poi only, mirroring
         // renderTile()'s non-feature terrain branch (getTileImage ->
         // drawImageTile with the same fog-of-war opacity treatment). Falls
-        // through to the ASCII symbol/color below when no image resolves.
+        // through to the shared symbol/color below when no image resolves.
         if (imageTerrain && RULES.terrainRendering.poiMarkers.usePaintedArt) {
             const tileImage = this.getTileImage(imageTerrain.id);
             if (tileImage) {
@@ -968,8 +977,16 @@ class MapRenderer {
         this.ctx.lineWidth = Math.max(2, this.config.tileWidth / 12);
         const x = (screenX + 0.5) * this.config.tileWidth;
         const y = (screenY + 0.5) * this.config.tileHeight;
-        this.ctx.strokeText(marker.symbol, x, y);
-        this.ctx.fillText(marker.symbol, x, y);
+        const semanticId = iconId(marker.symbol, null);
+        if (semanticId) {
+            const size = this.config.tileWidth * 0.8;
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+            this.ctx.fillRect(x - size / 2, y - size / 2, size, size);
+            drawIcon(this.ctx, semanticId, x - size / 2, y - size / 2, size, marker.color);
+        } else {
+            this.ctx.strokeText(marker.symbol, x, y);
+            this.ctx.fillText(marker.symbol, x, y);
+        }
         this.ctx.restore();
     }
 
@@ -988,7 +1005,13 @@ class MapRenderer {
         this.ctx.font = `bold ${Math.max(10, this.config.tileWidth / 2)}px monospace`;
         this.ctx.textAlign = 'left';
         this.ctx.textBaseline = 'top';
-        this.ctx.fillText(marker.symbol, screenX * this.config.tileWidth, screenY * this.config.tileHeight);
+        const semanticId = iconId(marker.symbol, null);
+        if (semanticId) {
+            drawIcon(this.ctx, semanticId, screenX * this.config.tileWidth,
+                screenY * this.config.tileHeight, Math.max(10, this.config.tileWidth / 2), marker.color);
+        } else {
+            this.ctx.fillText(marker.symbol, screenX * this.config.tileWidth, screenY * this.config.tileHeight);
+        }
         this.ctx.restore();
     }
 
@@ -1122,7 +1145,7 @@ class MapRenderer {
         this.config.viewportWidth = Math.floor(width / this.config.tileWidth);
         this.config.viewportHeight = Math.floor(height / this.config.tileHeight);
 
-        console.log(`📐 Resized to ${this.config.viewportWidth}x${this.config.viewportHeight} tiles`);
+        console.log(`Resized to ${this.config.viewportWidth}x${this.config.viewportHeight} tiles`);
     }
 }
 

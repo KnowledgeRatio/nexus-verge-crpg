@@ -1,60 +1,475 @@
 {
   "tavern": {
     "variants": [
-      { "image": "data/graphics/tavern-interior-v1.png", "alt": "A timber-beamed tavern common room, with a long bar on the left, a stone hearth on the right and tables around an open central aisle." },
-      { "image": "data/graphics/tavern-interior-v2.png", "alt": "Another frontier tavern common room, with a bar to the left, a warm hearth to the right and tables ready for company." }
+      {
+        "image": "data/graphics/tavern-interior-v1.png",
+        "alt": "A timber-beamed tavern common room, with a long bar on the left, a stone hearth on the right and tables around an open central aisle.",
+        "id": "tavern-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "image": "data/graphics/tavern-interior-v2.png",
+        "alt": "Another frontier tavern common room, with a bar to the left, a warm hearth to the right and tables ready for company.",
+        "id": "tavern-v2",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      }
     ],
     "caption": "The common room · select a name to talk",
-    "glow": { "x": 81, "y": 44 },
+    "glow": {
+      "x": 81,
+      "y": 44
+    },
     "people": [
-      { "roles": ["innkeeper"], "image": "data/graphics/tavern-keeper-v1.png", "x": 28, "y": 39, "width": 9 },
-      { "image": "data/graphics/tavern-patron-v1.png", "x": 57, "y": 78, "width": 18 },
-      { "image": "data/graphics/tavern-guest-v1.png", "x": 73, "y": 81, "width": 18 }
+      {
+        "roles": [
+          "innkeeper"
+        ],
+        "image": "data/graphics/tavern-keeper-v1.png",
+        "x": 28,
+        "y": 39,
+        "width": 9,
+        "id": "keeper",
+        "profile": "tavern-standing-keeper"
+      },
+      {
+        "image": "data/graphics/tavern-patron-v1.png",
+        "x": 57,
+        "y": 78,
+        "width": 18,
+        "id": "patron1",
+        "profile": "tavern-standing-patron",
+        "roles": [
+          "patron",
+          "citizen",
+          "guard"
+        ]
+      },
+      {
+        "image": "data/graphics/tavern-guest-v1.png",
+        "x": 69,
+        "y": 81,
+        "width": 18,
+        "id": "patron2",
+        "profile": "tavern-standing-patron",
+        "roles": [
+          "patron",
+          "citizen",
+          "guard"
+        ]
+      }
     ],
     "ambience": [
-      { "label": "Inhabited room", "tracks": [
-        { "url": "data/sound/tavern-voices-v2.wav", "volume": 0.55 },
-        { "url": "data/sound/tavern-activity-v2.wav", "volume": 0.14 }
-      ] }
+      {
+        "label": "Inhabited room",
+        "tracks": [
+          {
+            "url": "data/sound/tavern-voices-v2.wav",
+            "volume": 0.55
+          },
+          {
+            "url": "data/sound/tavern-activity-v2.wav",
+            "volume": 0.14
+          }
+        ],
+        "id": "tavern-inhabited-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "id": "tavern-conversations-v2",
+        "label": "Quiet conversation",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1,
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-tavern-v2.wav",
+            "volume": 0.6
+          }
+        ]
+      },
+      {
+        "id": "tavern-music-kethara-v1",
+        "label": "Kethara · strings and frame drum",
+        "campaignIds": [
+          "nexus-verge"
+        ],
+        "introducedVersion": 2,
+        "cultureIds": [
+          "kethara"
+        ],
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/sound/tavern-voices-v2.wav",
+            "volume": 0.55
+          },
+          {
+            "url": "data/sound/tavern-activity-v2.wav",
+            "volume": 0.14
+          },
+          {
+            "url": "data/audio/local/settlement-music-kethara-v1.wav",
+            "volume": 0.6
+          }
+        ]
+      },
+      {
+        "id": "tavern-music-vaethori-v1",
+        "label": "Vaethori · reed and strings",
+        "campaignIds": [
+          "nexus-verge"
+        ],
+        "introducedVersion": 2,
+        "cultureIds": [
+          "vaethori"
+        ],
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/sound/tavern-voices-v2.wav",
+            "volume": 0.55
+          },
+          {
+            "url": "data/sound/tavern-activity-v2.wav",
+            "volume": 0.14
+          },
+          {
+            "url": "data/audio/local/settlement-music-vaethori-v1.wav",
+            "volume": 0.6
+          }
+        ]
+      },
+      {
+        "id": "tavern-music-verathi-v1",
+        "label": "Verathi · answering strings and reed",
+        "campaignIds": [
+          "nexus-verge"
+        ],
+        "introducedVersion": 2,
+        "cultureIds": [
+          "verathi"
+        ],
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/sound/tavern-voices-v2.wav",
+            "volume": 0.55
+          },
+          {
+            "url": "data/sound/tavern-activity-v2.wav",
+            "volume": 0.14
+          },
+          {
+            "url": "data/audio/local/settlement-music-verathi-v1.wav",
+            "volume": 0.6
+          }
+        ]
+      },
+      {
+        "id": "tavern-music-sirathi-v1",
+        "label": "Sirathi · solo strings",
+        "campaignIds": [
+          "nexus-verge"
+        ],
+        "introducedVersion": 2,
+        "cultureIds": [
+          "sirathi"
+        ],
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/sound/tavern-voices-v2.wav",
+            "volume": 0.55
+          },
+          {
+            "url": "data/sound/tavern-activity-v2.wav",
+            "volume": 0.14
+          },
+          {
+            "url": "data/audio/local/settlement-music-sirathi-v1.wav",
+            "volume": 0.6
+          }
+        ]
+      }
+    ],
+    "legacyVariantIds": [
+      "tavern-v1",
+      "tavern-v2"
     ]
   },
   "merchant": {
     "variants": [
-      { "image": "data/graphics/merchant-interior-v1.png", "counterForeground": 62, "alt": "A first-person view across a frontier merchant's counter, with stocked shelves and practical supplies behind it." },
-      { "image": "data/graphics/merchant-interior-v2.png", "counterForeground": 64.5, "alt": "A different frontier general shop, seen from the customer's side of the counter.", "people": [
-        { "roles": ["merchant"], "image": "data/graphics/merchant-keeper-v2.png", "x": 50, "y": 69.5, "width": 28 }
-      ] }
+      {
+        "image": "data/graphics/merchant-interior-v1.png",
+        "counterForeground": 62,
+        "alt": "A first-person view across a frontier merchant's counter, with stocked shelves and practical supplies behind it.",
+        "id": "merchant-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "image": "data/graphics/merchant-interior-v2.png",
+        "counterForeground": 64.5,
+        "alt": "A different frontier general shop, seen from the customer's side of the counter.",
+        "people": [
+          {
+            "roles": [
+              "merchant"
+            ],
+            "image": "data/graphics/merchant-keeper-v2.png",
+            "x": 50,
+            "y": 69.5,
+            "width": 28,
+            "id": "keeper",
+            "profile": "merchant-counter-keeper"
+          }
+        ],
+        "id": "merchant-v2",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      }
     ],
     "caption": "At the counter · select the merchant to talk or trade",
+    "ambience": [
+      {
+        "label": "Shop room",
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-merchant-v1.wav",
+            "volume": 0.4
+          }
+        ],
+        "id": "merchant-room-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "id": "merchant-counter-v2",
+        "label": "Packing and browsing",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1,
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-merchant-v2.wav",
+            "volume": 0.4
+          }
+        ]
+      }
+    ],
     "counterForeground": 65,
     "people": [
-      { "roles": ["merchant"], "image": "data/graphics/merchant-keeper-v1.png", "x": 50, "y": 67, "width": 28 }
+      {
+        "roles": [
+          "merchant"
+        ],
+        "image": "data/graphics/merchant-keeper-v1.png",
+        "x": 50,
+        "y": 67,
+        "width": 28,
+        "id": "keeper",
+        "profile": "merchant-counter-keeper"
+      }
+    ],
+    "legacyVariantIds": [
+      "merchant-v1",
+      "merchant-v2"
     ]
   },
   "blacksmith": {
     "variants": [
-      { "image": "data/graphics/blacksmith-interior-v1.png", "counterForeground": 66, "alt": "A first-person view across a smith's work counter, with a glowing forge and tools in the workshop behind it." },
-      { "image": "data/graphics/blacksmith-interior-v2.png", "counterForeground": 73, "alt": "Another frontier smithy, seen across its sturdy counter with weapons and tools along the walls.", "people": [
-        { "roles": ["blacksmith"], "image": "data/graphics/blacksmith-keeper-v2.png", "x": 50, "y": 78, "width": 28 }
-      ] }
+      {
+        "image": "data/graphics/blacksmith-interior-v1.png",
+        "counterForeground": 66,
+        "alt": "A first-person view across a smith's work counter, with a glowing forge and tools in the workshop behind it.",
+        "id": "blacksmith-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "image": "data/graphics/blacksmith-interior-v2.png",
+        "counterForeground": 73,
+        "alt": "Another frontier smithy, seen across its sturdy counter with weapons and tools along the walls.",
+        "people": [
+          {
+            "roles": [
+              "blacksmith"
+            ],
+            "image": "data/graphics/blacksmith-keeper-v2.png",
+            "x": 50,
+            "y": 78,
+            "width": 28,
+            "id": "keeper",
+            "profile": "blacksmith-counter-keeper"
+          }
+        ],
+        "id": "blacksmith-v2",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      }
     ],
     "caption": "At the smith's counter · select the smith to talk or trade",
+    "ambience": [
+      {
+        "label": "Working smithy",
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-blacksmith-v1.wav",
+            "volume": 0.35
+          }
+        ],
+        "id": "blacksmith-workshop-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "id": "blacksmith-workshop-v2",
+        "label": "Steady workshop",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1,
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-blacksmith-v2.wav",
+            "volume": 0.4
+          }
+        ]
+      }
+    ],
     "counterForeground": 65,
     "people": [
-      { "roles": ["blacksmith"], "image": "data/graphics/blacksmith-keeper-v1.png", "x": 50, "y": 71, "width": 28 }
+      {
+        "roles": [
+          "blacksmith"
+        ],
+        "image": "data/graphics/blacksmith-keeper-v1.png",
+        "x": 50,
+        "y": 71,
+        "width": 28,
+        "id": "keeper",
+        "profile": "blacksmith-counter-keeper"
+      }
+    ],
+    "legacyVariantIds": [
+      "blacksmith-v1",
+      "blacksmith-v2"
     ]
   },
   "greathall": {
     "variants": [
-      { "image": "data/graphics/greathall-interior-v1.png", "counterForeground": 64, "alt": "A first-person view across a reception desk in the settlement's great hall, with records and banners behind it." },
-      { "image": "data/graphics/greathall-interior-v2.png", "counterForeground": 75, "alt": "A council records room with maps and books, viewed from the visitor's side of its reception desk.", "people": [
-        { "roles": ["leader"], "image": "data/graphics/greathall-keeper-v2.png", "x": 50, "y": 80, "width": 28 }
-      ] }
+      {
+        "image": "data/graphics/greathall-interior-v1.png",
+        "counterForeground": 64,
+        "alt": "A first-person view across a reception desk in the settlement's great hall, with records and banners behind it.",
+        "id": "greathall-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "image": "data/graphics/greathall-interior-v2.png",
+        "counterForeground": 75,
+        "alt": "A council records room with maps and books, viewed from the visitor's side of its reception desk.",
+        "people": [
+          {
+            "roles": [
+              "leader"
+            ],
+            "image": "data/graphics/greathall-keeper-v2.png",
+            "x": 50,
+            "y": 80,
+            "width": 28,
+            "id": "keeper",
+            "profile": "greathall-counter-keeper"
+          }
+        ],
+        "id": "greathall-v2",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      }
     ],
     "caption": "The great hall · select the settlement leader to talk",
+    "ambience": [
+      {
+        "label": "Hall room",
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-greathall-v1.wav",
+            "volume": 0.4
+          }
+        ],
+        "id": "greathall-records-v1",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1
+      },
+      {
+        "id": "greathall-records-v2",
+        "label": "Quiet business",
+        "campaignIds": [
+          "core"
+        ],
+        "introducedVersion": 1,
+        "localOnly": true,
+        "tracks": [
+          {
+            "url": "data/audio/local/settlement-greathall-v2.wav",
+            "volume": 0.4
+          }
+        ]
+      }
+    ],
     "counterForeground": 65,
     "people": [
-      { "roles": ["leader"], "image": "data/graphics/greathall-keeper-v1.png", "x": 50, "y": 69, "width": 28 }
+      {
+        "roles": [
+          "leader"
+        ],
+        "image": "data/graphics/greathall-keeper-v1.png",
+        "x": 50,
+        "y": 69,
+        "width": 28,
+        "id": "keeper",
+        "profile": "greathall-counter-keeper"
+      }
+    ],
+    "legacyVariantIds": [
+      "greathall-v1",
+      "greathall-v2"
     ]
   }
 }

@@ -202,7 +202,7 @@ registerHandler('extraAction', (value, ability, ctx) => {
     const count = typeof value === 'number' ? value : 1;
     ctx.combatant.actions.action += count;
 
-    ctx.addMessage(`⚡ ${ability.name}! ${ctx.combatant.name} gains an additional action!`, 'success');
+    ctx.addMessage(`${ability.name}! ${ctx.combatant.name} gains an additional action!`, 'success');
     ctx.showFloatingText(ctx.combatant.id, `${ability.name.toUpperCase()  }!`, 'buff');
 
     // Re-render combat actions to show updated action count
@@ -240,7 +240,7 @@ registerHandler('heal', (formula, ability, ctx) => {
         actual = normalizeHP(ctx.combatant.hp - oldHP);
     }
 
-    ctx.addMessage(`💚 ${ability.name} (Heal): ${ctx.character.name} heals for ${formatCombatNumber(actual)} HP! [${breakdown}]`, 'success');
+    ctx.addMessage(`${ability.name} (Heal): ${ctx.character.name} heals for ${formatCombatNumber(actual)} HP! [${breakdown}]`, 'success');
     if (!ctx.outOfCombat) {
         ctx.showFloatingText(ctx.combatant.id, `+${formatCombatNumber(actual)} HP`, 'healing');
     }
@@ -256,15 +256,15 @@ registerHandler('dodge', (value, ability, ctx) => {
     const applied = ctx.combatant.addCondition('dodging', 'untilStartOfTurn', ctx.combatant.id, {
         isBuff: true,
         curable: false,
-        icon: '🛡️'
+        icon: 'condition.dodging'
     });
 
     if (!applied) {
         return { condition: 'dodging', conditionApplied: false, conditionOutcome: rejectCondition(ctx.combatant, 'dodging', ctx) };
     }
 
-    ctx.addMessage(`🛡️ ${ability.name} (Dodge): ${ctx.character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
-    ctx.showFloatingText(ctx.combatant.id, 'DODGING! 🛡️', 'buff');
+    ctx.addMessage(`${ability.name} (Dodge): ${ctx.character.name} takes the Dodge action! Attackers have disadvantage.`, 'info');
+    ctx.showFloatingText(ctx.combatant.id, 'DODGING!', 'buff');
 
     return { condition: 'dodging' };
 });
@@ -275,7 +275,7 @@ registerHandler('dodge', (value, ability, ctx) => {
  * Effect value: true (boolean flag)
  */
 registerHandler('weapon_attack', (value, ability, ctx) => {
-    ctx.addMessage(`⚔️ ${ability.name} (Attack): Select a target to attack`, 'info');
+    ctx.addMessage(`${ability.name} (Attack): Select a target to attack`, 'info');
 
     return { deferred: true, type: 'weapon_attack' };
 });
@@ -321,7 +321,7 @@ registerHandler('variableCostDamage', async (config, ability, ctx) => {
 
     const bonusNote = isMatchingType ? ` (bonus die vs ${defender.character?.type})` : '';
     ctx.addMessage(
-        `✨ ${ability.name}! ${ctx.combatant?.name || 'Attacker'} spends ${resolveSpent} Resolve — ${totalDamage} ${config.damageType || ''} damage!${bonusNote}`,
+        `${ability.name}! ${ctx.combatant?.name || 'Attacker'} spends ${resolveSpent} Resolve — ${totalDamage} ${config.damageType || ''} damage!${bonusNote}`,
         'success'
     );
     const damageResult = applyAbilityDamage(defender, totalDamage, config, ability, ctx);
@@ -394,7 +394,7 @@ registerHandler('variableCostHeal', async (config, ability, ctx) => {
     gameState.set('character', character);
 
     ctx.addMessage(
-        `🤝 ${ability.name} (Heal): ${character.name} heals for ${formatCombatNumber(actual)} HP [${resolveSpent} Resolve]`,
+        `${ability.name} (Heal): ${character.name} heals for ${formatCombatNumber(actual)} HP [${resolveSpent} Resolve]`,
         'success'
     );
     if (!ctx.outOfCombat && ctx.combatant) {
@@ -419,7 +419,7 @@ registerHandler('cureCondition', async (config, ability, ctx) => {
     let removed = [];
     if (ctx.outOfCombat) {
         // Out of combat: no combatant — nothing to cure (conditions are combat-only currently)
-        ctx.addMessage(`🤝 ${ability.name}: No active conditions to cure outside of combat.`, 'info');
+        ctx.addMessage(`${ability.name}: No active conditions to cure outside of combat.`, 'info');
     } else {
         const combatant = ctx.combatant;
         const curableDebuffs = combatant.conditions?.filter(c => !c.isBuff && c.curable) || [];
@@ -435,11 +435,11 @@ registerHandler('cureCondition', async (config, ability, ctx) => {
         if (removed.length > 0) {
             gameState.set('character', character);
             ctx.addMessage(
-                `🤝 ${ability.name} (Cure): Removed ${removed.join(', ')}`,
+                `${ability.name} (Cure): Removed ${removed.join(', ')}`,
                 'success'
             );
         } else {
-            ctx.addMessage(`🤝 ${ability.name}: No curable conditions to remove.`, 'info');
+            ctx.addMessage(`${ability.name}: No curable conditions to remove.`, 'info');
         }
     }
 
@@ -466,7 +466,7 @@ registerHandler('rerollSavingThrow', (value, ability, ctx) => {
     const newTotal = newRoll + mod;
 
     ctx.addMessage(
-        `🔁 ${ability.name}! ${defender?.name || ctx.character?.name} rerolls: ${newRoll} + ${mod} = ${newTotal}`,
+        `${ability.name}! ${defender?.name || ctx.character?.name} rerolls: ${newRoll} + ${mod} = ${newTotal}`,
         'info'
     );
 
@@ -619,7 +619,7 @@ function rollDefenderSave(defender, saveAbility, { disadvantage = false, combatM
  *   saveType         {string} ability score for the save ('str' | 'wis' | ...)
  *   condition        {string} condition type to apply on failed save
  *   conditionDuration {string} duration string
- *   conditionIcon    {string} emoji icon
+ *   conditionIcon    {string} semantic icon identifier
  *   dcContext        {string} optional — derivedStatMap blend context overriding the DC
  *                    formula in 'NVSystem' mode only (see tacticSaveDC())
  *
@@ -641,7 +641,7 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     if (damagePrecisionEnabled() && defender.hp <= 0) {
         return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
     }
-    ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
+    ctx.addMessage(`${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     if (isConditionImmune(defender, config.condition)) {
         return { dieRoll, saveDC, saveRoll: null, conditionApplied: false,
@@ -653,13 +653,13 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
     if (exposedDisadvantage) {
         exposedSource.exposedConsumed = true;
-        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+        ctx.addMessage(`${defender.name} has disadvantage on this save (Exposed)!`, 'info');
     }
 
     // Save vs condition
     const saveRoll = rollDefenderSave(defender, config.saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const condLabel = config.condition.toUpperCase();
-    const icon      = config.conditionIcon ?? '💢';
+    const icon      = config.conditionIcon ?? 'condition.debuff';
 
     let conditionApplied = false;
     let conditionOutcome = 'saved';
@@ -675,10 +675,10 @@ registerHandler('onHitSaveOrCondition', (config, ability, ctx) => {
         }
         conditionOutcome = 'applied';
         ctx.addMessage(
-            `${icon} ${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
+            `${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
         );
-        ctx.showFloatingText(defender.id, `${condLabel}! ${icon}`, 'condition');
+        ctx.showFloatingText(defender.id, `${condLabel}!`, 'condition');
     } else {
         ctx.addMessage(
             `${defender.name} resists ${config.condition} (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
@@ -718,7 +718,7 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     if (damagePrecisionEnabled() && defender.hp <= 0) {
         return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
     }
-    ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
+    ctx.addMessage(`${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     if (isConditionImmune(defender, config.condition)) {
         return { dieRoll, saveDC, saveRoll: null, conditionApplied: false,
@@ -730,13 +730,13 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
     if (exposedDisadvantage) {
         exposedSource.exposedConsumed = true;
-        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+        ctx.addMessage(`${defender.name} has disadvantage on this save (Exposed)!`, 'info');
     }
 
     // Save vs condition
     const saveRoll = rollDefenderSave(defender, config.saveType, { disadvantage: exposedDisadvantage, combatManager: ctx.combatManager });
     const condLabel = config.condition.toUpperCase();
-    const icon      = config.conditionIcon ?? '💢';
+    const icon      = config.conditionIcon ?? 'condition.debuff';
 
     let conditionApplied = false;
     let conditionOutcome = 'saved';
@@ -754,10 +754,10 @@ registerHandler('onHitCondition', (config, ability, ctx) => {
         }
         conditionOutcome = 'applied';
         ctx.addMessage(
-            `${icon} ${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
+            `${defender.name} is ${condLabel}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
         );
-        ctx.showFloatingText(defender.id, `${condLabel}! ${icon}`, 'condition');
+        ctx.showFloatingText(defender.id, `${condLabel}!`, 'condition');
     } else {
         ctx.addMessage(
             `${defender.name} resists ${config.condition} (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${saveDC})`,
@@ -794,7 +794,7 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     if (damagePrecisionEnabled() && defender.hp <= 0) {
         return { dieRoll, saveDC, saveRoll: null, conditionApplied: false };
     }
-    ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
+    ctx.addMessage(`${ability.name}! +${dieRoll} extra damage (d${dieSides})`, 'success');
 
     const conditionType = config.condition ?? 'pushed';
     if (isConditionImmune(defender, conditionType)) {
@@ -807,7 +807,7 @@ registerHandler('onHitPush', (config, ability, ctx) => {
     const { disadvantage: exposedDisadvantage, sourceCondition: exposedSource } = checkExposedDisadvantage(attacker, defender);
     if (exposedDisadvantage) {
         exposedSource.exposedConsumed = true;
-        ctx.addMessage(`🎯 ${defender.name} has disadvantage on this save (Exposed)!`, 'info');
+        ctx.addMessage(`${defender.name} has disadvantage on this save (Exposed)!`, 'info');
     }
 
     // Save (config.saveType, default 'str' for backward compatibility) or pushed
@@ -822,17 +822,17 @@ registerHandler('onHitPush', (config, ability, ctx) => {
             config.condition ?? 'pushed',
             config.conditionDuration ?? 'untilEndOfTurn',
             attacker.id,
-            { isBuff: false, curable: false, icon: '💨', inflictedByTactic: true }
+            { isBuff: false, curable: false, icon: 'condition.pushed', inflictedByTactic: true }
         );
         if (!conditionApplied) {
             return { dieRoll, saveDC, saveRoll, conditionApplied, conditionOutcome: rejectCondition(defender, conditionType, ctx) };
         }
         conditionOutcome = 'applied';
         ctx.addMessage(
-            `💨 ${defender.name} is PUSHED back! (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
+            `${defender.name} is PUSHED back! (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
             'warning'
         );
-        ctx.showFloatingText(defender.id, 'PUSHED! 💨', 'condition');
+        ctx.showFloatingText(defender.id, 'PUSHED!', 'condition');
     } else {
         ctx.addMessage(
             `${defender.name} resists being pushed (${saveLabel} save ${saveRoll} vs DC ${saveDC})`,
@@ -869,7 +869,7 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
         value: tempHP,
         isBuff: true,
         curable: false,
-        icon: '✨'
+        icon: 'condition.tempHP'
     });
 
     // Consume bonus action
@@ -881,10 +881,10 @@ registerHandler('selfTempHP', (config, ability, ctx) => {
     }
 
     ctx.addMessage(
-        `⚡ ${ability.name}! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
+        `${ability.name}! Gained ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
         'success'
     );
-    ctx.showFloatingText(combatant.id, `+${tempHP} THP ✨`, 'buff');
+    ctx.showFloatingText(combatant.id, `+${tempHP} THP`, 'buff');
 
     return { tempHP, dieRoll, dieSides };
 });
@@ -926,7 +926,7 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
         value: tempHP,
         isBuff: true,
         curable: false,
-        icon: '✨'
+        icon: 'condition.tempHP'
     });
 
     // Consume bonus action
@@ -938,10 +938,10 @@ registerHandler('allyTempHP', (config, ability, ctx) => {
     }
 
     ctx.addMessage(
-        `⚡ ${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
+        `${ability.name}! ${ally.name} gains ${tempHP} temporary HP (d${dieSides}: ${dieRoll} + Resilience ${resilienceMod})`,
         'success'
     );
-    ctx.showFloatingText(ally.id, `+${tempHP} THP ✨`, 'buff');
+    ctx.showFloatingText(ally.id, `+${tempHP} THP`, 'buff');
 
     return { tempHP, dieRoll, dieSides, allyId: ally.id };
 });
@@ -966,7 +966,7 @@ registerHandler('precisionAttackBonus', (config, ability, ctx) => {
 
     const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
 
-    ctx.addMessage(`⚔️ ${ability.name}! +${dieRoll} to attack roll (d${dieSides})`, 'success');
+    ctx.addMessage(`${ability.name}! +${dieRoll} to attack roll (d${dieSides})`, 'success');
 
     return { bonus: dieRoll, dieRoll, dieSides };
 });
@@ -993,7 +993,7 @@ registerHandler('reactionAttack', (config, ability, ctx) => {
     const { roll: dieRoll, sides: dieSides } = rollTacticDie(character);
 
     ctx.addMessage(
-        `⚔️ ${ability.name}! +${dieRoll} bonus damage on counter-attack (d${dieSides})`,
+        `${ability.name}! +${dieRoll} bonus damage on counter-attack (d${dieSides})`,
         'success'
     );
 
@@ -1018,7 +1018,7 @@ registerHandler('reactionDamageReduction', (config, ability, ctx) => {
     const reduction = Math.max(0, dieRoll + resilienceMod);
 
     ctx.addMessage(
-        `🛡️ ${ability.name}! Reduces incoming damage by ${dieRoll}+${resilienceMod}=${reduction} (d${dieSides})`,
+        `${ability.name}! Reduces incoming damage by ${dieRoll}+${resilienceMod}=${reduction} (d${dieSides})`,
         'success'
     );
 
@@ -1062,7 +1062,7 @@ registerHandler('targetedSaveOrCondition', (config, ability, ctx) => {
             conditionOutcome: rejectCondition(defender, config.condition, ctx) };
     }
     const saveRoll = rollDefenderSave(defender, config.saveType, { combatManager: ctx.combatManager });
-    const icon = config.conditionIcon ?? '💢';
+    const icon = config.conditionIcon ?? 'condition.debuff';
     let conditionApplied = false;
     let conditionOutcome = 'saved';
 
@@ -1076,10 +1076,10 @@ registerHandler('targetedSaveOrCondition', (config, ability, ctx) => {
             attacker.concentratingOn = { abilityId: ability.id, targetId: defender.id };
         }
         ctx.addMessage(
-            `${icon} ${defender.name} is ${config.condition.toUpperCase()}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${dc})`,
+            `${defender.name} is ${config.condition.toUpperCase()}! (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${dc})`,
             'warning'
         );
-        ctx.showFloatingText(defender.id, `${config.condition.toUpperCase()}! ${icon}`, 'condition');
+        ctx.showFloatingText(defender.id, `${config.condition.toUpperCase()}!`, 'condition');
     } else {
         ctx.addMessage(
             `${defender.name} resists ${config.condition} (${config.saveType.toUpperCase()} save ${saveRoll} vs DC ${dc})`,
@@ -1114,7 +1114,7 @@ registerHandler('grantCondition', (config, ability, ctx) => {
     const applied = ally.addCondition(config.condition, config.duration, combatant?.id ?? ally.id, {
         isBuff: config.isBuff ?? true,
         curable: false,
-        icon: config.icon ?? '✨'
+        icon: config.icon ?? 'condition.buff'
     });
 
     if (!applied) {
@@ -1122,8 +1122,8 @@ registerHandler('grantCondition', (config, ability, ctx) => {
             conditionOutcome: rejectCondition(ally, config.condition, ctx) };
     }
 
-    ctx.addMessage(`✨ ${ability.name}! ${ally.name} is ${config.condition}!`, 'success');
-    ctx.showFloatingText(ally.id, `${config.condition.toUpperCase()}! ✨`, 'buff');
+    ctx.addMessage(`${ability.name}! ${ally.name} is ${config.condition}!`, 'success');
+    ctx.showFloatingText(ally.id, `${config.condition.toUpperCase()}!`, 'buff');
 
     return { allyId: ally.id, condition: config.condition };
 });
@@ -1153,7 +1153,7 @@ registerHandler('variableCostDamageRedirect', (config, ability, ctx) => {
     const reduction = Math.min(originalDamage, rolled);
 
     ctx.addMessage(
-        `🛡️ ${ability.name}! ${ctx.combatant?.name || ctx.character?.name} spends ${resolveSpent} Resolve — redirects ${reduction} damage!`,
+        `${ability.name}! ${ctx.combatant?.name || ctx.character?.name} spends ${resolveSpent} Resolve — redirects ${reduction} damage!`,
         'success'
     );
 

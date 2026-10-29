@@ -131,13 +131,13 @@ class RestManager {
     isPlayerInTavern() {
         const playerPos = gameState.get('player.position');
         if (!playerPos) {
-            console.log('🏨 Tavern check: No player position');
+            console.log('Tavern check: No player position');
             return false;
         }
 
         const world = gameState.get('world');
         if (!world || !world.generatedRegions) {
-            console.log('🏨 Tavern check: No world data');
+            console.log('Tavern check: No world data');
             return false;
         }
 
@@ -154,7 +154,7 @@ class RestManager {
 
         const region = world.generatedRegions.get(regionKey);
         if (!region) {
-            console.log(`🏨 Tavern check: No region at ${regionKey}`);
+            console.log(`Tavern check: No region at ${regionKey}`);
             return false;
         }
 
@@ -165,11 +165,11 @@ class RestManager {
         const tile = region.tiles[index];
 
         if (!tile) {
-            console.log(`🏨 Tavern check: No tile at local ${localX},${localY} (index ${index})`);
+            console.log(`Tavern check: No tile at local ${localX},${localY} (index ${index})`);
             return false;
         }
 
-        console.log(`🏨 Tavern check at world (${playerPos.x},${playerPos.y}), local (${localX},${localY})`);
+        console.log(`Tavern check at world (${playerPos.x},${playerPos.y}), local (${localX},${localY})`);
         console.log(`   - tile.terrain: ${tile.terrain}`);
         console.log('   - tile.feature:', tile.feature);
 
@@ -178,7 +178,7 @@ class RestManager {
             if (RULES.hostileSettlements.enabled && ['hostile', 'rebuilding'].includes(tile.feature.hostileState?.phase)) {
                 return false;
             }
-            console.log('   ✅ Found settlement feature on current tile');
+            console.log('   Found settlement feature on current tile');
             return true;
         }
 
@@ -480,12 +480,12 @@ class RestManager {
         return `
                 <div class="rest-stat">
                     <span class="label">Supplies:</span>
-                    <span class="value${suppliesWarning ? ' warning-text' : ''}">${suppliesWarning ? '⚠️' : '🎒'} ${fatigueState.supplies} remaining${suppliesWarning ? ' — HP recovery halved!' : ''}</span>
+                    <span class="value${suppliesWarning ? ' warning-text' : ''}">${fatigueState.supplies} remaining${suppliesWarning ? ' — HP recovery halved!' : ''}</span>
                 </div>
                 ${fatigueState.exhaustionLevels > 0 ? `
                 <div class="rest-stat">
                     <span class="label">Exhaustion:</span>
-                    <span class="value warning-text">💀 Level ${fatigueState.exhaustionLevels}</span>
+                    <span class="value warning-text">Level ${fatigueState.exhaustionLevels}</span>
                 </div>
                 ` : ''}
                 `;
@@ -584,7 +584,7 @@ class RestManager {
                 <p><strong>Short Rest:</strong> Roll all your hit dice to recover HP. Restore Resolve and abilities/equipment charges that recharge on a short rest. Max ${RULES.rest.shortRestsPerLongRest} per long rest. Does not advance the world clock.</p>
                 <p><strong>Long Rest:</strong> Fully restore HP, regain all spell slots, restore Resolve and short/long-rest ability and equipment charges, and reset short rest counter. ${RULES.rest.longRestRequiresTavern ? '(Requires a safe inn or sanctuary)' : ''} Advances the world clock by one week, consumes supplies and advances accepted urgent quest deadlines. Available even when fully recovered.</p>
                 ${RULES.rest.longRestRequiresTavern && !isInTavern ?
-        '<p class="warning">⚠️ You are not in a tavern. Find an inn to take a long rest.</p>' :
+        '<p class="warning">You are not in a tavern. Find an inn to take a long rest.</p>' :
         ''}
             `;
         }

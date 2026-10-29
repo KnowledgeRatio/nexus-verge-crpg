@@ -21,7 +21,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🏹",
+        "icon": "equipment.bow",
         "message": null
       },
       "campaignIds": [
@@ -49,7 +49,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🛡️",
+        "icon": "equipment.shield",
         "message": null
       },
       "campaignIds": [
@@ -79,7 +79,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "⚔️",
+        "icon": "action.attack",
         "message": null
       },
       "campaignIds": [
@@ -114,7 +114,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🗡️",
+        "icon": "equipment.dagger",
         "message": null
       },
       "campaignIds": [
@@ -144,7 +144,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🛡️",
+        "icon": "equipment.shield",
         "message": "{characterName} intercepts the attack!"
       },
       "campaignIds": [
@@ -173,7 +173,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "⚔️⚔️",
+        "icon": "action.attack",
         "message": null
       },
       "campaignIds": [
@@ -213,7 +213,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🎯",
+        "icon": "action.aim",
         "message": null
       },
       "campaignIds": [
@@ -239,7 +239,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "👊",
+        "icon": "action.unarmed",
         "message": null
       },
       "campaignIds": [
@@ -265,7 +265,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "👁️",
+        "icon": "action.perception",
         "message": null
       },
       "campaignIds": [
@@ -296,7 +296,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🛡️",
+        "icon": "equipment.shield",
         "message": "{characterName} intercepts the blow!"
       },
       "campaignIds": [
@@ -343,7 +343,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🌊",
+        "icon": "action.swim",
         "message": null
       },
       "campaignIds": [
@@ -363,7 +363,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "🎯",
+        "icon": "action.aim",
         "message": null
       },
       "campaignIds": [
@@ -383,7 +383,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "⚡",
+        "icon": "action.react",
         "message": null
       },
       "campaignIds": [
@@ -403,7 +403,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "⚠️",
+        "icon": "status.warning",
         "message": null
       },
       "campaignIds": [
@@ -423,7 +423,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "🛡️",
+        "icon": "equipment.shield",
         "message": null
       },
       "campaignIds": [
@@ -443,7 +443,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "🙏",
+        "icon": "action.heal",
         "message": null
       },
       "campaignIds": [
@@ -464,7 +464,7 @@
       "permanent": true,
       "effects": [],
       "visualFeedback": {
-        "icon": "❤️",
+        "icon": "action.heal",
         "message": null
       },
       "campaignIds": [

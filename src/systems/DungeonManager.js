@@ -101,14 +101,14 @@ export class DungeonManager {
     async enterDungeon() {
         // Don't enter if already in a dungeon
         if (this.isInDungeon()) {
-            gameState.addMessage('⚠️ You are already in a dungeon!', 'warning');
+            gameState.addMessage('You are already in a dungeon!', 'warning');
             return false;
         }
 
         // Get dungeon at player position
         const dungeonFeature = await this.getDungeonAtPlayerPosition();
         if (!dungeonFeature) {
-            gameState.addMessage('⚠️ No dungeon entrance here.', 'warning');
+            gameState.addMessage('No dungeon entrance here.', 'warning');
             return false;
         }
 
@@ -171,10 +171,10 @@ export class DungeonManager {
 
         // 6. Show entry message
         const dungeonName = dungeonFeature.dungeonType?.name || 'the dungeon';
-        gameState.addMessage(`🚪 You enter ${dungeonName}...`, 'info');
+        gameState.addMessage(`You enter ${dungeonName}...`, 'info');
 
         if (dungeonFeature.ambientDescription) {
-            gameState.addMessage(`📜 ${dungeonFeature.ambientDescription}`, 'info');
+            gameState.addMessage(`${dungeonFeature.ambientDescription}`, 'info');
         }
 
         return true;
@@ -212,7 +212,7 @@ export class DungeonManager {
         this.worldMapPosition = null;
 
         // 4. Show exit message
-        gameState.addMessage('🌤️ You emerge from the dungeon into daylight.', 'success');
+        gameState.addMessage('You emerge from the dungeon into daylight.', 'success');
 
         return true;
     }
@@ -448,7 +448,7 @@ export class DungeonManager {
 
         // Check if rooms are connected
         if (!currentRoom.connections.includes(roomIndex)) {
-            gameState.addMessage('⚠️ These rooms are not connected!', 'warning');
+            gameState.addMessage('These rooms are not connected!', 'warning');
             return { success: false };
         }
 
@@ -477,7 +477,7 @@ export class DungeonManager {
         gameState.set('dungeon', dungeonState);
 
         // Show room entry message
-        gameState.addMessage(`🚪 You enter ${targetRoom.name || 'a new room'}.`, 'info');
+        gameState.addMessage(`You enter ${targetRoom.name || 'a new room'}.`, 'info');
 
         // --- Quest: Retrieve item injection on boss room entry ---
         if (targetRoom.isBossRoom && this.currentDungeon) {
@@ -507,7 +507,7 @@ export class DungeonManager {
         // Check for boss room with undefeated boss
         const bossFight = targetRoom.isBossRoom && targetRoom.boss && !dungeonState.bossDefeated;
         if (bossFight) {
-            gameState.addMessage('⚠️ A powerful enemy blocks your path!', 'warning');
+            gameState.addMessage('A powerful enemy blocks your path!', 'warning');
         }
 
         return { success: true, bossFight, bossId: bossFight ? targetRoom.boss : null };
@@ -536,15 +536,15 @@ export class DungeonManager {
 
             if (remaining > 0) {
                 gameState.addMessage(
-                    `⚠️ ${remaining} room${remaining === 1 ? '' : 's'} remaining — hurry!`,
+                    `${remaining} room${remaining === 1 ? '' : 's'} remaining — hurry!`,
                     'warning'
                 );
             } else {
                 // Time limit exceeded — fail the quest
                 quest.status = 'failed';
                 quest.failReason = 'Time limit exceeded — the ritual completed.';
-                gameState.addMessage(`💀 Too late. The ritual is complete. Quest failed: ${quest.name}`, 'error');
-                console.log(`⏰ Quest time limit exceeded: ${quest.name} (${quest.id})`);
+                gameState.addMessage(`Too late. The ritual is complete. Quest failed: ${quest.name}`, 'error');
+                console.log(`Quest time limit exceeded: ${quest.name} (${quest.id})`);
 
                 // Route failure consequence through ConsequenceManager
                 if (window.consequenceManager) {
@@ -805,7 +805,7 @@ export class DungeonManager {
         if (dungeonState) {
             dungeonState.bossDefeated = true;
             gameState.set('dungeon', dungeonState);
-            gameState.addMessage('🏆 The dungeon boss has been defeated!', 'success');
+            gameState.addMessage('The dungeon boss has been defeated!', 'success');
         }
 
         // Inject quest item if this dungeon has a retrieve questBind
@@ -839,7 +839,7 @@ export class DungeonManager {
         // Add to player inventory
         const character = gameState.get('character');
         if (!character) {
-            console.warn('🏰 _injectQuestBind: no character in gameState');
+            console.warn('_injectQuestBind: no character in gameState');
             return;
         }
 
@@ -863,7 +863,7 @@ export class DungeonManager {
                 if (!bossRoom.loot.some(l => l.id === itemId)) {
                     bossRoom.loot.push({ id: itemId, name: itemName, type: 'quest_item', canDrop: false });
                     gameState.set('dungeon', dungeonState);
-                    console.log(`🏰 Quest item placed in boss room loot: ${itemName}`);
+                    console.log(`Quest item placed in boss room loot: ${itemName}`);
                 }
             }
         }
@@ -877,8 +877,8 @@ export class DungeonManager {
         }
 
         gameState.set('character', character);
-        gameState.addMessage(`📦 You find ${itemName} among the boss's remains.`, 'success');
-        console.log(`🏰 Quest item injected: ${itemName} (${itemId}) for dungeon (${dungeonX},${dungeonY})`);
+        gameState.addMessage(`You find ${itemName} among the boss's remains.`, 'success');
+        console.log(`Quest item injected: ${itemName} (${itemId}) for dungeon (${dungeonX},${dungeonY})`);
 
         // Mark as injected so re-entry doesn't duplicate
         feature.questBind.injected = true;

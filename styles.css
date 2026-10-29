@@ -1,5 +1,58 @@
 /* Nexus Verge - Main Stylesheet */
 
+.nv-icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    min-width: 1.2em;
+    vertical-align: -0.22em;
+    color: inherit;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+[data-icon] > .nv-icon {
+    width: 100%;
+    height: 100%;
+    max-width: 1.4em;
+    max-height: 1.4em;
+}
+
+.combat-scene-status .nv-icon,
+.condition-icon .nv-icon {
+    width: 1.25em;
+    height: 1.25em;
+}
+
+.item-icon .nv-icon,
+.building-icon .nv-icon {
+    width: 1.8em;
+    height: 1.8em;
+}
+
+.combatant-conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.combatant-condition {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.35rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.2rem;
+    font: 0.75rem var(--font-sans);
+    text-align: left;
+    max-width: 100%;
+}
+
+.combatant-condition:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
 :root {
     --bg-primary: #0f3c46;
     --bg-secondary: #0a2730;
@@ -2447,6 +2500,11 @@ body {
     pointer-events: none;
 }
 .building-art-person > img[hidden] { display: none; }
+.study-people-controls { display: flex; flex-wrap: wrap; gap: 12px; max-width: 100%; }
+.study-people-controls label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
+.study-people-controls select { max-width: 100%; }
+.settlement-ambience { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; width: 100%; }
+.settlement-ambience select { max-width: 100%; min-height: 44px; font: inherit; }
 .building-art-talk, .building-ambience-toggle {
     min-height: 44px;
     padding: 8px 12px;
@@ -2517,7 +2575,7 @@ body {
     .building-art-counter .building-art-person {
         position: absolute;
         transform: translate(-50%, -100%);
-        width: 36%;
+        width: var(--person-width);
         margin: 0;
     }
     .building-art-counter .building-art-person > img { height: auto; }

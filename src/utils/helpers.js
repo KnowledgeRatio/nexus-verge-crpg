@@ -348,25 +348,25 @@ export class Logger {
 
     info(...args) {
         if (this.enabled) {
-            console.info(`[${this.context}] ℹ️`, ...args);
+            console.info(`[${this.context}] `, ...args);
         }
     }
 
     warn(...args) {
         if (this.enabled) {
-            console.warn(`[${this.context}] ⚠️`, ...args);
+            console.warn(`[${this.context}] `, ...args);
         }
     }
 
     error(...args) {
         if (this.enabled) {
-            console.error(`[${this.context}] ❌`, ...args);
+            console.error(`[${this.context}] `, ...args);
         }
     }
 
     debug(...args) {
         if (this.enabled && process.env.NODE_ENV === 'development') {
-            console.debug(`[${this.context}] 🐛`, ...args);
+            console.debug(`[${this.context}] `, ...args);
         }
     }
 }

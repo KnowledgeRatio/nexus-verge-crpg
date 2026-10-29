@@ -29,7 +29,7 @@ class QuestManager {
     async initialize() {
         await this.generator.loadData();
         this.refreshTrackingIntel();
-        console.log('📜 Quest system initialized');
+        console.log('Quest system initialized');
     }
 
     /** Select a single active quest, or clear tracking with null. */
@@ -146,7 +146,7 @@ class QuestManager {
         this.refreshTrackingIntel();
 
         // Log message
-        gameState.addMessage(`📜 Quest Accepted: ${quest.name}`, 'success');
+        gameState.addMessage(`Quest Accepted: ${quest.name}`, 'success');
         console.log(`Quest accepted: ${quest.name} (${quest.id})`);
 
         return true;
@@ -269,7 +269,7 @@ class QuestManager {
         gameState.set('quests', quests);
 
         // Log messages
-        gameState.addMessage(`✅ Quest Completed: ${quest.name}`, 'success');
+        gameState.addMessage(`Quest Completed: ${quest.name}`, 'success');
         if (rewardSummary.xp > 0) {
             gameState.addMessage(`+${rewardSummary.xp} XP`, 'success');
         }
@@ -306,7 +306,7 @@ class QuestManager {
                     timestamp: Date.now()
                 });
                 gameState.set('world.modifiedTiles', modifiedTiles);
-                console.log(`📜 worldTag '${quest.worldTag}' written to world.modifiedTiles at (${x},${y})`);
+                console.log(`worldTag '${quest.worldTag}' written to world.modifiedTiles at (${x},${y})`);
             }
         }
 
@@ -447,7 +447,7 @@ class QuestManager {
                 character.inventory = character.inventory || [];
                 character.inventory.push(item);
                 summary.item = item.name;
-                gameState.addMessage(`📦 Quest reward: ${item.name}!`, 'success');
+                gameState.addMessage(`Quest reward: ${item.name}!`, 'success');
             } else {
                 console.warn(`QuestManager: reward item '${rewards.item}' not found in items`);
                 summary.item = rewards.item;
@@ -720,7 +720,7 @@ class QuestManager {
             const check = manager?.rollSkillCheck
                 ? manager.rollSkillCheck(character, checkConfig) : skillRegistry.rollCheck(character, checkConfig);
             gameState.addMessage(
-                `🔍 Investigation check: rolled ${check.roll} + ${check.modifier} = ${check.total} vs DC ${dc}`, 'info'
+                `Investigation check: rolled ${check.roll} + ${check.modifier} = ${check.total} vs DC ${dc}`, 'info'
             );
             obj.investigationAttempted = true;
             updated = true;
@@ -786,7 +786,7 @@ class QuestManager {
             objective.completed = true;
             objective.progress = 1;
             gameState.addMessage(objective.description
-                ? `✅ ${objective.description} — complete.` : '✅ You find the evidence. Investigation complete.', 'success');
+                ? `${objective.description} — complete.` : 'You find the evidence. Investigation complete.', 'success');
         } else {
             gameState.addMessage('You find nothing conclusive yet. Press E to search again; another search adds fatigue.',
                 'warning');
@@ -884,7 +884,7 @@ class QuestManager {
                 // Mark as ready to turn in (not auto-complete)
                 quest.status = 'ready_to_turn_in';
                 completedIds.push(quest.id);
-                gameState.addMessage(`✅ Quest Ready to Turn In: ${quest.name}`, 'success');
+                gameState.addMessage(`Quest Ready to Turn In: ${quest.name}`, 'success');
             }
         });
 
@@ -922,7 +922,7 @@ class QuestManager {
    */
     advanceCampaign(nextStage) {
         gameState.set('campaignProgress', nextStage);
-        gameState.addMessage(`📖 Campaign Advanced to Stage ${nextStage}`, 'info');
+        gameState.addMessage(`Campaign Advanced to Stage ${nextStage}`, 'info');
         console.log(`Campaign advanced to stage ${nextStage}`);
 
         // Auto-generate next campaign quest

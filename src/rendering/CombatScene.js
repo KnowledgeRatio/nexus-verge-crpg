@@ -8,6 +8,7 @@ import { CombatSmokeDepth } from './CombatSmoke.js';
 import { createCombatBreath, updateCombatBreath } from './CombatBreath.js';
 import { mediaAssetUrl } from '../utils/mediaAssetUrl.js';
 import { formatCombatNumber, fractionalCombatEnabled, conditionDescription } from '../utils/combatNumberFormat.js';
+import { conditionIconId, iconMarkup } from '../ui/Iconography.js';
 
 function samplePose(frames, progress) {
     const t = Math.max(0, Math.min(1, progress));
@@ -424,6 +425,7 @@ export class CombatScene {
             actor.label.title += `. Holding ${combatant.weaponName}`;
         }
         const conditions = combatant.conditions || [];
+        const visibleConditions = conditions.filter(condition => conditionIconId(condition));
         actor.weapon.visible = !conditions.some(condition => condition.type === 'disarmed');
         if (actor.offHand && !this.config.offHandModels?.[actor.offHandModel]) {
             actor.offHand.visible = actor.weapon.visible;
@@ -431,7 +433,7 @@ export class CombatScene {
         const describeCondition = condition => fractionalCombatEnabled()
             ? conditionDescription(condition, id => state.combatants.find(c => c.id === id)?.name)
             : condition.type;
-        const conditionNames = conditions.map(describeCondition).join(', ');
+        const conditionNames = visibleConditions.map(describeCondition).join(', ');
         if (conditionNames) {
             actor.label.title += `. Conditions: ${conditionNames}`;
         }
@@ -444,7 +446,6 @@ export class CombatScene {
         actor.label.classList.toggle('is-defeated', combatant.hp <= 0);
         actor.label.classList.toggle('is-downed', Boolean(combatant.isDowned));
         actor.statuses.replaceChildren();
-        const visibleConditions = conditions.filter(condition => condition.icon);
         const statusNames = [];
         if (combatant.isDowned) {
             const badge = document.createElement('span');
@@ -457,11 +458,44 @@ export class CombatScene {
         for (const condition of visibleConditions) {
             const badge = document.createElement('span');
             badge.className = `combat-scene-status ${condition.isBuff ? 'is-buff' : 'is-debuff'}`;
-            badge.textContent = condition.type === 'tempHP' && condition.value > 0 ?
-                `${condition.icon} ${formatCombatNumber(condition.value)}` : condition.icon;
-            badge.title = describeCondition(condition);
+            badge.innerHTML = iconMarkup(conditionIconId(condition));
+            const name = condition.name || (condition.type === 'tempHP' ? 'Temporary HP' :
+                String(condition.type || 'Condition').replace(/([a-z])([A-Z])/g, '$1 $2')
+                    .replace(/^./, letter => letter.toUpperCase()));
+            const value = typeof condition.value === 'number' && Number.isFinite(condition.value)
+                ? ` ${formatCombatNumber(condition.value)}` : '';
+            const turns = condition.roundsRemaining ?? (typeof condition.duration === 'number' ? condition.duration : null);
+            const duration = Number.isFinite(turns) && turns > 0
+                ? ` · ${turns} turn${turns === 1 ? '' : 's'}`
+                : ({ untilStartOfTurn: ' · until next turn starts', untilEndOfTurn: ' · until turn ends' })[condition.duration] || '';
+            badge.append(document.createTextNode(` ${name}${value}${duration}`));
+            const description = describeCondition(condition);
+            badge.title = description;
+            badge.setAttribute('aria-label', `${name}${value}${duration}. ${description}`);
+            badge.tabIndex = 0;
+            // Periodic damage details can be read on touch as well as hover/focus.
+            if (condition.periodicDamage?.tranches?.length) {
+                const detail = document.createElement('span');
+                detail.textContent = ` — ${description}`;
+                detail.hidden = true;
+                badge.append(detail);
+                badge.setAttribute('role', 'button');
+                badge.setAttribute('aria-expanded', 'false');
+                const toggle = event => {
+                    event.stopPropagation();
+                    detail.hidden = !detail.hidden;
+                    badge.setAttribute('aria-expanded', String(!detail.hidden));
+                };
+                badge.addEventListener('click', toggle);
+                badge.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        toggle(event);
+                    }
+                });
+            }
             actor.statuses.append(badge);
-            statusNames.push(describeCondition(condition));
+            statusNames.push(`${name}${value}${duration}. ${description}`);
         }
         actor.statuses.setAttribute('aria-label', statusNames.length ?
             `Active conditions: ${statusNames.join(', ')}` : 'No active conditions');

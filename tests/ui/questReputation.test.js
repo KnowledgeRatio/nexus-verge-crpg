@@ -136,7 +136,7 @@ describe('actual standing feedback and character sheet', () => {
         expect(window.showQuestNotification).toHaveBeenCalledWith('Quest Complete!', quest.name, 'success');
         expect(messages).not.toHaveBeenCalled();
         expect(claimed.disabled).toBe(true);
-        expect(claimed.textContent).toBe(`✓ Claimed: ${quest.name}`);
+        expect(claimed.textContent).toBe(`Claimed: ${quest.name}`);
         expect(other.disabled).toBe(false);
         expect(other.textContent).toBe('Turn in another quest');
         const journal = methods.renderQuestCard.call({ questManager: { getQuestReputationPreview: () => preview } },

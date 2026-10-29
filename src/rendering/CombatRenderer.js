@@ -33,7 +33,7 @@ class CombatRenderer {
             text: '#ffffff'
         };
 
-        console.log('⚔️ Combat Renderer initialized');
+        console.log('Combat Renderer initialized');
     }
 
     /**

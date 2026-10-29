@@ -1,0 +1,1379 @@
+{
+  "date": "2026-10-24",
+  "matrix": {
+    "compositions": [
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "0",
+        "keeper": "tavern-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "tavern",
+        "variant": "1",
+        "keeper": "tavern-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-guest-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-guest-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-guest-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-guest-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v2",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v2",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v2",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v2",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v3",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v3",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v3",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v3",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v4",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v4",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v4",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v4",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v5",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v5",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v5",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v5",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v6",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v6",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v6",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v6",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v7",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v7",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v7",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v7",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v8",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v8",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v8",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v8",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v9",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v9",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v9",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v9",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v10",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v10",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v10",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v10",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v11",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron1",
+        "patron": "tavern-patron-v11",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v11",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "0",
+        "slot": "patron2",
+        "patron": "tavern-patron-v11",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-guest-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-guest-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-guest-v1",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-guest-v1",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v2",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v2",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v2",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v2",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v3",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v3",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v3",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v3",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v4",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v4",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v4",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v4",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v5",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v5",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v5",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v5",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v6",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v6",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v6",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v6",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v7",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v7",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v7",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v7",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v8",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v8",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v8",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v8",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v9",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v9",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v9",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v9",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v10",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v10",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v10",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v10",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v11",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron1",
+        "patron": "tavern-patron-v11",
+        "width": 375
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v11",
+        "width": 1440
+      },
+      {
+        "type": "patron",
+        "variant": "1",
+        "slot": "patron2",
+        "patron": "tavern-patron-v11",
+        "width": 375
+      }
+    ],
+    "flows": [
+      "tavern",
+      "merchant",
+      "blacksmith",
+      "greathall"
+    ]
+  },
+  "correctedCounterMatrix": {
+    "compositions": [
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "0",
+        "keeper": "merchant-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v3",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v3",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v4",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v4",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v5",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v5",
+        "width": 375
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v6",
+        "width": 1440
+      },
+      {
+        "type": "merchant",
+        "variant": "1",
+        "keeper": "merchant-keeper-v6",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "0",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "blacksmith",
+        "variant": "1",
+        "keeper": "blacksmith-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "0",
+        "keeper": "greathall-keeper-v2",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v1",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v1",
+        "width": 375
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v2",
+        "width": 1440
+      },
+      {
+        "type": "greathall",
+        "variant": "1",
+        "keeper": "greathall-keeper-v2",
+        "width": 375
+      }
+    ],
+    "flows": [
+      "merchant",
+      "blacksmith",
+      "greathall"
+    ]
+  },
+  "generatedWorld": {
+    "same": true,
+    "settlements": 41,
+    "diversity": {
+      "rooms": [
+        "tavern-v2",
+        "tavern-v1"
+      ],
+      "keepers": [
+        "tavern-keeper-v6",
+        "tavern-keeper-v5",
+        "tavern-keeper-v3",
+        "tavern-keeper-v2",
+        "tavern-keeper-v4",
+        "tavern-keeper-v1"
+      ],
+      "merchants": [
+        "merchant-keeper-v3",
+        "merchant-keeper-v1",
+        "merchant-keeper-v5",
+        "merchant-keeper-v4",
+        "merchant-keeper-v2",
+        "merchant-keeper-v6"
+      ],
+      "patrons": [
+        "tavern-patron-v7",
+        "tavern-patron-v10",
+        "tavern-guest-v1",
+        "tavern-patron-v2",
+        "tavern-patron-v1",
+        "tavern-patron-v6",
+        "tavern-patron-v3",
+        "tavern-patron-v9",
+        "tavern-patron-v5",
+        "tavern-patron-v4",
+        "tavern-patron-v11",
+        "tavern-patron-v8"
+      ]
+    },
+    "names": [
+      "Dren Kindlewood",
+      "Marro Frostbeard",
+      "Moru Dawnbringer",
+      "Bren Shadowstep",
+      "Castorian Servani"
+    ],
+    "errors": []
+  },
+  "inputsAndFallbacks": [
+    "touch dialogue",
+    "keyboard Enter dialogue",
+    "full head/overflow 320",
+    "full head/overflow 667",
+    "full head/overflow 1920",
+    "missing portrait keeps conversation",
+    "missing background keeps full list/conversation"
+  ],
+  "notes": [
+    "Initial matrix counter captures superseded by correctedCounterMatrix after mobile width changed from forced36% to authored28%.",
+    "Automated image decoding and interaction checks are distinct from independent visual inspection."
+  ]
+}

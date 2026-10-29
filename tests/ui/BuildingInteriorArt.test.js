@@ -41,7 +41,7 @@ it('limits explicit previews to available variants and preserves per-variant por
     expect(selectBuildingInterior(catalogue, 'unknown', settlement)).toBeNull();
 });
 
-it('covers all settlement building roles with two illustrated variants and keeps ambience only in the tavern', () => {
+it('covers all settlement buildings with two illustrated variants and marks new soundscapes as private auditions', () => {
     const roles = { tavern: 'innkeeper', merchant: 'merchant', blacksmith: 'blacksmith', greathall: 'leader' };
     for (const [type, role] of Object.entries(roles)) {
         expect(catalogue[type].variants).toHaveLength(2);
@@ -51,11 +51,19 @@ it('covers all settlement building roles with two illustrated variants and keeps
             expect(selected.scene3d).toBeUndefined();
             expect(selected.alt.length).toBeGreaterThan(20);
         }
+        expect(new Set(catalogue[type].ambience.map(mix => mix.id)).size).toBe(2);
+        expect(catalogue[type].ambience[1].localOnly).toBe(true);
+        expect(catalogue[type].ambience[1].tracks[0].url).toBe(`data/audio/local/settlement-${type}-v2.wav`);
         if (type !== 'tavern') {
-            expect(catalogue[type].ambience).toBeUndefined();
+            expect(catalogue[type].ambience).toHaveLength(2);
+            const mix = catalogue[type].ambience[0];
+            expect(mix.localOnly).toBe(true);
+            expect(mix.tracks[0].url).toBe(`data/audio/local/settlement-${type}-v1.wav`);
+            expect(mix.tracks[0].volume).toBeGreaterThan(0);
+            expect(mix.tracks[0].volume).toBeLessThanOrEqual(1);
         }
     }
-    expect(catalogue.tavern.ambience).toHaveLength(1);
+    expect(catalogue.tavern.ambience).toHaveLength(2);
     expect(catalogue.tavern.ambience[0].tracks.map(track => track.url)).toEqual([
         'data/sound/tavern-voices-v2.wav', 'data/sound/tavern-activity-v2.wav'
     ]);

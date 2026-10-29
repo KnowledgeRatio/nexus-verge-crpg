@@ -4,9 +4,24 @@ Creative direction, 2026-10-23. The broader audio identity and criteria below re
 
 **Current experiment status:** the sponsor subsequently chose illustrated rooms
 and character images instead of the 3D interior. The accepted voices/activity
-files are unchanged; the current tavern catalogue contains that one mix, without
-the earlier-fireplace selector. Other illustrated building types have no newly
-configured ambience. See [current building interiors](building-interiors/README.md).
+files are unchanged; the earlier-fireplace selector remains removed. As of
+2026-10-24, merchant, blacksmith and great
+hall have private local soundscapes accepted by the sponsor, who signed off
+completion of [issue #59](https://github.com/KnowledgeRatio/nexus-verge-crpg/issues/59)
+on that date.
+They are excluded from public builds. See [current building interiors](building-interiors/README.md).
+The [soundscape review record](../reports/2026-10-24-settlement-soundscapes.md)
+separates recovered access, generated candidates, technical checks and sponsor
+listening acceptance. This does not approve the broader identity or public release.
+The subsequent [soundscape-variety slice](../reports/2026-10-24-soundscape-variety.md)
+is implemented locally with independent seeded choices: two exterior mixes each
+for villages/towns/cities and two mixes per building. Ten newly generated takes
+are private candidates without sponsor listening approval; the four previously
+accepted mixes remain unchanged. Opt-in selectors and local gain controls support
+audition; exterior playback stops on entry indoors, restricted views, departure
+and tab hide. Returns start muted. This implements local variety and playback
+lifecycle, not the proposed crossfades, dialogue ducking or independent global
+ambience bus described below. Public builds strip the new private candidates.
 The 2D/3D trial criteria below remain historical/proposed direction, not active
 comparison controls or acceptance of an overall audio system.
 

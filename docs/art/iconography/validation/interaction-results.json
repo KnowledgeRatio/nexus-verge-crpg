@@ -1,0 +1,16 @@
+[
+  {
+    "touch": false,
+    "choices": "Chat\nRest\nGoodbye",
+    "expanded": true,
+    "hiddenConditionAbsent": true,
+    "errors": []
+  },
+  {
+    "touch": true,
+    "choices": "Chat\nRest\nGoodbye",
+    "expanded": true,
+    "hiddenConditionAbsent": true,
+    "errors": []
+  }
+]

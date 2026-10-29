@@ -1,0 +1,36 @@
+{
+  "library": 119,
+  "combat": [
+    {
+      "level": 1,
+      "same": true,
+      "svg": 1,
+      "text": "\n                \n                    Icon Test\n                    \n                    \n                    HP: 12/12\n                    \n                        \n                    \n                    AC: 18\n                    \n                    \n                     bleeding (3 turns)\n                    \n                \n            "
+    },
+    {
+      "level": 5,
+      "same": true,
+      "svg": 1,
+      "text": "\n                \n                    Icon Test\n                    \n                    \n                    HP: 12/12\n                    \n                        \n                    \n                    AC: 18\n                    \n                    \n                     bleeding (3 turns)\n                    \n                \n            "
+    },
+    {
+      "level": 10,
+      "same": true,
+      "svg": 1,
+      "text": "\n                \n                    Icon Test\n                    \n                    \n                    HP: 12/12\n                    \n                        \n                    \n                    AC: 18\n                    \n                    \n                     bleeding (3 turns)\n                    \n                \n            "
+    }
+  ],
+  "clean": true,
+  "errors": [],
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "note": "Real UI creation; controlled condition display/save roundtrips at levels 1,5,10, not played combat balance."
+}

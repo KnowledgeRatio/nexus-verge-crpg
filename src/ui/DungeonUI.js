@@ -10,6 +10,7 @@
 
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
+import { drawIcon, iconId } from './Iconography.js';
 
 export class DungeonUI {
     constructor(canvasId, options = {}) {
@@ -53,7 +54,7 @@ export class DungeonUI {
             rubble: '#696969'
         };
 
-        console.log('🏰 DungeonUI initialized');
+        console.log('DungeonUI initialized');
     }
 
     /**
@@ -95,7 +96,7 @@ export class DungeonUI {
         };
         img.onerror = () => {
             this.playerAvatarImage = null;
-            console.warn(`⚠️ DungeonUI: Failed to load avatar: ${avatar.filename}`);
+            console.warn(`DungeonUI: Failed to load avatar: ${avatar.filename}`);
         };
         img.src = `data/graphics/${avatar.filename}`;
     }
@@ -215,13 +216,13 @@ export class DungeonUI {
             symbol = '+';
         } else if (tile.isExit) {
             color = this.colors.exit;
-            symbol = '▲';
+            symbol = 'map.entrance';
         } else if (tile.isTrap) {
             color = tile.trapDetected ? '#ff6347' : this.colors.floor;
-            symbol = tile.trapDetected ? '!' : '.';
+            symbol = tile.trapDetected ? 'outcome.warning' : '.';
         } else if (tile.isTreasure) {
             color = this.colors.treasure;
-            symbol = '$';
+            symbol = 'object.chest';
         } else if (tile.terrainType) {
             // Get color from terrain definition
             const terrainDef = this.getTerrainDef(tile.terrainType);
@@ -241,11 +242,17 @@ export class DungeonUI {
 
         // Draw symbol for non-floor tiles
         if (symbol !== '.') {
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = `${Math.floor(tileSize * 0.8)}px monospace`;
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(symbol, screenX + tileSize / 2, screenY + tileSize / 2);
+            const semanticId = iconId(symbol, null);
+            if (semanticId) {
+                drawIcon(this.ctx, semanticId, screenX + tileSize * 0.1,
+                    screenY + tileSize * 0.1, tileSize * 0.8, '#ffffff');
+            } else {
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = `${Math.floor(tileSize * 0.8)}px monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText(symbol, screenX + tileSize / 2, screenY + tileSize / 2);
+            }
         }
 
         // Draw feature icons
@@ -289,28 +296,10 @@ export class DungeonUI {
      * Render feature icon on tile
      */
     renderFeatureIcon(screenX, screenY, tileSize, featureType) {
-        const icons = {
-            chest: '📦',
-            altar: '⛪',
-            fountain: '⛲',
-            statue: '🗿',
-            brazier: '🔥',
-            bookshelf: '📚',
-            bed: '🛏️',
-            table: '🪑',
-            barrel: '🛢️',
-            crate: '📦',
-            bones: '💀',
-            web: '🕸️',
-            mushroom: '🍄'
-        };
-
-        const icon = icons[featureType];
+        const icon = iconId(`object.${featureType}`, null);
         if (icon) {
-            this.ctx.font = `${Math.floor(tileSize * 0.6)}px sans-serif`;
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(icon, screenX + tileSize / 2, screenY + tileSize / 2);
+            drawIcon(this.ctx, icon, screenX + tileSize * 0.1,
+                screenY + tileSize * 0.1, tileSize * 0.8, '#f5f0df');
         }
     }
 
@@ -377,7 +366,7 @@ export class DungeonUI {
             this.ctx.fillStyle = '#00ff00';
             this.ctx.textAlign = 'right';
             this.ctx.fillText(
-                '✓ Boss Defeated',
+                'Boss Defeated',
                 this.canvas.width - 10,
                 this.canvas.height - 10
             );
@@ -385,7 +374,7 @@ export class DungeonUI {
             this.ctx.fillStyle = '#ff4500';
             this.ctx.textAlign = 'right';
             this.ctx.fillText(
-                '⚠️ BOSS ROOM',
+                'BOSS ROOM',
                 this.canvas.width - 10,
                 this.canvas.height - 10
             );
@@ -484,16 +473,12 @@ export class DungeonUI {
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
-                let icon = '';
-                if (isEntrance) {
-                    icon = '▲';
-                } else if (isBoss) {
-                    icon = '☠';
+                if (isEntrance || isBoss) {
+                    drawIcon(ctx, isEntrance ? 'map.entrance' : 'map.boss', x + 4, y + 4,
+                        roomSize - 12, '#ffffff');
                 } else {
-                    icon = (index + 1).toString();
+                    ctx.fillText((index + 1).toString(), x + (roomSize - 4) / 2, y + (roomSize - 4) / 2);
                 }
-
-                ctx.fillText(icon, x + (roomSize - 4) / 2, y + (roomSize - 4) / 2);
             }
         });
 
@@ -501,7 +486,12 @@ export class DungeonUI {
         ctx.fillStyle = '#888888';
         ctx.font = '10px monospace';
         ctx.textAlign = 'left';
-        ctx.fillText('▲ Entrance  ☠ Boss', 5, minimapCanvas.height - 5);
+        ctx.textBaseline = 'middle';
+        const legendY = minimapCanvas.height - 14;
+        drawIcon(ctx, 'map.entrance', 5, legendY - 7, 14, '#cccccc');
+        ctx.fillText('Entrance', 22, legendY);
+        drawIcon(ctx, 'map.boss', 78, legendY - 7, 14, '#cccccc');
+        ctx.fillText('Boss', 95, legendY);
     }
 
     /**

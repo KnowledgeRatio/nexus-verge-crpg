@@ -222,7 +222,7 @@ describe('CombatManager.attack — to-hit roll resolution (legacy ability keys)'
         mockD20(1);
         await cm.attack(attacker, defender);
 
-        expect(lastMessageStartingWith('💥 Critical miss!')).toBe('💥 Critical miss!');
+        expect(lastMessageStartingWith('Critical miss!')).toBe('Critical miss!');
     });
 
     it('consumes the attacker action on a resolved attack', async () => {
@@ -330,7 +330,7 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         vi.spyOn(Math, 'random').mockReturnValue(0.7);
         await cm.attack(attacker, defender);
         expect(attacker.character.resolvePoints).toBe(1);
-        expect(lastMessageStartingWith('⚔️ Trip Attack!')).toContain('extra damage');
+        expect(lastMessageStartingWith('Trip Attack!')).toContain('extra damage');
         expect(attacker.pendingTactic).toBeNull();
         expect(attacker.actions.action).toBe(0);
     });
@@ -343,7 +343,7 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         await cm.attack(attacker, defender);
         expect(attacker.character.resolvePoints).toBe(0);
         expect(lastMessageStartingWith('Not enough Resolve!')).toContain('need 1');
-        expect(lastMessageStartingWith('⚔️ Trip Attack!')).toBeNull();
+        expect(lastMessageStartingWith('Trip Attack!')).toBeNull();
         expect(attacker.pendingTactic).toBeNull();
     });
 
@@ -446,7 +446,7 @@ describe('CombatManager.attack — confirmed hit resolves without throwing', () 
         await expect(cm.attack(attacker, defender)).resolves.not.toThrow();
 
         expect(attacker.pendingTactic).toBeNull();
-        expect(lastMessageStartingWith('⚔️ Test Trip!')).toContain('extra damage');
+        expect(lastMessageStartingWith('Test Trip!')).toContain('extra damage');
     });
 });
 
@@ -539,10 +539,10 @@ describe('CombatManager.flee', () => {
         cm.flee(fleeing);
         await Promise.resolve();
 
-        expect(lastMessageStartingWith('🏃 Flee check:')).toBe(
-            '🏃 Flee check: 15 + 7 (max DEX/WIS + prof) = 22 vs DC 10 (0 engaged enemies)'
+        expect(lastMessageStartingWith('Flee check:')).toBe(
+            'Flee check: 15 + 7 (max DEX/WIS + prof) = 22 vs DC 10 (0 engaged enemies)'
         );
-        expect(lastMessageStartingWith('✅')).toBe('✅ Fixture escapes!');
+        expect(lastMessageStartingWith('Fixture escapes!')).toBe('Fixture escapes!');
     });
 
     it('DC scales with engaged enemy count: 10 + 2 * (engaged - 1), capped at 25', async () => {
@@ -559,7 +559,7 @@ describe('CombatManager.flee', () => {
         await Promise.resolve();
 
         // engagedCount = 3 -> dc = 10 + 2*(3-1) = 14
-        expect(lastMessageStartingWith('🏃 Flee check:')).toContain('vs DC 14 (3 engaged enemies)');
+        expect(lastMessageStartingWith('Flee check:')).toContain('vs DC 14 (3 engaged enemies)');
     });
 
     it('DC is capped at dcCapMax even with many engaged enemies', async () => {
@@ -572,7 +572,7 @@ describe('CombatManager.flee', () => {
         cm.flee(fleeing);
         await Promise.resolve();
 
-        expect(lastMessageStartingWith('🏃 Flee check:')).toContain(`vs DC ${RULES.flee.dcCapMax}`);
+        expect(lastMessageStartingWith('Flee check:')).toContain(`vs DC ${RULES.flee.dcCapMax}`);
     });
 
     it('modifier is max(DEX, WIS) + proficiency, not a sum of both', async () => {
@@ -588,8 +588,8 @@ describe('CombatManager.flee', () => {
         await Promise.resolve();
 
         // max(5, -2) + prof(3) = 8, not 5 + -2 + 3 = 6
-        expect(lastMessageStartingWith('🏃 Flee check:')).toBe(
-            '🏃 Flee check: 10 + 8 (max DEX/WIS + prof) = 18 vs DC 10 (0 engaged enemies)'
+        expect(lastMessageStartingWith('Flee check:')).toBe(
+            'Flee check: 10 + 8 (max DEX/WIS + prof) = 18 vs DC 10 (0 engaged enemies)'
         );
     });
 
@@ -605,7 +605,7 @@ describe('CombatManager.flee', () => {
         cm.flee(fleeing);
         await Promise.resolve();
 
-        expect(lastMessageStartingWith('❌')).toBe('❌ Fixture failed to escape!');
+        expect(lastMessageStartingWith('Fixture failed to escape!')).toBe('Fixture failed to escape!');
     });
 
     it('blocking conditions prevent fleeing outright', () => {
@@ -664,10 +664,10 @@ describe('CombatManager.flee (NVSystem mode)', () => {
         await Promise.resolve();
 
         // 10 + (1 blend + 3 prof) = 14
-        expect(lastMessageStartingWith('🏃 Flee check:')).toBe(
-            '🏃 Flee check: 10 + 4 (Prowess+Intuition blend + prof) = 14 vs DC 10 (0 engaged enemies)'
+        expect(lastMessageStartingWith('Flee check:')).toBe(
+            'Flee check: 10 + 4 (Prowess+Intuition blend + prof) = 14 vs DC 10 (0 engaged enemies)'
         );
-        expect(lastMessageStartingWith('✅')).toBe('✅ Fixture escapes!');
+        expect(lastMessageStartingWith('Fixture escapes!')).toBe('Fixture escapes!');
     });
 
     it('a dump-Prowess build still flees on Intuition alone, unlike a single-stat design would allow a total dump', async () => {
@@ -684,7 +684,7 @@ describe('CombatManager.flee (NVSystem mode)', () => {
 
         // 10 + (1 blend + 3 prof) = 14 — even fully dumping Prowess, Intuition alone still
         // produces a real (non-zero) modifier, not a total dump.
-        expect(lastMessageStartingWith('🏃 Flee check:')).toContain('10 + 4 (Prowess+Intuition blend + prof) = 14');
+        expect(lastMessageStartingWith('Flee check:')).toContain('10 + 4 (Prowess+Intuition blend + prof) = 14');
     });
 });
 

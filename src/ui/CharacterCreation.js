@@ -4,6 +4,7 @@
  */
 
 import { Character } from '../systems/Character.js';
+import { iconMarkup } from './Iconography.js';
 import { gameState } from '../core/GameState.js';
 import { RULES } from '../core/rulesEngine.js';
 import { loadCampaigns, filterByCampaign, getDefaultCampaignId } from '../utils/campaignFilter.js';
@@ -103,7 +104,7 @@ export class CharacterCreationUI {
      */
     applyFiltering() {
         const campaignId = this.campaignId || getDefaultCampaignId();
-        console.log(`🎯 Filtering character creation data for campaign: ${campaignId}`);
+        console.log(`Filtering character creation data for campaign: ${campaignId}`);
 
         this.speciesData = filterByCampaign(this.rawSpeciesData, campaignId);
         this.classesData = filterByCampaign(this.rawClassesData, campaignId);
@@ -121,7 +122,7 @@ export class CharacterCreationUI {
             this.kitsData = this.rawKitsData;
         }
 
-        console.log(`📊 Filtered: ${this.speciesData?.length || 0} species, ${this.classesData?.length || 0} classes, ${this.backgroundsData?.length || 0} backgrounds`);
+        console.log(`Filtered: ${this.speciesData?.length || 0} species, ${this.classesData?.length || 0} classes, ${this.backgroundsData?.length || 0} backgrounds`);
     }
 
     /**
@@ -642,32 +643,32 @@ export class CharacterCreationUI {
             marksmanship: {
                 name: 'Marksmanship',
                 description: 'You gain a +2 bonus to attack rolls you make with ranged weapons',
-                icon: '🏹'
+                icon: 'equipment.bow'
             },
             defense: {
                 name: 'Defense',
                 description: '+1 AC while wearing armor',
-                icon: '🛡️'
+                icon: 'equipment.shield'
             },
             dueling: {
                 name: 'Dueling',
                 description: '+2 damage when wielding a melee weapon in one hand with no weapon in the other hand',
-                icon: '⚔️'
+                icon: 'action.attack'
             },
             greatWeaponFighting: {
                 name: 'Great Weapon Fighting',
                 description: 'When you roll a 1 or 2 on a damage die for an attack with a two-handed or versatile melee weapon, you can reroll the die (must use new roll)',
-                icon: '🪓'
+                icon: 'equipment.axe'
             },
             mariner: {
                 name: 'Mariner',
                 description: 'As long as you are not wearing heavy armor or wielding a shield: you can traverse deep water terrain and you gain a +1 bonus to AC',
-                icon: '🌊'
+                icon: 'terrain.water'
             },
             unarmedFighting: {
                 name: 'Unarmed Fighting',
                 description: 'Your unarmed strikes deal 1d6 + STR damage (1d8 if both hands are free). When you grapple a creature, you can deal 1d4 damage at the start of each of your turns',
-                icon: '👊'
+                icon: 'action.strike'
             }
         };
 
@@ -682,7 +683,7 @@ export class CharacterCreationUI {
         return `
                         <div class="fighting-style-card ${this.characterData.fightingStyle === styleId ? 'selected' : ''}"
                              data-style-id="${styleId}">
-                            <h4>${style.icon} ${style.name}</h4>
+                            <h4>${iconMarkup(style.icon)} ${style.name}</h4>
                             <p class="style-description">${style.description}</p>
                         </div>
                     `;

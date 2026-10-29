@@ -1,0 +1,50 @@
+{
+  "legacyRepair": true,
+  "genderChecked": true,
+  "same": true,
+  "settlements": 41,
+  "diversity": {
+    "rooms": [
+      "tavern-v2",
+      "tavern-v1"
+    ],
+    "keepers": [
+      "tavern-keeper-v6",
+      "tavern-keeper-v5",
+      "tavern-keeper-v3",
+      "tavern-keeper-v1",
+      "tavern-keeper-v2",
+      "tavern-keeper-v4"
+    ],
+    "merchants": [
+      "merchant-keeper-v3",
+      "merchant-keeper-v2",
+      "merchant-keeper-v1",
+      "merchant-keeper-v6",
+      "merchant-keeper-v4",
+      "merchant-keeper-v5"
+    ],
+    "patrons": [
+      "tavern-patron-v8",
+      "tavern-patron-v10",
+      "tavern-patron-v11",
+      "tavern-guest-v1",
+      "tavern-patron-v4",
+      "tavern-patron-v9",
+      "tavern-patron-v5",
+      "tavern-patron-v7",
+      "tavern-patron-v3",
+      "tavern-patron-v1",
+      "tavern-patron-v2",
+      "tavern-patron-v6"
+    ]
+  },
+  "names": [
+    "Dren Kindlewood",
+    "Marro Frostbeard",
+    "Moru Dawnbringer",
+    "Bren Shadowstep",
+    "Castorian Servani"
+  ],
+  "errors": []
+}

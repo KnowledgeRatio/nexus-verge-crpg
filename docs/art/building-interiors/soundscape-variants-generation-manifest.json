@@ -1,0 +1,410 @@
+{
+  "date": "2026-10-24",
+  "status": "Ten generated candidates for private local audition; not listening accepted or public-release approved.",
+  "provider": "ElevenLabs connected creative tools",
+  "flowId": "n4eCU5QS1N4N2ABJD7g6",
+  "model": "eleven_text_to_sound_v2",
+  "settings": {
+    "duration_seconds": 30,
+    "prompt_influence": 0.65,
+    "loop": true
+  },
+  "billing": {
+    "estimate": {
+      "credits": 3303.0027297543215,
+      "price_cents": 60,
+      "generations_count": 1,
+      "currency": "usd",
+      "estimated_runtime_seconds": 8
+    },
+    "reportedGenerationTotalCredits": 1000.8098271155596,
+    "reportedGenerationTotalUsdCents": 18.18,
+    "note": "Provider reported costs, not invoice audit. One take per brief."
+  },
+  "directionSources": [
+    "docs/art/audio-identity-direction.md",
+    "tools/audio-gen/style-guide.md",
+    "docs/art/building-interiors/soundscape-briefs.json",
+    "docs/world/WORLD.md",
+    "docs/world/TECHNOLOGY.md"
+  ],
+  "sources": [
+    {
+      "name": "village-lane",
+      "nodeId": "w3S2h0u519QPEscJ9zjG",
+      "prompt": "Quiet inhabited frontier village lane, stable outdoor listener. Sparse soft bootsteps on packed earth, two distant adults exchanging low unintelligible murmurs, faint cloth and wooden door movement; open air and long quiet intervals. Small lived-in place, rounded natural detail, seamless ambient bed. No intelligible words, music, machinery, traffic, crowds, shouting, close clicks, dramatic wind, hiss or rhythmic hook.",
+      "source": "data/audio/local/settlement-village-lane-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-village-lane-v2-source.wav",
+      "output": "data/audio/local/settlement-village-lane-v2.wav",
+      "generationId": "Rw1EETI9TOnh4jySr8uF",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -45.548,
+        "peakDbfs": -32.704,
+        "clippedSamples": 0,
+        "boundaryStep": 3
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -29.163,
+        "clippedSamples": 0,
+        "boundaryStep": 4
+      },
+      "processingMethod": "Original rounded Python sample gain retained",
+      "gainDb": 3.539,
+      "sourceSha256": "ab15972297897d516b35f8a315adca420087b1d00db8f6ee4e18f33728bc5076",
+      "decodedSha256": "f9cf75a023a10c35c134a87e4c428d84a9caa1b9febf15912ee8752199a7e297",
+      "outputSha256": "f7ac76be200324e6f3303db49fd6936271dbf49561be7ae64c25ed3e458ee960",
+      "originalGainSourceRmsDbfs": -45.539
+    },
+    {
+      "name": "village-workyard",
+      "nodeId": "xQD4l335XVXjmEDTpadf",
+      "prompt": "Small frontier village workyard from its edge. A few neighbours working separately: soft wood handling, occasional basket set down, distant low unintelligible exchange, sparse footsteps on earth. Open air, restrained irregular activity and generous quiet; stable perspective, seamless ambient bed. No intelligible speech, music, machinery, traffic, crowd, bells, sharp impacts, close microphone, hiss or repeated rhythmic hook.",
+      "source": "data/audio/local/settlement-village-workyard-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-village-workyard-v2-source.wav",
+      "output": "data/audio/local/settlement-village-workyard-v2.wav",
+      "generationId": "2U9U8flyzDqJ1Pl6kurK",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -39.039,
+        "peakDbfs": -19.492,
+        "clippedSamples": 0,
+        "boundaryStep": 99
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -22.459,
+        "clippedSamples": 0,
+        "boundaryStep": 70
+      },
+      "processingMethod": "Original rounded Python sample gain retained",
+      "gainDb": -2.967,
+      "sourceSha256": "8aa5a04507753161bda5f0301b1972aff50f1058cd3521e42aaa7d01bda1a1f5",
+      "decodedSha256": "34a66031fab79bfc34968512b1db1e8c0869704ffc91a79dfa978b32d259a919",
+      "outputSha256": "27b705a8c390b8bb00be3594b618302943dec52f6eb546fd84af14f8541a5a7d",
+      "originalGainSourceRmsDbfs": -39.033
+    },
+    {
+      "name": "town-market",
+      "nodeId": "LsRsSPaJd4tY769f90pn",
+      "prompt": "Modest frontier town market from a shaded lane. Several small groups in soft overlapping unintelligible conversation, intermittent footsteps on stone, subdued cloth parcels and wooden stalls handled nearby but not close. Open-air depth, rounded human midrange, irregular activity with breathing room, seamless loop. No clear words, shouting, music, festival, bells, machinery, traffic, loud impacts, close voices or hiss.",
+      "source": "data/audio/local/settlement-town-market-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-town-market-v2-source.wav",
+      "output": "data/audio/local/settlement-town-market-v2.wav",
+      "generationId": "aMeidBIMP2yRKzvfSfvL",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -27.374,
+        "peakDbfs": -2.863,
+        "clippedSamples": 0,
+        "boundaryStep": 273
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -17.493,
+        "clippedSamples": 0,
+        "boundaryStep": 50
+      },
+      "processingMethod": "Original rounded Python sample gain retained",
+      "gainDb": -14.63,
+      "sourceSha256": "fc1952ea118c10a9e68642d2bb7425e8e24d2719d4490519901002d5237d6559",
+      "decodedSha256": "4a7f90cb43971d3aeea2bac08f76080a1257da6d289a6619174db6df70371156",
+      "outputSha256": "43a198f37820b79fac446af1174f42e1b7c7df9a3aded133ed4a262855e9333e",
+      "originalGainSourceRmsDbfs": -27.37
+    },
+    {
+      "name": "town-workcourt",
+      "nodeId": "OaxwA1d3SLWFWhOjMMcN",
+      "prompt": "Frontier town workcourt heard from a side passage. Moderate distant labour: wooden crates shifted, soft leather handling, scattered bootsteps, low indistinct exchanges from several workshops. Layered outdoor activity with quiet intervals, restrained warm material detail, stable listening position, seamless ambient bed. No intelligible words, music, machines, traffic, rhythmic hammering, piercing impacts, festival or hiss.",
+      "source": "data/audio/local/settlement-town-workcourt-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-town-workcourt-v2-source.wav",
+      "output": "data/audio/local/settlement-town-workcourt-v2.wav",
+      "generationId": "G9bNYQwHerk1Akoo46E7",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -37.381,
+        "peakDbfs": -6.894,
+        "clippedSamples": 0,
+        "boundaryStep": 30
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -11.513,
+        "clippedSamples": 0,
+        "boundaryStep": 17
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": -4.619,
+      "sourceSha256": "54780547bd013f2c502f548c1657e36ff55de63018ce925c1c868840a0b9375c",
+      "decodedSha256": "f3fcd24a927a05ad776c3bc30a78c8b9554eb27e954d1deb3941b2ee053efadd",
+      "outputSha256": "840800be5d0b8111c0d8d9af8dc1212f5542daa3490d0eed0f94de7f0ff95bae"
+    },
+    {
+      "name": "city-street",
+      "nodeId": "8oKXaFT6txqXNFNwPFlx",
+      "prompt": "Inhabited frontier city street from a sheltered doorway. Many distant small groups in soft overlapping unintelligible conversation, layered footsteps on worn stone, subdued wooden cart movement far away. Broad outdoor depth and rounded human midrange, steady restrained urban activity, seamless loop. No intelligible words, music, festival, shouting, bells, engines, traffic roar, close sharp impacts, dramatic bass or hiss.",
+      "source": "data/audio/local/settlement-city-street-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-city-street-v2-source.wav",
+      "output": "data/audio/local/settlement-city-street-v2.wav",
+      "generationId": "LEh73k8LXToxW3KbNpLV",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -28.26,
+        "peakDbfs": -8.655,
+        "clippedSamples": 0,
+        "boundaryStep": 300
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -22.392,
+        "clippedSamples": 0,
+        "boundaryStep": 62
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": -13.74,
+      "sourceSha256": "6b04625a587f1aa98b970adaabff7c967f10ce7858bd4f8b58d01422863fb1cd",
+      "decodedSha256": "c5503255f43d7cb41e2d4505228975f06adc6f1056899712b26018084e92cf2e",
+      "outputSha256": "d5f756e1fcfc5fb7b1c6bae8e69fb11af50a5d5cc0f9b1e897651a22c8b85fe3"
+    },
+    {
+      "name": "city-market",
+      "nodeId": "dyDpTEbWbEmW9Wv3vdRc",
+      "prompt": "Frontier city market court from its quiet edge. Dense but subdued overlapping unintelligible trading murmur, layered footsteps at several distances, occasional soft baskets and cloth bundles placed on wood. Human activity dominates, open-air reflections, stable perspective, irregular seamless bed. No intelligible speech, music, cheering, festival, bells, modern machinery, engines, sharp clatter, close voices or hiss.",
+      "source": "data/audio/local/settlement-city-market-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-city-market-v2-source.wav",
+      "output": "data/audio/local/settlement-city-market-v2.wav",
+      "generationId": "vhQTcaCZdpOCdHmtgyjq",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -32.001,
+        "peakDbfs": -4.855,
+        "clippedSamples": 0,
+        "boundaryStep": 61
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -14.855,
+        "clippedSamples": 0,
+        "boundaryStep": 20
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": -9.999,
+      "sourceSha256": "3603ef95e59d868f126f4cca97c55bc98c558b8dd26853111ea8324fbf140e31",
+      "decodedSha256": "05495710d689e43ec4f16ba49c4de6f5df03913c9b6dfeac0bc3ca668736ddd1",
+      "outputSha256": "74d713d4bc15abbdcdd70d96d65bcb5a585dd9b6ac0792a5115cc047b18e731c"
+    },
+    {
+      "name": "tavern",
+      "nodeId": "m4hZd4f9up4ODAyWvju7",
+      "prompt": "Small frontier inn common room, listener near entrance. Four to six adults in small groups several metres away, low overlapping unintelligible conversation dominant; occasional subdued pottery on wood and bench movement underneath. Rounded human midrange, short warm timber room reflections, calm irregular seamless bed. No intelligible words, music, singing, cheering, close voices, loud laughter, fireplace, crackle or hiss.",
+      "source": "data/audio/local/settlement-tavern-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-tavern-v2-source.wav",
+      "output": "data/audio/local/settlement-tavern-v2.wav",
+      "generationId": "29We1ggZNa34tsQsLBKZ",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -31.429,
+        "peakDbfs": -8.925,
+        "clippedSamples": 0,
+        "boundaryStep": 227
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -19.495,
+        "clippedSamples": 0,
+        "boundaryStep": 68
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": -10.571,
+      "sourceSha256": "e7c20cf5a9305bb68446fa67a0d85b6cfa2e0e89a24f87af23877ea17ba07c25",
+      "decodedSha256": "02c5de65f57a40b783ebeba9142a11468026bbe2e8ac78d759b58fa00dbf427c",
+      "outputSha256": "39dafa384830a15500d52fd984efc9d43e227aafbd9ffc0bd4010c6b9e922237"
+    },
+    {
+      "name": "merchant",
+      "nodeId": "4yJrNYidvUcCBNplN8XO",
+      "prompt": "Frontier provisions shop from customer side of timber counter. Quiet leather straps and folded cloth handled, occasional soft wooden drawer movement, faint indistinct exchanges and steps beyond doorway. Short warm room reflections, sparse irregular activity, breathing space, stable seamless bed. No intelligible words, music, bells, cash register, machinery, close sharp clicks, loud impacts, exaggerated bass or hiss.",
+      "source": "data/audio/local/settlement-merchant-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-merchant-v2-source.wav",
+      "output": "data/audio/local/settlement-merchant-v2.wav",
+      "generationId": "8r18XNMRDsij4PzWe98l",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -46.227,
+        "peakDbfs": -10.419,
+        "clippedSamples": 0,
+        "boundaryStep": 18
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -41.976,
+        "peakDbfs": -6.192,
+        "clippedSamples": 0,
+        "boundaryStep": 29
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": 4.227,
+      "sourceSha256": "9f4430e961264a30e4316a7de2dcf86e88de12bcb15d278c5aafdb67f1113e4c",
+      "decodedSha256": "363dbe1cb633446b0e024f3b30be22d9442cc6c46243fdfd0887f94690ac5456",
+      "outputSha256": "d80840223c1da6f51fb065aea2ca938a92cf2f9d66c48d910780c2df73e7de78"
+    },
+    {
+      "name": "blacksmith",
+      "nodeId": "QeuNKZe28JQrsSoAjxyZ",
+      "prompt": "Frontier smithy between heavy work, listener at customer counter. Distant leather bellows breathing, low contained forge body, occasional gentle tools settling on wood and a few dull worked-iron taps in rear room. Short stone and timber reflections, sparse irregular labour, seamless bed. No speech, music, machinery, sustained ringing, repetitive hammer rhythm, loud impacts, close crackle, cinematic bass or hiss.",
+      "source": "data/audio/local/settlement-blacksmith-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-blacksmith-v2-source.wav",
+      "output": "data/audio/local/settlement-blacksmith-v2.wav",
+      "generationId": "W3bKW4Tx239JaseLXHGn",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -35.613,
+        "peakDbfs": -6.983,
+        "clippedSamples": 0,
+        "boundaryStep": 201
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -42.01,
+        "peakDbfs": -13.371,
+        "clippedSamples": 0,
+        "boundaryStep": 96
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": -6.387,
+      "sourceSha256": "c82e3789f0ae7dda1c055fb314bef68c744c0ad99006034843da1a7d3180fcce",
+      "decodedSha256": "d059da18faf1529f38c76227da316d19ab0ca5648575b6782ee201ac9083b76a",
+      "outputSha256": "8fe82439407c3bab12e19b23e03f406022e7ed5433321c74ea4895367fee3380"
+    },
+    {
+      "name": "greathall",
+      "nodeId": "b9MLzP2OawoaXDcvTOUX",
+      "prompt": "Frontier civic hall from reception alcove. A few low unintelligible exchanges far across modest stone and timber room, sparse soft footsteps and cloth movement, occasional papers moved on distant desk. Restrained human presence, short natural reflections, ample quiet, stable seamless ambience. No intelligible words, music, crowds, regal fanfare, cathedral echo, sharp close sounds, machinery, dramatic bass or hiss.",
+      "source": "data/audio/local/settlement-greathall-v2-source.mp3",
+      "decoded": "data/audio/local/settlement-greathall-v2-source.wav",
+      "output": "data/audio/local/settlement-greathall-v2.wav",
+      "generationId": "kGlC6jwQJqnZe1quDV9s",
+      "price": {
+        "credits": 100.08098271155596,
+        "price_cents": 1.818,
+        "cost_fiat_currency": "usd"
+      },
+      "status": "completed",
+      "targetRmsDbfs": -42,
+      "maxPeakDbfs": -3,
+      "sourceMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -71.224,
+        "peakDbfs": -57.64,
+        "clippedSamples": 0,
+        "boundaryStep": 1
+      },
+      "outputMeasurements": {
+        "durationSeconds": 30.0,
+        "rmsDbfs": -41.943,
+        "peakDbfs": -28.413,
+        "clippedSamples": 0,
+        "boundaryStep": 29
+      },
+      "processingMethod": "audioop.mul signed16 truncation",
+      "gainDb": 29.224,
+      "sourceSha256": "3480f594f7dda81becb359366cc3f6f9960ae4eff3289b1301aa125345ed652a",
+      "decodedSha256": "e9102abed8965c123c8eb34b5c7c06f94776829e6aec150ee92bb05496c3d93f",
+      "outputSha256": "463b36ad0a5959ed763d6919cfb4a41e04dedd4a6c4dcc098539e989ba201957"
+    }
+  ],
+  "processing": "Decoded using afconvert -f WAVE -d LEI16 source.mp3 decoded.wav. First three outputs retained exact original Python sample-rounding normalization from build_settlement_ambience.py conventions. Remaining seven use Python 3.9 audioop.rms/max native PCM measurements and audioop.mul signed16 truncating constant gain min(-42-sourceRmsDbfs,-3-sourcePeakDbfs); original WAV parameters retained. No compression, added sound, resampling or crossfade. RMS measurements use integer audioop.rms, so quantization slightly changes reported precision.",
+  "review": "Technical checks only; no agent listening or sponsor acceptance. Boundary step is not evidence of inaudible seam. Audition consecutive loops for phantom words, density, hooks, hiss and fatigue.",
+  "tavernReferenceMeasurements": {
+    "voicesRmsDbfs": -41.502,
+    "voicesGain": 0.55,
+    "activityRmsDbfs": -43.41,
+    "activityGain": 0.14,
+    "suggestedAlternateGain": 0.6,
+    "note": "Approximate RMS comparison, not perceived loudness or listening approval."
+  },
+  "preservation": {
+    "existingFilesHashChecked": 75,
+    "allUnchanged": true
+  }
+}

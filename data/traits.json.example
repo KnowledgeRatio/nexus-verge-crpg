@@ -23,7 +23,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "⚔️",
+        "icon": "action.attack",
         "message": null
       }
     },
@@ -48,7 +48,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🏹",
+        "icon": "equipment.bow",
         "message": null
       }
     },
@@ -74,7 +74,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "🛡️",
+        "icon": "equipment.shield",
         "message": null
       }
     },
@@ -103,7 +103,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "👁️",
+        "icon": "action.perception",
         "message": null
       }
     },
@@ -128,7 +128,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "💨",
+        "icon": "action.dodge",
         "message": "{characterName} nimbly dodges the effect!"
       }
     },
@@ -160,7 +160,7 @@
         }
       ],
       "visualFeedback": {
-        "icon": "⚡",
+        "icon": "action.react",
         "message": null
       }
     }
@@ -183,7 +183,7 @@
       "permanent": "Usually true - traits persist",
       "effects": "Array of passive effect objects",
       "visualFeedback": {
-        "icon": "Emoji or icon",
+        "icon": "Semantic icon identifier from the shared iconography catalogue",
         "message": "Usually null for passive traits, can have message for reactive traits like Evasion"
       }
     },

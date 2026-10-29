@@ -415,7 +415,7 @@ export class Character {
         const canonicalId = skillRegistry.normalizeId(skillId);
         const skill = this.skills[canonicalId];
         if (!skill || !skillRegistry.getDefinition(canonicalId)) {
-            console.warn(`⚠️ Skill not found: ${skillId}`);
+            console.warn(`Skill not found: ${skillId}`);
             return 0;
         }
         return skillRegistry.getModifier(this, canonicalId, attribute);
@@ -711,7 +711,7 @@ export class Character {
             // Import gameState to add level up message
             import('../core/GameState.js').then(module => {
                 const gameState = module.gameState || module.default;
-                gameState.addMessage(`🎉 Level Up! You are now level ${this.level}!`, 'success');
+                gameState.addMessage(`Level Up! You are now level ${this.level}!`, 'success');
             });
 
             return true;
@@ -727,7 +727,7 @@ export class Character {
      * Level up - Calculate what WOULD change (but don't apply yet!)
      * Changes are stored in pendingLevelUp and applied when player confirms
      *
-     * ⚠️ CRITICAL: This method does NOT modify character stats!
+     * CRITICAL: This method does NOT modify character stats!
      * Stats only change when applyLevelUpSelections() is called.
      */
     levelUp(newLevel) {
@@ -797,7 +797,7 @@ export class Character {
             return;
         }
 
-        console.log(`📈 Applying level-up to level ${this.pendingLevelUp.newLevel}`);
+        console.log(`Applying level-up to level ${this.pendingLevelUp.newLevel}`);
 
         // NOW apply the stat changes that were calculated earlier
         this.level = this.pendingLevelUp.newLevel;
@@ -921,7 +921,7 @@ export class Character {
         this.pendingLevelUp = null;
         this.levelUpSelections = null;
 
-        console.log(`✅ Level-up complete! Now level ${this.level}`);
+        console.log(`Level-up complete! Now level ${this.level}`);
     }
 
     /**
@@ -1111,7 +1111,7 @@ export class Character {
                 (rangedWeapon.ammoCapacity !== undefined || rangedWeapon.ammoCount !== undefined)) {
                 const capacity = rangedWeapon.ammoCapacity ?? 20;
                 rangedWeapon.ammoCount = capacity;
-                console.log(`🪶 Forgecraft: ${this.name} crafts arrows during long rest. Ammo refilled to ${capacity}.`);
+                console.log(`Forgecraft: ${this.name} crafts arrows during long rest. Ammo refilled to ${capacity}.`);
             }
         }
 
@@ -1377,7 +1377,7 @@ export class Character {
             this.ac = this.calculateAC();
         }
 
-        console.log(`✅ Equipped ${item.name} to ${slot}`);
+        console.log(`Equipped ${item.name} to ${slot}`);
         return true;
     }
 
@@ -1400,7 +1400,7 @@ export class Character {
             this.ac = this.calculateAC();
         }
 
-        console.log(`✅ Unequipped ${item.name} from ${slot}`);
+        console.log(`Unequipped ${item.name} from ${slot}`);
         return true;
     }
 
@@ -1433,7 +1433,7 @@ export class Character {
         // Remove one from inventory
         this.removeItem(itemId, 1);
 
-        console.log(`✅ Used ${item.name}`);
+        console.log(`Used ${item.name}`);
         return effect;
     }
 
@@ -1450,7 +1450,7 @@ export class Character {
             const tempHP = roll(effect.tempHP);
             this.tempHP = Math.max(this.tempHP, tempHP);
             result.tempHP = tempHP;
-            console.log(`🛡️ Gained ${tempHP} temporary HP`);
+            console.log(`Gained ${tempHP} temporary HP`);
         }
 
         // Buff effect (future: implement conditions)
@@ -1468,7 +1468,7 @@ export class Character {
      */
     addGold(amount) {
         this.gold += amount;
-        console.log(`💰 Gained ${amount} gold (total: ${this.gold} gp)`);
+        console.log(`Gained ${amount} gold (total: ${this.gold} gp)`);
     }
 
     /**
@@ -1478,12 +1478,12 @@ export class Character {
      */
     removeGold(amount) {
         if (this.gold < amount) {
-            console.warn(`❌ Insufficient gold (need ${amount}, have ${this.gold})`);
+            console.warn(`Insufficient gold (need ${amount}, have ${this.gold})`);
             return false;
         }
 
         this.gold -= amount;
-        console.log(`💸 Spent ${amount} gold (remaining: ${this.gold} gp)`);
+        console.log(`Spent ${amount} gold (remaining: ${this.gold} gp)`);
         return true;
     }
 

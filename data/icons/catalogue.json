@@ -1,0 +1,597 @@
+{
+  "navigation.menu": {
+    "label": "Menu",
+    "file": "navigation.menu.svg",
+    "master": "navigation.menu"
+  },
+  "navigation.journal": {
+    "label": "Journal",
+    "file": "navigation.journal.svg",
+    "master": "navigation.journal"
+  },
+  "navigation.inventory": {
+    "label": "Inventory",
+    "file": "navigation.inventory.svg",
+    "master": "navigation.inventory"
+  },
+  "navigation.map": {
+    "label": "Map",
+    "file": "navigation.map.svg",
+    "master": "navigation.map"
+  },
+  "navigation.party": {
+    "label": "Party",
+    "file": "navigation.party.svg",
+    "master": "navigation.party"
+  },
+  "navigation.help": {
+    "label": "Help",
+    "file": "navigation.help.svg",
+    "master": "navigation.help"
+  },
+  "condition.bleeding": {
+    "label": "Bleeding",
+    "file": "condition.bleeding.svg",
+    "master": "condition.bleeding"
+  },
+  "condition.prone": {
+    "label": "Prone",
+    "file": "condition.prone.svg",
+    "master": "condition.prone"
+  },
+  "condition.frightened": {
+    "label": "Frightened",
+    "file": "condition.frightened.svg",
+    "master": "condition.frightened"
+  },
+  "condition.slowed": {
+    "label": "Slowed",
+    "file": "condition.slowed.svg",
+    "master": "condition.slowed"
+  },
+  "condition.sapped": {
+    "label": "Sapped",
+    "file": "condition.sapped.svg",
+    "master": "condition.sapped"
+  },
+  "condition.pushed": {
+    "label": "Pushed",
+    "file": "condition.pushed.svg",
+    "master": "condition.pushed"
+  },
+  "condition.taunted": {
+    "label": "Taunted",
+    "file": "condition.taunted.svg",
+    "master": "condition.taunted"
+  },
+  "condition.inspired": {
+    "label": "Inspired",
+    "file": "condition.inspired.svg",
+    "master": "condition.inspired"
+  },
+  "condition.tempHP": {
+    "label": "Temporary health",
+    "file": "condition.tempHP.svg",
+    "master": "condition.tempHP"
+  },
+  "condition.exhaustion": {
+    "label": "Exhaustion",
+    "file": "condition.exhaustion.svg",
+    "master": "condition.exhaustion"
+  },
+  "condition.vexed": {
+    "label": "Vexed",
+    "file": "condition.vexed.svg",
+    "master": "condition.vexed"
+  },
+  "condition.harried": {
+    "label": "Harried",
+    "file": "condition.harried.svg",
+    "master": "condition.harried"
+  },
+  "condition.buff": {
+    "label": "Beneficial condition",
+    "file": "condition.buff.svg",
+    "master": "condition.buff"
+  },
+  "condition.debuff": {
+    "label": "Harmful condition",
+    "file": "condition.debuff.svg",
+    "master": "condition.debuff"
+  },
+  "action.attack": {
+    "label": "Attack",
+    "file": "action.attack.svg",
+    "master": "action.attack"
+  },
+  "action.dodge": {
+    "label": "Dodge",
+    "file": "action.dodge.svg",
+    "master": "action.dodge"
+  },
+  "action.flee": {
+    "label": "Flee",
+    "file": "action.flee.svg",
+    "master": "action.flee"
+  },
+  "action.spell": {
+    "label": "Spell",
+    "file": "action.spell.svg",
+    "master": "action.spell"
+  },
+  "action.ability": {
+    "label": "Ability",
+    "file": "action.ability.svg",
+    "master": "action.ability"
+  },
+  "action.unarmed": {
+    "label": "Unarmed",
+    "file": "action.unarmed.svg",
+    "master": "action.unarmed"
+  },
+  "action.perception": {
+    "label": "Perception",
+    "file": "action.perception.svg",
+    "master": "action.perception"
+  },
+  "action.swim": {
+    "label": "Swim",
+    "file": "action.swim.svg",
+    "master": "action.swim"
+  },
+  "action.react": {
+    "label": "Reaction",
+    "file": "action.react.svg",
+    "master": "action.react"
+  },
+  "action.heal": {
+    "label": "Healing",
+    "file": "action.heal.svg",
+    "master": "action.heal"
+  },
+  "resource.supplies": {
+    "label": "Supplies",
+    "file": "resource.supplies.svg",
+    "master": "resource.supplies"
+  },
+  "resource.gold": {
+    "label": "Gold",
+    "file": "resource.gold.svg",
+    "master": "resource.gold"
+  },
+  "resource.resolve": {
+    "label": "Resolve",
+    "file": "resource.resolve.svg",
+    "master": "resource.resolve"
+  },
+  "resource.health": {
+    "label": "Health",
+    "file": "resource.health.svg",
+    "master": "resource.health"
+  },
+  "resource.xp": {
+    "label": "Experience",
+    "file": "resource.xp.svg",
+    "master": "resource.xp"
+  },
+  "equipment.weapons": {
+    "label": "Weapons",
+    "file": "equipment.weapons.svg",
+    "master": "equipment.weapons"
+  },
+  "equipment.armour": {
+    "label": "Armour",
+    "file": "equipment.armour.svg",
+    "master": "equipment.armour"
+  },
+  "equipment.shield": {
+    "label": "Shield",
+    "file": "equipment.shield.svg",
+    "master": "equipment.shield"
+  },
+  "equipment.bow": {
+    "label": "Bow",
+    "file": "equipment.bow.svg",
+    "master": "equipment.bow"
+  },
+  "equipment.axe": {
+    "label": "Axe",
+    "file": "equipment.axe.svg",
+    "master": "equipment.axe"
+  },
+  "equipment.dagger": {
+    "label": "Dagger",
+    "file": "equipment.dagger.svg",
+    "master": "equipment.dagger"
+  },
+  "equipment.scroll": {
+    "label": "Scroll",
+    "file": "equipment.scroll.svg",
+    "master": "equipment.scroll"
+  },
+  "equipment.ring": {
+    "label": "Ring",
+    "file": "equipment.ring.svg",
+    "master": "equipment.ring"
+  },
+  "equipment.amulet": {
+    "label": "Amulet",
+    "file": "equipment.amulet.svg",
+    "master": "equipment.amulet"
+  },
+  "equipment.helmet": {
+    "label": "Helmet",
+    "file": "equipment.helmet.svg",
+    "master": "equipment.helmet"
+  },
+  "equipment.potion": {
+    "label": "Flask",
+    "file": "equipment.potion.svg",
+    "master": "equipment.potion"
+  },
+  "map.settlement": {
+    "label": "Settlement",
+    "file": "map.settlement.svg",
+    "master": "map.settlement"
+  },
+  "map.dungeon": {
+    "label": "Dungeon",
+    "file": "map.dungeon.svg",
+    "master": "map.dungeon"
+  },
+  "map.sanctuary": {
+    "label": "Sanctuary",
+    "file": "map.sanctuary.svg",
+    "master": "map.sanctuary"
+  },
+  "map.ruins": {
+    "label": "Ruins",
+    "file": "map.ruins.svg",
+    "master": "map.ruins"
+  },
+  "map.temple": {
+    "label": "Temple",
+    "file": "map.temple.svg",
+    "master": "map.temple"
+  },
+  "map.camp": {
+    "label": "Camp",
+    "file": "map.camp.svg",
+    "master": "map.camp"
+  },
+  "map.tower": {
+    "label": "Tower",
+    "file": "map.tower.svg",
+    "master": "map.tower"
+  },
+  "map.house": {
+    "label": "House",
+    "file": "map.house.svg",
+    "master": "map.house"
+  },
+  "map.tree": {
+    "label": "Tree",
+    "file": "map.tree.svg",
+    "master": "map.tree"
+  },
+  "map.mushroom": {
+    "label": "Mushroom",
+    "file": "map.mushroom.svg",
+    "master": "map.mushroom"
+  },
+  "map.entrance": {
+    "label": "Entrance",
+    "file": "map.entrance.svg",
+    "master": "map.entrance"
+  },
+  "map.boss": {
+    "label": "Boss",
+    "file": "map.boss.svg",
+    "master": "map.boss"
+  },
+  "object.chest": {
+    "label": "Chest",
+    "file": "object.chest.svg",
+    "master": "object.chest"
+  },
+  "object.altar": {
+    "label": "Altar",
+    "file": "object.altar.svg",
+    "master": "object.altar"
+  },
+  "object.fountain": {
+    "label": "Fountain",
+    "file": "object.fountain.svg",
+    "master": "object.fountain"
+  },
+  "object.statue": {
+    "label": "Statue",
+    "file": "object.statue.svg",
+    "master": "object.statue"
+  },
+  "object.brazier": {
+    "label": "Brazier",
+    "file": "object.brazier.svg",
+    "master": "object.brazier"
+  },
+  "object.bookshelf": {
+    "label": "Bookshelf",
+    "file": "object.bookshelf.svg",
+    "master": "object.bookshelf"
+  },
+  "object.bed": {
+    "label": "Bed",
+    "file": "object.bed.svg",
+    "master": "object.bed"
+  },
+  "object.table": {
+    "label": "Table",
+    "file": "object.table.svg",
+    "master": "object.table"
+  },
+  "object.barrel": {
+    "label": "Barrel",
+    "file": "object.barrel.svg",
+    "master": "object.barrel"
+  },
+  "object.crate": {
+    "label": "Crate",
+    "file": "object.crate.svg",
+    "master": "object.crate"
+  },
+  "object.bones": {
+    "label": "Bones",
+    "file": "object.bones.svg",
+    "master": "object.bones"
+  },
+  "object.web": {
+    "label": "Web",
+    "file": "object.web.svg",
+    "master": "object.web"
+  },
+  "service.trade": {
+    "label": "Trade",
+    "file": "service.trade.svg",
+    "master": "service.trade"
+  },
+  "service.rest": {
+    "label": "Rest",
+    "file": "service.rest.svg",
+    "master": "service.rest"
+  },
+  "service.forge": {
+    "label": "Forge",
+    "file": "service.forge.svg",
+    "master": "service.forge"
+  },
+  "outcome.success": {
+    "label": "Success",
+    "file": "outcome.success.svg",
+    "master": "outcome.success"
+  },
+  "outcome.warning": {
+    "label": "Warning",
+    "file": "outcome.warning.svg",
+    "master": "outcome.warning"
+  },
+  "outcome.failure": {
+    "label": "Failure",
+    "file": "outcome.failure.svg",
+    "master": "outcome.failure"
+  },
+  "system.save": {
+    "label": "Save",
+    "file": "system.save.svg",
+    "master": "system.save"
+  },
+  "system.load": {
+    "label": "Load",
+    "file": "system.load.svg",
+    "master": "system.load"
+  },
+  "system.settings": {
+    "label": "Settings",
+    "file": "system.settings.svg",
+    "master": "system.settings"
+  },
+  "system.delete": {
+    "label": "Delete",
+    "file": "system.delete.svg",
+    "master": "system.delete"
+  },
+  "system.close": {
+    "label": "Close",
+    "file": "system.close.svg",
+    "master": "system.close"
+  },
+  "terrain.water": {
+    "label": "Water",
+    "file": "terrain.water.svg",
+    "master": "terrain.water"
+  },
+  "action.interact": {
+    "label": "Unarmed",
+    "file": "action.interact.svg",
+    "master": "action.unarmed"
+  },
+  "condition.voidPresence": {
+    "label": "Harmful condition",
+    "file": "condition.voidPresence.svg",
+    "master": "condition.debuff"
+  },
+  "condition.disarmed": {
+    "label": "Sapped",
+    "file": "condition.disarmed.svg",
+    "master": "condition.sapped"
+  },
+  "damage.fire": {
+    "label": "Brazier",
+    "file": "damage.fire.svg",
+    "master": "object.brazier"
+  },
+  "condition.dodging": {
+    "label": "Dodge",
+    "file": "condition.dodging.svg",
+    "master": "action.dodge"
+  },
+  "condition.tauntBacklash": {
+    "label": "Taunted",
+    "file": "condition.tauntBacklash.svg",
+    "master": "condition.taunted"
+  },
+  "condition.restrained": {
+    "label": "Slowed",
+    "file": "condition.restrained.svg",
+    "master": "condition.slowed"
+  },
+  "condition.stunned": {
+    "label": "Harried",
+    "file": "condition.stunned.svg",
+    "master": "condition.harried"
+  },
+  "condition.poisoned": {
+    "label": "Flask",
+    "file": "condition.poisoned.svg",
+    "master": "equipment.potion"
+  },
+  "condition.charmed": {
+    "label": "Health",
+    "file": "condition.charmed.svg",
+    "master": "resource.health"
+  },
+  "condition.unconscious": {
+    "label": "Prone",
+    "file": "condition.unconscious.svg",
+    "master": "condition.prone"
+  },
+  "condition.blinded": {
+    "label": "Frightened",
+    "file": "condition.blinded.svg",
+    "master": "condition.frightened"
+  },
+  "condition.incapacitated": {
+    "label": "Prone",
+    "file": "condition.incapacitated.svg",
+    "master": "condition.prone"
+  },
+  "condition.paralyzed": {
+    "label": "Slowed",
+    "file": "condition.paralyzed.svg",
+    "master": "condition.slowed"
+  },
+  "condition.invisible": {
+    "label": "Dodge",
+    "file": "condition.invisible.svg",
+    "master": "action.dodge"
+  },
+  "condition.deafened": {
+    "label": "Harmful condition",
+    "file": "condition.deafened.svg",
+    "master": "condition.debuff"
+  },
+  "condition.petrified": {
+    "label": "Warning",
+    "file": "condition.petrified.svg",
+    "master": "outcome.warning"
+  },
+  "condition.cursed": {
+    "label": "Failure",
+    "file": "condition.cursed.svg",
+    "master": "outcome.failure"
+  },
+  "condition.weakened": {
+    "label": "Sapped",
+    "file": "condition.weakened.svg",
+    "master": "condition.sapped"
+  },
+  "condition.marked": {
+    "label": "Vexed",
+    "file": "condition.marked.svg",
+    "master": "condition.vexed"
+  },
+  "condition.shadowAura": {
+    "label": "Harmful condition",
+    "file": "condition.shadowAura.svg",
+    "master": "condition.debuff"
+  },
+  "condition.frightfulPresence": {
+    "label": "Frightened",
+    "file": "condition.frightfulPresence.svg",
+    "master": "condition.frightened"
+  },
+  "equipment.weapon": {
+    "label": "Weapons",
+    "file": "equipment.weapon.svg",
+    "master": "equipment.weapons"
+  },
+  "equipment.armor": {
+    "label": "Armour",
+    "file": "equipment.armor.svg",
+    "master": "equipment.armour"
+  },
+  "equipment.tool": {
+    "label": "Settings",
+    "file": "equipment.tool.svg",
+    "master": "system.settings"
+  },
+  "equipment.artifact": {
+    "label": "Ability",
+    "file": "equipment.artifact.svg",
+    "master": "action.ability"
+  },
+  "equipment.consumable": {
+    "label": "Flask",
+    "file": "equipment.consumable.svg",
+    "master": "equipment.potion"
+  },
+  "equipment.misc": {
+    "label": "Crate",
+    "file": "equipment.misc.svg",
+    "master": "object.crate"
+  },
+  "action.aim": {
+    "label": "Vexed",
+    "file": "action.aim.svg",
+    "master": "condition.vexed"
+  },
+  "action.strike": {
+    "label": "Unarmed",
+    "file": "action.strike.svg",
+    "master": "action.unarmed"
+  },
+  "action.disengage": {
+    "label": "Dodge",
+    "file": "action.disengage.svg",
+    "master": "action.dodge"
+  },
+  "status.warning": {
+    "label": "Warning",
+    "file": "status.warning.svg",
+    "master": "outcome.warning"
+  },
+  "map.hostile": {
+    "label": "Attack",
+    "file": "map.hostile.svg",
+    "master": "action.attack"
+  },
+  "map.rebuilding": {
+    "label": "Settings",
+    "file": "map.rebuilding.svg",
+    "master": "system.settings"
+  },
+  "map.exit": {
+    "label": "Entrance",
+    "file": "map.exit.svg",
+    "master": "map.entrance"
+  },
+  "map.door": {
+    "label": "Entrance",
+    "file": "map.door.svg",
+    "master": "map.entrance"
+  },
+  "object.mushroom": {
+    "label": "Mushroom",
+    "file": "object.mushroom.svg",
+    "master": "map.mushroom"
+  }
+}

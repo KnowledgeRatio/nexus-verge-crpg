@@ -45,7 +45,7 @@ export class ConsequenceManager {
             'cleansed':    null
         };
 
-        console.log('🌑 ConsequenceManager initialized');
+        console.log('ConsequenceManager initialized');
     }
 
     // ─── Public API ────────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ export class ConsequenceManager {
         const pending = gameState.get('world.pendingEvents') || [];
         pending.push(event);
         gameState.set('world.pendingEvents', pending);
-        console.log(`🌑 [ConsequenceManager] Queued '${eventType}' for settlement ${settlementId}`);
+        console.log(`[ConsequenceManager] Queued '${eventType}' for settlement ${settlementId}`);
     }
 
     /**
@@ -233,7 +233,7 @@ export class ConsequenceManager {
         const pending = gameState.get('world.pendingEvents') || [];
         pending.push(event);
         gameState.set('world.pendingEvents', pending);
-        console.log(`🌑 [ConsequenceManager] Queued '${eventType}' for settlement ${event.sourceSettlementId}`);
+        console.log(`[ConsequenceManager] Queued '${eventType}' for settlement ${event.sourceSettlementId}`);
     }
 
     /**
@@ -349,7 +349,7 @@ export class ConsequenceManager {
             if (handler) {
                 handler(event, settlement);
             } else {
-                console.warn(`🌑 [ConsequenceManager] No handler for event type: ${event.type}`);
+                console.warn(`[ConsequenceManager] No handler for event type: ${event.type}`);
             }
 
             event.isProcessed = true;
@@ -401,7 +401,7 @@ export class ConsequenceManager {
             sourceEventId: event.id
         });
         gameState.addMessage(
-            `⚔️ Word of your actions has reached the wrong ears. ${settlement.name || 'The settlement'} is being watched.`,
+            `Word of your actions has reached the wrong ears. ${settlement.name || 'The settlement'} is being watched.`,
             'warning'
         );
     }
@@ -412,7 +412,7 @@ export class ConsequenceManager {
             sourceEventId: event.id
         });
         gameState.addMessage(
-            `📉 Your reputation precedes you. Merchants in ${settlement.name || 'this settlement'} are wary.`,
+            `Your reputation precedes you. Merchants in ${settlement.name || 'this settlement'} are wary.`,
             'warning'
         );
     }
@@ -424,15 +424,15 @@ export class ConsequenceManager {
             sourceEventId: event.id
         });
         gameState.addMessage(
-            `🔥 The situation in ${settlement.name || 'this settlement'} has escalated. This will not resolve on its own.`,
+            `The situation in ${settlement.name || 'this settlement'} has escalated. This will not resolve on its own.`,
             'error'
         );
     }
 
     _handleFactionAttention(event, settlement) {
         // Faction system not yet built — log only
-        console.log(`🌑 [ConsequenceManager] faction_attention event received (faction system pending)`, event);
-        gameState.addMessage('👁️ Someone powerful has taken notice of your actions.', 'info');
+        console.log(`[ConsequenceManager] faction_attention event received (faction system pending)`, event);
+        gameState.addMessage('Someone powerful has taken notice of your actions.', 'info');
     }
 
     _handleUnintended(event, settlement) {
@@ -441,7 +441,7 @@ export class ConsequenceManager {
             sourceEventId: event.id
         });
         gameState.addMessage(
-            `🌑 Something you uncovered has had unexpected consequences near ${settlement.name || 'this area'}.`,
+            `Something you uncovered has had unexpected consequences near ${settlement.name || 'this area'}.`,
             'warning'
         );
     }
@@ -457,7 +457,7 @@ export class ConsequenceManager {
         });
         const flagLabel = flagType.replace(/_/g, ' ');
         gameState.addMessage(
-            `💀 The consequences of a failed quest have reached ${settlement.name || 'this settlement'}. It is now ${flagLabel}.`,
+            `The consequences of a failed quest have reached ${settlement.name || 'this settlement'}. It is now ${flagLabel}.`,
             'error'
         );
     }
@@ -469,7 +469,7 @@ export class ConsequenceManager {
 
         const factionLabel = flag.params?.factionId || 'enemy';
         gameState.addMessage(
-            `⚔️ Ambush! Agents of the ${factionLabel} attack as you enter ${settlement.name || 'the settlement'}!`,
+            `Ambush! Agents of the ${factionLabel} attack as you enter ${settlement.name || 'the settlement'}!`,
             'error'
         );
 
@@ -513,7 +513,7 @@ export class ConsequenceManager {
 
     _applyCursed(flag, settlement) {
         gameState.addMessage(
-            `💀 ${settlement.name || 'This settlement'} is cursed. Long rests here are fitful — you recover only half hit dice.`,
+            `${settlement.name || 'This settlement'} is cursed. Long rests here are fitful — you recover only half hit dice.`,
             'warning'
         );
         return { type: 'cursed', halfHitDiceRecovery: true };
@@ -521,7 +521,7 @@ export class ConsequenceManager {
 
     _applyWatchSuspicious(flag, settlement) {
         gameState.addMessage(
-            `👁️ The locals watch you with suspicion. Prices here are elevated.`,
+            `The locals watch you with suspicion. Prices here are elevated.`,
             'warning'
         );
         return { type: 'priceIncrease', multiplier: 1.25 };
@@ -531,7 +531,7 @@ export class ConsequenceManager {
         settlement.sacked = true;
         settlement.merchantLocked = true;
         gameState.addMessage(
-            `💀 ${settlement.name || 'This settlement'} has been sacked. The quest board is bare and merchants are gone.`,
+            `${settlement.name || 'This settlement'} has been sacked. The quest board is bare and merchants are gone.`,
             'error'
         );
         return { type: 'sacked', questBoardEmpty: true, merchantLocked: true };
@@ -539,7 +539,7 @@ export class ConsequenceManager {
 
     _applyDisease(flag, settlement) {
         gameState.addMessage(
-            `🤒 Disease spreads through ${settlement.name || 'this settlement'}. Rest here risks infection.`,
+            `Disease spreads through ${settlement.name || 'this settlement'}. Rest here risks infection.`,
             'warning'
         );
         return { type: 'disease', restRisk: true };
@@ -562,7 +562,7 @@ export class ConsequenceManager {
             params,
             active: true
         });
-        console.log(`🌑 [ConsequenceManager] Flag '${flagType}' added to ${settlement.name || settlement.id}`);
+        console.log(`[ConsequenceManager] Flag '${flagType}' added to ${settlement.name || settlement.id}`);
     }
 
     /**

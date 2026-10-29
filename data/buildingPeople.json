@@ -1,0 +1,505 @@
+{
+  "version": 1,
+  "people": [
+    {
+      "id": "tavern-keeper-v2",
+      "image": "data/graphics/tavern-keeper-v2.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-keeper-v1",
+      "image": "data/graphics/tavern-keeper-v1.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v1",
+      "image": "data/graphics/tavern-patron-v1.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-guest-v1",
+      "image": "data/graphics/tavern-guest-v1.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v1",
+      "image": "data/graphics/merchant-keeper-v1.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v2",
+      "image": "data/graphics/merchant-keeper-v2.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "blacksmith-keeper-v1",
+      "image": "data/graphics/blacksmith-keeper-v1.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "blacksmith"
+      ],
+      "profiles": [
+        "blacksmith-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "blacksmith-keeper-v2",
+      "image": "data/graphics/blacksmith-keeper-v2.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "blacksmith"
+      ],
+      "profiles": [
+        "blacksmith-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "greathall-keeper-v1",
+      "image": "data/graphics/greathall-keeper-v1.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "leader"
+      ],
+      "profiles": [
+        "greathall-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "greathall-keeper-v2",
+      "image": "data/graphics/greathall-keeper-v2.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "leader"
+      ],
+      "profiles": [
+        "greathall-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-keeper-v3",
+      "image": "data/graphics/tavern-keeper-v3.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-keeper-v4",
+      "image": "data/graphics/tavern-keeper-v4.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-keeper-v5",
+      "image": "data/graphics/tavern-keeper-v5.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-keeper-v6",
+      "image": "data/graphics/tavern-keeper-v6.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "innkeeper"
+      ],
+      "profiles": [
+        "tavern-standing-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v3",
+      "image": "data/graphics/merchant-keeper-v3.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v4",
+      "image": "data/graphics/merchant-keeper-v4.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v5",
+      "image": "data/graphics/merchant-keeper-v5.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "merchant-keeper-v6",
+      "image": "data/graphics/merchant-keeper-v6.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "merchant"
+      ],
+      "profiles": [
+        "merchant-counter-keeper"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v2",
+      "image": "data/graphics/tavern-patron-v2.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v3",
+      "image": "data/graphics/tavern-patron-v3.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v4",
+      "image": "data/graphics/tavern-patron-v4.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v5",
+      "image": "data/graphics/tavern-patron-v5.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v6",
+      "image": "data/graphics/tavern-patron-v6.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v7",
+      "image": "data/graphics/tavern-patron-v7.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v8",
+      "image": "data/graphics/tavern-patron-v8.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v9",
+      "image": "data/graphics/tavern-patron-v9.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v10",
+      "image": "data/graphics/tavern-patron-v10.png",
+      "identityConstraints": {
+        "gender": ["female"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    },
+    {
+      "id": "tavern-patron-v11",
+      "image": "data/graphics/tavern-patron-v11.png",
+      "identityConstraints": {
+        "gender": ["male"]
+      },
+      "roles": [
+        "patron",
+        "citizen",
+        "guard"
+      ],
+      "profiles": [
+        "tavern-standing-patron"
+      ],
+      "campaignIds": [
+        "core"
+      ],
+      "introducedVersion": 1
+    }
+  ]
+}

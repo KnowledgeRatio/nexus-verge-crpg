@@ -48,7 +48,7 @@ export class DungeonGenerator {
             }
 
             this.dataLoaded = true;
-            console.log(`🏰 DungeonGenerator loaded: ${this.dungeonTypes.length} dungeon types, ${this.roomTemplates.length} room templates`);
+            console.log(`DungeonGenerator loaded: ${this.dungeonTypes.length} dungeon types, ${this.roomTemplates.length} room templates`);
         } catch (error) {
             console.error('Failed to load dungeon data:', error);
         }
@@ -134,7 +134,7 @@ export class DungeonGenerator {
         dungeonFeature.generated = true;
         dungeonFeature.ambientDescription = dungeonType.ambientDescription;
 
-        console.log(`🏰 Generated ${dungeonType.name}: ${rooms.length} rooms (boss at depth ${this.getRoomDepth(rooms, 0, deepestIndex !== 0 ? deepestIndex : bossTemplateIndex)})`);
+        console.log(`Generated ${dungeonType.name}: ${rooms.length} rooms (boss at depth ${this.getRoomDepth(rooms, 0, deepestIndex !== 0 ? deepestIndex : bossTemplateIndex)})`);
 
         return dungeonFeature;
     }
@@ -477,7 +477,7 @@ export class DungeonGenerator {
             const exitPos = this.findValidExitPosition(tiles, width, height, room.isEntrance);
             if (exitPos) {
                 tiles[exitPos.y][exitPos.x] = {
-                    terrain: this.terrainMap['dungeonExit'] || { id: 'dungeonExit', symbol: '▲', color: '#ffd700', isExit: true },
+                    terrain: this.terrainMap['dungeonExit'] || { id: 'dungeonExit', symbol: 'map.exit', color: '#ffd700', isExit: true },
                     isExit: true,
                     isWall: false
                 };
@@ -830,7 +830,7 @@ export class DungeonGenerator {
             case 'mushrooms':
             case 'glowing_fungi':
                 tiles[pos.y][pos.x] = {
-                    terrain: this.terrainMap['dungeonMushroom'] || { id: 'dungeonMushroom', symbol: '♠', color: '#9370db' },
+                    terrain: this.terrainMap['dungeonMushroom'] || { id: 'dungeonMushroom', symbol: 'object.mushroom', color: '#9370db' },
                     isWall: false
                 };
                 break;
@@ -1220,7 +1220,7 @@ export class DungeonGenerator {
         }
 
         if (totalTrapsPlaced > 0) {
-            console.log(`🪤 Placed ${totalTrapsPlaced} traps across dungeon rooms`);
+            console.log(`Placed ${totalTrapsPlaced} traps across dungeon rooms`);
         }
     }
 

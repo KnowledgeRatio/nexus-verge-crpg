@@ -130,7 +130,7 @@ class CombatManager {
         this.weaponMasteryProficiencyRequired = true;
         this.weaponMasteryDataLoaded = false;
 
-        console.log('⚔️ Combat Manager initialized');
+        console.log('Combat Manager initialized');
     }
 
     /**
@@ -155,7 +155,7 @@ class CombatManager {
             ? { ...settlementSource } : null;
         // Ensure weapon mastery data is loaded before applying effects
         await this.loadWeaponMasteryData();
-        console.log('⚔️ Starting combat encounter!');
+        console.log('Starting combat encounter!');
 
         this.active = true;
         this.round = 1;
@@ -182,7 +182,7 @@ class CombatManager {
 
         if (this.companionCombatants.length > 0) {
             const names = this.companionCombatants.map(c => c.name).join(', ');
-            console.log(`👥 ${this.companionCombatants.length} companion(s) joining combat: ${names}`);
+            console.log(`${this.companionCombatants.length} companion(s) joining combat: ${names}`);
         }
 
         // Create enemy combatants
@@ -213,7 +213,7 @@ class CombatManager {
                 }
             }
         } catch (e) {
-            console.warn('⚠️ Could not read terrain cover type:', e.message);
+            console.warn('Could not read terrain cover type:', e.message);
         }
 
         // Determine cover winner via initiative contest (if cover terrain and mode enabled).
@@ -250,8 +250,8 @@ class CombatManager {
 
         // Add combat start messages
         const enemyNames = this.enemyCombatants.map(e => e.name).join(', ');
-        gameState.addMessage(`⚔️ You encounter: ${enemyNames}!`, 'warning');
-        gameState.addMessage(`⚔️ Combat begins! Round ${this.round}`, 'warning');
+        gameState.addMessage(`You encounter: ${enemyNames}!`, 'warning');
+        gameState.addMessage(`Combat begins! Round ${this.round}`, 'warning');
         gameState.addMessage(`Turn order: ${this.turnOrder.map(c => c.name).join(' → ')}`, 'info');
 
         // Announce cover contest result
@@ -260,7 +260,7 @@ class CombatManager {
             const loserMult = RULES.combat.coverInitiativeMode.loserMultiplier;
             const fullBonus = bonuses[this.coverType] || 0;
             const reducedBonus = Math.ceil(fullBonus * loserMult);
-            const coverLabel = this.coverType === 'substantial' ? '🏰 Substantial' : '🌿 Partial';
+            const coverLabel = this.coverType === 'substantial' ? 'Substantial' : 'Partial';
             if (this.coverWinner === 'player') {
                 gameState.addMessage(`${coverLabel} cover — your side claimed position! +${fullBonus} AC vs ranged. Enemies: +${reducedBonus} AC vs your ranged.`, 'success');
             } else {
@@ -269,7 +269,7 @@ class CombatManager {
         } else if (this.coverType) {
             // Fallback: initiative mode disabled — original asymmetric behaviour
             const bonus = RULES.combat.coverBonuses[this.coverType] || 0;
-            const coverLabel = this.coverType === 'substantial' ? '🏰 Substantial cover' : '🌿 Partial cover';
+            const coverLabel = this.coverType === 'substantial' ? 'Substantial cover' : 'Partial cover';
             gameState.addMessage(`${coverLabel}! Enemy ranged attacks suffer +${bonus} effective AC penalty.`, 'info');
         }
 
@@ -319,10 +319,10 @@ class CombatManager {
      */
     startTurn() {
         const combatant = this.getCurrentCombatant();
-        console.log('🎯 START TURN for:', combatant?.name, 'Team:', combatant?.team);
+        console.log('START TURN for:', combatant?.name, 'Team:', combatant?.team);
 
         if (!combatant) {
-            console.log('⚠️ No current combatant!');
+            console.log('No current combatant!');
             return;
         }
 
@@ -366,7 +366,7 @@ class CombatManager {
                 const dmgType = condition.damageOnTurnStart.type || 'necrotic';
                 applyDamage(combatant, condition.value, dmgType);
                 gameState.addMessage(
-                    `${condition.icon || '💢'} ${combatant.name} takes ${condition.value} ${dmgType} damage (${condition.type})`,
+                    `${combatant.name} takes ${condition.value} ${dmgType} damage (${condition.type})`,
                     'warning'
                 );
                 gameState.notify('combat.floatingText', {
@@ -374,7 +374,7 @@ class CombatManager {
                     combatantId: combatant.id, text: `-${condition.value}`, type: 'damage'
                 });
                 if (combatant.hp <= 0) {
-                    gameState.addMessage(`💀 ${combatant.name} is defeated!`, 'warning');
+                    gameState.addMessage(`${combatant.name} is defeated!`, 'warning');
                     setTimeout(() => this.playDefeatSound(combatant), 1000);
                     this.handleDefeat(combatant);
                     return;
@@ -417,7 +417,7 @@ class CombatManager {
         }
 
         gameState.addMessage(
-            `📍 ${combatant.name}'s turn (HP: ${combatant.hp}/${combatant.maxHP})`,
+            `${combatant.name}'s turn (HP: ${combatant.hp}/${combatant.maxHP})`,
             combatant.team === 'player' ? 'success' : 'warning'
         );
 
@@ -426,16 +426,16 @@ class CombatManager {
 
         // If it's an enemy turn, execute AI; companions wait for player input
         if (combatant.team === 'enemy') {
-            console.log('🤖 Enemy turn - executing AI in 500ms');
+            console.log('Enemy turn - executing AI in 500ms');
             setTimeout(() => this.executeEnemyAI(combatant), 500);
         } else if (combatant.team === 'companion') {
-            console.log(`👥 Companion turn (${combatant.name}) - waiting for player input`);
+            console.log(`Companion turn (${combatant.name}) - waiting for player input`);
             gameState.set('combat.isCompanionTurn', true);
             gameState.set('combat.activeCompanionId', combatant.id);
             gameState.addMessage(`${combatant.name}'s turn — you control them.`, 'info');
             // UI handles panel switch via 'combat.activeCompanionId' subscription
         } else {
-            console.log('👤 Player turn - waiting for input');
+            console.log('Player turn - waiting for input');
         }
     }
 
@@ -566,7 +566,7 @@ class CombatManager {
         if (!this.active || this.getCurrentCombatant() !== combatant || combatant.hp <= 0) {
             return;
         }
-        console.log(`⚔️ AI executing turn for ${combatant.name}`);
+        console.log(`AI executing turn for ${combatant.name}`);
         gameState.addMessage(`${combatant.name} is acting...`, 'info');
 
         // Generic passive trait handler — applyConditionOnTurnStart
@@ -586,7 +586,7 @@ class CombatManager {
                             value:             trait.condition.value,
                             isBuff:            trait.condition.isBuff ?? false,
                             curable:           trait.condition.curable ?? false,
-                            icon:              trait.condition.icon ?? '💢',
+                            icon:              trait.condition.icon ?? 'condition.debuff',
                             stackable:         trait.condition.stackable ?? false,
                             stackBehavior:     trait.condition.stackBehavior ?? 'addValue',
                             damageOnTurnStart: trait.condition.damageOnTurnStart ?? null
@@ -594,7 +594,7 @@ class CombatManager {
                     );
                     if (applied) {
                         gameState.addMessage(
-                            `${trait.condition.icon || '🌑'} ${combatant.name}'s ${trait.name} seeps into ${traitTarget.name}!`,
+                            `${combatant.name}'s ${trait.name} seeps into ${traitTarget.name}!`,
                             'warning'
                         );
                     } else {
@@ -609,7 +609,7 @@ class CombatManager {
             .filter(c => c.hp > 0 && !c.isDowned);
 
         if (targets.length === 0) {
-            console.log('⚠️ No valid targets, ending turn');
+            console.log('No valid targets, ending turn');
             this.endTurn();
             return;
         }
@@ -652,7 +652,7 @@ class CombatManager {
             } else {
                 attackCount = 2; // Default multiattack = 2 attacks
             }
-            gameState.addMessage(`⚔️ ${combatant.name} uses Multiattack!`, 'warning');
+            gameState.addMessage(`${combatant.name} uses Multiattack!`, 'warning');
         }
 
         // Filter to attack-type actions (melee/ranged weapon attacks with a weapon or damage dice)
@@ -684,7 +684,7 @@ class CombatManager {
             if (rangedActions.length > 0) {
                 // Ranged actions first; fall back to melee if ranged pool exhausted
                 orderedActions = [...rangedActions, ...meleeActions];
-                console.log(`🏹 ${combatant.name} prefers ranged — leading with ${rangedActions[0].name}`);
+                console.log(`${combatant.name} prefers ranged — leading with ${rangedActions[0].name}`);
             }
         }
 
@@ -808,8 +808,8 @@ class CombatManager {
         // PUSH MASTERY RESTRICTION: Cannot make melee attacks while pushed
         const isMeleeAction = action.type === 'meleeWeaponAttack' || action.type === 'melee';
         if (combatant.hasCondition && combatant.hasCondition('pushed') && isMeleeAction) {
-            console.log(`⚠️ ${combatant.name} is pushed and cannot make melee attacks!`);
-            gameState.addMessage(`💨 ${combatant.name} is pushed away! Cannot make melee attacks!`, 'error');
+            console.log(`${combatant.name} is pushed and cannot make melee attacks!`);
+            gameState.addMessage(`${combatant.name} is pushed away! Cannot make melee attacks!`, 'error');
             return;
         }
 
@@ -847,25 +847,25 @@ class CombatManager {
         // Sapped: Monster has disadvantage on its attack
         if (combatant.hasCondition && combatant.hasCondition('sapped')) {
             hasDisadvantage = true;
-            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (Sapped)! 💫`, 'warning');
+            gameState.addMessage(`${combatant.name} has disadvantage (Sapped)!`, 'warning');
         }
 
         // Dodging: Defender is dodging - attacker has disadvantage
         if (target.hasCondition && target.hasCondition('dodging')) {
             hasDisadvantage = true;
-            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (${target.name} is dodging)! 🛡️`, 'warning');
+            gameState.addMessage(`${combatant.name} has disadvantage (${target.name} is dodging)!`, 'warning');
         }
 
         // Attacker prone: Monster has disadvantage on its own attacks while prone
         if (combatant.hasCondition && combatant.hasCondition('prone')) {
             hasDisadvantage = true;
-            gameState.addMessage(`⚔️ ${combatant.name} has disadvantage (prone)! 🔻`, 'warning');
+            gameState.addMessage(`${combatant.name} has disadvantage (prone)!`, 'warning');
         }
 
         // FRIGHTENED: attacker has disadvantage on attacks when frightened
         if (combatant.hasCondition && combatant.hasCondition('frightened')) {
             hasDisadvantage = true;
-            gameState.addMessage(`😱 ${combatant.name} has disadvantage (Frightened)! 😱`, 'warning');
+            gameState.addMessage(`${combatant.name} has disadvantage (Frightened)!`, 'warning');
         }
 
         // Vexed: Monster has advantage vs the vexed target (one-time use, then cleared)
@@ -873,7 +873,7 @@ class CombatManager {
         if (vexCondition && vexCondition.value === target.id) {
             hasAdvantage = true;
             combatant.removeCondition('vexed', true);
-            gameState.addMessage(`⚔️ ${combatant.name} has advantage (Vex)! ⚡`, 'success');
+            gameState.addMessage(`${combatant.name} has advantage (Vex)!`, 'success');
         }
 
         let d20Result;
@@ -881,12 +881,12 @@ class CombatManager {
             const roll1 = rollD20();
             const roll2 = rollD20();
             d20Result = roll1.natural >= roll2.natural ? roll1 : roll2;
-            gameState.addMessage(`🎲 Advantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
+            gameState.addMessage(`Advantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
         } else if (hasDisadvantage && !hasAdvantage) {
             const roll1 = rollD20();
             const roll2 = rollD20();
             d20Result = roll1.natural <= roll2.natural ? roll1 : roll2;
-            gameState.addMessage(`🎲 Disadvantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
+            gameState.addMessage(`Disadvantage: Rolled ${roll1.natural} and ${roll2.natural}, using ${d20Result.natural}`, 'info');
         } else {
             d20Result = rollD20();
         }
@@ -898,10 +898,10 @@ class CombatManager {
         // critImmunity effect negates critical hits (e.g. Adaptive property)
         if (isCritical && this.getActiveEffect(target, 'modifyDefense', 'critImmunity')) {
             isCritical = false;
-            gameState.addMessage(`🛡️ ${target.name}'s armor absorbs the critical strike!`, 'info');
+            gameState.addMessage(`${target.name}'s armor absorbs the critical strike!`, 'info');
         }
 
-        gameState.addMessage(`🎲 ${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
+        gameState.addMessage(`${combatant.name} rolls ${d20Result.natural} + ${attackBonus} = ${attackTotal} vs AC ${target.ac}`, 'info');
 
         // Melee adds a reciprocal engagement; changing targets does not release existing opponents.
         if (isMeleeAction) {
@@ -910,7 +910,7 @@ class CombatManager {
         }
 
         if (isCriticalMiss) {
-            gameState.addMessage('❌ Critical miss!', 'info');
+            gameState.addMessage('Critical miss!', 'info');
             this.audio.playCombatSound({ ...soundContext, hit: false, critical: true });
             gameState.notify('combat.floatingText', { combatantId: target.id, text: 'MISS', type: 'miss' });
             // Clear sapped condition after attacking (even on a critical miss)
@@ -953,7 +953,7 @@ class CombatManager {
 
             const damageTotal = Math.max(1, damageRoll);
 
-            let damageMsg = isCritical ? '⭐ Critical hit! ' : '💥 Hit! ';
+            let damageMsg = isCritical ? 'Critical hit! ' : 'Hit! ';
             damageMsg += `${actionName}: ${damageTotal} ${damageType} ${damagePrecisionEnabled() ? 'base damage' : 'damage'}`;
             gameState.addMessage(damageMsg, 'error');
 
@@ -972,7 +972,7 @@ class CombatManager {
 
             // Check if target is defeated
             if (target.hp <= 0) {
-                gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
+                gameState.addMessage(`${target.name} is defeated!`, 'warning');
                 setTimeout(() => {
                     this.playDefeatSound(target);
                 }, 1000);
@@ -984,7 +984,7 @@ class CombatManager {
                 combatant.removeCondition('sapped', true);
             }
         } else {
-            gameState.addMessage(`❌ ${combatant.name} misses!`, 'info');
+            gameState.addMessage(`${combatant.name} misses!`, 'info');
             this.audio.playCombatSound({ ...soundContext, hit: false, critical: false });
             gameState.notify('combat.floatingText', { combatantId: target.id, text: 'MISS', type: 'miss' });
             // Clear sapped condition after attacking (even on a miss)
@@ -999,7 +999,7 @@ class CombatManager {
      */
     async executeSpecialMonsterAction(combatant, target, action) {
         const actionName = action.name || 'Special Attack';
-        gameState.addMessage(`🔥 ${combatant.name} uses ${actionName}!`, 'warning');
+        gameState.addMessage(`${combatant.name} uses ${actionName}!`, 'warning');
 
         gameState.notify('combat.presentationAction', {
             sourceId: combatant.id, targetId: target.id, kind: 'spell', actionName
@@ -1035,7 +1035,7 @@ class CombatManager {
                 consumeEquipmentModEffect(target.character, deflectSource.propId, deflectSource.effect);
                 saveTotal += deflectBonus;
                 gameState.addMessage(
-                    `🛡️ ${target.name} uses reaction to add +${deflectBonus} (shield) to saving throw!`,
+                    `${target.name} uses reaction to add +${deflectBonus} (shield) to saving throw!`,
                     'success'
                     );
                 }
@@ -1043,7 +1043,7 @@ class CombatManager {
 
         let saved = saveTotal >= saveDC;
 
-        let saveMsg = `🎲 ${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod}`;
+        let saveMsg = `${target.name} ${saveAbility.toUpperCase()} save: ${saveRoll.natural} + ${saveMod}`;
         if (deflectBonus > 0) {
             saveMsg += ` + ${deflectBonus} (deflecting)`;
         }
@@ -1066,7 +1066,7 @@ class CombatManager {
                 saveTotal = reactionResult.newTotal;
                 saved = saveTotal >= saveDC;
                 gameState.addMessage(
-                    `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${saved ? 'Success!' : 'Still fails.'}`,
+                    `Reroll result: ${saveTotal} vs DC ${saveDC} — ${saved ? 'Success!' : 'Still fails.'}`,
                     saved ? 'success' : 'warning'
                 );
             }
@@ -1085,9 +1085,9 @@ class CombatManager {
         const damageType = action.damageType || 'fire';
 
         if (saved) {
-            gameState.addMessage(`🛡️ ${target.name} saves! Takes ${damageTotal} ${damageType} damage (half).`, 'warning');
+            gameState.addMessage(`${target.name} saves! Takes ${damageTotal} ${damageType} damage (half).`, 'warning');
         } else {
-            gameState.addMessage(`💥 ${target.name} fails! Takes ${damageTotal} ${damageType} damage!`, 'error');
+            gameState.addMessage(`${target.name} fails! Takes ${damageTotal} ${damageType} damage!`, 'error');
         }
 
         if (!damagePrecisionEnabled()) {
@@ -1101,7 +1101,7 @@ class CombatManager {
 
         // Check if target is defeated
         if (target.hp <= 0) {
-            gameState.addMessage(`💀 ${target.name} is defeated!`, 'warning');
+            gameState.addMessage(`${target.name} is defeated!`, 'warning');
             setTimeout(() => {
                 this.playDefeatSound(target);
             }, 1000);
@@ -1148,12 +1148,12 @@ class CombatManager {
         // Determine which action type to check/consume
         const actionType = isOffHandAttack ? 'bonusAction' : 'action';
 
-        console.log('⚔️ ATTACK:', attacker.name, 'attacks', defender.name,
+        console.log('ATTACK:', attacker.name, 'attacks', defender.name,
             isCleaveAttack ? '(Cleave)' : '',
             isOffHandAttack ? '(Off-Hand)' : '(Main Hand)');
 
         if (!attacker.hasAction(actionType)) {
-            console.log(`⚠️ No ${actionType} available!`);
+            console.log(`No ${actionType} available!`);
             gameState.addMessage(`${attacker.name} has no ${actionType} available!`, 'error');
             return;
         }
@@ -1172,15 +1172,15 @@ class CombatManager {
             }
 
             if (weapon.ammoCount <= 0) {
-                gameState.addMessage(`❌ ${attacker.name} has no ammunition! Use a Quiver of Arrows from inventory or visit a merchant.`, 'error');
+                gameState.addMessage(`${attacker.name} has no ammunition! Use a Quiver of Arrows from inventory or visit a merchant.`, 'error');
                 return;
             }
         }
 
         // PUSH MASTERY RESTRICTION: Cannot make melee attacks while pushed
         if (attacker.hasCondition('pushed') && !isRanged) {
-            console.log(`⚠️ ${attacker.name} is pushed and cannot make melee attacks!`);
-            gameState.addMessage(`💨 ${attacker.name} is pushed away! Cannot make melee attacks! Use ranged weapons, spells, or abilities instead!`, 'error');
+            console.log(`${attacker.name} is pushed and cannot make melee attacks!`);
+            gameState.addMessage(`${attacker.name} is pushed away! Cannot make melee attacks! Use ranged weapons, spells, or abilities instead!`, 'error');
             return;
         }
 
@@ -1222,20 +1222,20 @@ class CombatManager {
         // Dodge: Defender is dodging - attacker has disadvantage
         if (defender.hasCondition('dodging')) {
             hasDisadvantage = true;
-            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (${defender.name} is dodging)! 🛡️`, 'warning');
+            gameState.addMessage(`${attacker.name} has disadvantage (${defender.name} is dodging)!`, 'warning');
         }
 
         // Prone condition: Attacker has disadvantage on their own attacks while prone
         if (attacker.hasCondition('prone')) {
             hasDisadvantage = true;
-            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (prone)! 🔻`, 'warning');
+            gameState.addMessage(`${attacker.name} has disadvantage (prone)!`, 'warning');
         }
 
         // Sap mastery: Attacker has disadvantage if sapped (one-time use, then cleared)
         if (attacker.hasCondition('sapped')) {
             hasDisadvantage = true;
             attacker.removeCondition('sapped', true); // Clear after use (ignoreImmunity = true)
-            gameState.addMessage(`⚔️ ${attacker.name} has disadvantage (Sapped)! 💫`, 'warning');
+            gameState.addMessage(`${attacker.name} has disadvantage (Sapped)!`, 'warning');
         }
 
         // Vex mastery: Attacker has advantage vs vexed target (one-time use, then cleared)
@@ -1243,45 +1243,45 @@ class CombatManager {
         if (vexCondition && vexCondition.value === defender.id) {
             hasAdvantage = true;
             attacker.removeCondition('vexed', true); // Clear after use (ignoreImmunity = true)
-            gameState.addMessage(`⚔️ ${attacker.name} has advantage (Vex)! ⚡`, 'success');
+            gameState.addMessage(`${attacker.name} has advantage (Vex)!`, 'success');
         }
 
         // LEGACY: Vex mastery via masteryEffects (backwards compatibility)
         if (attacker.masteryEffects.vexed === defender.id) {
             hasAdvantage = true;
             attacker.masteryEffects.vexed = null; // Clear after use
-            gameState.addMessage(`⚔️ ${attacker.name} has advantage (Vex)! [LEGACY]`, 'success');
+            gameState.addMessage(`${attacker.name} has advantage (Vex)! [LEGACY]`, 'success');
         }
 
         // INSPIRED (Bolster vow): consume for advantage on this attack (one-time use, then cleared)
         if (attacker.hasCondition('inspired')) {
             hasAdvantage = true;
             attacker.removeCondition('inspired', true);
-            gameState.addMessage(`✨ ${attacker.name} has advantage (Inspired)! ✨`, 'success');
+            gameState.addMessage(`${attacker.name} has advantage (Inspired)!`, 'success');
         }
 
         // Prone condition: Melee attackers have advantage vs prone targets
         if (defender.hasCondition('prone') && !isRanged) {
             hasAdvantage = true;
-            gameState.addMessage(`⚔️ ${attacker.name} has advantage (target prone)! 🔻`, 'success');
+            gameState.addMessage(`${attacker.name} has advantage (target prone)!`, 'success');
         }
 
         // LEGACY: Prone condition via masteryEffects (backwards compatibility)
         if (defender.masteryEffects.prone && !isRanged) {
             hasAdvantage = true;
-            gameState.addMessage(`⚔️ ${attacker.name} has advantage (target prone)! [LEGACY]`, 'success');
+            gameState.addMessage(`${attacker.name} has advantage (target prone)! [LEGACY]`, 'success');
         }
 
         // HARRIED: ranged attacker has disadvantage when harried by a melee hit this turn
         if (isRanged && attacker.hasCondition('harried')) {
             hasDisadvantage = true;
-            gameState.addMessage(`🎯 ${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
+            gameState.addMessage(`${attacker.name} has disadvantage (Harried — can't steady their aim)!`, 'warning');
         }
 
         // FRIGHTENED: attacker has disadvantage on attacks when frightened
         if (attacker.hasCondition('frightened')) {
             hasDisadvantage = true;
-            gameState.addMessage(`😱 ${attacker.name} has disadvantage (Frightened)! 😱`, 'warning');
+            gameState.addMessage(`${attacker.name} has disadvantage (Frightened)!`, 'warning');
         }
 
         // TAUNTED (Challenge vow): disadvantage vs anyone but the Challenge source. If the
@@ -1292,18 +1292,18 @@ class CombatManager {
         if (tauntedCondition) {
             if (defender.id !== tauntedCondition.appliedBy) {
                 hasDisadvantage = true;
-                gameState.addMessage(`😤 ${attacker.name} has disadvantage (Taunted)!`, 'warning');
+                gameState.addMessage(`${attacker.name} has disadvantage (Taunted)!`, 'warning');
             } else {
                 const backlashAdded = attacker.addCondition('tauntBacklash', 'untilStartOfTurn', attacker.id, {
                     value: -1,
                     isBuff: false,
                     curable: false,
-                    icon: '💢',
+                    icon: 'condition.tauntBacklash',
                     affectsAC: true
                 });
                 if (backlashAdded) {
                     attacker.ac -= 1;
-                    gameState.addMessage(`💢 ${attacker.name} attacks their Challenger anyway! (-1 AC)`, 'warning');
+                    gameState.addMessage(`${attacker.name} attacks their Challenger anyway! (-1 AC)`, 'warning');
                 } else if (isConditionImmune(attacker, 'tauntBacklash')) {
                     gameState.addMessage(conditionRejectionMessage(attacker, 'tauntBacklash'), 'info');
                 }
@@ -1316,11 +1316,11 @@ class CombatManager {
             const fatigueMods = getFatigueModifiers();
             if (fatigueMods.disadvantageAttacks && !hasDisadvantage) {
                 hasDisadvantage = true;
-                gameState.addMessage(`😩 ${attacker.name} has disadvantage (staggering fatigue)!`, 'warning');
+                gameState.addMessage(`${attacker.name} has disadvantage (staggering fatigue)!`, 'warning');
             }
             fatigueAttackMod = fatigueMods.attackMod;
             if (fatigueAttackMod !== 0) {
-                gameState.addMessage(`😴 Fatigue penalty: ${fatigueAttackMod} to attack roll`, 'warning');
+                gameState.addMessage(`Fatigue penalty: ${fatigueAttackMod} to attack roll`, 'warning');
             }
         }
 
@@ -1358,11 +1358,11 @@ class CombatManager {
         if (hasAdvantage && !hasDisadvantage) {
             const secondRoll = rollD20().result;
             attackRoll = Math.max(attackRoll, secondRoll);
-            gameState.addMessage(`🎲 Advantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
+            gameState.addMessage(`Advantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
         } else if (hasDisadvantage && !hasAdvantage) {
             const secondRoll = rollD20().result;
             attackRoll = Math.min(attackRoll, secondRoll);
-            gameState.addMessage(`🎲 Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
+            gameState.addMessage(`Disadvantage: Rolled ${attackRollObj.result} and ${secondRoll}, using ${attackRoll}`, 'info');
         }
 
         // MANEUVER: Precision Strike — adds maneuver die to attack roll (beforeAttack, spend 1 Resolve)
@@ -1370,7 +1370,7 @@ class CombatManager {
         if (attacker.pendingTactic === 'precisionStrike' && attacker.team === 'player') {
             const dieSides = attacker.character.getTacticDie?.() || 6;
             maneuverAttackBonus = rollDice(1, dieSides);
-            gameState.addMessage(`⚔️ Precision Strike! +${maneuverAttackBonus} to attack roll (d${dieSides})`, 'success');
+            gameState.addMessage(`Precision Strike! +${maneuverAttackBonus} to attack roll (d${dieSides})`, 'success');
         }
 
         // MANEUVER CONDITION: Disarmed — -2 to attack rolls until start of attacker's next turn
@@ -1378,7 +1378,7 @@ class CombatManager {
         if (attacker.hasCondition && attacker.hasCondition('disarmed')) {
             const cond = attacker.getCondition('disarmed');
             disarmedPenalty = cond?.value || -2;
-            gameState.addMessage(`🗡️ ${attacker.name} is disarmed! (${disarmedPenalty} to attack)`, 'warning');
+            gameState.addMessage(`${attacker.name} is disarmed! (${disarmedPenalty} to attack)`, 'warning');
         }
 
         // VANGUARD'S CHARGE (Exemplar passive, ADR-010: checked via selectedAbilities, not
@@ -1393,7 +1393,7 @@ class CombatManager {
         const vanguardsChargeAttackBonus = vanguardsChargeActive ? 1 : 0;
         const vanguardsChargeDamageRoll = vanguardsChargeActive ? rollDice(1, 4) : 0;
         if (vanguardsChargeActive) {
-            gameState.addMessage(`🐎 Vanguard's Charge! +1 to attack, +${vanguardsChargeDamageRoll} bonus damage (unengaged target)`, 'success');
+            gameState.addMessage(`Vanguard's Charge! +1 to attack, +${vanguardsChargeDamageRoll} bonus damage (unengaged target)`, 'success');
         }
 
         const attackTotal = attackRoll + attackBonus + proficiency + fightingStyleAttackBonus + maneuverAttackBonus + disarmedPenalty + fatigueAttackMod + vanguardsChargeAttackBonus;
@@ -1417,7 +1417,7 @@ class CombatManager {
         // critImmunity effect negates critical hits (e.g. Adaptive property)
         if (isCritical && this.getActiveEffect(defender, 'modifyDefense', 'critImmunity')) {
             isCritical = false;
-            gameState.addMessage(`🛡️ ${defender.name}'s armor absorbs the critical strike!`, 'info');
+            gameState.addMessage(`${defender.name}'s armor absorbs the critical strike!`, 'info');
         }
 
         // Build attack roll message
@@ -1448,7 +1448,7 @@ class CombatManager {
         }
 
         if (isCriticalMiss) {
-            gameState.addMessage('💥 Critical miss!', 'error');
+            gameState.addMessage('Critical miss!', 'error');
 
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'CRITICAL MISS!', type: 'miss' });
 
@@ -1492,7 +1492,7 @@ class CombatManager {
             if (isCritical) {
                 secondRoll = rollDice(1, damageDice); // Double dice on crit
                 damageRoll += secondRoll;
-                gameState.addMessage('⭐ Critical hit!', 'success');
+                gameState.addMessage('Critical hit!', 'success');
             }
 
             if (!isOffHandAttack) {
@@ -1511,7 +1511,7 @@ class CombatManager {
                     secondRoll = rerolled2;
                 }
                 if (gwfParts.length > 0) {
-                    gameState.addMessage(`⚔️ Great Weapon Fighting reroll [${gwfParts.join(', ')}]`, 'info');
+                    gameState.addMessage(`Great Weapon Fighting reroll [${gwfParts.join(', ')}]`, 'info');
                 }
             }
 
@@ -1520,7 +1520,7 @@ class CombatManager {
 
             if (isOffHandAttack && !passiveAddsOffHandAbilityMod(attacker.character.fightingStyle)) {
                 damageBonus = 0;
-                gameState.addMessage('⚔️ Off-hand attack: No ability modifier to damage', 'info');
+                gameState.addMessage('Off-hand attack: No ability modifier to damage', 'info');
             }
 
             if (weapon) {
@@ -1544,7 +1544,7 @@ class CombatManager {
             const damageTotal = damageRoll + damageBonus + forgecraftDamageBonus + extraDamage;
 
             // Build detailed damage message
-            let damageMsg = damagePrecisionEnabled() ? '💥 Hit! Rolled ' : '💥 Hit! ';
+            let damageMsg = damagePrecisionEnabled() ? 'Hit! Rolled ' : 'Hit! ';
             if (isCritical) {
                 // Critical: show both dice rolls
                 damageMsg += `Damage: ${firstRoll} + ${secondRoll} (crit)`;
@@ -1594,7 +1594,7 @@ class CombatManager {
                 if (reactionResult?.damageReduction) {
                     parried = true;
                     finalDamage = Math.max(0, damageTotal - reactionResult.damageReduction);
-                    gameState.addMessage(`🛡️ Parry! ${defender.name} reduces damage by ${reactionResult.damageReduction}! (${finalDamage} total)`, 'success');
+                    gameState.addMessage(`Parry! ${defender.name} reduces damage by ${reactionResult.damageReduction}! (${finalDamage} total)`, 'success');
                 }
             }
 
@@ -1638,11 +1638,11 @@ class CombatManager {
                         finalDamage = Math.max(0, finalDamage - interveneResult.redirectAmount);
                         applyDamage(this.playerCombatant, interveneResult.redirectAmount, weaponDamageType);
                         gameState.addMessage(
-                            `🛡️ Intervene! ${this.playerCombatant.name} takes ${interveneResult.redirectAmount} damage meant for ${defender.name}!`,
+                            `Intervene! ${this.playerCombatant.name} takes ${interveneResult.redirectAmount} damage meant for ${defender.name}!`,
                             'success'
                         );
                         if (this.playerCombatant.hp <= 0) {
-                            gameState.addMessage(`💀 ${this.playerCombatant.name} is defeated!`, 'warning');
+                            gameState.addMessage(`${this.playerCombatant.name} is defeated!`, 'warning');
                             this.handleDefeat(this.playerCombatant);
                         }
                     }
@@ -1659,7 +1659,7 @@ class CombatManager {
 
             // Check if defender is defeated
             if (defender.hp <= 0) {
-                gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+                gameState.addMessage(`${defender.name} is defeated!`, 'warning');
 
                 // Play death sound 1 second after damage sound
                 setTimeout(() => {
@@ -1704,7 +1704,7 @@ class CombatManager {
                         this.updateGameState();
                         // Check defeat again after variable-cost damage
                         if (defender.hp <= 0 && !this.defeatedThisTurn?.has(defender.id)) {
-                            gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+                            gameState.addMessage(`${defender.name} is defeated!`, 'warning');
                             this.handleDefeat(defender);
                         }
                         // CONVICTION (Oath trait): refund 1 Resolve when this on-hit damage
@@ -1715,7 +1715,7 @@ class CombatManager {
                             const before = character.resolvePoints ?? 0;
                             character.resolvePoints = Math.min(character.maxResolvePoints ?? before, before + 1);
                             if (character.resolvePoints > before) {
-                                gameState.addMessage(`❤️ Conviction! ${attacker.name} regains 1 Resolve.`, 'success');
+                                gameState.addMessage(`Conviction! ${attacker.name} regains 1 Resolve.`, 'success');
                                 if (attacker.team === 'player') {
                                     gameState.set('character', character);
                                 }
@@ -1736,11 +1736,11 @@ class CombatManager {
                     value: null,
                     isBuff: false,
                     curable: false,
-                    icon: '🎯'
+                    icon: 'condition.harried'
                 });
                 if (harriedAdded) {
-                    gameState.addMessage(`⚔️ ${defender.name} is harried! Ranged attacks have disadvantage! 🎯`, 'warning');
-                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'HARRIED! 🎯', type: 'condition' });
+                    gameState.addMessage(`${defender.name} is harried! Ranged attacks have disadvantage!`, 'warning');
+                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'HARRIED!', type: 'condition' });
                 } else if (isConditionImmune(defender, 'harried')) {
                     gameState.addMessage(conditionRejectionMessage(defender, 'harried'), 'info');
                 }
@@ -1751,7 +1751,7 @@ class CombatManager {
             if (!isCleaveAttack && !isRanged && this.hasWeaponMastery(attacker, weapon, 'cleave')) {
                 const adjacentEnemy = this.getAdjacentEnemy(defender);
                 if (adjacentEnemy && adjacentEnemy.hp > 0) {
-                    gameState.addMessage(`⚔️ Cleave! ${attacker.name} attacks ${adjacentEnemy.name}!`, 'warning');
+                    gameState.addMessage(`Cleave! ${attacker.name} attacks ${adjacentEnemy.name}!`, 'warning');
 
                     // Cleave attack: make attack roll, deal ability modifier damage (minimum 1)
                     const cleaveAttackRoll = rollD20().result;
@@ -1765,8 +1765,8 @@ class CombatManager {
                     if (cleaveAttackTotal >= adjacentEnemy.ac) {
                         const cleaveDamage = Math.max(1, attackBonus); // Ability modifier, minimum 1
                         const cleaveMsg = attackBonus >= 1
-                            ? `💢 Cleave hits! Damage: ${attackBonus} (ability, min 1) = ${cleaveDamage}`
-                            : '💢 Cleave hits! Damage: 1 (minimum)';
+                            ? `Cleave hits! Damage: ${attackBonus} (ability, min 1) = ${cleaveDamage}`
+                            : 'Cleave hits! Damage: 1 (minimum)';
                         gameState.addMessage(
                             cleaveMsg,
                             attacker.team === 'player' ? 'success' : 'error'
@@ -1781,7 +1781,7 @@ class CombatManager {
                         });
 
                         if (adjacentEnemy.hp <= 0) {
-                            gameState.addMessage(`💀 ${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
+                            gameState.addMessage(`${adjacentEnemy.name} is defeated by Cleave!`, 'warning');
 
                             // Play death sound 1 second after damage sound
                             setTimeout(() => {
@@ -1808,7 +1808,7 @@ class CombatManager {
                 const isOffHandLight = offHandWeapon?.properties?.includes('light');
 
                 if (offHandWeapon && isOffHandLight) {
-                    gameState.addMessage(`⚔️ Nick! ${attacker.name} makes additional attack with ${offHandWeapon.name}!`, 'warning');
+                    gameState.addMessage(`Nick! ${attacker.name} makes additional attack with ${offHandWeapon.name}!`, 'warning');
 
                     // Nick attack: Same attack roll logic but NO ability modifier to damage
                     const nickAttackRoll = rollD20().result;
@@ -1831,7 +1831,7 @@ class CombatManager {
                         const nickDamageBonus = Math.min(0, attackBonus); // Only negative modifiers apply
                         const nickDamageTotal = nickDamageRoll + nickDamageBonus;
 
-                        let nickMsg = `💢 Nick hits! Damage: ${nickDamageRoll}`;
+                        let nickMsg = `Nick hits! Damage: ${nickDamageRoll}`;
                         if (nickDamageBonus < 0) {
                             nickMsg += ` + ${nickDamageBonus} (negative ability)`;
                         } else {
@@ -1853,7 +1853,7 @@ class CombatManager {
                         });
 
                         if (defender.hp <= 0) {
-                            gameState.addMessage(`💀 ${defender.name} is defeated by Nick!`, 'warning');
+                            gameState.addMessage(`${defender.name} is defeated by Nick!`, 'warning');
 
                             // Play death sound 1 second after damage sound
                             setTimeout(() => {
@@ -1898,7 +1898,7 @@ class CombatManager {
 
                 if (grazeDamage > 0) {
                     gameState.addMessage(
-                        `💢 Graze! Despite missing, ${attacker.name} deals damage: ${attackBonus} (ability) = ${grazeDamage}`,
+                        `Graze! Despite missing, ${attacker.name} deals damage: ${attackBonus} (ability) = ${grazeDamage}`,
                         'warning'
                     );
 
@@ -1909,7 +1909,7 @@ class CombatManager {
                     applyDamage(defender, grazeDamage, getWeaponDamageType(weapon) || 'bone', damagePrecisionEnabled() ? (weapon?.isMagical ?? weapon?.magical ?? false) : false);
 
                     if (defender.hp <= 0) {
-                        gameState.addMessage(`💀 ${defender.name} is defeated by Graze!`, 'warning');
+                        gameState.addMessage(`${defender.name} is defeated by Graze!`, 'warning');
 
                         // Play death sound 1 second after damage sound
                         setTimeout(() => {
@@ -1929,13 +1929,13 @@ class CombatManager {
                 value: null,
                 isBuff: false,
                 curable: true,
-                icon: '💫'
+                icon: 'condition.sapped'
             });
 
             if (added) {
-                gameState.addMessage(`⚔️ Sap! ${defender.name} has disadvantage on next attack! 💫`, 'warning');
+                gameState.addMessage(`Sap! ${defender.name} has disadvantage on next attack!`, 'warning');
 
-                gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SAPPED! 💫', type: 'condition', delay: 300 });
+                gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SAPPED!', type: 'condition', delay: 300 });
             } else {
                 gameState.addMessage(conditionRejectionMessage(defender, 'sapped'), 'info');
             }
@@ -1948,15 +1948,15 @@ class CombatManager {
                 value: -1,
                 isBuff: false,
                 curable: false,
-                icon: '🐌',
+                icon: 'condition.slowed',
                 affectsAC: true
             });
 
             if (added) {
                 defender.ac -= 1;
-                gameState.addMessage(`⚔️ Slow! ${defender.name}'s AC reduced by 1! 🐌`, 'warning');
+                gameState.addMessage(`Slow! ${defender.name}'s AC reduced by 1!`, 'warning');
 
-                gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SLOWED! 🐌', type: 'condition', delay: 300 });
+                gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'SLOWED!', type: 'condition', delay: 300 });
             } else {
                 gameState.addMessage(conditionRejectionMessage(defender, 'slowed'), 'info');
             }
@@ -1975,7 +1975,7 @@ class CombatManager {
                 let toppleSaved = saveTotal >= saveDC;
 
                 gameState.addMessage(
-                    `⚔️ Topple! ${defender.name} must make Resilience save DC ${saveDC}...`,
+                    `Topple! ${defender.name} must make Resilience save DC ${saveDC}...`,
                     'warning'
                 );
                 gameState.addMessage(
@@ -1995,7 +1995,7 @@ class CombatManager {
                         saveTotal = reactionResult.newTotal;
                         toppleSaved = saveTotal >= saveDC;
                         gameState.addMessage(
-                            `🔁 Reroll result: ${saveTotal} vs DC ${saveDC} — ${toppleSaved ? 'Success!' : 'Still fails.'}`,
+                            `Reroll result: ${saveTotal} vs DC ${saveDC} — ${toppleSaved ? 'Success!' : 'Still fails.'}`,
                             toppleSaved ? 'success' : 'warning'
                         );
                     }
@@ -2007,14 +2007,14 @@ class CombatManager {
                         roundsRemaining: 1,
                         isBuff: false,
                         curable: true,
-                        icon: '🔻'
+                        icon: 'condition.prone'
                     });
 
                     if (added) {
-                        gameState.addMessage(`💥 ${defender.name} is knocked prone! 🔻`, 'error');
+                        gameState.addMessage(`${defender.name} is knocked prone!`, 'error');
 
                         gameState.notify('combat.floatingText', { combatantId: defender.id,
-                            text: 'PRONE! 🔻', type: 'condition', delay: 300 });
+                            text: 'PRONE!', type: 'condition', delay: 300 });
                     } else {
                         gameState.addMessage(conditionRejectionMessage(defender, 'prone'), 'info');
                     }
@@ -2031,11 +2031,11 @@ class CombatManager {
                 value: defender.id,      // Store target's ID
                 isBuff: true,            // Positive effect for attacker
                 curable: false,          // Cannot be removed by spells
-                icon: '⚡'
+                icon: 'condition.vexed'
             });
 
             if (added) {
-                gameState.addMessage(`⚔️ Vex! ${attacker.name} has advantage on next attack vs ${defender.name}! ⚡`, 'success');
+                gameState.addMessage(`Vex! ${attacker.name} has advantage on next attack vs ${defender.name}!`, 'success');
             } else {
                 gameState.addMessage(conditionRejectionMessage(attacker, 'vexed'), 'info');
             }
@@ -2052,13 +2052,13 @@ class CombatManager {
                     value: null,
                     isBuff: false,
                     curable: false,
-                    icon: '💨'
+                    icon: 'condition.pushed'
                 });
 
                 if (added) {
-                    gameState.addMessage(`⚔️ Push! ${defender.name} is pushed away! Cannot make melee attacks next turn! 💨`, 'warning');
+                    gameState.addMessage(`Push! ${defender.name} is pushed away! Cannot make melee attacks next turn!`, 'warning');
 
-                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'PUSHED! 💨', type: 'condition', delay: 300 });
+                    gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'PUSHED!', type: 'condition', delay: 300 });
                 } else {
                     gameState.addMessage(conditionRejectionMessage(defender, 'pushed'), 'info');
                 }
@@ -2079,11 +2079,11 @@ class CombatManager {
                 }
             }
             if (weapon.ammoCount <= 3 && weapon.ammoCount > 0) {
-                gameState.addMessage(`⚠️ Low ammo: ${weapon.ammoCount} shot(s) remaining.`, 'warning');
+                gameState.addMessage(`Low ammo: ${weapon.ammoCount} shot(s) remaining.`, 'warning');
             } else if (weapon.ammoCount === 0) {
-                gameState.addMessage('❌ Out of ammunition! Use a Quiver of Arrows from inventory to reload.', 'error');
+                gameState.addMessage('Out of ammunition! Use a Quiver of Arrows from inventory to reload.', 'error');
             }
-            console.log(`🪶 Ammo: ${attacker.name} fired ${weapon.name}. ${weapon.ammoCount} remaining.`);
+            console.log(`Ammo: ${attacker.name} fired ${weapon.name}. ${weapon.ammoCount} remaining.`);
         }
 
         if (shouldConsumeAction) {
@@ -2162,7 +2162,7 @@ class CombatManager {
 
         const count = oppAttackers.length;
         gameState.addMessage(
-            `⚔️ ${count} ${count === 1 ? 'enemy makes an' : 'enemies make'} opportunity attack${count > 1 ? 's' : ''}!`,
+            `${count} ${count === 1 ? 'enemy makes an' : 'enemies make'} opportunity attack${count > 1 ? 's' : ''}!`,
             'warning'
         );
 
@@ -2209,7 +2209,7 @@ class CombatManager {
         const combatState = gameState.get('combat');
         if (combatState?.unfleeable) {
             const msg = combatState.fleeDescription || 'There is no escape from this fight!';
-            gameState.addMessage(`⚔️ ${msg}`, 'error');
+            gameState.addMessage(`${msg}`, 'error');
             return;
         }
 
@@ -2225,10 +2225,10 @@ class CombatManager {
         // --- Consume action ---
         if (isCunningFlee) {
             combatant.consumeAction('bonusAction');
-            gameState.addMessage(`🏃 ${combatant.name} uses Cunning Action to attempt to flee!`, 'info');
+            gameState.addMessage(`${combatant.name} uses Cunning Action to attempt to flee!`, 'info');
         } else {
             combatant.consumeAction('action');
-            gameState.addMessage(`🏃 ${combatant.name} attempts to flee!`, 'info');
+            gameState.addMessage(`${combatant.name} attempts to flee!`, 'info');
         }
 
         // --- Opportunity attacks from engaged melee enemies (resolve BEFORE flee check) ---
@@ -2243,7 +2243,7 @@ class CombatManager {
         // --- Check if combatant survived opportunity attacks ---
         const updatedCombatant = this.combatants.find(c => c.id === combatant.id);
         if (!updatedCombatant || updatedCombatant.hp <= 0) {
-            gameState.addMessage(`💀 ${combatant.name} was cut down while fleeing!`, 'error');
+            gameState.addMessage(`${combatant.name} was cut down while fleeing!`, 'error');
             this.endCombat('defeat');
             return;
         }
@@ -2317,13 +2317,13 @@ class CombatManager {
             const r2 = rollD20().result;
             fleeRoll = Math.max(r1, r2);
             fleeRollDisplay = fleeRoll;
-            gameState.addMessage(`🎲 Flee check (advantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
+            gameState.addMessage(`Flee check (advantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
         } else if (hasDisadvantage) {
             const r1 = rollD20().result;
             const r2 = rollD20().result;
             fleeRoll = Math.min(r1, r2);
             fleeRollDisplay = fleeRoll;
-            gameState.addMessage(`🎲 Flee check (disadvantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
+            gameState.addMessage(`Flee check (disadvantage): Rolled ${r1} and ${r2}, using ${fleeRoll}`, 'info');
         } else {
             const rollObj = rollD20();
             fleeRoll = rollObj.result;
@@ -2333,15 +2333,15 @@ class CombatManager {
         const fleeTotal = fleeRoll + totalMod;
 
         gameState.addMessage(
-            `🏃 Flee check: ${fleeRollDisplay} + ${totalMod} (${statLabel} + prof) = ${fleeTotal} vs DC ${dc} (${engagedCount} engaged ${engagedCount === 1 ? 'enemy' : 'enemies'})`,
+            `Flee check: ${fleeRollDisplay} + ${totalMod} (${statLabel} + prof) = ${fleeTotal} vs DC ${dc} (${engagedCount} engaged ${engagedCount === 1 ? 'enemy' : 'enemies'})`,
             'info'
         );
 
         if (fleeTotal >= dc) {
-            gameState.addMessage(`✅ ${combatant.name} escapes!`, 'success');
+            gameState.addMessage(`${combatant.name} escapes!`, 'success');
             this.endCombat('fled');
         } else {
-            gameState.addMessage(`❌ ${combatant.name} failed to escape!`, 'warning');
+            gameState.addMessage(`${combatant.name} failed to escape!`, 'warning');
             this.updateGameState();
         }
     }
@@ -2362,7 +2362,7 @@ class CombatManager {
             value: null,
             isBuff: true,
             curable: false,
-            icon: '🛡️'
+            icon: 'condition.dodging'
         });
 
         combatant.consumeAction('action');
@@ -2372,11 +2372,11 @@ class CombatManager {
             return;
         }
         gameState.addMessage(
-            `🛡️ ${combatant.name} takes the Dodge action, focusing entirely on avoiding attacks!`,
+            `${combatant.name} takes the Dodge action, focusing entirely on avoiding attacks!`,
             combatant.team === 'player' ? 'success' : 'warning'
         );
         gameState.notify('combat.floatingText', { sourceId: combatant.id, combatantId: combatant.id,
-            text: 'DODGING! 🛡️', type: 'buff', effectType: 'dodge' });
+            text: 'DODGING!', type: 'buff', effectType: 'dodge' });
 
         gameState.addMessage(
             `Attackers have disadvantage until the start of ${combatant.name}'s next turn!`,
@@ -2449,14 +2449,14 @@ class CombatManager {
 
         if (wasEngagedWith.length > 0) {
             gameState.addMessage(
-                `🏃 ${combatant.name} disengages (${actionWord}) — engagement cleared with ${engagedNames}. No opportunity attacks this turn.`,
+                `${combatant.name} disengages (${actionWord}) — engagement cleared with ${engagedNames}. No opportunity attacks this turn.`,
                 'info'
             );
         } else {
-            gameState.addMessage(`🏃 ${combatant.name} disengages (${actionWord}).`, 'info');
+            gameState.addMessage(`${combatant.name} disengages (${actionWord}).`, 'info');
         }
 
-        console.log(`🏃 ${combatant.name} disengaged. Was engaged with: [${engagedNames}]`);
+        console.log(`${combatant.name} disengaged. Was engaged with: [${engagedNames}]`);
 
         this.updateGameState();
 
@@ -2488,7 +2488,7 @@ class CombatManager {
             other.engagedWith.delete(defeatedCombatant.id);
         });
         defeatedCombatant.engagedWith.clear();
-        console.log(`⚔️ Engagement cleared for ${defeatedCombatant.name}`);
+        console.log(`Engagement cleared for ${defeatedCombatant.name}`);
     }
 
     /** Play a collapse cue only when it fits the defeated combatant. */
@@ -2533,9 +2533,9 @@ class CombatManager {
                 }
             }
             this.turnOrder = this.turnOrder.filter(c => c.id !== combatant.id);
-            gameState.addMessage(`💔 ${combatant.name} is downed!`, 'error');
+            gameState.addMessage(`${combatant.name} is downed!`, 'error');
             gameState.notify('combat.floatingText', { combatantId: combatant.id, text: 'DOWNED!', type: 'condition' });
-            console.log(`👥 Companion ${combatant.name} downed. sourceCharacter.companionMeta.isDowned = true`);
+            console.log(`Companion ${combatant.name} downed. sourceCharacter.companionMeta.isDowned = true`);
             // Update game state so UI reflects the downed status
             this.updateGameState();
         } else {
@@ -2596,7 +2596,7 @@ class CombatManager {
         const aliveCombatants = this.turnOrder.filter(c => c.hp > 0);
 
         if (aliveCombatants.length === 0) {
-            console.log('⚠️ No alive combatants!');
+            console.log('No alive combatants!');
             return;
         }
 
@@ -2613,7 +2613,7 @@ class CombatManager {
         // If we've cycled back to start, increment round
         if (this.currentTurnIndex === 0 || this.currentTurnIndex < (this.currentTurnIndex - 1)) {
             this.round++;
-            gameState.addMessage(`⚔️ Round ${this.round} begins!`, 'warning');
+            gameState.addMessage(`Round ${this.round} begins!`, 'warning');
 
             // Only update combat state if combat is still active
             if (this.active && gameState.get('combat')) {
@@ -2658,7 +2658,7 @@ class CombatManager {
             const cost = chosen.cost || 1;
             boss.legendaryActionsRemaining -= cost;
 
-            gameState.addMessage(`🐉 ${boss.name} uses Legendary Action: ${chosen.name}! (${boss.legendaryActionsRemaining} remaining)`, 'danger');
+            gameState.addMessage(`${boss.name} uses Legendary Action: ${chosen.name}! (${boss.legendaryActionsRemaining} remaining)`, 'danger');
 
             // Find target (the player, or the combatant that just acted if enemy)
             const target = this.playerCombatant.hp > 0 ? this.playerCombatant : null;
@@ -2828,7 +2828,7 @@ class CombatManager {
                             }
                         }
                         if (foragingResults.length > 0) {
-                            lootMessages.push('🌲 Foraging turned up some extra supplies!');
+                            lootMessages.push('Foraging turned up some extra supplies!');
                         }
                     }
                     character.bankedForagingRolls = 0;
@@ -2876,22 +2876,22 @@ class CombatManager {
             // Emit combat.ended event so CompanionManager can handle post-combat logic
             // (auto-stabilize downed companions, fire relationship events, etc.)
             gameState.notify('combat.ended', { outcome: 'victory' });
-            console.log('⚔️ combat.ended emitted: victory');
+            console.log('combat.ended emitted: victory');
 
             gameState.notify('combat.victoryScreen', { xpGained, totalXP: character.xp, leveledUp, totalGold, allLootItems, lootMessages });
 
             // Return to exploration after delay
             gameState.set('combat', null);
         } else if (result === 'defeat') {
-            gameState.addMessage('💀 You have been defeated...', 'error');
-            gameState.addMessage('🎮 Game Over', 'error');
+            gameState.addMessage('You have been defeated...', 'error');
+            gameState.addMessage('Game Over', 'error');
 
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'defeat');
 
             // Emit combat.ended event (tpk — permanent death for downed companions)
             gameState.notify('combat.ended', { outcome: 'tpk' });
-            console.log('⚔️ combat.ended emitted: tpk');
+            console.log('combat.ended emitted: tpk');
 
             // Show game over screen
             gameState.set('combat', null);
@@ -2899,14 +2899,14 @@ class CombatManager {
                 gameState.notify('combat.gameOver', {});
             }, 2000);
         } else if (result === 'fled') {
-            gameState.addMessage('🏃 You have escaped from combat!', 'warning');
+            gameState.addMessage('You have escaped from combat!', 'warning');
 
             // Store combat result for challenge resumption
             gameState.set('lastCombatResult', 'fled');
 
             // Emit combat.ended event (fled — permanent death for downed companions per Decision 3)
             gameState.notify('combat.ended', { outcome: 'fled' });
-            console.log('⚔️ combat.ended emitted: fled');
+            console.log('combat.ended emitted: fled');
 
             // Return to appropriate screen after delay (dungeon if in dungeon, otherwise world map)
             gameState.set('combat', null);
@@ -3212,7 +3212,7 @@ class CombatManager {
         const attackRollObj = rollD20();
         const attackTotal = attackRollObj.result + strMod;
 
-        let attackMsg = `🎲 Improvised strike: Rolled ${attackRollObj.result}`;
+        let attackMsg = `Improvised strike: Rolled ${attackRollObj.result}`;
         if (strMod !== 0) {
             attackMsg += ` + ${strMod} (STR)`;
         }
@@ -3221,7 +3221,7 @@ class CombatManager {
 
         if (attackRollObj.result === 1) {
             // Critical miss
-            gameState.addMessage('💥 Critical miss!', 'error');
+            gameState.addMessage('Critical miss!', 'error');
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'CRITICAL MISS!', type: 'miss' });
             this.audio.playCombatSound({ ...soundContext, hit: false, critical: true });
         } else if (attackTotal >= defender.ac || attackRollObj.result === 20) {
@@ -3230,12 +3230,12 @@ class CombatManager {
             let dmg = rollDice(1, 4);
             if (isCritical) {
                 dmg += rollDice(1, 4); // Double dice on crit
-                gameState.addMessage('⭐ Critical hit!', 'success');
+                gameState.addMessage('Critical hit!', 'success');
             }
             const damage = Math.max(1, dmg);
 
             gameState.addMessage(
-                `✊ Hit! Improvised strike deals ${damage} bone damage.`,
+                `Hit! Improvised strike deals ${damage} bone damage.`,
                 attacker.team === 'player' ? 'success' : 'error'
             );
 
@@ -3247,7 +3247,7 @@ class CombatManager {
             applyDamage(defender, damage, 'bone');
 
             if (defender.hp <= 0) {
-                gameState.addMessage(`💀 ${defender.name} is defeated!`, 'warning');
+                gameState.addMessage(`${defender.name} is defeated!`, 'warning');
                 setTimeout(() => {
                     this.playDefeatSound(defender);
                 }, 1000);
@@ -3255,7 +3255,7 @@ class CombatManager {
             }
         } else {
             // Miss
-            gameState.addMessage(`💨 Miss! Improvised strike misses ${defender.name}.`, 'info');
+            gameState.addMessage(`Miss! Improvised strike misses ${defender.name}.`, 'info');
             gameState.notify('combat.floatingText', { combatantId: defender.id, text: 'MISS', type: 'miss' });
             this.audio.playCombatSound({ ...soundContext, hit: false, critical: false });
         }
@@ -3333,7 +3333,7 @@ class Combatant {
         //   roundsRemaining: number,// For 'rounds' duration
         //   isBuff: boolean,        // true = buff (positive), false = debuff (negative)
         //   curable: boolean,       // Can be removed by spells/abilities
-        //   icon: string            // Display icon (e.g., '🐌', '🛡️', '⚔️')
+        //   icon: string            // Semantic icon identifier (e.g., 'condition.slowed'); null hides internal conditions
         // }
         this.conditions = [];
 
@@ -3423,7 +3423,7 @@ class Combatant {
             roundsRemaining = 1,
             isBuff = false,
             curable = true,
-            icon = isBuff ? '✨' : '💢',
+            icon = isBuff ? 'condition.buff' : 'condition.debuff',
             stackable = false,
             stackBehavior = 'addValue',
             damageOnTurnStart = null,
@@ -3533,7 +3533,7 @@ class Combatant {
             return '';
         }
 
-        return this.conditions.map(c => c.icon).join(' ');
+        return this.conditions.filter(c => c.icon).map(c => c.name || c.type).join(', ');
     }
 
     /**
@@ -3564,7 +3564,7 @@ class Combatant {
             const roll2 = rollD20().result;
             roll = Math.max(roll1, roll2);
             gameState.addMessage(
-                `🎲 Advantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
+                `Advantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
                 'info'
             );
         } else if (hasDisadvantage && !hasAdvantage) {
@@ -3572,7 +3572,7 @@ class Combatant {
             const roll2 = rollD20().result;
             roll = Math.min(roll1, roll2);
             gameState.addMessage(
-                `🎲 Disadvantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
+                `Disadvantage: Rolled ${roll1} and ${roll2}, using ${roll}`,
                 'warning'
             );
         } else {
@@ -3613,7 +3613,7 @@ class Combatant {
                 consumeEquipmentModEffect(this.character, deflectSource.propId, deflectSource.effect);
                 total += deflectingBonus;
                 gameState.addMessage(
-                    `🛡️ ${this.name} uses reaction to add +${deflectingBonus} (shield) to saving throw!`,
+                    `${this.name} uses reaction to add +${deflectingBonus} (shield) to saving throw!`,
                     'success'
                 );
             }
@@ -3678,7 +3678,7 @@ class Combatant {
 
         conditionsToRemove.forEach(condition => {
             this.removeCondition(condition.type);
-            console.log(`✅ ${this.name}'s '${condition.type}' condition cleared (end of turn)`);
+            console.log(`${this.name}'s '${condition.type}' condition cleared (end of turn)`);
         });
 
         // No longer clear Slow here - it clears at start of attacker's turn
@@ -3722,9 +3722,9 @@ class Combatant {
             remaining -= absorbed;
             if (tempHPCondition.value <= 0) {
                 this.removeCondition('tempHP', true);
-                gameState.addMessage(`🛡️ ${this.name}'s temporary HP is depleted!`, 'info');
+                gameState.addMessage(`${this.name}'s temporary HP is depleted!`, 'info');
             } else {
-                gameState.addMessage(`🛡️ ${this.name}'s temporary HP absorbs ${absorbed} damage! (${tempHPCondition.value} remaining)`, 'info');
+                gameState.addMessage(`${this.name}'s temporary HP absorbs ${absorbed} damage! (${tempHPCondition.value} remaining)`, 'info');
             }
         }
 
@@ -3757,7 +3757,7 @@ class Combatant {
         const success = total >= dc;
 
         gameState.addMessage(
-            `🎯 ${this.name} concentration check: ${roll} + ${mod} = ${total} vs DC ${dc} — ${success ? 'maintained!' : 'broken!'}`,
+            `${this.name} concentration check: ${roll} + ${mod} = ${total} vs DC ${dc} — ${success ? 'maintained!' : 'broken!'}`,
             success ? 'info' : 'warning'
         );
 
@@ -3768,7 +3768,7 @@ class Combatant {
                 const target = this.combatManager?.combatants?.find(c => c.id === broken.targetId);
                 if (target?.hasCondition('taunted')) {
                     target.removeCondition('taunted', true);
-                    gameState.addMessage(`😤 ${target.name} is no longer Taunted (concentration broken).`, 'info');
+                    gameState.addMessage(`${target.name} is no longer Taunted (concentration broken).`, 'info');
                 }
             }
         }
@@ -3801,8 +3801,8 @@ class Combatant {
                 combatManager.turnOrder.splice(insertAt, 0, this);
             }
 
-            gameState.addMessage(`💚 ${this.name} is back in the fight!`, 'success');
-            console.log(`👥 Companion ${this.name} revived from downed state.`);
+            gameState.addMessage(`${this.name} is back in the fight!`, 'success');
+            console.log(`Companion ${this.name} revived from downed state.`);
         } else {
             this.hp = newHP;
         }

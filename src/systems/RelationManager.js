@@ -35,7 +35,7 @@ export default class RelationManager {
         this.startingScore = this.config.defaults.startingScore;
         await this._applyCampaignOverride(campaignId);
 
-        console.log(`📊 RelationManager initialized (campaign: ${campaignId}, startingScore: ${this.startingScore})`);
+        console.log(`RelationManager initialized (campaign: ${campaignId}, startingScore: ${this.startingScore})`);
     }
 
     /**
@@ -66,7 +66,7 @@ export default class RelationManager {
                 currentId = campaign.inherits?.[0] || null;
             }
         } catch (e) {
-            console.warn('⚠️ Could not load campaign overrides for relations:', e);
+            console.warn('Could not load campaign overrides for relations:', e);
         }
     }
 
@@ -121,7 +121,7 @@ export default class RelationManager {
 
         const modifier = this.config.modifiers[modifierKey];
         if (!modifier) {
-            console.warn(`⚠️ Unknown relation modifier key: ${modifierKey}`);
+            console.warn(`Unknown relation modifier key: ${modifierKey}`);
             return null;
         }
 
@@ -166,7 +166,7 @@ export default class RelationManager {
 
         const newRelation = this.getRelation(npc);
 
-        console.log(`📊 Relation changed: ${npc.name} ${points >= 0 ? '+' : ''}${points} (${modifierKey}) → ${npc.relations.score} [${newRelation.tierLabel}]`);
+        console.log(`Relation changed: ${npc.name} ${points >= 0 ? '+' : ''}${points} (${modifierKey}) → ${npc.relations.score} [${newRelation.tierLabel}]`);
 
         return {
             points,
