@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-30",
+  "tool": "OpenAI built-in image_gen",
+  "reason": "Sponsor feedback: outdoor scenes contain too many unrealistic protruding features.",
+  "brief": "Preserve standing camera height, simplify terrain into coherent continuous landforms, use naturally weathered shapes and irregular vegetation patches with quiet areas.",
+  "assets": [
+    {
+      "id": "rock",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-rock-v2.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-rock-v2.png",
+      "prompt": "Edit this Nexus Verge cliff encounter image into a believable real-world landscape illustration. Keep the standing adult viewpoint 1.65 metres above the ledge and the warm natural light, but completely simplify the geology. Replace the many pointed mountain towers in the distance with a broad ordinary valley and a few continuous rounded mountain ridges softened by atmospheric haze. The near cliff is one continuous mass of weathered layered limestone, with coherent strata and large quiet rock surfaces. Its narrow natural walking shelf follows a single bedding plane, with gently irregular worn edges and only a few small loose stones; it is not a staircase of repeated square blocks. Keep the shelf visibly below the standing viewer's eyes and preserve its dangerous exposure. Natural 45mm lens, credible proportions, illustrative realism and subdued material colour. No freestanding needles, rock fins, spikes, stalagmites, splinter-like outcrops, ornamental jagged edges, repeated identical formations or excessive high-frequency surface detail. No characters, text, UI, ropes or added equipment. Landscape 16:9.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-5e511247-22b9-4008-806a-2fed220339f5.png",
+      "file": "data/graphics/challenge-rock-v3.png"
+    },
+    {
+      "id": "river",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-river-v2.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-river-v2.png",
+      "prompt": "Edit this Nexus Verge environment illustration for realistic, restrained landscape structure. Keep a standing adult's eye height about 1.65 metres above the local ground and a natural normal-lens view. Retain the illustrated visual family and believable light, but substantially reduce visual clutter and protruding forms. Use broad continuous terrain surfaces, coherent real-world erosion, a few irregularly spaced objects, and quiet areas of open ground or water. No fantasy spikes, needle-like outcrops, decorative splinters, repeated identical forms or tiny structures jutting up everywhere. No people, text, interface, treasure or added buildings. Landscape 16:9. Make this a convincing swift river crossing through low rolling wooded hills. Remove the fallen trunk entirely and remove the jagged alpine peaks. Use a continuous gently sloping grassy/earth bank with only a few ordinary low rounded river stones. Four or five low water-worn boulders break the current irregularly, with ample uninterrupted water between them; no artificial row of stepping pillars. Water flows naturally around partially submerged stones. Preserve the strength of the current. Sparse bank vegetation, no mass of exposed roots or broken branches. The near bank and stone tops are naturally seen from above by a standing traveller.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-65c1e2b7-6e0d-407d-8b16-12364e920b54.png",
+      "file": "data/graphics/challenge-river-v3.png"
+    },
+    {
+      "id": "swamp",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-swamp-v2.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-swamp-v2.png",
+      "prompt": "Edit this Nexus Verge environment illustration for realistic, restrained landscape structure. Keep a standing adult's eye height about 1.65 metres above the local ground and a natural normal-lens view. Retain the illustrated visual family and believable light, but substantially reduce visual clutter and protruding forms. Use broad continuous terrain surfaces, coherent real-world erosion, a few irregularly spaced objects, and quiet areas of open ground or water. No fantasy spikes, needle-like outcrops, decorative splinters, repeated identical forms or tiny structures jutting up everywhere. No people, text, interface, treasure or added buildings. Landscape 16:9. Rebuild the marsh as a believable ordinary wetland: broad shallow reflective pools between low continuous muddy banks, two or three loose clumps of soft marsh grass and distant sparse trees. Replace the numerous spiky stumps, finger-like roots and repeated bristling islands with smooth saturated soil and softly flattened grasses. Vegetation grows in natural patches with open water and bare mud between them, not one sprout or spike on every inch. Restrained overcast morning light with a little warm glow and light haze; no theatrical wall of dead branches. Keep uncertain footing visible in the soft banks.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-989cbc08-6c7c-45f2-bc99-551aabdce713.png",
+      "file": "data/graphics/challenge-swamp-v3.png"
+    },
+    {
+      "id": "shore",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-shore-v2.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-shore-v2.png",
+      "prompt": "Edit this Nexus Verge environment illustration for realistic, restrained landscape structure. Keep a standing adult's eye height about 1.65 metres above the local ground and a natural normal-lens view. Retain the illustrated visual family and believable light, but substantially reduce visual clutter and protruding forms. Use broad continuous terrain surfaces, coherent real-world erosion, a few irregularly spaced objects, and quiet areas of open ground or water. No fantasy spikes, needle-like outcrops, decorative splinters, repeated identical forms or tiny structures jutting up everywhere. No people, text, interface, treasure or added buildings. Landscape 16:9. Simplify the beach into broad wet sand and fine rounded shingle, a few low weathered rocks and only two or three flat patches of washed-up seaweed. Keep one ordinary worn driftwood log lying flat a few paces away, with a mostly smooth rounded surface and blunt ends, not a mass of splintered fins and branch stubs. Replace jagged distant outcrops with a continuous naturally eroded headland. The tide and beach are calm ordinary coastal landforms; warm light may remain. Preserve large quiet areas of sand and water and keep the ground below a standing viewer's gaze.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-89a8117a-235b-4e35-a456-fcb1cf982352.png",
+      "file": "data/graphics/challenge-shore-v3.png"
+    },
+    {
+      "id": "desert",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-desert-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-desert-v1.png",
+      "prompt": "Edit this Nexus Verge environment illustration for realistic, restrained landscape structure. Keep a standing adult's eye height about 1.65 metres above the local ground and a natural normal-lens view. Retain the illustrated visual family and believable light, but substantially reduce visual clutter and protruding forms. Use broad continuous terrain surfaces, coherent real-world erosion, a few irregularly spaced objects, and quiet areas of open ground or water. No fantasy spikes, needle-like outcrops, decorative splinters, repeated identical forms or tiny structures jutting up everywhere. No people, text, interface, treasure or added buildings. Landscape 16:9. Rebuild the arid landscape as an ordinary gravel-and-sand desert plain under harsh pale daylight. Broad open gently sloping ground occupies most of the scene, with a handful of low rounded weathered bedrock outcrops and only two or three broad subdued ridgelines in the distance. Remove the dense carpet of miniature ridges, knobbly rock towers and repeated jagged silhouettes. Ground has small-scale fine gravel variation, not hundreds of large protruding stones. Keep a subtle impression of heat and uncertain direction, credible erosion and a standing viewpoint. No oasis, trees, cacti, structures or visible rewards.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-9681d603-68ae-4316-875e-349a5171fef0.png",
+      "file": "data/graphics/challenge-desert-v2.png"
+    }
+  ]
+}

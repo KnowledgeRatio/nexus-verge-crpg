@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="calling-reference.css">
     <link rel="stylesheet" href="combat-scene.css">
 </head>
 <body>
@@ -807,8 +808,13 @@
                     <h2>Character Sheet</h2>
                     <button class="close-btn" id="closeCharacterSheetBtn">&times;</button>
                 </div>
+                <nav class="character-sheet-pages" aria-label="Character sheet pages">
+                    <button type="button" data-sheet-page="character" aria-pressed="true" aria-controls="characterSheetContent">Character</button>
+                    <button type="button" data-sheet-page="calling" aria-pressed="false" aria-controls="characterCallingReference">Dedication pathways</button>
+                </nav>
                 <div class="modal-body character-sheet-body">
                     <div id="characterSheetContent"></div>
+                    <div id="characterCallingReference" hidden aria-live="polite"></div>
                 </div>
             </div>
         </div>

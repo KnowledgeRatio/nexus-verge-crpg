@@ -12,6 +12,7 @@ import { generateSeedString } from './utils/rng.js';
 
 import { CharacterCreationUI } from './ui/CharacterCreation.js';
 import { renderCharacterAppearance } from './ui/CharacterAppearance.js';
+import { mountCallingReference } from './ui/CallingReference.js';
 import SettlementUI, { formatQuestReputation } from './ui/SettlementUI.js';
 import WorldGenerator from './systems/WorldGenerator.js';
 import MapRenderer from './rendering/MapRenderer.js';
@@ -45,6 +46,7 @@ import consequenceManager from './systems/ConsequenceManager.js';
 import { getPassiveACBonus } from './systems/PassiveModifierRegistry.js';
 import { getAttributeModifierFor, getDerivedStatModifier } from './utils/attributeResolver.js';
 import { CombatSceneUI } from './ui/CombatSceneUI.js';
+import { mountChallengeScene } from './ui/ChallengeScene.js';
 
 class Game {
     constructor() {
@@ -3091,6 +3093,8 @@ class Game {
             return;
         }
 
+        mountChallengeScene(modal, { presentation: detail.presentation }, detail.context);
+
         // Show modal
         modal.classList.add('active');
 
@@ -4773,6 +4777,23 @@ class Game {
         const modal = document.getElementById('characterSheetModal');
         const closeBtn = document.getElementById('closeCharacterSheetBtn');
 
+        document.querySelectorAll('#characterSheetModal [data-sheet-page]').forEach(button => {
+            button.addEventListener('click', () => {
+                this.characterSheetPage = button.dataset.sheetPage;
+                const referenceOpen = this.characterSheetPage === 'calling';
+                document.getElementById('characterSheetContent').hidden = referenceOpen;
+                document.getElementById('characterCallingReference').hidden = !referenceOpen;
+                modal.querySelectorAll('[data-sheet-page]').forEach(pageButton => {
+                    pageButton.setAttribute('aria-pressed', String(pageButton === button));
+                });
+                modal.querySelector('.character-sheet-body').scrollTop = 0;
+                if (referenceOpen) {
+                    void mountCallingReference(document.getElementById('characterCallingReference'),
+                        gameState.get('character'), gameState.get('worldConfig')?.campaignId || 'core');
+                }
+            });
+        });
+
         // Close button
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -5769,6 +5790,7 @@ class Game {
                 consequences,
                 outcome,
                 stageHistory: config.stageHistory || [],
+                presentationContext: config.presentationContext,
                 triggersCombat
             });
         } else {
@@ -5794,6 +5816,7 @@ class Game {
      */
     showPassiveCheckResult(config, challenge, stage, rollResult, success, criticalInfo, dc, skillBonus) {
         const modal = document.getElementById('skillCheckModal');
+        mountChallengeScene(modal, challenge, config.presentationContext);
         const skillId = stage?.skill || config.skill;
         const description = config.description || stage?.description;
 
@@ -5889,6 +5912,7 @@ class Game {
 
     async promptSkillCheck(config, challenge = null, stage = null) {
         const modal = document.getElementById('skillCheckModal');
+        mountChallengeScene(modal, challenge, config.presentationContext);
         const character = gameState.get('character');
 
         // Get skill for current stage (sequential challenges) or main config
@@ -6141,6 +6165,7 @@ class Game {
                         consequences,
                         outcome,
                         stageHistory: config.stageHistory || [],
+                        presentationContext: config.presentationContext,
                         triggersCombat
                     });
                 }
@@ -6223,6 +6248,7 @@ class Game {
      */
     async promptChoiceSkillChallenge(challenge, context = {}) {
         const modal = document.getElementById('choiceChallengeModal');
+        mountChallengeScene(modal, challenge, context);
         const character = gameState.get('character');
 
         // Set title and description
@@ -6300,7 +6326,8 @@ class Game {
                     dc: optionData.adjustedDC,
                     advantage: optionData.option.advantage,
                     disadvantage: optionData.option.disadvantage,
-                    costGold: optionData.option.costGold
+                    costGold: optionData.option.costGold,
+                    presentationContext: context
                 };
 
                 // Pass option as stage so onSuccess/onFailure outcomes are found
@@ -6380,10 +6407,12 @@ class Game {
         consequences,
         outcome,
         stageHistory = [],
-        triggersCombat = false
+        triggersCombat = false,
+        presentationContext = {}
     }) {
         return new Promise((resolve) => {
             const modal = document.getElementById('skillOutcomeModal');
+            mountChallengeScene(modal, challenge, presentationContext);
             const header = document.getElementById('outcomeHeader');
             const icon = document.getElementById('outcomeIcon');
             const title = document.getElementById('outcomeTitle');
@@ -6818,6 +6847,11 @@ class Game {
         appearanceHost.className = 'char-section full-width';
         content.prepend(appearanceHost);
         void renderCharacterAppearance(appearanceHost);
+
+        if (this.characterSheetPage === 'calling') {
+            void mountCallingReference(document.getElementById('characterCallingReference'),
+                character, gameState.get('worldConfig')?.campaignId || 'core');
+        }
 
         content.querySelectorAll('.ability-use-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {

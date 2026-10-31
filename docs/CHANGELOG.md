@@ -4,6 +4,88 @@ Archived session notes. For active work see `docs/plans/` and `.claude/rules/arc
 
 ---
 
+## 2026-10-30 — Dedication Field Codex, local implementation
+
+The character sheet now has **Character** and **Dedication pathways** pages.
+The read-only codex compares Exemplar and Oath across levels 1–10, with shared
+abilities, tactics, vows, auras, fighting styles and practices. Dedication
+characters receive current-level, selected-path and learned-choice highlights.
+The standalone [`dedication.html`](../dedication.html) shares the renderer and
+offers Print / Save as PDF. Extra Attack and Exemplar's second Action Surge use
+are labelled unavailable; this change does not implement those combat benefits.
+
+Web packaging passes. The [implementation note](plans/2026-10-30-dedication-reference.md)
+records focused checks and broader-suite failures outside the reference change.
+Browser access was unavailable and native-app approval timed out, so desktop,
+mobile and printed presentation remain visually unverified. Nothing committed
+or deployed.
+
+## 2026-10-30 — Illustrated skill encounters, full local coverage
+
+All 41 catalogue challenges and the separate branching bandit conversation now
+have scene metadata, using 27 shared image families. Twenty new generated
+families complete the earlier seven-family slice. Ordered environment/terrain
+variants use the first valid match and a usable neutral default without new RNG
+draws or saved selections. Treasure and ledge checks now have default scenes as
+well as setting-specific art; harsh conditions and undergrowth have contextual
+landscape/snow variants. Existing terrain context stays with confirmation and
+result screens, and the separate social panel renders the tree's scene.
+
+Selected source PNGs are preserved exactly; same-resolution quality-88 JPEG
+delivery copies avoid resizing/cropping, with root JPEGs added to web packaging.
+The rollout provenance records 20 selected assets and three corrective edit
+chains. The study adds terrain selection and the actual branching conversation
+with a study-only close/control path. Final focused checks pass 44 tests in eight
+files; the full suite passes 1,734 tests and fails 18 in six files. Scoped lint is clean;
+repository and broad lint remain red. The final web build passes with 390 app
+files, 107 media files and a 180.31 MiB application bundle after archiving the
+unused forest candidate. Both catalogues retain their mechanical fields. All
+27 unique scene paths match packaged bytes, 20 retained PNGs match generated
+source bytes and 20 JPEGs retain their source dimensions. The study returns
+HTTP 200 and `git diff --check` passes. The generating agent inspected all
+selected sources and two encoded-image spot
+checks. Browser acceptance is unverified. No game mechanics, story branches or
+save migration are added.
+
+The initial slice and its correction evidence below are historical.
+
+Seven new scene illustrations accompany 14 of 41 skill-challenge definitions;
+an eighth forest image remains an unused candidate. Expanded encounter setups,
+selected existing approaches/outcomes and stage context retain the existing
+checks and consequences. Optional environment gates keep the treasure chamber
+inside dungeons and the exposed ledge outside them. Presentation follows the
+selected challenge without new RNG draws, save fields or selection receipts.
+
+Sponsor feedback prompted six standing-adult camera edits for the door, river,
+rock, ruin, swamp and shore scenes. That pass assigned v2 images to twelve
+definitions while retaining desert v1 for two. The image guide records the 1.65-metre
+eye height, normal lens, downward sightlines and human-scale foreground brief.
+All original sources remain, and the six edits have separate generation
+provenance. Superseded v1 images are archived outside runtime packaging. The
+six 1672 × 941 v2 images match their generated sources and packaged copies;
+all assigned paths and the final 176.07 MiB application build pass validation.
+The generating agent inspected the new outputs; this does not add browser
+acceptance or change mechanics, JavaScript, CSS or saved state.
+
+A subsequent naturalism correction simplifies all five active outdoor scenes:
+continuous ridges/strata, fewer low river stones, open marsh pools, quieter shore
+sand and subdued desert outcrops replace excessive protruding detail. Nine
+definitions now use rock/river/swamp/shore v3 or desert v2; door/ruin v2 are
+unchanged. The five replaced images are archived, and separate provenance records
+the new edits. The five 1672 × 941 outputs match generated source bytes;
+archived references, all 14 assigned paths and the 175.39 MiB web build pass
+validation. Mechanical fields are unchanged. The generating agent inspected the
+source images; no new browser acceptance is claimed and gameplay tests were not
+rerun for this asset-only pass. JavaScript, CSS, saved state and RNG are unchanged.
+
+The [coverage and validation note](art/skill-challenges/README.md) records the
+exact mappings, generation provenance and local prompt-review study. Renderer
+and focused skill-flow checks pass; the broader suite and repository lint are
+not green. Build and legal checks pass. Browser flow verification was blocked by
+the available automation hosts, including an Edge selection timeout awaiting
+app approval. No responsive-flow, sponsor visual or played-campaign acceptance
+is claimed. Nothing committed or deployed.
+
 ## 2026-10-24 — Local settlement soundscape variety
 
 Buildings now have two local mixes each; villages, towns and cities each have two

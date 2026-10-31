@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-30",
+  "tool": "OpenAI built-in image_gen",
+  "scope": "Complete authored skill challenge and social tree image coverage.",
+  "delivery": {
+    "encoding": "JPEG",
+    "quality": 88,
+    "resize": false,
+    "crop": false,
+    "encoder": "Windows System.Drawing JPEG codec",
+    "originals": "Retained exact generated PNG bytes under docs/art/skill-challenges/originals/"
+  },
+  "assets": [
+    {
+      "id": "parley",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-4a93234f-7dcc-4fed-adc3-3735ee22ea16.png",
+      "original": "docs/art/skill-challenges/originals/challenge-parley-v1.png",
+      "file": "data/graphics/challenge-parley-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. An ordinary dirt road bends around low grass and a single plain wooden barrier pole at waist height, leaving room for a tense conversation before crossing. Soft grey daylight, low rolling ground without dramatic peaks, a single worn blanket folded beside the barrier. No people, weapons, blood, flags or buildings. The interruption to the route is clear; nobody's identity or intentions are depicted."
+    },
+    {
+      "id": "watch",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-59b4bba9-db02-45cc-b364-b9cde07e0a37.png",
+      "original": "docs/art/skill-challenges/originals/challenge-watch-v1.png",
+      "file": "data/graphics/challenge-watch-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A plain hooded oil lantern hangs at shoulder height from an unmarked weathered timber upright beside a dark opening. Its restrained warm pool of light meets cool darkness beyond. A few upright timbers and folded plain canvas suggest a practical watch point without fixing a settlement, culture or interior layout. Clear uncluttered foreground passage. No people, emblems, traps or reward objects.",
+      "correction": {
+        "prompt": "Edit this lantern illustration into a tighter context-neutral watch-light vignette. Place the hooded lantern at the SAME EYE HEIGHT as a standing adult viewer, attached to one plain vertical timber with a little quiet folded canvas at the side. Remove the floor, chairs, balcony, railing, mountains and visible skyline entirely. Background is soft neutral dark shadow, not an identifiable room or region. Keep warm practical light and credible worn material. Standing eye-level view, normal lens, landscape 16:9. No people, text, emblems or extra equipment.",
+        "input": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-ec5d7ac7-2658-47c4-a6fa-e522bd5c1334.png",
+        "operation": "edit"
+      }
+    },
+    {
+      "id": "wolf",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-c24ce1d7-9a6d-4284-b5b6-05de77625e15.png",
+      "original": "docs/art/skill-challenges/originals/challenge-wolf-v1.png",
+      "file": "data/graphics/challenge-wolf-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A single anatomically credible ordinary grey wolf stands alert a few paces ahead, mouth slightly open and ears attentive, hesitant rather than lunging. View from a standing adult looking naturally down toward its shoulders; whole animal fits clearly, paws on ordinary earthy ground. Indistinct softly blurred neutral vegetation behind it with no distinctive biome or architecture. Natural diffuse daylight, realistic fur and proportions. No collar, ornament, magical features, extra animals, blood or injury."
+    },
+    {
+      "id": "tablet",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-80f6c02e-c601-43bc-bc96-e01feba620db.png",
+      "original": "docs/art/skill-challenges/originals/challenge-tablet-v1.png",
+      "file": "data/graphics/challenge-tablet-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A single weathered stone tablet rests upright at a slight angle on a simple stone support, its surface at chest height and clearly viewed by a standing adult. Soft sidelight reveals worn shallow incisions resembling fragmented abstract marks, without readable letters, recognizable real language or a puzzle solution. Quiet dark neutral background, plausible stone grain and erosion, one clear focal object. No glowing runes, gems or treasure.",
+      "correction": {
+        "prompt": "Edit this tablet illustration. Preserve only the tablet's material and worn abstract incisions. Remove the tavern completely: no chairs, windows, counter, barrel or domestic interior. Frame the tablet on a low plain stone support against softly blurred continuous dark stone. Reconstruct from a standing adult's eyes 1.65m above the floor, looking DOWN toward the chest-height tablet; its top edge and support top are visible from above. The floor itself need not appear. Ordinary stone, restrained diffuse sidelight, landscape 16:9. No readable language, magic, culture symbols or extra objects.",
+        "input": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-989224d8-9b38-4938-87bc-a60d777933dd.png",
+        "operation": "edit"
+      }
+    },
+    {
+      "id": "care",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-e6a0cf52-08ba-4049-8c6b-3a6e90d10de0.png",
+      "original": "docs/art/skill-challenges/originals/challenge-care-v1.png",
+      "file": "data/graphics/challenge-care-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A practical first-aid scene detail viewed naturally down from standing height: a short folded length of clean linen bandage, a plain wooden water bowl and a small worn cloth satchel on an unremarkable low resting surface. Materials have modest signs of use. Diffuse neutral light, quiet indistinct background with no identifiable biome or room. Concern and readiness through restrained arrangement. No visible patient, blood, tools entering skin, potion, modern medical equipment or successful treatment."
+    },
+    {
+      "id": "tracks",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-eb7a9d32-d2ff-4d0e-b49d-e984cc079bca.png",
+      "original": "docs/art/skill-challenges/originals/challenge-tracks-v1.png",
+      "file": "data/graphics/challenge-tracks-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A small stretch of ordinary damp earth and short pressed grass seen from standing adult height with a natural downward glance. A few disturbed impressions, a turned pebble and bent grass suggest passage without specifying a creature species or giving away its destination. The trail leads gently out of frame, background softly indistinct and not a particular biome. Soft diffuse daylight, continuous ground and very sparse detail. No creature, bones, blood, arrows, giant roots or dramatic rocks."
+    },
+    {
+      "id": "travel",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-c1a2c48a-4989-4560-9019-54e8bc0286cf.png",
+      "original": "docs/art/skill-challenges/originals/challenge-travel-v1.png",
+      "file": "data/graphics/challenge-travel-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A worn practical travel pack and folded plain wool cloak rest briefly on a simple low flat surface, seen looking down naturally from standing height. A repaired strap and weathered fabric quietly convey exposure and endurance. Neutral indistinct background and soft daylight with restrained earth colours. Neither snow, desert, tropical plants nor built room is identifiable. A focused illustrative vignette about enduring a journey, with no extra gear, weapon, potion, character or promised supply reward."
+    },
+    {
+      "id": "boulder",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-94ed4e54-726b-427b-9efb-ddba9980f58b.png",
+      "original": "docs/art/skill-challenges/originals/challenge-boulder-v1.png",
+      "file": "data/graphics/challenge-boulder-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. One heavy naturally rounded weathered boulder blocks a shallow rocky passage between continuous low rock faces. View from standing adult eye height, showing the boulder's top gently from above and the packed ground at its base where it might move. Geologically coherent ordinary stone and restrained dust, no jagged surrounding fins or needle peaks. Neutral daylight, no distinctive climate, no people, tools, treasure, cleared path or already-moved stone."
+    },
+    {
+      "id": "undergrowth",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-b2b9f677-ac93-4051-b409-2c92280fe555.png",
+      "original": "docs/art/skill-challenges/originals/challenge-undergrowth-v1.png",
+      "file": "data/graphics/challenge-undergrowth-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A plausible stretch of dense green undergrowth crossing a narrow route at the edge of ordinary woodland: a few broad leaves, soft bracken and naturally interwoven flexible stems. Viewed from standing height, the low vegetation clearly below the gaze. Quiet continuous ground and tree trunks, diffuse daylight, no dramatic rocks, tangled giant roots, thorn forest, human figure or manicured path. The obstacle is living vegetation with a little room to work through it."
+    },
+    {
+      "id": "snowgrowth",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-01070c86-de8e-4649-88e6-a4279c010c75.png",
+      "original": "docs/art/skill-challenges/originals/challenge-snowgrowth-v1.png",
+      "file": "data/graphics/challenge-snowgrowth-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A natural snowy woodland understory where low flexible branches and a few bracken stems cross a narrow route beneath scattered trees. Snow rests softly on the vegetation and patches of ground; not every twig is outlined. Standing-height view, restrained cold daylight and credible ordinary terrain. No fantasy icicles, spiky roots, jagged rocks, blizzard or visible person. A believable obstructed route through a quiet winter forest."
+    },
+    {
+      "id": "ice",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-006bf9b8-e7c6-4289-b6e1-a7e05c520ad1.png",
+      "original": "docs/art/skill-challenges/originals/challenge-ice-v1.png",
+      "file": "data/graphics/challenge-ice-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. An ordinary low ice wall on a shaded rock face, high enough to require a careful climb. Large coherent ice surfaces with small dull ridges and faint cloudy fractures suggest possible holds; no huge icicles, crystal needles or decorative blue spikes. Viewer stands upright a few paces from its base, looking slightly up while still seeing the ground below. Soft cold daylight, modest snowy margins and normal physical scale, no person, climbing tools or solved route."
+    },
+    {
+      "id": "market",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-453a836e-230c-40c4-a3c6-bfb7fe8ca587.png",
+      "original": "docs/art/skill-challenges/originals/challenge-market-v1.png",
+      "file": "data/graphics/challenge-market-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A close material study of ordinary merchant wares on a plain waist-high wooden counter: one folded wool cloth, a simple ceramic jug, a neatly repaired leather strap and a closed small cloth purse set apart. View naturally down from standing height, quiet softly blurred background with no identifiable person or elaborate room. Restrained practical warm light and cool daylight. A sparse credible frontier display for weighing value and noticing a theft; no coins spilling out, price labels, jewels, weapons or readable marks."
+    },
+    {
+      "id": "warehouse",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-30ed34c2-e371-4661-aac5-3f7115bac429.png",
+      "original": "docs/art/skill-challenges/originals/challenge-warehouse-v1.png",
+      "file": "data/graphics/challenge-warehouse-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. An ordinary timber warehouse doorway viewed from standing height, partly ajar onto a dim storage aisle. Two plain crates and a bundled cloth sack sit well aside of the opening; side daylight leaves one natural pool of shadow to observe from. Unmarked practical construction, quiet surfaces and believable depth. No people, emblems, secret evidence already discovered, contraband symbols, dramatic chains or magical effects."
+    },
+    {
+      "id": "crops",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-2c777779-4210-4dff-b4ba-e38e21ac2677.png",
+      "original": "docs/art/skill-challenges/originals/challenge-crops-v1.png",
+      "file": "data/graphics/challenge-crops-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A modest worked field with low young cereal plants in loose rows and a narrow worn earthen edge where a careful walker could cross. Standing-height view down toward the nearby plants and across a gentle ordinary field boundary. Low rolling ground, diffuse daylight and a simple distant fence; naturally uneven planted lines rather than perfect graphics. No farmer or invented house, no tools, no trampling already done, no exaggerated stalks or rocks."
+    },
+    {
+      "id": "forgefire",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-253fecee-0d41-465a-985b-ddeb52f463e9.png",
+      "original": "docs/art/skill-challenges/originals/challenge-forgefire-v1.png",
+      "file": "data/graphics/challenge-forgefire-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. An ordinary small stone forge and iron workbench viewed from a safe standing adult distance. A clearly uncontrolled patch of orange flame has spread onto a small stack of dry kindling beside the hearth, with a limited realistic thread of smoke. Most of the room is readable and intact; danger is local and urgent, not a cinematic inferno. Worn practical materials, no people, explosions, flying sparks, magical fire or modern equipment."
+    },
+    {
+      "id": "smith",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-ac78b01c-ffce-409e-90df-63b2f9fac181.png",
+      "original": "docs/art/skill-challenges/originals/challenge-smith-v1.png",
+      "file": "data/graphics/challenge-smith-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A waist-high scarred smith's workbench with a short unfinished plain iron fitting, ordinary tongs and a small hammer, all anatomically credible usable tools with simple shapes. Standing-height view naturally down toward the work; a quiet patch of metal surface shows quality and careful fit. Soft side daylight and a restrained warm forge glow far behind, blurred neutral workshop background. No people, giant weapons, excessive tools, gems, magic or finished reward item."
+    },
+    {
+      "id": "dialogue",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-a8cea639-b76b-4a89-809e-d26013b5f234.png",
+      "original": "docs/art/skill-challenges/originals/challenge-dialogue-v1.png",
+      "file": "data/graphics/challenge-dialogue-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A focused conversational vignette: two simple mismatched clay drinking cups sit apart on an ordinary waist-high worn timber tabletop, with a modest amber lamp just out of frame casting gentle sidelight. View naturally down from standing height; most of the background is indistinct soft shadow and no particular room is identifiable. A little empty space between the cups suggests an unresolved conversation. No people, coins, contract, readable paper, specific culture or already-agreed deal."
+    },
+    {
+      "id": "caveledge",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-f4451d20-e356-4ea9-9c4c-edf22342b010.png",
+      "original": "docs/art/skill-challenges/originals/challenge-caveledge-v1.png",
+      "file": "data/graphics/challenge-caveledge-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. An ordinary natural cave passage where a narrow continuous stone shelf runs beside a shallow dark drop and bends out of view. Standing adult eye height 1.65 metres above the shelf; the walkway is distinctly below the gaze. Soft reflected cool daylight from an unseen entrance and a little warm light from behind the viewer, geologically coherent limestone layers. Large quiet rock surfaces, no stalactite forest, spikes, repeated masonry steps, treasure, monsters or equipment."
+    },
+    {
+      "id": "cache",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-2b4498bc-c3f3-4814-ad8b-c95cc4e903a0.png",
+      "original": "docs/art/skill-challenges/originals/challenge-cache-v1.png",
+      "file": "data/graphics/challenge-cache-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. A focused search vignette viewed naturally down from standing height: one small closed weathered wooden compartment lid set flush in a quiet plain low surface, with a subtle worn edge and a simple closed catch. Its surroundings fade into indistinct soft neutral shadow without identifying a room, forest or terrain. The compartment is still shut and its contents unseen. Credible worn timber, modest diffuse light, no treasure, gems, arrows, symbols, labels or tools."
+    },
+    {
+      "id": "distraction",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-f3eb87e4-79f1-4f60-b29a-d046ee236e27.png",
+      "original": "docs/art/skill-challenges/originals/challenge-distraction-v1.png",
+      "file": "data/graphics/challenge-distraction-v1.jpg",
+      "prompt": "Create one landscape 16:9 Nexus Verge skill-encounter illustration. Detailed realistic illustrated materials matching a believable frontier tavern interior, restrained colours and natural lighting. Standing adult viewpoint, eyes 1.65 metres above the local walking surface, normal 45mm-equivalent lens, natural downward gaze at low subjects. Real physical scale, quiet coherent surfaces and sparse purposeful detail. No exaggerated spikes, ornamental protrusions, excessive tiny outcrops, oversized foreground objects or low mouse-height camera. No readable text, interface, watermarks, insignia, magical spectacle or revealed rewards. One simple clay cup rests on its side on a quiet plain floor near the edge of a soft warm pool of lamplight. Its ordinary shape and the open dark space beyond suggest a moment when attention might shift, without depicting a successful distraction. View naturally down from a standing adult, normal lens, restrained material detail and indistinct setting. No shattered fragments, people, spilled coins, text, evidence or revealed reward.",
+      "correction": {
+        "prompt": "Rebuild this cup illustration from a standing adult viewpoint looking DOWN at roughly 45 degrees toward one clay cup lying on its side on a continuous plain floor about two metres away. Remove all visible furniture, chair legs, doorways and horizon. The entire picture is the floor's naturally receding surface seen from ABOVE with one ordinary small cup and a restrained warm pool of light. No floor-skimming or kneeling camera, no giant cup, no dramatic texture. Keep illustrated worn materials, landscape 16:9, no people, text or broken fragments.",
+        "input": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-c240866a-c63d-427e-935e-7c8a93fca2f6.png",
+        "operation": "edit"
+      }
+    }
+  ]
+}

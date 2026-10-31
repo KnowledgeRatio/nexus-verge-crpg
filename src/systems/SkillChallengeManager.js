@@ -794,6 +794,7 @@ class SkillChallengeManager {
     renderChallenge() {
         const event = new CustomEvent('challengeUpdate', {
             detail: {
+                presentation: this.currentChallenge.tree.presentation,
                 node: this.getCurrentNode(),
                 choices: this.getAvailableChoices(this.getCurrentNode()),
                 tension: this.tension,

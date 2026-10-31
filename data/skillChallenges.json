@@ -44,7 +44,8 @@
       "id": "trap_detect_disarm",
       "name": "Trap Detection & Disarm",
       "physicalTrapOnly": true,
-      "description": "You notice suspicious markings on the floor ahead...",
+      "description": "The floor ahead is worn smooth except for one suspicious seam. A careless step could answer the question for you. Read the mechanism before putting your weight on it.",
+      "presentation": { "image": "data/graphics/challenge-ruin-v2.png", "alt": "An uneven stone floor beneath a worn recessed wall panel." },
       "type": "sequential",
       "balance": {
         "skillValue": "high",
@@ -150,7 +151,8 @@
     "locked_door": {
       "id": "locked_door",
       "name": "Locked Door",
-      "description": "A locked door bars your way. Choose how to get through - but choose wisely, failure means this door stays shut forever.",
+      "description": "The door holds fast. Its lock, ironwork and possible ward each suggest a different way through. Choose your approach carefully: an attempted failure leaves this passage closed for this run.",
+      "presentation": { "image": "data/graphics/challenge-door-v2.png", "alt": "A closed iron-bound timber door in a shadowed stone passage." },
       "type": "choice",
       "doorChallenge": true,
       "canTurnBack": true,
@@ -167,9 +169,9 @@
           "skill": "finesse",
           "attribute": "composure",
           "baseDC": 15,
-          "description": "Pick the lock with finesse",
+          "description": "Listen for the lock's small movements and ease it open without forcing the mechanism.",
           "onSuccess": {
-            "message": "You pick the lock and the door swings open silently.",
+            "message": "The final catch lifts. You ease the door open, listening to the quiet on the other side.",
             "xp": 75,
             "gold": 15
           },
@@ -181,9 +183,9 @@
           "skill": "athletics",
           "attribute": "prowess",
           "baseDC": 18,
-          "description": "Force the door open with brute strength",
+          "description": "Set your shoulder against the ironwork and force the door before your footing gives.",
           "onSuccess": {
-            "message": "You smash the door open with brute force!",
+            "message": "The frame gives with a sharp report. You steady yourself as the door swings clear.",
             "xp": 50,
             "gold": 10
           },
@@ -197,9 +199,9 @@
           "skill": "lore",
           "attribute": "intellect",
           "baseDC": 14,
-          "description": "Detect and dispel magical lock",
+          "description": "Read the ward around the lock and try to unravel the working that holds it.",
           "onSuccess": {
-            "message": "You identify a magical seal and dispel it!",
+            "message": "You follow the seal's pattern to its weak point. The working loosens; the lock finally yields.",
             "xp": 100,
             "gold": 20
           },
@@ -234,8 +236,9 @@
     },
     "bandit_negotiation": {
       "id": "bandit_negotiation",
+      "presentation": {"image":"data/graphics/challenge-parley-v1.jpg","alt":"A simple barrier across a quiet frontier road."},
       "name": "Bandit Negotiation",
-      "description": "Bandits block your path. Perhaps you can avoid bloodshed?",
+      "description": "The bandits spread across your path and wait for your answer. You have a little room to speak before this becomes a fight. Conviction, a convincing lie, or an appeal to the people behind the weapons might carry the moment.",
       "type": "choice",
       "balance": {
         "skillValue": "high",
@@ -338,7 +341,8 @@
     "cliff_climb": {
       "id": "cliff_climb",
       "name": "Cliff Climbing",
-      "description": "A towering cliff face blocks your path",
+      "description": "The cliff offers plenty of cracks and very few trustworthy holds. First find a line you can follow; then commit your weight to it. What looks sound from below may crumble under your fingers.",
+      "presentation": { "image": "data/graphics/challenge-rock-v3.png", "alt": "Weathered handholds and an exposed ledge on a steep rock face." },
       "type": "sequential",
       "balance": {
         "skillValue": "low",
@@ -354,7 +358,7 @@
           "skill": "perception",
           "attribute": "intuition",
           "baseDC": 12,
-          "description": "Spot the best climbing route",
+          "description": "Trace a line of holds before committing; a sound reading will make the climb easier.",
           "onSuccess": {
             "message": "You identify handholds and a safe path.",
             "nextStage": "climb",
@@ -370,7 +374,7 @@
           "skill": "athletics",
           "attribute": "prowess",
           "baseDC": 15,
-          "description": "Climb the cliff face",
+          "description": "Test each hold before trusting it, keeping enough strength for the pull over the lip.",
           "onSuccess": {
             "message": "You pull yourself over the lip. The valley falls away below you.",
             "xp": 120,
@@ -402,7 +406,8 @@
     "hidden_treasure": {
       "id": "hidden_treasure",
       "name": "Hidden Treasure Search",
-      "description": "This chamber looks like it might hide secrets...",
+      "description": "Something about this place rewards a second look: a fitted edge, a trace of wear where the surroundings are untouched. If there is a concealed compartment, finding it and opening it are two different problems.",
+      "presentation": {"image":"data/graphics/challenge-cache-v1.jpg","alt":"A closed wooden compartment has a subtle worn catch.","variants":[{"environment":"dungeon","image":"data/graphics/challenge-ruin-v2.png","alt":"A recessed stone panel and shadowed chamber passage."}]},
       "type": "sequential",
       "balance": {
         "skillValue": "medium",
@@ -418,7 +423,7 @@
           "skill": "investigation",
           "attribute": "intellect",
           "baseDC": 13,
-          "description": "Search the area methodically",
+          "description": "Compare edges and wear across the area; look for a surface that has been handled rather than weathered.",
           "onSuccess": {
             "message": "You find signs of a hidden compartment!",
             "nextStage": "retrieve"
@@ -432,7 +437,7 @@
           "skill": "finesse",
           "attribute": "composure",
           "baseDC": 12,
-          "description": "Open the hidden compartment",
+          "description": "Work the concealed catch gently. Finding the compartment has not made its mechanism any less stubborn.",
           "onSuccess": {
             "message": "Your fingers find the latch. Inside: worth the trouble.",
             "xp": 75,
@@ -469,8 +474,9 @@
     },
     "calm_wild_beast": {
       "id": "calm_wild_beast",
+      "presentation": {"image":"data/graphics/challenge-wolf-v1.jpg","alt":"An alert grey wolf hesitates on ordinary earthy ground."},
       "name": "Calm Wild Beast",
-      "description": "A wild animal blocks your path, snarling aggressively",
+      "description": "The animal bars your way, snarling at every movement. Closing the distance would be a mistake. Keep still, read its fear, and see whether you can give it a reason to withdraw.",
       "type": "single",
       "skill": "empathy",
       "attribute": "composure",
@@ -516,8 +522,9 @@
     },
     "sneak_past_guards": {
       "id": "sneak_past_guards",
+      "presentation": {"image":"data/graphics/challenge-watch-v1.jpg","alt":"A watch lantern casts warm light beside a dark opening."},
       "name": "Sneak Past Guards",
-      "description": "Guards patrol the corridor ahead...",
+      "description": "The guards' patrol leaves brief gaps, but each one closes quickly. You could move quietly, wait for their attention to turn, or walk through as though you belong. Being challenged will mean a fight.",
       "type": "choice",
       "balance": {
         "skillValue": "very_high",
@@ -645,7 +652,8 @@
     "arcane_puzzle": {
       "id": "arcane_puzzle",
       "name": "Arcane Puzzle",
-      "description": "Ancient runes glow faintly on the door ahead",
+      "description": "Faint runes gather around the door's mechanism. Repeated marks suggest a pattern, though not its meaning. You could interpret the working, investigate its sequence, or treat it as something built to be rearranged.",
+      "presentation": { "image": "data/graphics/challenge-ruin-v2.png", "alt": "An ancient fitted stone panel bearing worn abstract incisions." },
       "type": "choice",
       "balance": {
         "skillValue": "medium",
@@ -660,9 +668,9 @@
           "skill": "lore",
           "attribute": "intellect",
           "baseDC": 18,
-          "description": "Use magical knowledge to solve the puzzle",
+          "description": "Read the runes as a working: look for the principle that makes the sequence hold together.",
           "onSuccess": {
-            "message": "You understand the magical principles and solve the puzzle!",
+            "message": "The apparent contradictions resolve into a single working. You complete its pattern and the mechanism responds.",
             "xp": 120,
             "gold": 25,
             "loot": {
@@ -679,9 +687,9 @@
           "skill": "investigation",
           "attribute": "intellect",
           "baseDC": 14,
-          "description": "Examine the puzzle for patterns",
+          "description": "Compare repeated marks and worn edges until a consistent sequence emerges.",
           "onSuccess": {
-            "message": "Through careful observation, you solve the puzzle!",
+            "message": "One worn edge repeats where the others do not. You follow the pattern through; the mechanism answers with a quiet click.",
             "xp": 100,
             "gold": 20
           },
@@ -693,9 +701,9 @@
           "skill": "craft",
           "attribute": "intellect",
           "baseDC": 16,
-          "description": "Reconfigure the rune sequence as a working mechanism",
+          "description": "Treat the sequence as a made thing: test how its parts fit rather than what its symbols mean.",
           "onSuccess": {
-            "message": "Your creative approach reveals a hidden solution!",
+            "message": "You stop trying to read the sequence and start fitting it together. The last adjustment settles into place.",
             "xp": 110,
             "gold": 22
           },
@@ -725,8 +733,9 @@
     },
     "ancient_text": {
       "id": "ancient_text",
+      "presentation": {"image":"data/graphics/challenge-tablet-v1.jpg","alt":"A weathered stone tablet with eroded abstract marks."},
       "name": "Decipher Ancient Text",
-      "description": "Ancient writing covers the stone tablet",
+      "description": "Writing crowds the stone tablet, interrupted by damage and long use. Enough remains to tempt a reading. Work from what you can actually decipher; an attractive guess is still a guess.",
       "type": "single",
       "skill": "lore",
       "attribute": "intellect",
@@ -776,8 +785,9 @@
     },
     "stabilize_wounded": {
       "id": "stabilize_wounded",
+      "presentation": {"image":"data/graphics/challenge-care-v1.jpg","alt":"Linen bandages and a water bowl prepared for first aid."},
       "name": "Stabilize Wounded NPC",
-      "description": "A wounded person lies before you, bleeding heavily",
+      "description": "The wounded person's breathing is shallow and the bleeding has not stopped. Medical knowledge may tell you what to do; careful examination may show you where to begin. There is little room for an uncertain hand.",
       "type": "choice",
       "balance": {
         "skillValue": "medium",
@@ -830,8 +840,9 @@
     },
     "track_creature": {
       "id": "track_creature",
+      "presentation": {"image":"data/graphics/challenge-tracks-v1.jpg","alt":"Disturbed earth and pressed grass suggest recent passage."},
       "name": "Track Creature",
-      "description": "You notice animal tracks and signs of passage through the area",
+      "description": "A few disturbed patches break the ground's ordinary pattern. They might resolve into a trail if you can separate fresh passage from old marks. Finding the signs is only the first part; keeping them is the next.",
       "type": "sequential",
       "balance": {
         "skillValue": "very_high",
@@ -897,8 +908,9 @@
     },
     "detect_lie": {
       "id": "detect_lie",
+      "presentation": {"image":"data/graphics/challenge-dialogue-v1.jpg","alt":"Two plain clay cups sit apart across a worn table."},
       "name": "Detect Deception",
-      "description": "Something about their story doesn't add up...",
+      "description": "The account almost holds together. A pause falls in the wrong place; one detail seems too carefully supplied. Listen for what changes when they think you have accepted it.",
       "type": "contested",
       "playerSkill": "empathy",
       "playerAttribute": "composure",
@@ -945,8 +957,9 @@
     },
     "creative_distraction": {
       "id": "creative_distraction",
+      "presentation": {"image":"data/graphics/challenge-distraction-v1.jpg","alt":"A simple clay cup lies on its side in a pool of light."},
       "name": "Create Distraction",
-      "description": "You need to divert attention away from your true goal",
+      "description": "Their attention is exactly where you do not want it. A small, well-timed disturbance might be enough. Make it convincing without making yourself the most interesting thing here.",
       "type": "single",
       "skill": "finesse",
       "attribute": "composure",
@@ -987,7 +1000,8 @@
     "votive_record": {
       "id": "votive_record",
       "name": "Read the Votive Record",
-      "description": "Someone kept count here. The marks are still legible.",
+      "description": "Someone kept count here, returning often enough to wear the surface around the marks. The record is still legible. Look for repetition, omissions, and the point at which the pattern changes.",
+      "presentation": { "image": "data/graphics/challenge-ruin-v2.png", "alt": "Timeworn markings on a fitted stone surface." },
       "type": "single",
       "skill": "lore",
       "attribute": "intellect",
@@ -1034,7 +1048,8 @@
     "narrow_ledge": {
       "id": "narrow_ledge",
       "name": "Narrow Ledge",
-      "description": "A narrow ledge is the only way forward",
+      "description": "The ledge narrows around the rock, leaving little room to recover a misplaced foot. Study its surface before committing. Beyond the first step, balance matters more than haste.",
+      "presentation": {"image":"data/graphics/challenge-caveledge-v1.jpg","alt":"A narrow continuous stone shelf curves through a cave.","variants":[{"environment":"outdoors","image":"data/graphics/challenge-rock-v3.png","alt":"An exposed natural ledge follows a continuous rock face."}]},
       "type": "sequential",
       "balance": {
         "skillValue": "high",
@@ -1095,8 +1110,9 @@
     },
     "endure_harsh_environment": {
       "id": "endure_harsh_environment",
+      "presentation": {"image":"data/graphics/challenge-travel-v1.jpg","alt":"A worn travel pack and repaired cloak suggest a hard journey.","variants":[{"terrains":["swamp"],"image":"data/graphics/challenge-swamp-v3.png","alt":"Soft muddy banks and shallow marsh water."},{"terrains":["desert","desertHills"],"image":"data/graphics/challenge-desert-v2.png","alt":"An exposed gravel desert under pale daylight."},{"terrains":["tundra","snowyPlains","snowForest"],"image":"data/graphics/challenge-snowgrowth-v1.jpg","alt":"A cold snowy route through ordinary woodland."},{"terrains":["jungle"],"image":"data/graphics/challenge-undergrowth-v1.jpg","alt":"Dense green vegetation crossing a narrow route."}]},
       "name": "Endure Harsh Environment",
-      "description": "The extreme conditions test your limits",
+      "description": "The conditions are beginning to dictate your pace. Read the warning signs while you still have strength to act on them; then settle into an effort you can sustain.",
       "type": "sequential",
       "canTurnBack": false,
       "balance": {
@@ -1158,8 +1174,9 @@
     },
     "boulder_push": {
       "id": "boulder_push",
+      "presentation": {"image":"data/graphics/challenge-boulder-v1.jpg","alt":"A heavy rounded boulder blocks a shallow rocky passage."},
       "name": "Move Heavy Boulder",
-      "description": "A massive boulder blocks your path",
+      "description": "The boulder fills the passage, but the ground around its base shows where it might shift. Find purchase, set your footing, and decide whether your strength will move the stone before it gives out.",
       "type": "single",
       "skill": "athletics",
       "attribute": "prowess",
@@ -1208,7 +1225,8 @@
     "mountain_climb": {
       "id": "mountain_climb",
       "name": "Mountain Climbing",
-      "description": "Steep mountain slopes require careful navigation",
+      "description": "The slope steepens until every promising line hides another difficult stretch. Read the rock before choosing your ascent. A route you can see is not always a route you can hold.",
+      "presentation": { "image": "data/graphics/challenge-rock-v3.png", "alt": "Steep weathered mountain rock with small holds and exposed ledges." },
       "type": "sequential",
       "balance": {
         "skillValue": "medium",
@@ -1268,7 +1286,8 @@
     "heat_endurance": {
       "id": "heat_endurance",
       "name": "Desert Heat Wave",
-      "description": "The scorching sun beats down relentlessly",
+      "description": "The sun presses down until even small movements feel expensive. Read the ground for a less punishing line, then keep a steady pace. Heat makes poor decisions feel reasonable.",
+      "presentation": { "image": "data/graphics/challenge-desert-v2.png", "alt": "Bleached stony ground and distant ridges under harsh sunlight." },
       "type": "sequential",
       "balance": {
         "skillValue": "low",
@@ -1329,7 +1348,8 @@
     "swamp_navigation": {
       "id": "swamp_navigation",
       "name": "Navigate Treacherous Swamp",
-      "description": "The murky swamp conceals dangerous ground",
+      "description": "Dark water hides the ground between the reeds. A firm-looking patch may be only roots over mud. You can read the marsh, test a quick-footed crossing, or study the small signs that distinguish a route from a trap.",
+      "presentation": { "image": "data/graphics/challenge-swamp-v3.png", "alt": "Shallow marsh pools between soft muddy banks and patches of grass." },
       "type": "choice",
       "balance": {
         "skillValue": "medium",
@@ -1344,9 +1364,9 @@
           "skill": "survival",
           "attribute": "intuition",
           "baseDC": 13,
-          "description": "Probe ahead carefully with a stick",
+          "description": "Probe the ground before trusting it, reading how roots and water give under pressure.",
           "onSuccess": {
-            "message": "You identify safe paths through the swamp!",
+            "message": "Each test rules out another false foothold. You follow the ground that holds and leave the deeper mud behind.",
             "xp": 100,
             "gold": 20
           },
@@ -1360,9 +1380,9 @@
           "skill": "finesse",
           "attribute": "prowess",
           "baseDC": 15,
-          "description": "Hop between solid ground patches",
+          "description": "Move lightly between the firmer patches before the mud can take your weight.",
           "onSuccess": {
-            "message": "You nimbly navigate the swamp!",
+            "message": "You keep your weight moving from one firm patch to the next. Behind you, the water settles into the spaces you avoided.",
             "xp": 100,
             "gold": 20
           },
@@ -1376,9 +1396,9 @@
           "skill": "lore",
           "attribute": "intellect",
           "baseDC": 12,
-          "description": "Use knowledge of wetlands to identify safe paths",
+          "description": "Read the reeds, roots and standing water for the marsh's more dependable ground.",
           "onSuccess": {
-            "message": "Your knowledge guides you safely through!",
+            "message": "The vegetation gives away what the water hides. You follow its changes onto firmer ground.",
             "xp": 100,
             "gold": 20
           },
@@ -1403,8 +1423,9 @@
     },
     "dense_undergrowth": {
       "id": "dense_undergrowth",
+      "presentation": {"image":"data/graphics/challenge-undergrowth-v1.jpg","alt":"Dense green stems and bracken obstruct a route.","variants":[{"terrains":["snowForest"],"image":"data/graphics/challenge-snowgrowth-v1.jpg","alt":"Snow-covered branches obstruct a winter woodland route."}]},
       "name": "Dense Jungle Undergrowth",
-      "description": "Thick vines and vegetation block your path",
+      "description": "The growth closes across your route, woven tightly enough to catch a pack or turn a foot. Find the places that yield before forcing your way through. Every careless movement catches on something.",
       "type": "single",
       "skill": "survival",
       "attribute": "intuition",
@@ -1442,7 +1463,8 @@
     "cliff_climb_advanced": {
       "id": "cliff_climb_advanced",
       "name": "Scale Mountain Peak",
-      "description": "The near-vertical peak demands expert climbing",
+      "description": "The rock rises almost vertically, its holds scattered far enough apart to demand commitment. Study the line carefully. On this face, strength spent correcting a mistake may be strength you need higher up.",
+      "presentation": { "image": "data/graphics/challenge-rock-v3.png", "alt": "An exposed steep rock face with scattered weathered handholds." },
       "type": "sequential",
       "balance": {
         "skillValue": "high",
@@ -1500,8 +1522,9 @@
     },
     "ice_climbing": {
       "id": "ice_climbing",
+      "presentation": {"image":"data/graphics/challenge-ice-v1.jpg","alt":"A coherent ice wall covers a shaded rock face."},
       "name": "Ice Wall Climbing",
-      "description": "A wall of slick ice blocks your path",
+      "description": "The ice offers pale ridges that might hold and smooth stretches that certainly will not. Read its surface before beginning the climb. Each move needs a secure answer to the one before it.",
       "type": "sequential",
       "balance": {
         "skillValue": "low",
@@ -1562,7 +1585,8 @@
     "river_crossing": {
       "id": "river_crossing",
       "name": "Cross Swift River",
-      "description": "A fast-flowing river blocks your path",
+      "description": "The river looks shallower where it runs fastest. Rocks break the surface, but the water between them pulls hard. Strength, balance, or a careful reading of the current could get you across.",
+      "presentation": { "image": "data/graphics/challenge-river-v3.png", "alt": "A swift river flowing around a few low rounded boulders." },
       "type": "choice",
       "balance": {
         "skillValue": "medium",
@@ -1577,14 +1601,14 @@
           "skill": "athletics",
           "attribute": "prowess",
           "baseDC": 12,
-          "description": "Wade across the current",
+          "description": "Brace against the current and wade across, keeping your weight low.",
           "onSuccess": {
-            "message": "You power through the current and reach the other side!",
+            "message": "The current shoves at every step. You keep your footing until your boots finally find the far bank.",
             "xp": 100,
             "gold": 20
           },
           "onFailure": {
-            "message": "The current sweeps you downstream!",
+            "message": "The bed drops beneath your next step. The current rolls you against stone before you drag yourself clear.",
             "damage": "2d6",
             "damageType": "bone"
           }
@@ -1593,14 +1617,14 @@
           "skill": "finesse",
           "attribute": "prowess",
           "baseDC": 13,
-          "description": "Leap across stepping stones",
+          "description": "Trust your balance on the exposed stones, committing before the next wave washes over them.",
           "onSuccess": {
-            "message": "You nimbly hop across the river!",
+            "message": "One wet stone, then another. Your last step lands on firm ground with the river still reaching behind you.",
             "xp": 100,
             "gold": 20
           },
           "onFailure": {
-            "message": "You slip on a wet stone and fall in!",
+            "message": "A stone turns slick beneath your boot. You strike hard on the way into the water and scramble back out.",
             "damage": "1d6",
             "damageType": "bone"
           }
@@ -1609,14 +1633,14 @@
           "skill": "investigation",
           "attribute": "intellect",
           "baseDC": 14,
-          "description": "Find a shallow crossing point",
+          "description": "Study the current and riverbed for a ford instead of fighting the deepest water.",
           "onSuccess": {
-            "message": "You discover a safe ford and cross easily!",
+            "message": "The broken surface gives the riverbed away. You follow the shallower line and reach the far bank.",
             "xp": 100,
             "gold": 20
           },
           "onFailure": {
-            "message": "You misjudge the depth and get swept away!",
+            "message": "What looked like shallows gives way beneath you. The current batters you before you regain the bank.",
             "damage": "1d6",
             "damageType": "bone"
           }
@@ -1636,8 +1660,9 @@
     },
     "guard_patrol": {
       "id": "guard_patrol",
+      "presentation": {"image":"data/graphics/challenge-watch-v1.jpg","alt":"A plain watch lantern hangs from an unmarked timber."},
       "name": "Guard Patrol",
-      "description": "City guards approach, demanding to know your business.",
+      "description": "The guards approach with the manner of people expecting an explanation. Decide how to account for yourself before they decide what your hesitation means.",
       "type": "choice",
       "terrainModifiers": {},
       "choices": [
@@ -1702,8 +1727,9 @@
     },
     "market_haggle": {
       "id": "market_haggle",
+      "presentation": {"image":"data/graphics/challenge-market-v1.jpg","alt":"Plain cloth, pottery and repaired leather await appraisal."},
       "name": "Market Haggling",
-      "description": "A merchant offers goods at inflated prices. You could negotiate for a better deal.",
+      "description": "The asking price leaves room for negotiation, if you can give the merchant a reason to move. Listen to the offer before answering it; confidence alone does not make a bargain.",
       "type": "single",
       "terrainModifiers": {},
       "skill": "influence",
@@ -1731,8 +1757,9 @@
     },
     "pickpocket_attempt": {
       "id": "pickpocket_attempt",
+      "presentation": {"image":"data/graphics/challenge-market-v1.jpg","alt":"A closed cloth purse rests beside ordinary merchant wares."},
       "name": "Pickpocket Encounter",
-      "description": "You notice a pickpocket attempting to steal from a nearby merchant.",
+      "description": "A hand drifts toward the merchant's belongings while their attention is elsewhere. You have noticed it early enough to act. Choose your intervention before the moment passes.",
       "type": "choice",
       "terrainModifiers": {},
       "choices": [
@@ -1789,8 +1816,9 @@
     },
     "warehouse_sneak": {
       "id": "warehouse_sneak",
+      "presentation": {"image":"data/graphics/challenge-warehouse-v1.jpg","alt":"A warehouse doorway opens onto a dim storage aisle."},
       "name": "Warehouse Infiltration",
-      "description": "You notice suspicious activity in a warehouse. Investigate?",
+      "description": "Activity inside the warehouse does not fit the quiet outside it. There may be a way to learn more without announcing yourself. First read the openings, then choose when to move.",
       "type": "sequential",
       "terrainModifiers": {},
       "stages": [
@@ -1841,8 +1869,9 @@
     },
     "crop_trampling": {
       "id": "crop_trampling",
+      "presentation": {"image":"data/graphics/challenge-crops-v1.jpg","alt":"A narrow earthen edge runs beside young planted crops."},
       "name": "Crop Field Crossing",
-      "description": "You need to cross farmland. The farmer watches suspiciously.",
+      "description": "Your route crosses worked ground, and the farmer is watching. Their suspicion is understandable: a careless crossing can undo careful work. Choose how to make your passage acceptable.",
       "type": "choice",
       "terrainModifiers": {},
       "choices": [
@@ -1898,8 +1927,9 @@
     },
     "forge_accident": {
       "id": "forge_accident",
+      "presentation": {"image":"data/graphics/challenge-forgefire-v1.jpg","alt":"Fire has spread onto kindling beside a small stone forge."},
       "name": "Forge Fire",
-      "description": "A forge fire has gotten out of control! Help extinguish it?",
+      "description": "The forge fire is spreading beyond its proper bounds. Rushing in without reading the danger could make you another person needing help. Assess what is feeding it before attempting to bring it under control.",
       "type": "sequential",
       "terrainModifiers": {},
       "stages": [
@@ -1949,8 +1979,9 @@
     },
     "predator_stalk": {
       "id": "predator_stalk",
+      "presentation": {"image":"data/graphics/challenge-tracks-v1.jpg","alt":"Pressed grass and disturbed earth hint at unseen passage."},
       "name": "Predator Stalking",
-      "description": "Something is following you. The grass is too still.",
+      "description": "The quiet behind you keeps arriving a moment late. Something is matching your progress. Find the signs before turning uncertainty into an encounter you cannot control.",
       "type": "sequential",
       "balance": {
         "skillValue": "medium",
@@ -2007,7 +2038,8 @@
     "desert_wayfinding": {
       "id": "desert_wayfinding",
       "name": "Desert Wayfinding",
-      "description": "The dunes all look the same. The sun is moving. You need to orient before you lose another hour.",
+      "description": "The desert repeats itself in every direction. A ridge that looked distinctive now resembles three others. Establish your bearings from the ground and sky before committing to another line.",
+      "presentation": { "image": "data/graphics/challenge-desert-v2.png", "alt": "A dry, wind-scoured expanse of pale earth and repeated distant ridges." },
       "type": "sequential",
       "balance": {
         "skillValue": "medium",
@@ -2064,7 +2096,8 @@
     "beach_salvage": {
       "id": "beach_salvage",
       "name": "Shipwreck Salvage",
-      "description": "Debris from a shipwreck bobs in the shallows. Something in there is worth the cold.",
+      "description": "Wreck debris shifts in the shallows, briefly visible between the waves. First decide what is worth reaching for. Then time your attempt before the water closes over it again.",
+      "presentation": { "image": "data/graphics/challenge-shore-v3.png", "alt": "A tidal shoreline strewn with seaweed, wet stones and weathered driftwood." },
       "type": "sequential",
       "balance": {
         "skillValue": "medium",
@@ -2126,8 +2159,9 @@
     ,
     "gather_rumors": {
         "id": "gather_rumors",
+        "presentation": {"image":"data/graphics/challenge-dialogue-v1.jpg","alt":"Two mismatched clay cups leave space for a conversation."},
         "name": "Gather Rumors",
-        "description": "The innkeeper has an ear for local gossip. You could try to draw them out.",
+      "description": "The innkeeper hears more than most people mean to tell. Give the conversation room to wander, then listen for the detail they stop treating as idle gossip.",
         "type": "choice",
         "terrainModifiers": {},
         "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },
@@ -2190,8 +2224,9 @@
     },
     "appraise_goods": {
         "id": "appraise_goods",
+        "presentation": {"image":"data/graphics/challenge-market-v1.jpg","alt":"Worn merchant wares show their material and repairs."},
         "name": "Appraise Goods",
-        "description": "You want to know if this merchant's wares are worth the asking price.",
+      "description": "The wares look convincing at a glance. Look again at wear, joins and repairs before deciding what the price actually buys. Good presentation can conceal ordinary work.",
         "type": "single",
         "terrainModifiers": {},
         "skill": "investigation",
@@ -2211,8 +2246,9 @@
     },
     "identify_item_quality": {
         "id": "identify_item_quality",
+        "presentation": {"image":"data/graphics/challenge-smith-v1.jpg","alt":"A plain iron fitting lies on a scarred smith's bench."},
         "name": "Read the Craft",
-        "description": "A blacksmith's work reveals their skill. You could tell a lot by examining the forge.",
+      "description": "A maker's skill survives in the details: an even finish, a well-fitted join, a repair that respects the old work. Examine what the blacksmith has made before judging the hands that made it.",
         "type": "single",
         "terrainModifiers": {},
         "skill": "craft",
@@ -2233,8 +2269,9 @@
     },
     "craft_assistance": {
         "id": "craft_assistance",
+        "presentation": {"image":"data/graphics/challenge-smith-v1.jpg","alt":"Simple tongs and a hammer lie beside unfinished ironwork."},
         "name": "Lend a Hand",
-        "description": "The blacksmith is in the middle of a difficult job. You could help — or hinder.",
+      "description": "The blacksmith has reached the part of the job that leaves no spare hand. Before offering yours, understand what they are trying to hold, shape or fit. Useful help begins with noticing.",
         "type": "choice",
         "terrainModifiers": {},
         "balance": { "cooldown": 3600000, "riskLevel": "medium", "npcOnly": true },
@@ -2277,8 +2314,9 @@
     },
     "intimidate_npc": {
         "id": "intimidate_npc",
+        "presentation": {"image":"data/graphics/challenge-dialogue-v1.jpg","alt":"Two clay cups sit apart in a quiet pool of lamplight."},
         "name": "Intimidating Presence",
-        "description": "You make clear that obstructing you would be unwise.",
+      "description": "There is a point at which a request becomes a threat. You can cross it, but they will remember the manner of your approach. Make the pressure convincing if you choose to use it.",
         "type": "single",
         "terrainModifiers": {},
         "skill": "influence",
@@ -2300,8 +2338,9 @@
     },
     "negotiate": {
         "id": "negotiate",
+        "presentation": {"image":"data/graphics/challenge-dialogue-v1.jpg","alt":"Space between two cups suggests an unresolved discussion."},
         "name": "Negotiate Terms",
-        "description": "Propose a mutual benefit — appeal to their self-interest.",
+      "description": "They have a reason to refuse, and perhaps a better reason to agree. Find the part of your proposal that serves them as well as you. A workable bargain needs both sides to see it.",
         "type": "single",
         "terrainModifiers": {},
         "skill": "influence",
@@ -2323,8 +2362,9 @@
     },
     "persuade_npc": {
         "id": "persuade_npc",
+        "presentation": {"image":"data/graphics/challenge-dialogue-v1.jpg","alt":"A quiet table holds two ordinary drinking cups."},
         "name": "Make Your Case",
-        "description": "Find an unexpected angle they hadn't considered — lateral thinking, not direct pressure.",
+      "description": "Repeating the request will not change the answer. Find an angle they have not considered, and make its value clear in terms they can accept.",
         "type": "single",
         "terrainModifiers": {},
         "skill": "influence",
@@ -2345,8 +2385,9 @@
     },
     "gather_information": {
         "id": "gather_information",
+        "presentation": {"image":"data/graphics/challenge-watch-v1.jpg","alt":"A hooded watch lantern lights an unmarked timber post."},
         "name": "Ask the Guard",
-        "description": "Guards see everything that moves through a settlement.",
+      "description": "The guards see who comes and goes, but that does not mean they share everything they notice. Choose how to turn routine conversation toward something useful.",
         "type": "choice",
         "terrainModifiers": {},
         "balance": { "cooldown": 3600000, "riskLevel": "low", "npcOnly": true },

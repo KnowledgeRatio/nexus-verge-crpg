@@ -24,6 +24,7 @@ This document defines the structure of all JSON data files used in the game.
 13. [Save Game State](#save-game-state)
 14. [Building Interior Presentation](#building-interior-presentation)
 15. [Interface Icon References](#interface-icon-references)
+16. [Skill Challenge Presentation](#skill-challenge-presentation)
 
 ---
 
@@ -710,6 +711,68 @@ New-world generation attaches `provisioning:{id,cueId,attempt:null}` to selected
 ```
 
 The core catalogue contains exactly nine broad skills. `primaryAttribute` is the default NVSystem approach and `secondaryAttribute` is the only standard alternative. Skill-check content should explicitly author `attribute` when the approach matters. `legacyIds` are accepted for migration only and must not be used by new content.
+
+---
+
+## Skill Challenge Presentation
+
+**Files:** `data/skillChallenges.json`; top-level presentation metadata on
+`data/skillChallenges/bandit-negotiation.json`.
+
+Each entry under `challenges` may include optional presentation metadata:
+
+```json
+"presentation": {
+  "image": "data/graphics/challenge-undergrowth-v1.jpg",
+  "alt": "Dense green stems and bracken obstruct a route.",
+  "variants": [
+    {
+      "terrains": ["snowForest"],
+      "image": "data/graphics/challenge-snowgrowth-v1.jpg",
+      "alt": "Snow-covered branches obstruct a winter woodland route."
+    }
+  ]
+}
+```
+
+`image` is the scene asset URL; `alt` is its accessible description. Both must be
+nonempty for `src/ui/ChallengeScene.js` to select artwork. PNG and JPEG delivery
+paths are supported. The shared choice, confirmation and outcome modals, the
+passive-result fallback and the separate branching social panel use this
+metadata. Missing usable metadata or image-load failure retains text and
+controls. `RULES.skillChallenges.presentation.enabled` disables images.
+
+Optional `environment` restricts the illustration to `"dungeon"` or `"outdoors"`.
+The renderer treats truthy `gameState.dungeon.active` as `"dungeon"` and all other
+states as `"outdoors"`; this is not a biome or settlement classifier. Optional
+`terrains` is an array of terrain IDs, matched against the supplied
+`context.terrainType`. If both restrictions are present, both must match;
+omitted restrictions allow either environment or any terrain, respectively.
+
+Optional `variants` is an ordered array of complete scene objects with the same
+`image`, `alt`, `environment` and `terrains` fields. `resolveChallengeScene`
+selects the first variant with an image, alt text and matching restrictions.
+If no variant qualifies, it selects the base object when that object is valid
+and matches; otherwise it returns no scene. Fields are not inherited from the
+base into variants. Missing terrain context does not match a terrain-restricted
+variant. These are metadata-selection fallbacks: an HTTP image failure hides
+the selected art rather than selecting a different variant.
+
+Current data gives `hidden_treasure` a neutral compartment default and dungeon
+ruin variant, and `narrow_ledge` a cave-shelf default and outdoor rock variant.
+`endure_harsh_environment` uses travel equipment by default, with variants for
+`swamp`, `desert`/`desertHills`, `tundra`/`snowyPlains`/`snowForest`, and `jungle`.
+`dense_undergrowth` uses its snowy image for `snowForest`. All 41 catalogue
+definitions and the separate bandit social tree currently have scene metadata.
+
+Presentation follows the existing selected challenge and live context. Player
+terrain context is carried through single, sequential, choice, confirmation,
+passive and result prompts. Social `challengeUpdate` events carry the tree's
+presentation and existing conversation context. Selection adds no random draw,
+gameplay consequence, save field or migration. Legacy environment-only metadata
+remains supported. Keep scene art compatible with every eligible context and
+provide a neutral default where more specific variants cannot cover them all.
+See the [coverage and provenance](art/skill-challenges/README.md).
 
 ---
 

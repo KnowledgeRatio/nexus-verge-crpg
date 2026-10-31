@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skill encounter study — Nexus Verge</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { padding: 24px; overflow: auto; }
+        main { max-width: 760px; margin: auto; }
+        label, select, main button { display: block; margin: 12px 0; max-width: 100%; }
+        select, main button { min-height: 44px; padding: 10px; }
+        #reviewStatus { white-space: pre-line; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Skill encounter study</h1>
+        <p>Review illustrated encounters and their existing approaches. This study uses a temporary character and does not load or save a campaign.</p>
+        <label for="encounter">Encounter</label><select id="encounter"></select>
+        <label for="reviewLevel">Character level</label>
+        <select id="reviewLevel"><option>1</option><option>5</option><option>10</option></select>
+        <label for="reviewEnvironment">Setting</label>
+        <select id="reviewEnvironment"><option value="outdoors">Outdoors</option><option value="dungeon">Dungeon</option></select>
+        <label for="reviewTerrain">Terrain</label>
+        <select id="reviewTerrain"><option value="">Unspecified</option><option value="jungle">Jungle</option><option value="snowForest">Snow forest</option><option value="tundra">Tundra</option><option value="desert">Desert</option><option value="swamp">Swamp</option></select>
+        <button id="openEncounter" disabled>Open encounter</button>
+        <button id="openOutcome" disabled>Review success result</button>
+        <button id="testMissingArt" disabled>Review missing-art fallback</button>
+        <button id="openSocial" disabled>Open branching social encounter</button>
+        <p id="reviewStatus" role="status">Loading study…</p>
+    </main>
+    <script type="module">
+        // Import after load so main.js does not bootstrap a real game in this study.
+        window.addEventListener('load', async () => {
+            const status = document.getElementById('reviewStatus');
+            try {
+                const html = await (await fetch('index.html')).text();
+                const source = new DOMParser().parseFromString(html, 'text/html');
+                for (const id of ['skillCheckModal', 'choiceChallengeModal', 'skillOutcomeModal', 'socialChallengeModal']) {
+                    document.body.appendChild(source.getElementById(id));
+                }
+                const [{ default: Game }, { default: SkillChallengeManager }, { gameState }] = await Promise.all([
+                    import('./src/main.js'), import('./src/systems/SkillChallengeManager.js'), import('./src/core/GameState.js')
+                ]);
+                const manager = new SkillChallengeManager();
+                await Promise.all([manager.loadTerrainChallenges(), manager.loadSkillsData(), manager.loadChallenges()]);
+                window.skillChallengeManager = manager;
+                const game = Object.create(Game.prototype);
+                game.updateHUD = () => {};
+                game.checkDeath = () => false;
+                game.player = { triggerCombatFromChallenge: async () => { status.textContent = 'Study: this conversation would lead to combat.'; } };
+                game.setupSocialChallengeSystem();
+                window.game = game;
+                gameState.set('character', { name: 'Study traveller', level: 1, gold: 100, xp: 0, currentHP: 100, maxHP: 100,
+                    abilities: { prowess: 14, resilience: 14, intellect: 14, intuition: 14, presence: 14, composure: 14 }, skills: {} });
+                const select = document.getElementById('encounter');
+                for (const challenge of Object.values(manager.terrainChallengesData.challenges)) {
+                    const option = document.createElement('option');
+                    option.value = challenge.id;
+                    option.textContent = challenge.name;
+                    select.appendChild(option);
+                }
+                select.value = 'locked_door';
+                const presentationContext = () => ({ terrainType: document.getElementById('reviewTerrain').value });
+                function currentChallenge() {
+                    gameState.set('character.level', Number(document.getElementById('reviewLevel').value));
+                    gameState.set('dungeon.active', document.getElementById('reviewEnvironment').value === 'dungeon');
+                    return manager.terrainChallengesData.challenges[select.value];
+                }
+                async function open(challenge) {
+                    if (manager.getChallengeOptions(challenge).length) {
+                        const result = await game.promptChoiceSkillChallenge(challenge, presentationContext());
+                        status.textContent = result.attempted ? 'Study attempt resolved. No campaign was saved.' : 'Returned without attempting.';
+                    } else {
+                        const stage = challenge.stages?.find(entry => !entry.passiveRoll) || challenge;
+                        const result = await game.promptSkillCheck({ title: challenge.name,
+                            description: [challenge.description, stage !== challenge && stage.description].filter(Boolean).join('\n\n'),
+                            skill: stage.skill, attribute: stage.attribute,
+                            dc: manager.calculateAdjustedDC(stage.baseDC ?? challenge.baseDC ?? 12, gameState.get('character.level')),
+                            presentationContext: presentationContext()
+                        }, challenge, stage === challenge ? null : stage);
+                        status.textContent = result.attempted ? 'Study attempt resolved. No campaign was saved.' : 'Returned without attempting.';
+                    }
+                }
+                document.getElementById('openEncounter').onclick = () => open(currentChallenge());
+                document.getElementById('testMissingArt').onclick = () => {
+                    const challenge = currentChallenge();
+                    return open({ ...challenge, presentation: { image: 'data/graphics/intentionally-missing-study.png', alt: 'Missing study illustration.' } });
+                };
+                document.getElementById('openOutcome').onclick = () => {
+                    const challenge = currentChallenge();
+                    const stage = manager.getChallengeOptions(challenge)[0] || challenge.stages?.at(-1) || challenge;
+                    return game.showSkillChallengeOutcome({ challenge, stage, success: true, consequences: {}, presentationContext: presentationContext(),
+                        outcome: stage.onSuccess, rollResult: { roll: 15, total: 18, modifier: 3, dc: 14 } });
+                };
+                const closeSocial = document.createElement('button');
+                closeSocial.type = 'button';
+                closeSocial.className = 'btn btn-secondary';
+                closeSocial.textContent = 'Close social study';
+                closeSocial.onclick = () => manager.closeChallenge();
+                document.querySelector('#socialChallengeModal .social-challenge-container').appendChild(closeSocial);
+                document.getElementById('openSocial').onclick = () => {
+                    currentChallenge();
+                    manager.startChallenge('bandit_negotiation', { npcName: 'Bandit Leader', motivation: 'opportunists', settlementName: 'the settlement' });
+                };
+                document.addEventListener('keydown', event => { if (event.key === 'Escape') game.cancelPendingSkillPrompt?.(); });
+                document.querySelectorAll('main button').forEach(button => { button.disabled = false; });
+                status.textContent = 'Ready. Setting checks illustration compatibility; level checks the existing DC scaling.';
+            } catch (error) {
+                status.textContent = `Study could not load: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

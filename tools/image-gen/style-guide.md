@@ -24,6 +24,28 @@ Illustrative oil painting — gestural, bold, designed. Strong value contrast: p
 
 Nexus Verge (called "the Verge" in common speech) is a convergence dimension — a plane that has been pulling matter, ecology, and peoples from other dimensions for ages. It is a living frontier with competing factions and improvised law. At the world's edges the Void advances: pure entropy, no intent, no hunger, just the slow erasure of ordered matter. Tone: desperate wonder, survival on a frontier that is still being mapped. All content is medieval-fantasy in material culture. No industrial equipment, no modern technology, no post-apocalyptic ruin.
 
+## Skill Challenge Scenes
+
+Encounter scenes use the detailed illustrated environment treatment of the
+settlement interiors. Place the observer at a standing adult's eye height,
+approximately 1.65 metres above the local walking surface. State the physical
+camera height explicitly; “first-person” or “eye-level” alone is insufficient.
+Use a normal lens and natural downward sightlines for ground-level obstacles.
+Keep foreground stones, roots, reeds and driftwood at believable human scale;
+show their upper surfaces where the standing observer would see them. A ledge
+underfoot must sit below the gaze, and a waist-height latch below eye level.
+Avoid ground-skimming, crouched, worm's-eye and extreme wide-angle viewpoints
+unless the authored encounter explicitly requires one. Preserve the obstacle,
+unresolved outcome and existing world canon. This camera contract applies to
+skill encounter illustrations, not terrain atlases or portrait framing.
+
+Outdoor scenes need credible natural landforms and restrained detail. Build
+continuous slopes, coherent rock strata, water-worn stones and vegetation in
+irregular patches with quiet ground or water between them. Avoid filling every
+surface and silhouette with protruding roots, splinters, needles, fins, stumps
+or repeated tiny rock towers. Use dramatic geology only when the subject calls
+for it. Ordinary landscape atmosphere should come from light, weather and scale.
+
 ## Terrain Art Style
 
 Directly overhead orthographic field-atlas cartography in translucent gouache and fine iron-brown ink on a uniform warm stone-grey painted substrate. Restrained natural pigments: warm olive, weathered straw, iron brown, deep desaturated teal, slate blue-grey, and muted mineral highlights. Use broad readable terrain masses, sparse bold cartographic marks, consistent medium brush size and line weight, low-to-medium local contrast, and flat even illumination. Terrain identity must remain immediately legible when reduced to 16, 32, and 48 pixels. The painted surface fills every pixel edge-to-edge: no border, margin, padding, vignette, paper edge, edge fade, directional shadow, horizon, perspective, or focal centre.

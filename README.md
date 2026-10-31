@@ -168,7 +168,7 @@ Choose:
 
 ### Callings
 
-- Dedication: martial, STR + CON, uses Focus
+- Dedication: martial, Prowess + Resilience, uses Resolve from level 3
 - Curiosity: caster, INT + CON, uses Mana + Arcane Recovery
 - Audacity: hybrid, DEX + CHA, uses Mana
 
@@ -179,6 +179,14 @@ The game uses callings as classes:
 - Dedication
 - Curiosity (coming soon label shown in class data)
 - Audacity (coming soon label shown in class data)
+
+### Dedication Field Codex
+
+Press `C` in-game and choose **Dedication pathways** beside **Character** to compare Exemplar and Oath, follow levels 1–10, and browse abilities, auras, vows, fighting styles and practices. The read-only page highlights a Dedication character's current level, selected path and learned choices.
+
+You can also open [the standalone Dedication reference](dedication.html) from the running local site, or visit `http://localhost:8000/dedication.html` with the local server above. It loads its rules with JavaScript; use **Print / Save as PDF** for a printable copy. The standalone page does not load your saved character. Milestones marked **Not yet available** are authored features that do not currently grant their described combat benefit.
+
+The page is implemented locally; desktop, mobile and print visual acceptance remain unverified. See [the Dedication mechanics reference](docs/callings/dedication.md) for current mechanics and known gaps.
 
 ### Ability Scores
 

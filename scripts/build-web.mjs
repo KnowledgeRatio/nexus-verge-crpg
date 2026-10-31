@@ -41,7 +41,7 @@ const mediaBaseUrl = mediaOrigin
     : `/media/releases/${releaseId}/`;
 
 const appFiles = new Set([
-    'index.html', 'styles.css', 'LICENSE'
+    'index.html', 'styles.css', 'dedication.html', 'calling-reference.css', 'LICENSE'
 ]);
 const mediaFiles = new Set();
 
@@ -128,7 +128,7 @@ await addFilesUnder('data', file =>
 await addFilesUnder('data/skillChallenges', file => file.endsWith('.json'));
 await addFilesUnder('data/icons', file => /\.(svg|json)$/.test(file));
 await addFilesUnder('data/graphics', file =>
-    /^data\/graphics\/[^/]+\.png$/.test(file));
+    /^data\/graphics\/[^/]+\.(png|jpe?g)$/.test(file));
 await addFilesUnder('data/sound', file => file.endsWith('.wav'));
 appFiles.add('data/audio/combat-sfx.json');
 if (await stat(path.join(root, 'combat-scene.css')).catch(() => null)) {

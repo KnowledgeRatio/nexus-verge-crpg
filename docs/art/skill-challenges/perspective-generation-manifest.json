@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-30",
+  "tool": "OpenAI built-in image_gen",
+  "reason": "Sponsor feedback: several encounter scenes read as mouse-height viewpoints. Correct camera elevation and foreground scale.",
+  "cameraContract": "Standing adult observer, eye height about 1.65 metres above local walking surface; normal lens; natural downward sightlines to low obstacles; no ground-skimming camera or oversized foreground.",
+  "assets": [
+    {
+      "id": "door",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-door-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-door-v1.png",
+      "prompt": "Edit target: attached Nexus Verge door encounter illustration. Correct the camera perspective, rebuilding the view rather than merely cropping the old image. The original camera is too near the floor. Put the camera at the eye height of a STANDING ADULT, 1.65 metres above the floor, several paces back from an ordinary human-sized 2.1-metre-high door. View the closed door naturally straight ahead with a slight DOWNWARD sightline toward its waist-height lock. The floor must be visibly viewed from ABOVE, not skimmed along at ground level. The keyhole and latch are around 1 metre above the floor and noticeably BELOW the viewer's eye line. Show the full doorway, a little wall above the lintel, and a modest strip of receding floor; no huge foreground pebbles or close floor texture. Use a normal 45mm-equivalent lens with straight verticals and modest depth, no ultrawide distortion, no upward heroic camera, no crouched viewpoint, no dollhouse or bird's-eye view. Preserve the old closed timber door, weathered iron straps and hinges, rough stone passage, tactile illustrated material, amber light from left and cool shadow. Keep proportions ordinary and believable. No people, body parts, text, interface, treasure or new magical decoration. Landscape 16:9.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-8a9860fb-7668-4758-9e82-2f6f46e164ff.png",
+      "file": "data/graphics/challenge-door-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-door-v1.png"
+    },
+    {
+      "id": "river",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-river-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-river-v1.png",
+      "prompt": "Edit the attached Nexus Verge encounter illustration to correct a low, mouse-like camera. Reconstruct the scene from the eyes of an adult traveller STANDING UPRIGHT, camera 1.65 metres above the LOCAL walking surface. This physical camera height is the principal change. Preserve the scene's subject, detailed illustrated material treatment, restrained colours and lighting. Natural 45mm-equivalent perspective; modest downward gaze where the subject is below waist level. Foreground ground objects must be seen FROM ABOVE, with tops visible and convincing adult-relative size. No oversized foreground textures, waterline/ground-skimming lens, crouching, upward heroic shot, ultrawide distortion, tilt-shift miniature, overhead drone or bird's-eye view. No player body, other people, text, UI, logos or additional rewards. Landscape 16:9. Viewer stands on the near riverbank looking down and across the crossing. The camera is 1.65m above the bank, not beside the rocks at water level. Show several metres of the crossing as one legible route: fast slate-green water, rounded stepping stones and the existing fallen trunk. See rock tops and bank surfaces from distinctly above. Lower the apparent height/size of the nearest rocks and driftwood; distant bank stays ordinary in scale. Preserve a tense current and grounded warm/cool light.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-a392d81f-0ecf-4305-b02c-764bc9ee0de1.png",
+      "file": "data/graphics/challenge-river-v2.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-river-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-river-v1.png"
+    },
+    {
+      "id": "rock",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-rock-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-rock-v1.png",
+      "prompt": "Edit the attached Nexus Verge encounter illustration to correct a low, mouse-like camera. Reconstruct the scene from the eyes of an adult traveller STANDING UPRIGHT, camera 1.65 metres above the LOCAL walking surface. This physical camera height is the principal change. Preserve the scene's subject, detailed illustrated material treatment, restrained colours and lighting. Natural 45mm-equivalent perspective; modest downward gaze where the subject is below waist level. Foreground ground objects must be seen FROM ABOVE, with tops visible and convincing adult-relative size. No oversized foreground textures, waterline/ground-skimming lens, crouching, upward heroic shot, ultrawide distortion, tilt-shift miniature, overhead drone or bird's-eye view. No player body, other people, text, UI, logos or additional rewards. Landscape 16:9. Viewer stands upright on the same narrow ledge that recedes beside the rock face. The ledge immediately ahead lies distinctly BELOW eye level, visible with a natural downward glance from 1.65m above it. It must not run horizontally at the viewer's nose like a tabletop. Show human-scale foot placements farther along the ledge, the adjacent rough cliff at shoulder height, and mist beyond. Keep the ledge's continuity and sense of exposure, with small stones rather than giant boulders at the bottom edge.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-afd2a84c-c8da-4b99-8882-58a49a3fa8b0.png",
+      "file": "data/graphics/challenge-rock-v2.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-rock-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-rock-v1.png"
+    },
+    {
+      "id": "ruin",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-ruin-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-ruin-v1.png",
+      "prompt": "Edit the attached Nexus Verge encounter illustration to correct a low, mouse-like camera. Reconstruct the scene from the eyes of an adult traveller STANDING UPRIGHT, camera 1.65 metres above the LOCAL walking surface. This physical camera height is the principal change. Preserve the scene's subject, detailed illustrated material treatment, restrained colours and lighting. Natural 45mm-equivalent perspective; modest downward gaze where the subject is below waist level. Foreground ground objects must be seen FROM ABOVE, with tops visible and convincing adult-relative size. No oversized foreground textures, waterline/ground-skimming lens, crouching, upward heroic shot, ultrawide distortion, tilt-shift miniature, overhead drone or bird's-eye view. No player body, other people, text, UI, logos or additional rewards. Landscape 16:9. Viewer stands in the stone corridor with eyes 1.65m above its floor, facing the worn recessed panel at normal chest-to-head height. The panel's lower sill is waist height and visibly BELOW the eye line, with its TOP SURFACE seen gently from above. Vertical masonry stays upright; ordinary adult-sized steps and the floor recede below the gaze. No low-angle looming stone blocks. Retain existing eroded abstract incisions, fitted panel, dark passage and amber sidelight; do not invent text or a solved mechanism.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-dea1029a-bb84-4513-8eac-4bb05ec1631e.png",
+      "file": "data/graphics/challenge-ruin-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-ruin-v1.png"
+    },
+    {
+      "id": "swamp",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-swamp-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-swamp-v1.png",
+      "prompt": "Edit the attached Nexus Verge encounter illustration to correct a low, mouse-like camera. Reconstruct the scene from the eyes of an adult traveller STANDING UPRIGHT, camera 1.65 metres above the LOCAL walking surface. This physical camera height is the principal change. Preserve the scene's subject, detailed illustrated material treatment, restrained colours and lighting. Natural 45mm-equivalent perspective; modest downward gaze where the subject is below waist level. Foreground ground objects must be seen FROM ABOVE, with tops visible and convincing adult-relative size. No oversized foreground textures, waterline/ground-skimming lens, crouching, upward heroic shot, ultrawide distortion, tilt-shift miniature, overhead drone or bird's-eye view. No player body, other people, text, UI, logos or additional rewards. Landscape 16:9. Viewer stands on firm marsh ground, looking down ahead at an uncertain crossing. Place the lens 1.65m above that ground. The nearest reeds are knee-to-waist height, so their tips remain BELOW the viewer's eye line and the tops of muddy hummocks are clearly seen from above. The water is below the viewer, not at the lens. Preserve roots, dark water, mist and warm reflected light, but remove looming close vegetation and giant foreground mud details. Show an adult's natural surveying view.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-f84b73dd-9e1b-483e-bd69-f130d7781d2a.png",
+      "file": "data/graphics/challenge-swamp-v2.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-swamp-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-swamp-v1.png"
+    },
+    {
+      "id": "shore",
+      "operation": "edit",
+      "reference": "data/graphics/challenge-shore-v1.png",
+      "archivedReference": "docs/art/skill-challenges/archive/challenge-shore-v1.png",
+      "prompt": "Edit the attached Nexus Verge encounter illustration to correct a low, mouse-like camera. Reconstruct the scene from the eyes of an adult traveller STANDING UPRIGHT, camera 1.65 metres above the LOCAL walking surface. This physical camera height is the principal change. Preserve the scene's subject, detailed illustrated material treatment, restrained colours and lighting. Natural 45mm-equivalent perspective; modest downward gaze where the subject is below waist level. Foreground ground objects must be seen FROM ABOVE, with tops visible and convincing adult-relative size. No oversized foreground textures, waterline/ground-skimming lens, crouching, upward heroic shot, ultrawide distortion, tilt-shift miniature, overhead drone or bird's-eye view. No player body, other people, text, UI, logos or additional rewards. Landscape 16:9. Viewer stands upright on the beach, looking slightly down along the tideline from 1.65m above the shingle. The driftwood is an ordinary log lying BELOW knee height a few paces away; see its upper surface and the pebble bed from above. The log must not loom as a huge diagonal wall next to a ground-level lens. Preserve seaweed, wet stones, slate water, distant coastline and warm sky break. Pebbles should read as small objects beneath a standing person.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-df6f79aa-8460-45be-b1b4-224f3c610786.png",
+      "file": "data/graphics/challenge-shore-v2.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-shore-v2.png",
+      "supersedesRuntime": "data/graphics/challenge-shore-v1.png"
+    }
+  ]
+}

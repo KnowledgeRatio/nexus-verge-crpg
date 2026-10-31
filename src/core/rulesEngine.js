@@ -695,6 +695,7 @@ export const RULES = {
     // SKILL CHALLENGES
     // ====================
     skillChallenges: {
+        presentation: { enabled: true }, // Optional authored encounter art; no gameplay or save effects.
         defaultCooldownMs: 300000, // Omitted cooldowns use the existing five-minute baseline; explicit 0 opts out.
         // Balance system for skill challenge rewards
         balancing: {

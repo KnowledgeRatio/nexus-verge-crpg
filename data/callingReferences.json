@@ -1,0 +1,23 @@
+{
+  "dedication": {
+    "eyebrow": "The martial calling",
+    "subtitle": "One discipline. Two paths. A lifetime of resolve.",
+    "art": "data/graphics/sanctuary-cartographic-v1.png",
+    "growth": "At each confirmed level-up: gain hit points and +1 to one attribute (maximum 20).",
+    "foundation": "Choose one Fighting Style and three weapon masteries at character creation.",
+    "sections": [
+      { "id": "foundation", "title": "The shared discipline", "intro": "Automatic calling abilities. Each has its own use per short rest.", "pool": "abilities", "shared": true },
+      { "id": "tactics", "title": "Exemplar · combat manoeuvres", "intro": "Choose three at level 3; optionally learn one more at levels 7 and 9. Each costs 1 Resolve.", "pool": "abilities", "specialization": "exemplar", "tag": "tactic" },
+      { "id": "oath-gifts", "title": "Oath · sworn gifts", "intro": "Both are granted at level 3. Damage and healing draw from the same Resolve pool.", "pool": "abilities", "specialization": "oath", "excludeTag": "vow" },
+      { "id": "auras", "title": "Oath · auras", "intro": "Choose one at level 3. The other auras remain alternatives, not additional grants.", "pool": "traits", "specialization": "oath", "tier": 3 },
+      { "id": "vows", "title": "Oath · vows", "intro": "Optionally learn one at levels 5, 7 and 9. Conviction is a passive vow.", "pool": "combined", "specialization": "oath", "tag": "vow" },
+      { "id": "passives", "title": "Exemplar · the marks of mastery", "intro": "Automatic gifts of the Exemplar path.", "pool": "traits", "specialization": "exemplar" },
+      { "id": "styles", "title": "Your fighting style", "intro": "Choose one at character creation to define your approach to arms.", "pool": "styles" },
+      { "id": "practices", "title": "Beyond the battlefield", "intro": "Optional practice choices at levels 4, 6 and 8. These are shared across callings.", "pool": "practices" }
+    ],
+    "milestones": [
+      { "level": 5, "name": "Extra Attack", "description": "A second attack with the Attack action is an authored class milestone; it is not yet available in combat.", "availability": "planned" },
+      { "level": 10, "specialization": "exemplar", "name": "Action Surge · second use", "description": "A second use per short rest is an authored capstone; it is not yet available in combat.", "availability": "planned" }
+    ]
+  }
+}

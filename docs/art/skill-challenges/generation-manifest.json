@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-30",
+  "tool": "OpenAI built-in image_gen",
+  "reference": "data/graphics/tavern-interior-v1.png visually inspected; prompts use its documented visual treatment",
+  "assets": [
+    {
+      "id": "door",
+      "prompt": "Use case: illustration-story. Create a landscape 16:9 game encounter background for Nexus Verge, matching the high-detail photographic illustration of its tavern interiors: tactile worn materials, convincing depth, amber practical light against cool atmospheric fill, restrained earth colours, desperate wonder on a living frontier. Scene: eye-level close view of an old closed timber door reinforced with weathered iron in a rough stone passage, a small keyhole and worn hinges visibly suggesting different approaches. A soft warm light grazes the grain from offscreen left; cold darkness below the door. Intimate, evocative, tense and materially believable, a decision waiting to happen. No people, hands, text, UI, logos, readable runes, treasure, heraldry, supernatural spectacle, modern equipment or outcome already resolved. Keep obstacle central and legible in a wide shallow banner crop. Do not reproduce a known game asset.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-458d8008-f205-498a-bb2d-60dacae39f7d.png",
+      "file": "data/graphics/challenge-door-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-door-v1.png"
+    },
+    {
+      "id": "river",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. A powerful river crossing seen from the near bank. Swift slate-green water foams around rounded stepping rocks, with a fallen trunk reaching partway from one bank. Distant bank visible, no bridge, no settlements. Wet rock, tangled roots, amber late light and cold spray.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-92740003-73f9-40ff-b6bb-96426eb6ea58.png",
+      "file": "data/graphics/challenge-river-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-river-v1.png"
+    },
+    {
+      "id": "rock",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. A rough steep rock face with a narrow ledge disappearing around a bend, weathered cracks and small handholds. View from the foot looking slightly up, deep mist beyond the ledge suggesting real exposure. No snow, vegetation sparse and indistinct, no rope or invented equipment. Natural rock only.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-c5499343-5c24-44fe-b721-96ffda26ebc5.png",
+      "file": "data/graphics/challenge-rock-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-rock-v1.png"
+    },
+    {
+      "id": "ruin",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. An intimate ancient stone interior: close worn stone slabs with faint nonlinguistic abstract incisions, a carefully fitted recessed panel and an uneven stone floor continuing into shadow. Warm sidelight catches eroded surfaces against cool ambient light. No letters, recognizable script, magic beams, symbols of real faith, corpses, or revealed treasure. Ambiguous marks and construction, not a specific puzzle solution.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-42473a60-a63d-40d1-b8cc-08ef605fcac6.png",
+      "file": "data/graphics/challenge-ruin-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-ruin-v1.png"
+    },
+    {
+      "id": "forest",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. A tense close view along an overgrown wilderness trail. Bent stems, disturbed dark soil, roots, a few crushed leaves and a thin gap in tangled brush. Amber light glances off damp bark; cool shadow conceals what lies beyond. No animals, footprints of a specific species, people, structures, snow or flowers. A trail that rewards attention.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-11b62c97-be33-4401-9e9a-c0596e31dd37.png",
+      "file": "data/graphics/challenge-forest-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-forest-v1.png"
+    },
+    {
+      "id": "desert",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. A harsh dry expanse seen low from a stony rise. Wind-scoured earth, pale dust, a few dark exposed rocks and wavering distant ridges. Bleached daylight with restrained warm ochre and slate shadows. No water, oasis, sandstorm, people, tracks, buildings, bones or cacti. Subtle pressure of heat and uncertain direction.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-62d26e47-7e2d-4d21-b298-3b6097d7b4dd.png",
+      "file": "data/graphics/challenge-desert-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-desert-v1.png"
+    },
+    {
+      "id": "swamp",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. An uncertain passage into a marsh. Shallow dark water among reeds and twisted roots, patches of firm earth barely emerging, cold mist and pale amber reflected light. No buildings, people, creatures, hidden treasure or constructed boardwalk. Foreground ground texture makes choosing a route feel consequential.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-99ea52ba-22a3-4bb9-98b4-745a33d49a9f.png",
+      "file": "data/graphics/challenge-swamp-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-swamp-v1.png"
+    },
+    {
+      "id": "shore",
+      "prompt": "Use case: illustration-story. Landscape 16:9 encounter background for Nexus Verge in the same high-detail photographic illustration as its tavern interiors. Tactile worn materials, convincing depth, restrained earth colours, practical warm light balanced by cool atmosphere, desperate wonder on a living frontier. Evocative and tense: show a decision waiting to happen, never a resolved success or failure. First-person viewpoint without visible player body. No people, hands, text, readable lettering, UI, logos, heraldry, treasure, modern equipment or cosmic spectacle. Keep the main subject legible in a wide banner crop. A windswept shoreline at low tide with wet shingle, seaweed, rounded stones and a single piece of weathered driftwood. Slate water and a warm break in cloud, tangible salt-worn textures. No shipwreck, chests, loot, people, buildings, gulls or readable marks. Quiet potential for a careful search, nothing already discovered.",
+      "source": "C:\\Users\\josh_\\.codex\\generated_images\\01a18e64-d47b-7b80-8062-16c6832ad39b\\exec-87fb647b-2ea3-47cd-b8ec-64615cb29fe0.png",
+      "file": "data/graphics/challenge-shore-v1.png",
+      "archivedFile": "docs/art/skill-challenges/archive/challenge-shore-v1.png"
+    }
+  ]
+}

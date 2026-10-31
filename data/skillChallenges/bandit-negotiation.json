@@ -2,6 +2,7 @@
   "id": "bandit_negotiation",
   "name": "Negotiate with Bandits",
   "template": "social-encounter",
+  "presentation": { "image": "data/graphics/challenge-parley-v1.jpg", "alt": "A simple barrier interrupts a quiet frontier road." },
   "initialTension": 50,
   "tensionThreshold": 80,
   "initialNode": "opening",

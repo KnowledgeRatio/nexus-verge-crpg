@@ -822,13 +822,13 @@ class Player {
         // Handle challenge types
         if (challenge.type === 'single') {
             // Single skill check
-            await this.handleSingleSkillChallenge(challenge, adjustedDC);
+            await this.handleSingleSkillChallenge(challenge, adjustedDC, context);
         } else if (challenge.type === 'sequential') {
             // Multi-stage challenge
-            await this.handleSequentialSkillChallenge(challenge);
+            await this.handleSequentialSkillChallenge(challenge, context);
         } else if (challenge.type === 'choice') {
             // Multiple skill options
-            await this.handleChoiceSkillChallenge(challenge, adjustedDC);
+            await this.handleChoiceSkillChallenge(challenge, context);
         }
     }
 
@@ -837,7 +837,7 @@ class Player {
      * @param {Object} challenge - Challenge template
      * @param {number} adjustedDC - Level-adjusted DC
      */
-    async handleSingleSkillChallenge(challenge, adjustedDC) {
+    async handleSingleSkillChallenge(challenge, adjustedDC, context = {}) {
         const character = gameState.get('character');
 
         // Create config for skill check modal
@@ -846,7 +846,8 @@ class Player {
             description: challenge.description,
             skill: challenge.skill,
             attribute: challenge.attribute,
-            dc: adjustedDC
+            dc: adjustedDC,
+            presentationContext: context
         };
 
         // Prompt skill check with challenge integration
@@ -919,11 +920,12 @@ class Player {
             // Create config for this stage with stage history
             const config = {
                 title: `${challenge.name} - Stage ${currentStageIndex + 1}/${challenge.stages.length}`,
-                description: stage.description || challenge.description,
+                description: [challenge.description, stage.description].filter(Boolean).join('\n\n'),
                 skill: stage.skill,
                 attribute: stage.attribute,
                 dc: adjustedDC,
-                stageHistory: [...stageHistory] // Pass current history for display
+                stageHistory: [...stageHistory], // Pass current history for display
+                presentationContext: context
             };
 
             // Prompt skill check
@@ -1081,6 +1083,7 @@ class Player {
     async handleChoiceSkillChallenge(challenge, baseAdjustedDC) {
         // Show choice UI - player picks which skill to use
         const result = await window.game.promptChoiceSkillChallenge(challenge, {
+            ...(typeof baseAdjustedDC === 'object' ? baseAdjustedDC : {}),
             dcModifier: typeof baseAdjustedDC === 'object' ? baseAdjustedDC.dcModifier || 0 : 0
         });
         if (result.attempted) {
